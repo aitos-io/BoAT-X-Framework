@@ -1,7 +1,8 @@
 
 # BoAT SDK
 [![Issue](https://img.shields.io/github/issues/aitos-io/BoAT-X-Framework)](https://github.com/aitos-io/BoAT-X-Framework/issues)![Forks](https://img.shields.io/github/forks/aitos-io/BoAT-X-Framework)![Stars](https://img.shields.io/github/stars/aitos-io/BoAT-X-Framework)[![GitHub Release](https://img.shields.io/github/license/aitos-io/BoAT-X-Framework)](https://github.com/aitos-io/BoAT-X-Framework/blob/master/LICENSE)
-[![aitos.io](https://github.com/aitos-io/BoAT-X-Framework/blob/master/docs/logo/aitos_logo_100.png)](http://www.aitos.io/)
+
+[![aitos.io](https://github.com/aitos-io/BoAT-X-Framework/tree/master/docs/logo/aitos_logo_100.png)](http://www.aitos.io/)
 
 ## Introduction
 Welcome to the official implementation of BoAT Framework! 
