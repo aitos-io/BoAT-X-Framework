@@ -1,8 +1,9 @@
 
 # BoAT SDK
-[![Issue](https://img.shields.io/github/issues/aitos-io/BoAT-X-Framework)](https://github.com/aitos-io/BoAT-X-Framework/issues)![Forks](https://img.shields.io/github/forks/aitos-io/BoAT-X-Framework)![Stars](https://img.shields.io/github/stars/aitos-io/BoAT-X-Framework)[![GitHub Release](https://img.shields.io/github/license/aitos-io/BoAT-X-Framework)](https://github.com/aitos-io/BoAT-X-Framework/blob/master/LICENSE)
+[![Issue](https://img.shields.io/github/issues/aitos-io/BoAT-X-Framework)](https://github.com/aitos-io/BoAT-X-Framework/issues)![Forks](https://img.shields.io/github/forks/aitos-io/BoAT-X-Framework)![Stars](https://img.shields.io/github/stars/aitos-io/BoAT-X-Framework)[![GitHub Release](https://img.shields.io/github/license/aitos-io/BoAT-X-Framework)](https://github.com/aitos-io/BoAT-X-Framework/blob/master/LICENSE)[![Join the chat at https://gitter.im/BoAT-X/community](https://badges.gitter.im/BoAT-X/community.svg)](https://gitter.im/BoAT-X/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![aitos.io](https://github.com/aitos-io/BoAT-X-Framework/tree/master/docs/logo/aitos_logo_100.png)](http://www.aitos.io/) [![Join the chat at https://gitter.im/BoAT-X/community](https://badges.gitter.im/BoAT-X/community.svg)](https://gitter.im/BoAT-X/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![aitos.io](https://aitos-io.github.io/BoAT-X-Framework/logo/aitos_logo_100.png)](http://www.aitos.io/)
+
 
 ## Introduction
 Welcome to the official implementation of BoAT Framework! 
@@ -37,7 +38,7 @@ For full list of new features, please read [aitos.io Release Notes](https://gith
 
 
 
-Join us as a BoAT-Mariner and pioneer your IoT+Blockchain path in 2021
+**Join us as a BoAT-Mariner and pioneer your IoT+Blockchain path in 2021**
 
 ## Quick Start
 
@@ -199,7 +200,7 @@ Place BoAT source somewhere in your project and build BoAT libraries.
 
 #### Generate C interface code
 Generate C interface code from contract ABI and add the generated C files into project for building.
-See *Contract C Interface Generation* for how to generate them.
+See [*Contract C Interface Generation*](#contract-c-interface-generation) for how to generate them.
 
 #### Modify Makefile of your project
 Add include file search path:
@@ -215,7 +216,7 @@ Add to link options: -lcurl -lcrypto
 
 #### Modify your C code
 Add: #include “boatiotsdk.h”
-Follow instructions in “How to Call a Contract in Your C code”
+Follow instructions in [*How to Call a Contract in Your C code*](#how-to-call-a-contract-in-your-c-code).
 
 
 
@@ -228,16 +229,17 @@ TBD
 
 ## Community
 The BoAT-X Framework community can be found at:
-+ Mailing list: [BoAT-X dev](info@aitos.io)
-+ Bugs: [issues](https://github.com/aitos-io/BoAT-X-Framework/issues)
++ Contact Mail: info@aitos.io
++ Report Bugs: [BoAT-X Issues](https://github.com/aitos-io/BoAT-X-Framework/issues)
++ WeChat Group: Add WeChat "miatang51213" to join the group
 
-To chat with other community members you can join the [BoAT-X Gitter - TBD]
+To chat with other community members you can join the [BoAT-X Gitter](https://gitter.im/BoAT-X/community)
 
 
 
 ## Contribution
 We are glad to have contributors out of the core team; contributions, including (but not limited to) style/bug fixes,
-implementation of features, proposals of schemes/algorithms, and thorough documentation, are welcomed. Please refer to our [TBD Contribution Guideline](TBD_CONTRIBUTING.md) for more information.
+implementation of features, proposals of schemes/algorithms, and thorough documentation, are welcomed. Please refer to our [Contribution Guideline](./CONTRIBUTING.md) for more information.
 
 Development guide documentation is [TBD Development Guide].
 
