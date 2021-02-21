@@ -1,4 +1,7 @@
+# BoAT User Guide
+
 ## Introduction
+
 ### Overview
 This article introduces the functions and usage of BoAT IoT Framework SDK 1.x.
 
@@ -81,26 +84,27 @@ The tool component provides a set of  Python tools, that be used to generate C l
 
  ### SDK code structure
  
- |Root directory|First-level directory|Secondary directory|description|
- | :-----| :-----| :-----| :-----|
- |SDKRoot|||
- ||build||Directory to store object and executable files|
- ||contract||Contract ABI and generated C interface file|
- ||docs||API reference manual|
- ||hwdep||Hardware dependencies|
- |||default|A default pure software version for development|
- ||include||Header files for application to include.  Application #include "boatiotsdk.h" only.|
- ||lib||Lib files for application to link with|
- ||sdk||SDK source|
- |||cJSON|An open source JSON parser|
- |||include|Header files for SDK internal use|
- |||protocol|Blockchain client protocol implementation|
- |||rlp|RLP encoder|
- |||rpc|Remote procedure call wrapper|
- |||utilities|Utility APIs|
- |||wallet|SDK entry API implementation|
- ||tests||Demo and tests|
- ||tools||Tools for generating C interface from contract ABI|
+ |Root directory|First-level sub-directory|Secondary sub-directory|description|
+ | :----------- | :---------------------- | :-------------------- | :---------|
+ |SDKRoot       |                         |                       |           |
+ |              |build                    |                       |Directory to store object and executable files|
+ |              |contract                 |                       |Contract ABI and generated C interface file|
+ |              |demo                     |                       |Demo application|
+ |              |docs                     |                       |API reference manual|
+ |              |hwdep                    |                       |Hardware dependencies|
+ |              |                         |default                |A default pure software version for development|
+ |              |include                  |                       |Header files for application to include.  Application #include "boatiotsdk.h" only.|
+ |              |lib                      |                       |Lib files for application to link with|
+ |              |sdk                      |                       |SDK source|
+ |              |                         |cJSON                  |An open source JSON parser|
+ |              |                         |include                |Header files for SDK internal use|
+ |              |                         |protocol               |Blockchain client protocol implementation|
+ |              |                         |rlp                    |RLP encoder|
+ |              |                         |rpc                    |Remote procedure call wrapper|
+ |              |                         |utilities              |Utility APIs|
+ |              |                         |wallet                 |SDK entry API implementation|
+ |              |tests                    |                       |Demo and tests|
+ |              |tools                    |                       |Tools for generating C interface from contract ABI|
 
 Note: The build and lib directories are generated during compilation. After the compilation is complete, only the include, lib in the first level directory, and the header files in contract/generated are needed by the application.
 
@@ -116,7 +120,7 @@ BoAT IoT Framework SDK depends on the following software:
 |Compiler|gcc，Need to support c99 (9.3.0 is tested)|Required||
 |Cross-compiler|arm-oe-linux-gnueabi-gcc 4.9.2 is tested|Required||
 |Make|GNU Make (4.3 is tested)|Required||
-|Python|Python 2.7 (Python 3 is also compatible)|Required||
+|Python|Python 3.8.3 (Python 2.7 is also compatible)|Required||
 |curl|libcurl and its development files (7.55.1 is tested)|Required|Required|
 |OpenSSL|openssl and its development files (1.1.1d is tested)|Required|Required|
 
