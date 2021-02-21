@@ -63,7 +63,7 @@ Smart contract call (manual construction)
 
  Figure 2-1 shows the position of BoAT IoT Framwork in the OpenCPU module. As an application layer protocol, BoAT is located above the existing protocol stack of the module and provides blockchain services to IoT Application. The peer layer of BoAT is a blockchain network.  
  
- ![BoAT in System](./images/BoAT_User_Guide_en-F2-1-BoAT_in_system.png)
+ ![BoAT in System](/en-us/images/BoAT_User_Guide_en-F2-1-BoAT_in_system.png)
  Figure 2-1 The location of the BoAT in the system
 
  For non-OpenCPU cellular modules, the BoAT IoT Framework library is linked by the module firmware and expanded into AT commands by the module manufacturer for invocation of IoT applications on the host computer, no longer repeated.
@@ -71,7 +71,7 @@ Smart contract call (manual construction)
  ### SDK architecture
  BoAT IoT Framework SDK is shown in Figure 2-2, which mainly includes Wallet API, blockchain client interface protocol, remote procedure call interface, common components, hardware dependent components and tool components.  
  
- ![BoAT Architecture](./images/BoAT_User_Guide_en-F2-2-BoAT_architecture.png)
+ ![BoAT Architecture](/en-us/images/BoAT_User_Guide_en-F2-2-BoAT_architecture.png)
  Figure 2-2 BoAT Architecture
  
  The Wallet API is an interface that the SDK provides to the IoT Application to call, including the SDK public interface and wallet and transaction interfaces for different blockchain protocols.  
