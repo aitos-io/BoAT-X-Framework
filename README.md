@@ -34,11 +34,9 @@ This version supports:
 More blockchains are to be supported.
 
 
+### Release
 For full list of new features, please read [aitos.io Release Notes](https://github.com/aitos-io/BoAT-X-Framework/releases).
 
-
-
-**Join us as a BoAT-Mariner and pioneer your IoT+Blockchain path in 2021**
 
 ## Quick Start
 
@@ -81,9 +79,9 @@ For public blockchain, you must prepare some gas for transaction fee in advance.
 For consortium blockchain , you must consult the administrator to give you access permission on the blockchain. Or you may deploy your own consortium blockchain node for test purpose.
 
 See blockchain official website for details:
-[Ethereum](https://ethereum.org/)
-[Ganache: an Ethereum Simulator](https://www.trufflesuite.com/truffle/)
-[PlatON Enterprise](https://github.com/PlatONEnterprise/)
+For [Ethereum](https://ethereum.org/)
+For [Ganache: an Ethereum Simulator](https://www.trufflesuite.com/truffle/)
+For [PlatON Enterprise](https://github.com/PlatONEnterprise/)
 
 #### Deploy the smart contract
 The smart contracts used in the demo locate in ./contract.
@@ -251,3 +249,5 @@ Submit Pull Requests at [Pull Requests](https://github.com/aitos-io/BoAT-X-Frame
 
 Apache License 2.0, see [LICENSE](./LICENSE).
 
+
+## Join us as a BoAT-Mariner and pioneer your IoT+Blockchain path in 2021
