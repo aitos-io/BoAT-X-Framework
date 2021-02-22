@@ -110,11 +110,10 @@ export BOAT_CFLAGS
 export BOAT_LFLAGS
 export LINK_LIBS
 
-#.PHONY: all boatlibs createdir boatwalletlib hwdeplib contractlib tests clean cleanboatwallet cleanhwdep cleancontract cleantests
-.PHONY: all boatlibs createdir boatwalletlib hwdeplib contractlib demo clean cleanboatwallet cleanhwdep cleancontract cleandemo
+.PHONY: all boatlibs createdir boatwalletlib hwdeplib contractlib demo tests clean \
+        cleanboatwallet cleanhwdep cleancontract cleandemo cleantests
 
-#all: boatlibs tests
-all: boatlibs demo
+all: boatlibs demo tests
 
 boatlibs: createdir boatwalletlib hwdeplib
 
@@ -131,16 +130,13 @@ hwdeplib:
 contractlib:
 	make -C $(BOAT_BASE_DIR)/contract all
 
-#tests: boatlibs contractlib
-#	make -C $(BOAT_BASE_DIR)/tests all
+tests: boatlibs contractlib
+	make -C $(BOAT_BASE_DIR)/tests all
 
 demo: boatlibs contractlib
 	make -C $(BOAT_BASE_DIR)/demo all
-	
-#clean: cleanboatwallet cleanhwdep cleancontract cleantests
-#	-$(BOAT_RM) $(BOAT_BUILD_DIR)
 
-clean: cleanboatwallet cleanhwdep cleancontract cleandemo
+clean: cleanboatwallet cleanhwdep cleancontract cleandemo cleantests
 	-$(BOAT_RM) $(BOAT_BUILD_DIR)
 
 cleanboatwallet:
@@ -154,6 +150,9 @@ cleancontract:
 
 cleandemo:
 	make -C $(BOAT_BASE_DIR)/demo clean
+
+cleantests:
+	make -C $(BOAT_BASE_DIR)/tests clean
 
 
 
