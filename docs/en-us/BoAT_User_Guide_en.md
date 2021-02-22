@@ -289,7 +289,47 @@ Under Windows, the SDK does not support compilation in environments other than C
 When cross-compiling outside of Cygwin, you still need to install Cygwin and adjust the Makefile.
 
 ###### Install Cygwin
-When cross-compiling outside of Cygwin, Cygwin still needs to be installed. Because the SDK compilation project relies on some Cygwin tools. The tools that need to be installed are as follows：
+When cross-compiling outside of Cygwin, Cygwin still needs to be installed. Because the SDK compilation project relies on some Cygwin tools. The tools that need to be installed are as follows：  
+
+|**Tools needed**|**use**|
+| :------------------| :-----| 
+|find|Cygwin's find.exe is needed to search the subdirectories to be compiled recursively. Windows comes with another FIND.EXE with the same name but completely different functions, which cannot be used.|
+|rm|Used to delete specified directories and files. The built-in RMDIR/RD and DEL commands of the Windows cmd shell can only be used to delete directories (trees) and files, respectively, and are not compatible with Cygwin's rm.exe in terms of syntax.|
+|mkdir|Used to create one or more levels of directories. The built-in MKDIR/MD commands of Windows cmd shell have the same function, but the syntax is not compatible.|
+|GNU make|You can install make in Cygwin, or you can compile GNU make based on a compiler on Windows (such as Microsoft Visual Studio). The latter does not depend on Cygwin.|
+
+After installing Cygwin, you need to configure its path. Since some Cygwin tools that SDK compilation relies on have the same names as the Windows built-in tools, you must ensure that the relevant tools referenced in the compilation point to the Cygwin version.
+
+First, in the cmd shell that executes the compilation, execute the following command to increase the search path of Cygwin：  
+set PATH=%PATH%;\<Path_to_Cygwin\>\bin  
+Where \<Path_to_Cygwin\> is the absolute path of the Cygwin installation directory, such as: C:\Cygwin64  
+
+*Note: The above commands can be written in a bat batch file, or directly added to the Windows system environment variables for easy calling. Note that if you directly add the Windows system environment variables, you must not place Cygwin before the %SystemRoot%\System32 path, otherwise the find version of Cygwin will be called by mistake when calling the FIND command of Windows in other scenarios, which will affect other scenarios Use Windows built-in commands.*  
+
+Then, modify boatiotsdk\Makefile, add the path to the dependent tool：
+```
+# Commands
+CYGWIN_BASE := C:\cygwin64  # Modify to actual path to Cygwin
+BOAT_RM := $(CYGWIN_BASE)\bin\rm -rf
+BOAT_MKDIR := $(CYGWIN_BASE)\bin\mkdir
+BOAT_FIND := $(CYGWIN_BASE)\bin\find
+
+```
+
+Taking Windows 10 as an example, the method to add the search path to the Windows environment variable is：  
+a)	Right-click on the Windows logo menu and select "System"  
+ ![System](/en-us/images/System.png)   
+b)	Click "System Information" on the "About" page  
+ ![System Information](/en-us/images/System_Information.png)    
+c)	Click "Advanced System Settings" on the "System" page  
+ ![Advanced System Settings](/en-us/images/Advanced_System_Settings.png)  
+d)	Click "Environment Variables" in the "System Properties" page  
+ ![Environment Variables](/en-us/images/Environment_Variables.png)   
+e)	Click "Path" in "System Variables" on the "Environment Variables" page, and click "Edit"  
+ ![Path](/en-us/images/Path.png)    
+f)	On the "Edit Environment Variables" page, click "New", add the bin path under the Cygwin installation directory, and make sure that the new path is located anywhere after the path %SystemRoot%\system32  
+ ![Edit Environment Variables](/en-us/images/Edit_Environment_Variables.png)
+
 
 ###### Other adjustments
 When cross-compiling outside of Cygwin, in addition to the previous section, the following adjustments are required:
