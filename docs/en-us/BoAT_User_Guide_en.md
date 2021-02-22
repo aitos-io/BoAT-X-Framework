@@ -3,8 +3,7 @@
 ## Introduction
 
 ### Overview
-This article introduces the functions and usage of BoAT IoT Framework SDK 1.x.
-
+This article introduces the functions and usage of BoAT IoT Framework SDK 1.x.  
 The intended readers of this article are customers who integrate the BoAT IoT Framework SDK.
 
 ### Abbreviated terms
@@ -27,32 +26,23 @@ WASM|Web Assembly|
 BoAT IoT Framework is a C language blockchain client framework for cellular modules, which is easy to be transplanted to various modules and helps IoT applications based on cellular modules connect to the blockchain and realize data on-chain services. The functions provided by the framework SDK to IoT applications include initiating on-chain transactions, automatic generation of smart contract C interface code, calling smart contracts, and managing blockchain keys.
 
 **Supported blockchain：**  
-
 Ethereum  
-PlatONE  
+PlatONE 
 
 
 **Supported Target Operating System：**  
-
-linux  
+linux 
 
 
 **Supported Build Operating System：**  
-
 linux/cygwin  
 
 **Main features：**  
-
 Blockchain account (wallet) parameter configuration  
-
 Blockchain key pair generation  
-
 Blockchain account creation/loading/unloading  
-
 Transfer transaction  
-
 Smart contract call (automatically generate C call interface)  
-
 Smart contract call (manual construction)  
 
 
@@ -92,7 +82,7 @@ The tool component provides a set of  Python tools, that be used to generate C l
  
  |Root directory|First-level sub-directory|Secondary sub-directory|description|
  | :----------- | :---------------------- | :-------------------- | :---------|
- |SDKRoot       |                         |                       |           |
+ |\<SDKRoot\>   |                         |                       |           |
  |              |build                    |                       |Directory to store object and executable files|
  |              |contract                 |                       |Contract ABI and generated C interface file|
  |              |demo                     |                       |Demo application|
@@ -143,49 +133,29 @@ In the saving path of the SDK source code, starting from the root directory, all
   
   
 For example, the following is a suitable path:  
-
 /home/developer/project-blockchain/boatiotsdk  
-
 C:\Users\developer\Documents\project\boatiotsdk  
 
-
-
-
-
 The following paths are not suitable:  
-
 /home/developer/project+blockchain/boatiotsdk  
-
 C:\Documents and Settings\developer\project\boatiotsdk  
-  
-  
-  
-  
 
 If you can't avoid the unsuitable characters above in the path, please use the following methods to avoid：  
 For linux: In a path without unsuitable characters, create a symbolic link to the SDK directory: ln -s \<SDKRoot\> boatiotsdk, and compile under the path of the symbolic link.  
-
 For Windows: use the SUBST Z: \<SDKRoot\> command to create a virtual drive letter Z: (or other unused drive letter), and compile under the Z: drive.
 
 
-  
-  
 #### Referenced external environment variables
 Modify the environment variables in the following files of the SDK as needed：  
-
 \<SDKRoot\>/external.env：Configure the INCLUDE path that the external compilation environment depends on  
-
-\<SDKRoot\>/hwdep/default/hwdep.env：Configure the INCLUDE path related to hardware or operating system
+\<SDKRoot\>/hwdep/default/hwdep.env：Configure the INCLUDE path related to hardware or operating system  
 
 During Host compilation, if gcc and binutils are already installed in the system, there is usually no need to modify these environment variable configurations.  
-
 During cross compilation, if the cross compilation environment needs to configure a specific INCLUDE path, you need to add the path to the above file.  
 
 #### SDK Option configuration
 Modify the configuration in the following files of the SDK as needed:  
-
 \<SDKRoot\>/include/boatoptions.h  
-
 
 These options include the printing level of LOG, the enabled blockchain protocol, etc. See the description in the header file for details.  
 
@@ -194,21 +164,42 @@ Smart contracts are executable codes on the blockchain, executed on blockchain v
 
 Different virtual machines and contract programming languages have different application binary interfaces (ABI). When a client calls a contract function through RPC, it must follow the corresponding ABI assembly interface.
 
-The SDK provides the following tools to generate the corresponding C interface code according to the contract ABI, so that in the C code, the smart contract on the chain can be called through the generated interface code like a general C function:
+The SDK provides the following tools to generate the corresponding C interface code according to the contract ABI, so that in the C code, the smart contract on the chain can be called through the generated interface code like a general C function:  
 
-Since contract programming languages generally support object-oriented, and C language does not support object-oriented, and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools.
+|**Conversion tool**|**use**|
+| :-----| :-----| 
+|\<SDKRoot\>/tools/eth2c.py|According to the ABI of Ethereum Solidity, generate C calling code|
+|\<SDKRoot\>/tools/platon2c.py|Generate C calling code according to PlatON (WASM) ABI|
+|\<SDKRoot\>/tools/platone2c.py|Generate C calling code according to PlatONE (WASM) ABI|
 
-Before making the call, you first need to compile the contract, and copy the ABI interface description JSON file generated in the contract compilation to the corresponding directory of the SDK：
+Since contract programming languages generally support object-oriented, and C language does not support object-oriented, and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools.  
 
-Note 1: ABI's JSON file must have ".json" as the file name suffix.  
+Before making the call, you first need to compile the contract, and copy the ABI interface description JSON file generated in the contract compilation to the corresponding directory of the SDK： 
 
-Note 2: If multiple contract ABIs are converted and compiled together, different contracts must have different JSON file names, even if they belong to different blockchains.
+|**Contract ABI storage path**|**use**|
+| :-----| :-----| 
+|\<SDKRoot\>/contract/ethereum|Copy the ABI JSON file of Ethereum Solidity to this directory|
+|\<SDKRoot\>/contract/platon|Copy PlatON (WASM) ABI JSON file to this directory|
+|\<SDKRoot\>/contract/platone|Copy PlatONE (WASM) ABI JSON file to this directory|
+
+*Note 1: ABI's JSON file must have ".json" as the file name suffix.*  
+*Note 2: If multiple contract ABIs are converted and compiled together, different contracts must have different JSON file names, even if they belong to different blockchains.*
 
 During the compilation process, the automatic generation tool will generate the corresponding C interface calling code according to the contract ABI JSON file. If the automatic generation of C interface fails during compilation, you need to delete the unsupported ABI JSON file (or delete the unsupported interface) from the corresponding directory of \<SDKRoot\>/contract, write the C code manually, and assemble the ABI interface. See section 4.5.
 ### Host compilation
-Host compilation means that the compilation environment is consistent with the target environment, for example, to compile x86 programs on x86. There are usually two scenarios for using Host compilation：
+Host compilation means that the compilation environment is consistent with the target environment, for example, to compile x86 programs on x86. There are usually two scenarios for using Host compilation： 
+1. In the software commissioning phase, the software functions are tested on the PC.
+2. The target software itself runs on devices based on x86/x86-64 processors, such as some edge gateways.
+
 #### Use linux as the compilation environment
 Compile Host based on Linux distribution (such as Ubuntu). Generally, there is no need to configure the compilation environment, just make sure that the dependent software has been installed.
+Follow the steps below to compile：
+1. Store the SDK source code in a path that meets the requirements of section 3.2.1
+2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/contract (see section 3.3)
+3. In the \<SDKRoot\> directory, execute the following command：  
+$make boatlibs
+
+After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See section 4.1.
 
 #### Use Cygwin as the compilation environment
 On Windows, the SDK does not support compilation in environments other than Cygwin, nor does it support compilation with compilers other than gcc.
