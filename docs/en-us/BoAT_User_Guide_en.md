@@ -192,7 +192,7 @@ Host compilation means that the compilation environment is consistent with the t
 2. The target software itself runs on devices based on x86/x86-64 processors, such as some edge gateways.
 
 #### Use linux as the compilation environment
-Compile Host based on Linux distribution (such as Ubuntu). Generally, there is no need to configure the compilation environment, just make sure that the dependent software has been installed.
+Compile Host based on Linux distribution (such as Ubuntu). Generally, there is no need to configure the compilation environment, just make sure that the dependent software has been installed.  
 Follow the steps below to compile：
 1. Store the SDK source code in a path that meets the requirements of section 3.2.1
 2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/contract (see section 3.3)
@@ -213,19 +213,79 @@ In cross-compilation, it is generally necessary to configure the compilation con
 ##### Independent cross-compilation environment
 Independent compilation environment means that arm-oe-linux-gnueabi-gcc (or similar cross-compiler) has been installed in the Linux system and can be called independently.
 
-The SDK requires at least the following environment variables to be set in the system to point to the cross-compilation environment:
+The SDK requires at least the following environment variables to be set in the system to point to the cross-compilation environment:  
+
+|**Environment variable**|**Description**|
+| :-----| :-----| 
+|CC|Point to the cross compiler gcc executable file|
+|AR|Point to the cross compiler ar executable file|
+
+
+When the environment variables of CC and AR are not defined in the environment, GNU make will default CC=cc and AR=ar. Usually, the gcc and bintuils compilation environment of the host are installed in the Linux system. Therefore, if the above environment variables are not defined, the host compilation will be executed.
+
+When configuring a cross-compilation environment, it is usually necessary to execute a specific shell script to set the above environment variables to point to the cross-compilation environment. For the bash shell, commands similar to the following are usually executed:  
+$source cross_compiler_config.sh  
+or  
+$. cross_compiler_config.sh  
+
+The "cross_compiler_config.sh" in the above example is not a script in this SDK, but a configuration script in the cross-compilation environment. For the specific name and location, please refer to the relevant instructions of the cross-compilation environment.  
+The "source" or "." in the example is necessary, which makes the script execute in the context of the current shell, so the modification of the environment variables in the script can take effect in the current shell.
+
+You can execute the following command to view the environment variable settings in the current shell：  
+$export
+
+If the environment variables CC and AR have been set, you can execute the following command to view the current version of CC and AR to confirm whether the desired cross-compilation environment has been pointed to：  
+${CC} -v  
+${AR} -v  
+
+After the above configuration is completed, follow the steps in section 3.4.1 to compile.
 
 ##### A cross-compilation environment integrated with the module development environment
 Some OpenCPU modules have integrated a supporting cross-compiler environment in the development environment provided by them, so that customers do not need to install a cross-compiler separately in the Linux system. This is especially convenient for developing application software on multiple modules of different models on a host computer without repeatedly switching the cross-compilation environment.
 
 ###### The module development environment is compiled with GNU make
-If the module development environment uses GNU make as the compilation project (makefiles in the source code directories at all levels), you can adjust the compilation configuration for the BoAT IoT Framework SDK and incorporate it into the integrated module development environment for compilation.
+If the module development environment uses GNU make as the compilation project (makefiles in the source code directories at all levels), you can adjust the compilation configuration for the BoAT IoT Framework SDK and incorporate it into the integrated module development environment for compilation.  
+
+Usually, the example of the customer code is provided in the module development environment, and the compilation configuration of the example code of the customer is included in the compilation system.First copy the \<SDKRoot\> directory (bootiotsdk is the directory name in the following example) to the source code in the module development environment, and then modify the Makefile in example directory, to add a target to compile BoAT IoT Framework SDK.  
+E.g：  
+Assuming that in the original compilation environment, the Makefile of the example in customer source code is as follows：  
+```
+.PHNOY: all  
+all:  
+    $(CC) $(CFLAGS) example.c -o example.o 
+
+clean:  
+	-rm -rf example.o
+```
+Adjusted to：
+```
+.PHNOY: all boatiotsdkall boatiotsdkclean  
+all: boatiotsdkall  
+    $(CC) $(CFLAGS) example.c -o example.o 
+
+clean: boatiotsdkclean    
+	-rm -rf example.o  
+
+boatiotsdkall:
+	make -C boatiotsdk boatlibs
+
+boatiotsdkclean:
+	make -C boatiotsdk clean
+
+```
+Among them, boatiotsdk is the directory where the SDK is located, and the -C parameter after make specifies to enter the boatiotsdk directory and then compile according to Makefile.
+
+*Note: In the Makefile, the command under target must start with a Tab (ASCII code 0x09), not a space.*
+
+The above steps are only used to compile the SDK library. After the SDK library compile completed, the compiled library needs to be integrated into the module development environment. See section 4.1 for details.
 
 ###### The module development environment is compiled with non-GNU make
-Since BoAT IoT Framework SDK uses GNU make as the compilation project, if the module development environment uses non-GNU Make compilation projects (such as Ninja, ant, etc.), or uses the automatic generation tools of the compilation project (such as automake, CMake), it cannot Compile the SDK directly in the module development environment.
+Since BoAT IoT Framework SDK uses GNU make as the compilation project, if the module development environment uses non-GNU Make compilation projects (such as Ninja, ant, etc.), or uses the automatic generation tools of the compilation project (such as automake, CMake), it cannot Compile the SDK directly in the module development environment.  
+
+To compile the SDK in such a module development environment, you need to release the gcc and binutils compilation tools in the module development environment, and configure the environment variables described in section 3.5.1.1 so that they can be called in the system, which is equivalent to independent cross-compilation Environment, and then compile the SDK.
 
 #### Use Windows as the compilation environment
-Under Windows, the SDK does not support compilation in environments other than Cygwin. If the cross compiler with Windows as the build environment can only be run outside Cygwin, the compilation environment and compilation configuration files should be adjusted.
+Under Windows, the SDK does not support compilation in environments other than Cygwin. If the cross compiler with Windows as the build environment can only be run outside Cygwin, the compilation environment and compilation configuration files should be adjusted.  
 When cross-compiling outside of Cygwin, you still need to install Cygwin and adjust the Makefile.
 
 ###### Install Cygwin
@@ -233,6 +293,9 @@ When cross-compiling outside of Cygwin, Cygwin still needs to be installed. Beca
 
 ###### Other adjustments
 When cross-compiling outside of Cygwin, in addition to the previous section, the following adjustments are required:
+
+1.	Try make, if it prompts that the path is wrong, change the corresponding path separator in the Makefile from "/" to "\\". Don't change all "/" to "\\" at the beginning, because the Windows version of some tools derived from linux can recognize "/" as a path separator.
+2.	Configure the environment variables described in section 3.5.1.1 to point to the correct cross-compilation environment. In these environment variables, the path should be separated by "\\".
 
 ### Compile and run Demo
 #### ready
