@@ -1,5 +1,5 @@
 
-# BoAT SDK
+# BoAT Framework
 [![Issue](https://img.shields.io/github/issues/aitos-io/BoAT-X-Framework)](https://github.com/aitos-io/BoAT-X-Framework/issues)![Forks](https://img.shields.io/github/forks/aitos-io/BoAT-X-Framework)![Stars](https://img.shields.io/github/stars/aitos-io/BoAT-X-Framework)[![GitHub Release](https://img.shields.io/github/license/aitos-io/BoAT-X-Framework)](https://github.com/aitos-io/BoAT-X-Framework/blob/master/LICENSE)[![Join the chat at https://gitter.im/BoAT-X/community](https://badges.gitter.im/BoAT-X/community.svg)](https://gitter.im/BoAT-X/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![aitos.io](https://aitos-io.github.io/BoAT-X-Framework/logo/aitos_logo_100.png)](http://www.aitos.io/)
@@ -29,16 +29,14 @@ The latter is the way **BoAT** is walking on. To ease off the effort that IoT de
 
 This version supports:
 + Ethereum
-+ PlatON Enterprise
++ PlatON Enterprise (PlatONE)
 
 More blockchains are to be supported.
 
 
+### Release
 For full list of new features, please read [aitos.io Release Notes](https://github.com/aitos-io/BoAT-X-Framework/releases).
 
-
-
-**Join us as a BoAT-Mariner and pioneer your IoT+Blockchain path in 2021**
 
 ## Quick Start
 
@@ -81,9 +79,9 @@ For public blockchain, you must prepare some gas for transaction fee in advance.
 For consortium blockchain , you must consult the administrator to give you access permission on the blockchain. Or you may deploy your own consortium blockchain node for test purpose.
 
 See blockchain official website for details:
-[Ethereum](https://ethereum.org/)
-[Ganache: an Ethereum Simulator](https://www.trufflesuite.com/truffle/)
-[PlatON Enterprise](https://github.com/PlatONEnterprise/)
+For [Ethereum](https://ethereum.org/)
+For [Ganache: an Ethereum Simulator](https://www.trufflesuite.com/truffle/)
+For [PlatON Enterprise](https://github.com/PlatONEnterprise/)
 
 #### Deploy the smart contract
 The smart contracts used in the demo locate in ./contract.
@@ -221,7 +219,8 @@ Follow instructions in [*How to Call a Contract in Your C code*](#how-to-call-a-
 
 
 ## Documentation
-TBD
+
+For detailed information, please visit [BoAT documentation](https://aitos-io.github.io/BoAT-X-Framework)
 
 
 ## FAQ
@@ -241,12 +240,14 @@ To chat with other community members you can join the [BoAT-X Gitter](https://gi
 We are glad to have contributors out of the core team; contributions, including (but not limited to) style/bug fixes,
 implementation of features, proposals of schemes/algorithms, and thorough documentation, are welcomed. Please refer to our [Contribution Guideline](./CONTRIBUTING.md) for more information.
 
-Development guide documentation is [TBD Development Guide].
+Find development documentation at [BoAT documentation](https://aitos-io.github.io/BoAT-X-Framework).
 
-Pull Requests at [Pull Requests](https://github.com/aitos-io/BoAT-X-Framework/pulls)
+Submit Pull Requests at [Pull Requests](https://github.com/aitos-io/BoAT-X-Framework/pulls)
 
 
 ## License
 
 Apache License 2.0, see [LICENSE](./LICENSE).
 
+
+## Join us as a BoAT-Mariner and pioneer your IoT+Blockchain path in 2021
