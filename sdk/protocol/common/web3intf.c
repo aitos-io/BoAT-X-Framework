@@ -1176,7 +1176,7 @@ BCHAR *web3_eth_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_pt
     if( result != BOAT_SUCCESS )
     {
         BoatLog(BOAT_LOG_NORMAL, "RpcRequestSync() fails.");
-        boat_throw(result, web3_getTransactionReceiptStatus_RpcRequestSync_cleanup);
+        boat_throw(result, web3_eth_getTransactionReceiptStatus_cleanup);
     }
 
     BoatLog(BOAT_LOG_VERBOSE, "RESPONSE: %s", rpc_response_str);
@@ -1189,12 +1189,6 @@ BCHAR *web3_eth_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_pt
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
-    }
-	
-    boat_catch(web3_getTransactionReceiptStatus_RpcRequestSync_cleanup)
-    {
-        BoatLog(BOAT_LOG_NORMAL, "RpcRequestSync Exception: %d", boat_exception);
-        return_value_ptr = "0x0";
     }
 
     return return_value_ptr;
