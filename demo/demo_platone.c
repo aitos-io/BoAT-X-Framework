@@ -55,7 +55,7 @@ BOAT_RESULT BoatCallMyContract(BoatPlatoneWallet *wallet_ptr)
                           BOAT_TRUE,
                           NULL,
                           "0x333333",
-                          "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45", // 0x9e7f3ae22cf97939a2e4cd68dd33bb29268a1ec9
+                          "0xde7f3ae22cf97939a2e4cd68def3bb29268a1eck",
                           BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
 
     if( BOAT_SUCCESS != result )
@@ -114,7 +114,7 @@ BOAT_RESULT BoatPlatonePreCondition(void)
 
     // Set Node URL
     wallet_config.node_url_str[BOAT_NODE_URL_MAX_LEN-1] = '\0';
-    strncpy(wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_NODE_URL_MAX_LEN-1);
+    strncpy(wallet_config.node_url_str, "http://123.123.123.123:8080", BOAT_NODE_URL_MAX_LEN-1);
 
 #if BOAT_DEMO_CREATE_WALLET_NOT_STORE == 1
 
@@ -189,7 +189,7 @@ BOAT_RESULT BoatPlatonePreConLoadWallet(void)
 
     // Set Node URL
     wallet_config.node_url_str[BOAT_NODE_URL_MAX_LEN-1] = '\0';
-    strncpy(wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_NODE_URL_MAX_LEN-1);
+    strncpy(wallet_config.node_url_str, "http://123.123.123.123:8080", BOAT_NODE_URL_MAX_LEN-1);
 
     // Load an existed wallet
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, "boatplatone.keystore", NULL, sizeof(BoatPlatoneWalletConfig));
