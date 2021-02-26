@@ -313,17 +313,11 @@ BOAT_FIND := $(CYGWIN_BASE)\bin\find
 
 Taking Windows 10 as an example, the method to add the search path to the Windows environment variable is:  
 a)	Right-click on the Windows logo menu and select "System"  
- ![System](/en-us/images/system.png)   
 b)	Click "System Information" on the "About" page  
- ![System Information](/en-us/images/System_Information.png)    
 c)	Click "Advanced System Settings" on the "System" page  
- ![Advanced System Settings](/en-us/images/Advanced_System_Settings.png)  
 d)	Click "Environment Variables" in the "System Properties" page  
- ![Environment Variables](/en-us/images/Environment_Variables.png)   
 e)	Click "Path" in "System Variables" on the "Environment Variables" page, and click "Edit"  
- ![Path](/en-us/images/Path.png)    
 f)	On the "Edit Environment Variables" page, click "New", add the bin path under the Cygwin installation directory, and make sure that the new path is located anywhere after the path %SystemRoot%\system32  
- ![Edit Environment Variables](/en-us/images/Edit_Environment_Variables.png)
 
 
 ###### Other adjustments
