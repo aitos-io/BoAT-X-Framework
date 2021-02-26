@@ -29,38 +29,13 @@ boatwallet.c is the SDK main entry.
 #include "boatprotocols.h"
 #include "rpcintf.h"
 
-#include "randgenerator.h"
-#include "bignum.h"
 #include "cJSON.h"
 
 #include "persiststore.h"
 
-
-
 BoatIotSdkContext g_boat_iot_sdk_context;
 
 
-
-/******************************************************************************
-@brief Initialize Boat IoT SDK
-
-Function: BoatIotSdkInit()
-
-    This function initialize global context of Boat IoT SDK.
-
-    BoatIotSdkInit() MUST be called before any use of BoAT IoT SDK per process.
-    BoatIotSdkDeInit() MUST be called after use of BoAT IoT SDK.
-    
-
-@see BoatIotSdkDeInit()
-
-@return
-    This function returns BOAT_SUCCESS if initialization is successful.\n
-    Otherwise it returns BOAT_ERROR.
-    
-
-@param This function doesn't take any argument.
-*******************************************************************************/
 BOAT_RESULT BoatIotSdkInit(void)
 {
     BUINT32 i;
@@ -71,10 +46,10 @@ BOAT_RESULT BoatIotSdkInit(void)
 #endif
 
     hooks.malloc_fn = BoatMalloc;
-    hooks.free_fn = BoatFree;
+    hooks.free_fn   = BoatFree;
     cJSON_InitHooks(&hooks);
 
-// For Multi-Thread Support: CreateMutex Here
+	// For Multi-Thread Support: CreateMutex Here
 
     for( i = 0; i < BOAT_MAX_WALLET_NUM; i++ )
     {
@@ -92,128 +67,53 @@ BOAT_RESULT BoatIotSdkInit(void)
     }
 #endif
 
-
-    
     return BOAT_SUCCESS;
-
 }
 
 
-/******************************************************************************
-@brief De-initialize BoAT IoT SDK
-
-Function: BoatIotSdkDeInit()
-
-    This function de-initialize context of BoAT IoT SDK.
-
-    BoatIotSdkInit() MUST be called before any use of BoAT IoT SDK per process.
-    BoatIotSdkDeInit() MUST be called after use of BoAT IoT SDK.
-    
-
-@see BoatIotSdkInit()
-
-@return This function doesn't return any thing.
-
-
-*******************************************************************************/
 void BoatIotSdkDeInit(void)
 {
     BUINT32 i;
     
-
     for( i = 0; i < BOAT_MAX_WALLET_NUM; i++ )
     {
         BoatWalletUnload(i);
     }
-
-        
 
 #if RPC_USE_LIBCURL == 1
     curl_global_cleanup();
 #endif
 
 // For Multi-Thread Support: DeleteMutex Here
-
-    return;
 }
 
 
-/******************************************************************************
-@brief Create BoAT wallet
-
-Function: BoatWalletCreate()
-
-    This function creates a wallet or loads an existed persistent wallet.
-
-    A wallet is a configuration for blockchain parameters as well as context for
-    blockchain operations. There are 2 types of wallet. One is a one-time wallet,
-    which only exists in RAM and disappears once the device is powered down. The
-    other is a persistent wallet, which is saved in non-volatile memory for later
-    loading.
-    
-    If the given <wallet_name_str> is NULL, a one-time wallet is created. Otherwise
-    a persistent wallet with the given name will be created or loaded. If no wallet
-    with the given name exists, a new persistent wallet will be created with the
-    name and immediately loaded into RAM. If a persistent wallet with the given
-    name exists, it will be loaded into RAM.
-
-    To create a one-time wallet, <wallet_name_str> MUST be NULL and a non-NULL
-    <wallet_config_ptr> MUST be specified.
-
-    To create a persistent wallet, <wallet_name_str>, <wallet_config_ptr> and
-    <wallet_config_size> MUST be specified. If a persitent wallet with the given
-    <wallet_name_str> exists, the specified configuration will overwrite the
-    existed one, both in RAM and in non-volatile memroy.
-
-    To load an existed persistent wallet into RAM, specify its name in <wallet_name_str>,
-    specify <wallet_config_ptr> = NULL and <wallet_config_size> = the configuration
-    size of the specified <protocol_type>.
-    
-    To unload a wallet from RAM, which was loaded by BoatWalletCreate(), call
-    BoatWalletUnload(). For persisent wallet, this does NOT delete it from
-    non-volatile memory.
-    
-    To delete a persistent wallet from non-volatile memroy, call BoatWalletDelete().
-    This does NOT unload it from RAM. If a loaded persistent wallet is deleted
-    without unloading it, it becomes a one-time wallet.
-
-
-@see BoatWalletUnload() BoatWalletDelete()
-
-@return
-    This function returns the non-negative index of the loaded wallet.\n
-    It returns -1 if wallet creation fails.
-
-@param[in] protocol_type
-    The blockchain protocol. See boattypes.h for supported protocol.
-
-@param[in] wallet_name_str
-    A string of wallet name.\n
-    If the given <wallet_name_str> is NULL, a one-time wallet is created.\n
-    Otherwise a persistent wallet with the given name will be created or loaded.
-
-@param[in] wallet_config_ptr
-    Configuration (e.g. crypto key) for the wallet.\n
-    The exact configuration definition is determinted by the specified <protocol_type>.
-
-@param[in] wallet_config_size
-    Size (in byte) of configuration specified by <wallet_config_ptr>.
-
-*******************************************************************************/
-BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_name_str, const void * wallet_config_ptr, BUINT32 wallet_config_size)
+BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_name_str, 
+						  const void * wallet_config_ptr, BUINT32 wallet_config_size )
 {
     BSINT32 i;
-    BUINT8 loaded_wallet_config_array[wallet_config_size];
+    BUINT8  loaded_wallet_config_array[wallet_config_size];
 
-
-    // Check wallet configuration
+    /* Check wallet configuration */ 
     if( wallet_name_str == NULL && wallet_config_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Invalid wallet configuration.");
-        return -1;
+        return BOAT_ERROR;
     }
 
-    // For Multi-Thread Support: ObtainMutex Here
+	/* Hyperledger Fabric does not support one-time wallet */
+	if( ( protocol_type == BOAT_PROTOCOL_HLFABRIC ) && ( wallet_name_str == NULL ) ){
+		BoatLog(BOAT_LOG_NORMAL, "Hyperledger Fabric does not support one-time wallet.");
+        return BOAT_ERROR;
+	}
+	
+	/* Fiscobcos Follow the access mechanism, does not support one-time wallet */
+	if( ( protocol_type == BOAT_PROTOCOL_FISCOBCOS ) && ( wallet_name_str == NULL ) ){
+		BoatLog(BOAT_LOG_NORMAL, "Fiscobcos does not support one-time wallet.");
+        return BOAT_ERROR;
+	}
+	
+    /* For Multi-Thread Support: ObtainMutex Here */
     for( i = 0; i < BOAT_MAX_WALLET_NUM; i++ )
     {
         if( g_boat_iot_sdk_context.wallet_list[i].is_used == BOAT_FALSE )
@@ -222,32 +122,34 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
             break;
         }
     }
-    // For Multi-Thread Support: ReleaseMutex Here
-
+	
+    /* For Multi-Thread Support: ReleaseMutex Here */
     if( i >= BOAT_MAX_WALLET_NUM )
     {
         BoatLog(BOAT_LOG_NORMAL, "Too many wallets was loaded.");
-        return -1;
+        return BOAT_ERROR;
     }
 
     if( wallet_name_str != NULL )
     {
         if( wallet_config_ptr != NULL )
         {
-            // Create persistent wallet / Overwrite existed configuration
+            /* Create persistent wallet / Overwrite existed configuration */
             if( BOAT_SUCCESS != BoatPersistStore(wallet_name_str, wallet_config_ptr, wallet_config_size) )
             {
-                return -1;
+				BoatLog(BOAT_LOG_NORMAL, "persistent wallet create failed.");
+                return BOAT_ERROR;
             }
-            
+
             memcpy(loaded_wallet_config_array, wallet_config_ptr, wallet_config_size);
         }
         else
         {
-            // Load persistent wallet;
+            /* Load persistent wallet; */
             if( BOAT_SUCCESS != BoatPersistRead(wallet_name_str, loaded_wallet_config_array, wallet_config_size) )
             {
-                return -1;
+                BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
+				return BOAT_ERROR;
             }
         }
     }
@@ -256,7 +158,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
         memcpy(loaded_wallet_config_array, wallet_config_ptr, wallet_config_size);
     }
 
-    // Check protocol type
+    /* Check protocol type */
     g_boat_iot_sdk_context.wallet_list[i].protocol_type = protocol_type;
     
     switch(protocol_type)
@@ -270,7 +172,13 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
 
     #if PROTOCOL_USE_HLFABRIC == 1
         case BOAT_PROTOCOL_HLFABRIC:
-            g_boat_iot_sdk_context.wallet_list[i].wallet_ptr  = BoatHLFabricWalletInit((BoatHLFabricWalletConfig*)loaded_wallet_config_array, wallet_config_size);
+            g_boat_iot_sdk_context.wallet_list[i].wallet_ptr  = BoatHlfabricWalletInit((BoatHlfabricWalletConfig*)loaded_wallet_config_array, wallet_config_size);
+        break;
+    #endif
+
+    #if PROTOCOL_USE_PLATON == 1
+        case BOAT_PROTOCOL_PLATON:
+            g_boat_iot_sdk_context.wallet_list[i].wallet_ptr  = BoatPlatonWalletInit((BoatPlatonWalletConfig*)loaded_wallet_config_array, wallet_config_size);
         break;
     #endif
 
@@ -279,6 +187,12 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
             g_boat_iot_sdk_context.wallet_list[i].wallet_ptr  = BoatPlatoneWalletInit((BoatPlatoneWalletConfig*)loaded_wallet_config_array, wallet_config_size);
         break;
     #endif
+		
+	#if PROTOCOL_USE_FISCOBCOS == 1
+		case BOAT_PROTOCOL_FISCOBCOS:
+			g_boat_iot_sdk_context.wallet_list[i].wallet_ptr  = BoatFiscobcosWalletInit((BoatFiscobcosWalletConfig*)loaded_wallet_config_array, wallet_config_size);
+			break;
+	#endif
     
         default:
         g_boat_iot_sdk_context.wallet_list[i].wallet_ptr = NULL;
@@ -290,40 +204,16 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
         BoatLog(BOAT_LOG_NORMAL, "Fail to create wallet: protocol type: %d.", (BSINT32)protocol_type);
         g_boat_iot_sdk_context.wallet_list[i].is_used = BOAT_FALSE;
 
-        return -1;
+        return BOAT_ERROR;
     }
 
-    
-
-    
     return i;
-
 }
 
 
-/******************************************************************************
-@brief Unload a wallet
-
-Function: BoatWalletUnload()
-
-    This function unloads a wallet from RAM if no more operations on this wallet
-    is required. If the wallet is of persistent type, this function will NOT
-    delete it from non-volatile memory. To delete a persistent wallet from
-    non-volatile memory, call BoatWalletDelete().
-
-
-@see BoatWalletCreate() BoatWalletDelete()
-
-@return This function doesn't return any thing.
-
-@param[in] wallet_index
-    The wallet index to unload.
-
-*******************************************************************************/
 void BoatWalletUnload(BSINT32 wallet_index)
 {
     BoatProtocolType protocol;
-
 
     if( wallet_index >= 0 && wallet_index < BOAT_MAX_WALLET_NUM
         && g_boat_iot_sdk_context.wallet_list[wallet_index].is_used != BOAT_FALSE
@@ -342,7 +232,13 @@ void BoatWalletUnload(BSINT32 wallet_index)
 
         #if PROTOCOL_USE_HLFABRIC == 1
             case BOAT_PROTOCOL_HLFABRIC:
-                BoatHLFabricWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
+                BoatHlfabricWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
+            break;
+        #endif
+
+        #if PROTOCOL_USE_PLATON == 1
+            case BOAT_PROTOCOL_PLATON:
+                BoatEthWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
             break;
         #endif
 
@@ -350,12 +246,17 @@ void BoatWalletUnload(BSINT32 wallet_index)
             case BOAT_PROTOCOL_PLATONE:
                 BoatPlatoneWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
             break;
+		#endif
+			
+		#if PROTOCOL_USE_FISCOBCOS == 1
+		case BOAT_PROTOCOL_FISCOBCOS:
+				BoatFiscobcosWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
+            break;
         #endif
-        
+			
             default:
                 BoatLog(BOAT_LOG_VERBOSE, "Unknown blockchain protocol type: %u.", protocol);
                 protocol = BOAT_PROTOCOL_UNKNOWN;
-            
         }
 
         if( protocol != BOAT_PROTOCOL_UNKNOWN )
@@ -364,52 +265,16 @@ void BoatWalletUnload(BSINT32 wallet_index)
             g_boat_iot_sdk_context.wallet_list[wallet_index].is_used = BOAT_FALSE;
         }
     }
-    
-
-    return;
 }
 
 
-/******************************************************************************
-@brief Delete a persistent wallet
-
-Function: BoatWalletDelete()
-
-    This function deletes a persistent wallet from non-volatile memory. This
-    does NOT unload it from RAM. If a loaded persistent wallet is deleted
-    without unloading it, it becomes a one-time wallet.
-
-
-@see BoatWalletCreate() BoatWalletUnload()
-
-@return This function doesn't return any thing.
-
-@param[in] wallet_name_str
-    The wallet name to delete.
-
-*******************************************************************************/
 void BoatWalletDelete(BCHAR * wallet_name_str)
 {
     // Delete persistent wallet
     BoatPersistDelete(wallet_name_str);
-    return;
 }
 
 
-/******************************************************************************
-@brief Get the BoAT wallet context by index.
-
-Function: BoatGetWalletByIndex()
-
-    This function gets the BoAT wallet context by index.
-
-
-@return This function returns a pointer to the wallet context.
-
-@param[in] wallet_index
-    The wallet index.
-
-*******************************************************************************/
 void * BoatGetWalletByIndex(BSINT32 wallet_index)
 {
 
@@ -423,7 +288,6 @@ void * BoatGetWalletByIndex(BSINT32 wallet_index)
     }
 
     return NULL;
-
 }
 
 

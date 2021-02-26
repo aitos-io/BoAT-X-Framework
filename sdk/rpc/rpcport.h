@@ -34,14 +34,9 @@ RPC_USE_XXX macros.
 #include "curlport.h"
 #endif
 
-
-
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 #ifdef __cplusplus
 }

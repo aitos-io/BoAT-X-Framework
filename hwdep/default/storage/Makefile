@@ -4,7 +4,6 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/hwdep/storage
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-
 all: $(OBJECTS_DIR) $(OBJECTS)
 
 $(OBJECTS_DIR):
@@ -13,6 +12,6 @@ $(OBJECTS_DIR):
 $(OBJECTS_DIR)/%.o:%.c
 	$(CC) -c $(BOAT_CFLAGS) $(HWDEP_INCLUDE) $< -o $@
 
-
 clean:
 	-$(BOAT_RM) $(OBJECTS)
+	

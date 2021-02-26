@@ -47,7 +47,6 @@ generated_include_block_str = '''
 // Generated C function interface from smart contract ABI
 
 #include "boatiotsdk.h"
-#include "sha3.h"
 
 '''
 
@@ -509,7 +508,7 @@ class CFunctionGen():
 
         # Generate C code for function selector
         func_body_str += '    function_prototye_str = \"' + sol_func_proto_str + '\";\n'
-        func_body_str += '    keccak_256((BUINT8 *)function_prototye_str, strlen(function_prototye_str), field_bytes32);\n'
+        func_body_str += '    BoatHash(BOAT_HASH_KECCAK256, (BUINT8 *)function_prototye_str, strlen(function_prototye_str), field_bytes32, NULL, NULL);\n'
 
         func_body_str += '    memcpy(data_offset_ptr, field_bytes32, 4);\n'
         func_body_str += '    data_offset_ptr += 4;\n\n'
@@ -542,7 +541,7 @@ class CFunctionGen():
                     #fill offset location value
                     offset         = self.get_nonFixed_offset(abi_item, inputIndex - 1)
                     func_body_str += '    //param \'' + inputName_str + '\' offset location filled\n'
-                    func_body_str += '    data_offset_location = ' + offset + ';\n'
+                    func_body_str += '    data_offset_location = ' + offset.replace('\\\n', '') + ';\n'
                     func_body_str += '    UtilityChangeEndian(&data_offset_location, sizeof(BUINT32));\n'
                     func_body_str += '    memset(data_offset_ptr, 0x00, 32);\n'
                     func_body_str += '    memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &data_offset_location, sizeof(BUINT32));\n'

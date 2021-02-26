@@ -1,0 +1,205 @@
+/******************************************************************************
+ * Copyright (C) 2018-2021 aitos.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
+
+/*!@brief PlatON wallet API for BoAT IoT SDK
+
+@file
+boatplatonwallet.c defines the PlatON wallet API for BoAT IoT SDK.
+*/
+
+#include "boatinternal.h"
+
+#include "web3intf.h"
+#include "boatprotocols.h"
+#include "rpcintf.h"
+
+#include "cJSON.h"
+
+// As PlatON's wallet structure is mostly the same as Ethereum, thus it re-use a lot of
+// Ethereum's data structure and API.
+// APIs not listed here are compatible with Ethereum.
+
+
+BOAT_RESULT BoatPlatonTxInit( BoatPlatonWallet *wallet_ptr,
+							  BoatPlatonTx *tx_ptr,
+							  BBOOL is_sync_tx,
+							  BCHAR * gasprice_str,
+							  BCHAR * gaslimit_str,
+							  BCHAR *recipient_str,
+							  BoatPlatonTxtype txtype)
+{
+    BOAT_RESULT result;
+
+    if( (wallet_ptr == NULL) || (tx_ptr == NULL) || (recipient_str == NULL) )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+
+    tx_ptr->wallet_ptr = wallet_ptr;
+    memset( &tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields) );
+
+    // Re-use Ethereum transaction initialization
+    result = BoatEthTxInit( (BoatEthWallet *)wallet_ptr, (BoatEthTx *)tx_ptr,
+                            is_sync_tx, gasprice_str, gaslimit_str, recipient_str );
+    if( result != BOAT_SUCCESS )
+    {
+		BoatLog(BOAT_LOG_CRITICAL, "platon Tx init failed.");
+        return BOAT_ERROR;
+    }
+
+    // Set transaction type
+    result = BoatPlatonTxSetTxtype(tx_ptr, txtype);
+
+    if( result != BOAT_SUCCESS )
+    {
+		BoatLog(BOAT_LOG_CRITICAL, "platon set Tx type failed.");
+        return BOAT_ERROR;
+    }
+    
+    return BOAT_SUCCESS;
+}
+
+
+BOAT_RESULT BoatPlatonTxSetTxtype(BoatPlatonTx *tx_ptr, BoatPlatonTxtype txtype)
+{
+    if( tx_ptr == NULL )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+
+    tx_ptr->rawtx_fields.txtype = txtype;
+    
+    return BOAT_SUCCESS;
+}
+
+
+BOAT_RESULT BoatPlatonTxSend(BoatPlatonTx *tx_ptr)
+{
+    BOAT_RESULT result;
+    
+    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+
+    if( tx_ptr->is_sync_tx == BOAT_FALSE )
+    {
+        result = PlatonSendRawtx(tx_ptr);
+    }
+    else
+    {
+        result = PlatonSendRawtxWithReceipt(tx_ptr);
+    }
+    
+    return result;
+}
+
+
+BCHAR * BoatPlatonCallContractFunc( BoatPlatonTx *tx_ptr, BUINT8 *rlp_param_ptr,
+									BUINT32 rlp_param_len )
+{
+    // *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
+    BCHAR data_str[rlp_param_len*2 + 3]; // Compiler MUST support C99 to allow variable-size local array
+ 
+    Param_eth_call param_eth_call;
+    BCHAR *retval_str;
+
+    if( rlp_param_ptr == NULL && rlp_param_len != 0 )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+        return NULL;
+    }
+
+    BCHAR recipient_hexstr[BOAT_PLATON_ADDRESS_SIZE*2+3];
+    
+    UtilityBin2Hex( recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_PLATON_ADDRESS_SIZE,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+    param_eth_call.to = recipient_hexstr;
+
+    // Function call consumes zero gas but gasLimit and gasPrice must be specified.
+    param_eth_call.gas      = "0x1fffff";
+    param_eth_call.gasPrice = "0x8250de00";
+
+    // Set function parameters
+    UtilityBin2Hex( data_str, rlp_param_ptr, rlp_param_len,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+    param_eth_call.data = data_str;
+    param_eth_call.block_num_str = "latest";
+    retval_str = web3_eth_call( tx_ptr->wallet_ptr->web3intf_context_ptr,
+                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                &param_eth_call);
+
+    return retval_str;
+
+}
+
+
+BOAT_RESULT BoatPlatonTransfer(BoatPlatonTx *tx_ptr, BCHAR * value_hex_str)
+{
+    BoatFieldMax32B value;
+    BoatFieldVariable data;
+    BUINT64 tx_type_big;
+    BOAT_RESULT result;
+   
+    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL || value_hex_str == NULL )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+    
+    // Set nonce
+    result = BoatPlatonTxSetNonce(tx_ptr, BOAT_PLATON_NONCE_AUTO);
+    if( result != BOAT_SUCCESS )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "platon Tx set nonce failed.");
+		return BOAT_ERROR;
+	}
+    
+    // Set value
+    value.field_len =  UtilityHex2Bin( value.field, 32, value_hex_str,
+									   TRIMBIN_LEFTTRIM, BOAT_TRUE  );
+    result = BoatPlatonTxSetValue(tx_ptr, &value);
+    if( result != BOAT_SUCCESS )	
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "platon Tx set value failed.");
+		return BOAT_ERROR;
+	}
+
+    // Set data (contains txtype only)
+    UtilityUint64ToBigend( (BUINT8*)&tx_type_big, 0, TRIMBIN_TRIM_NO );
+    data.field_ptr = (BUINT8*)&tx_type_big;
+    data.field_len = sizeof(BUINT64);
+    
+    result = BoatPlatonTxSetData(tx_ptr, &data);
+    if( result != BOAT_SUCCESS )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "platon Tx set data failed.");
+		return BOAT_ERROR;
+	}
+    // Perform the transaction
+    // NOTE: Field v,r,s are calculated automatically
+    result = BoatPlatonTxSend(tx_ptr);
+    if( result != BOAT_SUCCESS )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "platon Tx send failed.");
+		return BOAT_ERROR;
+	}
+	
+    return BOAT_SUCCESS;
+}

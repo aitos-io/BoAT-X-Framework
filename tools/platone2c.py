@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Copyright (C) 2018-2020 aitos.io
+# Copyright (C) 2018-2021 aitos.io
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 # limitations under the License.
 
 
-# This python script generates PlatONE's C language interface function from contract ABI (WASM).
+# This python script generates PlatON's C language interface function from contract ABI (WASM).
 
 # Not all contract ABI can be converted to C interface because C is lack of object-oriented programming
 # capability. If the tool fails to generate the interface, you may have to organize the contract call

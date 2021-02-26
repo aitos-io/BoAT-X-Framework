@@ -33,27 +33,94 @@ To use libcurl porting, RPC_USE_LIBCURL in boatoptions.h must set to 1.
 #include "curl/curl.h"
 
 
-
-
-
-/*!*****************************************************************************
-@brief Initialize libcurl.
-
-Function: CurlPortInit()
-
-    This function initializes libcurl. It also dynamically allocates storage to
-    receive response from the peer.
+/*!****************************************************************************
+ * @brief Callback function to write received data from the peer to the user specified buffer.
+ *
+ * @details
+ *   This function is a callback function as per libcurl CURLOPT_WRITEFUNCTION option.
+ *   libcurl will call this function (possibly) multiple times to write received
+ *   data from peer to the buffer specified by this function. The received data
+ *   are typically some RESPONSE from the HTTP server.
+ *   \n The receiving buffer is dynamically allocated. If the received data from
+ *   the peer exceeds the current buffer size, a new buffer that could hold all
+ *   data will be allocated and previously received data will be copied to the
+ *   new buffer as well as the newly received data.
+ * 
+ * @param[in] data_ptr
+ *   A pointer given by libcurl, pointing to the received data from peer.
+ *
+ * @param[in] size
+ *   For historic reasons, libcurl will always call with <size> = 1.
+ *
+ * @param[in] nmemb
+ *   <nmemb> is the size of the data chunk to write. It doesn't include null
+ *   terminator even if the data were string.\n
+ *   For backward compatibility, use <size> * <nmemb> to calculate the size of
+ *   the received data.
+ *
+ * @param[in] userdata
+ *   <userdata> is the value previously set by CURLOPT_WRITEDATA option.
+ *   Typically it's a pointer to a struct which contains information about the
+ *   receiving buffer.
+ *  
+ * @return
+ *   This function returns how many bytes are written into the user buffer.
+ *   If the returned size differs from <size>*<nmemb>, libcurl will treat it as
+ *   a failure.
+ *
+ * @see https://curl.haxx.se/libcurl/c/CURLOPT_WRITEFUNCTION.html
+ ******************************************************************************/
+__BOATSTATIC size_t CurlPortWriteMemoryCallback( void *data_ptr, size_t size, 
+											     size_t nmemb, void *userdata )
+{
+    size_t data_size;
+    StringWithLen *mem;
+    BUINT32 expand_size;
+    BUINT32 expand_steps;
+    BCHAR *expanded_str;
+    BUINT32 expanded_to_space;
     
-@see CurlPortDeinit()
+    mem = (StringWithLen*)userdata;
 
-@return
-    This function returns a pointer to curlport context.\n
-    It returns NULL if initialization fails.
+    // NOTE: For historic reasons, argument size is always 1 and nmemb is the
+    // size of the data chunk to write. And size * nmemb doesn't include null
+    // terminator even if the data were string.
+    data_size = size * nmemb;
     
+    // If response buffer has enough space:
+    if( mem->string_space - mem->string_len > data_size ) // 1 more byte reserved for null terminator
+    {
+        memcpy(mem->string_ptr + mem->string_len, data_ptr, data_size);
+        mem->string_len += data_size;
+        mem->string_ptr[mem->string_len] = '\0';
+    }
+    else // If response buffer has no enough space
+    {
+        // If malloc is supported, expand the response buffer in steps of
+        // CURLPORT_RECV_BUF_SIZE_STEP.
+        expand_size  = data_size - (mem->string_space - mem->string_len) + 1; // plus 1 for null terminator
+        expand_steps = (expand_size - 1) / CURLPORT_RECV_BUF_SIZE_STEP + 1;
+        expanded_to_space = expand_steps * CURLPORT_RECV_BUF_SIZE_STEP + mem->string_space;
+    
+        expanded_str = BoatMalloc(expanded_to_space);
 
-@param This function doesn't take any argument.
+        if( expanded_str != NULL )
+        {
+            memcpy(expanded_str, mem->string_ptr, mem->string_len);
+            memcpy(expanded_str + mem->string_len, data_ptr, data_size);
+            BoatFree(mem->string_ptr);
+            mem->string_ptr = expanded_str;
+            mem->string_space = expanded_to_space;
+            mem->string_len += data_size;
+            mem->string_ptr[mem->string_len] = '\0';
+        }
 
-*******************************************************************************/
+    }
+
+    return data_size;
+}
+
+
 CurlPortContext * CurlPortInit(void)
 {
     CurlPortContext *curlport_context_ptr;
@@ -82,28 +149,9 @@ CurlPortContext * CurlPortInit(void)
     }
     
     return curlport_context_ptr;
-
 }
 
 
-/*!*****************************************************************************
-@brief Deinitialize libcurl.
-
-Function: CurlPortDeinit()
-
-    This function de-initializes libcurl. It also frees the dynamically
-    allocated storage to receive response from the peer.
-
-@see CurlPortInit()    
-
-@return
-    This function doesn't return any value.
-    
-
-@param[in] curlport_context_ptr
-    Pointer to the context of curlport, which is returned by CurlPortInit()
-
-*******************************************************************************/
 void CurlPortDeinit(CurlPortContext * curlport_context_ptr)
 {
     if( curlport_context_ptr == NULL )
@@ -114,12 +162,10 @@ void CurlPortDeinit(CurlPortContext * curlport_context_ptr)
     curlport_context_ptr->curlport_response.string_space = 0;
     curlport_context_ptr->curlport_response.string_len = 0;
 
-
     if( curlport_context_ptr->curlport_response.string_ptr != NULL )
     {
         BoatFree(curlport_context_ptr->curlport_response.string_ptr);
     }
-
 
     curlport_context_ptr->curlport_response.string_ptr = NULL;
 
@@ -129,25 +175,6 @@ void CurlPortDeinit(CurlPortContext * curlport_context_ptr)
 }
 
 
-/*!*****************************************************************************
-@brief Set options for use with libcurl.
-
-Function: CurlPortSetOpt()
-
-    This function is a dummy function and does nothing.
-    
-
-@return
-    This function always returns BOAT_SUCCESS.
-    
-
-@param[in] curlport_context_ptr
-    A pointer to the curlport context
-    
-@param[in] remote_url_str
-    The URL of the remote server.
-
-*******************************************************************************/
 BOAT_RESULT CurlPortSetOpt(CurlPortContext * curlport_context_ptr, BCHAR *remote_url_str)
 {
     if( curlport_context_ptr == NULL || remote_url_str == NULL)
@@ -161,148 +188,11 @@ BOAT_RESULT CurlPortSetOpt(CurlPortContext * curlport_context_ptr, BCHAR *remote
 }
 
 
-/*!*****************************************************************************
-@brief Callback function to write received data from the peer to the user specified buffer.
-
-Function: CurlPortWriteMemoryCallback()
-
-    This function is a callback function as per libcurl CURLOPT_WRITEFUNCTION option.
-    libcurl will call this function (possibly) multiple times to write received
-    data from peer to the buffer specified by this function. The received data
-    are typically some RESPONSE from the HTTP server.
-
-    The receiving buffer is dynamically allocated. If the received data from
-    the peer exceeds the current buffer size, a new buffer that could hold all
-    data will be allocated and previously received data will be copied to the
-    new buffer as well as the newly received data.
-
-    
-@see https://curl.haxx.se/libcurl/c/CURLOPT_WRITEFUNCTION.html
-    
-
-@return
-    This function returns how many bytes are written into the user buffer.
-    If the returned size differs from <size>*<nmemb>, libcurl will treat it as
-    a failure.
-    
-
-@param[in] data_ptr
-    A pointer given by libcurl, pointing to the received data from peer.
-
-@param[in] size
-    For historic reasons, libcurl will always call with <size> = 1.
-
-@param[in] nmemb
-    <nmemb> is the size of the data chunk to write. It doesn't include null
-    terminator even if the data were string.\n
-    For backward compatibility, use <size> * <nmemb> to calculate the size of
-    the received data.
-
-@param[in] userdata
-    <userdata> is the value previously set by CURLOPT_WRITEDATA option.
-    Typically it's a pointer to a struct which contains information about the
-    receiving buffer.
-
-*******************************************************************************/
-size_t CurlPortWriteMemoryCallback(void *data_ptr, size_t size, size_t nmemb, void *userdata)
-{
-    size_t data_size;
-    StringWithLen *mem;
-    BUINT32 expand_size;
-    BUINT32 expand_steps;
-    BCHAR *expanded_str;
-    BUINT32 expanded_to_space;
-    
-    mem = (StringWithLen*)userdata;
-
-    // NOTE: For historic reasons, argument size is always 1 and nmemb is the
-    // size of the data chunk to write. And size * nmemb doesn't include null
-    // terminator even if the data were string.
-    data_size = size * nmemb;
-    
-    // If response buffer has enough space:
-    if( mem->string_space - mem->string_len > data_size ) // 1 more byte reserved for null terminator
-    {
-        memcpy(mem->string_ptr + mem->string_len, data_ptr, data_size);
-        mem->string_len += data_size;
-        mem->string_ptr[mem->string_len] = '\0';
-    }
-    else  // If response buffer has no enough space
-    {
-
-        // If malloc is supported, expand the response buffer in steps of
-        // CURLPORT_RECV_BUF_SIZE_STEP.
-        
-        expand_size = data_size - (mem->string_space - mem->string_len) + 1; // plus 1 for null terminator
-        expand_steps = (expand_size - 1) / CURLPORT_RECV_BUF_SIZE_STEP + 1;
-        expanded_to_space = expand_steps * CURLPORT_RECV_BUF_SIZE_STEP + mem->string_space;
-    
-        expanded_str = BoatMalloc(expanded_to_space);
-
-        if( expanded_str != NULL )
-        {
-            memcpy(expanded_str, mem->string_ptr, mem->string_len);
-            memcpy(expanded_str + mem->string_len, data_ptr, data_size);
-            BoatFree(mem->string_ptr);
-            mem->string_ptr = expanded_str;
-            mem->string_space = expanded_to_space;
-            mem->string_len += data_size;
-            mem->string_ptr[mem->string_len] = '\0';
-        }
-
-    }
-
-    return data_size;
-
-}
-
-
-/*!*****************************************************************************
-@brief Perform a synchronous HTTP POST and wait for its response.
-
-Function: CurlPortRequestSync()
-
-    This function initiates a curl session, performs a synchronous HTTP POST
-    and waits for its response.
-
-@see https://curl.haxx.se/libcurl/c/curl_easy_setopt.html
-@see https://curl.haxx.se/libcurl/c/curl_easy_perform.html
-    
-
-@return
-    This function returns BOAT_SUCCESS if succeeds.
-    Otherwise it returns one of the error codes.
-    
-@param[in] curlport_context_ptr
-    A pointer to the curlport context.
-    
-@param[in] request_str
-    A pointer to the request string to POST.
-
-@param[in] request_len
-    The length of <request_str> excluding NULL terminator. This function is
-    wrapped by RpcRequestSync() and thus takes this argument for compatibility
-    with the wrapper function. Typically it equals to strlen(request_str).
-
-@param[out] response_str_ptr
-    The address of a BCHAR* pointer (i.e. a double pointer) to hold the address
-    of the receiving buffer.\n
-    The receiving buffer is internally maintained by curlport and the caller
-    shall only read from the buffer. DO NOT modify the buffer or save the address
-    for later use.
-
-@param[out] response_len_ptr
-    The address of a BUINT32 integer to hold the effective length of
-    <response_str_ptr> excluding NULL terminator. This function is wrapped by
-    RpcRequestSync() and thus takes this argument for compatibility with the
-    wrapper function. Typically it equals to strlen(response_str_ptr).
-
-*******************************************************************************/
-BOAT_RESULT CurlPortRequestSync(CurlPortContext * curlport_context_ptr,
-                               const BCHAR *request_str,
-                               BUINT32 request_len,
-                               BOAT_OUT BCHAR **response_str_ptr,
-                               BOAT_OUT BUINT32 *response_len_ptr)
+BOAT_RESULT CurlPortRequestSync( CurlPortContext * curlport_context_ptr,
+                                 const BCHAR *request_str,
+                                 BUINT32 request_len,
+                                 BOAT_OUT BCHAR **response_str_ptr,
+                                 BOAT_OUT BUINT32 *response_len_ptr )
 {
     CURL *curl_ctx_ptr = NULL;
     struct curl_slist *curl_opt_list_ptr = NULL;
@@ -360,7 +250,6 @@ BOAT_RESULT CurlPortRequestSync(CurlPortContext * curlport_context_ptr,
     // Verbose Debug Info.
     // curl_easy_setopt(curl_ctx_ptr, CURLOPT_VERBOSE, 1);
 
-
     // Set HTTP Type: POST
     curl_easy_setopt(curl_ctx_ptr, CURLOPT_POST, 1L);
 
@@ -385,7 +274,6 @@ BOAT_RESULT CurlPortRequestSync(CurlPortContext * curlport_context_ptr,
 
     curl_easy_setopt(curl_ctx_ptr, CURLOPT_HTTPHEADER, curl_opt_list_ptr);
 
-
     // Set callback and receive buffer for RESPONSE
     // Clean up response buffer
     curlport_context_ptr->curlport_response.string_ptr[0] = '\0';
@@ -397,7 +285,6 @@ BOAT_RESULT CurlPortRequestSync(CurlPortContext * curlport_context_ptr,
     curl_easy_setopt(curl_ctx_ptr, CURLOPT_POSTFIELDS, request_str);
     curl_easy_setopt(curl_ctx_ptr, CURLOPT_POSTFIELDSIZE, request_len);
 
-
     // Perform the RPC request
     curl_result = curl_easy_perform(curl_ctx_ptr);
 
@@ -407,7 +294,6 @@ BOAT_RESULT CurlPortRequestSync(CurlPortContext * curlport_context_ptr,
         boat_throw(BOAT_ERROR_EXT_MODULE_OPERATION_FAIL, CurlPortRequestSync_cleanup);
     }
     
-
     curl_result = curl_easy_getinfo(curl_ctx_ptr, CURLINFO_RESPONSE_CODE, &info);
 
     if(( curl_result == CURLE_OK ) && (info == 200 || info == 201))
@@ -431,7 +317,6 @@ BOAT_RESULT CurlPortRequestSync(CurlPortContext * curlport_context_ptr,
     
     result = BOAT_SUCCESS;
 
-
     // Exceptional Clean Up
     boat_catch(CurlPortRequestSync_cleanup)
     {
@@ -450,7 +335,6 @@ BOAT_RESULT CurlPortRequestSync(CurlPortContext * curlport_context_ptr,
     }
     
     return result;
-    
 }
 
 #endif // end of #if RPC_USE_LIBCURL == 1

@@ -15,7 +15,6 @@
  *****************************************************************************/
 
 /*!@brief Header file wrapper for protocols
-
 @file
 boatprotocols.h is a wrapper header file for protocols.
 */
@@ -28,13 +27,19 @@ boatprotocols.h is a wrapper header file for protocols.
 #endif
 
 #if PROTOCOL_USE_HLFABRIC
-#include "boathlfabric.h"
+#include "boathlfabric/boathlfabric.h"
+#endif
+
+#if PROTOCOL_USE_PLATON
+#include "boatplaton.h"
 #endif
 
 #if PROTOCOL_USE_PLATONE
 #include "boatplatone.h"
 #endif
 
-
+#if PROTOCOL_USE_FISCOBCOS
+#include "boatfiscobcos.h"
+#endif
 
 #endif
