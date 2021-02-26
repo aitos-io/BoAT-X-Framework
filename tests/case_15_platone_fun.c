@@ -20,24 +20,24 @@
 //BoatDisplayTestResult(is_pass, case_name_str)
 
 
-
-#define TEST_PONE_GASPRICE_0	"0x111111"
-#define TEST_PONE_GASPRICE_1 	"0x222222"
-
+//Gas price
+#define TEST_PONE_GASPRICE_0	NULL
+#define TEST_PONE_GASPRICE_1 	"0x000333"
+//Gas limit
 #define TEST_PONE_GASLIMIT_0	"0x333333"
-#define TEST_PONE_GASLIMIT_1	"0x222222"
+#define TEST_PONE_GASLIMIT_1	"0x666666"
 #define TEST_PONE_GASLIMIT_2	"0x111111"
 
 //Contract Address
-#define TEST_PONE_CONTRACT_ADDR_0 "0x1234567812345678123456781234567812345678"
-#define TEST_PONE_CONTRACT_ADDR_1 "0x1234567812345678123456781234567812345688"
-
-#define TEST_PONE_PRIVATE_KEY_0 "0x1234567812345678123456781234567812345678123456781234567812345678"
-#define TEST_PONE_PRIVATE_KEY_1 "0x1234567812345678123456781234567812345678123456781234567812345688"
-
-#define TEST_PONE_NODE_URL_0 "HTTP://127.0.0.1:7545"
+#define TEST_PONE_CONTRACT_ADDR_0 "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
+#define TEST_PONE_CONTRACT_ADDR_1 "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e46"
+//Private key
+#define TEST_PONE_PRIVATE_KEY_0 "0xe55464c12b9e034ab00f7dddeb01874edcf514b3cd77a9ad0ad8796b4d3b1fdb"
+#define TEST_PONE_PRIVATE_KEY_1 "0xe55464c12b9e034ab00f7dddeb01874edcf514b3cd77a9ad0ad8796b4d3b1fdf"
+//Node URL
+#define TEST_PONE_NODE_URL_0 "http://116.236.47.90:7545"
 #define TEST_PONE_NODE_URL_1 "HTTP://127.1.1.1:7545"
-
+//Wallet name
 #define TEST_PONE_WALLET_NAME_0 "./tests/platone.key"
 #define TEST_PONE_WALLET_NAME_1 "./tests/platone/platone.key"
 
@@ -49,6 +49,11 @@ BoatPlatoneWallet *g_case_15_platone_wallet_ptr;
 
 
 //case 0:
+/*
+Test case 0:
+Test purpose:Test cases for proper operation,serve as templates for other test cases
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_PlatonePreCondition_0(BSINT8 *wallet_num)
 {
     BSINT32 index;
@@ -142,7 +147,11 @@ BOAT_RESULT Case_15_PlatoneFunTest_0(BSINT8 *wallet_num)
     return BOAT_SUCCESS;
 }
 
-//case 1:load wallet
+/*
+Test case 1:load wallet
+Test purpose:Test the load wallet to invoke PlatNOE contracts,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_PlatonePreCondition_1(BSINT8 *wallet_num)
 {
     BSINT32 index;
@@ -170,6 +179,11 @@ BOAT_RESULT Case_15_PlatoneFunTest_1(BSINT8 *wallet_num)
 
 
 //case 2:no private_key
+/*
+Test case 2: no private_key
+Test purpose:Test cases where the private key is not set when invoking PlatNOE contracts,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_PlatonePreCondition_2(BSINT8 *wallet_num)
 {
     BSINT32 index;
@@ -205,7 +219,11 @@ BOAT_RESULT Case_15_PlatoneFunTest_2(BSINT8 *wallet_num)
     return BOAT_SUCCESS;
 }
 
-//case 3:other private_key
+/*
+Test case 3: other private key
+Test purpose:Test case for setting up other private keys when invoking PlatNOE contracts ,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_PlatonePreCondition_3(BSINT8 *wallet_num)
 {
     BSINT32 index;
@@ -250,6 +268,11 @@ BOAT_RESULT Case_15_PlatoneFunTest_3(BSINT8 *wallet_num)
 }
 
 //case 4:chain id
+/*
+Test case 4: chain_id = 0
+Test purpose:Test cases where the chain ID is not set when invoking PlatNOE contracts,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_PlatonePreCondition_4(BSINT8 *wallet_num)
 {
     BSINT32 index;
@@ -295,6 +318,11 @@ BOAT_RESULT Case_15_PlatoneFunTest_4(BSINT8 *wallet_num)
 
 
 //case 5:EIP155
+/*
+Test case 5: eip155=1
+Test purpose:To set up test cases that comply with the EIP155 rule when invoking PlatNOE contracts,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_PlatonePreCondition_5(BSINT8 *wallet_num)
 {
     BSINT32 index;
@@ -341,6 +369,11 @@ BOAT_RESULT Case_15_PlatoneFunTest_5(BSINT8 *wallet_num)
 }
 
 //case 6:url
+/*
+Test case 6: URL = TEST_ETH_NODE_URL_1
+Test purpose:Test case for setting other Node URLs when invoking PlatNOE contracts,
+Test target results:The calling contract were failed.
+*/
 BOAT_RESULT Case_15_PlatonePreCondition_6(BSINT8 *wallet_num)
 {
     BSINT32 index;
@@ -383,11 +416,16 @@ BOAT_RESULT Case_15_PlatoneFunTest_6(BSINT8 *wallet_num)
 {
     BoatDisplayTestResult( BOAT_SUCCESS == Case_15_PlatonePreCondition_6(wallet_num), "Case_15_PlatonePreCondition_6" );
 
-    BoatDisplayTestResult( BOAT_SUCCESS == Case_15_Call_my_contract_0(g_case_15_platone_wallet_ptr), "Case_15_Call_my_contract_0" );
+    BoatDisplayTestResult( BOAT_SUCCESS != Case_15_Call_my_contract_0(g_case_15_platone_wallet_ptr), "Case_15_Call_my_contract_0" );
     return BOAT_SUCCESS;
 }
 
 //case 7:wallet_type
+/*
+Test case 7: load wallet
+Test purpose:Test the load wallet to invoke PlatNOE contracts,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_PlatonePreCondition_7(BSINT8 *wallet_num)
 {
     BSINT32 index;
@@ -431,6 +469,11 @@ BOAT_RESULT Case_15_PlatoneFunTest_7(BSINT8 *wallet_num)
 }
 
 //case 8:one time
+/*
+Test case 8: one-time wallet
+Test purpose:Test one-time wallets to invoke PlatNOE contracts,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_PlatonePreCondition_8(BSINT8 *wallet_num)
 {
     BSINT32 index;
@@ -480,6 +523,11 @@ BOAT_RESULT Case_15_PlatoneFunTest_8(BSINT8 *wallet_num)
 
 
 //case 9:is_sync_tx
+/*
+Test case 9: is_sync_tx=BOAT_TRUE
+Test purpose:Test the effect of the transaction state parameter on the invoking PlatNOE contract,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_Call_my_contract_9(BoatPlatoneWallet *wallet_ptr)
 {
     BCHAR *result_str;
@@ -509,6 +557,11 @@ BOAT_RESULT Case_15_PlatoneFunTest_9(BSINT8 *wallet_num)
 }
 
 //case 10:TEST_PONE_GASPRICE_1
+/*
+Test case 10: TEST_PONE_GASPRICE_1
+Test purpose:Test the impact of setting a smaller GasPrice on the invoking PlatNOE contracts,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_Call_my_contract_10(BoatPlatoneWallet *wallet_ptr)
 {
     BCHAR *result_str;
@@ -538,6 +591,11 @@ BOAT_RESULT Case_15_PlatoneFunTest_10(BSINT8 *wallet_num)
 }
 
 //case 11:TEST_PONE_GASLIMIT_1
+/*
+Test case 11: TEST_PONE_GASLIMIT_1
+Test purpose:Test the impact of setting a smaller GasLimit on the invoking PlatNOE contracts,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_Call_my_contract_11(BoatPlatoneWallet *wallet_ptr)
 {
     BCHAR *result_str;
@@ -563,11 +621,16 @@ BOAT_RESULT Case_15_PlatoneFunTest_11(BSINT8 *wallet_num)
 {
     BoatDisplayTestResult( BOAT_SUCCESS == Case_15_PlatonePreCondition_1(wallet_num), "Case_15_PlatonePreCondition_0" );
 
-    BoatDisplayTestResult( BOAT_SUCCESS == Case_15_Call_my_contract_0(g_case_15_platone_wallet_ptr), "Case_15_Call_my_contract_0" );
+    BoatDisplayTestResult( BOAT_SUCCESS == Case_15_Call_my_contract_11(g_case_15_platone_wallet_ptr), "Case_15_Call_my_contract_11" );
     return BOAT_SUCCESS;
 }
 
 //case 11:TEST_PONE_CONTRACT_ADDR_1
+/*
+Test case 11: TEST_PONE_CONTRACT_ADDR_1
+Test purpose:Test the effect of setting other contract addresses on the invoking PlatNOE contracts,
+Test target results:The calling contract were successful.
+*/
 BOAT_RESULT Case_15_Call_my_contract_12(BoatPlatoneWallet *wallet_ptr)
 {
     BCHAR *result_str;
@@ -592,7 +655,7 @@ BOAT_RESULT Case_15_PlatoneFunTest_12(BSINT8 *wallet_num)
 {
     BoatDisplayTestResult( BOAT_SUCCESS == Case_15_PlatonePreCondition_1(wallet_num), "Case_15_PlatonePreCondition_0" );
 
-    BoatDisplayTestResult( BOAT_SUCCESS == Case_15_Call_my_contract_0(g_case_15_platone_wallet_ptr), "Case_15_Call_my_contract_0" );
+    BoatDisplayTestResult( BOAT_SUCCESS == Case_15_Call_my_contract_12(g_case_15_platone_wallet_ptr), "Case_15_Call_my_contract_12" );
     return BOAT_SUCCESS;
 }
 

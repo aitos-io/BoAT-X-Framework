@@ -20,7 +20,7 @@
 
 #include "testcommon.h"
 
-#define TEST_ETH_PRIVATE_KEYCOV_0 "0x1234567812345678123456781234567812345678123456781234567812345678"
+#define TEST_ETH_PRIVATE_KEYCOV_0 "0x88c40e712a2af0ac032aa17ba07963aa2c2f732ef2a88188930aa4e33151d3c9"
 
 #define TEST_ETH_NODE_URLCOV_0 "HTTP://127.0.0.1:7545"
 
@@ -135,7 +135,6 @@ BOAT_RESULT Case_EthereumPreCondition_B(BSINT8 *wallet_num)
 }
 
 
-
 BOAT_RESULT Case_utilitiesMain()
 {
     BOAT_RESULT result=BOAT_SUCCESS;
@@ -184,7 +183,6 @@ BOAT_RESULT Case_utilitiesMain()
 
     return result;
 }
-
 
 
 //api_ethereum.c
@@ -256,9 +254,6 @@ BOAT_RESULT Case_boatethereumMain(BoatEthWallet *wallet_ptr)
 }
 
 
-
-
-
 BOAT_RESULT Case_web3Main(void)
 {
     BOAT_RESULT result=BOAT_SUCCESS;
@@ -288,19 +283,19 @@ BOAT_RESULT Case_web3Main(void)
     param_ptr_A1.address_str="0x123456789";
     param_ptr_A1.block_num_str="10";
     param_ptr_A1.position_str="11";                            
-
-    BoatDisplayCellTestResult(result, NULL == web3_eth_getStorageAt(web3_init_A1,TEST_ETH_NODE_URLCOV_0,&param_ptr_A1), "web3_eth_getStorageAt"); 
-
-    BoatDisplayCellTestResult(result, NULL == web3_eth_getTransactionReceiptStatus(NULL,NULL,NULL), "web3_eth_getTransactionReceiptStatus");                                 
-
-    BoatDisplayCellTestResult(result, NULL == web3_eth_getTransactionReceiptStatus(web3_init_A1,NULL,NULL), "web3_eth_getTransactionReceiptStatus");  
-
+///////////////////
+    BoatDisplayCellTestResult(result, NULL != web3_eth_getStorageAt(web3_init_A1,TEST_ETH_NODE_URLCOV_0,&param_ptr_A1), "web3_eth_getStorageAt"); 
+    //printf("+++++++ StorageAt:%s\n",web3_eth_getStorageAt(web3_init_A1,TEST_ETH_NODE_URLCOV_0,&param_ptr_A1));
+    BoatDisplayCellTestResult(result, NULL != web3_eth_getTransactionReceiptStatus(NULL,NULL,NULL), "web3_eth_getTransactionReceiptStatus");                                 
+//////////
+    BoatDisplayCellTestResult(result, NULL != web3_eth_getTransactionReceiptStatus(web3_init_A1,NULL,NULL), "web3_eth_getTransactionReceiptStatus");  
+    //printf("+++++++ Status:%s\n",web3_eth_getTransactionReceiptStatus(web3_init_A1,NULL,NULL));
     BoatDisplayCellTestResult(result, NULL == web3_eth_call(NULL,NULL,NULL), "web3_eth_call"); 
     BoatDisplayCellTestResult(result, NULL == web3_eth_call(web3_init_A1,NULL,NULL), "web3_eth_call");                      
                      
     web3_deinit(web3_init_A1);
 
-    return BOAT_SUCCESS;
+    return result;
 }
 
 
