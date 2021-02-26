@@ -56,7 +56,7 @@ BOAT_RESULT BoatCallReadStore(BoatEthWallet *wallet_ptr)
                           BOAT_TRUE,
                           NULL,
                           "0x333333",
-						  "0xE6337c2E09bF9D0BAd111D85D2222C5924C84867");
+                          "0xE6337c2E09bF9D0BAd1fkD85D2222C5924C84867");
 
     if( BOAT_SUCCESS != result )
     {
@@ -71,7 +71,7 @@ BOAT_RESULT BoatCallReadStore(BoatEthWallet *wallet_ptr)
     {
         result_str = StoreRead_readListLength(&tx_ctx);
         result = BoatEthPraseRpcResponseResult( result_str, "", &prase_result);
-		if( result == BOAT_SUCCESS )
+        if( result == BOAT_SUCCESS )
         {
             BoatLog(BOAT_LOG_NORMAL, "readListLength returns: %s", prase_result.field_ptr);
             
@@ -103,10 +103,10 @@ BOAT_RESULT BoatCallReadStore(BoatEthWallet *wallet_ptr)
         }
     }
 
-	//free prase_result
-	BoatFree(prase_result.field_ptr);
-	prase_result.field_ptr = 0;
-	
+    //free prase_result
+    BoatFree(prase_result.field_ptr);
+    prase_result.field_ptr = 0;
+
     return BOAT_SUCCESS;
 }
 
@@ -143,7 +143,7 @@ BOAT_RESULT BoatEthereumPreCondition(void)
 
     // Set Node URL
     wallet_config.node_url_str[BOAT_NODE_URL_MAX_LEN-1] = '\0';
-    strncpy(wallet_config.node_url_str, "http://192.168.59.1:7545", BOAT_NODE_URL_MAX_LEN-1); // 47.104.142.169:7545
+    strncpy(wallet_config.node_url_str, "http://123.123.123.123:8080", BOAT_NODE_URL_MAX_LEN-1);
 
 #if BOAT_DEMO_CREATE_WALLET_NOT_STORE == 1
 
@@ -218,7 +218,7 @@ BOAT_RESULT BoatEthereumPreConLoadWallet(void)
 
     // Set Node URL
     wallet_config.node_url_str[BOAT_NODE_URL_MAX_LEN-1] = '\0';
-    strncpy(wallet_config.node_url_str, "http://192.168.59.1:7545", BOAT_NODE_URL_MAX_LEN-1); 
+    strncpy(wallet_config.node_url_str, "http://123.123.123.123:8080", BOAT_NODE_URL_MAX_LEN-1); 
 
     // Load an existed wallet
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "boateth.keystore", NULL, sizeof(BoatEthWalletConfig));
@@ -284,16 +284,16 @@ BOAT_RESULT BoatEthereumMainEntry(void)
     if ( BOAT_SUCCESS == result )
     {
         cur_balance_wei = BoatEthWalletGetBalance(g_boat_ethereum_wallet_ptr, NULL);
-		result = BoatEthPraseRpcResponseResult( cur_balance_wei, "", &prase_result);
-		if( result == BOAT_SUCCESS )
-		{
-			BoatLog( BOAT_LOG_NORMAL, "BoatEthWalletGetBalance returns: %s", prase_result.field_ptr );
-		}
-		else
-		{
-			return BOAT_ERROR;
-		}
-		
+        result = BoatEthPraseRpcResponseResult( cur_balance_wei, "", &prase_result);
+        if( result == BOAT_SUCCESS )
+        {
+            BoatLog( BOAT_LOG_NORMAL, "BoatEthWalletGetBalance returns: %s", prase_result.field_ptr );
+        }
+        else
+        {
+            return BOAT_ERROR;
+        }
+
         BoatLog(BOAT_LOG_VERBOSE, "cur_balance_wei: %s wei", prase_result.field_ptr);
         cur_balance_eth = UtilityWeiStrToEthDouble((BCHAR*)prase_result.field_ptr);
         BoatLog(BOAT_LOG_VERBOSE, "cur_balance_eth: %10lf ETH", cur_balance_eth);
@@ -315,9 +315,9 @@ BOAT_RESULT BoatEthereumMainEntry(void)
         BoatLog(BOAT_LOG_NORMAL, "Block to Ethereum Chain Passed.");
     }
 
-	//free prase_result
-	BoatFree(prase_result.field_ptr);
-	prase_result.field_ptr = 0;
+    //free prase_result
+    BoatFree(prase_result.field_ptr);
+    prase_result.field_ptr = 0;
 	
     return result;
 }
