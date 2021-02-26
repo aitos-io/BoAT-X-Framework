@@ -1,2 +1,2 @@
-- [**BoAT User Guide**](/en-us/BoAT_User_Guide_en.md)
-- [**BoAT Getting Started**](/en-us/BoAT_Getting_Started_en.md)
+- [**English Documents**](/en-us/README.md)
+- [**简体中文文档**](/zh-cn/README.md)
