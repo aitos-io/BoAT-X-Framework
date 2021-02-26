@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
     
     //case_result += Case_20_RlpMain();
 
-    //case_result += Case_10_EthFunMain();
-    //case_result += Case_11_EthCovMain();
+    case_result += Case_10_EthFunMain();
+    case_result += Case_11_EthCovMain();
 
     case_result += Case_15_PlatONEMain();
     case_result += Case_16_PlatONECovMain();
