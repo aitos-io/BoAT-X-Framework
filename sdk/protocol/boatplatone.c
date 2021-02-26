@@ -758,14 +758,19 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
     tx_hash_str = web3_eth_sendRawTransaction( tx_ptr->wallet_ptr->web3intf_context_ptr,
                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                                &param_eth_sendRawTransaction);
-
-    if( tx_hash_str == NULL ) boat_throw(BOAT_ERROR_RPC_FAIL, PlatoneSendRawtx_cleanup);
+    result = BoatEthPraseRpcResponseResult( tx_hash_str, "", 
+											&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+	if( result != BOAT_SUCCESS )
+	{
+		BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
+		boat_throw(BOAT_ERROR_RPC_FAIL, PlatoneSendRawtx_cleanup);
+	}
 
     tx_ptr->tx_hash.field_len =
             UtilityHex2Bin(
                             tx_ptr->tx_hash.field,
                             32,
-                            tx_hash_str,
+                            (BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
                             TRIMBIN_TRIM_NO,
                             BOAT_FALSE
                            );
