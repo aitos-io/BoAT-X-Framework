@@ -1,2 +1,1 @@
-- [**English Documents**](/en-us/README.md)
-- [**简体中文文档**](/zh-cn/README.md)
+- [**BoAT-X Documents**](/README.md)
