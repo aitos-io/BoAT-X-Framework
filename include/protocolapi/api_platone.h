@@ -304,6 +304,12 @@ BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr
 
 
 // Ethereum APIs compatible for PlatONE
+//!@brief Prase RPC method RESPONSE
+//!@see BoatEthPraseRpcResponseResult()
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR * json_string, const BCHAR * child_name,BoatFieldVariable *result_out)
+{
+    return BoatEthPraseRpcResponseResult(json_string,child_name,result_out);
+}
 
 //!@brief Initialize Boat PlatONE Wallet
 //!@see BoatEthWalletInit()

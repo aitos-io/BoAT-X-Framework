@@ -93,49 +93,32 @@ BOAT_RESULT Case_15_PlatonePreCondition_0(BSINT8 *wallet_num)
 
 BOAT_RESULT Case_15_Call_my_contract_0(BoatPlatoneWallet *wallet_ptr)
 {
-    BCHAR *result_str;
     BoatPlatoneTx tx_ctx;
     BOAT_RESULT result;
-    
+
+    BCHAR *json_string;
+    BoatFieldVariable result_str;
+    BUINT8 field_buf[128];
+    result_str.field_ptr = field_buf;
     // Set Contract Address
-    result = BoatPlatoneTxInit(wallet_ptr,
-                          &tx_ctx,
-                          BOAT_TRUE,
-                          NULL,
-                          TEST_PONE_GASLIMIT_0,
-                          TEST_PONE_CONTRACT_ADDR_0,
-                          BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
+    BoatDisplayTestResult (BOAT_SUCCESS == BoatPlatoneTxInit(wallet_ptr,
+                                                            &tx_ctx,
+                                                            BOAT_TRUE,
+                                                            NULL,
+                                                            TEST_PONE_GASLIMIT_0,
+                                                            TEST_PONE_CONTRACT_ADDR_0,
+                                                            BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR),"BoatPlatoneTxInit");
 
-    if( result != BOAT_SUCCESS )
-    {
-        BoatLog(BOAT_LOG_NORMAL, "BoatPlatoneTxInit fails.");
-        return BOAT_ERROR;
-    }
-    
+    BoatDisplayTestResult(NULL != (json_string = my_contract_cpp_abi_setName(&tx_ctx, "Hello World")),"my_contract_cpp_abi_setName");
+    BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", json_string);
 
-    result_str = my_contract_cpp_abi_setName(&tx_ctx, "HelloWorld");
-    if( result_str != NULL )
-    {
-        BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", result_str);
-    }
-    else
-    {
-        return BOAT_ERROR;
-    }
     
-    
-    result_str = my_contract_cpp_abi_getName(&tx_ctx);
-    if( result_str != NULL )
-    {
-        BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str);
-        BoatDisplayTestResult( 0 == memcmp(result_str,"0x48656c6c6f576f726c64",strlen("0x48656c6c6f576f726c64")), "my_contract_cpp_abi_getName" );
-    }
-    else
-    {
-        return BOAT_ERROR;
-    }
-    
-    
+    BoatDisplayTestResult(NULL != (json_string = my_contract_cpp_abi_getName(&tx_ctx)),"my_contract_cpp_abi_getName");
+    BoatDisplayTestResult( BOAT_SUCCESS == BoatPlatonePraseRpcResponseResult( json_string, "result", &result_str ), "BoatPlatonePraseRpcResponseResult" );
+    BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str.field_ptr);
+
+    BoatDisplayTestResult( 0 == memcmp(result_str.field_ptr,"0x48656c6c6f20576f726c64",strlen("0x48656c6c6f20576f726c64")), "my_contract_cpp_abi_getName" );
+ 
     return BOAT_SUCCESS;
 }
 
@@ -321,7 +304,7 @@ BOAT_RESULT Case_15_PlatoneFunTest_4(BSINT8 *wallet_num)
 /*
 Test case 5: eip155=1
 Test purpose:To set up test cases that comply with the EIP155 rule when invoking PlatNOE contracts,
-Test target results:The calling contract were successful.
+Test target results:The calling contract were failed.
 */
 BOAT_RESULT Case_15_PlatonePreCondition_5(BSINT8 *wallet_num)
 {
@@ -364,7 +347,7 @@ BOAT_RESULT Case_15_PlatoneFunTest_5(BSINT8 *wallet_num)
 {
     BoatDisplayTestResult( BOAT_SUCCESS == Case_15_PlatonePreCondition_5(wallet_num), "Case_15_PlatonePreCondition_5" );
 
-    BoatDisplayTestResult( BOAT_SUCCESS == Case_15_Call_my_contract_0(g_case_15_platone_wallet_ptr), "Case_15_Call_my_contract_0" );
+    BoatDisplayTestResult( BOAT_SUCCESS != Case_15_Call_my_contract_0(g_case_15_platone_wallet_ptr), "Case_15_Call_my_contract_0" );
     return BOAT_SUCCESS;
 }
 
@@ -526,24 +509,27 @@ BOAT_RESULT Case_15_PlatoneFunTest_8(BSINT8 *wallet_num)
 /*
 Test case 9: is_sync_tx=BOAT_TRUE
 Test purpose:Test the effect of the transaction state parameter on the invoking PlatNOE contract,
-Test target results:The calling contract were successful.
+Test target results:The calling contract were failed.
 */
 BOAT_RESULT Case_15_Call_my_contract_9(BoatPlatoneWallet *wallet_ptr)
 {
-    BCHAR *result_str;
     BoatPlatoneTx tx_ctx;
-    
+
+    BCHAR *json_string;
+    BoatFieldVariable result_str;
+    BUINT8 field_buf[128];
+    result_str.field_ptr = field_buf;    
     // Set Contract Address
     BoatDisplayTestResult( BOAT_SUCCESS == BoatPlatoneTxInit(wallet_ptr,&tx_ctx,BOAT_TRUE,NULL,TEST_PONE_GASLIMIT_0,TEST_PONE_CONTRACT_ADDR_0,BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR), "BoatPlatoneTxInit" );
 
-    BoatDisplayTestResult( BOAT_SUCCESS == ( result_str = my_contract_cpp_abi_setName(NULL, "HelloWorld")), "my_contract_cpp_abi_setName" );   
-    BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", result_str);
+    BoatDisplayTestResult( NULL == ( json_string = my_contract_cpp_abi_setName(NULL, "Hello World")), "my_contract_cpp_abi_setName" );   
+    BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", json_string);
 
+    BoatDisplayTestResult( NULL != ( json_string = my_contract_cpp_abi_getName(&tx_ctx)), "my_contract_cpp_abi_getName" );
+    BoatDisplayTestResult( BOAT_SUCCESS == BoatPlatonePraseRpcResponseResult( json_string, "result", &result_str ), "BoatPlatonePraseRpcResponseResult" );
+    BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str.field_ptr);
 
-    BoatDisplayTestResult( BOAT_SUCCESS == ( result_str = my_contract_cpp_abi_getName(&tx_ctx)), "my_contract_cpp_abi_getName" );   
-    BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str);
-
-    BoatDisplayTestResult( 0 == memcmp(result_str,"0x48656c6c6f576f726c64",strlen("0x48656c6c6f576f726c64")), "my_contract_cpp_abi_getName" );
+    BoatDisplayTestResult( 0 == memcmp(result_str.field_ptr,"0x48656c6c6f20576f726c64",strlen("0x48656c6c6f20576f726c64")), "my_contract_cpp_abi_getName" );
 
     return BOAT_SUCCESS;
 }
@@ -564,20 +550,25 @@ Test target results:The calling contract were successful.
 */
 BOAT_RESULT Case_15_Call_my_contract_10(BoatPlatoneWallet *wallet_ptr)
 {
-    BCHAR *result_str;
     BoatPlatoneTx tx_ctx;
-    
+
+    BCHAR *json_string;
+    BoatFieldVariable result_str;
+    BUINT8 field_buf[128];
+    result_str.field_ptr = field_buf;        
     // Set Contract Address
     BoatDisplayTestResult( BOAT_SUCCESS == BoatPlatoneTxInit(wallet_ptr,&tx_ctx,BOAT_FALSE,TEST_PONE_GASPRICE_1,TEST_PONE_GASLIMIT_0,TEST_PONE_CONTRACT_ADDR_0,BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR), "BoatPlatoneTxInit" );
 
-    BoatDisplayTestResult( BOAT_SUCCESS == ( result_str = my_contract_cpp_abi_setName(NULL, "HelloWorld")), "my_contract_cpp_abi_setName" );   
-    BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", result_str);
+    BoatDisplayTestResult( NULL == ( json_string = my_contract_cpp_abi_setName(NULL, "Hello World")), "my_contract_cpp_abi_setName" );   
+    BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", json_string);
 
 
-    BoatDisplayTestResult( BOAT_SUCCESS == ( result_str = my_contract_cpp_abi_getName(&tx_ctx)), "my_contract_cpp_abi_getName" );   
-    BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str);
+    BoatDisplayTestResult( NULL != ( json_string = my_contract_cpp_abi_getName(&tx_ctx)), "my_contract_cpp_abi_getName" );   
+    BoatDisplayTestResult( BOAT_SUCCESS == BoatPlatonePraseRpcResponseResult( json_string, "result", &result_str ), "BoatPlatonePraseRpcResponseResult" );
+    
+    BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str.field_ptr);
 
-    BoatDisplayTestResult( 0 == memcmp(result_str,"0x48656c6c6f576f726c64",strlen("0x48656c6c6f576f726c64")), "my_contract_cpp_abi_getName" );
+    BoatDisplayTestResult( 0 == memcmp(result_str.field_ptr,"0x48656c6c6f20576f726c64",strlen("0x48656c6c6f20576f726c64")), "my_contract_cpp_abi_getName" );
 
     return BOAT_SUCCESS;
 }
@@ -598,20 +589,26 @@ Test target results:The calling contract were successful.
 */
 BOAT_RESULT Case_15_Call_my_contract_11(BoatPlatoneWallet *wallet_ptr)
 {
-    BCHAR *result_str;
+
     BoatPlatoneTx tx_ctx;
-    
+
+    BCHAR *json_string;
+    BoatFieldVariable result_str;
+    BUINT8 field_buf[128];
+    result_str.field_ptr = field_buf;          
     // Set Contract Address
     BoatDisplayTestResult( BOAT_SUCCESS == BoatPlatoneTxInit(wallet_ptr,&tx_ctx,BOAT_FALSE,TEST_PONE_GASPRICE_0,TEST_PONE_GASLIMIT_1,TEST_PONE_CONTRACT_ADDR_0,BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR), "BoatPlatoneTxInit" );
 
-    BoatDisplayTestResult( BOAT_SUCCESS == ( result_str = my_contract_cpp_abi_setName(NULL, "HelloWorld")), "my_contract_cpp_abi_setName" );   
-    BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", result_str);
+    BoatDisplayTestResult( NULL == ( json_string = my_contract_cpp_abi_setName(NULL, "Hello World")), "my_contract_cpp_abi_setName" );   
+    BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", json_string);
 
 
-    BoatDisplayTestResult( BOAT_SUCCESS == ( result_str = my_contract_cpp_abi_getName(&tx_ctx)), "my_contract_cpp_abi_getName" );   
-    BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str);
+    BoatDisplayTestResult( NULL != ( json_string = my_contract_cpp_abi_getName(&tx_ctx)), "my_contract_cpp_abi_getName" );   
+    BoatDisplayTestResult( BOAT_SUCCESS == BoatPlatonePraseRpcResponseResult( json_string, "result", &result_str ), "BoatPlatonePraseRpcResponseResult" );
+    
+    BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str.field_ptr);
 
-    BoatDisplayTestResult( 0 == memcmp(result_str,"0x48656c6c6f576f726c64",strlen("0x48656c6c6f576f726c64")), "my_contract_cpp_abi_getName" );
+    BoatDisplayTestResult( 0 == memcmp(result_str.field_ptr,"0x48656c6c6f20576f726c64",strlen("0x48656c6c6f20576f726c64")), "my_contract_cpp_abi_getName" );
 
     return BOAT_SUCCESS;
 }
@@ -633,27 +630,19 @@ Test target results:The calling contract were successful.
 */
 BOAT_RESULT Case_15_Call_my_contract_12(BoatPlatoneWallet *wallet_ptr)
 {
-    BCHAR *result_str;
     BoatPlatoneTx tx_ctx;
-    
+    BCHAR *json_string;
     // Set Contract Address
     BoatDisplayTestResult( BOAT_SUCCESS == BoatPlatoneTxInit(wallet_ptr,&tx_ctx,BOAT_FALSE,TEST_PONE_GASPRICE_0,TEST_PONE_GASLIMIT_0,TEST_PONE_CONTRACT_ADDR_1,BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR), "BoatPlatoneTxInit" );
 
-    BoatDisplayTestResult( BOAT_SUCCESS == ( result_str = my_contract_cpp_abi_setName(NULL, "HelloWorld")), "my_contract_cpp_abi_setName" );   
-    BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", result_str);
-
-
-    BoatDisplayTestResult( BOAT_SUCCESS == ( result_str = my_contract_cpp_abi_getName(&tx_ctx)), "my_contract_cpp_abi_getName" );   
-    BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str);
-
-    BoatDisplayTestResult( 0 == memcmp(result_str,"0x48656c6c6f576f726c64",strlen("0x48656c6c6f576f726c64")), "my_contract_cpp_abi_getName" );
+    BoatDisplayTestResult( NULL == ( json_string = my_contract_cpp_abi_setName(NULL, "Hello World")), "my_contract_cpp_abi_setName" );   
 
     return BOAT_SUCCESS;
 }
 
 BOAT_RESULT Case_15_PlatoneFunTest_12(BSINT8 *wallet_num)
 {
-    BoatDisplayTestResult( BOAT_SUCCESS == Case_15_PlatonePreCondition_1(wallet_num), "Case_15_PlatonePreCondition_0" );
+    BoatDisplayTestResult( BOAT_SUCCESS == Case_15_PlatonePreCondition_0(wallet_num), "Case_15_PlatonePreCondition_0" );
 
     BoatDisplayTestResult( BOAT_SUCCESS == Case_15_Call_my_contract_12(g_case_15_platone_wallet_ptr), "Case_15_Call_my_contract_12" );
     return BOAT_SUCCESS;
@@ -667,28 +656,40 @@ BOAT_RESULT Case_15_PlatONEMain(void)
     BSINT8 wallet_num=0;
     case_result += Case_15_PlatoneFunTest_0(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_1(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_2(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_3(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_4(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_5(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_6(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_7(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_8(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_9(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_10(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_11(&wallet_num);
     BoatWalletUnload(wallet_num);
+
     case_result += Case_15_PlatoneFunTest_12(&wallet_num);
     BoatWalletUnload(wallet_num);
 
