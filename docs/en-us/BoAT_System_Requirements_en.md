@@ -6,9 +6,9 @@ This technical paper describes the system requirements of the BoAT Framework (C 
 ## Part One. Storage requirements
 
 For supporting Ethereum, the storage requirements of the BoAT Framework (C language version) itself are:
-	Flash (code and read-only data): about 180kB
-	Flash (non-volatile RW data): tens of bytes
-	RAM (global variables, heap, stack): about 30kB
+- Flash (code and read-only data): about 180kB
+- Flash (non-volatile RW data): tens of bytes
+- RAM (global variables, heap, stack): about 30kB
 
 The above does not include the system libraries that the BoAT Framework (C language version) depends on. The exact values may vary with different blockchain protocols.
 
