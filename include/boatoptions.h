@@ -52,10 +52,10 @@ boatoptions.h defines options for compiling.
 
 // Blockchain Protocol OPTION
 #define PROTOCOL_USE_ETHEREUM   	             1
-#define PROTOCOL_USE_HLFABRIC                    0
-#define PROTOCOL_USE_PLATON     	             0
-#define PROTOCOL_USE_PLATONE    	             0
-#define PROTOCOL_USE_FISCOBCOS    	             0
+#define PROTOCOL_USE_PLATON     	             1
+#define PROTOCOL_USE_PLATONE    	             1
+#define PROTOCOL_USE_HLFABRIC                    1
+#define PROTOCOL_USE_FISCOBCOS    	             1
 
 // Protocol dependency
 #if (PROTOCOL_USE_PLATON != 0)
@@ -68,6 +68,11 @@ boatoptions.h defines options for compiling.
 #define PROTOCOL_USE_ETHEREUM                    1
 #undef PROTOCOL_USE_PLATON
 #define PROTOCOL_USE_PLATON                      1
+#endif
+
+#if (PROTOCOL_USE_HLFABRIC != 0)
+#undef PROTOCOL_USE_ETHEREUM
+#define PROTOCOL_USE_ETHEREUM                    1
 #endif
 
 #if (PROTOCOL_USE_FISCOBCOS != 0)
