@@ -22,6 +22,8 @@ perform it and wait for its receipt.
 */
 
 #include "boatinternal.h"
+
+#if PROTOCOL_USE_FISCOBCOS == 1
 #include "web3intf.h"
 #include "boatethereum.h"
 #include "boatfiscobcos.h"
@@ -479,3 +481,4 @@ BOAT_RESULT FiscobcosSendRawtxWithReceipt(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
 
     return result;
 }
+#endif /* end of PROTOCOL_USE_FISCOBCOS */

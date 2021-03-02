@@ -22,6 +22,8 @@
 
 #include "boatiotsdk.h"
 
+#if PROTOCOL_USE_HLFABRIC == 1
+
 BoatHlfabricWallet *g_fabric_wallet_ptr;
 
 __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
@@ -137,3 +139,10 @@ int main(int argc, char *argv[])
     
     return 0;
 }
+#else
+int main(int argc, char *argv[])
+{
+    BoatLog(BOAT_LOG_NORMAL, "undefine PROTOCOL_USE_HLFABRIC");
+    return 0;
+}
+#endif /* end of PROTOCOL_USE_HLFABRIC */

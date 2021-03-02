@@ -21,7 +21,7 @@ boatFiscobcoswallet.c defines the FISCOBCOS wallet API for BoAT IoT SDK.
 */
 
 #include "boatinternal.h"
-
+#if PROTOCOL_USE_FISCOBCOS == 1
 #include "web3intf.h"
 #include "boatprotocols.h"
 #include "rpcintf.h"
@@ -397,3 +397,4 @@ BCHAR * BoatFiscobcosGetBlockNumber( BoatFiscobcosTx *tx_ptr )
 
     return retval_str;
 }
+#endif /* end of PROTOCOL_USE_FISCOBCOS */

@@ -50,9 +50,35 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 
 #if PROTOCOL_USE_PLATONE == 1
 #include "protocolapi/api_platone.h"
+#else
+#define BOAT_PLATONE_NONCE_AUTO                  BOAT_ETH_NONCE_AUTO
+
+typedef int    BoatPlatoneTxtype;
+
+typedef struct TBoatPlatoneRawtxFields
+{
+    BoatPlatoneTxtype txtype;     //!< Transaction Type
+}BoatPlatoneRawtxFields;
+
+typedef struct TBoatPlatoneTx
+{
+    BoatFieldMax32B tx_hash;
+    BoatPlatoneRawtxFields rawtx_fields;
+}BoatPlatoneTx;
+
 #endif
+
+
 #if PROTOCOL_USE_FISCOBCOS == 1
 #include "protocolapi/api_fiscobcos.h"
+#else
+#define BOAT_FISCOBCOS_NONCE_AUTO                BOAT_ETH_NONCE_AUTO
+
+typedef struct TBoatFiscobcosTx
+{
+    BoatFieldMax32B tx_hash;
+}BoatFiscobcosTx;
+
 #endif
 
 #include "boatwallet.h"

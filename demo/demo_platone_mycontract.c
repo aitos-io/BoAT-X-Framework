@@ -20,6 +20,9 @@
 
 
 #include "boatiotsdk.h"
+
+#if PROTOCOL_USE_PLATONE == 1
+
 #include "my_contract.cpp.abi.h"
 
 BoatPlatoneWallet *g_platone_wallet_ptr;
@@ -176,3 +179,10 @@ int main(int argc, char *argv[])
     
     return 0;
 }
+#else
+int main(int argc, char *argv[])
+{
+    BoatLog(BOAT_LOG_NORMAL, "undefine PROTOCOL_USE_PLATONE");
+    return 0;
+}
+#endif /* end of PROTOCOL_USE_PLATONE */

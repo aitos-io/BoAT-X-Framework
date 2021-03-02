@@ -24,6 +24,8 @@ wait for its receipt.
 
 /* self-header include */
 #include "boathlfabric.h"
+
+#if PROTOCOL_USE_HLFABRIC == 1
 #include "http2intf.h"
 #include "boatplatform_internal.h"
 /* protos header include */
@@ -683,3 +685,5 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 }
 
 /*! @}*/
+
+#endif /* end of PROTOCOL_USE_HLFABRIC */

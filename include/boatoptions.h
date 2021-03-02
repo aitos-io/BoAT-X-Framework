@@ -52,10 +52,10 @@ boatoptions.h defines options for compiling.
 
 // Blockchain Protocol OPTION
 #define PROTOCOL_USE_ETHEREUM   	             1
-#define PROTOCOL_USE_HLFABRIC                    1
-#define PROTOCOL_USE_PLATON     	             1
-#define PROTOCOL_USE_PLATONE    	             1
-#define PROTOCOL_USE_FISCOBCOS    	             1
+#define PROTOCOL_USE_HLFABRIC                    0
+#define PROTOCOL_USE_PLATON     	             0
+#define PROTOCOL_USE_PLATONE    	             0
+#define PROTOCOL_USE_FISCOBCOS    	             0
 
 // Protocol dependency
 #if (PROTOCOL_USE_PLATON != 0)
@@ -85,7 +85,6 @@ boatoptions.h defines options for compiling.
 #error "At least ONE PROTOCOL_USE option shall be set to 1"
 #endif
 #undef PROTOCOL_USE_COUNT
-
 
 //! Mining interval and Pending transaction timeout
 #define BOAT_MINE_INTERVAL                       3  //!< Mining Interval of the blockchain, in seconds

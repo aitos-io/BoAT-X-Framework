@@ -19,6 +19,8 @@
 
 
 #include "boatiotsdk.h"
+
+#if PROTOCOL_USE_FISCOBCOS == 1
 #include "HelloWorld.h"
 
 BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
@@ -147,3 +149,10 @@ int main(int argc, char *argv[])
     
     return 0;
 }
+#else
+int main(int argc, char *argv[])
+{
+    BoatLog(BOAT_LOG_NORMAL, "undefine PROTOCOL_USE_FISCOBCOS");
+    return 0;
+}
+#endif /* end of PROTOCOL_USE_FISCOBCOS */

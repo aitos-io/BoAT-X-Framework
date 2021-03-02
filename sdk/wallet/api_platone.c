@@ -21,7 +21,7 @@ boatPlatonewallet.c defines the Platone wallet API for BoAT IoT SDK.
 */
 
 #include "boatinternal.h"
-
+#if PROTOCOL_USE_PLATONE == 1
 #include "web3intf.h"
 #include "boatprotocols.h"
 #include "rpcintf.h"
@@ -94,3 +94,4 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str)
 
     return BOAT_SUCCESS;
 }
+#endif /* end of PROTOCOL_USE_PLATONE */

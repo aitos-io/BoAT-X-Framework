@@ -25,6 +25,7 @@ boathlfabric.h is header file for RAW transaction construction and performing.
 
 #include "boatinternal.h"
 
+#if PROTOCOL_USE_HLFABRIC == 1
 
 /*! @defgroup fabricp protocol-fabric 
  * @{
@@ -52,4 +53,5 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr);
 }
 #endif /* end of __cplusplus */
 
+#endif /* end of PROTOCOL_USE_HLFABRIC */
 #endif

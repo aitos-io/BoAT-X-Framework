@@ -21,6 +21,9 @@
 
 /* self header include */
 #include "boatoptions.h"
+
+#if PROTOCOL_USE_HLFABRIC == 1
+
 #include "http2intf.h"
 /* protos header include */
 #include "common/common.pb-c.h"
@@ -368,3 +371,4 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 
 	return result;
 }
+#endif /* end of PROTOCOL_USE_HLFABRIC */

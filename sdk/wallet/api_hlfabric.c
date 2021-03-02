@@ -22,6 +22,7 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
 
 /* self-header include */
 #include "boatinternal.h"
+#if PROTOCOL_USE_HLFABRIC == 1
 #include "boatprotocols.h"
 #include "http2intf.h"
 /* protos include */
@@ -948,3 +949,4 @@ BOAT_RESULT BoatHlfabricTxSubmit( BoatHlfabricTx *tx_ptr )
 
 	return result;
 }
+#endif /* end of PROTOCOL_USE_HLFABRIC */

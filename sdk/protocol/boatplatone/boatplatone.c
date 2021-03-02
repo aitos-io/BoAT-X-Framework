@@ -22,6 +22,7 @@ perform it and wait for its receipt.
 */
 
 #include "boatinternal.h"
+#if PROTOCOL_USE_PLATONE == 1
 #include "web3intf.h"
 #include "boatethereum.h"
 #include "boatplatone.h"
@@ -539,3 +540,4 @@ BOAT_RESULT PlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr)
 
     return result;
 }
+#endif /* end of PROTOCOL_USE_PLATONE */
