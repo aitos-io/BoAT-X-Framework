@@ -94,11 +94,17 @@ else
 endif
 
 
-# Hardware-specific Flags
-BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/crypto/mbedTLS/include \
-                -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/keccak \
-                -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/storage
-
+# Hardware-specific Flags 
+ifeq ($(HW_TARGET), default)
+    BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/crypto/mbedTLS/include \
+                    -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/keccak \
+                    -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/storage 
+else ifeq ($(HW_TARGET), default_tbd)
+    BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/storage \
+                    -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/crypto
+else
+    BOAT_INCLUDE += 
+endif
 
 # Combine FLAGS
 BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \

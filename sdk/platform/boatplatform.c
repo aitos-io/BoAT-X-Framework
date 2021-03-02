@@ -25,21 +25,7 @@
 #include "boattypes.h"
 #include "boatutility.h"
 
-#include "keccak.h"
-
-/* mbedTLS header include */
-#include "mbedtls/entropy.h"
-#include "mbedtls/ctr_drbg.h"
-#include "mbedtls/ecdsa.h"
-#include "mbedtls/pk.h"
-#include "mbedtls/sha256.h"
-#include "mbedtls/asn1.h"
-
-#include "mbedtls/net_sockets.h"
-#include "mbedtls/ssl.h"
-#include "mbedtls/bignum.h"
-#include "mbedtls/asn1write.h"
-#include "mbedtls/error.h"
+#include "sha3.h"
 
 /* net releated include */
 #include <sys/types.h>
@@ -48,9 +34,6 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <string.h>
-
-//#include <sys/time.h>
-
 
 BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 inputLen, 
 				       BUINT8* hashed, BUINT8* hashedLen, void* rsvd )
@@ -74,7 +57,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
 	}
 	else if( type == BOAT_HASH_SHA256 )
 	{
-		mbedtls_sha256( input, inputLen, hashed, 0 );
+		sha3_256( input, inputLen, hashed );
 		if( hashedLen != NULL )
 		{
 			*hashedLen = 32;

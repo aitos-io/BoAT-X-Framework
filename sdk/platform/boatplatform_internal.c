@@ -23,21 +23,7 @@
 #include "boatplatform_internal.h"
 #include "boattypes.h"
 
-#include "keccak.h"
-
-/* mbedTLS header include */
-#include "mbedtls/entropy.h"
-#include "mbedtls/ctr_drbg.h"
-#include "mbedtls/ecdsa.h"
-#include "mbedtls/pk.h"
-#include "mbedtls/sha256.h"
-#include "mbedtls/asn1.h"
-
-#include "mbedtls/net_sockets.h"
-#include "mbedtls/ssl.h"
-#include "mbedtls/bignum.h"
-#include "mbedtls/asn1write.h"
-#include "mbedtls/error.h"
+#include "sha3.h"
 
 /* net releated include */
 #include <sys/types.h>
@@ -55,256 +41,218 @@
 #endif
 
 
-static int ecdsa_signature_to_asn1( const mbedtls_mpi *r, const mbedtls_mpi *s,
-								    unsigned char *sig, size_t *slen )
-{
-    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
-    unsigned char buf[MBEDTLS_ECDSA_MAX_LEN];
-    unsigned char *p = buf + sizeof( buf );
-    size_t len = 0;
 
-    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_mpi( &p, buf, s ) );
-    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_mpi( &p, buf, r ) );
-    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_len( &p, buf, len ) );
-    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_tag( &p, buf,
-						  MBEDTLS_ASN1_CONSTRUCTED | MBEDTLS_ASN1_SEQUENCE ) );
+// /******************************************************************************
+//  * @brief ECDSA with prefix
+//  *
+//  * ECDSA with prefix. s of signature is guaranteed to be less than N/2. This function
+//  * both generates ASN.1 format signatures and native signatures consisting of R and S.
+//  * 
+//  * @param[in] ctx 
+//  *   ecdsa context
+//  *
+//  * @param[in] digest
+//  *   a digest message. 
+//  *
+//  * @param[in] digestLen 
+//  *   the length of digiest message.
+//  *
+//  * @param[out] signature 
+//  *   ASN.1 format signature.The signature size maximum 139 bytes, caller needs to 
+//  *   make sure that there is enough space to store it.
+//  *
+//  * @param[out] signatureLen 
+//  *   ASN.1 format signature length.
+//  * @param[out] raw_r
+//  *   The r field of the native signature, the space of this filed is fixed 32 bytes.
+//  *   Caller needs to make sure that there is enough space to store it.
+//  *
+//  * @param[out] raw_s 
+//  *   The s field of the native signature, the space of this filed is fixed 32 bytes.
+//  *   Caller needs to make sure that there is enough space to store it.
+//  *
+//  * @param[in] f_rng
+//  *   the function of random number generation. This function is used to generate a 
+//  *   random number to generate r filed of signature.
+//  *
+//  * @param[in] p_rng 
+//  *   the parameter f_rng.
+//  *
+//  * @param[in] f_rng_blind 
+//  *   the function of random number generation. This function is used to generate a 
+//  *   random number to counter side-channel attacks.
+//  *
+//  * @param[in] p_rng_blind 
+//  *   the parameter f_rng_blind.
+//  *
+//  * @param[out] ecdsPrefix
+//  *   the generate signature Prefix.
+//  *
+//  * @return BOAT_RESULT 
+//   *   return BOAT_SUCCESS if generate success; otherwise return a negative error code
+//  ******************************************************************************/
+// static BOAT_RESULT Boat_private_ecdsa_sign( mbedtls_ecdsa_context *ctx, 
+// 									const BUINT8 *digest, size_t digestLen,
+// 									BUINT8* signature, size_t* signatureLen, BUINT8* raw_r, BUINT8* raw_s,
+// 									int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+// 									int (*f_rng_blind)(void *, unsigned char *, size_t),
+// 									void *p_rng_blind, unsigned char *ecdsPrefix )
+// {
+//     int ret, key_tries, sign_tries;
+//     mbedtls_ecp_point R;
+// 	mbedtls_mpi r, s;
+//     mbedtls_mpi k, e, t; //k: temporary random number of signature
+// 	                     //e: convert from hash message
+// 	                     //t: temporary random number to counter side-channel attacks
+// 	int boat_ecdsPrefix;
 
-    memcpy( sig, p, len );
-    *slen = len;
+//     /* Fail cleanly on curves such as Curve25519 that can't be used for ECDSA */
+//     if( ctx == NULL || !mbedtls_ecdsa_can_do( ctx->grp.id ) || ctx->grp.N.p == NULL )
+//         return( MBEDTLS_ERR_ECP_BAD_INPUT_DATA );
 
-    return( 0 );
-}
+//     /* Make sure d is in range 1..n-1 */
+//     if( mbedtls_mpi_cmp_int( &ctx->d, 1 ) < 0 || mbedtls_mpi_cmp_mpi( &ctx->d, &ctx->grp.N ) >= 0 )
+//         return( MBEDTLS_ERR_ECP_INVALID_KEY );
 
-static int derive_mpi( const mbedtls_ecp_group *grp, mbedtls_mpi *x,
-                       const unsigned char *buf, size_t blen )
-{
-    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
-    size_t n_size = ( grp->nbits + 7 ) / 8;
-    size_t use_size = blen > n_size ? n_size : blen;
+//     mbedtls_ecp_point_init( &R );
+//     mbedtls_mpi_init( &k ); 
+// 	mbedtls_mpi_init( &e ); 
+// 	mbedtls_mpi_init( &t );
+// 	mbedtls_mpi_init( &r ); 
+// 	mbedtls_mpi_init( &s );
 
-    MBEDTLS_MPI_CHK( mbedtls_mpi_read_binary( x, buf, use_size ) );
-    if( use_size * 8 > grp->nbits )
-        MBEDTLS_MPI_CHK( mbedtls_mpi_shift_r( x, use_size * 8 - grp->nbits ) );
+//     sign_tries = 0;
+//     do
+//     {
+//         if( (sign_tries)++ > 10 )
+//         {
+//             ret = MBEDTLS_ERR_ECP_RANDOM_FAILED;
+//             goto cleanup;
+//         }
 
-    /* While at it, reduce modulo N */
-    if( mbedtls_mpi_cmp_mpi( x, &grp->N ) >= 0 )
-        MBEDTLS_MPI_CHK( mbedtls_mpi_sub_mpi( x, x, &grp->N ) );
+//         /*
+//          * Steps 1-3: generate a suitable ephemeral keypair
+//          * and set r = xR mod n
+//          */
+//         key_tries = 0;
+//         do
+//         {
+//             if( (key_tries)++ > 10 )
+//             {
+//                 ret = MBEDTLS_ERR_ECP_RANDOM_FAILED;
+//                 goto cleanup;
+//             }
 
-cleanup:
-    return( ret );
-}
+//             MBEDTLS_MPI_CHK( mbedtls_ecp_gen_privkey( &ctx->grp, &k, f_rng, p_rng ) );
 
-/******************************************************************************
- * @brief ECDSA with prefix
- *
- * ECDSA with prefix. s of signature is guaranteed to be less than N/2. This function
- * both generates ASN.1 format signatures and native signatures consisting of R and S.
- * 
- * @param[in] ctx 
- *   ecdsa context
- *
- * @param[in] digest
- *   a digest message. 
- *
- * @param[in] digestLen 
- *   the length of digiest message.
- *
- * @param[out] signature 
- *   ASN.1 format signature.The signature size maximum 139 bytes, caller needs to 
- *   make sure that there is enough space to store it.
- *
- * @param[out] signatureLen 
- *   ASN.1 format signature length.
- * @param[out] raw_r
- *   The r field of the native signature, the space of this filed is fixed 32 bytes.
- *   Caller needs to make sure that there is enough space to store it.
- *
- * @param[out] raw_s 
- *   The s field of the native signature, the space of this filed is fixed 32 bytes.
- *   Caller needs to make sure that there is enough space to store it.
- *
- * @param[in] f_rng
- *   the function of random number generation. This function is used to generate a 
- *   random number to generate r filed of signature.
- *
- * @param[in] p_rng 
- *   the parameter f_rng.
- *
- * @param[in] f_rng_blind 
- *   the function of random number generation. This function is used to generate a 
- *   random number to counter side-channel attacks.
- *
- * @param[in] p_rng_blind 
- *   the parameter f_rng_blind.
- *
- * @param[out] ecdsPrefix
- *   the generate signature Prefix.
- *
- * @return BOAT_RESULT 
-  *   return BOAT_SUCCESS if generate success; otherwise return a negative error code
- ******************************************************************************/
-static BOAT_RESULT Boat_private_ecdsa_sign( mbedtls_ecdsa_context *ctx, 
-									const BUINT8 *digest, size_t digestLen,
-									BUINT8* signature, size_t* signatureLen, BUINT8* raw_r, BUINT8* raw_s,
-									int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
-									int (*f_rng_blind)(void *, unsigned char *, size_t),
-									void *p_rng_blind, unsigned char *ecdsPrefix )
-{
-    int ret, key_tries, sign_tries;
-    mbedtls_ecp_point R;
-	mbedtls_mpi r, s;
-    mbedtls_mpi k, e, t; //k: temporary random number of signature
-	                     //e: convert from hash message
-	                     //t: temporary random number to counter side-channel attacks
-	int boat_ecdsPrefix;
-
-    /* Fail cleanly on curves such as Curve25519 that can't be used for ECDSA */
-    if( ctx == NULL || !mbedtls_ecdsa_can_do( ctx->grp.id ) || ctx->grp.N.p == NULL )
-        return( MBEDTLS_ERR_ECP_BAD_INPUT_DATA );
-
-    /* Make sure d is in range 1..n-1 */
-    if( mbedtls_mpi_cmp_int( &ctx->d, 1 ) < 0 || mbedtls_mpi_cmp_mpi( &ctx->d, &ctx->grp.N ) >= 0 )
-        return( MBEDTLS_ERR_ECP_INVALID_KEY );
-
-    mbedtls_ecp_point_init( &R );
-    mbedtls_mpi_init( &k ); 
-	mbedtls_mpi_init( &e ); 
-	mbedtls_mpi_init( &t );
-	mbedtls_mpi_init( &r ); 
-	mbedtls_mpi_init( &s );
-
-    sign_tries = 0;
-    do
-    {
-        if( (sign_tries)++ > 10 )
-        {
-            ret = MBEDTLS_ERR_ECP_RANDOM_FAILED;
-            goto cleanup;
-        }
-
-        /*
-         * Steps 1-3: generate a suitable ephemeral keypair
-         * and set r = xR mod n
-         */
-        key_tries = 0;
-        do
-        {
-            if( (key_tries)++ > 10 )
-            {
-                ret = MBEDTLS_ERR_ECP_RANDOM_FAILED;
-                goto cleanup;
-            }
-
-            MBEDTLS_MPI_CHK( mbedtls_ecp_gen_privkey( &ctx->grp, &k, f_rng, p_rng ) );
-
-            MBEDTLS_MPI_CHK( mbedtls_ecp_mul_restartable( &ctx->grp, &R, &k, &ctx->grp.G,
-							 f_rng_blind,
-							 p_rng_blind,
-							 NULL ) );
-            MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &r, &R.X, &ctx->grp.N ) );
+//             MBEDTLS_MPI_CHK( mbedtls_ecp_mul_restartable( &ctx->grp, &R, &k, &ctx->grp.G,
+// 							 f_rng_blind,
+// 							 p_rng_blind,
+// 							 NULL ) );
+//             MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &r, &R.X, &ctx->grp.N ) );
 			
-			//-----------------------------------------------------------
-			// -boat:boat_ecdsPrefix update 
-			boat_ecdsPrefix = *(R.Y.p) & 1;
-            if( 1 == mbedtls_mpi_cmp_mpi(&R.X, &ctx->grp.N) ){// R.X > N
-                boat_ecdsPrefix |= 2;
-            }
-			//-----------------------------------------------------------
-        }
-        while( mbedtls_mpi_cmp_int( &r, 0 ) == 0 );
+// 			//-----------------------------------------------------------
+// 			// -boat:boat_ecdsPrefix update 
+// 			boat_ecdsPrefix = *(R.Y.p) & 1;
+//             if( 1 == mbedtls_mpi_cmp_mpi(&R.X, &ctx->grp.N) ){// R.X > N
+//                 boat_ecdsPrefix |= 2;
+//             }
+// 			//-----------------------------------------------------------
+//         }
+//         while( mbedtls_mpi_cmp_int( &r, 0 ) == 0 );
 
-        /*
-         * Step 5: derive MPI from hashed message
-         */
-        MBEDTLS_MPI_CHK( derive_mpi( &ctx->grp, &e, digest, digestLen ) );
+//         /*
+//          * Step 5: derive MPI from hashed message
+//          */
+//         MBEDTLS_MPI_CHK( derive_mpi( &ctx->grp, &e, digest, digestLen ) );
 
-        /*
-         * Generate a random value to blind inv_mod in next step,
-         * avoiding a potential timing leak.
-         */
-        MBEDTLS_MPI_CHK( mbedtls_ecp_gen_privkey( &ctx->grp, &t, f_rng_blind,
-						 p_rng_blind ) );
+//         /*
+//          * Generate a random value to blind inv_mod in next step,
+//          * avoiding a potential timing leak.
+//          */
+//         MBEDTLS_MPI_CHK( mbedtls_ecp_gen_privkey( &ctx->grp, &t, f_rng_blind,
+// 						 p_rng_blind ) );
 
-        /*
-         * Step 6: compute s = (e + r * d) / k = t (e + rd) / (kt) mod n
-         */
-        MBEDTLS_MPI_CHK( mbedtls_mpi_mul_mpi( &s, &r, &ctx->d ) );
-        MBEDTLS_MPI_CHK( mbedtls_mpi_add_mpi( &e, &e, &s ) );
-        MBEDTLS_MPI_CHK( mbedtls_mpi_mul_mpi( &e, &e, &t ) );
-        MBEDTLS_MPI_CHK( mbedtls_mpi_mul_mpi( &k, &k, &t ) );
-        MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &k, &k, &ctx->grp.N ) );
-        MBEDTLS_MPI_CHK( mbedtls_mpi_inv_mod( &s, &k, &ctx->grp.N ) );
-        MBEDTLS_MPI_CHK( mbedtls_mpi_mul_mpi( &s, &s, &e ) );
-        MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &s, &s, &ctx->grp.N ) );
-    }
-    while( mbedtls_mpi_cmp_int( &s, 0 ) == 0 );
+//         /*
+//          * Step 6: compute s = (e + r * d) / k = t (e + rd) / (kt) mod n
+//          */
+//         MBEDTLS_MPI_CHK( mbedtls_mpi_mul_mpi( &s, &r, &ctx->d ) );
+//         MBEDTLS_MPI_CHK( mbedtls_mpi_add_mpi( &e, &e, &s ) );
+//         MBEDTLS_MPI_CHK( mbedtls_mpi_mul_mpi( &e, &e, &t ) );
+//         MBEDTLS_MPI_CHK( mbedtls_mpi_mul_mpi( &k, &k, &t ) );
+//         MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &k, &k, &ctx->grp.N ) );
+//         MBEDTLS_MPI_CHK( mbedtls_mpi_inv_mod( &s, &k, &ctx->grp.N ) );
+//         MBEDTLS_MPI_CHK( mbedtls_mpi_mul_mpi( &s, &s, &e ) );
+//         MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &s, &s, &ctx->grp.N ) );
+//     }
+//     while( mbedtls_mpi_cmp_int( &s, 0 ) == 0 );
 
-	//-----------------------------------------------------------
-	// -boat: boat_ecdsPrefix update
-	mbedtls_mpi x;
-    mbedtls_mpi_init( &x );
-    mbedtls_mpi_mul_int( &x, &s, 2 );
-	// compare 2S with N
-	if( 0 < mbedtls_mpi_cmp_mpi( &x, &ctx->grp.N ) ){
-		mbedtls_mpi_sub_mpi(&s, &ctx->grp.N, &s); // -s should less than N/2
-		boat_ecdsPrefix ^= 1;
-    }
-	mbedtls_mpi_free( &x );
-	*ecdsPrefix = boat_ecdsPrefix;
-	//-----------------------------------------------------------
+// 	//-----------------------------------------------------------
+// 	// -boat: boat_ecdsPrefix update
+// 	mbedtls_mpi x;
+//     mbedtls_mpi_init( &x );
+//     mbedtls_mpi_mul_int( &x, &s, 2 );
+// 	// compare 2S with N
+// 	if( 0 < mbedtls_mpi_cmp_mpi( &x, &ctx->grp.N ) ){
+// 		mbedtls_mpi_sub_mpi(&s, &ctx->grp.N, &s); // -s should less than N/2
+// 		boat_ecdsPrefix ^= 1;
+//     }
+// 	mbedtls_mpi_free( &x );
+// 	*ecdsPrefix = boat_ecdsPrefix;
+// 	//-----------------------------------------------------------
 	
-	/* convert asn1 signature to raw r & s */
-	mbedtls_mpi_write_binary( &r, raw_r, 32 );
-	mbedtls_mpi_write_binary( &s, raw_s, 32 );
-	/* convert r,s to asn.1 */
-	ecdsa_signature_to_asn1(&r, &s, signature, signatureLen);
+// 	/* convert asn1 signature to raw r & s */
+// 	mbedtls_mpi_write_binary( &r, raw_r, 32 );
+// 	mbedtls_mpi_write_binary( &s, raw_s, 32 );
+// 	/* convert r,s to asn.1 */
+// 	ecdsa_signature_to_asn1(&r, &s, signature, signatureLen);
 
-cleanup:
-    mbedtls_ecp_point_free( &R );
-    mbedtls_mpi_free( &k ); 
-	mbedtls_mpi_free( &e ); 
-	mbedtls_mpi_free( &t );
-	mbedtls_mpi_free( &r ); 
-	mbedtls_mpi_free( &s );
+// cleanup:
+//     mbedtls_ecp_point_free( &R );
+//     mbedtls_mpi_free( &k ); 
+// 	mbedtls_mpi_free( &e ); 
+// 	mbedtls_mpi_free( &t );
+// 	mbedtls_mpi_free( &r ); 
+// 	mbedtls_mpi_free( &s );
 
-    return( ret );
-}
+//     return( ret );
+// }
 
 
 BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
 {
-	mbedtls_ctr_drbg_context ctr_drbg;
-    mbedtls_entropy_context  entropy;
+	// mbedtls_ctr_drbg_context ctr_drbg;
+    // mbedtls_entropy_context  entropy;
 	
 	BOAT_RESULT result = BOAT_SUCCESS;
-    boat_try_declare;
+    // boat_try_declare;
 	
-	mbedtls_ctr_drbg_init( &ctr_drbg );
-    mbedtls_entropy_init( &entropy );
-	result = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0 );
-	if( result != 0 )
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec  mbedtls_ctr_drbg_seed.");
-        boat_throw(result, hlfabricGenNonce_exception);
-	}
+	// mbedtls_ctr_drbg_init( &ctr_drbg );
+    // mbedtls_entropy_init( &entropy );
+	// result = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0 );
+	// if( result != 0 )
+	// {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "Fail to exec  mbedtls_ctr_drbg_seed.");
+    //     boat_throw(result, hlfabricGenNonce_exception);
+	// }
 	
-	result = mbedtls_ctr_drbg_random( &ctr_drbg, output, outputLen );
-	if( result != 0 )
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec  mbedtls_ctr_drbg_random(nonce).");
-		boat_throw(result, hlfabricGenNonce_exception);
-	}
+	// result = mbedtls_ctr_drbg_random( &ctr_drbg, output, outputLen );
+	// if( result != 0 )
+	// {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "Fail to exec  mbedtls_ctr_drbg_random(nonce).");
+	// 	boat_throw(result, hlfabricGenNonce_exception);
+	// }
 
-	/* boat catch handle */
-	boat_catch(hlfabricGenNonce_exception)
-	{
-        BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-        result = boat_exception;
-    }
+	// /* boat catch handle */
+	// boat_catch(hlfabricGenNonce_exception)
+	// {
+    //     BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+    //     result = boat_exception;
+    // }
 	
-	/* free */
-	mbedtls_ctr_drbg_free( &ctr_drbg );
-    mbedtls_entropy_free( &entropy );
+	// /* free */
+	// mbedtls_ctr_drbg_free( &ctr_drbg );
+    // mbedtls_entropy_free( &entropy );
 	
 	return result;
 }
@@ -315,89 +263,89 @@ BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikey
 						   size_t* signatureLen, BUINT8* r, BUINT8* s, 
 						   BUINT8* signaturePrefix, void* rsvd )
 {	
-	mbedtls_entropy_context   entropy;
-    mbedtls_ctr_drbg_context  ctr_drbg;
-	mbedtls_pk_context        prikeyCtx;
-    mbedtls_ecdsa_context* ecPrikey = NULL;
-	BUINT8 raw_r[32]; 
-	BUINT8 raw_s[32];
-	BUINT8 ecdsPrefix = 0;
+	// mbedtls_entropy_context   entropy;
+    // mbedtls_ctr_drbg_context  ctr_drbg;
+	// mbedtls_pk_context        prikeyCtx;
+    // mbedtls_ecdsa_context* ecPrikey = NULL;
+	// BUINT8 raw_r[32]; 
+	// BUINT8 raw_s[32];
+	// BUINT8 ecdsPrefix = 0;
 	
 	BOAT_RESULT result;
-	boat_try_declare;
+	//boat_try_declare;
 	
 	(void)rsvd;
 	
-	/* param check */
-	if( (signature == NULL) || (signatureLen == NULL) )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'signature' or 'signatureLen' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
-	}
+	// /* param check */
+	// if( (signature == NULL) || (signatureLen == NULL) )
+	// {
+	// 	BoatLog( BOAT_LOG_CRITICAL, "param which 'signature' or 'signatureLen' can't be NULL." );
+	// 	return BOAT_ERROR_NULL_POINTER;
+	// }
 
-    mbedtls_entropy_init( &entropy );
-    mbedtls_ctr_drbg_init( &ctr_drbg );
-	mbedtls_pk_init( &prikeyCtx );
+    // mbedtls_entropy_init( &entropy );
+    // mbedtls_ctr_drbg_init( &ctr_drbg );
+	// mbedtls_pk_init( &prikeyCtx );
 	
-	result = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0 );
-	if(result != 0)
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ctr_drbg_seed." );
-        boat_throw( result, BoatSignature_exception );
-    }
+	// result = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0 );
+	// if(result != 0)
+	// {
+	// 	BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ctr_drbg_seed." );
+    //     boat_throw( result, BoatSignature_exception );
+    // }
 	
-	if( (strstr( (const char *)prikeyId, "-----BEGIN " ) != NULL) && \
-		(strstr( (const char *)prikeyId, "-----END " )   != NULL) && \
-		(strstr( (const char *)prikeyId, " PRIVATE KEY-----" ) != NULL) )
-	{
-		/* prikeyId is prikey content */
-		result = mbedtls_pk_parse_key( &prikeyCtx, prikeyId, strlen((const char*)prikeyId) + 1, NULL, 0 );
-	}else{
-		/* prikeyId is prikey path */
-		BoatLog( BOAT_LOG_NORMAL, "execute mbedtls_pk_parse_keyfile..." );
-		result = mbedtls_pk_parse_keyfile( &prikeyCtx, (const char*)prikeyId, NULL );
-	}
-    if(result != 0)
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_pk_parse." );
-        boat_throw( result, BoatSignature_exception );
-    }
-	ecPrikey = mbedtls_pk_ec( prikeyCtx );
+	// if( (strstr( (const char *)prikeyId, "-----BEGIN " ) != NULL) && \
+	// 	(strstr( (const char *)prikeyId, "-----END " )   != NULL) && \
+	// 	(strstr( (const char *)prikeyId, " PRIVATE KEY-----" ) != NULL) )
+	// {
+	// 	/* prikeyId is prikey content */
+	// 	result = mbedtls_pk_parse_key( &prikeyCtx, prikeyId, strlen((const char*)prikeyId) + 1, NULL, 0 );
+	// }else{
+	// 	/* prikeyId is prikey path */
+	// 	BoatLog( BOAT_LOG_NORMAL, "execute mbedtls_pk_parse_keyfile..." );
+	// 	result = mbedtls_pk_parse_keyfile( &prikeyCtx, (const char*)prikeyId, NULL );
+	// }
+    // if(result != 0)
+	// {
+	// 	BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_pk_parse." );
+    //     boat_throw( result, BoatSignature_exception );
+    // }
+	// ecPrikey = mbedtls_pk_ec( prikeyCtx );
 
-	/* signature process */
-	result = Boat_private_ecdsa_sign( ecPrikey, digest, digestLen, signature, signatureLen, raw_r, raw_s, 
-							  mbedtls_ctr_drbg_random, &ctr_drbg,
-							  mbedtls_ctr_drbg_random, &ctr_drbg, &ecdsPrefix );
-	if(result != 0)
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ecdsa_write_signature." );
-		boat_throw( result, BoatSignature_exception );
-	}
+	// /* signature process */
+	// result = Boat_private_ecdsa_sign( ecPrikey, digest, digestLen, signature, signatureLen, raw_r, raw_s, 
+	// 						  mbedtls_ctr_drbg_random, &ctr_drbg,
+	// 						  mbedtls_ctr_drbg_random, &ctr_drbg, &ecdsPrefix );
+	// if(result != 0)
+	// {
+	// 	BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ecdsa_write_signature." );
+	// 	boat_throw( result, BoatSignature_exception );
+	// }
 	
-	if( r != NULL )
-	{
-		memcpy(r, raw_r, 32);
-	}
-	if( s != NULL )
-	{
-		memcpy(s, raw_s, 32);
-	}
-	if( signaturePrefix != NULL )
-	{
-		*signaturePrefix = ecdsPrefix;
-	}
+	// if( r != NULL )
+	// {
+	// 	memcpy(r, raw_r, 32);
+	// }
+	// if( s != NULL )
+	// {
+	// 	memcpy(s, raw_s, 32);
+	// }
+	// if( signaturePrefix != NULL )
+	// {
+	// 	*signaturePrefix = ecdsPrefix;
+	// }
 
-	/* boat catch handle */
-	boat_catch( BoatSignature_exception )
-	{
-        BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
-        result = boat_exception;
-    }
+	// /* boat catch handle */
+	// boat_catch( BoatSignature_exception )
+	// {
+    //     BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
+    //     result = boat_exception;
+    // }
 	
-	/* free */
-	mbedtls_entropy_free( &entropy );
-    mbedtls_ctr_drbg_free( &ctr_drbg );
-	mbedtls_pk_free( &prikeyCtx );
+	// /* free */
+	// mbedtls_entropy_free( &entropy );
+    // mbedtls_ctr_drbg_free( &ctr_drbg );
+	// mbedtls_pk_free( &prikeyCtx );
 
 	return result;
 }
@@ -406,51 +354,51 @@ BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikey
 BOAT_RESULT BoatGenOnetimeSignPrikey( const BoatSignatureAlgType type, BUINT8 *outbuf, 
 								      BUINT32 maxLen, BUINT8 *pubX, BUINT8 *pubY, void* rsvd )
 {
-    mbedtls_entropy_context   entropy;
-    mbedtls_ctr_drbg_context  ctr_drbg;
-	mbedtls_pk_context        key;
+    // mbedtls_entropy_context   entropy;
+    // mbedtls_ctr_drbg_context  ctr_drbg;
+	// mbedtls_pk_context        key;
 	BOAT_RESULT               result = BOAT_SUCCESS;
 	
 	(void)rsvd;
 	
-	if( (outbuf == NULL) || (pubX == NULL) || (pubY == NULL) )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'outbuf' or 'pubX' or 'pubY' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
-	}
+	// if( (outbuf == NULL) || (pubX == NULL) || (pubY == NULL) )
+	// {
+	// 	BoatLog( BOAT_LOG_CRITICAL, "param which 'outbuf' or 'pubX' or 'pubY' can't be NULL." );
+	// 	return BOAT_ERROR_NULL_POINTER;
+	// }
 	
-    mbedtls_entropy_init( &entropy );
-    mbedtls_ctr_drbg_init( &ctr_drbg );
-	mbedtls_pk_init( &key );
+    // mbedtls_entropy_init( &entropy );
+    // mbedtls_ctr_drbg_init( &ctr_drbg );
+	// mbedtls_pk_init( &key );
 
-	result += mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
-    result += mbedtls_pk_setup( &key, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY) );
+	// result += mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
+    // result += mbedtls_pk_setup( &key, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY) );
 	
-	if( type == BOAT_SIGNATURE_SECP256K1 )
-	{
-		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec( key ),
-									   mbedtls_ctr_drbg_random, &ctr_drbg );
-	}
-	else if( type == BOAT_SIGNATURE_SECP256R1 )
-	{
-		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec( key ),
-									   mbedtls_ctr_drbg_random, &ctr_drbg );
-	}
-	else
-	{
-		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_NONE, mbedtls_pk_ec( key ),
-									   mbedtls_ctr_drbg_random, &ctr_drbg );
-	}
+	// if( type == BOAT_SIGNATURE_SECP256K1 )
+	// {
+	// 	result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec( key ),
+	// 								   mbedtls_ctr_drbg_random, &ctr_drbg );
+	// }
+	// else if( type == BOAT_SIGNATURE_SECP256R1 )
+	// {
+	// 	result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec( key ),
+	// 								   mbedtls_ctr_drbg_random, &ctr_drbg );
+	// }
+	// else
+	// {
+	// 	result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_NONE, mbedtls_pk_ec( key ),
+	// 								   mbedtls_ctr_drbg_random, &ctr_drbg );
+	// }
 	
-	mbedtls_mpi_write_binary(&mbedtls_pk_ec( key )->Q.X, pubX, 32);
-    mbedtls_mpi_write_binary(&mbedtls_pk_ec( key )->Q.Y, pubY, 32);
+	// mbedtls_mpi_write_binary(&mbedtls_pk_ec( key )->Q.X, pubX, 32);
+    // mbedtls_mpi_write_binary(&mbedtls_pk_ec( key )->Q.Y, pubY, 32);
 	
-    result += mbedtls_pk_write_key_pem( &key, outbuf, maxLen );
+    // result += mbedtls_pk_write_key_pem( &key, outbuf, maxLen );
 
 	
-    mbedtls_entropy_free( &entropy );
-    mbedtls_ctr_drbg_free( &ctr_drbg );
-	mbedtls_pk_free( &key );
+    // mbedtls_entropy_free( &entropy );
+    // mbedtls_ctr_drbg_free( &ctr_drbg );
+	// mbedtls_pk_free( &key );
 	
     return result;
 }
@@ -458,39 +406,39 @@ BOAT_RESULT BoatGenOnetimeSignPrikey( const BoatSignatureAlgType type, BUINT8 *o
 
 BOAT_RESULT BoatChkPrikeyExist( const BUINT8 *prikeyId, BUINT8 *pubX, BUINT8 *pubY, void* rsvd )
 {
-	mbedtls_pk_context prikeyCtx;
-	BOAT_RESULT        result = BOAT_SUCCESS;
-	boat_try_declare;
+	// mbedtls_pk_context prikeyCtx;
+	 BOAT_RESULT        result = BOAT_SUCCESS;
+	// boat_try_declare;
 
-	(void)rsvd;
+	// (void)rsvd;
 	
-	if( (prikeyId == NULL) || (pubX == NULL) || (pubY == NULL) )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'prikeyId' or 'pubX' or 'pubY' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
-	}
+	// if( (prikeyId == NULL) || (pubX == NULL) || (pubY == NULL) )
+	// {
+	// 	BoatLog( BOAT_LOG_CRITICAL, "param which 'prikeyId' or 'pubX' or 'pubY' can't be NULL." );
+	// 	return BOAT_ERROR_NULL_POINTER;
+	// }
 	
-	mbedtls_pk_init( &prikeyCtx );
-	result = mbedtls_pk_parse_keyfile( &prikeyCtx, (const char*)prikeyId, NULL );
-    if( result != 0 )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to parse keyfile: %s.", prikeyId );
-		boat_throw( result, BoatChkPrikeyExist_exception );
-    }
-	else
-	{
-		mbedtls_mpi_write_binary(&mbedtls_pk_ec( prikeyCtx )->Q.X, pubX, 32);
-		mbedtls_mpi_write_binary(&mbedtls_pk_ec( prikeyCtx )->Q.Y, pubY, 32);
-	}
+	// mbedtls_pk_init( &prikeyCtx );
+	// result = mbedtls_pk_parse_keyfile( &prikeyCtx, (const char*)prikeyId, NULL );
+    // if( result != 0 )
+	// {
+	// 	BoatLog( BOAT_LOG_CRITICAL, "Failed to parse keyfile: %s.", prikeyId );
+	// 	boat_throw( result, BoatChkPrikeyExist_exception );
+    // }
+	// else
+	// {
+	// 	mbedtls_mpi_write_binary(&mbedtls_pk_ec( prikeyCtx )->Q.X, pubX, 32);
+	// 	mbedtls_mpi_write_binary(&mbedtls_pk_ec( prikeyCtx )->Q.Y, pubY, 32);
+	// }
 	
-	/* boat catch handle */
-	boat_catch(BoatChkPrikeyExist_exception)
-	{
-        BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
-        result = boat_exception;
-    }
+	// /* boat catch handle */
+	// boat_catch(BoatChkPrikeyExist_exception)
+	// {
+    //     BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
+    //     result = boat_exception;
+    // }
 	
-	mbedtls_pk_free( &prikeyCtx );
+	// mbedtls_pk_free( &prikeyCtx );
 	
 	return result;
 }

@@ -9,9 +9,9 @@ CLEAN_SUBDIRS := $(addprefix _clean_,$(SUBDIRS) )
 
 # Source and Objects
 
-OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/hwdep/crypto/*.o) \
-          $(wildcard $(BOAT_BUILD_DIR)/hwdep/keccak/*.o) \
-		  $(wildcard $(BOAT_BUILD_DIR)/hwdep/storage/*.o)
+OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/hwdep/$(HW_TARGET)/crypto/*.o) \
+          $(wildcard $(BOAT_BUILD_DIR)/hwdep/$(HW_TARGET)/keccak/*.o) \
+		  $(wildcard $(BOAT_BUILD_DIR)/hwdep/$(HW_TARGET)/storage/*.o)
 
 LIBNAME = $(BOAT_LIB_DIR)/libboathwdep.a
 

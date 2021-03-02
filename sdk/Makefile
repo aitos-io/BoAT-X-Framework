@@ -42,7 +42,6 @@ boatwallet_objs: $(SUBDIRS)
 
 $(SUBDIRS):
 	make -C $@ all
-
 	
 $(CLEAN_SUBDIRS):
 	make -C $(patsubst _clean_%,%,$@) clean
