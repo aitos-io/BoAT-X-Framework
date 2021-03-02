@@ -35,5 +35,3 @@ $(CLEAN_SUBDIRS):
 
 clean: $(CLEAN_SUBDIRS)
 	-$(BOAT_RM) $(LIBNAME)
-
-
