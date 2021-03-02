@@ -101,6 +101,7 @@ boatoptions.h defines options for compiling.
 #define BOAT_KEYID_MAX_LEN                       300
 #define BOAT_FILENAME_MAX_LEN                    127
 
+#if PROTOCOL_USE_HLFABRIC == 1
 //! hyperledger fabric configuration items
 #define HLFABRIC_ARGS_MAX_NUM                    4   //!< arguments max number in fabric command
 #define HLFABRIC_ENDORSER_MAX_NUM                10  //!< support endorser max number
@@ -113,5 +114,6 @@ boatoptions.h defines options for compiling.
 #define HLFABRIC_ROOTCA_MAX_NUM                  5 //!< support ROOT CA certificate max number
 
 #define HTTP2_SEND_MAX_BUF                       4096
+#endif /* end of PROTOCOL_USE_HLFABRIC */
 
 #endif /* end of __BOATOPTIONS_H__ */
