@@ -37,12 +37,13 @@ typedef enum
     TRIMBIN_LEFTTRIM    //!< Trim leading or MSB zeros
 }TRIMBIN_TRIM_MODE;
 
+
 //!@brief Argument type for UtilityHex2Bin()
 typedef enum
 {
-    BIN2HEX_LEFTTRIM_QUANTITY = 0, //!< Trim {0x00, 0x01, 0x00 0xAB} => "0x100AB" or "100AB"
-	BIN2HEX_LEFTTRIM_ZEROBYTE,     //!< Trim {0x00, 0x01, 0x00 0xAB} => "0x0100AB" or "0100AB"
-	BIN2HEX_LEFTTRIM_UNFMTDATA     //!< Trim {0x00, 0x01, 0x00 0xAB} => "0x000100AB" or "000100AB"
+    BIN2HEX_LEFTTRIM_UNFMTDATA = 0,     //!< Trim {0x00, 0x01, 0x00 0xAB} => "0x000100AB" or "000100AB"
+    BIN2HEX_LEFTTRIM_QUANTITY, //!< Trim {0x00, 0x01, 0x00 0xAB} => "0x100AB" or "100AB"
+	BIN2HEX_LEFTTRIM_TWOHEXPERBYTE      //!< Trim {0x00, 0x01, 0x00 0xAB} => "0x0100AB" or "0100AB"
 }BIN2HEX_TRIM_MODE;
 
 //!@brief Argument type for UtilityBin2Hex()
@@ -283,7 +284,7 @@ BUINT32 UtilityTrimBin( BOAT_OUT BUINT8 *to_ptr,
  *   {0x00, 0x01, 0x00, 0xAB} will be converted to string:   
  *   "000100ab": if <trim_mode> = BIN2HEX_LEFTTRIM_UNFMTDATA
  *   "100ab"   : if <trim_mode> = BIN2HEX_LEFTTRIM_QUANTITY
- *   "0100ab"  : if <trim_mode> = BIN2HEX_LEFTTRIM_ZEROBYTE
+ *   "0100ab"  : if <trim_mode> = BIN2HEX_LEFTTRIM_TWOHEXPERBYTE
  *
  * @note
  *   This function doesn't treat the binary stream as an integer and thus
@@ -308,7 +309,7 @@ BUINT32 UtilityTrimBin( BOAT_OUT BUINT8 *to_ptr,
  * @param[in] trim_mode
  *   BIN2HEX_LEFTTRIM_UNFMTDATA to trim as unformatted data;\n
  *   BIN2HEX_LEFTTRIM_QUANTITY to trim as a quantity;\n
- *   BIN2HEX_LEFTTRIM_ZEROBYTE to trim byte with a value of 0.
+ *   BIN2HEX_LEFTTRIM_TWOHEXPERBYTE to trim byte with a value of 0.
  *
  * @param[in] prefix_0x_mode
  *   BIN2HEX_PREFIX_0x_YES: Prepend a "0x" prefix at the beginning of the HEX string;\n
