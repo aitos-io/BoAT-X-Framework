@@ -593,7 +593,7 @@ class CFunctionGen():
             # for stateful transaction
             func_body_str += '    boat_try(BoatFiscobcosTxSetData(tx_ptr, &data_field));\n\n'
             func_body_str += '    boat_try(BoatFiscobcosTxSend(tx_ptr));\n\n'
-            func_body_str += '    UtilityBin2Hex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
+            func_body_str += '    UtilityBin2Hex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
          
         
         # Cleanup Label
