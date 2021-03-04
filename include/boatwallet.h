@@ -29,6 +29,34 @@ boatwallet.h is the SDK header file.
  * @{
  */
 
+//!@brief XXX
+typedef enum
+{
+    BOAT_WALLET_PRIKEY_UNKNOWN = 0,     //!< Placeholder for unknown protocol
+    //! @todo should I distinguish DER and PEM of PKCS ?
+    BOAT_WALLET_PRIKEY_PKCS_SECP256K1,  //!< xx
+    BOAT_WALLET_PRIKEY_PKCS_SECP256R1,  //!< xx
+    BOAT_WALLET_PRIKEY_PRIMORDIAL,      //!< xx
+    BOAT_WALLET_PRIKEY_MNEMONIC,        //!< xx
+    BOAT_WALLET_PRIKEY_GENERATION,      //!< xx
+}BoatWalletPriKeyType;
+
+//!@brief XXX
+typedef struct TBoatWalletPriKeyId_config
+{
+    BoatWalletPriKeyType prikey_type;
+    BoatFieldVariable    prikey_content; //!< xxx
+}BoatWalletPriKeyId_config;
+
+//!@brief XXX
+typedef struct TBoatWalletPriKeyId
+{
+    BUINT32            prikey_index;   //!< xxx
+    BoatFieldVariable  pubkey_content; //!< xxx
+    void *             extra_data;     //!< xxx
+}BoatWalletPriKeyId;
+
+//!@brief XXX
 typedef struct TBoatWalletList
 {
     BBOOL is_used;

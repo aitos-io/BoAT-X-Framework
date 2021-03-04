@@ -24,6 +24,7 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 #define __API_ETHEREUM_H__
 
 #include "boatiotsdk.h"
+#include "boatwallet.h"
 
 /*! @defgroup eth-api boat ethereum-API
  * ethereum public API
@@ -40,6 +41,7 @@ typedef struct TBoatEthAccountInfo
 {
 	BUINT8  prikeyId[BOAT_KEYID_MAX_LEN];//!< prikey unique identification for persistent wallet; or
 										 //!< prikey content for one time wallet
+    BoatWalletPriKeyId prikeyId1;                                         
 	BUINT8  pub_key_array[64];  //!< Public key of the account
     BUINT8  address[BOAT_ETH_ADDRESS_SIZE];//!< Account address calculated from public key
 }BoatEthAccountInfo;
