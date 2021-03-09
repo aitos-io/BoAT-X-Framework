@@ -17,4 +17,3 @@ All contributors and their contribution are required to agree with and follow [A
 Before submitting your code, make sure to follow the [Contributor license agreement](#contributor-license-agreement) beforehand. DO NOT submit your code unless you fully accept the aggreement. Your submission implies you have accepted the agreement.
 
 What you submit should link to an issue in the [BoAT-X Issues](https://github.com/aitos-io/BoAT-X-Framework/issues). Create one if there is no issue about what you're going to submit. Please also create a Pull Request for the issue and submission.
-
