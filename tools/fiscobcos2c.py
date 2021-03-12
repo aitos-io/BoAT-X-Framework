@@ -435,7 +435,7 @@ class CFunctionGen():
         inputName_str = ''
 
         # Generate local variables
-        if abi_item['constant'] == True:
+        if abi_item['stateMutability'] == "pure" or abi_item['stateMutability'] == "view":
             func_body_str += '    BCHAR *call_result_str = NULL;\n'
         else:
             func_body_str += '    static BCHAR tx_hash_str[67] = \"\";\n'
@@ -478,9 +478,8 @@ class CFunctionGen():
         func_body_str     += '    }\n\n'
 
         # Set Nonce
-        if abi_item['constant'] != True:
+        if abi_item['stateMutability'] == "pure" or abi_item['stateMutability'] == "view":    
             func_body_str += '    boat_try(BoatFiscobcosTxSetNonce(tx_ptr, BOAT_FISCOBCOS_NONCE_AUTO));\n\n'
-
 
         # Construct solidity function prototype
 
@@ -586,7 +585,7 @@ class CFunctionGen():
                     func_body_str  += '    data_offset_ptr += nonFixed_filled_length;\n\n'
             i = i+1
 
-        if abi_item['constant'] == True:
+        if abi_item['stateMutability'] == "pure" or abi_item['stateMutability'] == "view":
             # for state-less funciton call
             func_body_str += '    call_result_str = BoatFiscobcosCallContractFunc(tx_ptr, function_prototye_str, data_field.field_ptr+4, data_field.field_len-4);\n\n'
         else:
@@ -608,7 +607,7 @@ class CFunctionGen():
 
         func_body_str += '\n    BoatFree(data_field.field_ptr);\n'
 
-        if abi_item['constant'] == True:
+        if abi_item['stateMutability'] == "pure" or abi_item['stateMutability'] == "view":
             func_body_str += '    return(call_result_str);\n'
         else:
             func_body_str += '    return(tx_hash_str);\n'
