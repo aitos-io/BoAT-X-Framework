@@ -101,17 +101,17 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
         return BOAT_ERROR;
     }
 
-	/* Hyperledger Fabric does not support one-time wallet */
-	if( ( protocol_type == BOAT_PROTOCOL_HLFABRIC ) && ( wallet_name_str == NULL ) ){
-		BoatLog(BOAT_LOG_NORMAL, "Hyperledger Fabric does not support one-time wallet.");
-        return BOAT_ERROR;
-	}
+	///* Hyperledger Fabric does not support one-time wallet */
+	//if( ( protocol_type == BOAT_PROTOCOL_HLFABRIC ) && ( wallet_name_str == NULL ) ){
+	//	BoatLog(BOAT_LOG_NORMAL, "Hyperledger Fabric does not support one-time wallet.");
+    //    return BOAT_ERROR;
+	//}
 	
-	/* Fiscobcos Follow the access mechanism, does not support one-time wallet */
-	if( ( protocol_type == BOAT_PROTOCOL_FISCOBCOS ) && ( wallet_name_str == NULL ) ){
-		BoatLog(BOAT_LOG_NORMAL, "Fiscobcos does not support one-time wallet.");
-        return BOAT_ERROR;
-	}
+	///* Fiscobcos Follow the access mechanism, does not support one-time wallet */
+	//if( ( protocol_type == BOAT_PROTOCOL_FISCOBCOS ) && ( wallet_name_str == NULL ) ){
+	//	BoatLog(BOAT_LOG_NORMAL, "Fiscobcos does not support one-time wallet.");
+    //    return BOAT_ERROR;
+	//}
 	
     /* For Multi-Thread Support: ObtainMutex Here */
     for( i = 0; i < BOAT_MAX_WALLET_NUM; i++ )

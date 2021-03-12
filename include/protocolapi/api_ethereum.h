@@ -39,10 +39,10 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 //! from the public key and the public key is calculated from the private key.
 typedef struct TBoatEthAccountInfo
 {
-	BUINT8  prikeyId[BOAT_KEYID_MAX_LEN];//!< prikey unique identification for persistent wallet; or
+	//BUINT8  prikeyId[BOAT_KEYID_MAX_LEN];//!< prikey unique identification for persistent wallet; or
 										 //!< prikey content for one time wallet
-    BoatWalletPriKeyId prikeyId1;                                         
-	BUINT8  pub_key_array[64];  //!< Public key of the account
+    BoatWalletPriKeyId prikeyId;                                         
+	//BUINT8  pub_key_array[64];  //!< Public key of the account
     BUINT8  address[BOAT_ETH_ADDRESS_SIZE];//!< Account address calculated from public key
 }BoatEthAccountInfo;
 
@@ -75,6 +75,7 @@ typedef struct TBoatEthNetworkInfo
 
 //! Wallet information consists of account and block chain network information.
 //! Currently only one account per wallet is supported.
+//! NOTE: Members  of account_info and network_info will be stored, DO NOT put pointer member in it
 typedef struct TBoatEthWallet
 {
     BoatEthAccountInfo account_info; //!< Account information
@@ -90,7 +91,8 @@ typedef struct TBoatEthWallet
 //! Ethereum wallet configuration is used in wallet creation.
 typedef struct TBoatEthWalletConfig
 {
-    BUINT8   prikeyId[BOAT_KEYID_MAX_LEN]; //!< prikey unique identification for persistent wallet; or
+	BoatWalletPriKeyId_config  prikeyId_config;
+    //BUINT8   prikeyId[BOAT_KEYID_MAX_LEN]; //!< prikey unique identification for persistent wallet; or
 										   //!< prikey content for one time wallet
     BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
     BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatEthNetworkInfo

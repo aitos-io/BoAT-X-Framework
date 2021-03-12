@@ -581,3 +581,9 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 	}
 #endif
 }
+
+
+BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyId_config config, BoatWalletPriKeyId* id )
+{
+	
+}
