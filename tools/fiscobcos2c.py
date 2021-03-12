@@ -104,6 +104,9 @@ type_mapping = {
     # Variable-length types not supported yet
     'string'    :'BCHAR*',
     'bytes'     :'BUINT8*',
+    
+    'bytes[]'   :'BoatFieldVariable*',
+    'address[]' :'BoatAddress*',
 
     #Fixed-length types
     'address'   :'BoatAddress',
@@ -254,6 +257,8 @@ class CFunctionGen():
         if abitype == 'string':
             return True
         elif abitype == 'bytes':
+            return True
+        elif abitype.find('[]') != -1:
             return True
         else:
             return False
