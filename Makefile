@@ -59,7 +59,8 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
 				  -I$(BOAT_SDK_DIR)/third-party/cJSON \
                   -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
                   -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include \
-                  -I$(BOAT_BASE_DIR)/include \
+                  -I$(BOAT_BASE_DIR)/vendor/platform/Linux-x86-64/port_mbedtls \
+				  -I$(BOAT_BASE_DIR)/vendor/common/storage \
                   -I$(BOAT_BASE_DIR)/contract/generated \
                   -I$(BOAT_BASE_DIR)/demo \
 				  -I$(BOAT_BASE_DIR)/tests \
@@ -94,11 +95,17 @@ else
 endif
 
 
-# Hardware-specific Flags
-BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/crypto/mbedTLS/include \
-                -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/keccak \
-                -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/storage
-
+# Hardware-specific Flags 
+ifeq ($(HW_TARGET), default)
+    BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/crypto/mbedTLS/include \
+                    -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/keccak \
+                    -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/storage 
+else ifeq ($(HW_TARGET), default_tbd)
+    BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/storage \
+                    -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/crypto
+else
+    BOAT_INCLUDE += 
+endif
 
 # Combine FLAGS
 BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \

@@ -139,7 +139,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	BoatLog_hexdump(BOAT_LOG_NORMAL, "blocklimitTmp1:", blocklimitTmp.field, 32);
 	
 	//convert bigendian uint256 to bignumber
-	bignum256 convertTmp;
+	utility_bignum256 convertTmp;
 	BUINT32   blockLimitOffset = 500; //value should rangle of 1 ~ 1000
 	Utility_readBigendToBignum( &blocklimitTmp.field[0], &convertTmp );
 	
