@@ -129,13 +129,16 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 			BoatPort_keyCreate( wallet_config_ptr, &priKeyIdTmp );
 			
 			/* step-2:  assign value of prikeyIdTmp to wallet_config_ptr */
-			memcpy( (BoatWalletPriKeyId_config*)wallet_config_ptr->private_KeyId, &priKeyIdTmp, sizeof(priKeyIdTmp) );
+			memcpy( &( ((BoatWalletPriKeyId_config*)wallet_config_ptr)->private_KeyId), &priKeyIdTmp, sizeof(priKeyIdTmp) );
 			
 			/* step-3:  clear  sensitive information in wallet_config_ptr */
-			(BoatWalletPriKeyId_config*)wallet_config_ptr->prikey_type         = BOAT_WALLET_PRIKEY_UNKNOWN;
-			memset( (BoatWalletPriKeyId_config*)wallet_config_ptr->prikey_content, 0, 
-					sizeof((BoatWalletPriKeyId_config*)wallet_config_ptr->prikey_content) );
-			(BoatWalletPriKeyId_config*)wallet_config_ptr->prikey_content_size = 0;
+			((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_type         = BOAT_WALLET_PRIKEY_UNKNOWN;
+			memset( ((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content, 0, 
+					sizeof(((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content) );
+			((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content_size = 0;
+			BoatLog( BOAT_LOG_NORMAL, "=====================prikey_content length: %d.", 
+					 sizeof(((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content) );
+			
 			
             /* Create persistent wallet / Overwrite existed configuration */
             if( BOAT_SUCCESS != BoatPersistStore(wallet_name_str, wallet_config_ptr, wallet_config_size) )

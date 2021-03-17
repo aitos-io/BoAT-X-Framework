@@ -110,7 +110,7 @@ BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32
 //	}
 	
 	//Configure priKey information
-	memcpy(wallet_ptr->account_info.prikeyId, config_ptr->prikeyId_config.private_KeyId, sizeof(BoatWalletPriKeyId));
+	memcpy(&wallet_ptr->account_info.prikeyId, &config_ptr->prikeyId_config.private_KeyId, sizeof(BoatWalletPriKeyId));
 	
 	// Configure account address	
 	BoatHash(BOAT_HASH_KECCAK256, wallet_ptr->account_info.prikeyId.pubkey_content, 
