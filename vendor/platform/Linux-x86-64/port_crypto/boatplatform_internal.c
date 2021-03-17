@@ -81,7 +81,7 @@ BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikey
 	BUINT8 sig[64];
 	// BUINT8 ecdsPrefix = 0;
 	
-	BOAT_RESULT result;
+	BOAT_RESULT result = BOAT_ERROR;
 	//boat_try_declare;
 	
 	(void)rsvd;
@@ -338,68 +338,72 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd )
 
 BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 {
-	int                 connectfd;
-	char                ip[64];
-	char                port[8];
-	char                *ptr = NULL;
-	struct hostent      *he; 
+    int                 connectfd;
+    char                ip[64];
+    char                port[8];
+    char                *ptr = NULL;
+    struct hostent      *he; 
     struct sockaddr_in  server;
     struct sockaddr     localaddr;
     struct sockaddr_in  *localaddr_ptr;
     socklen_t           addrlen = sizeof(struct sockaddr);
 
-	(void)rsvd;
-	
-	ptr = strchr(address, ':');
-	if( NULL == ptr )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "invalid address:%s.", address );
-        return -1;
-	}
+    (void)rsvd;
 
-	memset(ip  , 0      , sizeof(ip));
-	memset(port, 0      , sizeof(port));
-	memcpy(ip  , address, (int)(ptr - address));
-	memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
-	
-    if( (he = gethostbyname(ip)) == NULL )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "gethostbyname() error" );
+    ptr = strchr(address, ':');
+    if( NULL == ptr )
+    {
+        BoatLog( BOAT_LOG_CRITICAL, "invalid address:%s.", address );
         return -1;
-	}
-
-	if( (connectfd = socket(AF_INET, SOCK_STREAM, 0)) == -1 )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "socket() error" );
-        return -1;
-	}
-
-	struct timeval timeout = {0, 500*1000};
-	setsockopt(connectfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(struct timeval));
-	setsockopt(connectfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(struct timeval));
-
-	memset(&server, 0, sizeof(server));
-	server.sin_family = AF_INET;
-	server.sin_port = htons(atoi(port));
-	server.sin_addr = *((struct in_addr *)(he->h_addr_list[0])); 
-
-	if(connect(connectfd, (struct sockaddr *)&server,sizeof(struct sockaddr)) == -1)
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "connect() error" );
-        return -1;
-	}
-    if(0 != getsockname(connectfd, &localaddr, &addrlen) )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "getsockname() error" );
-        return -1;
-    }else{
-        localaddr_ptr = (struct sockaddr_in*)&localaddr;
-        BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.", 
-				inet_ntoa(localaddr_ptr->sin_addr), htons(localaddr_ptr->sin_port));
     }
 
-	BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
-	
+    memset(ip  , 0      , sizeof(ip));
+    memset(port, 0      , sizeof(port));
+    memcpy(ip  , address, (int)(ptr - address));
+    memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
+
+    if( (he = gethostbyname(ip)) == NULL )
+    {
+        BoatLog( BOAT_LOG_CRITICAL, "gethostbyname() error" );
+        return -1;
+    }
+
+    if( (connectfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
+    {
+        BoatLog( BOAT_LOG_CRITICAL, "socket() error" );
+        return -1;
+    }
+
+    struct timeval timeout = {0, 500*1000};
+    setsockopt(connectfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(struct timeval));
+    setsockopt(connectfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(struct timeval));
+
+    memset(&server, 0, sizeof(server));
+    server.sin_family = AF_INET;
+    server.sin_port = htons(atoi(port));
+    server.sin_addr = *((struct in_addr *)(he->h_addr_list[0])); 
+
+    if(connect(connectfd, (struct sockaddr *)&server,sizeof(struct sockaddr)) < 0)
+    {
+        BoatLog( BOAT_LOG_CRITICAL, "connect() error" );
+        close(connectfd);
+        return -1;
+    }
+    if(getsockname(connectfd, &localaddr, &addrlen) < 0)
+    {
+        BoatLog( BOAT_LOG_CRITICAL, "getsockname() error" );
+        close(connectfd);
+        return -1;
+    }
+    else
+    {
+        localaddr_ptr = (struct sockaddr_in*)&localaddr;
+        BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.", 
+        inet_ntoa(localaddr_ptr->sin_addr), htons(localaddr_ptr->sin_port));
+    }
+
+    BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
+
     return connectfd;
 }
 

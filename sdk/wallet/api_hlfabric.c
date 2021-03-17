@@ -70,7 +70,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec( BoatHlfabricTx *tx_ptr,
 	/* prepare http2-request argument */
 	for( int i = 0; i < nodeMaxNum; i++ )
 	{
-		if( ( (nodeInfo + i) != NULL ) && 
+		if( ( NULL != (BoatHlfabricNodeInfo *)(nodeInfo + i) ) && 
 		    ( (nodeInfo + i)->nodeUrl != NULL ) && ( strlen((nodeInfo + i)->nodeUrl) > 0 ) )
 		{
 			tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = (nodeInfo + i)->nodeUrl;
@@ -630,57 +630,57 @@ void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr )
 {
     BUINT16      i = 0;
 
-    if( wallet_ptr == NULL )
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr needn't DeInit: wallet_ptr is NULL.");
-		return;
-	}
-    
-	/* account_info DeInit */
-	BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
-	wallet_ptr->account_info.prikeyId.field_len = 0;
-	BoatFree(wallet_ptr->account_info.cert.field_ptr);
-	wallet_ptr->account_info.cert.field_len     = 0;
-	
-	/* tlsClinet_info DeInit */
+    if( NULL == wallet_ptr )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr needn't DeInit: wallet_ptr is NULL.");
+        return;
+    }
+
+    /* account_info DeInit */
+    BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
+    wallet_ptr->account_info.prikeyId.field_len = 0;
+    BoatFree(wallet_ptr->account_info.cert.field_ptr);
+    wallet_ptr->account_info.cert.field_len     = 0;
+
+    /* tlsClinet_info DeInit */
 #if (HLFABRIC_TLS_SUPPORT == 1)
 #if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-	BoatFree(wallet_ptr->tlsClinet_info.prikeyId.field_ptr);
-	wallet_ptr->tlsClinet_info.prikeyId.field_len = 0;
-	BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
-	wallet_ptr->tlsClinet_info.cert.field_len     = 0;
+    BoatFree(wallet_ptr->tlsClinet_info.prikeyId.field_ptr);
+    wallet_ptr->tlsClinet_info.prikeyId.field_len = 0;
+    BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
+    wallet_ptr->tlsClinet_info.cert.field_len     = 0;
 #endif /* #if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1) */
-	// for c99, free(NULL) will return directly, so here
-	// use HLFABRIC_ROOTCA_MAX_NUM as cyclic maximum is acceptable.
-	for( i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
-	{
-		BoatFree( wallet_ptr->tlsCAchain.ca[i].field_ptr );
-		wallet_ptr->tlsCAchain.ca[i].field_len = 0;
-	}
+    // for c99, free(NULL) will return directly, so here
+    // use HLFABRIC_ROOTCA_MAX_NUM as cyclic maximum is acceptable.
+    for( i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
+    {
+        BoatFree( wallet_ptr->tlsCAchain.ca[i].field_ptr );
+        wallet_ptr->tlsCAchain.ca[i].field_len = 0;
+    }
 #endif /* #if (HLFABRIC_TLS_SUPPORT == 1) */
-	
-	/* network_info DeInit */
-	for( i = 0; i < wallet_ptr->network_info.ordererNum; i++ )
-	{
-		BoatFree(wallet_ptr->network_info.orderer[i].nodeUrl);
-		BoatFree(wallet_ptr->network_info.orderer[i].hostName);
-	}
-	wallet_ptr->network_info.ordererNum = 0;
-	for( i = 0; i < wallet_ptr->network_info.endorserNum; i++ )
-	{
-		BoatFree(wallet_ptr->network_info.endorser[i].nodeUrl);
-		BoatFree(wallet_ptr->network_info.endorser[i].hostName);
-	}
-	wallet_ptr->network_info.endorserNum = 0;
 
-	/* http2Context DeInit */
-	http2DeInit(wallet_ptr->http2Context_ptr);
-	
-	/* wallet_ptr DeInit */
-	BoatFree(wallet_ptr);
-	
-	/* set NULL after free completed */
-	wallet_ptr = NULL; 
+    /* network_info DeInit */
+    for( i = 0; i < wallet_ptr->network_info.ordererNum; i++ )
+    {
+        BoatFree(wallet_ptr->network_info.orderer[i].nodeUrl);
+        BoatFree(wallet_ptr->network_info.orderer[i].hostName);
+    }
+    wallet_ptr->network_info.ordererNum = 0;
+    for( i = 0; i < wallet_ptr->network_info.endorserNum; i++ )
+    {
+        BoatFree(wallet_ptr->network_info.endorser[i].nodeUrl);
+        BoatFree(wallet_ptr->network_info.endorser[i].hostName);
+    }
+    wallet_ptr->network_info.endorserNum = 0;
+
+    /* http2Context DeInit */
+    http2DeInit(wallet_ptr->http2Context_ptr);
+
+    /* wallet_ptr DeInit */
+    BoatFree(wallet_ptr);
+
+    /* set NULL after free completed */
+    wallet_ptr = NULL; 
 }
 
 
