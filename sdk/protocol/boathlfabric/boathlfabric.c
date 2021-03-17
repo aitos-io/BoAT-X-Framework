@@ -611,7 +611,7 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	if( tx_ptr->var.type == HLFABRIC_TYPE_PROPOSAL )
 	{
 		tx_ptr->var.nonce.field_len = sizeof(tx_ptr->var.nonce.field);
-		BoatRandom(tx_ptr->var.nonce.field, tx_ptr->var.nonce.field_len, NULL);
+		result = BoatRandom(tx_ptr->var.nonce.field, tx_ptr->var.nonce.field_len, NULL);
 	}
 	if( result != BOAT_SUCCESS )
 	{
