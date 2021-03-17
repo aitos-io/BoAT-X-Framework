@@ -291,21 +291,21 @@ http2IntfContext* http2Init(void)
 
 void http2DeInit(http2IntfContext *http2Context)
 {
-	if( http2Context != NULL )
-	{
-		BoatFree(http2Context->sendBuf.field_ptr);
-		if( http2Context->session != NULL )
-		{
-			nghttp2_session_del(http2Context->session);
-			http2Context->session = NULL;
-		}
+    if( NULL != http2Context )
+    {
+        BoatFree(http2Context->sendBuf.field_ptr);
+        if( NULL != http2Context->session )
+        {
+            nghttp2_session_del(http2Context->session);
+            http2Context->session = NULL;
+        }
 #if (HLFABRIC_TLS_SUPPORT == 1)		
-		BoatFree(http2Context->tlsContext);
-		http2Context->tlsContext = NULL;
+        BoatFree(http2Context->tlsContext);
+        http2Context->tlsContext = NULL;
 #endif
-		BoatFree(http2Context);
-		http2Context = NULL;
-	}
+        BoatFree(http2Context);
+        http2Context = NULL;
+    }
 }
 
 

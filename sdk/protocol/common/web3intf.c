@@ -191,7 +191,8 @@ Web3IntfContext * web3_init(void)
 
     web3intf_context_ptr = BoatMalloc(sizeof(Web3IntfContext));
 
-    if( web3intf_context_ptr == NULL )
+    //if( web3intf_context_ptr == NULL )
+    if( NULL == web3intf_context_ptr)
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to allocate Web3 Interface context.");
         boat_throw(BOAT_ERROR_OUT_OF_MEMORY, web3_init_cleanup);
@@ -200,7 +201,7 @@ Web3IntfContext * web3_init(void)
 	web3intf_context_ptr->web3_json_string_buf.field_len = WEB3_STRING_BUF_STEP_SIZE;
     web3intf_context_ptr->web3_json_string_buf.field_ptr = \
 			BoatMalloc(web3intf_context_ptr->web3_json_string_buf.field_len);
-    if( web3intf_context_ptr->web3_json_string_buf.field_ptr == NULL )
+    if( NULL == web3intf_context_ptr->web3_json_string_buf.field_ptr )
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to allocate Web3 JSON string buffer.");
         boat_throw(BOAT_ERROR_OUT_OF_MEMORY, web3_init_cleanup);
@@ -210,7 +211,7 @@ Web3IntfContext * web3_init(void)
 	web3intf_context_ptr->web3_result_string_buf.field_len = WEB3_STRING_BUF_STEP_SIZE;
     web3intf_context_ptr->web3_result_string_buf.field_ptr = \
 			BoatMalloc(web3intf_context_ptr->web3_result_string_buf.field_len);
-    if( web3intf_context_ptr->web3_result_string_buf.field_ptr == NULL )
+    if( NULL == web3intf_context_ptr->web3_result_string_buf.field_ptr )
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to allocate Web3 result string buffer.");
         boat_throw(BOAT_ERROR_OUT_OF_MEMORY, web3_init_cleanup);
@@ -222,7 +223,7 @@ Web3IntfContext * web3_init(void)
 
     web3intf_context_ptr->rpc_context_ptr = RpcInit();
 
-    if( web3intf_context_ptr->rpc_context_ptr == NULL )
+    if( NULL == web3intf_context_ptr->rpc_context_ptr )
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to inintialize RPC.");
         boat_throw(BOAT_ERROR_EXT_MODULE_OPERATION_FAIL, web3_init_cleanup);
@@ -232,17 +233,17 @@ Web3IntfContext * web3_init(void)
     boat_catch(web3_init_cleanup)
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
-        if( web3intf_context_ptr != NULL )
+        if( NULL != web3intf_context_ptr)
         {
-            if( web3intf_context_ptr->web3_json_string_buf.field_ptr != NULL )
+            if( NULL != web3intf_context_ptr->web3_json_string_buf.field_ptr !=  )
 			{
 				BoatFree(web3intf_context_ptr->web3_json_string_buf.field_ptr);
 			}
-            if( web3intf_context_ptr->web3_result_string_buf.field_ptr != NULL )
+            if( NULL != web3intf_context_ptr->web3_result_string_buf.field_ptr )
 			{
 				BoatFree(web3intf_context_ptr->web3_result_string_buf.field_ptr);
 			}
-            if( web3intf_context_ptr->rpc_context_ptr != NULL )
+            if( NULL != web3intf_context_ptr->rpc_context_ptr )
 			{
 				RpcDeinit(web3intf_context_ptr->rpc_context_ptr);
 			}
