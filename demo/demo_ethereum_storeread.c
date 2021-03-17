@@ -57,9 +57,9 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
     BoatEthWalletConfig wallet_config;
 
 	/* wallet_config value assignment */
-	strncpy( (char*)wallet_config.prikeyId, 
-			 "/mnt/sharework/boatiotsdk_fabric/demo/demo_key/ethereum_client.key", 
-			 BOAT_KEYID_MAX_LEN - 1 );
+	//strncpy( (char*)wallet_config.prikeyId, 
+	//		 "/mnt/sharework/boatiotsdk_fabric/demo/demo_key/ethereum_client.key", 
+	//		 BOAT_KEYID_MAX_LEN - 1 );
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy( wallet_config.node_url_str, 

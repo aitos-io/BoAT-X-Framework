@@ -35,7 +35,7 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 
 	/* wallet_config value assignment */
 	/* for one-time wallet, the 'prikeyId' field should be cleared */
-	memset(wallet_config.prikeyId, 0, BOAT_KEYID_MAX_LEN); 
+	//memset(wallet_config.prikeyId, 0, BOAT_KEYID_MAX_LEN); 
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy( wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_NODE_URL_MAX_LEN - 1 );
