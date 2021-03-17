@@ -68,7 +68,7 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy( wallet_config.node_url_str, 
-			 "http://192.168.59.1:7545", 
+			 "HTTP://127.0.0.1:7545", 
 			 BOAT_NODE_URL_MAX_LEN - 1 );
 
 	/* create ethereum wallet */
@@ -125,7 +125,7 @@ BOAT_RESULT ethereumTransfer(BoatEthWallet *wallet_ptr)
     /* Set Recipient Address */
     result = BoatEthTxInit( wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
 						    "0x333333",
-						    "0xB29Db0f51f2f91276Ceb23A43C8fEEC7616B8FA6" );
+						    "0xEF5D6d9D037Faa6493637E26A2B5d604f7722779" );
 
     if( result != BOAT_SUCCESS )
     {
