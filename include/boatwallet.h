@@ -41,6 +41,12 @@ typedef enum
     BOAT_WALLET_PRIKEY_GENERATION,      //!< xx
 }BoatWalletPriKeyType;
 
+//!@brief XXX
+typedef enum
+{
+	BOAT_WALLET_PUBKEY_UNKNOWN = 0,     //!< Placeholder for unknown prikey
+	//! @todo
+}BoatWalletPubKeyType;
 
 //!@brief XXX
 typedef struct TBoatWalletExtraData
@@ -54,7 +60,8 @@ typedef struct TBoatWalletExtraData
 typedef struct TBoatWalletPriKeyId
 {
     BUINT32               prikey_index;       //!< xxx
-	BoatWalletPriKeyType  prikey_type;        //!< xxx
+	//BoatWalletPriKeyType  prikey_type;        //!< xxx
+	BoatWalletPubKeyType  pubkey_type;        //!< xxx
     BUINT8                pubkey_content[64]; //!< xxx
     BoatWalletExtraData   extra_data;         //!< used for crypto implemented by software, to store the prikey info.
 }BoatWalletPriKeyId;
@@ -64,11 +71,11 @@ typedef struct TBoatWalletPriKeyId
 typedef struct TBoatWalletPriKeyId_config
 {
     BoatWalletPriKeyType prikey_type;    //!< xxx
-    BoatFieldVariable    prikey_content; //!< xxx
+    BUINT8               prikey_content[512]; //!< xxx
+	BUINT32              prikey_content_size;//!< xxx
 	
 	//! this field will be updated by internal
-	//! @todo
-	BoatWalletPriKeyId  private_KeyId;//!<?????
+	BoatWalletPriKeyId  private_KeyId;  //!< xxx
 }BoatWalletPriKeyId_config;
 
 

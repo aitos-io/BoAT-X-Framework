@@ -91,7 +91,8 @@ typedef struct TBoatEthWallet
 //! Ethereum wallet configuration is used in wallet creation.
 typedef struct TBoatEthWalletConfig
 {
-	BoatWalletPriKeyId_config  prikeyId_config;
+	BoatWalletPriKeyId_config  prikeyId_config; //!< @NOTE This field MUST BE placed in the first member of the structure
+	                                            //!< because in function BoatWalletCreate(), 
     //BUINT8   prikeyId[BOAT_KEYID_MAX_LEN]; //!< prikey unique identification for persistent wallet; or
 										   //!< prikey content for one time wallet
     BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible

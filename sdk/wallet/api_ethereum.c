@@ -53,7 +53,7 @@ BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32
         return NULL;
     }
         
-    // Init Web3 interface
+    /* Init Web3 interface */
     wallet_ptr->web3intf_context_ptr = web3_init();
 
     if( wallet_ptr->web3intf_context_ptr == NULL )
@@ -63,52 +63,57 @@ BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32
         return NULL;
     }
 
-    // Set EIP-155 Compatibility to TRUE by default
+    /* Set EIP-155 Compatibility to TRUE by default */
     BoatEthWalletSetEIP155Comp(wallet_ptr, config_ptr->eip155_compatibility);
 
-    // Configure prikeyId
-	for( int i = 0; i < BOAT_KEYID_MAX_LEN; i++ )
-	{
-		if(config_ptr->prikeyId[i] != 0)
-		{
-			prikeyIdIsEmpty = false;
-			break;
-		}
-	}
-	if(prikeyIdIsEmpty)
-	{
+    /* Configure prikeyId */
+//	for( int i = 0; i < BOAT_KEYID_MAX_LEN; i++ )
+//	{
+//		if(config_ptr->prikeyId[i] != 0)
+//		{
+//			prikeyIdIsEmpty = false;
+//			break;
+//		}
+//	}
+//	if(prikeyIdIsEmpty)
+//	{
 		/* one time wallet */
 		/* generate one time keyfile */
-		result = BoatGenOnetimeSignPrikey( BOAT_SIGNATURE_SECP256K1, 
-										   wallet_ptr->account_info.prikeyId, 
-										   sizeof(wallet_ptr->account_info.prikeyId),
-										   &wallet_ptr->account_info.pub_key_array[0],
-										   &wallet_ptr->account_info.pub_key_array[32], NULL );
-		if( result != BOAT_SUCCESS )
-		{
-			web3_deinit(wallet_ptr->web3intf_context_ptr);
-			BoatFree(wallet_ptr);
-			BoatLog(BOAT_LOG_CRITICAL, "BoatGenOnetimePrikey failed.");
-			return NULL;
-		}
-	}
-	else
-	{
-		/* presistent wallet */
-		memcpy(wallet_ptr->account_info.prikeyId, config_ptr->prikeyId, BOAT_KEYID_MAX_LEN);
-		/* check the keyfile is exist */
-		result = BoatChkPrikeyExist( wallet_ptr->account_info.prikeyId,
-									 &wallet_ptr->account_info.pub_key_array[0],
-									 &wallet_ptr->account_info.pub_key_array[32], NULL );
-		if( result != BOAT_SUCCESS )
-		{
-			web3_deinit(wallet_ptr->web3intf_context_ptr);
-			BoatFree(wallet_ptr);
-			BoatLog(BOAT_LOG_CRITICAL, "BoatChkPrikeyExist failed.");
-			return NULL;
-		}
-	}
-	BoatHash(BOAT_HASH_KECCAK256, wallet_ptr->account_info.pub_key_array, 
+//		result = BoatGenOnetimeSignPrikey( BOAT_SIGNATURE_SECP256K1, 
+//										   wallet_ptr->account_info.prikeyId, 
+//										   sizeof(wallet_ptr->account_info.prikeyId),
+//										   &wallet_ptr->account_info.pub_key_array[0],
+//										   &wallet_ptr->account_info.pub_key_array[32], NULL );
+//		if( result != BOAT_SUCCESS )
+//		{
+//			web3_deinit(wallet_ptr->web3intf_context_ptr);
+//			BoatFree(wallet_ptr);
+//			BoatLog(BOAT_LOG_CRITICAL, "BoatGenOnetimePrikey failed.");
+//			return NULL;
+//		}
+//	}
+//	else
+//	{
+//		/* presistent wallet */
+//		memcpy(wallet_ptr->account_info.prikeyId, config_ptr->prikeyId, BOAT_KEYID_MAX_LEN);
+//		/* check the keyfile is exist */
+//		result = BoatChkPrikeyExist( wallet_ptr->account_info.prikeyId,
+//									 &wallet_ptr->account_info.pub_key_array[0],
+//									 &wallet_ptr->account_info.pub_key_array[32], NULL );
+//		if( result != BOAT_SUCCESS )
+//		{
+//			web3_deinit(wallet_ptr->web3intf_context_ptr);
+//			BoatFree(wallet_ptr);
+//			BoatLog(BOAT_LOG_CRITICAL, "BoatChkPrikeyExist failed.");
+//			return NULL;
+//		}
+//	}
+	
+	//Configure priKey information
+	memcpy(wallet_ptr->account_info.prikeyId, config_ptr->prikeyId_config.private_KeyId, sizeof(BoatWalletPriKeyId));
+	
+	// Configure account address	
+	BoatHash(BOAT_HASH_KECCAK256, wallet_ptr->account_info.prikeyId.pubkey_content, 
 			 64, pubkeyHash, &hashLenDummy, NULL);
 	memcpy(wallet_ptr->account_info.address, &pubkeyHash[32 - BOAT_ETH_ADDRESS_SIZE], BOAT_ETH_ADDRESS_SIZE);
     
