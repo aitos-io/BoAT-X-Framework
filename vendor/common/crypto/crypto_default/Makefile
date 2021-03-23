@@ -47,7 +47,7 @@ endif
 # Source and Objects
 
 SOURCES = $(wildcard *.c) $(wildcard aes/*.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/hwdep/$(HW_TARGET)/crypto
+OBJECTS_DIR = $(BOAT_BUILD_DIR)/vendor/common/crypto_default
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 

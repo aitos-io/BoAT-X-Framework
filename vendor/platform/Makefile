@@ -1,9 +1,9 @@
 # Select one of the hardware
 
 all:
-	make -C $(BOAT_BASE_DIR)/hwdep/$(HW_TARGET) all
+	make -C $(BOAT_BASE_DIR)/vendor/$(PLATFORM_TARGET) all
 
 clean:	
-	make -C $(BOAT_BASE_DIR)/hwdep/$(HW_TARGET) clean
+	make -C $(BOAT_BASE_DIR)/vendor/$(PLATFORM_TARGET) clean
 
 

@@ -37,7 +37,6 @@ BOAT_BASE_DIR := $(CURDIR)
 BOAT_SDK_DIR := $(BOAT_BASE_DIR)/sdk
 BOAT_LIB_DIR := $(BOAT_BASE_DIR)/lib
 BOAT_BUILD_DIR := $(BOAT_BASE_DIR)/build
-HWDEP_BASE_DIR := $(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)
 
 
 # Compiling Flags
@@ -95,17 +94,40 @@ else
 endif
 
 
-# Hardware-specific Flags 
-ifeq ($(HW_TARGET), default)
-    BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/crypto/mbedTLS/include \
-                    -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/keccak \
-                    -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/storage 
-else ifeq ($(HW_TARGET), default_tbd)
-    BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/storage \
-                    -I$(BOAT_BASE_DIR)/hwdep/$(HW_TARGET)/crypto
+
+# Platform target
+# The valid option value of PLATFORM_TARGET list as below:
+# - LINUX-X86-64      : default platform
+# - BG95              : a LPWA module of quectel
+# - L610              : a CAT1 module of fibocom
+# - L718              : a LTE module of fibocom
+PLATFORM_TARGET ?= LINUX-X86-64
+
+ifeq ($(PLATFORM_TARGET), "LINUX-X86-64")
+else ifeq ($(PLATFORM_TARGET), "BG95")
+endif
+
+# Soft-crypto Dependencies
+# The valid option value of SOFT_CRYPTO_DEP list as below:
+# - CRYPTO_DEFAULT      : default soft crypto algorithm
+# - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
+SOFT_CRYPTO_DEP ?= CRYPTO_MBEDTLS
+
+ifeq ($(SOFT_CRYPTO_DEP), "CRYPTO_DEFAULT")
+    BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default \
+	                -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default/aes \
+                    -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
+                    -I$(BOAT_BASE_DIR)/vendor/common/crypto/storage \
+					-I$(BOAT_BASE_DIR)/vendor/$(PLATFORM_TARGET)/port_crypto_default
+else ifeq ($(SOFT_CRYPTO_DEP), "CRYPTO_MBEDTLS")
+    BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS/include \
+                    -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
+                    -I$(BOAT_BASE_DIR)/vendor/common/crypto/storage \
+					-I$(BOAT_BASE_DIR)/vendor/$(PLATFORM_TARGET)/port_mbedtls 
 else
     BOAT_INCLUDE += 
 endif
+
 
 # Combine FLAGS
 BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \
@@ -118,12 +140,11 @@ BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \
 BOAT_LFLAGS := $(BOAT_COMMON_LINK_FLAGS) $(TARGET_SPEC_LINK_FLAGS)
 LINK_LIBS := $(EXTERNAL_LIBS) $(TARGET_SPEC_LIBS)
 
-
-export HW_TARGET
+export SOFT_CRYPTO_DEP
+export PLATFORM_TARGET
 export BOAT_BASE_DIR
 export BOAT_LIB_DIR
 export BOAT_BUILD_DIR
-export HWDEP_BASE_DIR
 export BOAT_CFLAGS
 export BOAT_LFLAGS
 export LINK_LIBS
@@ -144,8 +165,8 @@ boatwalletlib:
 	fi
 
 hwdeplib:
-	if [ -d "$(BOAT_BASE_DIR)/hwdep" ]; then \
-	make -C $(BOAT_BASE_DIR)/hwdep all; \
+	if [ -d "$(BOAT_BASE_DIR)/vendor" ]; then \
+	make -C $(BOAT_BASE_DIR)/vendor all; \
 	fi
 
 contractlib:
@@ -168,8 +189,8 @@ cleanboatwallet:
 	fi
 
 cleanhwdep:
-	if [ -d "$(BOAT_BASE_DIR)/hwdep" ]; then \
-	make -C $(BOAT_BASE_DIR)/hwdep clean; \
+	if [ -d "$(BOAT_BASE_DIR)/vendor" ]; then \
+	make -C $(BOAT_BASE_DIR)/vendor clean; \
 	fi
 
 cleancontract:
