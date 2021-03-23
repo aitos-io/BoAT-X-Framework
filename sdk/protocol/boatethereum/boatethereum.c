@@ -282,13 +282,13 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     **************************************************************************/
 	BUINT8 asn1_sign_tmp[256];
 	size_t asn1_sign_tmp_len;
-	result = BoatSignature( BOAT_SIGNATURE_SECP256K1, 
-						    tx_ptr->wallet_ptr->account_info.prikeyId, 
-						    message_digest, message_digestLen, 
-						    asn1_sign_tmp, &asn1_sign_tmp_len, 
-						    tx_ptr->rawtx_fields.sig.r32B, 
-						    tx_ptr->rawtx_fields.sig.s32B, 
-						    &sig_parity, NULL );
+	//result = BoatSignature( BOAT_SIGNATURE_SECP256K1, 
+	//					    tx_ptr->wallet_ptr->account_info.prikeyId, 
+	//					    message_digest, message_digestLen, 
+	//					    asn1_sign_tmp, &asn1_sign_tmp_len, 
+	//					    tx_ptr->rawtx_fields.sig.r32B, 
+	//					    tx_ptr->rawtx_fields.sig.s32B, 
+	//					    &sig_parity, NULL );
 	if( result != BOAT_SUCCESS )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Execute BoatSignature failed.");
