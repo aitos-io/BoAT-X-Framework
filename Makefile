@@ -58,8 +58,6 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
 				  -I$(BOAT_SDK_DIR)/third-party/cJSON \
                   -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
                   -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include \
-                  -I$(BOAT_BASE_DIR)/vendor/platform/Linux-x86-64/port_mbedtls \
-				  -I$(BOAT_BASE_DIR)/vendor/common/storage \
                   -I$(BOAT_BASE_DIR)/contract/generated \
                   -I$(BOAT_BASE_DIR)/demo \
 				  -I$(BOAT_BASE_DIR)/tests \
@@ -103,9 +101,6 @@ endif
 # - L718              : a LTE module of fibocom
 PLATFORM_TARGET ?= LINUX-X86-64
 
-ifeq ($(PLATFORM_TARGET), "LINUX-X86-64")
-else ifeq ($(PLATFORM_TARGET), "BG95")
-endif
 
 # Soft-crypto Dependencies
 # The valid option value of SOFT_CRYPTO_DEP list as below:
@@ -113,19 +108,19 @@ endif
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
 SOFT_CRYPTO_DEP ?= CRYPTO_MBEDTLS
 
-ifeq ($(SOFT_CRYPTO_DEP), "CRYPTO_DEFAULT")
+ifeq ($(SOFT_CRYPTO_DEP), CRYPTO_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default \
 	                -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default/aes \
                     -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
-                    -I$(BOAT_BASE_DIR)/vendor/common/crypto/storage \
-					-I$(BOAT_BASE_DIR)/vendor/$(PLATFORM_TARGET)/port_crypto_default
-else ifeq ($(SOFT_CRYPTO_DEP), "CRYPTO_MBEDTLS")
+                    -I$(BOAT_BASE_DIR)/vendor/common/storage \
+					-I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_crypto_default
+else ifeq ($(SOFT_CRYPTO_DEP), CRYPTO_MBEDTLS)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS/include \
                     -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
-                    -I$(BOAT_BASE_DIR)/vendor/common/crypto/storage \
-					-I$(BOAT_BASE_DIR)/vendor/$(PLATFORM_TARGET)/port_mbedtls 
+                    -I$(BOAT_BASE_DIR)/vendor/common/storage \
+					-I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_mbedtls
 else
-    BOAT_INCLUDE += 
+    BOAT_INCLUDE +=
 endif
 
 

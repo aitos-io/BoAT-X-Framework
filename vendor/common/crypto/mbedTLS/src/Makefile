@@ -10,7 +10,6 @@ $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
 
 $(OBJECTS_DIR)/%.o:%.c
-	@echo --------------------------------------------------------
 	$(CC) -c $(BOAT_CFLAGS) $< -o $@
 
 clean:
