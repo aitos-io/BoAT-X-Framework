@@ -105,7 +105,7 @@ Modify the demo code in ./demo:
 +---contract      | Demo smart contract ABI and generated C interface file
 +---demo          | Demo application
 +---docs          | API reference manual
-+---hwdep         | Hardware dependency
++---vendor        | Special vendor dependency
 |   \---default   |     A default pure software version for development
 +---include       | Header files for application to include
 +---lib           | Lib files for application to link with
@@ -213,7 +213,7 @@ Add to link options: -lcurl -lcrypto
 
 
 #### Modify your C code
-Add: #include “boatiotsdk.h”
+Add: #include “boatiotsdk.h�
 Follow instructions in [*How to Call a Contract in Your C code*](#how-to-call-a-contract-in-your-c-code).
 
 
