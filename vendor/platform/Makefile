@@ -1,9 +1,10 @@
 # Select one of the hardware
 
 all:
-	make -C $(BOAT_BASE_DIR)/vendor/$(PLATFORM_TARGET) all
+	@echo +++++++++++++++++
+	make -C $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET) all
 
 clean:	
-	make -C $(BOAT_BASE_DIR)/vendor/$(PLATFORM_TARGET) clean
+	make -C $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET) clean
 
 
