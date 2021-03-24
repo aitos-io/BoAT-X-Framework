@@ -6,3 +6,6 @@ docs/latex/
 *.udb
 .scannerwork/
 contract/
+node_modules/
+package.json
+package-lock.json
