@@ -1,7 +1,7 @@
 # Source and Objects  
 
 SOURCES = $(wildcard *.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/platform
+OBJECTS_DIR = $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_mbedtls
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 

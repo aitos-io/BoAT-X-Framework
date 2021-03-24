@@ -44,7 +44,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <arpa/inet.h>
+#include <arpa/inet.h>		
 #include <string.h>
 
 #include <sys/time.h>
@@ -58,18 +58,18 @@
 static int ecdsa_signature_to_asn1( const mbedtls_mpi *r, const mbedtls_mpi *s,
 								    unsigned char *sig, size_t *slen )
 {
-    unsigned char buf[MBEDTLS_ECDSA_MAX_LEN];
-    unsigned char *p = buf + sizeof( buf );
-    size_t len = 0;
+    //unsigned char buf[MBEDTLS_ECDSA_MAX_LEN];
+    //unsigned char *p = buf + sizeof( buf );
+    //size_t len = 0;
 
-    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_mpi( &p, buf, s ) );
-    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_mpi( &p, buf, r ) );
-    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_len( &p, buf, len ) );
-    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_tag( &p, buf,
-						  MBEDTLS_ASN1_CONSTRUCTED | MBEDTLS_ASN1_SEQUENCE ) );
+    //MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_mpi( &p, buf, s ) );
+    //MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_mpi( &p, buf, r ) );
+    //MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_len( &p, buf, len ) );
+    //MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_tag( &p, buf,
+	//					  MBEDTLS_ASN1_CONSTRUCTED | MBEDTLS_ASN1_SEQUENCE ) );
 
-    memcpy( sig, p, len );
-    *slen = len;
+    //memcpy( sig, p, len );
+    //*slen = len;
 
     return( 0 );
 }
@@ -676,7 +676,7 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
         inet_ntoa(localaddr_ptr->sin_addr), htons(localaddr_ptr->sin_port));
     }
 
-    BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connect_fd);
+    BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
 
     return connectfd;
 }
@@ -837,7 +837,7 @@ BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* 
 void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 {
 	close(sockfd);
-#if (HLFABRIC_TLS_SUPPORT == 1) 
+#if (HLFABRIC_TLS_SUPPORT == 1)
 	// free tls releated
 	if(tlsContext != NULL)
 	{
@@ -858,4 +858,24 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 		((TTLSContext*)tlsContext)->ssl_crt = NULL;
 	}
 #endif
+}
+
+
+
+BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
+{
+	//! @todo
+	return BOAT_SUCCESS;
+}
+
+BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
+{	
+	//! @todo
+	return BOAT_SUCCESS;
+}
+
+BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
+{
+	//! @todo
+	return BOAT_SUCCESS;
 }

@@ -1,8 +1,8 @@
-# Select one of the hardware
+# Select one of the crypto-dep and platform
 
-.PHONY:all mbedTLS keccak platform
+.PHONY:all mbedTLS keccak storage platform
 
-all: mbedTLS keccak platform
+all: mbedTLS keccak storage platform 
 
 mbedTLS:
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS all
@@ -10,11 +10,13 @@ mbedTLS:
 keccak:	
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/keccak all
 
+storage:
+	make -C $(BOAT_BASE_DIR)/vendor/common/storage all
+
 platform:
-	@echo ++++++++++++++++++++++++++++++++++---
-	make -C $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET) all
+	make -C $(BOAT_BASE_DIR)/vendor/platform all
 	
 clean:	
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS clean
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/keccak clean
-	make -C $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET) clean 
+	make -C $(BOAT_BASE_DIR)/vendor/platform clean 

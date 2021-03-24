@@ -592,17 +592,17 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
 {
 	//! @todo
-	retrun BOAT_SUCCESS;
+	return BOAT_SUCCESS;
 }
 
 BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
 {
 	//! @todo
-	retrun BOAT_SUCCESS;
+	return BOAT_SUCCESS;
 }
 
 BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
 {
 	//! @todo
-	retrun BOAT_SUCCESS;
+	return BOAT_SUCCESS;
 }
