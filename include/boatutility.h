@@ -570,6 +570,7 @@ void Utility_readBigendToBignum(const BUINT8 *in_number, utility_bignum256 *out_
 *******************************************************************************/
 void Utility_writeBignumToBigend(const utility_bignum256 *in_number, BUINT8 *out_number);
 
+BOAT_RESULT MaxLenCheck(BCHAR *check_str);
 
 /*! @}*/
 

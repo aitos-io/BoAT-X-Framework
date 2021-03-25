@@ -126,6 +126,18 @@ BCHAR * BoatPlatonCallContractFunc( BoatPlatonTx *tx_ptr, BUINT8 *rlp_param_ptr,
         return NULL;
     }
 
+	if (rlp_param_len > BOAT_MAX_LEN)
+	{
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return NULL;
+	}
+
+    if (BOAT_SUCCESS != MaxLenCheck(rlp_param_ptr))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return NULL;
+    }
+
     BCHAR recipient_hexstr[BOAT_PLATON_ADDRESS_SIZE*2+3];
     
     UtilityBin2Hex( recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_PLATON_ADDRESS_SIZE,
