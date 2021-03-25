@@ -272,6 +272,18 @@ BCHAR * BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_prot
         return NULL;
     }
 
+	if (func_param_len > BOAT_MAX_LEN)
+	{
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return NULL;
+	}
+	
+    if ( (BOAT_SUCCESS != MaxLenCheck(func_proto_str)) && (BOAT_SUCCESS != MaxLenCheck(func_param_ptr)) )
+    {
+		BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return NULL;
+    }
+
 	//set groupid
 	memset(groupid_hexstr, 0, sizeof(groupid_hexstr));
 	UtilityBin2Hex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,

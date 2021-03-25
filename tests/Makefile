@@ -10,8 +10,8 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatcontract.a \
 				  $(LINK_LIBS)
 
 all: $(OBJECTS_DIR) $(OBJECTS)	
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) -o $(BOAT_BUILD_DIR)/tests/demo_ethereum_transfer \
-		$(BOAT_BUILD_DIR)/tests/demo_ethereum_transfer.o $(DEPENDENCE_LIBS)	
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) -o $(BOAT_BUILD_DIR)/tests/boat_10_case \
+		$(BOAT_BUILD_DIR)/tests/boat_10_case.o $(DEPENDENCE_LIBS)	
 
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)

@@ -123,6 +123,12 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
 		return BOAT_ERROR;
 	}
+
+	if ( (BOAT_SUCCESS != MaxLenCheck(prikeyId)) && (BOAT_SUCCESS != MaxLenCheck(certName)) )
+    {
+		BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return BOAT_ERROR;
+    }
 	
 	/* initialization */
 	wallet_ptr->account_info.prikeyId.field_ptr = NULL;

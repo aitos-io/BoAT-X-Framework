@@ -593,11 +593,23 @@ BCHAR * BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
         return NULL;
     }
     
-    if( func_param_ptr == NULL && func_param_len != 0)
+    if( func_param_ptr == NULL && func_param_len != 0 )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
     }
+
+	if (func_param_len > BOAT_MAX_LEN)
+	{
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return NULL;
+	}
+
+    if ( (BOAT_SUCCESS != MaxLenCheck(func_proto_str)) && (BOAT_SUCCESS != MaxLenCheck(func_param_ptr)) )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return NULL;
+    }    
 
     BCHAR recipient_hexstr[BOAT_ETH_ADDRESS_SIZE*2+3];
     

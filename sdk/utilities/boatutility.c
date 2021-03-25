@@ -589,3 +589,16 @@ void Utility_writeBignumToBigend(const bignum256 *in_number, BUINT8 *out_number)
 		temp = limb;
 	}
 }
+
+BOAT_RESULT MaxLenCheck(BCHAR *check_str)
+{
+    for (int i = 0; i < BOAT_MAX_LEN; i++)
+    {
+        if ( *(check_str+i) == '\0' )
+        {
+            return BOAT_SUCCESS;
+        }
+    }
+    return BOAT_ERROR;
+}
+

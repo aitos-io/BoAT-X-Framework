@@ -114,6 +114,9 @@ boatoptions.h defines options for compiling.
 #define HLFABRIC_ROOTCA_MAX_NUM                  5 //!< support ROOT CA certificate max number
 
 #define HTTP2_SEND_MAX_BUF                       4096
+
+#define BOAT_MAX_LEN							 4096
+
 #endif /* end of PROTOCOL_USE_HLFABRIC */
 
 #endif /* end of __BOATOPTIONS_H__ */

@@ -62,6 +62,12 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
         return BOAT_ERROR;
     }
 
+    if ( (BOAT_SUCCESS != MaxLenCheck(storage_name_str)) )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return NULL;
+    } 
+
 	// aes init
 	mbedtls_aes_init( &ctx );
 	
@@ -132,6 +138,12 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "storage_name or data cannot be NULL, data_len cannot be zero.");
         return BOAT_ERROR;
+    }
+
+    if ( (BOAT_SUCCESS != MaxLenCheck(storage_name_str)) )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return NULL;
     }
 
 	//aes init
