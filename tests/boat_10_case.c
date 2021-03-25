@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "boattypes.h"
 
-#include "api_ethereum.h"
+#include "protocolapi/api_ethereum.h"
 #include "boatutility.h"
 #include "check.h"
 
@@ -141,8 +141,8 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
 
 Suite * make_add_suite(void) {
     Suite *seth_api = suite_create("eth_api");       // 建立Suite
-    TCase *tc_math = tcase_create("ethereum");  // 建立测试用例集
-    suite_add_tcase(s, tc_math);           // 将测试用例加到Suite中
+    TCase *tc_math = tcase_create("ethereum");  // 建立测试用例�
+    suite_add_tcase(s, tc_math);           // 将测试用例加到Suite�
     tcase_add_test(tc_math, test_sub);     // 测试用例加到测试集中
     tcase_add_test(tc_math, test_add);     // 测试用例加到测试集中
     return s;
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
     SRunner *sr;
     sr = srunner_create(make_add_suite()); // 将Suite加入到SRunner
     srunner_run_all(sr, CK_NORMAL);
-    int n = srunner_ntests_failed(sr);         // 运行所有测试用例
+    int n = srunner_ntests_failed(sr);         // 运行所有测试用�
     srunner_free(sr);
  
 
