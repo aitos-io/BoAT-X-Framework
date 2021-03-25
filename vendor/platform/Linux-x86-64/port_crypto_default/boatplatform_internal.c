@@ -606,3 +606,19 @@ BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyId_config* config, BoatWa
 	//! @todo
 	return BOAT_SUCCESS;
 }
+
+
+/******************************************************************************
+                              BOAT AES WARPPER
+*******************************************************************************/
+BOAT_RESULT  BoatAesEncrypted(BUINT8 * iv[16], const BUINT8 * input, size_t length, BUINT8 * output)
+{
+
+}
+
+BOAT_RESULT  BoatAesDecrypt(BUINT8 * iv[16], const BUINT8 * input, size_t length, BUINT8 * output)
+{
+
+}
+
+

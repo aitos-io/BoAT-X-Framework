@@ -23,7 +23,7 @@ persiststore.c contains APIs for default persistent storage as a file.
 #include "boatinternal.h"
 #include "keccak.h"
 /* mbedTLS header include */
-#include "mbedtls/aes.h"
+//#include "mbedtls/aes.h"
 
 //!@brief Salt size for keystore
 #define BOAT_STORAGE_SALT_SIZE 16
@@ -54,7 +54,7 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
 
     BOAT_RESULT result = BOAT_SUCCESS;
 	
-	mbedtls_aes_context  ctx;
+	//mbedtls_aes_context  ctx;
 
     if( (storage_name_str == NULL) || (data_ptr == NULL) || (data_len == 0) )
 	{
@@ -69,7 +69,7 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
     } 
 
 	// aes init
-	mbedtls_aes_init( &ctx );
+	//mbedtls_aes_init( &ctx );
 	
 	// prepare encrypt raw data
 	memset(rawData, 0, sizeof(rawData));
@@ -83,12 +83,12 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
     BoatRandom(salt_array, BOAT_STORAGE_SALT_SIZE, NULL);
 	
     // Encrypt the data	
-	result = mbedtls_aes_setkey_enc(&ctx, g_aes_key, 128);
+	//result = mbedtls_aes_setkey_enc(&ctx, g_aes_key, 128);
 	
 	// use salt_array copy because function mbedtls_aes_crypt_cbc(...) will modify this field
 	memcpy(salt_array_copy, salt_array, BOAT_STORAGE_SALT_SIZE);
-	result = mbedtls_aes_crypt_cbc( &ctx, MBEDTLS_AES_ENCRYPT, encrypted_len, 
-									salt_array_copy, rawData, encrypted_array );
+	//result = mbedtls_aes_crypt_cbc( &ctx, MBEDTLS_AES_ENCRYPT, encrypted_len, 
+	//								salt_array_copy, rawData, encrypted_array );
 	
     if( result == BOAT_SUCCESS )
     {
@@ -106,7 +106,7 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
     }
 
 	//aes free
-	mbedtls_aes_free( &ctx );
+	//mbedtls_aes_free( &ctx );
 	
     return result;
 }
@@ -132,7 +132,7 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
     
     BOAT_RESULT result = BOAT_ERROR;
 	
-	mbedtls_aes_context  ctx;
+	//mbedtls_aes_context  ctx;
 
     if( (storage_name_str == NULL) || (data_ptr == NULL) || (len_to_read == 0) )
 	{
@@ -147,9 +147,9 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
     }
 
 	//aes init
-	mbedtls_aes_init( &ctx );
+	//mbedtls_aes_init( &ctx );
 		
-	result  = mbedtls_aes_setkey_dec( &ctx, g_aes_key, 128 );
+	//result  = mbedtls_aes_setkey_dec( &ctx, g_aes_key, 128 );
 	result += BoatGetFileSize( storage_name_str, &fileSize, NULL );
 	result += BoatReadFile( storage_name_str, readDataTmp, fileSize, NULL );
 	
@@ -168,8 +168,8 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 									 fileSize - BOAT_STORAGE_SALT_SIZE - sizeof(original_data_hash_array));
 		memcpy(encrypted_array, &readDataTmp[readDataIndex], encrypted_readLen);
 		
-		result = mbedtls_aes_crypt_cbc( &ctx, MBEDTLS_AES_DECRYPT, encrypted_readLen, salt_array, 
-										encrypted_array, plain_array );
+		//result = mbedtls_aes_crypt_cbc( &ctx, MBEDTLS_AES_DECRYPT, encrypted_readLen, salt_array, 
+		//								encrypted_array, plain_array );
 		// Check size of the decrypted data matches the length to read
 		if( result == BOAT_SUCCESS && plain_len == len_to_read )
 		{
@@ -197,7 +197,7 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 	}
 
 	//aes free
-	mbedtls_aes_free( &ctx );
+	//mbedtls_aes_free( &ctx );
 	
     return result;
 }
