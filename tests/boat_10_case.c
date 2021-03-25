@@ -30,11 +30,8 @@ static BoatEthTx g_test_tx_ptr;
 static void Test_Protocol_EthApi_Init(void)
 {
 	BoatEthWalletConfig wallet_config;
-		/* wallet_config value assignment */
-	strncpy( (char*)wallet_config.prikeyId, 
-			 TEST_ETH_PRIKEYID, 
-			 BOAT_KEYID_MAX_LEN - 1 );
-
+	/* wallet_config value assignment */
+	//strncpy( (char*)wallet_config.prikeyId, TEST_ETH_PRIKEYID, BOAT_KEYID_MAX_LEN - 1 );
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
 
@@ -54,11 +51,8 @@ static void Test_Protocol_EthApi_DeInit(void)
 
 START_TEST(test_Api_WalletInit) {
 	BoatEthWalletConfig wallet_config;
-		/* wallet_config value assignment */
-	strncpy( (char*)wallet_config.prikeyId, 
-			 TEST_ETH_PRIKEYID, 
-			 BOAT_KEYID_MAX_LEN - 1 );
-
+	/* wallet_config value assignment */
+	//strncpy( (char*)wallet_config.prikeyId,  TEST_ETH_PRIKEYID,  BOAT_KEYID_MAX_LEN - 1 );
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
 
@@ -71,7 +65,7 @@ START_TEST(test_Api_WalletInit) {
 	ck_assert((wallet_ptr_1 = BoatEthWalletInit(&wallet_config, sizeof(BoatEthWalletConfig))) != NULL);
 
 	ck_assert(wallet_ptr_1->web3intf_context_ptr != NULL);
-	ck_assert_str_eq(wallet_ptr_1->account_info.prikeyId , TEST_ETH_PRIKEYID);
+	//ck_assert_str_eq(wallet_ptr_1->account_info.prikeyId , TEST_ETH_PRIKEYID);
 	ck_assert_str_eq(wallet_ptr_1->network_info.node_url_ptr, TEST_ETH_NODE_URL);
 	ck_assert(wallet_ptr_1->network_info.chain_id == 1);
 	ck_assert(wallet_ptr_1->network_info.eip155_compatibility == BOAT_FALSE);
@@ -163,7 +157,7 @@ START_TEST(test_Api_TxInit) {
 	ck_assert(BoatEthTxInit(g_test_wallet_ptr,&tx_ptr,BOAT_TRUE,NULL,TEST_ETH_GASPRICE,TEST_ETH_WALLET_ADDR_1) == BOAT_SUCCESS);
 
 	ck_assert_str_eq(tx_ptr.wallet_ptr->network_info.node_url_ptr ,TEST_ETH_NODE_URL);
-	ck_assert_str_eq(tx_ptr.wallet_ptr->account_info.prikeyId ,TEST_ETH_PRIKEYID);
+	//ck_assert_str_eq(tx_ptr.wallet_ptr->account_info.prikeyId ,TEST_ETH_PRIKEYID);
 	ck_assert(tx_ptr.wallet_ptr->network_info.chain_id == 1);
 	ck_assert(tx_ptr.wallet_ptr->network_info.eip155_compatibility == BOAT_FALSE);
 
@@ -173,7 +167,7 @@ START_TEST(test_Api_TxInit) {
 	//case 2:
 	ck_assert(BoatEthTxInit(g_test_wallet_ptr,&tx_ptr,BOAT_TRUE,NULL,NULL,TEST_ETH_WALLET_ADDR_1) == BOAT_SUCCESS);
 	ck_assert_str_eq(tx_ptr.wallet_ptr->network_info.node_url_ptr ,TEST_ETH_NODE_URL);
-	ck_assert_str_eq(tx_ptr.wallet_ptr->account_info.prikeyId ,TEST_ETH_PRIKEYID);
+	//ck_assert_str_eq(tx_ptr.wallet_ptr->account_info.prikeyId ,TEST_ETH_PRIKEYID);
 	ck_assert(tx_ptr.wallet_ptr->network_info.chain_id == 1);
 	ck_assert(tx_ptr.wallet_ptr->network_info.eip155_compatibility == BOAT_FALSE);
 	printf("++++++++++++tx_ptr.rawtx_fields.gasprice.field: %s\n",tx_ptr.rawtx_fields.gasprice.field);
@@ -283,7 +277,7 @@ END_TEST
 
 /*
 BCHAR * BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
-								 BUINT8 *func_param_ptr, BUINT32 func_param_len )
+		 BUINT8 *func_param_ptr, BUINT32 func_param_len )
 */
 
 START_TEST(test_Api_Transfer) {
@@ -352,14 +346,3 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -7,7 +7,8 @@ OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatcontract.a \
 				  $(BOAT_LIB_DIR)/libboatwallet.a \
 				  $(BOAT_LIB_DIR)/libboathwdep.a \
-				  $(LINK_LIBS)
+				  $(LINK_LIBS) \
+				  -lcheck
 
 all: $(OBJECTS_DIR) $(OBJECTS)	
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) -o $(BOAT_BUILD_DIR)/tests/boat_10_case \
