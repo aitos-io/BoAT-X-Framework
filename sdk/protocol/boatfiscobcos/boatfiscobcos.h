@@ -52,7 +52,7 @@ extern "C" {
  *       4. blocklimit(transaction life cycle);
  *       5. recipient;
  *       6. value(currently not used in de-coinized FISCO BCOS);
- *       7. data(contain at least an 8-byte bigendian txtype field in data);
+ *       7. data;
  *       8. chainid(record the chain/business information to which the transaction belongs);
  *       9. groupid(group to which this transaction belongs);
  *      11. extraData(reserved segment);

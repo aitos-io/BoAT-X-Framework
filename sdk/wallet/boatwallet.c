@@ -93,6 +93,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 {
     BSINT32 i;
     BUINT8  loaded_wallet_config_array[wallet_config_size];
+	BoatWalletPriKeyId  priKeyIdTmp;
 
     /* Check wallet configuration */ 
     if( wallet_name_str == NULL && wallet_config_ptr == NULL )
@@ -100,18 +101,6 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
         BoatLog(BOAT_LOG_NORMAL, "Invalid wallet configuration.");
         return BOAT_ERROR;
     }
-
-	/* Hyperledger Fabric does not support one-time wallet */
-	if( ( protocol_type == BOAT_PROTOCOL_HLFABRIC ) && ( wallet_name_str == NULL ) ){
-		BoatLog(BOAT_LOG_NORMAL, "Hyperledger Fabric does not support one-time wallet.");
-        return BOAT_ERROR;
-	}
-	
-	/* Fiscobcos Follow the access mechanism, does not support one-time wallet */
-	if( ( protocol_type == BOAT_PROTOCOL_FISCOBCOS ) && ( wallet_name_str == NULL ) ){
-		BoatLog(BOAT_LOG_NORMAL, "Fiscobcos does not support one-time wallet.");
-        return BOAT_ERROR;
-	}
 	
     /* For Multi-Thread Support: ObtainMutex Here */
     for( i = 0; i < BOAT_MAX_WALLET_NUM; i++ )
@@ -134,6 +123,23 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
     {
         if( wallet_config_ptr != NULL )
         {
+			/* Update wallet_config_ptr information to protect sensitive information */
+			//! @todo
+			/* step-1:  generate prikeyIdTmp */
+			BoatPort_keyCreate( wallet_config_ptr, &priKeyIdTmp );
+			
+			/* step-2:  assign value of prikeyIdTmp to wallet_config_ptr */
+			memcpy( &( ((BoatWalletPriKeyId_config*)wallet_config_ptr)->private_KeyId), &priKeyIdTmp, sizeof(priKeyIdTmp) );
+			
+			/* step-3:  clear  sensitive information in wallet_config_ptr */
+			((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_type         = BOAT_WALLET_PRIKEY_UNKNOWN;
+			memset( ((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content, 0, 
+					sizeof(((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content) );
+			((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content_size = 0;
+			BoatLog( BOAT_LOG_NORMAL, "=====================prikey_content length: %d.", 
+					 sizeof(((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content) );
+			
+			
             /* Create persistent wallet / Overwrite existed configuration */
             if( BOAT_SUCCESS != BoatPersistStore(wallet_name_str, wallet_config_ptr, wallet_config_size) )
             {

@@ -388,8 +388,9 @@ __BOATSTATIC BOAT_RESULT hlfabricTransactionPayloadDataPacked(BoatHlfabricTx *tx
 	BUINT8 txIdBin[32];
 	BoatFieldVariable signatureHeadPacked;
 	BoatFieldVariable payloadDataPacked;
-	
+	BUINT16      i = 0;
 	BOAT_RESULT result = BOAT_SUCCESS;
+
     boat_try_declare;
 	
 	/* chaincode_proposal_payload */
@@ -405,13 +406,13 @@ __BOATSTATIC BOAT_RESULT hlfabricTransactionPayloadDataPacked(BoatHlfabricTx *tx
     chaincodeEndorsedAction.proposal_response_payload.len  = tx_ptr->endorserResponse.response[0].payload.field_len;
     chaincodeEndorsedAction.proposal_response_payload.data = tx_ptr->endorserResponse.response[0].payload.field_ptr;
 	chaincodeEndorsedAction.n_endorsements                 = tx_ptr->endorserResponse.responseCount;
-	for( int i = 0; i < sizeof(endorsement)/sizeof(endorsement[0]); i++ )
+	for( i = 0; i < sizeof(endorsement)/sizeof(endorsement[0]); i++ )
 	{
 		endorsement[i]     = endorsement[0];
 		endorsement_ptr[i] = &endorsement[i];
 	}
     chaincodeEndorsedAction.endorsements                   = endorsement_ptr;
-	for( int i = 0; i < chaincodeEndorsedAction.n_endorsements; i++ )
+	for( i = 0; i < chaincodeEndorsedAction.n_endorsements; i++ )
 	{
 		endorsement[i].has_endorser    = true;   
 		endorsement[i].endorser.len    = tx_ptr->endorserResponse.response[i].endorser.field_len;
@@ -611,7 +612,7 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	if( tx_ptr->var.type == HLFABRIC_TYPE_PROPOSAL )
 	{
 		tx_ptr->var.nonce.field_len = sizeof(tx_ptr->var.nonce.field);
-		BoatRandom(tx_ptr->var.nonce.field, tx_ptr->var.nonce.field_len, NULL);
+		result = BoatRandom(tx_ptr->var.nonce.field, tx_ptr->var.nonce.field_len, NULL);
 	}
 	if( result != BOAT_SUCCESS )
 	{

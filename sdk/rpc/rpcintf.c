@@ -27,7 +27,7 @@ RPC_USE_XXX macros.
 
 void * RpcInit(void)
 {
-    void * rpc_context_ptr;
+    void * rpc_context_ptr = NULL;
 
 #if RPC_USE_LIBCURL == 1
     rpc_context_ptr = CurlPortInit();
@@ -56,7 +56,7 @@ BOAT_RESULT RpcRequestSync( void *rpc_context_ptr,
                             BOAT_OUT BUINT8 **response_pptr,
                             BOAT_OUT BUINT32 *response_len_ptr )
 {
-    BOAT_RESULT result;
+    BOAT_RESULT result = BOAT_ERROR;
     
 #if RPC_USE_LIBCURL == 1
     result = CurlPortRequestSync( rpc_context_ptr, (const BCHAR *)request_ptr, request_len, 

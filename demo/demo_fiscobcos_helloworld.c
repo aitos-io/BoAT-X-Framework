@@ -33,9 +33,9 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR *wallet_name)
     BoatFiscobcosWalletConfig wallet_config;
 
 	/* wallet_config value assignment */
-	strncpy( (char*)wallet_config.prikeyId, 
-			 "/mnt/sharework/boatiotsdk_fabric/demo/demo_key/fiscobcos_client.key", 
-			 BOAT_KEYID_MAX_LEN - 1 );
+	//strncpy( (char*)wallet_config.prikeyId, 
+	//		 "/mnt/sharework/boatiotsdk_fabric/demo/demo_key/fiscobcos_client.key", 
+	//		 BOAT_KEYID_MAX_LEN - 1 );
     strncpy( wallet_config.node_url_str, "http://127.0.0.1:8545", BOAT_NODE_URL_MAX_LEN - 1 );
 
 	/* create fiscobcos wallet */

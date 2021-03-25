@@ -43,6 +43,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 {
 	BCHAR   *retval_str = NULL;
     BOAT_RESULT result;
+    BUINT16      i = 0;
 
     if( (wallet_ptr == NULL) || (tx_ptr == NULL) || (gasprice_str == NULL) || (recipient_str == NULL) )
     {
@@ -132,19 +133,19 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	//convert to bigendian uint256
 	BoatFieldMax32B  blocklimitTmp;
 	memset( &blocklimitTmp, 0, sizeof(BoatFieldMax32B) );
-	for( int i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++ )
+	for( i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++ )
 	{
 		blocklimitTmp.field[31 - i] = tx_ptr->rawtx_fields.blocklimit.field[tx_ptr->rawtx_fields.blocklimit.field_len - i - 1];
 	}
 	BoatLog_hexdump(BOAT_LOG_NORMAL, "blocklimitTmp1:", blocklimitTmp.field, 32);
 	
 	//convert bigendian uint256 to bignumber
-	bignum256 convertTmp;
+	utility_bignum256 convertTmp;
 	BUINT32   blockLimitOffset = 500; //value should rangle of 1 ~ 1000
 	Utility_readBigendToBignum( &blocklimitTmp.field[0], &convertTmp );
 	
 	//execute bignumber plus uint
-	for( int i = 0; i < 9; i++ )
+	for( i = 0; i < 9; i++ )
 	{
 		blockLimitOffset += convertTmp.val[i];
 		convertTmp.val[i] = blockLimitOffset & 0x3FFFFFFF;
@@ -157,7 +158,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	memset(tx_ptr->rawtx_fields.blocklimit.field, 0, 32);
 	
 	//convert bigendian uint256 to foregone
-	for(int i = 0; i < 32; i++)
+	for( i = 0; i < 32; i++)
 	{
 		if(blocklimitTmp.field[i] != 0x00)
 		{
@@ -165,7 +166,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 		}
 	}
 	tx_ptr->rawtx_fields.blocklimit.field_len = blocklimitTmp.field_len;//update data length
-	for(int i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++)
+	for( i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++)
 	{
 		tx_ptr->rawtx_fields.blocklimit.field[i] = blocklimitTmp.field[32 - tx_ptr->rawtx_fields.blocklimit.field_len + i];
 	}

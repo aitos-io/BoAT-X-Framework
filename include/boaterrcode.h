@@ -41,4 +41,5 @@ boaterrcode.h defines error codes.
 #define BOAT_ERROR_FAILED_GEN_SIGNATURE          (-113)
 #define BOAT_ERROR_BAD_FILE_DESCRIPTOR           (-114)
 
+
 #endif

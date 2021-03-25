@@ -70,7 +70,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec( BoatHlfabricTx *tx_ptr,
 	/* prepare http2-request argument */
 	for( int i = 0; i < nodeMaxNum; i++ )
 	{
-		if( ( (nodeInfo + i) != NULL ) && 
+		if( ( NULL != (BoatHlfabricNodeInfo *)(nodeInfo + i) ) && 
 		    ( (nodeInfo + i)->nodeUrl != NULL ) && ( strlen((nodeInfo + i)->nodeUrl) > 0 ) )
 		{
 			tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = (nodeInfo + i)->nodeUrl;
@@ -300,8 +300,9 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr,
 											 BUINT32 rootCaNumber )
 {
 	BUINT32      stringLen;
-	
-	BOAT_RESULT  result = BOAT_SUCCESS;
+	BUINT16      i = 0;
+
+    BOAT_RESULT  result = BOAT_SUCCESS;
 	boat_try_declare;
 	
 	if(rootCaFileName == NULL)
@@ -316,14 +317,14 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr,
 	}
 	
 	/* initialization */
-	for( int i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
+	for( i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
 	{
 		wallet_ptr->tlsCAchain.ca[i].field_len = 0;
 		wallet_ptr->tlsCAchain.ca[i].field_ptr = NULL;
 	}
 	
 	/* assignment */
-	for( int i = 0 ; i < rootCaNumber; i++ )
+	for( i = 0 ; i < rootCaNumber; i++ )
 	{
 		if( (*(rootCaFileName + i) != NULL) && (stringLen = strlen(*(rootCaFileName + i)) > 0) )
 		{
@@ -366,7 +367,7 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
 	 	result = boat_exception;
 		/* free malloc param Deinit */	
-		for(int i = 0 ; i < rootCaNumber; i++)
+		for( i = 0 ; i < rootCaNumber; i++)
 		{
 			if(wallet_ptr->tlsCAchain.ca[i].field_ptr != NULL)
 			{
@@ -409,12 +410,12 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 	}
 	
 	/* initialization */
-	for( int i = 0; i < HLFABRIC_ORDERER_MAX_NUM; i++ )
+	for( i = 0; i < HLFABRIC_ORDERER_MAX_NUM; i++ )
 	{
 		wallet_ptr->network_info.orderer[i].nodeUrl   = NULL;
 		wallet_ptr->network_info.orderer[i].hostName  = NULL;
 	}
-	for( int i = 0; i < HLFABRIC_ENDORSER_MAX_NUM; i++ )
+	for( i = 0; i < HLFABRIC_ENDORSER_MAX_NUM; i++ )
 	{
 		wallet_ptr->network_info.endorser[i].nodeUrl   = NULL;
 		wallet_ptr->network_info.endorser[i].hostName  = NULL;
@@ -529,13 +530,13 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 		BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
 	 	result = boat_exception;
 		/* free malloc param Deinit */
-		for( int i = 0; i < wallet_ptr->network_info.ordererNum; i++ )
+		for( 0; i < wallet_ptr->network_info.ordererNum; i++ )
 		{
 			BoatFree(wallet_ptr->network_info.orderer[i].nodeUrl);
 			BoatFree(wallet_ptr->network_info.orderer[i].hostName);
 		}
 		wallet_ptr->network_info.ordererNum = 0;
-		for( int i = 0; i < wallet_ptr->network_info.endorserNum; i++ )
+		for( i = 0; i < wallet_ptr->network_info.endorserNum; i++ )
 		{
 			BoatFree(wallet_ptr->network_info.endorser[i].nodeUrl);
 			BoatFree(wallet_ptr->network_info.endorser[i].hostName);
@@ -551,6 +552,7 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
 {
     BoatHlfabricWallet  *wallet_ptr;
     BOAT_RESULT         result = BOAT_SUCCESS;
+    BUINT16      i = 0;
 
 	if( ( config_ptr == NULL ) || ( config_size == 0 ) )
 	{
@@ -583,18 +585,18 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
 	wallet_ptr->tlsClinet_info.cert.field_ptr         = NULL;
 	wallet_ptr->tlsClinet_info.cert.field_len         = 0;
 #endif
-	for( int i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
+	for( i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
 	{
 		wallet_ptr->tlsCAchain.ca[i].field_len = 0;
 		wallet_ptr->tlsCAchain.ca[i].field_ptr = NULL;
 	}
 #endif
-	for( int i = 0; i < HLFABRIC_ORDERER_MAX_NUM; i++ )
+	for( i = 0; i < HLFABRIC_ORDERER_MAX_NUM; i++ )
 	{
 		wallet_ptr->network_info.orderer[i].nodeUrl   = NULL;
 		wallet_ptr->network_info.orderer[i].hostName  = NULL;
 	}
-	for( int i = 0; i < HLFABRIC_ENDORSER_MAX_NUM; i++ )
+	for( i = 0; i < HLFABRIC_ENDORSER_MAX_NUM; i++ )
 	{
 		wallet_ptr->network_info.endorser[i].nodeUrl   = NULL;
 		wallet_ptr->network_info.endorser[i].hostName  = NULL;
@@ -631,58 +633,60 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
 
 
 void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr )
-{	
-	if( wallet_ptr == NULL )
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr needn't DeInit: wallet_ptr is NULL.");
-		return;
-	}
-    
-	/* account_info DeInit */
-	BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
-	wallet_ptr->account_info.prikeyId.field_len = 0;
-	BoatFree(wallet_ptr->account_info.cert.field_ptr);
-	wallet_ptr->account_info.cert.field_len     = 0;
-	
-	/* tlsClinet_info DeInit */
+{
+    BUINT16      i = 0;
+
+    if( NULL == wallet_ptr )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr needn't DeInit: wallet_ptr is NULL.");
+        return;
+    }
+
+    /* account_info DeInit */
+    BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
+    wallet_ptr->account_info.prikeyId.field_len = 0;
+    BoatFree(wallet_ptr->account_info.cert.field_ptr);
+    wallet_ptr->account_info.cert.field_len     = 0;
+
+    /* tlsClinet_info DeInit */
 #if (HLFABRIC_TLS_SUPPORT == 1)
 #if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-	BoatFree(wallet_ptr->tlsClinet_info.prikeyId.field_ptr);
-	wallet_ptr->tlsClinet_info.prikeyId.field_len = 0;
-	BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
-	wallet_ptr->tlsClinet_info.cert.field_len     = 0;
+    BoatFree(wallet_ptr->tlsClinet_info.prikeyId.field_ptr);
+    wallet_ptr->tlsClinet_info.prikeyId.field_len = 0;
+    BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
+    wallet_ptr->tlsClinet_info.cert.field_len     = 0;
 #endif /* #if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1) */
-	// for c99, free(NULL) will return directly, so here
-	// use HLFABRIC_ROOTCA_MAX_NUM as cyclic maximum is acceptable.
-	for( int i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
-	{
-		BoatFree( wallet_ptr->tlsCAchain.ca[i].field_ptr );
-		wallet_ptr->tlsCAchain.ca[i].field_len = 0;
-	}
+    // for c99, free(NULL) will return directly, so here
+    // use HLFABRIC_ROOTCA_MAX_NUM as cyclic maximum is acceptable.
+    for( i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
+    {
+        BoatFree( wallet_ptr->tlsCAchain.ca[i].field_ptr );
+        wallet_ptr->tlsCAchain.ca[i].field_len = 0;
+    }
 #endif /* #if (HLFABRIC_TLS_SUPPORT == 1) */
-	
-	/* network_info DeInit */
-	for( int i = 0; i < wallet_ptr->network_info.ordererNum; i++ )
-	{
-		BoatFree(wallet_ptr->network_info.orderer[i].nodeUrl);
-		BoatFree(wallet_ptr->network_info.orderer[i].hostName);
-	}
-	wallet_ptr->network_info.ordererNum = 0;
-	for( int i = 0; i < wallet_ptr->network_info.endorserNum; i++ )
-	{
-		BoatFree(wallet_ptr->network_info.endorser[i].nodeUrl);
-		BoatFree(wallet_ptr->network_info.endorser[i].hostName);
-	}
-	wallet_ptr->network_info.endorserNum = 0;
 
-	/* http2Context DeInit */
-	http2DeInit(wallet_ptr->http2Context_ptr);
-	
-	/* wallet_ptr DeInit */
-	BoatFree(wallet_ptr);
-	
-	/* set NULL after free completed */
-	wallet_ptr = NULL; 
+    /* network_info DeInit */
+    for( i = 0; i < wallet_ptr->network_info.ordererNum; i++ )
+    {
+        BoatFree(wallet_ptr->network_info.orderer[i].nodeUrl);
+        BoatFree(wallet_ptr->network_info.orderer[i].hostName);
+    }
+    wallet_ptr->network_info.ordererNum = 0;
+    for( i = 0; i < wallet_ptr->network_info.endorserNum; i++ )
+    {
+        BoatFree(wallet_ptr->network_info.endorser[i].nodeUrl);
+        BoatFree(wallet_ptr->network_info.endorser[i].hostName);
+    }
+    wallet_ptr->network_info.endorserNum = 0;
+
+    /* http2Context DeInit */
+    http2DeInit(wallet_ptr->http2Context_ptr);
+
+    /* wallet_ptr DeInit */
+    BoatFree(wallet_ptr);
+
+    /* set NULL after free completed */
+    wallet_ptr = NULL; 
 }
 
 
@@ -697,9 +701,10 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
 	BUINT32       stringLen;
 	BCHAR*        paramSrcList[5];
 	BCHAR**       paramDstList[5];
-	
+	BUINT16      i = 0;
     BOAT_RESULT  result = BOAT_SUCCESS;
-	boat_try_declare;
+
+    boat_try_declare;
 
 	if( ( tx_ptr == NULL ) || (wallet_ptr == NULL) )
 	{
@@ -715,7 +720,7 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
 	tx_ptr->var.timestamp.sec   = 0;
 	tx_ptr->var.timestamp.nanos = 0;
 	tx_ptr->var.nonce.field_len = 0;
-	for( int i = 0; i < 24; i++ )
+	for( i = 0; i < 24; i++ )
 	{
 		tx_ptr->var.nonce.field[i] = 0;
 	}
@@ -723,7 +728,7 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
 	tx_ptr->var.chaincodeId.path    = NULL;
 	tx_ptr->var.chaincodeId.version = NULL;
 	tx_ptr->var.args.nArgs       = 0;
-	for( int i = 0; i < HLFABRIC_ARGS_MAX_NUM; i++ )
+	for( i = 0; i < HLFABRIC_ARGS_MAX_NUM; i++ )
 	{
 		tx_ptr->var.args.args[i] = NULL;
 	}
@@ -731,7 +736,7 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
 	tx_ptr->var.orgName             = NULL;
 	/* ----->tx_ptr->endorserResponse reset */
 	tx_ptr->endorserResponse.responseCount = 0;
-	for(int i = 0; i < HLFABRIC_ENDORSER_MAX_NUM; i++)
+	for( i = 0; i < HLFABRIC_ENDORSER_MAX_NUM; i++)
 	{
 		tx_ptr->endorserResponse.response[i].contentPtr          = NULL;
 		tx_ptr->endorserResponse.response[i].responseType        = HLFABRIC_TYPE_IDLE;
@@ -758,7 +763,7 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
 	paramDstList[3] = &tx_ptr->var.channelId;
 	paramDstList[4] = &tx_ptr->var.orgName;
 	
-	for(int i = 0; i < sizeof(paramSrcList)/sizeof(paramSrcList[0]); i++)
+	for( i = 0; i < sizeof(paramSrcList)/sizeof(paramSrcList[0]); i++)
 	{
 		if( ( paramSrcList[i] != NULL ) && ( (stringLen = strlen(paramSrcList[i])) > 0 ) )
 		{
