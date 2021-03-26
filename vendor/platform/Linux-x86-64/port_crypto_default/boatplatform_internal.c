@@ -123,7 +123,7 @@ BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikey
 	return result;
 }
 
-
+#if 0
 BOAT_RESULT BoatGenOnetimeSignPrikey( const BoatSignatureAlgType type, BUINT8 *outbuf, 
 								      BUINT32 maxLen, BUINT8 *pubX, BUINT8 *pubY, void* rsvd )
 {
@@ -215,8 +215,12 @@ BOAT_RESULT BoatChkPrikeyExist( const BUINT8 *prikeyId, BUINT8 *pubX, BUINT8 *pu
 	
 	return result;
 }
+#endif
 
 
+/******************************************************************************
+                              BOAT FILE OPERATION WARPPER
+*******************************************************************************/
 BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 {
 	FILE   *file_ptr;
@@ -335,7 +339,10 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd )
     }
 }
 
-
+/******************************************************************************
+                              BOAT SOCKET WARPPER
+							  THIS ONLY USED BY FABRIC
+*******************************************************************************/
 BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 {
     int                 connectfd;
@@ -588,7 +595,9 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 
 
 
-
+/******************************************************************************
+                              BOAT KEY PROCESS WARPPER
+*******************************************************************************/
 BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
 {
 	//! @todo

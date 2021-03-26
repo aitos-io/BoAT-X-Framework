@@ -27,7 +27,7 @@ storage:
 platform:
 	make -C $(BOAT_BASE_DIR)/vendor/platform all
 	
-clean:	
+clean:
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS clean
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default clean
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/keccak clean

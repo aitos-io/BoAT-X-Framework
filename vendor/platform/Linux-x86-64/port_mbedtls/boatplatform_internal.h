@@ -113,7 +113,7 @@ BOAT_RESULT  BoatSignature( const BoatSignatureAlgType type, const BUINT8* priKe
 						    size_t* signatureLen, BUINT8* r, BUINT8* s,
 							BUINT8* signaturePrefix, void* rsvd );
 
-
+#if 0
 /*!****************************************************************************
  * @brief 
  *   generate one-time ECP private key.
@@ -172,7 +172,7 @@ BOAT_RESULT BoatGenOnetimeSignPrikey( const BoatSignatureAlgType type, BUINT8 *o
  ******************************************************************************/
 BOAT_RESULT  BoatChkPrikeyExist( const BUINT8 * prikeyId, 
 								 BUINT8 *pubX, BUINT8 *pubY, void* rsvd );
-
+#endif
 
 /*!****************************************************************************
  * @brief 

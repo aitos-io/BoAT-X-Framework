@@ -318,7 +318,7 @@ BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikey
     mbedtls_ctr_drbg_context  ctr_drbg;
 	mbedtls_pk_context        prikeyCtx;
     mbedtls_ecdsa_context* ecPrikey = NULL;
-	BUINT8 raw_r[32]; 
+	BUINT8 raw_r[32];
 	BUINT8 raw_s[32];
 	BUINT8 ecdsPrefix = 0;
 	
@@ -401,7 +401,7 @@ BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikey
 	return result;
 }
 
-
+#if 0
 BOAT_RESULT BoatGenOnetimeSignPrikey( const BoatSignatureAlgType type, BUINT8 *outbuf, 
 								      BUINT32 maxLen, BUINT8 *pubX, BUINT8 *pubY, void* rsvd )
 {
@@ -493,7 +493,7 @@ BOAT_RESULT BoatChkPrikeyExist( const BUINT8 *prikeyId, BUINT8 *pubX, BUINT8 *pu
 	
 	return result;
 }
-
+#endif
 
 BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 {

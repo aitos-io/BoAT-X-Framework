@@ -60,7 +60,7 @@ typedef struct TBoatWalletExtraData
 typedef struct TBoatWalletPriKeyId
 {
     BUINT32               prikey_index;       //!< xxx
-	//BoatWalletPriKeyType  prikey_type;        //!< xxx
+	//BoatWalletPriKeyType  prikey_type;      //!< xxx
 	BoatWalletPubKeyType  pubkey_type;        //!< xxx
     BUINT8                pubkey_content[64]; //!< xxx
     BoatWalletExtraData   extra_data;         //!< used for crypto implemented by software, to store the prikey info.
