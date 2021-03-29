@@ -29,6 +29,7 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #include <unistd.h>
 #include <string.h>
 
+#include "boatwallet.h"
 #include "boatoptions.h"
 #include "boaterrcode.h"
 #include "boattypes.h"
@@ -80,8 +81,5 @@ typedef struct TBoatFiscobcosTx
 }BoatFiscobcosTx;
 
 #endif
-
-#include "boatwallet.h"
-
 
 #endif

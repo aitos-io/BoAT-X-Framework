@@ -23,16 +23,15 @@ boatwallet.h is the SDK header file.
 #ifndef __BOATWALLET_H__
 #define __BOATWALLET_H__
 
-#include "boatiotsdk.h"
-
 /*! @defgroup wallet boat wallet
  * @{
  */
+#include "boattypes.h"
 
 //!@brief XXX
 typedef enum
 {
-    BOAT_WALLET_PRIKEY_UNKNOWN = 0,     //!< Placeholder for unknown prikey
+    BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN = 0,     //!< Placeholder for unknown prikey
     BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM,        //!< xx
     BOAT_WALLET_PRIKEY_FORMAT_PKCS_DER,        //!< xx
     BOAT_WALLET_PRIKEY_FORMAT_PRIMORDIAL,      //!< xx
@@ -50,7 +49,7 @@ typedef enum
 //!@brief XXX
 typedef enum
 {
-	BOAT_WALLET_PUBKEY_UNKNOWN = 0,     //!< Placeholder for unknown prikey
+	BOAT_WALLET_PUBKEY_TYPE_UNKNOWN = 0,     //!< Placeholder for unknown prikey
 	//! @todo
 }BoatWalletPubKeyType;
 

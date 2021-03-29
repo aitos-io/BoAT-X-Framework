@@ -132,7 +132,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 			memcpy( &( ((BoatWalletPriKeyId_config*)wallet_config_ptr)->private_KeyId), &priKeyIdTmp, sizeof(priKeyIdTmp) );
 			
 			/* step-3:  clear  sensitive information in wallet_config_ptr */
-			((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_type         = BOAT_WALLET_PRIKEY_UNKNOWN;
+			((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_type         = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
 			memset( ((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content, 0, 
 					sizeof(((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content) );
 			((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content_size = 0;
