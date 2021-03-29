@@ -25,6 +25,20 @@
 /* self header include */
 #include "boatinternal.h"
 
+//!@brief boat SDK signature result
+typedef struct TBoatSignatureResult
+{
+	BBOOL   native_format_used;  //!< ture: used, false:unused
+	BUINT8  native_sign[64];
+	
+	BBOOL   pkcs_format_used;
+	BUINT8  pkcs_sign[256];
+	
+	BBOOL   signPrefix_used;
+	BUINT8  signPrefix;
+}BoatSignatureResult;
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -57,6 +71,7 @@ extern "C" {
 BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
 
 
+#if 0
 /*!****************************************************************************
  * @brief 
  *   elliptic curve signature function.
@@ -112,6 +127,12 @@ BOAT_RESULT  BoatSignature( const BoatSignatureAlgType type, const BUINT8* priKe
 							const BUINT8* digest, BUINT32 digestLen, BUINT8* signature,
 						    size_t* signatureLen, BUINT8* r, BUINT8* s,
 							BUINT8* signaturePrefix, void* rsvd );
+#endif
+
+BOAT_RESULT BoatSignature( BoatWalletPriKeyId prikeyId, 
+						   const BUINT8* digest, BUINT32 digestLen, 
+						   BoatSignatureResult* signatureResult, void* rsvd );
+
 
 #if 0
 /*!****************************************************************************

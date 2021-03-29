@@ -33,12 +33,18 @@ boatwallet.h is the SDK header file.
 typedef enum
 {
     BOAT_WALLET_PRIKEY_UNKNOWN = 0,     //!< Placeholder for unknown prikey
-    //! @todo should I distinguish DER and PEM of PKCS ?
-    BOAT_WALLET_PRIKEY_PKCS_SECP256K1,  //!< xx
-    BOAT_WALLET_PRIKEY_PKCS_SECP256R1,  //!< xx
-    BOAT_WALLET_PRIKEY_PRIMORDIAL,      //!< xx
-    BOAT_WALLET_PRIKEY_MNEMONIC,        //!< xx
-    BOAT_WALLET_PRIKEY_GENERATION,      //!< xx
+    BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM,        //!< xx
+    BOAT_WALLET_PRIKEY_FORMAT_PKCS_DER,        //!< xx
+    BOAT_WALLET_PRIKEY_FORMAT_PRIMORDIAL,      //!< xx
+    BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC,        //!< xx
+    BOAT_WALLET_PRIKEY_FORMAT_GENERATION,      //!< xx
+}BoatWalletPriKeyFormat;
+
+typedef enum
+{
+    BOAT_WALLET_PRIKEY_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown signature algorithm
+	BOAT_WALLET_PRIKEY_TYPE_SECP256K1,    //!< secp256k1 algorithm
+	BOAT_WALLET_PRIKEY_TYPE_SECP256R1,    //!< secp256r1 algorithm
 }BoatWalletPriKeyType;
 
 //!@brief XXX
@@ -59,20 +65,22 @@ typedef struct TBoatWalletExtraData
 //!@brief XXX
 typedef struct TBoatWalletPriKeyId
 {
-    BUINT32               prikey_index;       //!< xxx
-	//BoatWalletPriKeyType  prikey_type;      //!< xxx
-	BoatWalletPubKeyType  pubkey_type;        //!< xxx
-    BUINT8                pubkey_content[64]; //!< xxx
-    BoatWalletExtraData   extra_data;         //!< used for crypto implemented by software, to store the prikey info.
+    BUINT32                 prikey_index;       //!< xxx
+	BoatWalletPriKeyFormat  prikey_format;
+	BoatWalletPriKeyType    prikey_type;        //!< SDK according to this field to execute signature
+	BoatWalletPubKeyType    pubkey_type;        //!< xxx
+    BUINT8                  pubkey_content[64]; //!< xxx
+    BoatWalletExtraData     extra_data;         //!< used for crypto implemented by software, to store the prikey info.
 }BoatWalletPriKeyId;
 
 
 //!@brief XXX
 typedef struct TBoatWalletPriKeyId_config
 {
-    BoatWalletPriKeyType prikey_type;    //!< xxx
-    BUINT8               prikey_content[512]; //!< xxx
-	BUINT32              prikey_content_size;//!< xxx
+	BoatWalletPriKeyFormat  prikey_format;
+    BoatWalletPriKeyType    prikey_type;    //!< xxx
+    BUINT8                  prikey_content[512]; //!< xxx
+	BUINT32                 prikey_content_size;//!< xxx
 	
 	//! this field will be updated by internal
 	BoatWalletPriKeyId  private_KeyId;  //!< xxx

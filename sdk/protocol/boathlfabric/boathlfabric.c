@@ -634,9 +634,9 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	
 	/* step-4: signature */
 	memset(signature, 0, sizeof(signature));
-	result = BoatSignature( BOAT_SIGNATURE_SECP256R1, 
-							tx_ptr->wallet_ptr->account_info.prikeyId.field_ptr, 
-							hash, sizeof(hash), signature, &signatureLen, NULL, NULL, NULL, NULL );
+	//result = BoatSignature( BOAT_SIGNATURE_SECP256R1, 
+	//						tx_ptr->wallet_ptr->account_info.prikeyId.field_ptr, 
+	//						hash, sizeof(hash), signature, &signatureLen, NULL, NULL, NULL, NULL );
 	if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");

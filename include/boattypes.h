@@ -62,12 +62,12 @@ typedef enum
 }BoatProtocolType;
 
 //!@brief Blockchain signature algorithm
-typedef enum
-{
-    BOAT_SIGNATURE_UNKNOWN = 0,    //!< Placeholder for unknown signature algorithm
-	BOAT_SIGNATURE_SECP256K1,      //!< secp256k1 signature algorithm
-	BOAT_SIGNATURE_SECP256R1       //!< secp256r1 signature algorithm
-}BoatSignatureAlgType;
+//typedef enum
+//{
+//    BOAT_SIGNATURE_UNKNOWN = 0,    //!< Placeholder for unknown signature algorithm
+//	BOAT_SIGNATURE_SECP256K1,      //!< secp256k1 signature algorithm
+//	BOAT_SIGNATURE_SECP256R1       //!< secp256r1 signature algorithm
+//}BoatSignatureAlgType;
 
 //!@brief Blockchain hash algorithm
 typedef enum

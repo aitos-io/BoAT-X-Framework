@@ -67,6 +67,15 @@ BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
 }
 
 
+
+BOAT_RESULT BoatSignature( BoatWalletPriKeyId prikeyId, 
+						   const BUINT8* digest, BUINT32 digestLen, 
+						   BoatSignatureResult* signatureResult, void* rsvd )
+{
+
+}
+
+#if 0
 BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikeyId, 
 						   const BUINT8* digest, BUINT32 digestLen, BUINT8* signature, 
 						   size_t* signatureLen, BUINT8* r, BUINT8* s, 
@@ -122,6 +131,7 @@ BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikey
 
 	return result;
 }
+#endif
 
 #if 0
 BOAT_RESULT BoatGenOnetimeSignPrikey( const BoatSignatureAlgType type, BUINT8 *outbuf, 
