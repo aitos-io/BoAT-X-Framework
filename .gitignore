@@ -9,3 +9,4 @@ contract/
 node_modules/
 package.json
 package-lock.json
+.vscode/settings.json

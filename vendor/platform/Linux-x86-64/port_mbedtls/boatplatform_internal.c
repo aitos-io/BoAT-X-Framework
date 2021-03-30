@@ -59,18 +59,19 @@
 static int ecdsa_signature_to_asn1( const mbedtls_mpi *r, const mbedtls_mpi *s,
 								    unsigned char *sig, size_t *slen )
 {
-    //unsigned char buf[MBEDTLS_ECDSA_MAX_LEN];
-    //unsigned char *p = buf + sizeof( buf );
-    //size_t len = 0;
+    unsigned char buf[MBEDTLS_ECDSA_MAX_LEN];
+    unsigned char *p = buf + sizeof( buf );
+    size_t len = 0;
+	int ret;
 
-    //MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_mpi( &p, buf, s ) );
-    //MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_mpi( &p, buf, r ) );
-    //MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_len( &p, buf, len ) );
-    //MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_tag( &p, buf,
-	//					  MBEDTLS_ASN1_CONSTRUCTED | MBEDTLS_ASN1_SEQUENCE ) );
+    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_mpi( &p, buf, s ) );
+    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_mpi( &p, buf, r ) );
+    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_len( &p, buf, len ) );
+    MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_tag( &p, buf,
+						  MBEDTLS_ASN1_CONSTRUCTED | MBEDTLS_ASN1_SEQUENCE ) );
 
-    //memcpy( sig, p, len );
-    //*slen = len;
+    memcpy( sig, p, len );
+    *slen = len;
 
     return( 0 );
 }
@@ -314,103 +315,12 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd )
 {
-	//mbedtls_entropy_context   entropy;
-    //mbedtls_ctr_drbg_context  ctr_drbg;
-	//mbedtls_pk_context        prikeyCtx;
-    //mbedtls_ecdsa_context* ecPrikey = NULL;
-	//BUINT8 raw_r[32];
-	//BUINT8 raw_s[32];
-	//BUINT8 ecdsPrefix = 0;
-	
-	//BOAT_RESULT result;
-	//boat_try_declare;
-	
-	//(void)rsvd;
-	
-	///* param check */
-	//if( (digest == NULL) || (signatureResult == NULL) )
-	//{
-	//	BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
-	//	return BOAT_ERROR_NULL_POINTER;
-	//}
-
-    //mbedtls_entropy_init( &entropy );
-    //mbedtls_ctr_drbg_init( &ctr_drbg );
-	//mbedtls_pk_init( &prikeyCtx );
-	
-	//result = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0 );
-	//if(result != 0)
-	//{
-	//	BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ctr_drbg_seed." );
-    //    boat_throw( result, BoatSignature_exception );
-    //}
-	
-	//if( (strstr( (const char *)prikeyId, "-----BEGIN " ) != NULL) && \
-	//	(strstr( (const char *)prikeyId, "-----END " )   != NULL) && \
-	//	(strstr( (const char *)prikeyId, " PRIVATE KEY-----" ) != NULL) )
-	//{
-	//	/* prikeyId is prikey content */
-	//	result = mbedtls_pk_parse_key( &prikeyCtx, prikeyId, strlen((const char*)prikeyId) + 1, NULL, 0 );
-	//}else{
-	//	/* prikeyId is prikey path */
-	//	BoatLog( BOAT_LOG_NORMAL, "execute mbedtls_pk_parse_keyfile..." );
-	//	result = mbedtls_pk_parse_keyfile( &prikeyCtx, (const char*)prikeyId, NULL );
-	//}
-    //if(result != 0)
-	//{
-	//	BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_pk_parse." );
-    //    boat_throw( result, BoatSignature_exception );
-    //}
-	//ecPrikey = mbedtls_pk_ec( prikeyCtx );
-
-	///* signature process */
-	//result = Boat_private_ecdsa_sign( ecPrikey, digest, digestLen, signature, signatureLen, raw_r, raw_s, 
-	//						  mbedtls_ctr_drbg_random, &ctr_drbg,
-	//						  mbedtls_ctr_drbg_random, &ctr_drbg, &ecdsPrefix );
-	//if(result != 0)
-	//{
-	//	BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ecdsa_write_signature." );
-	//	boat_throw( result, BoatSignature_exception );
-	//}
-	
-	//if( r != NULL )
-	//{
-	//	memcpy(r, raw_r, 32);
-	//}
-	//if( s != NULL )
-	//{
-	//	memcpy(s, raw_s, 32);
-	//}
-	//if( signaturePrefix != NULL )
-	//{
-	//	*signaturePrefix = ecdsPrefix;
-	//}
-
-	///* boat catch handle */
-	//boat_catch( BoatSignature_exception )
-	//{
-    //    BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
-    //    result = boat_exception;
-    //}
-	
-	///* free */
-	//mbedtls_entropy_free( &entropy );
-    //mbedtls_ctr_drbg_free( &ctr_drbg );
-	//mbedtls_pk_free( &prikeyCtx );
-
-	//return result;
-}
-
-#if 0
-BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikeyId, 
-						   const BUINT8* digest, BUINT32 digestLen, BUINT8* signature, 
-						   size_t* signatureLen, BUINT8* r, BUINT8* s, 
-						   BUINT8* signaturePrefix, void* rsvd )
-{	
 	mbedtls_entropy_context   entropy;
     mbedtls_ctr_drbg_context  ctr_drbg;
-	mbedtls_pk_context        prikeyCtx;
+	mbedtls_pk_context        mbedtls_pkCtx;
     mbedtls_ecdsa_context* ecPrikey = NULL;
+	BUINT8 signatureTmp[139];
+	size_t signatureTmpLen;
 	BUINT8 raw_r[32];
 	BUINT8 raw_s[32];
 	BUINT8 ecdsPrefix = 0;
@@ -421,15 +331,15 @@ BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikey
 	(void)rsvd;
 	
 	/* param check */
-	if( (signature == NULL) || (signatureLen == NULL) )
+	if( (digest == NULL) || (signatureResult == NULL) )
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'signature' or 'signatureLen' can't be NULL." );
+		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
 		return BOAT_ERROR_NULL_POINTER;
 	}
 
     mbedtls_entropy_init( &entropy );
     mbedtls_ctr_drbg_init( &ctr_drbg );
-	mbedtls_pk_init( &prikeyCtx );
+	mbedtls_pk_init( &mbedtls_pkCtx );
 	
 	result = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0 );
 	if(result != 0)
@@ -438,46 +348,48 @@ BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikey
         boat_throw( result, BoatSignature_exception );
     }
 	
-	if( (strstr( (const char *)prikeyId, "-----BEGIN " ) != NULL) && \
-		(strstr( (const char *)prikeyId, "-----END " )   != NULL) && \
-		(strstr( (const char *)prikeyId, " PRIVATE KEY-----" ) != NULL) )
+	if( prikeyCtx.prikey_format == BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM )
 	{
-		/* prikeyId is prikey content */
-		result = mbedtls_pk_parse_key( &prikeyCtx, prikeyId, strlen((const char*)prikeyId) + 1, NULL, 0 );
-	}else{
-		/* prikeyId is prikey path */
-		BoatLog( BOAT_LOG_NORMAL, "execute mbedtls_pk_parse_keyfile..." );
-		result = mbedtls_pk_parse_keyfile( &prikeyCtx, (const char*)prikeyId, NULL );
+		/* get prikey content according to prikey index */
+		//! @todo function todo
+		
+		/* parse is prikey content */
+		//result = mbedtls_pk_parse_key( &mbedtls_pkCtx, prikeyCtx., strlen((const char*)prikeyId) + 1, NULL, 0 );
+	}
+	else
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET." );
+        boat_throw( BOAT_ERROR, BoatSignature_exception );
 	}
     if(result != 0)
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_pk_parse." );
         boat_throw( result, BoatSignature_exception );
     }
-	ecPrikey = mbedtls_pk_ec( prikeyCtx );
+	ecPrikey = mbedtls_pk_ec( mbedtls_pkCtx );
 
 	/* signature process */
-	result = Boat_private_ecdsa_sign( ecPrikey, digest, digestLen, signature, signatureLen, raw_r, raw_s, 
-							  mbedtls_ctr_drbg_random, &ctr_drbg,
-							  mbedtls_ctr_drbg_random, &ctr_drbg, &ecdsPrefix );
+	result = Boat_private_ecdsa_sign( ecPrikey, digest, digestLen, signatureTmp, &signatureTmpLen, raw_r, raw_s, 
+							 		  mbedtls_ctr_drbg_random, &ctr_drbg,
+							  		  mbedtls_ctr_drbg_random, &ctr_drbg, &ecdsPrefix );
 	if(result != 0)
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ecdsa_write_signature." );
 		boat_throw( result, BoatSignature_exception );
 	}
 	
-	if( r != NULL )
-	{
-		memcpy(r, raw_r, 32);
-	}
-	if( s != NULL )
-	{
-		memcpy(s, raw_s, 32);
-	}
-	if( signaturePrefix != NULL )
-	{
-		*signaturePrefix = ecdsPrefix;
-	}
+	// signature result assign
+	signatureResult->pkcs_format_used = true;
+	signatureResult->pkcs_sign_length = signatureTmpLen;
+	memset(signatureResult->pkcs_sign, 0, sizeof(signatureResult->pkcs_sign));
+	memcpy(signatureResult->pkcs_sign, signatureTmp, signatureResult->pkcs_sign_length);
+	
+	signatureResult->native_format_used = true;
+	memcpy(	&signatureResult->native_sign[0],  raw_r, 32 );
+	memcpy(	&signatureResult->native_sign[32], raw_s, 32 );
+
+	signatureResult->signPrefix_used = true;
+	signatureResult->signPrefix      = ecdsPrefix;
 
 	/* boat catch handle */
 	boat_catch( BoatSignature_exception )
@@ -485,110 +397,15 @@ BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikey
         BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
         result = boat_exception;
     }
-	
+
 	/* free */
 	mbedtls_entropy_free( &entropy );
     mbedtls_ctr_drbg_free( &ctr_drbg );
-	mbedtls_pk_free( &prikeyCtx );
+	mbedtls_pk_free( &mbedtls_pkCtx );
 
 	return result;
 }
-#endif
 
-
-#if 0
-BOAT_RESULT BoatGenOnetimeSignPrikey( const BoatSignatureAlgType type, BUINT8 *outbuf, 
-								      BUINT32 maxLen, BUINT8 *pubX, BUINT8 *pubY, void* rsvd )
-{
-    mbedtls_entropy_context   entropy;
-    mbedtls_ctr_drbg_context  ctr_drbg;
-	mbedtls_pk_context        key;
-	BOAT_RESULT               result = BOAT_SUCCESS;
-	
-	(void)rsvd;
-	
-	if( (outbuf == NULL) || (pubX == NULL) || (pubY == NULL) )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'outbuf' or 'pubX' or 'pubY' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
-	}
-	
-    mbedtls_entropy_init( &entropy );
-    mbedtls_ctr_drbg_init( &ctr_drbg );
-	mbedtls_pk_init( &key );
-
-	result += mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
-    result += mbedtls_pk_setup( &key, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY) );
-	
-	if( type == BOAT_SIGNATURE_SECP256K1 )
-	{
-		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec( key ),
-									   mbedtls_ctr_drbg_random, &ctr_drbg );
-	}
-	else if( type == BOAT_SIGNATURE_SECP256R1 )
-	{
-		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec( key ),
-									   mbedtls_ctr_drbg_random, &ctr_drbg );
-	}
-	else
-	{
-		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_NONE, mbedtls_pk_ec( key ),
-									   mbedtls_ctr_drbg_random, &ctr_drbg );
-	}
-	
-	mbedtls_mpi_write_binary(&mbedtls_pk_ec( key )->Q.X, pubX, 32);
-    mbedtls_mpi_write_binary(&mbedtls_pk_ec( key )->Q.Y, pubY, 32);
-	
-    result += mbedtls_pk_write_key_pem( &key, outbuf, maxLen );
-
-	
-    mbedtls_entropy_free( &entropy );
-    mbedtls_ctr_drbg_free( &ctr_drbg );
-	mbedtls_pk_free( &key );
-	
-    return result;
-}
-
-
-BOAT_RESULT BoatChkPrikeyExist( const BUINT8 *prikeyId, BUINT8 *pubX, BUINT8 *pubY, void* rsvd )
-{
-	mbedtls_pk_context prikeyCtx;
-	BOAT_RESULT        result = BOAT_SUCCESS;
-	boat_try_declare;
-
-	(void)rsvd;
-	
-	if( (prikeyId == NULL) || (pubX == NULL) || (pubY == NULL) )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'prikeyId' or 'pubX' or 'pubY' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
-	}
-	
-	mbedtls_pk_init( &prikeyCtx );
-	result = mbedtls_pk_parse_keyfile( &prikeyCtx, (const char*)prikeyId, NULL );
-    if( result != 0 )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to parse keyfile: %s.", prikeyId );
-		boat_throw( result, BoatChkPrikeyExist_exception );
-    }
-	else
-	{
-		mbedtls_mpi_write_binary(&mbedtls_pk_ec( prikeyCtx )->Q.X, pubX, 32);
-		mbedtls_mpi_write_binary(&mbedtls_pk_ec( prikeyCtx )->Q.Y, pubY, 32);
-	}
-	
-	/* boat catch handle */
-	boat_catch(BoatChkPrikeyExist_exception)
-	{
-        BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
-        result = boat_exception;
-    }
-	
-	mbedtls_pk_free( &prikeyCtx );
-	
-	return result;
-}
-#endif
 
 BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 {
@@ -956,11 +773,67 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 }
 
 
-
 BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {
-	//! @todo
-	return BOAT_SUCCESS;
+	mbedtls_entropy_context   entropy;
+    mbedtls_ctr_drbg_context  ctr_drbg;
+	mbedtls_pk_context        key;
+	BOAT_RESULT               result = BOAT_SUCCESS;
+	
+	if( (config == NULL) || (pkCtx == NULL) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
+		return BOAT_ERROR_NULL_POINTER;
+	}
+	
+    mbedtls_entropy_init( &entropy );
+    mbedtls_ctr_drbg_init( &ctr_drbg );
+	mbedtls_pk_init( &key );
+
+	result += mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
+    result += mbedtls_pk_setup( &key, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY) );
+	
+	if( config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1 )
+	{
+		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec( key ),
+									   mbedtls_ctr_drbg_random, &ctr_drbg );
+	}
+	else if( config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1 )
+	{
+		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec( key ),
+									   mbedtls_ctr_drbg_random, &ctr_drbg );
+	}
+	else
+	{
+		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_NONE, mbedtls_pk_ec( key ),
+									   mbedtls_ctr_drbg_random, &ctr_drbg );
+	}
+	
+	// 1- update private key
+	memset( pkCtx->extra_data.map_value, 0, sizeof(pkCtx->extra_data.map_value) );
+    result += mbedtls_pk_write_key_pem( &key, pkCtx->extra_data.map_value, sizeof(pkCtx->extra_data.map_value) );
+	pkCtx->extra_data.map_key = 1; //! @note matbe this field should auto generate.
+
+	// 2- update private key format
+	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM;
+	
+	// 3- update private key type
+	pkCtx->prikey_type   = config->prikey_type;
+
+	// 4- update private key index
+	pkCtx->prikey_index = pkCtx->extra_data.map_key;
+
+	// 5- update public key
+	pkCtx->pubkey_type = BOAT_WALLET_PUBKEY_TYPE_PRIMORDIAL;
+	mbedtls_mpi_write_binary( &mbedtls_pk_ec( key )->Q.X, &pkCtx->pubkey_content[0],  32 );
+    mbedtls_mpi_write_binary( &mbedtls_pk_ec( key )->Q.Y, &pkCtx->pubkey_content[32], 32 );
+
+	// clear
+    mbedtls_entropy_free( &entropy );
+    mbedtls_ctr_drbg_free( &ctr_drbg );
+	mbedtls_pk_free( &key );
+	
+    return result;
 }
 
 BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )

@@ -28,14 +28,16 @@
 //!@brief boat SDK signature result
 typedef struct TBoatSignatureResult
 {
-	BBOOL   native_format_used;  //!< ture: used, false:unused
-	BUINT8  native_sign[64];
+	BBOOL    native_format_used;  //!< ture: used, false:unused
+	BUINT8   native_sign[64];
 	
-	BBOOL   pkcs_format_used;
-	BUINT8  pkcs_sign[256];
+	BBOOL    pkcs_format_used;
+	BUINT8   pkcs_sign[139];  //!< 139 is ECDSA MAX LENGTH, If another type of signature should be
+	                          //!< added later, this value maybe need extend.
+	BUINT32  pkcs_sign_length;
 	
-	BBOOL   signPrefix_used;
-	BUINT8  signPrefix;
+	BBOOL    signPrefix_used;
+	BUINT8   signPrefix;
 }BoatSignatureResult;
 
 
@@ -71,7 +73,6 @@ extern "C" {
 BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
 
 
-#if 0
 /*!****************************************************************************
  * @brief 
  *   elliptic curve signature function.
@@ -79,19 +80,8 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
  * @details
  *   elliptic curve signature function.
  *
- * @param type 
- *	 the signature type.
- *   \n - #BOAT_SIGNATURE_SECP256K1.
- *   \n - #BOAT_SIGNATURE_SECP256R1.
- *
- * @param[in] priKeyId 
- * 	 priKeyId can be the full path of a private key, also the content of private key.
- *   If priKeyId contains both the following:
- *      1. "-----BEGIN "
- *      2. "-----END "
- *      3. " PRIVATE KEY-----"
- *   priKeyId is considered the content of private key; otherwise the full path of 
- *   a private key.
+ * @param[in] prikeyCtx 
+ *   xxxxx
  *
  * @param[in] digest
  *   pointer to disgest message.
@@ -99,23 +89,8 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
  * @param[in] digestLen 
  *   the length of digiest message.
  *
- * @param[out] signature 
- *   ASN.1 format signature.The signature size maximum 139 bytes, caller needs to 
- *   make sure that there is enough space to store it.
- *
- * @param[out] signatureLen 
- *   ASN.1 format signature length.
- *
- * @param[out] r 
- *   the r field of the native signature, the space of this filed is fixed 32 bytes.
- *   caller needs to make sure that there is enough space to store it.
- *
- * @param[out] s 
- *   the s field of the native signature, the space of this filed is fixed 32 bytes.
- *   caller needs to make sure that there is enough space to store it.
- *
- * @param[out] signaturePrefix 
- *   the generate signature Prefix.
+ * @param[out] signatureResult 
+ *   xxxx
  *
  * @param rsvd 
  *   reserved for futrue. 
@@ -123,12 +98,6 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
  * @return BOAT_RESULT 
  *   return BOAT_SUCCESS if generate success; otherwise return a negative error code
  ******************************************************************************/
-BOAT_RESULT  BoatSignature( const BoatSignatureAlgType type, const BUINT8* priKeyId,
-							const BUINT8* digest, BUINT32 digestLen, BUINT8* signature,
-						    size_t* signatureLen, BUINT8* r, BUINT8* s,
-							BUINT8* signaturePrefix, void* rsvd );
-#endif
-
 BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd );

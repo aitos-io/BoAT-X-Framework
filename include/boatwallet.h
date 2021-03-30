@@ -39,6 +39,9 @@ typedef enum
     BOAT_WALLET_PRIKEY_FORMAT_GENERATION,      //!< xx
 }BoatWalletPriKeyFormat;
 
+//! type of privaye key
+//! @note For PKCS format private key, the key type is already included in it,
+//!       but we still suggest to fill this field.
 typedef enum
 {
     BOAT_WALLET_PRIKEY_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown signature algorithm
@@ -50,6 +53,7 @@ typedef enum
 typedef enum
 {
 	BOAT_WALLET_PUBKEY_TYPE_UNKNOWN = 0,     //!< Placeholder for unknown prikey
+    BOAT_WALLET_PUBKEY_TYPE_PRIMORDIAL,
 	//! @todo
 }BoatWalletPubKeyType;
 
@@ -83,7 +87,7 @@ typedef struct TBoatWalletPriKeyCtx_config
     BUINT8                  prikey_content[512];  //!< xxx
 	BUINT32                 prikey_content_size;  //!< xxx
 	
-	//! this field will be updated by internal
+	//! this field will be updated by sdk internal
 	BoatWalletPriKeyCtx     private_KeyCtx;  //!< xxx
 }BoatWalletPriKeyCtx_config;
 
