@@ -68,7 +68,7 @@ BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
 
 
 
-BOAT_RESULT BoatSignature( BoatWalletPriKeyId prikeyId, 
+BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd )
 {
@@ -608,19 +608,19 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
-BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
+BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {
 	//! @todo
 	return BOAT_SUCCESS;
 }
 
-BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
+BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {
 	//! @todo
 	return BOAT_SUCCESS;
 }
 
-BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
+BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {
 	//! @todo
 	return BOAT_SUCCESS;

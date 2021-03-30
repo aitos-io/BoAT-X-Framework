@@ -93,7 +93,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 {
     BSINT32 i;
     BUINT8  loaded_wallet_config_array[wallet_config_size];
-	BoatWalletPriKeyId  priKeyIdTmp;
+	BoatWalletPriKeyCtx  priKeyCtxTmp;
 
     /* Check wallet configuration */ 
     if( wallet_name_str == NULL && wallet_config_ptr == NULL )
@@ -125,19 +125,19 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
         {
 			/* Update wallet_config_ptr information to protect sensitive information */
 			//! @todo
-			/* step-1:  generate prikeyIdTmp */
-			BoatPort_keyCreate( wallet_config_ptr, &priKeyIdTmp );
+			/* step-1:  generate prikeyCtxTmp */
+			BoatPort_keyCreate( wallet_config_ptr, &priKeyCtxTmp );
 			
 			/* step-2:  assign value of prikeyIdTmp to wallet_config_ptr */
-			memcpy( &( ((BoatWalletPriKeyId_config*)wallet_config_ptr)->private_KeyId), &priKeyIdTmp, sizeof(priKeyIdTmp) );
+			memcpy( &( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->private_KeyCtx), &priKeyCtxTmp, sizeof(priKeyCtxTmp) );
 			
 			/* step-3:  clear  sensitive information in wallet_config_ptr */
-			((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_type         = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
-			memset( ((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content, 0, 
-					sizeof(((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content) );
-			((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content_size = 0;
+			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_type         = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
+			memset( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content, 0, 
+					sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );
+			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content_size = 0;
 			BoatLog( BOAT_LOG_NORMAL, "=====================prikey_content length: %d.", 
-					 sizeof(((BoatWalletPriKeyId_config*)wallet_config_ptr)->prikey_content) );
+					 sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );
 			
 			
             /* Create persistent wallet / Overwrite existed configuration */

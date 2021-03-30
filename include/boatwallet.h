@@ -62,28 +62,30 @@ typedef struct TBoatWalletExtraData
 
 
 //!@brief XXX
-typedef struct TBoatWalletPriKeyId
+typedef struct TBoatWalletPriKeyCtx
 {
     BUINT32                 prikey_index;       //!< xxx
 	BoatWalletPriKeyFormat  prikey_format;
-	BoatWalletPriKeyType    prikey_type;        //!< SDK according to this field to execute signature
+	BoatWalletPriKeyType    prikey_type;        //!< SDK according to this field to execute corresponding signature
+	
 	BoatWalletPubKeyType    pubkey_type;        //!< xxx
     BUINT8                  pubkey_content[64]; //!< xxx
-    BoatWalletExtraData     extra_data;         //!< used for crypto implemented by software, to store the prikey info.
-}BoatWalletPriKeyId;
+    
+	BoatWalletExtraData     extra_data;         //!< used for crypto implemented by software, to store the prikey info.
+}BoatWalletPriKeyCtx;
 
 
 //!@brief XXX
-typedef struct TBoatWalletPriKeyId_config
+typedef struct TBoatWalletPriKeyCtx_config
 {
 	BoatWalletPriKeyFormat  prikey_format;
-    BoatWalletPriKeyType    prikey_type;    //!< xxx
-    BUINT8                  prikey_content[512]; //!< xxx
-	BUINT32                 prikey_content_size;//!< xxx
+    BoatWalletPriKeyType    prikey_type;          //!< xxx
+    BUINT8                  prikey_content[512];  //!< xxx
+	BUINT32                 prikey_content_size;  //!< xxx
 	
 	//! this field will be updated by internal
-	BoatWalletPriKeyId  private_KeyId;  //!< xxx
-}BoatWalletPriKeyId_config;
+	BoatWalletPriKeyCtx     private_KeyCtx;  //!< xxx
+}BoatWalletPriKeyCtx_config;
 
 
 //!@brief XXX

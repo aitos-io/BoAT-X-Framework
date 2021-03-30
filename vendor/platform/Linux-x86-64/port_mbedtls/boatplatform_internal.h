@@ -129,7 +129,7 @@ BOAT_RESULT  BoatSignature( const BoatSignatureAlgType type, const BUINT8* priKe
 							BUINT8* signaturePrefix, void* rsvd );
 #endif
 
-BOAT_RESULT BoatSignature( BoatWalletPriKeyId prikeyId, 
+BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd );
 

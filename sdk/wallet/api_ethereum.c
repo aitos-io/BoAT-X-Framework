@@ -30,7 +30,7 @@ BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32
 {
     BoatEthWallet *wallet_ptr;
     BOAT_RESULT result;
-	BBOOL prikeyIdIsEmpty = true;
+	//BBOOL prikeyIdIsEmpty = true;
 	BUINT8 pubkeyHash[32];
 	BUINT8 hashLenDummy;
 
@@ -110,10 +110,10 @@ BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32
 //	}
 	
 	//Configure priKey information
-	memcpy(&wallet_ptr->account_info.prikeyId, &config_ptr->prikeyId_config.private_KeyId, sizeof(BoatWalletPriKeyId));
+	memcpy(&wallet_ptr->account_info.prikeyCtx, &config_ptr->prikeyCtx_config.private_KeyCtx, sizeof(BoatWalletPriKeyCtx));
 	
 	// Configure account address	
-	BoatHash(BOAT_HASH_KECCAK256, wallet_ptr->account_info.prikeyId.pubkey_content, 
+	BoatHash(BOAT_HASH_KECCAK256, wallet_ptr->account_info.prikeyCtx.pubkey_content, 
 			 64, pubkeyHash, &hashLenDummy, NULL);
 	memcpy(wallet_ptr->account_info.address, &pubkeyHash[32 - BOAT_ETH_ADDRESS_SIZE], BOAT_ETH_ADDRESS_SIZE);
     

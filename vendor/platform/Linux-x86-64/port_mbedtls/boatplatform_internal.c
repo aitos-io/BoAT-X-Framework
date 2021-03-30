@@ -310,11 +310,95 @@ BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
 }
 
 
-BOAT_RESULT BoatSignature( BoatWalletPriKeyId prikeyId, 
+BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd )
 {
+	//mbedtls_entropy_context   entropy;
+    //mbedtls_ctr_drbg_context  ctr_drbg;
+	//mbedtls_pk_context        prikeyCtx;
+    //mbedtls_ecdsa_context* ecPrikey = NULL;
+	//BUINT8 raw_r[32];
+	//BUINT8 raw_s[32];
+	//BUINT8 ecdsPrefix = 0;
+	
+	//BOAT_RESULT result;
+	//boat_try_declare;
+	
+	//(void)rsvd;
+	
+	///* param check */
+	//if( (digest == NULL) || (signatureResult == NULL) )
+	//{
+	//	BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
+	//	return BOAT_ERROR_NULL_POINTER;
+	//}
 
+    //mbedtls_entropy_init( &entropy );
+    //mbedtls_ctr_drbg_init( &ctr_drbg );
+	//mbedtls_pk_init( &prikeyCtx );
+	
+	//result = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0 );
+	//if(result != 0)
+	//{
+	//	BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ctr_drbg_seed." );
+    //    boat_throw( result, BoatSignature_exception );
+    //}
+	
+	//if( (strstr( (const char *)prikeyId, "-----BEGIN " ) != NULL) && \
+	//	(strstr( (const char *)prikeyId, "-----END " )   != NULL) && \
+	//	(strstr( (const char *)prikeyId, " PRIVATE KEY-----" ) != NULL) )
+	//{
+	//	/* prikeyId is prikey content */
+	//	result = mbedtls_pk_parse_key( &prikeyCtx, prikeyId, strlen((const char*)prikeyId) + 1, NULL, 0 );
+	//}else{
+	//	/* prikeyId is prikey path */
+	//	BoatLog( BOAT_LOG_NORMAL, "execute mbedtls_pk_parse_keyfile..." );
+	//	result = mbedtls_pk_parse_keyfile( &prikeyCtx, (const char*)prikeyId, NULL );
+	//}
+    //if(result != 0)
+	//{
+	//	BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_pk_parse." );
+    //    boat_throw( result, BoatSignature_exception );
+    //}
+	//ecPrikey = mbedtls_pk_ec( prikeyCtx );
+
+	///* signature process */
+	//result = Boat_private_ecdsa_sign( ecPrikey, digest, digestLen, signature, signatureLen, raw_r, raw_s, 
+	//						  mbedtls_ctr_drbg_random, &ctr_drbg,
+	//						  mbedtls_ctr_drbg_random, &ctr_drbg, &ecdsPrefix );
+	//if(result != 0)
+	//{
+	//	BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ecdsa_write_signature." );
+	//	boat_throw( result, BoatSignature_exception );
+	//}
+	
+	//if( r != NULL )
+	//{
+	//	memcpy(r, raw_r, 32);
+	//}
+	//if( s != NULL )
+	//{
+	//	memcpy(s, raw_s, 32);
+	//}
+	//if( signaturePrefix != NULL )
+	//{
+	//	*signaturePrefix = ecdsPrefix;
+	//}
+
+	///* boat catch handle */
+	//boat_catch( BoatSignature_exception )
+	//{
+    //    BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
+    //    result = boat_exception;
+    //}
+	
+	///* free */
+	//mbedtls_entropy_free( &entropy );
+    //mbedtls_ctr_drbg_free( &ctr_drbg );
+	//mbedtls_pk_free( &prikeyCtx );
+
+	//return result;
 }
 
 #if 0
@@ -873,19 +957,19 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 
 
 
-BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
+BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {
 	//! @todo
 	return BOAT_SUCCESS;
 }
 
-BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
+BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {	
 	//! @todo
 	return BOAT_SUCCESS;
 }
 
-BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyId_config* config, BoatWalletPriKeyId* id )
+BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {
 	//! @todo
 	return BOAT_SUCCESS;

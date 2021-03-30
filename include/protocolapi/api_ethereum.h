@@ -40,7 +40,7 @@ typedef struct TBoatEthAccountInfo
 {
 	//BUINT8  prikeyId[BOAT_KEYID_MAX_LEN];//!< prikey unique identification for persistent wallet; or
 										 //!< prikey content for one time wallet
-    BoatWalletPriKeyId prikeyId;                                         
+    BoatWalletPriKeyCtx prikeyCtx;                                         
 	//BUINT8  pub_key_array[64];  //!< Public key of the account
     BUINT8  address[BOAT_ETH_ADDRESS_SIZE];//!< Account address calculated from public key
 }BoatEthAccountInfo;
@@ -90,7 +90,7 @@ typedef struct TBoatEthWallet
 //! Ethereum wallet configuration is used in wallet creation.
 typedef struct TBoatEthWalletConfig
 {
-	BoatWalletPriKeyId_config  prikeyId_config; //!< @NOTE This field MUST BE placed in the first member of the structure
+	BoatWalletPriKeyCtx_config  prikeyCtx_config; //!< @NOTE This field MUST BE placed in the first member of the structure
 	                                            //!< because in function BoatWalletCreate(), 
     //BUINT8   prikeyId[BOAT_KEYID_MAX_LEN]; //!< prikey unique identification for persistent wallet; or
 										   //!< prikey content for one time wallet
