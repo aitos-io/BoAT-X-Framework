@@ -30,7 +30,7 @@ As a middleware of the IoT blockchain, BoAT should be easily and quickly transpl
 
 ## The position of BoAT SDK in the entire blockchain network
 As a middleware connecting IoT devices and blockchain, BoAT SDK's position in the entire interactive network is shown in Figure 3-1.
-![BoAT position](/en-us/images/BoAT_Overall_Design_en-F3-1-Boat_Position.png)  
+![BoAT position](/images/BoAT_Overall_Design_en-F3-1-Boat_Position.png)  
 Figure 3-1 The position of BoAT in the blockchain interactive network
 
 
@@ -44,7 +44,7 @@ BoAT follows a hierarchical design, which is divided into interface layer, proto
 + The general tool layer is used to generate the C language interface of the smart contract and provide services such as data encoding and format conversion for the remaining layers.  
 + The utility program provides services such as data format conversion, message encoding and decoding to each layer.  
 The overall framework of BoAT is shown in Figure 4-1.
-![BoAT overall framework diagram](/en-us/images/BoAT_Overall_Design_en-F4-1-BoAT_Overall_Framework_Diagram.png)  
+![BoAT overall framework diagram](/images/BoAT_Overall_Design_en-F4-1-BoAT_Overall_Framework_Diagram.png)  
 Figure 4-1 BoAT overall framework diagram
 
 ### Interface layer
@@ -215,7 +215,7 @@ In addition to the initialization steps described by Ethereum, PlatONE also:
 
 
 It can be seen from the foregoing that the difference between PlatONE and Ethereum is very small. When designing the data structure and code implementation of PlatONE, the inheritance of the data structure and the reuse of code implementation should be considered, which not only reduces the amount of code, but also facilitates maintenance. For example, the composition of the transaction structure. The transaction structure of PlatONE has one more transaction type field than the transaction structure of Ethereum. Therefore, in the design of the data structure, a possible design idea is shown in Figure 4-2.  
-![A possible design idea of data structure](/en-us/images/BoAT_Overall_Design_en-F4-2-Data_Structure.png)  
+![A possible design idea of data structure](/images/BoAT_Overall_Design_en-F4-2-Data_Structure.png)  
 Figure 4-2 A possible design idea of data structure  
 Figure 4-2 describes a possible data structure design idea of PlatONE. Please note that the transaction type field of PlatONE should be placed at the end of the data structure, and the integrity of the data structure of the multiplexed Ethereum should not be destroyed. If the integrity of the data structure of Ethereum is destroyed, the implementation methods related to the data structure in Ethereum will not be reused.
 
@@ -483,7 +483,7 @@ In addition, in order to adapt the SDK to more environments, you can also encaps
 ##### Structure of RLP
 RLP encoding is used in two places. One is that the protocol layer organizes transaction messages to use RLP encoding, and the other is that RLP encoding may be used in the generated C language contract interface code.  
 The definition of RLP encoding only handles two types of data: one is a string and the other is a list. String refer to a string of binary data, such as a byte array; List is a nested recursive structure, which can contain strings and lists, and its structure is shown in Figure 4-3:
-![The structure of the RLP list](/en-us/images/BoAT_Overall_Design_en-F4-3-Structure_Of_RLP.png)  
+![The structure of the RLP list](/images/BoAT_Overall_Design_en-F4-3-Structure_Of_RLP.png)  
 Figure 4-3 The structure of the RLP list
 
 ##### RLP encoding rules
@@ -498,7 +498,7 @@ For a more detailed description of RLP encoding rules, please refer to the refer
 
 ##### RLP encoding implementation
 RLP encoding can be implemented in many different ways. As can be seen from the foregoing chapters, a possible data structure composition description of RLP encoding is shown in Figure 4-4:
-![A possible data structure of RLP encoding](/en-us/images/BoAT_Overall_Design_en-F4-4-Data_Structure_Of_RLP.png)  
+![A possible data structure of RLP encoding](/images/BoAT_Overall_Design_en-F4-4-Data_Structure_Of_RLP.png)  
 Figure 4-4 A possible data structure of RLP encoding
 
 The figure defines four types to express the nested recursive structure of the RLP list. If there is a list object named List, it contains three string objects: stringA, stringB, stringC,Then a possible process of performing RLP encoding on the list object List is described as follows:
@@ -529,7 +529,7 @@ cJSON is a lightweight JSON codec written in C language. It follows the ANSI-C s
 
 ### The process of creating an Ethereum transaction using BoAT
 A typical process of using BoAT to create an Ethereum transaction is shown in Figure 5-1:  
-![The process of creating a transaction using BoAT](/en-us/images/BoAT_Overall_Design_en-F5-1-Create_Ttransaction.png)  
+![The process of creating a transaction using BoAT](/images/BoAT_Overall_Design_en-F5-1-Create_Ttransaction.png)  
 Figure 5-1 The process of creating a transaction using BoAT
 
 among them:
