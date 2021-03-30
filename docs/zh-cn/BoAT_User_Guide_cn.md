@@ -1,265 +1,279 @@
-# BoAT用户手册
+# 用户手册
 
-## Introduction
+## 引言
 
-### Overview
-This article introduces the functions and usage of BoAT IoT Framework SDK 1.x.
-The intended readers of this article are customers who integrate the BoAT IoT Framework SDK.
+### 概述
+本文介绍BoAT IoT Framework SDK 1.x的功能和使用方法。  
+本文的预期读者为集成BoAT IoT Framework SDK的客户。
 
-### Abbreviated terms
-|ABI|Application Binary Interface|
-| :-----| :-----|
-API|Application Programming Interface|
-BoAT|Blockchain of AI Things|
-IoT|Internet of Things|
-JSON|JavaScript Object Notation|
-OS|Operating System|
-RLP|Recursive Length Prefix (Encoding/Decoding)|
-RPC|Remote Procedure Call|
-RTOS|Real Time Operating System|
-SDK|Software Development Kit|
-WASM|Web Assembly|
-
-
-
-## Function and architecture
-BoAT IoT Framework is a C language blockchain client framework for cellular modules, which is easy to be transplanted to various modules and helps IoT applications based on cellular modules connect to the blockchain and realize data on-chain services. The functions provided by the framework SDK to IoT applications include initiating on-chain transactions, automatic generation of smart contract C interface code, calling smart contracts, and managing blockchain keys.
-
-**Supported blockchain:**
-Ethereum
-PlatONE
-
-
-**Supported Target Operating System:**
-linux
-
-
-**Supported Build Operating System:**
-linux/cygwin
-
-**Main features:**
-Blockchain account (wallet) parameter configuration
-Blockchain key pair generation
-Blockchain account creation/loading/unloading
-Transfer transaction
-Smart contract call (automatically generate C call interface)
-Smart contract call (manual construction)
-
-
- ### Position in the system
- BoAT IoT Framework runs on the application processor of the cellular module in the form of a software lib library. The SDK is provided in the form of C source files and compiled in the development environment of the cellular module.
-
- For the cellular module in the form of OpenCPU, the BoAT IoT Framework library is linked by the IoT Application to form an IoT application with blockchain link capabilities.
-
- Figure 2-1 shows the position of BoAT IoT Framwork in the OpenCPU module. As an application layer protocol, BoAT is located above the existing protocol stack of the module and provides blockchain services to IoT Application. The peer layer of BoAT is a blockchain network.
-
- ![BoAT in System](/en-us/images/BoAT_User_Guide_en-F2-1-BoAT_in_system.png)
- Figure 2-1 The location of the BoAT in the system
-
- For non-OpenCPU cellular modules, the BoAT IoT Framework library is linked by the module firmware and expanded into AT commands by the module manufacturer for invocation of IoT applications on the host computer, no longer repeated.
-
- ### SDK architecture
- BoAT IoT Framework SDK is shown in Figure 2-2, which mainly includes Wallet API, blockchain client interface protocol, remote procedure call interface, common components, hardware dependent components and tool components.
-
- ![BoAT Architecture](/en-us/images/BoAT_User_Guide_en-F2-2-BoAT_architecture.png)
- Figure 2-2 BoAT Architecture
-
-The Wallet API is an interface that the SDK provides to the IoT Application to call, including the SDK public interface and wallet and transaction interfaces for different blockchain protocols.
-The blockchain client interface protocol mainly implements transaction interface protocols for different blockchains, and interacts with blockchain nodes through the RPC interface.
-The remote procedure call(RPC) interface implements a warpper for different communication protocols. This component needs to be ported according to the specific communication method supported by the IoT device.
-Public components implement common functions such as RLP encoding, JSON codec, string processing, etc.
-Hardware dependent components are transplanted components involving different hardware, such as cryptography accelerators, secure storage, random numbers, etc. This component needs to be transplanted according to specific hardware. SDK also provides a set of default Hardware dependent components witch implementations by software.
-The tool component provides a set of  Python tools, that be used to generate C language contract call interface of smart contract ABI interface based on Solidity or WASM C++.
+### 缩写术语
+|术语   |解释                                        |
+|:----- | :-------------------------------          |
+|ABI    |Application Binary Interface               |
+|API    |Application Programming Interface          |
+|BoAT   |Blockchain of AI Things                    |
+|IoT    |Internet of Things                         |
+|JSON   |JavaScript Object Notation                 |
+|OS     |Operating System                           |
+|RLP    |Recursive Length Prefix (Encoding/Decoding)|
+|RPC    |Remote Procedure Call                      |
+|RTOS   |Real Time Operating System                 |
+|SDK    |Software Development Kit                   |
+|WASM   |Web Assembly                               |
 
 
 
- ### SDK code structure
+## 功能和架构
+BoAT IoT Framework是面向蜂窝模组的C语言区块链客户端框架，便于移植到各类模组中，帮助基于蜂窝模组的物联网应用连接区块链，实现数据上链等业务。框架SDK向物联网应用提供的功能包括发起链上交易、智能合约C接口代码自动生成、调用智能合约、管理区块链密钥等。
 
- |Root directory|First-level sub-directory|Secondary sub-directory|description|
- | :----------- | :---------------------- | :-------------------- | :---------|
- |\<SDKRoot\>   |                         |                       |           |
- |              |build                    |                       |Directory to store object and executable files|
- |              |contract                 |                       |Contract ABI and generated C interface file|
- |              |demo                     |                       |Demo application|
- |              |docs                     |                       |API reference manual|
- |              |hwdep                    |                       |Hardware dependencies|
- |              |                         |default                |A default pure software version for development|
- |              |include                  |                       |Header files for application to include.  Application #include "boatiotsdk.h" only.|
- |              |lib                      |                       |Lib files for application to link with|
- |              |sdk                      |                       |SDK source|
- |              |                         |cJSON                  |An open source JSON parser|
- |              |                         |include                |Header files for SDK internal use|
- |              |                         |protocol               |Blockchain client protocol implementation|
- |              |                         |rlp                    |RLP encoder|
- |              |                         |rpc                    |Remote procedure call wrapper|
- |              |                         |utilities              |Utility APIs|
- |              |                         |wallet                 |SDK entry API implementation|
- |              |tests                    |                       |Demo and tests|
- |              |tools                    |                       |Tools for generating C interface from contract ABI|
-
-Note: The build and lib directories are generated during compilation. After the compilation is complete, only the include, lib in the first level directory, and the header files in contract/generated are needed by the application.
+**已支持的区块链:**  
+以太坊  
+PlatONE 
 
 
-## SDK compilation
-### Software dependency
-BoAT IoT Framework SDK depends on the following software:
-
-|Dependent software|requirements|Build environment|Target environment|
-| :-----| :-----| :-----| :-----|
-|Host OS|linux，Or Cygwin on Windows|Required||
-|Target OS|linux||Required|
-|Compiler|gcc，Need to support c99 (9.3.0 is tested)|Required||
-|Cross-compiler|arm-oe-linux-gnueabi-gcc 4.9.2 is tested|Required||
-|Make|GNU Make (4.3 is tested)|Required||
-|Python|Python 3.8.3 (Python 2.7 is also compatible)|Required||
-|curl|libcurl and its development files (7.55.1 is tested)|Required|Required|
-|OpenSSL|openssl and its development files (1.1.1d is tested)|Required|Required|
-
-Before compiling the SDK and using it, you need to make sure that these software have been installed. On Ubuntu, use the apt install command to install the corresponding package. Under Cygwin, use the Setup program that comes with Cygwin to install.
-
-Under Windows, the SDK does not support compilation in environments other than Cygwin. If you must run outside of Cygwin (for example, a cross-compiler using Windows as the Build environment), please refer to section 3.5.2 to adjust the compiled file.
-
-When porting SDK on RTOS, libcurl and openssl dependencies should be ported.
-
-### Preparation for compilation
-#### SDK source path
-In the saving path of the SDK source code, starting from the root directory, all directory names at all levels should be composed of English letters, numbers, underscores, and minus signs, and avoid spaces, Chinese, and special symbols such as plus signs, @, and brackets.
+**支持的Target操作系统：**  
+linux 
 
 
+**支持的Build操作系统：**  
+linux/cygwin  
 
-For example, the following is a suitable path:
-/home/developer/project-blockchain/boatiotsdk
-C:\Users\developer\Documents\project\boatiotsdk
-
-The following paths are not suitable:
-/home/developer/project+blockchain/boatiotsdk
-C:\Documents and Settings\developer\project\boatiotsdk
-
-If you can't avoid the unsuitable characters above in the path, please use the following methods to avoid:
-For linux: In a path without unsuitable characters, create a symbolic link to the SDK directory: ln -s \<SDKRoot\> boatiotsdk, and compile under the path of the symbolic link.
-For Windows: use the SUBST Z: \<SDKRoot\> command to create a virtual drive letter Z: (or other unused drive letter), and compile under the Z: drive.
+**主要特性：**  
+区块链账号（钱包）参数配置  
+区块链密钥对生成  
+区块链账号的创建/加载/卸载  
+转账交易  
+智能合约调用（自动生成C调用接口）  
+智能合约调用（手工构造）    
 
 
-#### Referenced external environment variables
-Modify the environment variables in the following files of the SDK as needed:
-\<SDKRoot\>/external.env: Configure the INCLUDE path that the external compilation environment depends on
-\<SDKRoot\>/hwdep/default/hwdep.env: Configure the INCLUDE path related to hardware or operating system
+### 系统中的位置
 
-During Host compilation, if gcc and binutils are already installed in the system, there is usually no need to modify these environment variable configurations.
-During cross compilation, if the cross compilation environment needs to configure a specific INCLUDE path, you need to add the path to the above file.
+BoAT IoT Framework以软件lib库的形式，运行于蜂窝模组的应用处理器上。其SDK以C源文件形式提供，在蜂窝模组的开发环境中编译。  
 
-#### SDK Option configuration
-Modify the configuration in the following files of the SDK as needed:
-\<SDKRoot\>/include/boatoptions.h
+对于OpenCPU形态的蜂窝模组，BoAT IoT Framework库被IoT Application链接，形成具备区块链链接能力的物联网应用程序。  
 
-These options include the printing level of LOG, the enabled blockchain protocol, etc. See the description in the header file for details.
+图 2‑1展示了BoAT IoT Framwork在OpenCPU模组中的位置。BoAT作为应用层协议，位于模组已有的协议栈上方，向IoT Application提供区块链服务。BoAT的对等层是区块链网络。  
 
-### Automatic generation of contract C interface code
-Smart contracts are executable codes on the blockchain, executed on blockchain virtual machines (such as EVM and WASM), and called by the client in the form of remote procedure calls (RPC).
+![BoAT IoT Framework在系统中的位置](/images/BoAT_User_Guide_zh-F2-1-BoAT_in_system.png)
+图 2-1 BoAT IoT Framework在系统中的位置
 
-Different virtual machines and contract programming languages have different application binary interfaces (ABI). When a client calls a contract function through RPC, it must follow the corresponding ABI assembly interface.
+对于非OpenCPU形态的蜂窝模组，BoAT IoT Framework库被模组固件链接，并由模组厂商扩展为AT命令，供上位机上的物联网应用调用，不再赘述。  
 
-The SDK provides the following tools to generate the corresponding C interface code according to the contract ABI, so that in the C code, the smart contract on the chain can be called through the generated interface code like a general C function:
+### SDK架构
+BoAT IoT Framework SDK如图 2‑2所示，主要包含Wallet API、区块链客户端接口协议、远程过程调用接口、公共组件、硬件依赖组件以及工具组件。  
 
-|**Conversion tool**|**use**|
-| :-----| :-----|
-|\<SDKRoot\>/tools/eth2c.py|According to the ABI of Ethereum Solidity, generate C calling code|
-|\<SDKRoot\>/tools/platon2c.py|Generate C calling code according to PlatON (WASM) ABI|
-|\<SDKRoot\>/tools/platone2c.py|Generate C calling code according to PlatONE (WASM) ABI|
+![BoAT IoT Framework SDK架构](/images/BoAT_User_Guide_zh-F2-2-BoAT_architecture.png)
+图 2-2 BoAT IoT Framework SDK架构
+ 
+Wallet API是SDK提供给IoT Application调用的接口，具体包括SDK公共接口和针对不同区块链协议的钱包和交易接口。  
+区块链客户端接口协议主要实现针对不同区块链的交易接口协议，并通过RPC接口与区块链节点进行交互。  
+远程过程调用（RPC）接口实现针对不同通信承载的接口方式。该组件需要根据IoT设备支持的具体通信方式进行移植。  
+公共组件实现RLP编码、JSON编解码、字符串处理等公共功能。  
+硬件依赖组件为涉及不同硬件的移植组件，例如密码学加速器、安全存储、随机数等。该组件需要根据具体硬件进行移植。SDK亦提供一套全软件的默认实现。
+工具组件提供了根据Solidity或者WASM C++的智能合约ABI接口，生成C语言合约调用接口的Python工具。  
 
-Since contract programming languages generally support object-oriented, and C language does not support object-oriented, and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools.
 
-Before making the call, you first need to compile the contract, and copy the ABI interface description JSON file generated in the contract compilation to the corresponding directory of the SDK:
+### SDK代码结构
+ 
+|上级目录       |一级目录                  |二级目录                |描述                                                                                |
+| :----------- | :---------------------- | :-------------------- | :---------------------------------------------------------------------------------|
+|\<SDKRoot\>   |                         |                       |                                                                                   |
+|              |build                    |                       |Directory to store object and executable files                                     |
+|              |contract                 |                       |Contract ABI and generated C interface file                                        |
+|              |demo                     |                       |Demo application                                                                   |
+|              |docs                     |                       |API reference manual                                                               |
+|              |hwdep                    |                       |Hardware dependencies                                                              |
+|              |                         |default                |A default pure software version for development                                    |
+|              |include                  |                       |Header files for application to include.  Application #include "boatiotsdk.h" only.|
+|              |lib                      |                       |Lib files for application to link with                                             |
+|              |sdk                      |                       |SDK source                                                                         |
+|              |                         |cJSON                  |An open source JSON parser                                                         |
+|              |                         |include                |Header files for SDK internal use                                                  |
+|              |                         |protocol               |Blockchain client protocol implementation                                          |
+|              |                         |rlp                    |RLP encoder                                                                        |
+|              |                         |rpc                    |Remote procedure call wrapper                                                      |
+|              |                         |utilities              |Utility APIs                                                                       |
+|              |                         |wallet                 |SDK entry API implementation                                                       |
+|              |tests                    |                       |Demo and tests                                                                     |
+|              |tools                    |                       |Tools for generating C interface from contract ABI                                 |
 
-|**Contract ABI storage path**|**use**|
-| :-----| :-----|
-|\<SDKRoot\>/contract/ethereum|Copy the ABI JSON file of Ethereum Solidity to this directory|
-|\<SDKRoot\>/contract/platon|Copy PlatON (WASM) ABI JSON file to this directory|
-|\<SDKRoot\>/contract/platone|Copy PlatONE (WASM) ABI JSON file to this directory|
 
-*Note 1: ABI's JSON file must have ".json" as the file name suffix.*
-*Note 2: If multiple contract ABIs are converted and compiled together, different contracts must have different JSON file names, even if they belong to different blockchains.*
+注：build和lib目录在编译中生成。编译完成后，只有一级目录的include、lib，以及contract/generated中的头文件是应用需要的。  
 
-During the compilation process, the automatic generation tool will generate the corresponding C interface calling code according to the contract ABI JSON file. If the automatic generation of C interface fails during compilation, you need to delete the unsupported ABI JSON file (or delete the unsupported interface) from the corresponding directory of \<SDKRoot\>/contract, write the C code manually, and assemble the ABI interface. See section 4.5.
-### Host compilation
-Host compilation means that the compilation environment is consistent with the target environment, for example, to compile x86 programs on x86. There are usually two scenarios for using Host compilation:
-1. In the software commissioning phase, the software functions are tested on the PC.
-2. The target software itself runs on devices based on x86/x86-64 processors, such as some edge gateways.
+## SDK编译
+### 软件依赖
+BoAT IoT Framework SDK依赖于以下软件:
 
-#### Use linux as the compilation environment
-Compile Host based on Linux distribution (such as Ubuntu). Generally, there is no need to configure the compilation environment, just make sure that the dependent software has been installed.
-Follow the steps below to compile:
-1. Store the SDK source code in a path that meets the requirements of section 3.2.1
-2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/contract (see section 3.3)
-3. In the \<SDKRoot\> directory, execute the following command:
+|依赖软件       |要求                                    |Build环境|Target环境|
+| :------------| :------------------------------------  | :----- | :-----  |
+|Host OS       |linux，或者Windows上的Cygwin             |Required |         |
+|Target OS     |linux                                   |        |Required |
+|Compiler      |gcc，需要支持c99 (9.3.0 is tested)       |Required |        |
+|Cross-compiler|arm-oe-linux-gnueabi-gcc 4.9.2 is tested|Required |        |
+|Make          |GNU Make (4.3 is tested)                |Required |        |
+|Python        |Python 2.7 (Python 3 is also compatible)|Required |        |
+|curl          |libcurl及其开发文件(7.55.1 is tested)     |Required |Required|
+|OpenSSL       |openssl及其开发文件 (1.1.1d is tested)    |Required |Required|
+
+在编译SDK和使用之前，需要确保这些软件已经安装。在Ubuntu下，使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
+
+在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照3.5.2节对编译文件进行调整。  
+
+在RTOS上移植SDK时，应对libcurl和openssl依赖进行移植。  
+
+
+### 编译准备
+#### SDK源码路径
+SDK源码的保存路径中，自根目录起，各级目录名称应全部为英文字母、数字、下划线和减号组成，避免空格、中文以及加号、@、括号等特殊符号。  
+  
+  
+  
+例如，以下为适合的路径：  
+/home/developer/project-blockchain/boatiotsdk  
+C:\Users\developer\Documents\project\boatiotsdk  
+  
+
+以下为不适合的路径：  
+/home/developer/project+blockchain/boatiotsdk  
+C:\Documents and Settings\developer\project\boatiotsdk  
+ 
+
+如果无法避免在路径中出现上述不适字符，请使用以下方法规避：  
+对于linux：在一个没有不适字符的路径中，建立一个指向SDK目录的符号链接：ln -s \<SDKRoot\> boatiotsdk，在该符号链接的路径下进行编译。  
+对于Windows：使用SUBST Z: \<SDKRoot\>命令虚拟一个盘符Z:（也可以是其他未使用的盘符），在Z:盘下进行编译。  
+
+
+
+#### 引用的外部环境变量
+根据需要，修改SDK以下文件中的环境变量：  
+\<SDKRoot\>/external.env：配置外部编译环境依赖的INCLUDE路径  
+\<SDKRoot\>/hwdep/default/hwdep.env：配置硬件或操作系统相关的INCLUDE路径  
+
+在Host编译时，如果gcc和binutils已经安装在系统中，通常不需要修改这些环境变量配置。  
+在交叉编译时，如果交叉编译环境需要配置特定的INCLUDE路径，需要在上述文件中添加路径。    
+
+#### SDK Option配置
+根据需要，修改SDK以下文件中的配置：  
+\<SDKRoot\>/include/boatoptions.h  
+
+这些选项包括了LOG的打印级别、使能的区块链协议等，具体参见头文件中的说明。  
+
+
+### 合约C接口代码自动生成
+智能合约是区块链上的可执行代码，在区块链虚拟机（例如EVM和WASM）上执行，并以远程过程调用（RPC）方式被客户端调用。  
+
+不同的虚拟机和合约编程语言，有不同的应用程序二进制接口（ABI）。客户端在通过RPC调用合约函数时，必须遵照相应的ABI组装接口。  
+
+SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，使得C代码中，可以像调用一般C函数一样，通过生成的接口代码调用链上智能合约：  
+
+|**转换工具**                   |**用途**                            |
+| :----------------------------| :---------------------------------| 
+|\<SDKRoot\>/tools/eth2c.py    |根据以太坊Solidity的ABI，生成C调用代码 |
+|\<SDKRoot\>/tools/platone2c.py|根据PlatONE（WASM）的ABI，生成C调用代码|
+
+由于合约编程语言一般支持面向对象，而C语言不支持面向对象，无法使用统一范式传递对象，因此只有参数类型与C语言内置类型一致的合约函数，可以通过工具转换为C调用代码。
+
+在进行调用前，首先需要编译合约，将合约编译中生成的ABI接口描述JSON文件，拷贝至SDK相应目录中：
+ 
+
+|**合约ABI存放路径**            |**用途**                                  |
+| :---------------------------| :----------------------------------------| 
+|\<SDKRoot\>/contract/ethereum|将以太坊Solidity的ABI JSON文件拷贝至该目录下  |
+|\<SDKRoot\>/contract/platone |将PlatONE（WASM）的ABI JSON文件拷贝至该目录下 |
+
+*注1：ABI的JSON文件必须以“.json”为文件名后缀。  
+注2：如果有多个合约ABI一起转换编译，不同合约必须有不同的JSON文件名，即使它们属于不同的区块链*
+
+在编译过程中，自动生成工具将根据合约ABI JSON文件，生成相应的C接口调用代码。如果编译中自动生成C接口失败，则需要从<SDKRoot>/contract的相应目录中，删除无法支持的ABI JSON文件（或者删除其中无法支持的接口），手工编写C代码，进行ABI接口组装，详见4.5节。  
+### Host编译
+Host编译指编译环境与目标环境一致，例如，在x86上编译x86程序。通常有两种使用Host编译的场景: 
+1. 在软件调测阶段，在PC机上对软件功能进行测试。
+2. 目标软件本身运行于基于x86/x86-64处理器的设备上，例如某些边缘网关。
+
+
+#### 以linux为编译环境
+基于linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。  
+
+编译遵照如下步骤:
+1. 将SDK源码存放在符合3.2.1节要求的路径中
+2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/contract的对应目录中（参见3.3节）
+3. 在\<SDKRoot\>目录下，执行以下命令:  
 $make boatlibs
 
-After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See section 4.1.
+编译完成后，生成的库文件在./lib中。应用应当包含./include下的头文件，并链接./lib下的库，实现访问区块链的功能。参见4.1节。
 
-#### Use Cygwin as the compilation environment
-On Windows, the SDK does not support compilation in environments other than Cygwin, nor does it support compilation with compilers other than gcc.
+#### 以Cygwin为编译环境
+在Windows上，SDK不支持在Cygwin以外的环境进行编译，也不支持使用gcc以外的编译器进行编译。
 
-The compilation steps are the same as under linux.
-
-### cross-compilation
-In cross-compilation, it is generally necessary to configure the compilation configuration file according to the specific compilation environment.
-
-#### Use linux as the compilation environment
-##### Independent cross-compilation environment
-Independent compilation environment means that arm-oe-linux-gnueabi-gcc (or similar cross-compiler) has been installed in the Linux system and can be called independently.
-
-The SDK requires at least the following environment variables to be set in the system to point to the cross-compilation environment:
-
-|**Environment variable**|**Description**|
-| :-----| :-----|
-|CC|Point to the cross compiler gcc executable file|
-|AR|Point to the cross compiler ar executable file|
+编译步骤与在linux下相同。
 
 
-When the environment variables of CC and AR are not defined in the environment, GNU make will default CC=cc and AR=ar. Usually, the gcc and bintuils compilation environment of the host are installed in the Linux system. Therefore, if the above environment variables are not defined, the host compilation will be executed.
+### 交叉编译
+交叉编译中，一般需要根据具体编译环境，对编译配置文件等进行配置。
 
-When configuring a cross-compilation environment, it is usually necessary to execute a specific shell script to set the above environment variables to point to the cross-compilation environment. For the bash shell, commands similar to the following are usually executed:
-$source cross_compiler_config.sh
-or
-$. cross_compiler_config.sh
+#### 以linux为编译环境
+##### 独立的交叉编译环境
+独立的编译环境是指arm-oe-linux-gnueabi-gcc（或类似交叉编译器）已经安装在linux系统中，可以独立调用。
 
-The "cross_compiler_config.sh" in the above example is not a script in this SDK, but a configuration script in the cross-compilation environment. For the specific name and location, please refer to the relevant instructions of the cross-compilation environment.
-The "source" or "." in the example is necessary, which makes the script execute in the context of the current shell, so the modification of the environment variables in the script can take effect in the current shell.
+SDK要求系统中至少应该设置以下环境变量，使之指向交叉编译环境：
+  
 
-You can execute the following command to view the environment variable settings in the current shell:
+|**环境变量**|**说明**                |
+| :---------| :---------------------| 
+|CC         |指向交叉编译器gcc可执行文件|
+|AR         |指向交叉编译器ar可执行文件 |
+
+
+当环境中没有定义CC和AR环境变量时，GNU make会默认CC=cc，AR=ar。通常，linux系统中会安装host的gcc及bintuils编译环境，因此，未定义上述环境变量时，将会执行host编译。
+
+在配置交叉编译环境时，通常需要执行特定shell脚本，对上述环境变量进行设置，使之指向交叉编译环境。对于bash shell，通常会执行类似如下的命令：  
+$source cross_compiler_config.sh  
+或者  
+$. cross_compiler_config.sh  
+
+如上示例中的“cross_compiler_config.sh”并非本SDK中的脚本，而是交叉编译环境中的配置脚本，其具体名称和位置请参考交叉编译环境相关的说明。  
+示例中的“source”或“.”是必需的，这使得该脚本在当前shell的上下文中执行，因而该脚本中对环境变量的修改在当前shell中能生效。
+
+
+可以执行以下命令查看当前shell中的环境变量设置：  
 $export
 
-If the environment variables CC and AR have been set, you can execute the following command to view the current version of CC and AR to confirm whether the desired cross-compilation environment has been pointed to:
-${CC} -v
+
+若环境变量CC和AR已设置，可以执行以下命令查看当前CC和AR的版本，以便确认是否已经指向了期望的交叉编译环境：  
+${CC} -v  
 ${AR} -v
 
-After the above configuration is completed, follow the steps in section 3.4.1 to compile.
+以上配置完成后，遵照3.4.1节的步骤进行编译。
 
-##### A cross-compilation environment integrated with the module development environment
-Some OpenCPU modules have integrated a supporting cross-compiler environment in the development environment provided by them, so that customers do not need to install a cross-compiler separately in the Linux system. This is especially convenient for developing application software on multiple modules of different models on a host computer without repeatedly switching the cross-compilation environment.
 
-###### The module development environment is compiled with GNU make
-If the module development environment uses GNU make as the compilation project (makefiles in the source code directories at all levels), you can adjust the compilation configuration for the BoAT IoT Framework SDK and incorporate it into the integrated module development environment for compilation.
+##### 与模组开发环境整合的交叉编译环境
+有些OpenCPU模组在其所提供的开发环境中，已经整合了配套的交叉编译环境，使得客户无需另行在linux系统中安装交叉编译器。这尤其便于在一台host电脑上，开发多个不同型号模组上的应用软件，而无需反复切换交叉编译环境。
 
-Usually, the example of the customer code is provided in the module development environment, and the compilation configuration of the example code of the customer is included in the compilation system.First copy the \<SDKRoot\> directory (bootiotsdk is the directory name in the following example) to the source code in the module development environment, and then modify the Makefile in example directory, to add a target to compile BoAT IoT Framework SDK.
-E.g:
-Assuming that in the original compilation environment, the Makefile of the example in customer source code is as follows:
+
+###### 模组开发环境以GNU make为编译工程
+若模组开发环境以GNU make为编译工程（各级源码目录内有Makefile），可以对BoAT IoT Framework SDK调整编译配置，将其纳入整合的模组开发环境中编译。
+
+通常，模组开发环境中会提供客户代码的Example，并在编译体系中包含对客户示例代码Example的编译配置。首先将\<SDKRoot\>目录（以下例子中以bootiotsdk为目录名）复制到模组开发环境中的客户代码Example目录，然后修改针对客户代码Example的Makefile，增加一个编译BoAT IoT Framework SDK的target。
+  
+例如:  
+假设原有编译环境中，客户代码Example的Makefile如下:  
 ```
-.PHNOY: all
-all:
-    $(CC) $(CFLAGS) example.c -o example.o
+.PHNOY: all  
+all:  
+    $(CC) $(CFLAGS) example.c -o example.o 
 
-clean:
+clean:  
 	-rm -rf example.o
 ```
-Adjusted to:
+调整为:
 ```
-.PHNOY: all boatiotsdkall boatiotsdkclean
-all: boatiotsdkall
-    $(CC) $(CFLAGS) example.c -o example.o
+.PHNOY: all boatiotsdkall boatiotsdkclean  
+all: boatiotsdkall  
+    $(CC) $(CFLAGS) example.c -o example.o 
 
-clean: boatiotsdkclean
-	-rm -rf example.o
+clean: boatiotsdkclean    
+	-rm -rf example.o  
 
 boatiotsdkall:
 	make -C boatiotsdk boatlibs
@@ -268,40 +282,44 @@ boatiotsdkclean:
 	make -C boatiotsdk clean
 
 ```
-Among them, boatiotsdk is the directory where the SDK is located, and the -C parameter after make specifies to enter the boatiotsdk directory and then compile according to Makefile.
+其中，boatiotsdk为SDK所在目录，make后的-C参数指定进入boatiotsdk目录后按Makefile执行编译。
 
-*Note: In the Makefile, the command under target must start with a Tab (ASCII code 0x09), not a space.*
 
-The above steps are only used to compile the SDK library. After the SDK library compile completed, the compiled library needs to be integrated into the module development environment. See section 4.1 for details.
+*注：Makefile中，target下的命令，必须一个Tab（ASCII码0x09）开头，而不能以空格开头。*
 
-###### The module development environment is compiled with non-GNU make
-Since BoAT IoT Framework SDK uses GNU make as the compilation project, if the module development environment uses non-GNU Make compilation projects (such as Ninja, ant, etc.), or uses the automatic generation tools of the compilation project (such as automake, CMake), it cannot Compile the SDK directly in the module development environment.
+以上步骤仅仅是用于执行对SDK库的编译。SDK库编译完成后，还需将编译生成的lib库整合入模组开发环境。详见4.1节。
 
-To compile the SDK in such a module development environment, you need to release the gcc and binutils compilation tools in the module development environment, and configure the environment variables described in section 3.5.1.1 so that they can be called in the system, which is equivalent to independent cross-compilation Environment, and then compile the SDK.
+###### 模组开发环境采用非GNU Make编译工程
+由于BoAT IoT Framework SDK以GNU make为编译工程，若模组开发环境采用非GNU Make的编译工程（例如Ninja、ant等），或者使用了编译工程的自动生成工具（如automake、CMake），则不能直接在模组开发环境中编译SDK。
 
-#### Use Windows as the compilation environment
-Under Windows, the SDK does not support compilation in environments other than Cygwin. If the cross compiler with Windows as the build environment can only be run outside Cygwin, the compilation environment and compilation configuration files should be adjusted.
-When cross-compiling outside of Cygwin, you still need to install Cygwin and adjust the Makefile.
+在此类模组开发环境中编译SDK，需要将模组开发环境中的gcc、binutils编译工具释出，配置3.5.1.1节所述环境变量，使之可以在系统中调用，等同于独立交叉编译环境，然后编译SDK。
 
-###### Install Cygwin
-When cross-compiling outside of Cygwin, Cygwin still needs to be installed. Because the SDK compilation project relies on some Cygwin tools. The tools that need to be installed are as follows:
 
-|**Tools needed**|**use**|
-| :------------------| :-----|
-|find|Cygwin's find.exe is needed to search the subdirectories to be compiled recursively. Windows comes with another FIND.EXE with the same name but completely different functions, which cannot be used.|
-|rm|Used to delete specified directories and files. The built-in RMDIR/RD and DEL commands of the Windows cmd shell can only be used to delete directories (trees) and files, respectively, and are not compatible with Cygwin's rm.exe in terms of syntax.|
-|mkdir|Used to create one or more levels of directories. The built-in MKDIR/MD commands of Windows cmd shell have the same function, but the syntax is not compatible.|
-|GNU make|You can install make in Cygwin, or you can compile GNU make based on a compiler on Windows (such as Microsoft Visual Studio). The latter does not depend on Cygwin.|
+#### 以Windows为编译环境
+在Windows下，SDK不支持在Cygwin以外的环境下编译。如果以Windows为Build环境的交叉编译器只能在Cygwin以外运行，应对编译环境和编译配置文件进行调整。  
+在Cygwin以外进行交叉编译时，仍然需要安装Cygwin，并调整Makefile。
 
-After installing Cygwin, you need to configure its path. Since some Cygwin tools that SDK compilation relies on have the same names as the Windows built-in tools, you must ensure that the relevant tools referenced in the compilation point to the Cygwin version.
+###### 安装Cygwin
 
-First, in the cmd shell that executes the compilation, execute the following command to increase the search path of Cygwin:
-set PATH=%PATH%;\<Path_to_Cygwin\>\bin
-Where \<Path_to_Cygwin\> is the absolute path of the Cygwin installation directory, such as: C:\Cygwin64
+在Cygwin以外进行交叉编译时，仍然需要安装Cygwin。因为SDK编译工程依赖于一些Cygwin工具。需要安装的工具如下:  
 
-*Note: The above commands can be written in a bat batch file, or directly added to the Windows system environment variables for easy calling. Note that if you directly add the Windows system environment variables, you must not place Cygwin before the %SystemRoot%\System32 path, otherwise the find version of Cygwin will be called by mistake when calling the FIND command of Windows in other scenarios, which will affect other scenarios Use Windows built-in commands.*
+|**所需工具**|**用途**                                                                                                             |
+| :---------| :------------------------------------------------------------------------------------------------------------------| 
+|find       |需要Cygwin的find.exe用于递归搜索要编译的子目录。Windows自带有另一个同名但功能完全不同的FIND.EXE，不能使用。                    |
+|rm         |用于删除指定目录和文件。Windows的cmd shell内置的RMDIR/RD和DEL命令分别只能用于删除目录（树）和文件，语法上与Cygwin的rm.exe不兼容。|
+|mkdir      |用于创建一级或多级目录。Windows的cmd shell内置的MKDIR/MD命令具有相同功能，但语法不兼容                                       |
+|GNU make   | 可以在Cygwin中安装make，也可以基于Windows上的编译器（例如Microsoft Visual Studio）自行编译GNU make。后者不依赖于Cygwin。     |
 
-Then, modify boatiotsdk\Makefile, add the path to the dependent tool:
+安装Cygwin之后，需要配置其路径。由于SDK编译所依赖的部分Cygwin工具与Windows自带工具同名，因此必须确保编译中引用的相关工具指向Cygwin的版本。
+
+首先，在执行编译的cmd shell中，执行如下命令增加Cygwin的搜索路径：  
+set PATH=%PATH%;\<Path_to_Cygwin\>\bin  
+其中<Path_to_Cygwin>是Cygwin安装目录的绝对路径，如：C:\Cygwin64  
+  
+
+*注：上述命令可以编写在一个bat批处理文件中，或者直接加入Windows系统环境变量中，方便调用。注意，如果直接加入Windows系统环境变量，不得将Cygwin置于%SystemRoot%\System32路径之前，否则在其他场景中调用Windows的FIND命令时，将错误地调用Cygwin的find版本，这将影响其他场景中使用Windows自带命令。*  
+
+然后，修改boatiotsdk\Makefile，为依赖工具加上路径:
 ```
 # Commands
 CYGWIN_BASE := C:\cygwin64  # Modify to actual path to Cygwin
@@ -311,193 +329,198 @@ BOAT_FIND := $(CYGWIN_BASE)\bin\find
 
 ```
 
-Taking Windows 10 as an example, the method to add the search path to the Windows environment variable is:
-a)	Right-click on the Windows logo menu and select "System"
-b)	Click "System Information" on the "About" page
-c)	Click "Advanced System Settings" on the "System" page
-d)	Click "Environment Variables" in the "System Properties" page
-e)	Click "Path" in "System Variables" on the "Environment Variables" page, and click "Edit"
-f)	On the "Edit Environment Variables" page, click "New", add the bin path under the Cygwin installation directory, and make sure that the new path is located anywhere after the path %SystemRoot%\system32
+以Windows10为例，将搜索路径加入Windows环境变量的方法为:  
+a)	在Windows徽标菜单上点右键，选择“系统”  
+b)	在“关于”页中点击“系统信息”  
+c)	在“系统”页中点击“高级系统设置”  
+d)	在“系统属性”页中点击“环境变量”  
+e)	在“环境变量”页中点击“系统变量”中的“Path”，并点击“编辑”  
+f)	在“编辑环境变量”页中点击“新建”，新增Cygwin的安装目录下的bin路径，并确保该项新增路径位于%SystemRoot%\system32这条路径之后的任意位置  
 
 
-###### Other adjustments
-When cross-compiling outside of Cygwin, in addition to the previous section, the following adjustments are required:
+###### 其他调整
+在Cygwin以外进行交叉编译时，除上节所述外，还需要进行下列调整：
 
-1.	Try make, if it prompts that the path is wrong, change the corresponding path separator in the Makefile from "/" to "\\". Don't change all "/" to "\\" at the beginning, because the Windows version of some tools derived from linux can recognize "/" as a path separator.
-2.	Configure the environment variables described in section 3.5.1.1 to point to the correct cross-compilation environment. In these environment variables, the path should be separated by "\\".
+1. 尝试make，如果提示路径错误，则将Makefile中相应的路径分隔符，从“/”修改为“\\”。不要一开始就把所有的“/”都改为“\\”，因为部分源自linux的工具的Windows版本，可以识别“/”作为路径分隔符。
+2. 配置3.5.1.1节所述环境变量，使之指向正确的交叉编译环境。在这些环境变量中，路径应以“\\”为分隔符
 
-### Compile and run Demo
-#### ready
-SDK provides Demo based on Ethereum and PlatONE. Before running these demos, you need to install the corresponding blockchain node software (or have known nodes) and deploy the smart contracts required by the demo.
+### 编译和运行Demo
+#### 准备
+SDK提供基于以太坊和PlatONE的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
 
-The smart contract used by the demo and its ABI JSON file are placed in:
+Demo所使用的智能合约及其ABI JSON文件放置在：  
 
-|**Demo smart contract**|**Contract ABI JSON file**|**use**|
-| :-----| :-----| :-----|
-|\<SDKRoot\>/contract/ethereum/StoreRead.sol|\<SDKRoot\>/contract/ethereum/StoreRead.json|Ethereum demo|
-|\<SDKRoot\>/contract/platone/my_contract.cpp|\<SDKRoot\>/contract/platone/my_contract.cpp.abi.json|PlatONE demo|
-
-
-Before running Ethereum's Demo, you need to install the Ethereum node simulator ganache, as well as the Ethereum smart contract compilation deployment tool truffle.
-Ganache and truffle tools can visit this website: https://truffleframework.com
-Ganache has a ganache-cli version of the command line interface, and a Ganache version of the graphical interface. The ganache-cli of the command line interface and the Ganache 1.x version of the graphical interface will not be saved. If the process of ganache-cli or Ganache 1.x is terminated, the deployed contract will be lost. The command truffle migrate - reset Redeploy the contract, the address of the redeployed contract may change. The Ganache 2.x version of the graphical interface can create a Workspace save state. After closing and reopening the Workspace next time, the deployed contract still does not need to be redeployed.
-In addition to using the ganache simulator, you can also use the Ethereum test network such as Ropsten (you need to apply for a free test token).
+|**Demo智能合约**                             |**合约ABI JSON文件**                                  |**用途**   |
+| :------------------------------------------| :---------------------------------------------------| :--------| 
+|\<SDKRoot\>/contract/ethereum/StoreRead.sol |\<SDKRoot\>/contract/ethereum/StoreRead.json         |以太坊演示  |
+|\<SDKRoot\>/contract/platone/my_contract.cpp|\<SDKRoot\>/contract/platone/my_contract.cpp.abi.json|PlatONE演示|
 
 
-Before running the PlatONE Demo, you need to install the PlatONE node, as well as smart contract compilation and deployment tools.
-PlatONE source code and tools can visit this website: https://platone.wxblockchain.com
+在运行以太坊的Demo之前，需要安装以太坊节点模拟器ganache，以及以太坊智能合约编译部署工具truffle。  
+ganache及truffle工具可以访问该网站：https://truffleframework.com  
+ganache有命令行界面的ganache-cli版本，以及图形界面的Ganache版本。命令行界面的ganache-cli和图形界面的Ganache 1.x版本不会存盘，如果ganache-cli或Ganache   1.x的进程被终止，部署的合约会丢失，下次启动需要使用命令truffle migrate --reset重新部署合约，重新部署的合约地址可能会变化。图形界面的Ganache   2.x版本可以建Workspace保存状态，关闭下次重新打开该Workspace后，部署过的合约仍然在无需重新部署。  
+除了使用ganache模拟器，还可以使用Ropsten等以太坊测试网络（需要申请免费的测试token）。  
 
+在运行PlatONE的Demo之前，需要安装PlatONE节点，以及智能合约编译和部署工具。  
+PlatONE源码及工具可以访问该网站：https://platone.wxblockchain.com
 
-After completing the node (or simulator) deployment, you need to follow the instructions on the truffle and PlatONE websites to deploy the Demo smart contract. After the smart contract is successfully deployed, the contract address will be generated.
+在完成节点（或模拟器）部署后，需要分别遵照truffle和PlatONE网站的说明，部署Demo智能合约。智能合约部署成功后，将生成合约地址。
 
-The Demo C code that calls the smart contract is placed in:
+调用智能合约的Demo C代码放置在: 
 
-|**Demo C code**|**use**|
-| :-----| :-----|
-|\<SDKRoot\>/tests/case_30_ethereum.c|Ethereum demo use case|
-|\<SDKRoot\>/tests/case_32_platone.c|PlatONE demo use case|
+|**Demo C代码**                       |**用途**      |
+| :----------------------------------| :------------|
+|\<SDKRoot\>/tests/case_30_ethereum.c|以太坊演示用例  |
+|\<SDKRoot\>/tests/case_32_platone.c |PlatONE演示用例|
 
-Before compiling the Demo, you need to modify the following parts of the Demo C code:
-1. Search for "Set Node URL" and fill in the node URL (including port) as the IP address and RPC port of the actual deployed node or simulator
-2. Search for "Set Private Key" and set the client private key to:
-a) For Ethereum, set it to the private key of any account generated by Ganache
-b) For PlatONE, there is no need to modify the private key in the Demo
-3. Search for "Set Contract Address" and modify it to the deployment address of the Demo contract.
-4. For Ethereum Demo only, search for "Set Recipient Address" and modify it to the address of any account other than section 2.a) previous generated by ganache.
-#### Compile Demo
-Execute the following commands in the \<SDKRoot\> directory to compile the SDK call Demo:
+编译Demo之前，需要修改Demo的C代码中以下部分：
+1.	搜索“Set Node URL”，将节点URL（含端口）填写为实际部署的节点或模拟器的IP地址和RPC端口
+2.	搜索“Set Private Key”，将客户端私钥设置为：  
+a)	对于以太坊，设置为ganache生成的任意一个账户的私钥  
+b)	对于PlatONE，无需修改Demo中的私钥  
+3.	搜索“Set Contract Address”，修改为Demo合约的部署地址。
+4.	仅对以太坊Demo，搜索“Set Recipient Address”，修改为ganache生成的除2 a)以外的任意一个账户的地址。
+ 
+
+#### 编译Demo
+在\<SDKRoot\>目录下执行以下命令编译SDK的调用Demo：
 $make tests
 
-
-The generated Demo program is located at: \<SDKRoot\>/build/tests/boattest
-
-
-### Trouble shooting in compilation
-1.  A message similar to "Makefile: 120: *** missing delimiter. Stop" is prompted during compilation.
-This problem is generally caused by the command under target in the Makefile that does not start with Tab (ASCII code 0x09). Note that when you press the Tab key, the text editor may replace the Tab character with a number of spaces. The text editor should be set not to replace Tab with spaces.
-
-2. The prompt "curl/curl.h" cannot be found during compilation
-This problem is caused by the fact that curl and its development files are not installed in the system. For Host compilation on a Linux distribution, please note that only installing the curl package is not enough, you also need to install its development file package. The development file package has different names in different linux distributions, usually named similar to curl-devel, or libcurl. For details, please refer to the package management tool of the Linux distribution you are using.
+生成的Demo程序位于：\<SDKRoot\>/build/tests/boattest
 
 
-If curl is compiled with source code and is not installed in the system directory, you should specify its search path in external.env, and specify the path where the curl library is located when linking.
+
+### 编译中的常见问题
+1.  编译中提示类似“Makefile: 120: *** 缺失分隔符。 停止”的信息。  
+该问题一般是因为Makefile中的target下的命令不是以Tab（ASCII码0x09）开头引起。注意按Tab键时，文本编辑器可能将Tab字符替换为若干空格。应将文本编辑器设置为不要用空格替代Tab。
+
+2. 编译中提示“curl/curl.h”找不到  
+该问题是因为系统中未安装curl及其开发文件引起。对于在linux发行版上做Host编译而言，注意只安装curl包不够，还需要安装其开发文件包。开发文件包在不同的linux发行版中有不同的名称，通常会命名为类似curl-devel，或者libcurl。具体请参照所使用的linux发行版的软件包管理工具。    
+  
+  
+如果curl采用源码编译，且未安装到系统目录，则应在external.env中指定其搜索路径，并在链接时指定curl库所在路径。  
+  
+  
+在交叉编译中，尤其要注意搜索路径和库应指向交叉编译环境中的头文件和库，而不应指向执行编译的Host上的路径。
+
+3. 编译中提示“openssl/evp.h”找不到  
+该问题是因为系统中未安装OpenSSL及其开发文件引起。参照curl。
+
+4. 交叉编译链接时提示字节序、位宽或ELF格式不匹配  
+该问题通常是因为交叉编译中，部分库引用了Host的库，而Obj文件则是由交叉编译产生，或者，部分库为32位，另一部分为64位。应仔细核查所有库的路径，避免Host与Target的库混合链接，或者不同位宽的库混合链接。  
+  
+  
+可以使用如下命令查看库文件是ARM版本还是x86版本，以及位宽：  
+$file \<lib或obj文件名\>
+
+5. 编译中提示可执行文件找不到，或者参数错误  
+常见提示:  
+'make'不是内部或外部命令，也不是可运行的程序或批处理文件。  
+mkdir… 命令语法不正确。  
+FIND: 参数格式不正确  
+  
+  
+该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照3.5.2节安装Cygwin和配置Makefile。
 
 
-In cross-compilation, pay special attention to the search path and library should point to the header files and libraries in the cross-compilation environment, and should not point to the path on the Host that executes the compilation.
+## 编程模型
 
-3. The prompt " openssl/evp.h " cannot be found during compilation
-The problem is caused by the fact that OpenSSL and its development files are not installed in the system. Refer to curl.
+### 头文件和库
+BoAT IoT Framework SDK编译完成后，应用可以通过SDK头文件和库，发起区块链交易或调用智能合约。
 
-4. When cross-compiling and linking, it prompts that the byte order, bit width or ELF format does not match
-This problem is usually because in cross-compilation, some libraries refer to the Host library, and the Obj file is generated by cross-compilation, or some libraries are 32-bit and the other is 64-bit. You should carefully check the paths of all libraries to avoid mixed links between Host and Target libraries, or libraries with different bit widths.
+在SDK编译完成后，只有以下文件是应用在编译链接时需要的：
+- \<SDKRoot\>/include下的所有头文件
+- \<SDKRoot\>/lib下的所有库文件
+- 如果使用了根据合约ABI JSON文件自动生成C接口代码，还有<SDKRoot>/ contract/generated下所有头文件
+
+1. 在应用中引用SDK头文件
+
+在应用的头文件搜索路径中，增加\<SDKRoot\>/include，或者将\<SDKRoot\>/include下所有头文件拷贝至应用头文件目录中。
+在应用相关C代码中，#include “boatiotsdk.h”。该头文件为SDK的入口头文件。
+应用无需将SDK的其他头文件目录纳入搜索路径。
+
+如果使用了根据合约ABI JSON文件自动生成C接口代码，还需在头文件搜索路径中增加\<SDKRoot\>/contract/generated，或者将该目录下所有头文件拷贝至应用头文件目录中。
+在应用相关C代码中，#include这些生成的头文件。
 
 
-You can use the following command to check whether the library file is the ARM version or the x86 version, and the bit width:
-$file \<lib or obj file name\>
+2. 在应用中链接SDK库文件
 
-5. The compilation prompts that the executable file could not be found, or that the parameters are incorrect
-Common tips:
-'make' is not an internal or external command, nor is it an executable program or batch file.
-mkdir… command syntax is incorrect.
-FIND: The parameter format is incorrect
-
-
-This problem is generally caused by compiling under Windows, but Cygwin is not installed, or the paths of BOAT_RM, BOAT_MKDIR, and BOAT_FIND are not correctly configured in the Makefile. Please refer to section 3.5.2 to install Cygwin and configure Makefile.
-
-## Programming model
-
-### Header files and libraries
-After the BoAT IoT Framework SDK compile completed, the application can initiate blockchain transactions or call smart contracts through the SDK header files and libraries.
-
-After the SDK is compiled, only the following files are needed for the application when compiling and linking:
-
-- All header files under \<SDKRoot\>/include
-- All library files under \<SDKRoot\>/lib
-- If the C interface code is automatically generated according to the contract ABI JSON file, and all the header files under \<SDKRoot\>/ contract/generated are used
-
-1. Refer to the SDK header file in the application
-
-Add \<SDKRoot\>/include to the header file search path of the application, or copy all header files under \<SDKRoot\>/include to the application header file directory.
-In the application-related C code, #include "boatiotsdk.h". The header file is the entry header file of the SDK.
-The application does not need to include the other header file directories of the SDK into the search path.
-
-2. Link SDK library files in the application
-
-(1)In the link library of the application, add three static libraries in \<SDKRoot\>/lib in turn:
+(1)在应用的链接库中，依次增加\<SDKRoot\>/lib中三个静态库：  
 libboatcontract.a libboatwallet.a libboathwdep.a
 
-(2)In the application link library, add dynamic libraries of curl and openssl:
+(2)在应用的链接库中，增加curl和openssl的动态库：  
 -lcurl -lcrypto
 
-For cross-compilation, you should ensure that the curl and openssl versions in the development environment are consistent with those in the target version operating environment.
+对于交叉编译，应当保证开发环境中的curl和openssl版本与目标板运行环境中的一致。
 
-### SDK initialization and destruction
-Before calling the SDK, you must call BoatIotSdkInit() to initialize the global resources of the SDK:
+
+### SDK初始化和销毁
+在调用SDK之前，必须调用BoatIotSdktInit()对SDK的全局资源进行初始化:
 ```
 BOAT_RESULT BoatIotSdktInit(void);
 ```
-After the end of use, you should call BoatIotSdkDeInit() to release resources:
+在使用结束后，应调用BoatIotSdkDeInit()释放资源:
 ```
 void BoatIotSdkDeInit(void);
 ```
 
-### Blockchain wallet create/load/unload/delete
-A wallet is a collection of attributes of a blockchain account. These attributes include key attributes such as private keys and blockchain node URLs. Before initiating a transaction or invoking a smart contract, a wallet must be created or a previously saved wallet must be loaded.
+### 区块链钱包创建/加载/卸载/删除
+钱包是区块链账号的属性集合，这些属性包括私钥、区块链节点URL等关键属性。在发起交易或调用智能合约前，必须创建钱包或加载此前已经持久化保存的钱包。
 
-#### Create and load wallet
-The SDK supports two types of wallets: one-time wallets and persistent wallets.
+#### 创建和加载钱包
+SDK支持两类钱包：一次性钱包和持久性钱包。
 
-One-time wallets are created temporarily when in use, only exist in memory, and become invalid after shutdown.
-Persistent wallets will be persistently saved when they are created. After turning off and on again, the persistent wallet that has been created before can be loaded.
+一次性钱包在使用时临时创建，仅在内存中存在，关机后失效。  
+持久性钱包在创建时会做持久性保存，关机再重新开机后，可以加载之前已经创建的持久性钱包。  
 
-*Note: The persistence implementation method in \<SDKRoot\>/hwdep/default/storage is for reference only. In commercial products, it is recommended to consider a more secure persistence method based on actual hardware capabilities.*
+***注：<SDKRoot>/hwdep/default/storage中的持久化实现方法仅供参考，在商业化产品中，建议根据实际硬件能力，考虑更安全的持久化方法。***
 
-When creating and loading a wallet, you should always call BoatWalletCreate() in the same thread.
+创建和加载钱包时，应保证总在同一个线程中调用BoatWalletCreate()。
 
-When creating a wallet, you need to pass in wallet configuration parameters according to the specific blockchain protocol.
+在创建钱包时，需要根据具体区块链协议，传入钱包配置参数。
 
-Aitos Technology provides customers with non-exclusive test node services of some blockchain protocols for free, so that customers can verify and demonstrate when integrating BoAT IoT Framework. Please contact customer service representative for relevant information.
+摩联科技免费向客户提供部分区块链协议的非独占的测试用节点服务，以便于客户在集成BoAT IoT Framework时验证和演示。请联系客服代表获得相关信息。
 
-These test nodes are only for customers' non-exclusive use in development and demonstration. Customers are not allowed to use it for commerce, public service, military, and other purposes that involve state or commercial secrets or may have significant social impact.
+这些测试用节点仅供客户在开发演示中非独占使用。客户不得将其用于商业、公共服务、军事及其他涉及国家或商业秘密或可能带来重大社会影响的用途。
 
-Once customers use these test nodes, they are deemed to have:
-1. Aitos Technology reserves the right to transfer, close these test nodes, or clear node data at any time, and does not assume the obligation to notify customers in advance before transferring, closing nodes or clearing data.
-2. Aitos Technology is not responsible for the direct or indirect losses incurred by customers when using the test node service, regardless of whether these losses are related to the test node service.
-3. These test node services are for non-exclusive use. Any information passed to the test node may be obtained by a third party.
+客户一旦使用这些测试节点，视为已知晓并认可：
+1. 摩联科技保留随时转移、关闭这些测试节点，或者清除节点数据等权利，且不承担在转移、关闭节点或清除数据等之前事先通知客户的义务。
+2. 摩联科技不承担客户使用测试节点服务时发生的直接或间接损失，无论这些损失是否与测试节点服务有关。
+3. 这些测试节点服务为非独占使用。任何传递给测试节点的信息，都有可能被第三方获得。
 ```
 BSINT32 BoatWalletCreate(BoatProtocolType protocol_type,
                          const BCHAR *wallet_name_str,
                          const void * wallet_config_ptr,
                          BUINT32 wallet_config_size);
 ```
-Parameters:
+参数:
 
-||||
-|-----|-----|-----|
-|[in]|**protocol_type**|The blockchain protocol. See boattypes.h for supported protocol.|
-|[in]|**wallet_name_str**|A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded.|
-|[in]|**wallet_config_ptr**|Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>.|
+|    |                      |                                                                  |
+|----|--------------------- |------------------------------------------------------------------|
+|[in]|**protocol_type**     |The blockchain protocol. See boattypes.h for supported protocol.  |
+|[in]|**wallet_name_str**   |A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded.|
+|[in]|**wallet_config_ptr** |Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>.                                                                |
 |[in]|**wallet_config_size**|Size (in byte) of configuration specified by \<wallet_config_ptr\>.|
 
-**return value:**
+**返回值:**  
 This function returns the non-negative index of the loaded wallet.
 It returns -1 if wallet creation fails.
 
-Example:
+示例:
 ```
    BoatEthWalletConfig wallet_config;
    BoatEthWallet *wallet_ptr;
-
+    
     // Set Private Key
     UtilityHex2Bin( wallet_config.priv_key_array,
                     32,
                     "0x84bbaa51f0530db722055a0aab7f89720d3f5c0ab7573f5c658bd5d1530af2a2",
                     TRIMBIN_TRIM_NO,
                     BOAT_FALSE);
-
+    
     wallet_config.chain_id = 1;
     wallet_config.eip155_compatibility = 0;
-
+    
     // Set Node URL
     wallet_config.node_url_str[BOAT_NODE_URL_MAX_LEN-1] = '\0';
     strncpy(wallet_config.node_url_str, "http://127.0.0.1:7545", BOAT_NODE_URL_MAX_LEN-1);
@@ -521,72 +544,73 @@ Example:
                              sizeof(BoatEthWalletConfig));
 ```
 
-#### unload wallet
-Unloading the wallet will unload the loaded wallet from the memory. It will not delete the persistent wallet, but the persistent wallet cannot be used until it is loaded again.
+#### 卸载钱包
+卸载钱包将把已加载的钱包从内存中卸载。卸载不会删除已经持久化的钱包，但在再次加载之前，该持久性钱包将不能使用。
+
 ```
 void BoatWalletUnload(BSINT32 wallet_index);
 ```
-Parameters:
+参数:
 
-||||
-|-----|-----|-----|
+|    |                |                           |
+|----|----------------|---------------------------|
 |[in]|**wallet_index**|The wallet index to unload.|
 
 
-#### Delete wallet
-Deleting the wallet will delete the persistent wallet. If the wallet has been loaded before the deletion, after the deletion, the persistent wallet will become a one-time wallet, which can still be used before being unload.
+#### 删除钱包
+删除钱包会将持久化的钱包删除。如果该钱包在删除之前已经加载，那么删除之后，该持久化钱包会变为一次性钱包，在卸载之前仍可使用。  
 ```
 void BoatWalletDelete(BCHAR * wallet_name_str);
 ```
-Parameters:
+参数:
 
-||||
-|-----|-----|-----|
-|[in]|**wallet_name_str**|The wallet name to delete.|
+|     |                   |                          |
+|-----|------------------ |--------------------------|
+|[in] |**wallet_name_str**|The wallet name to delete.|
 
-### Key generation
-The key that needs to be configured when creating a wallet can be inputted externally or generated by the SDK.
+### 密钥生成
+创建钱包时需要配置的密钥，可以由外部输入，也可以由SDK生成。
 
-Take Ethereum as an example:
+以以太坊为例:
 ```
 BOAT_RESULT BoatEthWalletGeneratePrivkey( BOAT_OUT BUINT8 priv_key_array[32] );
 ```
-Parameters:
+参数:
 
-||||
-|-----|-----|-----|
-|[in]|**priv_key_array**|A 32-byte buffer to hold the generated private key.|
+|     |                  |                                                   |
+|-----|------------------|---------------------------------------------------|
+|[in] |**priv_key_array**|A 32-byte buffer to hold the generated private key.|
 
-**return value:**
+**返回值:**  
 This function returns BOAT_SUCCESS if private key is successfully generated.
 Otherwise it returns one of the error codes.
 
-### Transfer call
-Token transfer from this account to other accounts (not all blockchain protocols support transfers).
+### 转账调用
+从本账户向其他账户进行token转账（并非所有区块链协议都支持转账）。
 
-Take Ethereum as an example:
+以以太坊为例:
 ```
 BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr,
                             BCHAR * value_hex_str);
 ```
 
-Parameters:
+参数:
 
-||||
-|-----|-----|-----|
-|[in]|**tx_ptr**|Transaction pointer.|
+|    |                 |                                                                        |
+|----|-----------------|------------------------------------------------------------------------|
+|[in]|**tx_ptr**       |Transaction pointer.                                                    |
 |[in]|**value_hex_str**|A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234".|
 
-**return value:**
+**返回值:**  
 This function returns BOAT_SUCCESS if transfer is successful.
 Otherwise it returns one of the error codes.
 
-### Contract call (automatically generated)
+### 合约调用（自动生成)
 
-#### Restrictions on automatically generated contracts
-Since contract programming languages generally support object-oriented, and C language does not support object-oriented, and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools.
+#### 自动生成合约的限制
+由于合约编程语言一般支持面向对象，而C语言不支持面向对象，无法使用统一范式传递对象，因此只有参数类型与C语言内置类型一致的合约函数，可以通过工具转换为C调用代码。
 
-For contracts written by Solidity, the tool supports the following parameter types:
+对于Solidity编写的合约，工具支持以下参数类型：
   - address
   - bool
   - uint8
@@ -616,7 +640,7 @@ For contracts written by Solidity, the tool supports the following parameter typ
   - bytes13
   - bytes14
   - bytes15
-  - bytes16
+  - bytes16 
   - bytes17
   - bytes18
   - bytes19
@@ -636,7 +660,7 @@ For contracts written by Solidity, the tool supports the following parameter typ
   - bytes
   - string
 
-For WASM contracts written in C++, the tool supports the following parameter types:
+对于C++编写的WASM合约，工具支持以下参数类型:
   - string
   - uint8
   - uint16
@@ -648,45 +672,45 @@ For WASM contracts written in C++, the tool supports the following parameter typ
   - int64
   - void
 
-If the contract function contains unsupported parameter types, the automatic conversion tool will not be able to complete the conversion, and the contract must be written manually.
+若合约函数中包含不支持的参数类型，自动转换工具将无法完成转换，必须手工编写合约。
 
-#### Automatically generated contract call interface
-The successfully generated contract call interface is the following C function:
+#### 自动生成的合约调用接口
+成功生成的合约调用接口为如下形式的C函数:
 ```
-BCHAR * <Contract ABI JSON file name >_< Contract function name>(<Wallet type> *tx_ptr, …);
+BCHAR * <合约ABI JSON文件名 >_< 合约函数名>(<钱包类型> *tx_ptr, …);
 ```
-E.g:
+例如:
 ```
 BCHAR * StoreRead_saveList(BoatEthTx *tx_ptr, Bbytes32 newEvent);
 ```
-The first parameter of the calling interface is always the pointer of the initialized transaction object.
+调用接口的第一个参数总为已初始化的交易对象的指针。
 
-If the call is successful, the return value of the call interface is a string:
-- For a contract call (transaction) that will change the state of the blockchain, the returned string is the hash of the transaction, expressed in the form of a HEX string.
-- For contract calls that do not change the state of the blockchain, the returned string is the "result" string in the node's return message, and the "result" string represents the return value of the contract function.
+如果调用成功，调用接口的返回值是一个字符串：
+- 对于会改变区块链状态的合约调用（交易），返回的字符串是本次交易的哈希，以HEX字符串形式表示。
+- 对于不改变区块链状态的合约调用，返回的字符串是节点返回信息中的”result”字串，该“result”字串代表合约函数的返回值。
 
-*Note: The memory of the string is allocated inside the SDK. The application must copy the string to the memory allocated by the application for subsequent use, and must not modify the content of the returned string or save the pointer to the string for use.*
+*注：该字符串的内存在SDK内部分配，应用程序必须将该字符串复制到应用分配的内存中再做后续使用，不得修改返回的字符串的内容，或将该字符串的指针保存使用。*
 
-The contract function that changes the state of the blockchain refers to any function that changes the persistent storage information in the blockchain ledger.For example, functions that write and modify member variables in the contract are all contract functions that change the state of the blockchain.If a contract function only modifies the local variables in the function, but does not modify the contract member variables, then the contract function is a contract function that does not change the state of the blockchain.
+改变区块链状态的合约函数，是指任何会改变区块链账本中的持久化存储信息的函数。例如，会对合约中的成员变量进行写入修改的函数，都是改变区块链状态的合约函数。如果一个合约函数只修改函数内的局部变量，而不会修改合约成员变量，那么该合约函数是不改变区块链状态的合约函数。
 
-In some contract programming languages, the two types of contract functions have a clear modifier difference on the prototype, while in other programming languages, there is no obvious mark. In the ABI, these two types of functions have different identifiers.
+有一些合约编程语言中，两类合约函数在原型上有明确的修饰符区别，而另一些编程语言，没有明显的标识。在ABI中，这两类函数会有不同的标识。
 
-For example, take the following Ethereum Solidity contract as an example:
+例如，以如下以太坊Solidity合约为例:
 ```
 contract StoreRead {
-
+    
     bytes32[] eventList;
-
+    
     function saveList(bytes32 newEvent) public {
         eventList.push(newEvent);
     }
-
+    
     function readListLength() public view returns (uint32 length_) {
         length_ = uint32(eventList.length);
     }
 }
 ```
-After the contract is compiled, the ABI corresponding to the two functions are described as follows:
+合约编译后，两个函数对应的ABI描述如下:
 ```
 "abi": [
     {
@@ -719,20 +743,19 @@ After the contract is compiled, the ABI corresponding to the two functions are d
     }
 ]
 ```
-In the above contract, eventList is a member variable of the contract. saveList() will change the value of eventList, which is a contract function that changes the state of the blockchain; readListLength() has a view modifier and only reads the attributes of eventList without changing its value. It is a contract function that does not change the state of the blockchain .
+上述合约中，eventList是合约的成员变量。saveList()会改变eventList的值，是改变区块链状态的合约函数；readListLength()有view修饰符，只读取eventList的属性，不改变它的值，是不改变区块链状态的合约函数。
 
-Pay special attention to the fact that although the contract function and C call interface function that change the state of the blockchain and do not change the state of the blockchain are very similar in prototype, the calling principles of the two are quite different.
+特别注意，尽管改变区块链状态和不改变区块链状态的合约函数和C调用接口函数在原型上非常相似，但两者的调用原理有很大差别。
 
-Any change to the state of the blockchain needs to be implemented through blockchain transactions and reach a consensus across the entire network. The contract function that changes the state of the blockchain is called asynchronously. When called, it only initiates the blockchain transaction, and the contract will not be executed before the blockchain network packs the transaction into blocks. Therefore, when the contract function that changes the state of the blockchain is called, the return value is only the hash value used to identify the transaction, not the return value in the form of the contract function. When designing a smart contract, the public interface function that changes the state of the blockchain, the information it tries to return should be stored in the contract member variable, and the receipt of the transaction is queried through BoatEthGetTransactionReceipt(). After success, use another Obtained in the form of a read function.
+对区块链状态的任何改变，都需要通过区块链交易实施并在全网达成共识。改变区块链状态的合约函数是异步调用，在调用时，只是发起该次区块链交易，而在区块链网络将该交易打包出块前，该合约不会被执行。因此，调用改变区块链状态的合约函数时，其返回值仅仅是用于标识该次交易的哈希值，而不是该合约函数形式上的返回值。在设计智能合约时，改变区块链状态的对外（public）接口函数，其试图返回的信息，应当保存在合约成员变量中，通过BoatEthGetTransactionReceipt()查询该次交易的回执，成功后，用另一个读函数的形式获取。
 
+不改变区块链状态的合约函数，只需区块链节点读取其数据库内的已有信息，无需交易和共识，因此对该类函数的调用是同步调用，其返回值是合约函数形式上的返回值
 
-Contract functions that do not change the state of the blockchain, only need the blockchain node to read the existing information in its database, without transactions and consensus, so the call to this type of function is a synchronous call.The return value is the return value in the form of the contract function.
+#### 交易初始化
+调用自动生成的合约接口，首先应初始化一个交易对象，然后调用生成的合约接口。
+即使调用的合约函数是不改变区块链状态的，也需要先初始化一个交易对象。
 
-#### Transaction initialization
-To call the automatically generated contract interface, first initialize a transaction object, and then call the generated contract interface.
-Even if the called contract function does not change the state of the blockchain, a transaction object needs to be initialized first.
-
-Take Ethereum as an example (different blockchain protocol parameters are different):
+以以太坊为例（不同的区块链协议参数有所差异）:
 ```
 BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
                           BoatEthTx *tx_ptr,
@@ -740,23 +763,23 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
                           BCHAR * gasprice_str,
                           BCHAR * gaslimit_str,
                           BCHAR *recipient_str)
-```
-Parameters:
+```						 
+参数:
 
-||||
-|-----|-----|-----|
-|[in]|**wallet_ptr**|The wallet pointer that this transaction is combined with.|
-|[in]|**tx_ptr**|Pointer a transaction object.|
-|[in]|**is_sync_tx**|For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored.|
-|[in]|**gasprice**|A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed.|
-|[in]|**gaslimit**|A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed.|
+|    |                 |                                                                                                |
+|----|--------------   |------------------------------------------------------------------------------------------------|
+|[in]|**wallet_ptr**   |The wallet pointer that this transaction is combined with.                                      |
+|[in]|**tx_ptr**       |Pointer a transaction object.                                                                   |
+|[in]|**is_sync_tx**   |For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored.|
+|[in]|**gasprice**     |A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed.                                                                                                |
+|[in]|**gaslimit**     |A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed.                                          |
 |[in]|**recipient_str**|A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed. |
 
-**return value:**
+**返回值:**  
 This function returns BOAT_SUCCESS if initialization is successful.
 Otherwise it returns one of the error codes.
 
-E.g:
+示例:
 ```
 BoatEthTx tx_ctx;
 BOAT_RESULT result;
@@ -768,75 +791,69 @@ result = BoatEthTxInit(
                        "0x333333",
                        "0x9e7f3ae22cf97939a2e4cd68dd33bb29268a1ec9");
 ```
-#### Call contract interface
-After completing the transaction initialization, you can call the automatically generated contract interface:
+#### 调用合约接口
+完成交易初始化后，可以调用自动生成的合约接口：
 
-E.g:
+例如:
 ```
 BCHAR *result_str;
 result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ```
-Note: Please refer to 4.6.2 for the description of the return value
+注：返回值的说明见4.4.2
 
-### Manually construct contract calls
-If the automatic generation tool cannot generate the C call interface, you need to manually construct the transaction message.
+### 手动构造合约调用
+如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。
 
-The manual construction of transactions needs to follow the ABI interface of the specific blockchain protocol.
+手工构造交易需要遵循具体区块链协议的ABI接口，。
 
-Example 1: Ethereum transaction structure
-Step 1: Call BoatEthTxInit() to initialize the transaction
+例1：以太坊交易构造
+Step 1：调用BoatEthTxInit()进行交易初始化
 
-Step 2.1: Set transaction parameter nonce:
+Step 2.1：设置交易参数nonce：  
 BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr,
 BUINT64 nonce);
-Nonce is usually set to BOAT_ETH_NONCE_AUTO, and the nonce value is obtained from the network.
-
-Step 2.2: If necessary, set the "value" parameter of the transaction(in the initialized transaction object, value defaults to 0):
+nonce通常设置为BOAT_ETH_NONCE_AUTO，从网络获取nonce值。
+Step 2.2：需要的话，设置交易参数value（初始化的交易对象中，value默认为0）:  
 ```
 BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr,
 BoatFieldMax32B *value_ptr);
 ```
-Step 3a: For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
+Step 3a：对于改变区块链状态的合约调用（交易），设置交易参数data:
 ```
 BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr,
 BoatFieldVariable *data_ptr);
 ```
-Among them, the format of data_ptr follows the Ethereum ABI, including the first 4 bytes of the Keccak-256 hash of the contract function prototype as the Function Selector, and then the parameters are arranged in sequence:
-<https://solidity.readthedocs.io/en/develop/abi-spec.html>
-
-Step 4a: Send transaction
+其中，data_ptr的格式遵循以太坊ABI，包括合约函数原型的Keccak-256哈希的前4字节作为Function Selector，随后依次排列各个参数：
+https://solidity.readthedocs.io/en/develop/abi-spec.html  
+Step 4a：发送交易
 ```
 BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
 ```
-
-Step 4b: For contract calls that do not change the state of the blockchain, call the State-less contract function
+Step 4b：对于不改变区块链状态的合约调用，调用State-less合约函
 ```
 BCHAR * BoatEthCallContractFunc(BoatEthTx *tx_ptr,
                                 BCHAR *func_proto_str,
                                 BUINT8 *func_param_ptr,
                                 BUINT32 func_param_len);
 ```
-Among them, the format of func_param_ptr follows the same rules as Step 3a.
-
-Example 2: PlatONE transaction structure
-Step 1: Call BoatPlatONETxInit() to initialize the transaction, and the transaction type field is set according to the actual transaction type.
-
-Step 2.1: Set transaction parameter nonce:
+其中，func_param_ptr的格式遵循与Step 3a相同的规则。
+例2：PlatONE交易构造
+Step 1：调用BoatPlatONETxInit()进行交易初始化，其中交易类型字段根据实际交易类型进行设置。
+Step 2.1：设置交易参数nonce：
 BOAT_RESULT BoatPlatoneTxSetNonce(BoatEthTx *tx_ptr,
-BUINT64 nonce);
-The nonce is usually set to BOAT_PLATONE_NONCE_AUTO, and the nonce value is obtained from the network.
-
-Step 2.2: If necessary, set the "value" parameter of the transaction (in the initialized transaction object, value defaults to 0):
+BUINT64 nonce); 
+nonce通常设置为BOAT_PLATONE_NONCE_AUTO，从网络获取nonce值。
+Step 2.2：需要的话，设置交易参数value（初始化的交易对象中，value默认为0）:
 ```
 BOAT_RESULT BoatPlatoneTxSetValue(BoatEthTx *tx_ptr,
 BoatFieldMax32B *value_ptr);
 ```
-Step 3a: For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
+Step 3a：对于改变区块链状态的合约调用（交易），设置交易参数data:
 ```
 BOAT_RESULT BoatPlatoneTxSetData(BoatEthTx *tx_ptr,
 BoatFieldVariable *data_ptr);
 ```
-Among them, data_ptr is coded according to RLP and is sequentially compiled into the following fields:
+其中，data_ptr按RLP编码，依次编入如下字段:
 ```
 {
   TransactionType (Fixed unsigned 64bit, BigEndian),
@@ -846,128 +863,127 @@ Among them, data_ptr is coded according to RLP and is sequentially compiled into
 …
 }
 ```
-RLP encoding is as follows:
-- a) Call RlpInitListObject() to initialize the top-level LIST object
-- b) Call RlpInitStringObject() to initialize the first encoding field object
-- c) Call RlpEncoderAppendObjectToList() to add the first encoding field object to the top-level LIST object
-- d) Repeat b and c until all code objects are added to the top LIST object
-- e) Call RlpEncode() to perform RLP encoding on the top-level LIST object and its subobjects
-- f) Call RlpGetEncodedStream() to get the encoded stream
-- g) After completing the contract call, call RlpRecursiveDeleteObject() to destroy the top-level LIST object and all its child objects
+RLP编码按以下方法:
+- a) 调用RlpInitListObject()初始化顶层LIST对象
+- b) 调用RlpInitStringObject()初始化第一个编码字段对象
+- c) 调用RlpEncoderAppendObjectToList()将第一个编码字段对象加入顶层LIST对象
+- d) 重复b和c，直至所有编码对象都加入顶层LIST对象
+- e) 调用RlpEncode()对顶层LIST对象及其子对象进行RLP编码
+- f) 调用RlpGetEncodedStream()获取编码后的码流
+- g) 完成合约调用后，调用RlpRecursiveDeleteObject()销毁顶层LIST对象及其所有子对象
 
-Step 4a: Send transaction
+Step 4a: 发送交易
 ```
 BOAT_RESULT BoatPlatoneTxSend(BoatEthTx *tx_ptr);
 ```
 
-Step 3b: For contract calls that do not change the state of the blockchain, call the State-less contract function
+Step 3b: 对于不改变区块链状态的合约调用，调用State-less合约函数
 ```
 BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr,
                                     BUINT8 *rlp_param_ptr,
                                     BUINT32 rlp_param_len)
 ```
-Among them, the format of rlp_param_ptr follows the same rules as Step 3a.
+其中，rlp_param_ptr的格式遵循与Step 3a相同的规则。
 
 
-For the specific calling method, please refer to the automatically generated code of the Demo attached to the SDK, which is located under \<SDKRoot\>/contract/generated.
+具体调用方法，可参照SDK所附的Demo的自动生成代码，这些代码位于\<SDKRoot\>/contract/generated下。
 
-## Suggestions for porting SDK to RTOS
-If the SDK is ported to RTOS, the following points should generally be followed:
-###### 1. Remove the dependency on curl
+## SDK往RTOS移植的建议
+若将SDK移植到RTOS上，一般应遵循以下几点:
+1. 解除对curl的依赖
+curl是一个linux下的通信协议库，在SDK中用于支持http/https通信。区块链节点通常采用http/https协议进行通信。
 
-curl is a communication protocol library under linux, used in the SDK to support http/https communication. Blockchain nodes usually use the http/https protocol to communicate.
-
-For modules using RTOS, you should add a call package to the module's http/https interface in \<SDKRoot\>/sdk/rpc, and modify \<SDKRoot\>/include/boatoptions.h, close RPC_USE_LIBCURL and set the new RPC USE OPTION.
-
-
-###### 2. Remove the dependency on OpenSSL
-
-OpenSSL is a cryptography library under linux, used in the SDK to support CSPRNG (cryptographic secure pseudo-random number generator) and AES encryption and decryption.
-
-If the random number generator depends on hardware, a new hardware platform should be added to \<SDKRoot\>/hwdep. If you use the software pseudo-random number generator (it should be noted that the adverse impact on security), you should modify \<SDKRoot\>/include/boatoptions.h, turn off BOAT_USE_OPENSSL, and adjust the code in \<SDKRoot\>/hwdep/default/rng Make it reference the pseudo-random number generator provided by the system.
-
-The AES encryption and decryption is used in the SDK for persistent storage of the wallet. If encryption is not required (it should be noted that the adverse impact on security), you can modify \<SDKRoot\>/hwdep/default/storage, cancel encryption, or use other encryption algorithms that do not rely on OpenSSL.
+对于采用RTOS的模组，应当在\<SDKRoot\>/sdk/rpc中增加对模组的http/https的接口的调用封装，并修改\<SDKRoot\>/include/boatoptions.h，关闭RPC_USE_LIBCURL并设置新增的RPC USE OPTION
 
 
-###### 3. Remove dependence on the file system
+2. 解除对OpenSSL的依赖
 
-The SDK uses files as a persistent storage method for the wallet. If the RTOS does not support the file system, you should modify \<SDKRoot\>/hwdep/default/storage to modify the read/write file to a persistence method supported by the system.
+OpenSSL是一个linux下的密码学库，在SDK中用于支持CSPRNG（密码学安全伪随机数发生器）和AES加解密。
 
-When only one persistent wallet needs to be supported, the wallet name can be ignored in the persistence method.
+其中的随机数发生器如果依赖硬件，应当在\<SDKRoot\>/hwdep中新增硬件平台。如果使用软件的伪随机数发生器（应当注意到对安全性的不利影响），应当修改<SDKRoot>/include/boatoptions.h，关闭BOAT_USE_OPENSSL，并调整<SDKRoot>/hwdep/default/rng中的代码使之引用系统提供的伪随机数发生器。
 
-###### 4. Memory trimming
-
-If the memory of the target system is too tight to load, you can try to trim the memory. The points that can be cropped include:
-
-a) According to actual needs, in \<SDKRoot\>/include/boatoptions.h, close the blockchain protocol that does not need to be supported
-b) According to the actual situation, reduce the storage space BOAT_NODE_URL_MAX_LEN of the node URL string in \<SDKRoot\>/include/boatoptions.h
-c) According to actual needs, reduce the number of wallets BOAT_MAX_WALLET_NUM in \<SDKRoot\>/include/boatwallet.h
-d) According to the actual situation, reduce the maximum number of members supported in a LIST in \<SDKRoot\>/include/boatrlp.h MAX_RLP_LIST_DESC_NUM
-e) According to the actual situation, reduce the size of the send/receive buffer WEB3_JSON_STRING_BUF_MAX_SIZE in \<SDKRoot\>/sdk/protocol/common/web3intf.h, and the size of the result string Buffer WEB3_RESULT_STRING_BUF_MAX_SIZE
+其中的AES加解密在SDK中用于钱包的持久性保存。如果不需要加密（应当注意到对安全性的不利影响），可以修改\<SDKRoot\>/hwdep/default/storage，取消加密，或者改用其他不依赖于OpenSSL的加密算法实现。
 
 
-###### If after the above cropping, the memory is still too large to fit, you can try:
-- a) According to actual needs, the simple RLP encoding method for specific transaction parameters is used to replace the recursive general RLP encoding method in \<SDKRoot\>/sdk/rlp
-- b) According to actual needs, tailor the APIs that are not actually used
 
-## BoAT's extended AT command suggestion
+3. 解除对文件系统的依赖
 
-### Create/load wallet AT^BCWALT
-|**Command**|**Response(s)**|
-| :-----| :-----|
-|Write Command:<br>^BCWALT=\<protocol_type\>,\<wallet_name\>[,\<wallet_config\>]|^BCWALT: \<wallet_index\><br>OK<br>|
-|Test Command:<br>^BCWALT=?|+BCWALT: (list of supported \<protocol_type\>s)<br>OK<br>|
+SDK中使用文件作为钱包的持久化保存方法。若RTOS不支持文件系统，应当修改\<SDKRoot\>/hwdep/default/storage，将读/写文件修改为系统支持的持久化方法。
 
-Features:
-Create/load wallet, corresponding to BoatWalletCreate().
+当仅需支持一个持久化钱包时，持久化方法中可以忽略钱包名。
 
-Parameters:
+
+4. 内存裁剪
+
+若目标系统内存较为紧张，以致无法装入时，可以尝试对内存进行裁剪。可以裁剪的点包括：
+
+a)	根据实际需要，在<SDKRoot>/include/boatoptions.h中，关闭不需要支持的区块链Protocol  
+b)	根据实际情况，减小<SDKRoot>/include/boatoptions.h中，节点URL字符串的存储空间BOAT_NODE_URL_MAX_LEN  
+c)	根据实际需要，减小<SDKRoot>/include/boatwallet.h中，支持的钱包数量BOAT_MAX_WALLET_NUM  
+d)	根据实际情况，减小<SDKRoot>/include/boatrlp.h中，一个LIST中支持的最大成员个数MAX_RLP_LIST_DESC_NUM  
+e)	根据实际情况，减小<SDKRoot>/sdk/protocol/common/web3intf.h中，发送/接收Buffer的大小WEB3_JSON_STRING_BUF_MAX_SIZE，以及result字串Buffer的大小WEB3_RESULT_STRING_BUF_MAX_SIZE  
+
+
+如果经过上述裁剪，内存仍然过大无法装入，可以尝试：  
+a)	根据实际需要，采用针对具体交易参数的简易RLP编码方法，替代<SDKRoot>/sdk/rlp中递归的通用RLP编码方法  
+b)	根据实际需要，裁剪实际不会用到的API  
+
+## BoAT的扩展AT命令建议
+
+### 创建/加载钱包 AT^BCWALT
+|**Command**                                                                    |**Response(s)**                                          |
+| :-----------------------------------------------------------------------------| :-------------------------------------------------------| 
+|Write Command:<br>^BCWALT=\<protocol_type\>,\<wallet_name\>[,\<wallet_config\>]|^BCWALT: \<wallet_index\><br>OK<br>                      |
+|Test Command:<br>^BCWALT=?                                                     |+BCWALT: (list of supported \<protocol_type\>s)<br>OK<br>|
+
+功能：
+创建/加载钱包，与BoatWalletCreate()对应。
+
+参数：
 \<protocol_type\>: integer type
 - 1: Ethereum
-- 2: Hyper Ledger Fabric (not yet supported)
-- 3: PlatON
-- 4: PlatONE
+- 2: PlatONE
 
-\<wallet_name\>: string type;
+\<wallet_name\>: string type; 
 a string of wallet name
 
 \<wallet_config\>: string type;
 A JSON string representing the wallet configuration of \<protocol_type\>. The exact format is manufacture specific.
 
-\<wallet_index\>: integer type;
+\<wallet_index\>: integer type; 
 the index of the created wallet
 
-### Unload wallet AT^BUWALT
-|**Command**|**Response(s)**|
-| :-----| :-----|
-|Write Command:<br>^BUWALT=<wallet_index>|<br>OK<br>|
-|Test Command:<br>^BUWALT=?|+BUWALT: (list of loadeded \<wallet_index\>s)<br>OK<br>|
+### 卸载钱包AT^BUWALT
+|**Command**                             |**Response(s)**                                        |
+| :--------------------------------------| :-----------------------------------------------------| 
+|Write Command:<br>^BUWALT=<wallet_index>|<br>OK<br>                                             |
+|Test Command:<br>^BUWALT=?              |+BUWALT: (list of loadeded \<wallet_index\>s)<br>OK<br>|
 
-Features:
-Unload wallet，corresponding to BoatWalletUnload ().
+功能：
+卸载钱包，与BoatWalletUnload()对应。
 
-Parameters:
+参数:
 \<wallet_index\>: integer type; wallet index to unload, previously returned by ^BCWALT
-### Delete wallet AT^BDWALT
-|**Command**|**Response(s)**|
-| :-----| :-----|
-|Write Command:<br>^BDWALT=\<wallet_name\>|<br>OK<br>|
+### 删除钱包AT^BDWALT
+|**Command**                              |**Response(s)**|
+| :---------------------------------------| :-------------| 
+|Write Command:<br>^BDWALT=\<wallet_name\>|<br>OK<br>     |
 
-Features:
-Delete the created persistent wallet, corresponding to BoatWalletDelete()。
+功能：
+删除已创建的持久化钱包，与BoatWalletDelete()对应。
 
-Parameters:
+参数:
 \<wallet_name\>: string type; the name of the wallet to delete
 
-### Contract function call AT^BCALLFUNC
-|**Command**|**Response(s)**|
-| :-----| :-----|
-|Write Command:<br>^BCALLFUNC=\<wallet_index\>,\<tx_object\>|<br>OK<br>|
+### 合约函数调用AT^BCALLFUNC
+|**Command**                                                |**Response(s)**|
+| :---------------------------------------------------------| :-------------| 
+|Write Command:<br>^BCALLFUNC=\<wallet_index\>,\<tx_object\>|<br>OK<br>     |
 
-Features:
-Initiating a contract call corresponds to the C call interface generated according to the contract ABI JSON file.
+功能：
+发起合约调用，与根据合约ABI JSON文件生成的C调用接口对应。
 
-Parameters:
+参数:
 \<wallet_index\>: integer type; wallet index combined with the contract call, previously returned by ^BCWALT
 
 \<tx_object\>: string type;
@@ -975,22 +991,20 @@ A JSON string representing the transaction object as per the generated C contrac
 
 \<wallet_index\>: integer type; the index of the created wallet
 
-### Transfer AT^BTRANS
-|**Command**|**Response(s)**|
-| :-----| :-----|
-|Write Command:<br>^BTRANS=\<wallet_index\>,\<recipient\>,\<value\>|<br>OK<br>|
+### 转账AT^BTRANS
+|**Command**                                                       |**Response(s)**|
+| :----------------------------------------------------------------| :-------------| 
+|Write Command:<br>^BTRANS=\<wallet_index\>,\<recipient\>,\<value\>|<br>OK<br>     |
 
-Features:
-Initiate a transfer of the designated Wallet (not all blockchains support transfers). For example, for Ethereum, it corresponds to BoatEthTransfer().
+功能：  
+发起指定Wallet的转账（并非所有区块链都支持转账）。例如，对以太坊，与BoatEthTransfer()对应。
 
-Parameters:
+参数:  
 \<wallet_index\>: integer type; wallet index combined with the transfer (the payer), previously returned by ^BCWALT
 
-\<recipient\>: string type;
+\<recipient\>: string type;  
 A HEX string representing the recipient (payee) address.
 
 \<value\>: integer type; the value to transfer, represented by the smallest token unit of the protocol (e.g. for Ethereum, the unit is wei or 10-18 ether).
-## Reference
-BoAT API Reference Manual
-
+## 参考资料
 [1].BoAT IoT Framework SDK Reference Manual, AITOS.20.70.100IF, V1.0.0
