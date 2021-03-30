@@ -96,7 +96,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 	BoatWalletPriKeyCtx  priKeyCtxTmp;
 
     /* Check wallet configuration */ 
-    if( wallet_name_str == NULL && wallet_config_ptr == NULL )
+    if( (wallet_name_str == NULL) && (wallet_config_ptr == NULL) )
     {
         BoatLog(BOAT_LOG_NORMAL, "Invalid wallet configuration.");
         return BOAT_ERROR;
@@ -131,7 +131,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 			/* step-2:  assign value of prikeyIdTmp to wallet_config_ptr */
 			memcpy( &( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->private_KeyCtx), &priKeyCtxTmp, sizeof(priKeyCtxTmp) );
 			
-			/* step-3:  clear  sensitive information in wallet_config_ptr */
+			/* step-3:  clear sensitive information in wallet_config_ptr */
 			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_type         = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
 			memset( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content, 0, 
 					sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );

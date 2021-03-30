@@ -103,67 +103,6 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 						   BoatSignatureResult* signatureResult, void* rsvd );
 
 
-#if 0
-/*!****************************************************************************
- * @brief 
- *   generate one-time ECP private key.
- *
- * @details
- *   generate one-time ECP private key.
- *
- * @param type 
- *	 the signature type.
- *   \n - #BOAT_SIGNATURE_SECP256K1.
- *   \n - #BOAT_SIGNATURE_SECP256R1.
- *
- * @param[out] outbuf 
- *   pointer to store the generate private key.
- *
- * @param[in] maxLen 
- *   param <b>outbuf</b> size.
- *
- * @param[out] pubX 
- *   X point of Corresponding public key.
- *
- * @param[out] pubY 
- *   Y point of Corresponding public key.
- *
- * @param rsvd
- *   reserved for futrue. 
- *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if gennerate success; otherwise return a negative error code.
- ******************************************************************************/
-BOAT_RESULT BoatGenOnetimeSignPrikey( const BoatSignatureAlgType type, BUINT8 *outbuf, 
-								      BUINT32 maxLen, BUINT8 *pubX, BUINT8 *pubY, void* rsvd );
-
-
-/*!****************************************************************************
- * @brief 
- *   check the privete is exists or not.
- * 
- * @details
- *   check the privete is exists or not.
- *
- * @param prikeyId 
- *   the full path of a private key.
- *
- * @param pubX 
- *   X point of Corresponding public key.
- *
- * @param pubY 
- *   Y point of Corresponding public key.
- *
- * @param rsvd
- *   reserved for futrue. 
- *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if gennerate success; otherwise return a negative error code.
- ******************************************************************************/
-BOAT_RESULT  BoatChkPrikeyExist( const BUINT8 * prikeyId, 
-								 BUINT8 *pubX, BUINT8 *pubY, void* rsvd );
-#endif
-
 /*!****************************************************************************
  * @brief 
  *   get file size

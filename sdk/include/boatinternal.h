@@ -33,9 +33,7 @@ boatinternal.h defines common types and include external header files that are i
 
 #include "boattypes.h"
 #include "boatwallet.h"
-#include "boatplatform_internal.h"
 #include "boatiotsdk.h"
-
 
 //! Define a resonable max length in bytes for general checking for memory
 //! allocation related validation. The lower end the embedded system is, the
