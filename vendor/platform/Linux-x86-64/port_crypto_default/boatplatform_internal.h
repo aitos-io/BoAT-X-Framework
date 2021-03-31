@@ -82,7 +82,7 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
  * @return BOAT_RESULT 
  *   return BOAT_SUCCESS if generate success; otherwise return a negative error code
  ******************************************************************************/
-BOAT_RESULT BoatSignature( BoatWalletPriKeypkCtx prikeypkCtx, 
+BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd );
 
@@ -329,6 +329,14 @@ BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* 
  *        reserved for futrue. 
  ******************************************************************************/
 void    BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd);
+
+
+BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx );
+BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx );
+BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx );
+
+BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
+BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
 
 /*! @}*/
 

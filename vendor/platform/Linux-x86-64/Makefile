@@ -5,7 +5,7 @@ OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/keccak/*.o) \
 
 ifeq ($(SOFT_CRYPTO_DEP), CRYPTO_DEFAULT)
     OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/crypto_default/*.o) \
-	           $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_crypto_default/*.o)
+	           $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_crypto_default/*.o) 
     CRYPTO_PORT_DIRECTORY = port_crypto_default
 else ifeq ($(SOFT_CRYPTO_DEP), CRYPTO_MBEDTLS)
     OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/mbedtls/*.o) \
@@ -18,7 +18,7 @@ endif
 
 LIBNAME = $(BOAT_LIB_DIR)/libboathwdep.a
 
-.PHONY: all $(SUBDIRS) $(CLEAN_SUBDIRS) boathwdep_objs clean
+.PHONY: all $(CLEAN_SUBDIRS) boathwdep_objs clean
 
 all: boathwdep_objs $(LIBNAME)
 

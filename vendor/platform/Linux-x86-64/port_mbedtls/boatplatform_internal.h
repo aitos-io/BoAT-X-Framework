@@ -336,8 +336,8 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx );
 BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx );
 
-BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
-BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
+BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
+BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
 
 
 /*! @}*/

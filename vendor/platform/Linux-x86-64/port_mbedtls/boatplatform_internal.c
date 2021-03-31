@@ -852,7 +852,7 @@ BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx )
 /******************************************************************************
                               BOAT AES WARPPER
 *******************************************************************************/
-BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
+BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
 {
 	mbedtls_aes_context  ctx;
 	BUINT8  saltArrayTmp[16];
@@ -876,7 +876,7 @@ BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], BUINT8 * key, const BUINT8 * input, s
 	return result;
 }
 
-BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
+BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
 {
 	mbedtls_aes_context  ctx;
 	BOAT_RESULT result = BOAT_SUCCESS;

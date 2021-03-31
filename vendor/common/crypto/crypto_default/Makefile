@@ -63,6 +63,3 @@ $(OBJECTS_DIR)/%.o:%.c
 
 clean:	
 	-$(BOAT_RM) $(OBJECTS)
-
-
-

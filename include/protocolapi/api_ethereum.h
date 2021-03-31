@@ -89,9 +89,7 @@ typedef struct TBoatEthWallet
 typedef struct TBoatEthWalletConfig
 {
 	BoatWalletPriKeyCtx_config  prikeyCtx_config; //!< @NOTE This field MUST BE placed in the first member of the structure
-	                                            //!< because in function BoatWalletCreate(), 
-    //BUINT8   prikeyId[BOAT_KEYID_MAX_LEN]; //!< prikey unique identification for persistent wallet; or
-										   //!< prikey content for one time wallet
+	                                              //!< because in function BoatWalletCreate(), 
     BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
     BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatEthNetworkInfo
     BCHAR    node_url_str[BOAT_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"

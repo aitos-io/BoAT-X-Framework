@@ -24,6 +24,7 @@
 #include "boattypes.h"
 
 #include "rand.h"
+#include "aes/aes.h"
 #include "sha3.h"
 #include "secp256k1.h"
 #include "nist256p1.h"
@@ -72,19 +73,6 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd )
 {
-
-}
-
-#if 0
-BOAT_RESULT BoatSignatur( const BoatSignatureAlgType type, const BUINT8* prikeyId, 
-						   const BUINT8* digest, BUINT32 digestLen, BUINT8* signature, 
-						   size_t* signatureLen, BUINT8* r, BUINT8* s, 
-						   BUINT8* signaturePrefix, void* rsvd )
-{	
-	// mbedtls_entropy_context   entropy;
-    // mbedtls_ctr_drbg_context  ctr_drbg;
-	// mbedtls_pk_context        prikeyCtx;
-    // mbedtls_ecdsa_context* ecPrikey = NULL;
 	// BUINT8 raw_r[32]; 
 	// BUINT8 raw_s[32];
 	BUINT8 sig[64];
@@ -96,33 +84,33 @@ BOAT_RESULT BoatSignatur( const BoatSignatureAlgType type, const BUINT8* prikeyI
 	(void)rsvd;
 	
 	/* param check */
-	if( (signature == NULL) || (signatureLen == NULL) )
+	if( (digest == NULL) || (signatureResult == NULL) )
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'signature' or 'signatureLen' can't be NULL." );
+		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
 		return BOAT_ERROR_NULL_POINTER;
 	}
 
-	if( type == BOAT_SIGNATURE_SECP256K1 )
+	if( prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1 )
 	{
-		ecdsa_sign_digest(
-					&secp256k1, // const ecdsa_curve *curve
-					prikeyId,   //const uint8_t *priv_key
-					digest,     //const uint8_t *digest
-					sig,        //uint8_t *sig,
-					signaturePrefix, //uint8_t *pby,
-					NULL        //int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-					);
+		// ecdsa_sign_digest(
+		// 			&secp256k1, // const ecdsa_curve *curve
+		// 			prikeyId,   // const uint8_t *priv_key
+		// 			digest,     // const uint8_t *digest
+		// 			sig,        // uint8_t *sig,
+		// 			signaturePrefix, //uint8_t *pby,
+		// 			NULL        // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
+		// 			);
 	}
-	else if( type == BOAT_SIGNATURE_SECP256R1 )
+	else if( prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1 )
 	{
-		ecdsa_sign_digest(
-					&nist256p1, // const ecdsa_curve *curve
-					prikeyId,   //const uint8_t *priv_key
-					digest,     //const uint8_t *digest
-					sig,        //uint8_t *sig,
-					signaturePrefix, //uint8_t *pby,
-					NULL        //int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-					);
+		// ecdsa_sign_digest(
+		// 			&nist256p1, // const ecdsa_curve *curve
+		// 			prikeyId,   // const uint8_t *priv_key
+		// 			digest,     // const uint8_t *digest
+		// 			sig,        // uint8_t *sig,
+		// 			signaturePrefix, //uint8_t *pby,
+		// 			NULL        // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
+		// 			);
 	}
 	else
 	{
@@ -131,101 +119,6 @@ BOAT_RESULT BoatSignatur( const BoatSignatureAlgType type, const BUINT8* prikeyI
 
 	return result;
 }
-#endif
-
-#if 0
-BOAT_RESULT BoatGenOnetimeSignPrikey( const BoatSignatureAlgType type, BUINT8 *outbuf, 
-								      BUINT32 maxLen, BUINT8 *pubX, BUINT8 *pubY, void* rsvd )
-{
-    // mbedtls_entropy_context   entropy;
-    // mbedtls_ctr_drbg_context  ctr_drbg;
-	// mbedtls_pk_context        key;
-	BOAT_RESULT               result = BOAT_SUCCESS;
-	
-	(void)rsvd;
-	
-	// if( (outbuf == NULL) || (pubX == NULL) || (pubY == NULL) )
-	// {
-	// 	BoatLog( BOAT_LOG_CRITICAL, "param which 'outbuf' or 'pubX' or 'pubY' can't be NULL." );
-	// 	return BOAT_ERROR_NULL_POINTER;
-	// }
-	
-    // mbedtls_entropy_init( &entropy );
-    // mbedtls_ctr_drbg_init( &ctr_drbg );
-	// mbedtls_pk_init( &key );
-
-	// result += mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
-    // result += mbedtls_pk_setup( &key, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY) );
-	
-	// if( type == BOAT_SIGNATURE_SECP256K1 )
-	// {
-	// 	result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec( key ),
-	// 								   mbedtls_ctr_drbg_random, &ctr_drbg );
-	// }
-	// else if( type == BOAT_SIGNATURE_SECP256R1 )
-	// {
-	// 	result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec( key ),
-	// 								   mbedtls_ctr_drbg_random, &ctr_drbg );
-	// }
-	// else
-	// {
-	// 	result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_NONE, mbedtls_pk_ec( key ),
-	// 								   mbedtls_ctr_drbg_random, &ctr_drbg );
-	// }
-	
-	// mbedtls_mpi_write_binary(&mbedtls_pk_ec( key )->Q.X, pubX, 32);
-    // mbedtls_mpi_write_binary(&mbedtls_pk_ec( key )->Q.Y, pubY, 32);
-	
-    // result += mbedtls_pk_write_key_pem( &key, outbuf, maxLen );
-
-	
-    // mbedtls_entropy_free( &entropy );
-    // mbedtls_ctr_drbg_free( &ctr_drbg );
-	// mbedtls_pk_free( &key );
-	
-    return result;
-}
-
-
-BOAT_RESULT BoatChkPrikeyExist( const BUINT8 *prikeyId, BUINT8 *pubX, BUINT8 *pubY, void* rsvd )
-{
-	// mbedtls_pk_context prikeyCtx;
-	 BOAT_RESULT        result = BOAT_SUCCESS;
-	// boat_try_declare;
-
-	// (void)rsvd;
-	
-	// if( (prikeyId == NULL) || (pubX == NULL) || (pubY == NULL) )
-	// {
-	// 	BoatLog( BOAT_LOG_CRITICAL, "param which 'prikeyId' or 'pubX' or 'pubY' can't be NULL." );
-	// 	return BOAT_ERROR_NULL_POINTER;
-	// }
-	
-	// mbedtls_pk_init( &prikeyCtx );
-	// result = mbedtls_pk_parse_keyfile( &prikeyCtx, (const char*)prikeyId, NULL );
-    // if( result != 0 )
-	// {
-	// 	BoatLog( BOAT_LOG_CRITICAL, "Failed to parse keyfile: %s.", prikeyId );
-	// 	boat_throw( result, BoatChkPrikeyExist_exception );
-    // }
-	// else
-	// {
-	// 	mbedtls_mpi_write_binary(&mbedtls_pk_ec( prikeyCtx )->Q.X, pubX, 32);
-	// 	mbedtls_mpi_write_binary(&mbedtls_pk_ec( prikeyCtx )->Q.Y, pubY, 32);
-	// }
-	
-	// /* boat catch handle */
-	// boat_catch(BoatChkPrikeyExist_exception)
-	// {
-    //     BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
-    //     result = boat_exception;
-    // }
-	
-	// mbedtls_pk_free( &prikeyCtx );
-	
-	return result;
-}
-#endif
 
 
 /******************************************************************************
@@ -604,7 +497,6 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 }
 
 
-
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
@@ -620,7 +512,7 @@ BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWa
 	return BOAT_SUCCESS;
 }
 
-BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
+BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx )
 {
 	//! @todo
 	return BOAT_SUCCESS;
@@ -630,14 +522,29 @@ BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyCtx_config* config, BoatW
 /******************************************************************************
                               BOAT AES WARPPER
 *******************************************************************************/
-BOAT_RESULT  BoatAesEncrypt(BUINT8 * iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
+BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
 {
+	aes_encrypt_ctx ctxe;
+	BOAT_RESULT result = BOAT_SUCCESS;
 
+	// aes init
+	result += aes_encrypt_key256( key, &ctxe );
+
+	// Encrypt the data		
+	result += aes_cbc_encrypt(input, output, length, iv, &ctxe);
+
+	return result;
 }
 
-BOAT_RESULT  BoatAesDecrypt(BUINT8 * iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
+BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
 {
+	aes_encrypt_ctx ctxd;
+	BOAT_RESULT result = BOAT_SUCCESS;
 
+	//aes init
+	result += aes_decrypt_key256( key, &ctxd );
+
+	result += aes_cbc_decrypt(input, output, length, iv, &ctxd);
+
+	return result;
 }
-
-

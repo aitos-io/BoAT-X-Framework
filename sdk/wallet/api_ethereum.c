@@ -30,7 +30,6 @@ BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32
 {
     BoatEthWallet *wallet_ptr;
     BOAT_RESULT result;
-	//BBOOL prikeyIdIsEmpty = true;
 	BUINT8 pubkeyHash[32];
 	BUINT8 hashLenDummy;
 
@@ -65,51 +64,8 @@ BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32
 
     /* Set EIP-155 Compatibility to TRUE by default */
     BoatEthWalletSetEIP155Comp(wallet_ptr, config_ptr->eip155_compatibility);
-
-    /* Configure prikeyId */
-//	for( int i = 0; i < BOAT_KEYID_MAX_LEN; i++ )
-//	{
-//		if(config_ptr->prikeyId[i] != 0)
-//		{
-//			prikeyIdIsEmpty = false;
-//			break;
-//		}
-//	}
-//	if(prikeyIdIsEmpty)
-//	{
-		/* one time wallet */
-		/* generate one time keyfile */
-//		result = BoatGenOnetimeSignPrikey( BOAT_SIGNATURE_SECP256K1, 
-//										   wallet_ptr->account_info.prikeyId, 
-//										   sizeof(wallet_ptr->account_info.prikeyId),
-//										   &wallet_ptr->account_info.pub_key_array[0],
-//										   &wallet_ptr->account_info.pub_key_array[32], NULL );
-//		if( result != BOAT_SUCCESS )
-//		{
-//			web3_deinit(wallet_ptr->web3intf_context_ptr);
-//			BoatFree(wallet_ptr);
-//			BoatLog(BOAT_LOG_CRITICAL, "BoatGenOnetimePrikey failed.");
-//			return NULL;
-//		}
-//	}
-//	else
-//	{
-//		/* presistent wallet */
-//		memcpy(wallet_ptr->account_info.prikeyId, config_ptr->prikeyId, BOAT_KEYID_MAX_LEN);
-//		/* check the keyfile is exist */
-//		result = BoatChkPrikeyExist( wallet_ptr->account_info.prikeyId,
-//									 &wallet_ptr->account_info.pub_key_array[0],
-//									 &wallet_ptr->account_info.pub_key_array[32], NULL );
-//		if( result != BOAT_SUCCESS )
-//		{
-//			web3_deinit(wallet_ptr->web3intf_context_ptr);
-//			BoatFree(wallet_ptr);
-//			BoatLog(BOAT_LOG_CRITICAL, "BoatChkPrikeyExist failed.");
-//			return NULL;
-//		}
-//	}
 	
-	//Configure priKey information
+	//Configure priKey context information
 	memcpy(&wallet_ptr->account_info.prikeyCtx, &config_ptr->prikeyCtx_config.private_KeyCtx, sizeof(BoatWalletPriKeyCtx));
 	
 	// Configure account address	

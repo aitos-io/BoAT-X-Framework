@@ -113,6 +113,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 											  const BCHAR *prikeyId, 
 											  const BCHAR *certName )
 {
+	//! @todo prikeyId waiting be update
 	// BUINT32   stringLen;
 	
 	// BOAT_RESULT  result = BOAT_SUCCESS;
@@ -124,7 +125,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 	// 	return BOAT_ERROR;
 	// }
 
-	// if ( (BOAT_SUCCESS != MaxLenCheck(prikeyId)) && (BOAT_SUCCESS != MaxLenCheck(certName)) )
+	// if( (BOAT_SUCCESS != MaxLenCheck(prikeyId)) && (BOAT_SUCCESS != MaxLenCheck(certName)) )
     // {
 	// 	BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
     //     return BOAT_ERROR;
@@ -195,13 +196,14 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 	// 	BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
 	//  	result = boat_exception;
 	// 	/* free malloc param Deinit */
-	// 	BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
-	// 	wallet_ptr->account_info.prikeyId.field_len = 0;
+	// 	//! @todo prikeyId waiting be update
+	// 	//BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
+	// 	//wallet_ptr->account_info.prikeyId.field_len = 0;
 	// 	BoatFree(wallet_ptr->account_info.cert.field_ptr);
 	// 	wallet_ptr->account_info.cert.field_len     = 0;
 	// }
 	
-	//return result;
+	// return result;
 }
 
 #if (HLFABRIC_TLS_SUPPORT == 1) && (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
@@ -530,7 +532,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 		BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
 	 	result = boat_exception;
 		/* free malloc param Deinit */
-		for( 0; i < wallet_ptr->network_info.ordererNum; i++ )
+		for( i = 0; i < wallet_ptr->network_info.ordererNum; i++ )
 		{
 			BoatFree(wallet_ptr->network_info.orderer[i].nodeUrl);
 			BoatFree(wallet_ptr->network_info.orderer[i].hostName);
@@ -574,6 +576,7 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
     }
 	
 	/* initialization */
+	//! @todo prikeyId waiting be update
 	//wallet_ptr->account_info.prikeyId.field_ptr = NULL;
 	//wallet_ptr->account_info.prikeyId.field_len = 0;
 	wallet_ptr->account_info.cert.field_ptr     = NULL;
@@ -643,7 +646,8 @@ void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr )
     }
 
     /* account_info DeInit */
-    //BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
+    //! @todo prikeyId waiting be update
+	//BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
     //wallet_ptr->account_info.prikeyId.field_len = 0;
     BoatFree(wallet_ptr->account_info.cert.field_ptr);
     wallet_ptr->account_info.cert.field_len     = 0;
