@@ -25,22 +25,6 @@
 /* self header include */
 #include "boatinternal.h"
 
-//!@brief boat SDK signature result
-typedef struct TBoatSignatureResult
-{
-	BBOOL    native_format_used;  //!< ture: used, false:unused
-	BUINT8   native_sign[64];
-	
-	BBOOL    pkcs_format_used;
-	BUINT8   pkcs_sign[139];  //!< 139 is ECDSA MAX LENGTH, If another type of signature should be
-	                          //!< added later, this value maybe need extend.
-	BUINT32  pkcs_sign_length;
-	
-	BBOOL    signPrefix_used;
-	BUINT8   signPrefix;
-}BoatSignatureResult;
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -345,6 +329,16 @@ BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* 
  *        reserved for futrue. 
  ******************************************************************************/
 void    BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd);
+
+
+
+BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx );
+BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx );
+BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx );
+
+BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
+BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
+
 
 /*! @}*/
 

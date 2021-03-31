@@ -40,8 +40,9 @@ typedef enum{
 //!@brief fabric key pairs structure
 //!fabric key pairs structure
 typedef struct TBoatHlfabricKeyPair{
-	BoatFieldVariable      prikeyId;//!< prikey unique identification
-	BoatFieldVariable      cert;    //!< client certificate content
+	BoatWalletPriKeyCtx  prikeyCtx; //!< @NOTE This field MUST BE placed in the first member of the structure
+	                                //!< because in function BoatWalletCreate(), 
+	BoatFieldVariable    cert;      //!< client certificate content
 }BoatHlfabricKeyPair;
 
 

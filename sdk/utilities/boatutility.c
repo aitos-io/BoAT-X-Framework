@@ -239,7 +239,7 @@ BUINT32 UtilityHex2Bin( BOAT_OUT BUINT8 *to_ptr,
     }
             
     // if HEX length is odd, treat as if it were left filled with one more '0'
-    if( (from_len&0x01) != 0 )
+    if( (from_len & 0x01) != 0 )
     {
         // length is odd 
         odd_flag = 1;
@@ -590,11 +590,11 @@ void Utility_writeBignumToBigend(const utility_bignum256 *in_number, BUINT8 *out
 	}
 }
 
-BOAT_RESULT MaxLenCheck(BCHAR *check_str)
+BOAT_RESULT MaxLenCheck( BCHAR *check_str )
 {
     for (int i = 0; i < BOAT_MAX_LEN; i++)
     {
-        if ( *(check_str+i) == '\0' )
+        if ( *(check_str + i) == '\0' )
         {
             return BOAT_SUCCESS;
         }

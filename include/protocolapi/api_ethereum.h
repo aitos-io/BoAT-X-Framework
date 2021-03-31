@@ -38,10 +38,8 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 //! from the public key and the public key is calculated from the private key.
 typedef struct TBoatEthAccountInfo
 {
-	//BUINT8  prikeyId[BOAT_KEYID_MAX_LEN];//!< prikey unique identification for persistent wallet; or
-										 //!< prikey content for one time wallet
-    BoatWalletPriKeyCtx prikeyCtx;                                         
-	//BUINT8  pub_key_array[64];  //!< Public key of the account
+    BoatWalletPriKeyCtx prikeyCtx;         //!< prikey context                       
+
     BUINT8  address[BOAT_ETH_ADDRESS_SIZE];//!< Account address calculated from public key
 }BoatEthAccountInfo;
 

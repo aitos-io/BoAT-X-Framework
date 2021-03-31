@@ -60,7 +60,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     
     BUINT8 message_digest[32];
 	BUINT8 message_digestLen;
-    BUINT8 sig_parity;
+    BUINT8 sig_parity = 0;
     BUINT32 v;
 
     Param_fiscobcos_sendRawTransaction param_fiscobcos_sendRawTransaction;
@@ -289,19 +289,26 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     /**************************************************************************
     * STEP 3: Sign the transaction                                            *
     **************************************************************************/
-	BUINT8 asn1_sign_tmp[256];
-	size_t asn1_sign_tmp_len;
-	//result = BoatSignature( BOAT_SIGNATURE_SECP256K1, 
-	//					    tx_ptr->wallet_ptr->account_info.prikeyId, 
-	//					    message_digest, message_digestLen, 
-	//					    asn1_sign_tmp, &asn1_sign_tmp_len, 
-	//					    tx_ptr->rawtx_fields.sig.r32B, 
-	//					    tx_ptr->rawtx_fields.sig.s32B, 
-	//					    &sig_parity, NULL );
+    BoatSignatureResult signatureResultTmp;
+
+	result = BoatSignature( tx_ptr->wallet_ptr->account_info.prikeyCtx, 
+							message_digest, message_digestLen, &signatureResultTmp, NULL );
 	if( result != BOAT_SUCCESS )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to BoatSignature signature.");
         boat_throw(BOAT_ERROR_FAILED_GEN_SIGNATURE, FiscobcosSendRawtx_cleanup);
+    }
+
+    // assign signature value
+    if( signatureResultTmp.native_format_used )
+    {
+        memcpy(tx_ptr->rawtx_fields.sig.r32B, &signatureResultTmp.native_sign[0]  ,32);
+        memcpy(tx_ptr->rawtx_fields.sig.s32B, &signatureResultTmp.native_sign[32] ,32);
+    }
+
+    if( signatureResultTmp.signPrefix_used )
+    {
+		sig_parity = signatureResultTmp.signPrefix;
     }
 
     // Trim r

@@ -25,20 +25,6 @@
 /* self header include */
 #include "boatinternal.h"
 
-//!@brief boat SDK signature result
-typedef struct TBoatSignatureResult
-{
-	BBOOL   native_format_used;  //!< ture: used, false:unused
-	BUINT8  native_sign[64];
-	
-	BBOOL   pkcs_format_used;
-	BUINT8  pkcs_sign[256];
-	
-	BBOOL   signPrefix_used;
-	BUINT8  signPrefix;
-}BoatSignatureResult;
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -70,7 +56,7 @@ extern "C" {
  ******************************************************************************/
 BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
 
-#if 0
+
 /*!****************************************************************************
  * @brief 
  *   elliptic curve signature function.
@@ -78,19 +64,8 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
  * @details
  *   elliptic curve signature function.
  *
- * @param type 
- *	 the signature type.
- *   \n - #BOAT_SIGNATURE_SECP256K1.
- *   \n - #BOAT_SIGNATURE_SECP256R1.
- *
- * @param[in] priKeyId 
- * 	 priKeyId can be the full path of a private key, also the content of private key.
- *   If priKeyId contains both the following:
- *      1. "-----BEGIN "
- *      2. "-----END "
- *      3. " PRIVATE KEY-----"
- *   priKeyId is considered the content of private key; otherwise the full path of 
- *   a private key.
+ * @param[in] prikeyCtx 
+ *   xxxxx
  *
  * @param[in] digest
  *   pointer to disgest message.
@@ -98,23 +73,8 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
  * @param[in] digestLen 
  *   the length of digiest message.
  *
- * @param[out] signature 
- *   ASN.1 format signature.The signature size maximum 139 bytes, caller needs to 
- *   make sure that there is enough space to store it.
- *
- * @param[out] signatureLen 
- *   ASN.1 format signature length.
- *
- * @param[out] r 
- *   the r field of the native signature, the space of this filed is fixed 32 bytes.
- *   caller needs to make sure that there is enough space to store it.
- *
- * @param[out] s 
- *   the s field of the native signature, the space of this filed is fixed 32 bytes.
- *   caller needs to make sure that there is enough space to store it.
- *
- * @param[out] signaturePrefix 
- *   the generate signature Prefix.
+ * @param[out] signatureResult 
+ *   xxxx
  *
  * @param rsvd 
  *   reserved for futrue. 
@@ -122,76 +82,10 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
  * @return BOAT_RESULT 
  *   return BOAT_SUCCESS if generate success; otherwise return a negative error code
  ******************************************************************************/
-BOAT_RESULT  BoatSignature( const BoatSignatureAlgType type, const BUINT8* priKeyId,
-							const BUINT8* digest, BUINT32 digestLen, BUINT8* signature,
-						    size_t* signatureLen, BUINT8* r, BUINT8* s,
-							BUINT8* signaturePrefix, void* rsvd );
-#endif
-
 BOAT_RESULT BoatSignature( BoatWalletPriKeypkCtx prikeypkCtx, 
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd );
 
-#if 0
-/*!****************************************************************************
- * @brief 
- *   generate one-time ECP private key.
- *
- * @details
- *   generate one-time ECP private key.
- *
- * @param type 
- *	 the signature type.
- *   \n - #BOAT_SIGNATURE_SECP256K1.
- *   \n - #BOAT_SIGNATURE_SECP256R1.
- *
- * @param[out] outbuf 
- *   pointer to store the generate private key.
- *
- * @param[in] maxLen 
- *   param <b>outbuf</b> size.
- *
- * @param[out] pubX 
- *   X point of Corresponding public key.
- *
- * @param[out] pubY 
- *   Y point of Corresponding public key.
- *
- * @param rsvd
- *   reserved for futrue. 
- *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if gennerate success; otherwise return a negative error code.
- ******************************************************************************/
-BOAT_RESULT BoatGenOnetimeSignPrikey( const BoatSignatureAlgType type, BUINT8 *outbuf, 
-								      BUINT32 maxLen, BUINT8 *pubX, BUINT8 *pubY, void* rsvd );
-
-
-/*!****************************************************************************
- * @brief 
- *   check the privete is exists or not.
- * 
- * @details
- *   check the privete is exists or not.
- *
- * @param prikeyId 
- *   the full path of a private key.
- *
- * @param pubX 
- *   X point of Corresponding public key.
- *
- * @param pubY 
- *   Y point of Corresponding public key.
- *
- * @param rsvd
- *   reserved for futrue. 
- *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if gennerate success; otherwise return a negative error code.
- ******************************************************************************/
-BOAT_RESULT  BoatChkPrikeyExist( const BUINT8 * prikeyId, 
-								 BUINT8 *pubX, BUINT8 *pubY, void* rsvd );
-#endif
 
 /*!****************************************************************************
  * @brief 

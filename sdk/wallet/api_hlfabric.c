@@ -113,95 +113,95 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 											  const BCHAR *prikeyId, 
 											  const BCHAR *certName )
 {
-	BUINT32   stringLen;
+	// BUINT32   stringLen;
 	
-	BOAT_RESULT  result = BOAT_SUCCESS;
-	boat_try_declare;
+	// BOAT_RESULT  result = BOAT_SUCCESS;
+	// boat_try_declare;
 
-	if( wallet_ptr == NULL )
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR;
-	}
+	// if( wallet_ptr == NULL )
+	// {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
+	// 	return BOAT_ERROR;
+	// }
 
-	if ( (BOAT_SUCCESS != MaxLenCheck(prikeyId)) && (BOAT_SUCCESS != MaxLenCheck(certName)) )
-    {
-		BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
-        return BOAT_ERROR;
-    }
+	// if ( (BOAT_SUCCESS != MaxLenCheck(prikeyId)) && (BOAT_SUCCESS != MaxLenCheck(certName)) )
+    // {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+    //     return BOAT_ERROR;
+    // }
 	
-	/* initialization */
-	wallet_ptr->account_info.prikeyId.field_ptr = NULL;
-	wallet_ptr->account_info.prikeyId.field_len = 0;
-	wallet_ptr->account_info.cert.field_ptr     = NULL;
-	wallet_ptr->account_info.cert.field_len     = 0;
+	// /* initialization */
+	// wallet_ptr->account_info.prikeyId.field_ptr = NULL;
+	// wallet_ptr->account_info.prikeyId.field_len = 0;
+	// wallet_ptr->account_info.cert.field_ptr     = NULL;
+	// wallet_ptr->account_info.cert.field_len     = 0;
 	
-	/* prikeyId assignment */
-	if( ( prikeyId != NULL ) && ( (stringLen = strlen(prikeyId)) > 0 ) )
-	{	
-		// strlen check
-		if( stringLen >= BOAT_KEYID_MAX_LEN )
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "ERROR: length of prikeyId out of limit.");
-			boat_throw(BOAT_ERROR_BAD_FILE_DESCRIPTOR, BoatHlfabricWalletSetAccountInfo_exception);
-		}
-		// assignment
-		wallet_ptr->account_info.prikeyId.field_ptr = BoatMalloc( stringLen + 1 );
-		if( wallet_ptr->account_info.prikeyId.field_ptr == NULL )
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-			boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetAccountInfo_exception);
-		}
-		memcpy(wallet_ptr->account_info.prikeyId.field_ptr, prikeyId, stringLen + 1);
-		wallet_ptr->account_info.prikeyId.field_len = stringLen + 1;
-	}
+	// /* prikeyId assignment */
+	// if( ( prikeyId != NULL ) && ( (stringLen = strlen(prikeyId)) > 0 ) )
+	// {	
+	// 	// strlen check
+	// 	if( stringLen >= BOAT_KEYID_MAX_LEN )
+	// 	{
+	// 		BoatLog(BOAT_LOG_CRITICAL, "ERROR: length of prikeyId out of limit.");
+	// 		boat_throw(BOAT_ERROR_BAD_FILE_DESCRIPTOR, BoatHlfabricWalletSetAccountInfo_exception);
+	// 	}
+	// 	// assignment
+	// 	wallet_ptr->account_info.prikeyId.field_ptr = BoatMalloc( stringLen + 1 );
+	// 	if( wallet_ptr->account_info.prikeyId.field_ptr == NULL )
+	// 	{
+	// 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
+	// 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetAccountInfo_exception);
+	// 	}
+	// 	memcpy(wallet_ptr->account_info.prikeyId.field_ptr, prikeyId, stringLen + 1);
+	// 	wallet_ptr->account_info.prikeyId.field_len = stringLen + 1;
+	// }
 	
-	/* cert assignment */
-	if( ( certName != NULL ) && ( (stringLen = strlen(certName)) > 0 ) )
-	{
-		// strlen check
-		if( stringLen >= BOAT_FILENAME_MAX_LEN )
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "ERROR: length of certName out of limit.");
-			boat_throw(BOAT_ERROR_BAD_FILE_DESCRIPTOR, BoatHlfabricWalletSetAccountInfo_exception);
-		}
-		// assignment
-		result = BoatGetFileSize( certName, &wallet_ptr->account_info.cert.field_len, NULL );
-		if(result != BOAT_SUCCESS)
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "BoatGetFileSize failed.");
-			boat_throw(BOAT_ERROR_BAD_FILE_DESCRIPTOR, BoatHlfabricWalletSetAccountInfo_exception);
-		}
-		wallet_ptr->account_info.cert.field_ptr = BoatMalloc(wallet_ptr->account_info.cert.field_len);
-		if( wallet_ptr->account_info.cert.field_ptr == NULL )
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-			boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetAccountInfo_exception);
-		}
-		result = BoatReadFile( certName, 
-							   wallet_ptr->account_info.cert.field_ptr,
-							   wallet_ptr->account_info.cert.field_len, NULL );
-		if(result != BOAT_SUCCESS)
-		{
-			/* read error */
-			BoatLog(BOAT_LOG_CRITICAL, "certfile read failed.");
-			boat_throw(BOAT_ERROR_BAD_FILE_DESCRIPTOR, BoatHlfabricWalletSetAccountInfo_exception);
-		}
-	}
+	// /* cert assignment */
+	// if( ( certName != NULL ) && ( (stringLen = strlen(certName)) > 0 ) )
+	// {
+	// 	// strlen check
+	// 	if( stringLen >= BOAT_FILENAME_MAX_LEN )
+	// 	{
+	// 		BoatLog(BOAT_LOG_CRITICAL, "ERROR: length of certName out of limit.");
+	// 		boat_throw(BOAT_ERROR_BAD_FILE_DESCRIPTOR, BoatHlfabricWalletSetAccountInfo_exception);
+	// 	}
+	// 	// assignment
+	// 	result = BoatGetFileSize( certName, &wallet_ptr->account_info.cert.field_len, NULL );
+	// 	if(result != BOAT_SUCCESS)
+	// 	{
+	// 		BoatLog(BOAT_LOG_CRITICAL, "BoatGetFileSize failed.");
+	// 		boat_throw(BOAT_ERROR_BAD_FILE_DESCRIPTOR, BoatHlfabricWalletSetAccountInfo_exception);
+	// 	}
+	// 	wallet_ptr->account_info.cert.field_ptr = BoatMalloc(wallet_ptr->account_info.cert.field_len);
+	// 	if( wallet_ptr->account_info.cert.field_ptr == NULL )
+	// 	{
+	// 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
+	// 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetAccountInfo_exception);
+	// 	}
+	// 	result = BoatReadFile( certName, 
+	// 						   wallet_ptr->account_info.cert.field_ptr,
+	// 						   wallet_ptr->account_info.cert.field_len, NULL );
+	// 	if(result != BOAT_SUCCESS)
+	// 	{
+	// 		/* read error */
+	// 		BoatLog(BOAT_LOG_CRITICAL, "certfile read failed.");
+	// 		boat_throw(BOAT_ERROR_BAD_FILE_DESCRIPTOR, BoatHlfabricWalletSetAccountInfo_exception);
+	// 	}
+	// }
 	
-	/* boat catch handle */
-	boat_catch(BoatHlfabricWalletSetAccountInfo_exception)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-	 	result = boat_exception;
-		/* free malloc param Deinit */
-		BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
-		wallet_ptr->account_info.prikeyId.field_len = 0;
-		BoatFree(wallet_ptr->account_info.cert.field_ptr);
-		wallet_ptr->account_info.cert.field_len     = 0;
-	}
+	// /* boat catch handle */
+	// boat_catch(BoatHlfabricWalletSetAccountInfo_exception)
+	// {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+	//  	result = boat_exception;
+	// 	/* free malloc param Deinit */
+	// 	BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
+	// 	wallet_ptr->account_info.prikeyId.field_len = 0;
+	// 	BoatFree(wallet_ptr->account_info.cert.field_ptr);
+	// 	wallet_ptr->account_info.cert.field_len     = 0;
+	// }
 	
-	return result;
+	//return result;
 }
 
 #if (HLFABRIC_TLS_SUPPORT == 1) && (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
@@ -574,8 +574,8 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
     }
 	
 	/* initialization */
-	wallet_ptr->account_info.prikeyId.field_ptr = NULL;
-	wallet_ptr->account_info.prikeyId.field_len = 0;
+	//wallet_ptr->account_info.prikeyId.field_ptr = NULL;
+	//wallet_ptr->account_info.prikeyId.field_len = 0;
 	wallet_ptr->account_info.cert.field_ptr     = NULL;
 	wallet_ptr->account_info.cert.field_len     = 0;
 #if (HLFABRIC_TLS_SUPPORT == 1)
@@ -643,8 +643,8 @@ void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr )
     }
 
     /* account_info DeInit */
-    BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
-    wallet_ptr->account_info.prikeyId.field_len = 0;
+    //BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
+    //wallet_ptr->account_info.prikeyId.field_len = 0;
     BoatFree(wallet_ptr->account_info.cert.field_ptr);
     wallet_ptr->account_info.cert.field_len     = 0;
 

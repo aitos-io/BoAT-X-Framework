@@ -76,7 +76,7 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 }
 
 #if 0
-BOAT_RESULT BoatSignature( const BoatSignatureAlgType type, const BUINT8* prikeyId, 
+BOAT_RESULT BoatSignatur( const BoatSignatureAlgType type, const BUINT8* prikeyId, 
 						   const BUINT8* digest, BUINT32 digestLen, BUINT8* signature, 
 						   size_t* signatureLen, BUINT8* r, BUINT8* s, 
 						   BUINT8* signaturePrefix, void* rsvd )

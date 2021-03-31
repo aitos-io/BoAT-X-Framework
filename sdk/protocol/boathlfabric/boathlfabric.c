@@ -590,10 +590,11 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 {
 	Common__Envelope envelope       = COMMON__ENVELOPE__INIT;
 	BoatFieldVariable payloadPacked = {NULL, 0};
+	BoatSignatureResult signatureResult;
 	BUINT8  grpcHeader[5];
 	BUINT8  hash[32];
-	BUINT8  signature[139];//139 is ECDSA MAX LENGTH
-	size_t  signatureLen;
+	//BUINT8  signature[139];//139 is ECDSA MAX LENGTH
+	//size_t  signatureLen;
 	BUINT32 packedLength;
 	BUINT8  *packedData = NULL;
 	
@@ -633,13 +634,17 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	}
 	
 	/* step-4: signature */
-	memset(signature, 0, sizeof(signature));
-	//result = BoatSignature( BOAT_SIGNATURE_SECP256R1, 
-	//						tx_ptr->wallet_ptr->account_info.prikeyId.field_ptr, 
-	//						hash, sizeof(hash), signature, &signatureLen, NULL, NULL, NULL, NULL );
+	result = BoatSignature( tx_ptr->wallet_ptr->account_info.prikeyCtx,
+							hash, sizeof(hash), &signatureResult, NULL );
 	if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
+		boat_throw(BOAT_ERROR_FAILED_GEN_SIGNATURE, hlfabricProposalTransactionPacked_exception);
+	}
+	
+	if( !signatureResult.pkcs_format_used )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
 		boat_throw(BOAT_ERROR_FAILED_GEN_SIGNATURE, hlfabricProposalTransactionPacked_exception);
 	}
 
@@ -647,9 +652,9 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	envelope.has_payload     = true;
 	envelope.payload.len     = payloadPacked.field_len;
 	envelope.payload.data    = payloadPacked.field_ptr;
-	envelope.has_signature   = true;
-	envelope.signature.len   = signatureLen;
-	envelope.signature.data  = signature;
+	envelope.has_signature   = signatureResult.pkcs_format_used;
+	envelope.signature.len   = signatureResult.pkcs_sign_length;
+	envelope.signature.data  = signatureResult.pkcs_sign;
 	packedLength             = common__envelope__get_packed_size(&envelope);
 	
 	/* step-6: packed length assignment */

@@ -63,7 +63,7 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
-    } 
+    }
 	
 	/* prepare encrypt raw data */
 	memset(rawData, 0, sizeof(rawData));

@@ -320,7 +320,7 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 	mbedtls_pk_context        mbedtls_pkCtx;
     mbedtls_ecdsa_context* ecPrikey = NULL;
 	BUINT8 signatureTmp[139];
-	size_t signatureTmpLen;
+	size_t signatureTmpLen = 0;
 	BUINT8 raw_r[32];
 	BUINT8 raw_s[32];
 	BUINT8 ecdsPrefix = 0;
@@ -842,7 +842,7 @@ BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWa
 	return BOAT_SUCCESS;
 }
 
-BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
+BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx )
 {
 	//! @todo
 	return BOAT_SUCCESS;
@@ -852,7 +852,7 @@ BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyCtx_config* config, BoatW
 /******************************************************************************
                               BOAT AES WARPPER
 *******************************************************************************/
-BOAT_RESULT  BoatAesEncrypt(BUINT8 * iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
+BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
 {
 	mbedtls_aes_context  ctx;
 	BUINT8  saltArrayTmp[16];
@@ -876,7 +876,7 @@ BOAT_RESULT  BoatAesEncrypt(BUINT8 * iv[16], BUINT8 * key, const BUINT8 * input,
 	return result;
 }
 
-BOAT_RESULT  BoatAesDecrypt(BUINT8 * iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
+BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
 {
 	mbedtls_aes_context  ctx;
 	BOAT_RESULT result = BOAT_SUCCESS;

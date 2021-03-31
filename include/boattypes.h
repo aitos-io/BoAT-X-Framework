@@ -61,14 +61,6 @@ typedef enum
 	BOAT_PROTOCOL_FISCOBCOS        //!< FISCOBCOS Enterprise consortium chain
 }BoatProtocolType;
 
-//!@brief Blockchain signature algorithm
-//typedef enum
-//{
-//    BOAT_SIGNATURE_UNKNOWN = 0,    //!< Placeholder for unknown signature algorithm
-//	BOAT_SIGNATURE_SECP256K1,      //!< secp256k1 signature algorithm
-//	BOAT_SIGNATURE_SECP256R1       //!< secp256r1 signature algorithm
-//}BoatSignatureAlgType;
-
 //!@brief Blockchain hash algorithm
 typedef enum
 {
@@ -76,6 +68,23 @@ typedef enum
 	BOAT_HASH_KECCAK256,      //!< keccak256 hash algorithm
 	BOAT_HASH_SHA256          //!< sha256 hash algorithm
 }BoatHashAlgType;
+
+
+//!@brief boat SDK signature result
+typedef struct TBoatSignatureResult
+{
+	BBOOL    native_format_used;  //!< ture: used, false:unused
+	BUINT8   native_sign[64];
+	
+	BBOOL    pkcs_format_used;
+	BUINT8   pkcs_sign[139];  //!< 139 is ECDSA MAX LENGTH, If another type of signature should be
+	                          //!< added later, this value maybe need extend.
+	BUINT32  pkcs_sign_length;
+	
+	BBOOL    signPrefix_used;
+	BUINT8   signPrefix;
+}BoatSignatureResult;
+
 
 //!@brief common struct for variable length fields
 typedef struct TBoatFieldVariable

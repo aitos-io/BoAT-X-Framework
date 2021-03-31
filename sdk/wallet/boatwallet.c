@@ -136,7 +136,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 			memset( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content, 0, 
 					sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );
 			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content_size = 0;
-			BoatLog( BOAT_LOG_NORMAL, "=====================prikey_content length: %d.", 
+			BoatLog( BOAT_LOG_NORMAL, "=====================prikey_content length: %ld.", 
 					 sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );
 			
             /* Create persistent wallet / Overwrite existed configuration */
