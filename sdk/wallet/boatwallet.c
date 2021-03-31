@@ -121,7 +121,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 
     if( wallet_name_str != NULL )
     {
-        if( wallet_config_ptr != NULL )
+        if( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_format == BOAT_WALLET_PRIKEY_FORMAT_GENERATION )
         {
 			/* Update wallet_config_ptr information to protect sensitive information */
 			//! @todo
@@ -138,7 +138,6 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content_size = 0;
 			BoatLog( BOAT_LOG_NORMAL, "=====================prikey_content length: %d.", 
 					 sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );
-			
 			
             /* Create persistent wallet / Overwrite existed configuration */
             if( BOAT_SUCCESS != BoatPersistStore(wallet_name_str, wallet_config_ptr, wallet_config_size) )

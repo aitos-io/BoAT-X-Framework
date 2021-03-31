@@ -44,7 +44,6 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
     // Where, hash = keccak256(data)
 
     BUINT8  salt_array[BOAT_STORAGE_SALT_SIZE];
-	BUINT8  salt_array_copy[BOAT_STORAGE_SALT_SIZE];
     BUINT8  data_hash_array[32];
     BUINT8  rawData[data_len + 31]; // 31 for AES padding
 	BUINT8  encrypted_array[data_len + 31]; // 31 for AES padding
@@ -53,8 +52,6 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
     BUINT32 writeDataLen;
 
     BOAT_RESULT result = BOAT_SUCCESS;
-	
-	//mbedtls_aes_context  ctx;
 
     if( (storage_name_str == NULL) || (data_ptr == NULL) || (data_len == 0) )
 	{
@@ -67,46 +64,34 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
     } 
-
-	// aes init
-	//mbedtls_aes_init( &ctx );
 	
-	// prepare encrypt raw data
+	/* prepare encrypt raw data */
 	memset(rawData, 0, sizeof(rawData));
 	memcpy(rawData, data_ptr, data_len);	
     encrypted_len = BOAT_ROUNDUP(data_len, 16);
 	
-    // Calculate data hash
+    /* Calculate data hash */
     keccak_256(rawData, encrypted_len, data_hash_array);
     
-    // Generate 16-byte salt as AES initial vector
+    /* Generate 16-byte salt as AES initial vector */
     BoatRandom(salt_array, BOAT_STORAGE_SALT_SIZE, NULL);
 	
-    // Encrypt the data	
-	//result = mbedtls_aes_setkey_enc(&ctx, g_aes_key, 128);
-	
-	// use salt_array copy because function mbedtls_aes_crypt_cbc(...) will modify this field
-	memcpy(salt_array_copy, salt_array, BOAT_STORAGE_SALT_SIZE);
-	//result = mbedtls_aes_crypt_cbc( &ctx, MBEDTLS_AES_ENCRYPT, encrypted_len, 
-	//								salt_array_copy, rawData, encrypted_array );
-	
+    /* Encrypt the data	*/
+	result = BoatAesEncrypt(salt_array, g_aes_key, rawData, encrypted_len, encrypted_array);
     if( result == BOAT_SUCCESS )
     {
 		writeDataLen = 0;
-		// Write salt
+		/* Write salt */
 		memcpy( &writeDataTmp[writeDataLen], salt_array, sizeof(salt_array) );
 		writeDataLen += sizeof(salt_array);
-		// Write hash
+		/* Write hash */
 		memcpy( &writeDataTmp[writeDataLen], data_hash_array, sizeof(data_hash_array) );
 		writeDataLen += sizeof(data_hash_array);
-		// Write encrypted data
+		/* Write encrypted data */
 		memcpy( &writeDataTmp[writeDataLen], encrypted_array, encrypted_len );
 		writeDataLen += encrypted_len;
 		result = BoatWriteFile( storage_name_str, writeDataTmp, writeDataLen, NULL );
     }
-
-	//aes free
-	//mbedtls_aes_free( &ctx );
 	
     return result;
 }
@@ -131,8 +116,6 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 	BUINT32 fileSize;
     
     BOAT_RESULT result = BOAT_ERROR;
-	
-	//mbedtls_aes_context  ctx;
 
     if( (storage_name_str == NULL) || (data_ptr == NULL) || (len_to_read == 0) )
 	{
@@ -146,10 +129,6 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
         return NULL;
     }
 
-	//aes init
-	//mbedtls_aes_init( &ctx );
-		
-	//result  = mbedtls_aes_setkey_dec( &ctx, g_aes_key, 128 );
 	result += BoatGetFileSize( storage_name_str, &fileSize, NULL );
 	result += BoatReadFile( storage_name_str, readDataTmp, fileSize, NULL );
 	
@@ -157,25 +136,24 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 		( fileSize >= BOAT_STORAGE_SALT_SIZE + sizeof(data_hash_array) + len_to_read ) )
 	{
 		readDataIndex = 0;
-		// Read salt
+		/* Read salt */
 		memcpy(salt_array, &readDataTmp[readDataIndex], BOAT_STORAGE_SALT_SIZE );
 		readDataIndex += BOAT_STORAGE_SALT_SIZE;
-		// Read original data hash
+		/* Read original data hash */
 		memcpy(original_data_hash_array, &readDataTmp[readDataIndex], sizeof(original_data_hash_array) );
 		readDataIndex += sizeof(original_data_hash_array);
-		// Read rest of the file (encrypted data)
+		/* Read rest of the file (encrypted data)  */
 		encrypted_readLen = BOAT_MIN(sizeof(encrypted_array), 
 									 fileSize - BOAT_STORAGE_SALT_SIZE - sizeof(original_data_hash_array));
 		memcpy(encrypted_array, &readDataTmp[readDataIndex], encrypted_readLen);
-		
-		//result = mbedtls_aes_crypt_cbc( &ctx, MBEDTLS_AES_DECRYPT, encrypted_readLen, salt_array, 
-		//								encrypted_array, plain_array );
+		/* decrypt data */
+		result = BoatAesDecrypt(salt_array, g_aes_key, encrypted_array, encrypted_readLen, plain_array);
 		// Check size of the decrypted data matches the length to read
 		if( result == BOAT_SUCCESS && plain_len == len_to_read )
 		{
-			// Calculate data hash from the decrypted data
+			/* Calculate data hash from the decrypted data */
 			keccak_256(plain_array, BOAT_ROUNDUP(len_to_read, 16), data_hash_array);
-			// Check if decrypted hash is the same as the original one
+			/* Check if decrypted hash is the same as the original one */
 			if( 0 == memcmp(original_data_hash_array, data_hash_array, sizeof(data_hash_array)) )
 			{
 				memcpy(data_ptr, plain_array, len_to_read);
@@ -195,9 +173,6 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 	{
 		result = BOAT_ERROR;
 	}
-
-	//aes free
-	//mbedtls_aes_free( &ctx );
 	
     return result;
 }

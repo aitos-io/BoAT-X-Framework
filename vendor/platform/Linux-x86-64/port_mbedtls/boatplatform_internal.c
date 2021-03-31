@@ -852,12 +852,46 @@ BOAT_RESULT  BoatPort_keyDelete( const BoatWalletPriKeyCtx_config* config, BoatW
 /******************************************************************************
                               BOAT AES WARPPER
 *******************************************************************************/
-BOAT_RESULT  BoatAesEncrypted(BUINT8 * iv[16], const BUINT8 * input, size_t length, BUINT8 * output)
+BOAT_RESULT  BoatAesEncrypt(BUINT8 * iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
 {
-
+	mbedtls_aes_context  ctx;
+	BUINT8  saltArrayTmp[16];
+	BOAT_RESULT result = BOAT_SUCCESS;
+	
+	/* aes init */
+	mbedtls_aes_init( &ctx );
+	
+	/* set encrypt key */	
+	result += mbedtls_aes_setkey_enc(&ctx, key, 128);
+	
+	/* use saltArrayTmp because function mbedtls_aes_crypt_cbc(...) will modify this field */
+	memcpy(saltArrayTmp, iv, 16);
+	
+	/* encrypt process */
+	result += mbedtls_aes_crypt_cbc( &ctx, MBEDTLS_AES_ENCRYPT, length, saltArrayTmp, input, output );
+	
+	/* aes free */
+	mbedtls_aes_free( &ctx );
+	
+	return result;
 }
 
-BOAT_RESULT  BoatAesDecrypt(BUINT8 * iv[16], const BUINT8 * input, size_t length, BUINT8 * output)
+BOAT_RESULT  BoatAesDecrypt(BUINT8 * iv[16], BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
 {
-
+	mbedtls_aes_context  ctx;
+	BOAT_RESULT result = BOAT_SUCCESS;
+	
+	/* aes init */
+	mbedtls_aes_init( &ctx );
+	
+	/* set encrypt key */	
+	result += mbedtls_aes_setkey_dec( &ctx, key, 128 );
+	
+	/* decrypt process */
+	result += mbedtls_aes_crypt_cbc( &ctx, MBEDTLS_AES_DECRYPT, length, iv, input, output );
+	
+	/* aes free */
+	mbedtls_aes_free( &ctx );
+	
+	return result;
 }
