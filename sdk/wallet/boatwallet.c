@@ -101,7 +101,9 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
         BoatLog(BOAT_LOG_NORMAL, "Invalid wallet configuration.");
         return BOAT_ERROR;
     }
-	
+    /* Check the parameter of config is valid or not */
+    //! @todo Check the parameter of config is valid or not
+    
     /* For Multi-Thread Support: ObtainMutex Here */
     for( i = 0; i < BOAT_MAX_WALLET_NUM; i++ )
     {
@@ -111,55 +113,62 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
             break;
         }
     }
-	
     /* For Multi-Thread Support: ReleaseMutex Here */
     if( i >= BOAT_MAX_WALLET_NUM )
     {
         BoatLog(BOAT_LOG_NORMAL, "Too many wallets was loaded.");
         return BOAT_ERROR;
     }
-
     if( wallet_name_str != NULL )
     {
-        if( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_format == BOAT_WALLET_PRIKEY_FORMAT_GENERATION )
+        if( wallet_config_ptr != NULL )
         {
-			/* Update wallet_config_ptr information to protect sensitive information */
+			/* create a persiststore  wallet */
 			//! @todo
-			/* step-1:  generate prikeyCtxTmp */
-			BoatPort_keyCreate( wallet_config_ptr, &priKeyCtxTmp );
+			/* -step-1:  generate prikeyCtxTmp */
+			if( BOAT_SUCCESS != BoatPort_keyCreate( wallet_config_ptr, &priKeyCtxTmp ) )
+            {
+                BoatLog(BOAT_LOG_CRITICAL, "Failed to BoatPort_keyCreate.");
+                return BOAT_ERROR;
+            }
+            
+            printf("priKeyCtxTmp.pubkey_type          : %d\n", priKeyCtxTmp.pubkey_type);
+            BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.pubkey_content", priKeyCtxTmp.pubkey_content, 64);
+            printf("priKeyCtxTmp.extra_data.map_key   : %d\n", priKeyCtxTmp.extra_data.map_key);
+            BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.extra_data.map_value", priKeyCtxTmp.extra_data.map_value, 512);
+
 			
-			/* step-2:  assign value of prikeyIdTmp to wallet_config_ptr */
+			/* -step-2:  assign value of prikeyIdTmp to wallet_config_ptr */
 			memcpy( &( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->private_KeyCtx), &priKeyCtxTmp, sizeof(priKeyCtxTmp) );
 			
-			/* step-3:  clear sensitive information in wallet_config_ptr */
+			/* -step-3:  clear sensitive information in wallet_config_ptr */
 			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_type         = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
+			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content_size = 0;
 			memset( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content, 0, 
 					sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );
-			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content_size = 0;
-			BoatLog( BOAT_LOG_NORMAL, "=====================prikey_content length: %ld.", 
-					 sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );
 			
-            /* Create persistent wallet / Overwrite existed configuration */
+            /* -step-4: create persistent wallet / Overwrite existed configuration */
             if( BOAT_SUCCESS != BoatPersistStore(wallet_name_str, wallet_config_ptr, wallet_config_size) )
             {
 				BoatLog(BOAT_LOG_NORMAL, "persistent wallet create failed.");
                 return BOAT_ERROR;
             }
-
             memcpy(loaded_wallet_config_array, wallet_config_ptr, wallet_config_size);
         }
         else
         {
-            /* Load persistent wallet; */
+            /* Load persistent wallet */
             if( BOAT_SUCCESS != BoatPersistRead(wallet_name_str, loaded_wallet_config_array, wallet_config_size) )
             {
                 BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
 				return BOAT_ERROR;
             }
+            BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "---test---", loaded_wallet_config_array, wallet_config_size);
         }
     }
     else
     {
+        /* create one-time wallet */
         memcpy(loaded_wallet_config_array, wallet_config_ptr, wallet_config_size);
     }
 

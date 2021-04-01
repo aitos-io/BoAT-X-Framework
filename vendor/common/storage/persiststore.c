@@ -115,7 +115,7 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
     BUINT32 readDataIndex;
 	BUINT32 fileSize;
     
-    BOAT_RESULT result = BOAT_ERROR;
+    BOAT_RESULT result = BOAT_SUCCESS;
 
     if( (storage_name_str == NULL) || (data_ptr == NULL) || (len_to_read == 0) )
 	{

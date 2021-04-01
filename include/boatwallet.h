@@ -83,9 +83,9 @@ typedef struct TBoatWalletPriKeyCtx
 typedef struct TBoatWalletPriKeyCtx_config
 {
 	BoatWalletPriKeyFormat  prikey_format;
-    BoatWalletPriKeyType    prikey_type;          //!< xxx
-    BUINT8                  prikey_content[512];  //!< xxx
-	BUINT32                 prikey_content_size;  //!< xxx
+    BoatWalletPriKeyType    prikey_type;           //!< xxx
+    BUINT8                  prikey_content[512];   //!< xxx
+	BUINT32                 prikey_content_length; //!< The length contains the terminator for the string format.
 	
 	//! this field will be updated by sdk internal
 	BoatWalletPriKeyCtx     private_KeyCtx;  //!< xxx

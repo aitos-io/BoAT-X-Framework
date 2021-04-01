@@ -311,6 +311,14 @@ BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
 }
 
 
+
+static BOAT_RESULT sBoat_get_prikey_content( BoatWalletPriKeyCtx prikeyCtx, 
+                                             BUINT8* content, BUINT32 maxsize )
+{
+	BOAT_RESULT result;
+	
+}
+
 BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd )
@@ -351,10 +359,12 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 	if( prikeyCtx.prikey_format == BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM )
 	{
 		/* get prikey content according to prikey index */
+		//sBoat_get_prikey_content(prikeyCtx, );
 		//! @todo function todo
 		
 		/* parse is prikey content */
-		//result = mbedtls_pk_parse_key( &mbedtls_pkCtx, prikeyCtx., strlen((const char*)prikeyId) + 1, NULL, 0 );
+		result = mbedtls_pk_parse_key( &mbedtls_pkCtx, prikeyCtx.extra_data.map_value,
+		                               strlen((const char*)prikeyCtx.extra_data.map_value) + 1, NULL, 0 );
 	}
 	else
 	{
@@ -773,7 +783,11 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 }
 
 
-BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
+
+/******************************************************************************
+                              BOAT KEY PROCESS WARPPER
+*******************************************************************************/
+static BOAT_RESULT sBoatPort_keyCreate_generate(const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx)
 {
 	mbedtls_entropy_context   entropy;
     mbedtls_ctr_drbg_context  ctr_drbg;
@@ -796,17 +810,17 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 	if( config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1 )
 	{
 		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec( key ),
-									   mbedtls_ctr_drbg_random, &ctr_drbg );
+									mbedtls_ctr_drbg_random, &ctr_drbg );
 	}
 	else if( config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1 )
 	{
 		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec( key ),
-									   mbedtls_ctr_drbg_random, &ctr_drbg );
+									mbedtls_ctr_drbg_random, &ctr_drbg );
 	}
 	else
 	{
-		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_NONE, mbedtls_pk_ec( key ),
-									   mbedtls_ctr_drbg_random, &ctr_drbg );
+		BoatLog( BOAT_LOG_CRITICAL, "unknown private keytype..." );
+		result = BOAT_ERROR;
 	}
 	
 	// 1- update private key
@@ -832,6 +846,80 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
     mbedtls_entropy_free( &entropy );
     mbedtls_ctr_drbg_free( &ctr_drbg );
 	mbedtls_pk_free( &key );
+	
+    return result;
+}
+
+static BOAT_RESULT sBoatPort_keyCreate_setpem(const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx)
+{
+	mbedtls_pk_context     mbedtls_pkCtx;
+	BOAT_RESULT            result = BOAT_SUCCESS;
+
+	mbedtls_pk_init( &mbedtls_pkCtx );
+
+	result = mbedtls_pk_parse_key( &mbedtls_pkCtx, config->prikey_content,
+									config->prikey_content_length, NULL, 0 );
+	printf("result = %x \n", result);
+
+	// 1- update private key
+	memcpy(pkCtx->extra_data.map_value, config->prikey_content, config->prikey_content_length);
+	pkCtx->extra_data.map_key = 1; //! @note matbe this field should auto generate.
+
+	// 2- update private key format
+	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM;
+	
+	// 3- update private key type
+	pkCtx->prikey_type   = config->prikey_type;
+
+	// 4- update private key index
+	pkCtx->prikey_index = pkCtx->extra_data.map_key;
+
+	// 5- update public key
+	pkCtx->pubkey_type = BOAT_WALLET_PUBKEY_TYPE_PRIMORDIAL;
+	mbedtls_mpi_write_binary( &mbedtls_pk_ec( mbedtls_pkCtx )->Q.X, &pkCtx->pubkey_content[0],  32 );
+    mbedtls_mpi_write_binary( &mbedtls_pk_ec( mbedtls_pkCtx )->Q.Y, &pkCtx->pubkey_content[32], 32 );
+
+	/* free */
+	mbedtls_pk_free( &mbedtls_pkCtx );
+
+    return result;
+}
+
+
+BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
+{
+	mbedtls_entropy_context   entropy;
+    mbedtls_ctr_drbg_context  ctr_drbg;
+	mbedtls_pk_context        key;
+	BOAT_RESULT               result = BOAT_SUCCESS;
+	
+	if( (config == NULL) || (pkCtx == NULL) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
+		return BOAT_ERROR_NULL_POINTER;
+	}
+	
+	switch (config->prikey_format)
+	{
+		case BOAT_WALLET_PRIKEY_FORMAT_GENERATION:
+			BoatLog( BOAT_LOG_VERBOSE, "wallet private key generation..." );
+			result = sBoatPort_keyCreate_generate(config, pkCtx);
+			break;
+		case BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM:
+			BoatLog( BOAT_LOG_VERBOSE, "wallet private key[pem] set..." );
+			result = sBoatPort_keyCreate_setpem(config, pkCtx);
+			break;
+		case BOAT_WALLET_PRIKEY_FORMAT_PKCS_DER:
+		case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
+		case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
+			BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );
+			result = BOAT_ERROR;
+			break;
+		default:
+			BoatLog( BOAT_LOG_CRITICAL, "invalid private key format." );
+			result = BOAT_ERROR;
+			break;
+	}
 	
     return result;
 }
