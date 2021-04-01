@@ -15,8 +15,8 @@
  *****************************************************************************/
 
 //#define  USE_ONETIME_WALLET        // if expect create a one-time wallet, uncomment this definition
-#define  USE_CREATE_PERSIST_WALLET // if expect create a persist wallet, uncomment this definition
-//#define  USE_LOAD_PERSIST_WALLET   // if expect load a persist wallet, uncomment this definition
+//#define  USE_CREATE_PERSIST_WALLET // if expect create a persist wallet, uncomment this definition
+#define  USE_LOAD_PERSIST_WALLET   // if expect load a persist wallet, uncomment this definition
 
 
 #include "boatiotsdk.h"
@@ -59,7 +59,7 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
     wallet_config.prikeyCtx_config.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_GENERATION;
     wallet_config.prikeyCtx_config.prikey_type   = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     
-    wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM;
+    wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
     char * tmp =  "-----BEGIN EC PRIVATE KEY-----\n"
                   "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
                   "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"

@@ -356,7 +356,7 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
         boat_throw( result, BoatSignature_exception );
     }
 	
-	if( prikeyCtx.prikey_format == BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM )
+	if( prikeyCtx.prikey_format == BOAT_WALLET_PRIKEY_FORMAT_PKCS )
 	{
 		/* get prikey content according to prikey index */
 		//sBoat_get_prikey_content(prikeyCtx, );
@@ -829,7 +829,7 @@ static BOAT_RESULT sBoatPort_keyCreate_generate(const BoatWalletPriKeyCtx_config
 	pkCtx->extra_data.map_key = 1; //! @note matbe this field should auto generate.
 
 	// 2- update private key format
-	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM;
+	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
 	
 	// 3- update private key type
 	pkCtx->prikey_type   = config->prikey_type;
@@ -866,7 +866,7 @@ static BOAT_RESULT sBoatPort_keyCreate_setpem(const BoatWalletPriKeyCtx_config* 
 	pkCtx->extra_data.map_key = 1; //! @note matbe this field should auto generate.
 
 	// 2- update private key format
-	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM;
+	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
 	
 	// 3- update private key type
 	pkCtx->prikey_type   = config->prikey_type;
@@ -905,11 +905,10 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 			BoatLog( BOAT_LOG_VERBOSE, "wallet private key generation..." );
 			result = sBoatPort_keyCreate_generate(config, pkCtx);
 			break;
-		case BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM:
+		case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
 			BoatLog( BOAT_LOG_VERBOSE, "wallet private key[pem] set..." );
 			result = sBoatPort_keyCreate_setpem(config, pkCtx);
 			break;
-		case BOAT_WALLET_PRIKEY_FORMAT_PKCS_DER:
 		case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
 		case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
 			BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );

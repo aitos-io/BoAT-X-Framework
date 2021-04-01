@@ -32,8 +32,7 @@ boatwallet.h is the SDK header file.
 typedef enum
 {
     BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN = 0,     //!< Placeholder for unknown prikey
-    BOAT_WALLET_PRIKEY_FORMAT_PKCS_PEM,        //!< xx
-    BOAT_WALLET_PRIKEY_FORMAT_PKCS_DER,        //!< xx
+    BOAT_WALLET_PRIKEY_FORMAT_PKCS,            //!< contain PEM and DER format
     BOAT_WALLET_PRIKEY_FORMAT_NATIVE,          //!< xx
     BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC,        //!< xx
     BOAT_WALLET_PRIKEY_FORMAT_GENERATION,      //!< xx
