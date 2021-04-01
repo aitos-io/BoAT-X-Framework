@@ -5,6 +5,7 @@ OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/keccak/*.o) \
 
 ifeq ($(SOFT_CRYPTO_DEP), CRYPTO_DEFAULT)
     OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/crypto_default/*.o) \
+			   $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/crypto_default/aes/*.o) \
 	           $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_crypto_default/*.o) 
     CRYPTO_PORT_DIRECTORY = port_crypto_default
 else ifeq ($(SOFT_CRYPTO_DEP), CRYPTO_MBEDTLS)
