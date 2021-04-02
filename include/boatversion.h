@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#ifndef __BOATVERSION_H__
+#define __BOATVERSION_H__
+/*! @addtogroup wallet
+ * @{
+ */
+
 #include <stdbool.h>
 #include "boattypes.h"
 
@@ -34,6 +40,9 @@
                                       (BOAT_VERSION_MINOR << 16) | \
                                       (BOAT_VERSION_PATCH <<  8) )
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*!****************************************************************************
  * @brief   Get the version number.
@@ -41,7 +50,7 @@
  * @return   The constructed version number in the format
  *           MMNNPP00 (Major, Minor, Patch).
  ******************************************************************************/
-BUINT32 BoatIotSdk_getVersion( void );
+BUINT32 BoatIotSdkVersion( void );
 
 
 /*!****************************************************************************
@@ -49,4 +58,12 @@ BUINT32 BoatIotSdk_getVersion( void );
  *
  * @return   The constructed version string.
  ******************************************************************************/
-BCHAR * BoatIotSdk_getVersionString( void );
+BCHAR * BoatIotSdkVersionString( void );
+
+/*! @}*/
+
+#ifdef __cplusplus
+}
+#endif /* end of __cplusplus */
+
+#endif

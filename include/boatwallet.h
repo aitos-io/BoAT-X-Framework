@@ -23,7 +23,7 @@ boatwallet.h is the SDK header file.
 #ifndef __BOATWALLET_H__
 #define __BOATWALLET_H__
 
-/*! @defgroup wallet boat wallet
+/*! @defgroup wallet boat wallet API
  * @{
  */
 #include "boattypes.h"

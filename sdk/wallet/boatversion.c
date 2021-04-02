@@ -15,12 +15,12 @@
  *****************************************************************************/
 #include "boatversion.h"
 
-BUINT32 BoatIotSdk_getVersion( void )
+BUINT32 BoatIotSdkVersion( void )
 {
     return( BOAT_VERSION_NUMBER );
 }
 
-BCHAR * BoatIotSdk_getVersionString( void )
+BCHAR * BoatIotSdkVersionString( void )
 {
 	return BOAT_VERSION_STRING;
 }
