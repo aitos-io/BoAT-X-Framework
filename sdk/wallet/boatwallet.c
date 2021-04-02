@@ -132,7 +132,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                 return BOAT_ERROR;
             }
             
-            printf("priKeyCtxTmp.pubkey_type          : %d\n", priKeyCtxTmp.pubkey_type);
+            printf("priKeyCtxTmp.pubkey_format        : %d\n", priKeyCtxTmp.pubkey_format);
             BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.pubkey_content", priKeyCtxTmp.pubkey_content, 64);
             printf("priKeyCtxTmp.extra_data.map_key   : %d\n", priKeyCtxTmp.extra_data.map_key);
             BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.extra_data.map_value", priKeyCtxTmp.extra_data.map_value, 512);
@@ -142,8 +142,8 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 			memcpy( &( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->private_KeyCtx), &priKeyCtxTmp, sizeof(priKeyCtxTmp) );
 			
 			/* -step-3:  clear sensitive information in wallet_config_ptr */
-			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_type         = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
-			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content_size = 0;
+			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_type           = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
+			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content_length = 0;
 			memset( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content, 0, 
 					sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );
 			

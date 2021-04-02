@@ -787,7 +787,8 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
-static BOAT_RESULT sBoatPort_keyCreate_generate(const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_intern_generation( const BoatWalletPriKeyCtx_config* config, 
+													      BoatWalletPriKeyCtx* pkCtx )
 {
 	mbedtls_entropy_context   entropy;
     mbedtls_ctr_drbg_context  ctr_drbg;
@@ -815,7 +816,7 @@ static BOAT_RESULT sBoatPort_keyCreate_generate(const BoatWalletPriKeyCtx_config
 	else if( config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1 )
 	{
 		result += mbedtls_ecp_gen_key( MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec( key ),
-									mbedtls_ctr_drbg_random, &ctr_drbg );
+									   mbedtls_ctr_drbg_random, &ctr_drbg );
 	}
 	else
 	{
@@ -835,10 +836,10 @@ static BOAT_RESULT sBoatPort_keyCreate_generate(const BoatWalletPriKeyCtx_config
 	pkCtx->prikey_type   = config->prikey_type;
 
 	// 4- update private key index
-	pkCtx->prikey_index = pkCtx->extra_data.map_key;
+	pkCtx->prikey_index  = pkCtx->extra_data.map_key;
 
 	// 5- update public key
-	pkCtx->pubkey_type = BOAT_WALLET_PUBKEY_TYPE_PRIMORDIAL;
+	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
 	mbedtls_mpi_write_binary( &mbedtls_pk_ec( key )->Q.X, &pkCtx->pubkey_content[0],  32 );
     mbedtls_mpi_write_binary( &mbedtls_pk_ec( key )->Q.Y, &pkCtx->pubkey_content[32], 32 );
 
@@ -850,7 +851,8 @@ static BOAT_RESULT sBoatPort_keyCreate_generate(const BoatWalletPriKeyCtx_config
     return result;
 }
 
-static BOAT_RESULT sBoatPort_keyCreate_setpem(const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_extern_injection_pkcs( const BoatWalletPriKeyCtx_config* config, 
+															  BoatWalletPriKeyCtx* pkCtx )
 {
 	mbedtls_pk_context     mbedtls_pkCtx;
 	BOAT_RESULT            result = BOAT_SUCCESS;
@@ -872,10 +874,10 @@ static BOAT_RESULT sBoatPort_keyCreate_setpem(const BoatWalletPriKeyCtx_config* 
 	pkCtx->prikey_type   = config->prikey_type;
 
 	// 4- update private key index
-	pkCtx->prikey_index = pkCtx->extra_data.map_key;
+	pkCtx->prikey_index  = pkCtx->extra_data.map_key;
 
 	// 5- update public key
-	pkCtx->pubkey_type = BOAT_WALLET_PUBKEY_TYPE_PRIMORDIAL;
+	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
 	mbedtls_mpi_write_binary( &mbedtls_pk_ec( mbedtls_pkCtx )->Q.X, &pkCtx->pubkey_content[0],  32 );
     mbedtls_mpi_write_binary( &mbedtls_pk_ec( mbedtls_pkCtx )->Q.Y, &pkCtx->pubkey_content[32], 32 );
 
@@ -899,27 +901,36 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 		return BOAT_ERROR_NULL_POINTER;
 	}
 	
-	switch (config->prikey_format)
+	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERN_GENERATION)
 	{
-		case BOAT_WALLET_PRIKEY_FORMAT_GENERATION:
-			BoatLog( BOAT_LOG_VERBOSE, "wallet private key generation..." );
-			result = sBoatPort_keyCreate_generate(config, pkCtx);
-			break;
-		case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
-			BoatLog( BOAT_LOG_VERBOSE, "wallet private key[pem] set..." );
-			result = sBoatPort_keyCreate_setpem(config, pkCtx);
-			break;
-		case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
-		case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
-			BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );
-			result = BOAT_ERROR;
-			break;
-		default:
-			BoatLog( BOAT_LOG_CRITICAL, "invalid private key format." );
-			result = BOAT_ERROR;
-			break;
+		BoatLog( BOAT_LOG_VERBOSE, "The private key is generated internally..." );
+		result = sBoatPort_keyCreate_intern_generation(config, pkCtx);
 	}
-	
+	else if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_EXTERN_INJECTION)
+	{
+		switch (config->prikey_format)
+		{
+			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
+				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[pem] set..." );
+				result = sBoatPort_keyCreate_extern_injection_pkcs(config, pkCtx);
+				break;
+			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
+			case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
+				BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );
+				result = BOAT_ERROR;
+				break;
+			default:
+				BoatLog( BOAT_LOG_CRITICAL, "invalid private key format." );
+				result = BOAT_ERROR;
+				break;
+		}
+	}
+	else
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "invalid private key format." );
+		result = BOAT_ERROR;
+	}
+
     return result;
 }
 

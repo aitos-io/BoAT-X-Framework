@@ -28,17 +28,25 @@ boatwallet.h is the SDK header file.
  */
 #include "boattypes.h"
 
-//!@brief XXX
+//! @brief The generate mode of the used private key
 typedef enum
 {
-    BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN = 0,     //!< Placeholder for unknown prikey
-    BOAT_WALLET_PRIKEY_FORMAT_PKCS,            //!< contain PEM and DER format
-    BOAT_WALLET_PRIKEY_FORMAT_NATIVE,          //!< xx
-    BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC,        //!< xx
-    BOAT_WALLET_PRIKEY_FORMAT_GENERATION,      //!< xx
+    BOAT_WALLET_PRIKEY_GENMODE_UNKNOWN = 0,       //!< Placeholder for unknown prikey format
+    BOAT_WALLET_PRIKEY_GENMODE_EXTERN_INJECTION,  //!< The private key is injected externally
+    BOAT_WALLET_PRIKEY_GENMODE_INTERN_GENERATION, //!< The private key is generated internally
+}BoatWalletPriKeyGenMode;
+
+//! @brief The format of the externally injected private key
+//! This field will be actived when /ref BOAT_WALLET_PRIKEY_FORMAT_EXTERN_INJECTION be selected.
+typedef enum
+{
+    BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN = 0,     //!< Placeholder for unknown prikey format
+    BOAT_WALLET_PRIKEY_FORMAT_PKCS,            //!< Contain PEM and DER format
+    BOAT_WALLET_PRIKEY_FORMAT_NATIVE,          //!< The 32 bytes format private key
+    BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC,        //!< Mnemonic words that meet BIP39 format
 }BoatWalletPriKeyFormat;
 
-//! type of privaye key
+//! type of private key
 //! @note For PKCS format private key, the key type is already included in it,
 //!       but we still suggest to fill this field.
 typedef enum
@@ -51,10 +59,10 @@ typedef enum
 //!@brief XXX
 typedef enum
 {
-	BOAT_WALLET_PUBKEY_TYPE_UNKNOWN = 0,     //!< Placeholder for unknown prikey
-    BOAT_WALLET_PUBKEY_TYPE_PRIMORDIAL,
+	BOAT_WALLET_PUBKEY_FORMAT_UNKNOWN = 0,     //!< Placeholder for unknown prikey
+    BOAT_WALLET_PUBKEY_FORMAT_NATIVE,
 	//! @todo
-}BoatWalletPubKeyType;
+}BoatWalletPubKeyFormat;
 
 //!@brief XXX
 typedef struct TBoatWalletExtraData
@@ -68,10 +76,10 @@ typedef struct TBoatWalletExtraData
 typedef struct TBoatWalletPriKeyCtx
 {
     BUINT32                 prikey_index;       //!< xxx
-	BoatWalletPriKeyFormat  prikey_format;
+	BoatWalletPriKeyFormat  prikey_format;      //!< xxx
 	BoatWalletPriKeyType    prikey_type;        //!< SDK according to this field to execute corresponding signature
 	
-	BoatWalletPubKeyType    pubkey_type;        //!< xxx
+	BoatWalletPubKeyFormat  pubkey_format;      //!< xxx
     BUINT8                  pubkey_content[64]; //!< xxx
     
 	BoatWalletExtraData     extra_data;         //!< used for crypto implemented by software, to store the prikey info.
@@ -81,13 +89,14 @@ typedef struct TBoatWalletPriKeyCtx
 //!@brief XXX
 typedef struct TBoatWalletPriKeyCtx_config
 {
-	BoatWalletPriKeyFormat  prikey_format;
-    BoatWalletPriKeyType    prikey_type;           //!< xxx
-    BUINT8                  prikey_content[512];   //!< xxx
-	BUINT32                 prikey_content_length; //!< The length contains the terminator for the string format.
+	BoatWalletPriKeyGenMode  prikey_genMode;        //!<
+	BoatWalletPriKeyFormat   prikey_format;         //!<
+    BoatWalletPriKeyType     prikey_type;           //!< xxx
+    BUINT8                   prikey_content[512];   //!< xxx
+	BUINT32                  prikey_content_length; //!< The length contains the terminator for the string format.
 	
-	//! this field will be updated by sdk internal
-	BoatWalletPriKeyCtx     private_KeyCtx;  //!< xxx
+	//! This field will be updated by sdk internal
+	BoatWalletPriKeyCtx     private_KeyCtx;  //!< Private key context
 }BoatWalletPriKeyCtx_config;
 
 
