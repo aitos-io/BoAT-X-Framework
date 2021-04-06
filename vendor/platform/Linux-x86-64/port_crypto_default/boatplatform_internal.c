@@ -249,7 +249,7 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd )
 
 /******************************************************************************
                               BOAT SOCKET WARPPER
-							  THIS ONLY USED BY FABRIC
+					        THIS ONLY USED BY FABRIC
 *******************************************************************************/
 BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 {
@@ -508,7 +508,50 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 static BOAT_RESULT sBoatPort_keyCreate_intern_generation( const BoatWalletPriKeyCtx_config* config, 
 													      BoatWalletPriKeyCtx* pkCtx )
 {
+	/* Valid private key value (as a UINT256) for Ethereum is [1, n-1], where n is
+       0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 */
+    const BUINT32 priv_key_max_u256[8] = { 0xD0364141, 0xBFD25E8C, 0xAF48A03B, 0xBAAEDCE6,
+                                           0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
+	bignum256   priv_key_bn256;
+    bignum256   priv_key_max_bn256;
+	BUINT8      prikeyTmp[32];
+	BUINT32     key_try_count;
+    BOAT_RESULT result = BOAT_SUCCESS;
 
+	/* Convert private key from UINT256 to Bignum256 format */
+    bn_read_le(prikeyTmp, &priv_key_bn256);
+
+	/* Convert priv_key_max_u256 from UINT256 to Bignum256 format */
+    bn_read_le((const uint8_t *)priv_key_max_u256, &priv_key_max_bn256);
+
+	/* generate native private key loop */
+	for( key_try_count = 0; key_try_count < 100; key_try_count++ )
+    {
+		/* generate native private key */
+        result = BoatRandom( prikeyTmp, 32, NULL );
+        if( result != BOAT_SUCCESS )
+        {
+            BoatLog(BOAT_LOG_CRITICAL, "Fail to generate private key.");
+            break;
+        }        
+
+		/* check the generated private key is valid or not */
+		if( ( bn_is_zero(&priv_key_bn256) == 0) && \
+		    ( bn_is_less(&priv_key_bn256, &priv_key_max_bn256) != 0 ) )
+		{
+			/* key is valid */
+			memcpy( pkCtx->extra_data.value, prikeyTmp, 32 );
+			result = BOAT_SUCCESS;
+			break;
+
+		}
+		else
+		{
+			result = BOAT_ERROR;
+		}          
+    }
+
+	return result;
 }
 
 static BOAT_RESULT sBoatPort_keyCreate_extern_injection_native( const BoatWalletPriKeyCtx_config* config, 
@@ -548,10 +591,10 @@ static BOAT_RESULT sBoatPort_keyCreate_extern_injection_native( const BoatWallet
 	}
 	else 
 	{
-		;
+		BoatLog( BOAT_LOG_CRITICAL, "Invalid private key type." );
+		result = BOAT_ERROR;
 	}
 	
-
     return result;
 }
 
@@ -586,14 +629,14 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 				result = BOAT_ERROR;
 				break;
 			default:
-				BoatLog( BOAT_LOG_CRITICAL, "invalid private key format." );
+				BoatLog( BOAT_LOG_CRITICAL, "Invalid private key format." );
 				result = BOAT_ERROR;
 				break;
 		}
 	}
 	else
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "invalid private key format." );
+		BoatLog( BOAT_LOG_CRITICAL, "Invalid private key format." );
 		result = BOAT_ERROR;
 	}
 
