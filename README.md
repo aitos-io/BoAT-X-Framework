@@ -30,6 +30,8 @@ The latter is the way **BoAT** is walking on. To ease off the effort that IoT de
 This version supports:
 + Ethereum
 + PlatON Enterprise (PlatONE)
++ fISCO-BCOS
++ Hyperledger Fabric
 
 More blockchains are to be supported.
 
@@ -101,24 +103,25 @@ Modify the demo code in ./demo:
 ```
 <SDKRoot>
 |
-+---build         | Directory to store object and executable files
-+---contract      | Demo smart contract ABI and generated C interface file
-+---demo          | Demo application
-+---docs          | API reference manual
-+---vendor        | Special vendor dependency
-|   \---default   |     A default pure software version for development
-+---include       | Header files for application to include
-+---lib           | Lib files for application to link with
-+---sdk           | SDK source
-|   +---cJSON     |     An open source JSON parser
-|   +---include   |     Header files for SDK internal use
-|   +---protocol  |     Blockchain client protocol implementation
-|   +---rlp       |     RLP encoder
-|   +---rpc       |     Remote procedure call wrapper
-|   +---utilities |     Utility APIs
-|   \---wallet    |     SDK entry API implementation
-+---tests         | Test cases
-\---tools         | Tools for generating C interface from contract ABI
++---build           | Directory to store object and executable files
++---contract        | Demo smart contract ABI and generated C interface file
++---demo            | Demo application
++---docs            | API reference manual
++---vendor          | Special vendor dependency
+|   \---common      |     Universal soft algorithms implementation
+|   \---platform    |     Dependency of different platforms
++---include         | Header files for application to include
++---lib             | Lib files for application to link with
++---sdk             | SDK source
+|   +---third-party |     Three party libraries
+|   +---include     |     Header files for SDK internal use
+|   +---protocol    |     Blockchain client protocol implementation
+|   +---rlp         |     RLP encoder
+|   +---rpc         |     Remote procedure call wrapper
+|   +---utilities   |     Utility APIs
+|   \---wallet      |     SDK entry API implementation
++---tests           | Test cases
+\---tools           | Tools for generating C interface from contract ABI
 
 NOTE: ./build and ./lib are created in building
 

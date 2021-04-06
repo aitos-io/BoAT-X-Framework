@@ -46,9 +46,9 @@ typedef enum
     BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC,        //!< Mnemonic words that meet BIP39 format
 }BoatWalletPriKeyFormat;
 
-//! type of private key
+//! Type of private key
 //! @note For PKCS format private key, the key type is already included in it,
-//!       but we still suggest to fill this field.
+//!       but still suggest to fill this field.
 typedef enum
 {
     BOAT_WALLET_PRIKEY_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown signature algorithm
@@ -56,11 +56,11 @@ typedef enum
 	BOAT_WALLET_PRIKEY_TYPE_SECP256R1,    //!< secp256r1 algorithm
 }BoatWalletPriKeyType;
 
-//!@brief XXX
+//!@brief format of public key
 typedef enum
 {
-	BOAT_WALLET_PUBKEY_FORMAT_UNKNOWN = 0,     //!< Placeholder for unknown prikey
-    BOAT_WALLET_PUBKEY_FORMAT_NATIVE,
+	BOAT_WALLET_PUBKEY_FORMAT_UNKNOWN = 0, //!< Placeholder for unknown prikey
+    BOAT_WALLET_PUBKEY_FORMAT_NATIVE,      //!< The 64 bytes public key, it's a coordinate of an elliptic curve 
 	//! @todo
 }BoatWalletPubKeyFormat;
 
@@ -70,40 +70,40 @@ typedef enum
 //! \n still to store it in TE/SE.
 typedef struct TBoatWalletExtraData
 {
-    BUINT32  value_len;
-    BUINT8   value[512]; //!< xxx
+    BUINT32  value_len;  //!< Length of the stored private key
+    BUINT8   value[512]; //!< Private key content when a secure storage environment is not available
 }BoatWalletExtraData;
 
 
-//!@brief XXX
+//!@brief Boat wallet private key context
 typedef struct TBoatWalletPriKeyCtx
 {
-    BUINT32                 prikey_index;       //!< xxx
-	BoatWalletPriKeyFormat  prikey_format;      //!< xxx
-	BoatWalletPriKeyType    prikey_type;        //!< SDK according to this field to execute corresponding signature
+    BUINT32                 prikey_index;       //!< Index of private key
+	BoatWalletPriKeyFormat  prikey_format;      //!< Format of private key
+	BoatWalletPriKeyType    prikey_type;        //!< Type of private key, SDK according to this field to execute corresponding signature
 	
-	BoatWalletPubKeyFormat  pubkey_format;      //!< xxx
-    BUINT8                  pubkey_content[64]; //!< xxx
+	BoatWalletPubKeyFormat  pubkey_format;      //!< Format of public key
+    BUINT8                  pubkey_content[64]; //!< Content of public key, current only native format be supported.
     
-	BoatWalletExtraData     extra_data;         //!< used for crypto implemented by software, to store the prikey info.
+	BoatWalletExtraData     extra_data;         //!< Used for crypto implemented by software, to store the prikey info.
 }BoatWalletPriKeyCtx;
 
 
-//!@brief XXX
+//!@brief Boat wallet config context
 typedef struct TBoatWalletPriKeyCtx_config
 {
-	BoatWalletPriKeyGenMode  prikey_genMode;        //!<
-	BoatWalletPriKeyFormat   prikey_format;         //!<
-    BoatWalletPriKeyType     prikey_type;           //!< xxx
-    BUINT8                   prikey_content[512];   //!< xxx
-	BUINT32                  prikey_content_length; //!< The length contains the terminator for the string format.
+	BoatWalletPriKeyGenMode  prikey_genMode;        //!< Generate mode of private key
+	BoatWalletPriKeyFormat   prikey_format;         //!< Format of private key
+    BoatWalletPriKeyType     prikey_type;           //!< Type of private key
+    BUINT8                   prikey_content[512];   //!< The externally injected private key contents
+	BUINT32                  prikey_content_length; //!< The externally injected private key length, it contains the terminator for the string format.
 	
 	//! This field will be updated by sdk internal
-	BoatWalletPriKeyCtx     private_KeyCtx;  //!< Private key context
+	BoatWalletPriKeyCtx     private_KeyCtx;         //!< Private key context
 }BoatWalletPriKeyCtx_config;
 
 
-//!@brief XXX
+//!@brief Boat wallet list
 typedef struct TBoatWalletList
 {
     BBOOL is_used;
