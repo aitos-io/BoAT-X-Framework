@@ -30,7 +30,7 @@ The latter is the way **BoAT** is walking on. To ease off the effort that IoT de
 This version supports:
 + Ethereum
 + PlatON Enterprise (PlatONE)
-+ fISCO-BCOS
++ FISCO-BCOS
 + Hyperledger Fabric
 
 More blockchains are to be supported.
