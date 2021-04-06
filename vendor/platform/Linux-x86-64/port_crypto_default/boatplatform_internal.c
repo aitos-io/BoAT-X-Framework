@@ -73,13 +73,10 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd )
 {
-	// BUINT8 raw_r[32]; 
-	// BUINT8 raw_s[32];
-	BUINT8 sig[64];
-	// BUINT8 ecdsPrefix = 0;
+	BUINT8 signatureTmp[64];
+	BUINT8 ecdsPrefix = 0;
 	
-	BOAT_RESULT result = BOAT_ERROR;
-	//boat_try_declare;
+	BOAT_RESULT result = BOAT_SUCCESS;
 	
 	(void)rsvd;
 	
@@ -92,30 +89,38 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 
 	if( prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1 )
 	{
-		 ecdsa_sign_digest(
-		 			&secp256k1,      // const ecdsa_curve *curve
-		 			prikeyId,        // const uint8_t *priv_key
-		 			digest,          // const uint8_t *digest
-		 			sig,             // uint8_t *sig,
-		 			signaturePrefix, //uint8_t *pby,
-		 			NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-		 			);
+		result = ecdsa_sign_digest( &secp256k1,      // const ecdsa_curve *curve
+									prikeyCtx.extra_data.value,        // const uint8_t *priv_key
+									digest,          // const uint8_t *digest
+									signatureTmp,    // uint8_t *sig,
+									&ecdsPrefix,     // uint8_t *pby,
+									NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
+									);
 	}
 	else if( prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1 )
 	{
-		 ecdsa_sign_digest(
-		 			&nist256p1, // const ecdsa_curve *curve
-		 			prikeyId,   // const uint8_t *priv_key
-		 			digest,     // const uint8_t *digest
-		 			sig,        // uint8_t *sig,
-		 			signaturePrefix, //uint8_t *pby,
-		 			NULL        // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-		 			);
+		result = ecdsa_sign_digest( &nist256p1,      // const ecdsa_curve *curve
+									prikeyCtx.extra_data.value,        // const uint8_t *priv_key
+									digest,          // const uint8_t *digest
+									signatureTmp,    // uint8_t *sig,
+									&ecdsPrefix,     // uint8_t *pby,
+									NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
+									);
 	}
 	else
 	{
-		;
+		BoatLog( BOAT_LOG_CRITICAL, "Unkown private key type." );
+		return  BOAT_ERROR;
 	}
+
+	// signature result assign
+	memset(signatureResult, 0, sizeof(BoatSignatureResult));
+	
+	signatureResult->native_format_used = true;
+	memcpy(	signatureResult->native_sign,  signatureTmp, 64 );
+
+	signatureResult->signPrefix_used = true;
+	signatureResult->signPrefix      = ecdsPrefix;
 
 	return result;
 }
@@ -500,10 +505,99 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
+static BOAT_RESULT sBoatPort_keyCreate_intern_generation( const BoatWalletPriKeyCtx_config* config, 
+													      BoatWalletPriKeyCtx* pkCtx )
+{
+
+}
+
+static BOAT_RESULT sBoatPort_keyCreate_extern_injection_native( const BoatWalletPriKeyCtx_config* config, 
+													            BoatWalletPriKeyCtx* pkCtx )
+{
+	BUINT8       pubKey65[65] = {0};
+	BOAT_RESULT  result = BOAT_SUCCESS;
+
+	// 1- update private key
+	memcpy(pkCtx->extra_data.value, config->prikey_content, config->prikey_content_length);
+	pkCtx->extra_data.value_len = config->prikey_content_length;
+
+	// 2- update private key format
+	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+	
+	// 3- update private key type
+	pkCtx->prikey_type   = config->prikey_type;
+
+	// 4- update private key index
+	// This field should update by 'key secure storage'(such as TE/SE).
+	// When algorithms are implemented by software, this field is default to 0, means
+	// that ignore this field.
+	pkCtx->prikey_index  = 0; 
+
+	// 5- update public key
+	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
+
+	if( config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1 )
+	{
+		ecdsa_get_public_key65(&secp256k1, pkCtx->extra_data.value, pubKey65);
+		memcpy( pkCtx->pubkey_content, &pubKey65[1], 64 );
+	}
+	else if( config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1 )
+	{
+		ecdsa_get_public_key65(&nist256p1, pkCtx->extra_data.value, pubKey65);
+		memcpy( pkCtx->pubkey_content, &pubKey65[1], 64 );
+	}
+	else 
+	{
+		;
+	}
+	
+
+    return result;
+}
+
+
 BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {
-	//! @todo
-	return BOAT_SUCCESS;
+	BOAT_RESULT               result = BOAT_SUCCESS;
+	
+	if( (config == NULL) || (pkCtx == NULL) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
+		return BOAT_ERROR_NULL_POINTER;
+	}
+	
+	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERN_GENERATION)
+	{
+		BoatLog( BOAT_LOG_VERBOSE, "The private key is generated internally..." );
+		result = sBoatPort_keyCreate_intern_generation(config, pkCtx);
+	}
+	else if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_EXTERN_INJECTION)
+	{
+		switch (config->prikey_format)
+		{
+			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
+				break;
+			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
+				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[native] set..." );
+				result = sBoatPort_keyCreate_extern_injection_native(config, pkCtx);
+				break;
+			case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
+				BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );
+				result = BOAT_ERROR;
+				break;
+			default:
+				BoatLog( BOAT_LOG_CRITICAL, "invalid private key format." );
+				result = BOAT_ERROR;
+				break;
+		}
+	}
+	else
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "invalid private key format." );
+		result = BOAT_ERROR;
+	}
+
+    return result;
 }
 
 BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
@@ -525,13 +619,17 @@ BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx )
 BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
 {
 	aes_encrypt_ctx ctxe;
+	BUINT8  saltArrayTmp[16];
 	BOAT_RESULT result = BOAT_SUCCESS;
 
-	// aes init
-	result += aes_encrypt_key256( key, &ctxe );
+	/* aes init */
+	result += aes_encrypt_key128( key, &ctxe );
 
-	// Encrypt the data		
-	result += aes_cbc_encrypt(input, output, length, iv, &ctxe);
+	/* use saltArrayTmp because function aes_cbc_encrypt(...) will modify this field */
+	memcpy(saltArrayTmp, iv, 16);
+
+	/* encrypt process */
+	result += aes_cbc_encrypt(input, output, length, saltArrayTmp, &ctxe);
 
 	return result;
 }
@@ -541,9 +639,10 @@ BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * in
 	aes_encrypt_ctx ctxd;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
-	//aes init
-	result += aes_decrypt_key256( key, &ctxd );
+	/* aes init */
+	result += aes_decrypt_key128( key, &ctxd );
 
+	/* decrypt process */
 	result += aes_cbc_decrypt(input, output, length, iv, &ctxd);
 
 	return result;

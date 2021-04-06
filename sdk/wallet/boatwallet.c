@@ -124,7 +124,6 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
         if( wallet_config_ptr != NULL )
         {
 			/* create a persiststore  wallet */
-			//! @todo
 			/* -step-1:  generate prikeyCtxTmp */
 			if( BOAT_SUCCESS != BoatPort_keyCreate( wallet_config_ptr, &priKeyCtxTmp ) )
             {
@@ -134,16 +133,19 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
             
             printf("priKeyCtxTmp.pubkey_format        : %d\n", priKeyCtxTmp.pubkey_format);
             BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.pubkey_content", priKeyCtxTmp.pubkey_content, 64);
-            BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.extra_data.value", priKeyCtxTmp.extra_data.value, 512);
+            BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.extra_data.value", \
+                                                    priKeyCtxTmp.extra_data.value, priKeyCtxTmp.extra_data.value_len);
 
 			
 			/* -step-2:  assign value of prikeyIdTmp to wallet_config_ptr */
 			memcpy( &( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->private_KeyCtx), &priKeyCtxTmp, sizeof(priKeyCtxTmp) );
 			
 			/* -step-3:  clear sensitive information in wallet_config_ptr */
-			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_type           = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
+			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_genMode        = BOAT_WALLET_PRIKEY_GENMODE_UNKNOWN;
+            ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_format         = BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN;
+            ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_type           = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
 			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content_length = 0;
-			memset( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content, 0, 
+			memset( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content, 0, \ 
 					sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );
 			
             /* -step-4: create persistent wallet / Overwrite existed configuration */
@@ -162,7 +164,6 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                 BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
 				return BOAT_ERROR;
             }
-            BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "---test---", loaded_wallet_config_array, wallet_config_size);
         }
     }
     else

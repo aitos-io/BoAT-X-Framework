@@ -106,7 +106,7 @@ PLATFORM_TARGET ?= LINUX-X86-64
 # The valid option value of SOFT_CRYPTO_DEP list as below:
 # - CRYPTO_DEFAULT      : default soft crypto algorithm
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
-SOFT_CRYPTO_DEP ?= CRYPTO_MBEDTLS
+SOFT_CRYPTO_DEP ?= CRYPTO_DEFAULT
 
 ifeq ($(SOFT_CRYPTO_DEP), CRYPTO_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default \

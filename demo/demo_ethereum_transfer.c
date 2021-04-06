@@ -15,8 +15,8 @@
  *****************************************************************************/
 
 //#define  USE_ONETIME_WALLET        // if expect create a one-time wallet, uncomment this definition
-#define  USE_CREATE_PERSIST_WALLET // if expect create a persist wallet, uncomment this definition
-//#define  USE_LOAD_PERSIST_WALLET   // if expect load a persist wallet, uncomment this definition
+//#define  USE_CREATE_PERSIST_WALLET // if expect create a persist wallet, uncomment this definition
+#define  USE_LOAD_PERSIST_WALLET   // if expect load a persist wallet, uncomment this definition
 
 
 #include "boatiotsdk.h"
@@ -68,6 +68,17 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
 
     memcpy(wallet_config.prikeyCtx_config.prikey_content, demoKey, strlen(demoKey) );
     wallet_config.prikeyCtx_config.prikey_content_length = strlen(demoKey) + 1; //length contain terminator
+
+
+#if 1
+    char * nativedemoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERN_INJECTION;
+    wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+    wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    UtilityHex2Bin( wallet_config.prikeyCtx_config.prikey_content, 32, nativedemoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    wallet_config.prikeyCtx_config.prikey_content_length = 32;
+#endif
+
     wallet_config.chain_id                      = 1;
     wallet_config.eip155_compatibility          = BOAT_FALSE;
     strncpy( wallet_config.node_url_str, "http://192.168.132.200:7545", BOAT_NODE_URL_MAX_LEN - 1 );

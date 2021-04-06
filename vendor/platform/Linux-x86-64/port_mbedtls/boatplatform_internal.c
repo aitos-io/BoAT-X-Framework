@@ -381,9 +381,10 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 	}
 	
 	// signature result assign
+	memset(signatureResult, 0, sizeof(BoatSignatureResult));
+
 	signatureResult->pkcs_format_used = true;
 	signatureResult->pkcs_sign_length = signatureTmpLen;
-	memset(signatureResult->pkcs_sign, 0, sizeof(signatureResult->pkcs_sign));
 	memcpy(signatureResult->pkcs_sign, signatureTmp, signatureResult->pkcs_sign_length);
 	
 	signatureResult->native_format_used = true;
@@ -874,6 +875,7 @@ static BOAT_RESULT sBoatPort_keyCreate_extern_injection_pkcs( const BoatWalletPr
 	pkCtx->prikey_index  = 0; 
 
 	// 5- update public key
+	// Ethereum series need NATIVE public key to calculate account address
 	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
 	mbedtls_mpi_write_binary( &mbedtls_pk_ec( mbedtls_pkCtx )->Q.X, &pkCtx->pubkey_content[0],  32 );
     mbedtls_mpi_write_binary( &mbedtls_pk_ec( mbedtls_pkCtx )->Q.Y, &pkCtx->pubkey_content[32], 32 );
@@ -908,7 +910,7 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 		switch (config->prikey_format)
 		{
 			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
-				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[pem] set..." );
+				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[pkcs] set..." );
 				result = sBoatPort_keyCreate_extern_injection_pkcs(config, pkCtx);
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:

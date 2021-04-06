@@ -131,7 +131,7 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 
 	result += BoatGetFileSize( storage_name_str, &fileSize, NULL );
 	result += BoatReadFile( storage_name_str, readDataTmp, fileSize, NULL );
-	
+
 	if( ( result == BOAT_SUCCESS ) && \
 		( fileSize >= BOAT_STORAGE_SALT_SIZE + sizeof(data_hash_array) + len_to_read ) )
 	{
@@ -161,16 +161,19 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 			}
 			else
 			{
+		        BoatLog(BOAT_LOG_CRITICAL, "Decrypted hash different with original.");
 				result = BOAT_ERROR;
 			}
 		}
 		else
 		{
+			BoatLog(BOAT_LOG_CRITICAL, "Decrypted failed or the length is don't match.");
 			result = BOAT_ERROR;
 		}
 	}
 	else
 	{
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file or the file size error.");
 		result = BOAT_ERROR;
 	}
 	
