@@ -311,14 +311,6 @@ BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
 }
 
 
-
-static BOAT_RESULT sBoat_get_prikey_content( BoatWalletPriKeyCtx prikeyCtx, 
-                                             BUINT8* content, BUINT32 maxsize )
-{
-	BOAT_RESULT result;
-	
-}
-
 BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
 						   const BUINT8* digest, BUINT32 digestLen, 
 						   BoatSignatureResult* signatureResult, void* rsvd )
@@ -363,8 +355,8 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 		//! @todo function todo
 		
 		/* parse is prikey content */
-		result = mbedtls_pk_parse_key( &mbedtls_pkCtx, prikeyCtx.extra_data.map_value,
-		                               strlen((const char*)prikeyCtx.extra_data.map_value) + 1, NULL, 0 );
+		result = mbedtls_pk_parse_key( &mbedtls_pkCtx, prikeyCtx.extra_data.value,
+		                               strlen((const char*)prikeyCtx.extra_data.value) + 1, NULL, 0 );
 	}
 	else
 	{
@@ -825,9 +817,8 @@ static BOAT_RESULT sBoatPort_keyCreate_intern_generation( const BoatWalletPriKey
 	}
 	
 	// 1- update private key
-	memset( pkCtx->extra_data.map_value, 0, sizeof(pkCtx->extra_data.map_value) );
-    result += mbedtls_pk_write_key_pem( &key, pkCtx->extra_data.map_value, sizeof(pkCtx->extra_data.map_value) );
-	pkCtx->extra_data.map_key = 1; //! @note matbe this field should auto generate.
+	memset( pkCtx->extra_data.value, 0, sizeof(pkCtx->extra_data.value) );
+    result += mbedtls_pk_write_key_pem( &key, pkCtx->extra_data.value, sizeof(pkCtx->extra_data.value) );
 
 	// 2- update private key format
 	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
@@ -836,7 +827,10 @@ static BOAT_RESULT sBoatPort_keyCreate_intern_generation( const BoatWalletPriKey
 	pkCtx->prikey_type   = config->prikey_type;
 
 	// 4- update private key index
-	pkCtx->prikey_index  = pkCtx->extra_data.map_key;
+	// This field should update by 'key secure storage'(such as TE/SE).
+	// When algorithms are implemented by software, this field is default to 0, means
+	// that ignore this field.
+	pkCtx->prikey_index  = 0;
 
 	// 5- update public key
 	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
@@ -864,8 +858,8 @@ static BOAT_RESULT sBoatPort_keyCreate_extern_injection_pkcs( const BoatWalletPr
 	printf("result = %x \n", result);
 
 	// 1- update private key
-	memcpy(pkCtx->extra_data.map_value, config->prikey_content, config->prikey_content_length);
-	pkCtx->extra_data.map_key = 1; //! @note matbe this field should auto generate.
+	memcpy(pkCtx->extra_data.value, config->prikey_content, config->prikey_content_length);
+	pkCtx->extra_data.value_len = config->prikey_content_length;
 
 	// 2- update private key format
 	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
@@ -874,7 +868,10 @@ static BOAT_RESULT sBoatPort_keyCreate_extern_injection_pkcs( const BoatWalletPr
 	pkCtx->prikey_type   = config->prikey_type;
 
 	// 4- update private key index
-	pkCtx->prikey_index  = pkCtx->extra_data.map_key;
+	// This field should update by 'key secure storage'(such as TE/SE).
+	// When algorithms are implemented by software, this field is default to 0, means
+	// that ignore this field.
+	pkCtx->prikey_index  = 0; 
 
 	// 5- update public key
 	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;

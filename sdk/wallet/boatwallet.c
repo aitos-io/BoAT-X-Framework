@@ -134,8 +134,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
             
             printf("priKeyCtxTmp.pubkey_format        : %d\n", priKeyCtxTmp.pubkey_format);
             BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.pubkey_content", priKeyCtxTmp.pubkey_content, 64);
-            printf("priKeyCtxTmp.extra_data.map_key   : %d\n", priKeyCtxTmp.extra_data.map_key);
-            BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.extra_data.map_value", priKeyCtxTmp.extra_data.map_value, 512);
+            BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.extra_data.value", priKeyCtxTmp.extra_data.value, 512);
 
 			
 			/* -step-2:  assign value of prikeyIdTmp to wallet_config_ptr */

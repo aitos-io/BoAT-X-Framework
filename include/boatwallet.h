@@ -64,11 +64,14 @@ typedef enum
 	//! @todo
 }BoatWalletPubKeyFormat;
 
-//!@brief XXX
+//!@brief The extension field of prikey context
+//! \n This field is only used for secret key storage in a keyless secure 
+//! \n storage environment, and the practice of the security specification is 
+//! \n still to store it in TE/SE.
 typedef struct TBoatWalletExtraData
 {
-    BUINT32 map_key;
-    BUINT8  map_value[512]; //!< xxx
+    BUINT32  value_len;
+    BUINT8   value[512]; //!< xxx
 }BoatWalletExtraData;
 
 

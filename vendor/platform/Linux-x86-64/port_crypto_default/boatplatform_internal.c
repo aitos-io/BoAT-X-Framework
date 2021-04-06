@@ -92,25 +92,25 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 
 	if( prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1 )
 	{
-		// ecdsa_sign_digest(
-		// 			&secp256k1, // const ecdsa_curve *curve
-		// 			prikeyId,   // const uint8_t *priv_key
-		// 			digest,     // const uint8_t *digest
-		// 			sig,        // uint8_t *sig,
-		// 			signaturePrefix, //uint8_t *pby,
-		// 			NULL        // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-		// 			);
+		 ecdsa_sign_digest(
+		 			&secp256k1,      // const ecdsa_curve *curve
+		 			prikeyId,        // const uint8_t *priv_key
+		 			digest,          // const uint8_t *digest
+		 			sig,             // uint8_t *sig,
+		 			signaturePrefix, //uint8_t *pby,
+		 			NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
+		 			);
 	}
 	else if( prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1 )
 	{
-		// ecdsa_sign_digest(
-		// 			&nist256p1, // const ecdsa_curve *curve
-		// 			prikeyId,   // const uint8_t *priv_key
-		// 			digest,     // const uint8_t *digest
-		// 			sig,        // uint8_t *sig,
-		// 			signaturePrefix, //uint8_t *pby,
-		// 			NULL        // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-		// 			);
+		 ecdsa_sign_digest(
+		 			&nist256p1, // const ecdsa_curve *curve
+		 			prikeyId,   // const uint8_t *priv_key
+		 			digest,     // const uint8_t *digest
+		 			sig,        // uint8_t *sig,
+		 			signaturePrefix, //uint8_t *pby,
+		 			NULL        // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
+		 			);
 	}
 	else
 	{
