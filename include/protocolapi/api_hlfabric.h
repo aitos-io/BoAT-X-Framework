@@ -169,11 +169,9 @@ typedef struct TBoatHlfabricNodeInfoCfg{
 //!@brief fabric wallet config structure
 //! fabric wallet config structure
 typedef struct TBoatHlfabricWalletConfig{
-	//BCHAR   accountPrikeyId[BOAT_KEYID_MAX_LEN]; //!< full path of the prikey file, string
 	BoatWalletPriKeyCtx_config  accountPriKey_config;
 	BCHAR                       accountCertFileName[BOAT_FILENAME_MAX_LEN]; 
 
-	//BCHAR   tlsClientPrikeyId[BOAT_KEYID_MAX_LEN]; //!< full path of the prikey file, string
 	BoatWalletPriKeyCtx_config  tlsPriKey_config;
 	BCHAR                       tlsClientCertFileName[BOAT_FILENAME_MAX_LEN];
 	
@@ -203,7 +201,7 @@ extern "C" {
  * @param wallet_ptr
  *   fabric wallet pointer
  *
- * @param prikeyCtx
+ * @param prikeyCtx_config
  *   xxxxxx
  *
  * @param certName
@@ -213,7 +211,7 @@ extern "C" {
  *   return BOAT_SUCCESS if set successed, otherwise return a failed code.
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr, 
-											  BoatWalletPriKeyCtx  prikeyCtx,
+											  const BoatWalletPriKeyCtx_config prikeyCtx_config,
 											  const BCHAR *certName );
 
 
@@ -229,7 +227,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
  * @param wallet_ptr 
  *   fabric wallet pointer
  *
- * @param prikeyCtx 
+ * @param prikeyCtx_config 
  *   xxxxx
  *
  * @param certName
@@ -241,7 +239,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
  *@note this function is reserved for future.
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr, 
-											   BoatWalletPriKeyCtx  prikeyCtx,
+											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
 											    const BCHAR *certName );
 #endif
 

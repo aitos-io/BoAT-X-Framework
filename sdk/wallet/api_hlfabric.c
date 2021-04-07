@@ -110,7 +110,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec( BoatHlfabricTx *tx_ptr,
 
 
 BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr, 
-											  BoatWalletPriKeyCtx prikeyCtx,
+											  const BoatWalletPriKeyCtx_config prikeyCtx_config,
 											  const BCHAR *certName )
 {
 	//! @todo prikeyId waiting be update
@@ -125,37 +125,20 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 		return BOAT_ERROR;
 	}
 
-	if( (BOAT_SUCCESS != MaxLenCheck(prikeyId)) && (BOAT_SUCCESS != MaxLenCheck(certName)) )
+	if( BOAT_SUCCESS != MaxLenCheck(certName) )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return BOAT_ERROR;
     }
 	
 	/* initialization */
-	wallet_ptr->account_info.prikeyId.field_ptr = NULL;
-	wallet_ptr->account_info.prikeyId.field_len = 0;
+	memset(&wallet_ptr->account_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx) );
 	wallet_ptr->account_info.cert.field_ptr     = NULL;
 	wallet_ptr->account_info.cert.field_len     = 0;
 	
-	/* prikeyId assignment */
-	if( ( prikeyId != NULL ) && ( (stringLen = strlen(prikeyId)) > 0 ) )
-	{	
-		// strlen check
-		if( stringLen >= BOAT_KEYID_MAX_LEN )
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "ERROR: length of prikeyId out of limit.");
-			boat_throw(BOAT_ERROR_BAD_FILE_DESCRIPTOR, BoatHlfabricWalletSetAccountInfo_exception);
-		}
-		// assignment
-		wallet_ptr->account_info.prikeyId.field_ptr = BoatMalloc( stringLen + 1 );
-		if( wallet_ptr->account_info.prikeyId.field_ptr == NULL )
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-			boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetAccountInfo_exception);
-		}
-		memcpy(wallet_ptr->account_info.prikeyId.field_ptr, prikeyId, stringLen + 1);
-		wallet_ptr->account_info.prikeyId.field_len = stringLen + 1;
-	}
+	/* prikey context assignment */
+	memcpy( &wallet_ptr->account_info.prikeyCtx, \
+		    &prikeyCtx_config.private_KeyCtx, sizeof(BoatWalletPriKeyCtx));
 	
 	/* cert assignment */
 	if( ( certName != NULL ) && ( (stringLen = strlen(certName)) > 0 ) )
@@ -197,8 +180,6 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 	 	result = boat_exception;
 		/* free malloc param Deinit */
 		//! @todo prikeyId waiting be update
-		BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
-		wallet_ptr->account_info.prikeyId.field_len = 0;
 		BoatFree(wallet_ptr->account_info.cert.field_ptr);
 		wallet_ptr->account_info.cert.field_len     = 0;
 	}
@@ -208,7 +189,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 
 #if (HLFABRIC_TLS_SUPPORT == 1) && (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
 BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr, 
-											    BoatWalletPriKeyCtx prikeyCtx,
+											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
 												const BCHAR *certName )
 {
 	BUINT32   stringLen;
@@ -223,30 +204,14 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
 	}
 	
 	/* initialization */
-	wallet_ptr->tlsClinet_info.prikeyId.field_ptr     = NULL;
-	wallet_ptr->tlsClinet_info.prikeyId.field_len     = 0;
+	memset(&wallet_ptr->tlsClinet_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx) );
 	wallet_ptr->tlsClinet_info.cert.field_ptr         = NULL;
 	wallet_ptr->tlsClinet_info.cert.field_len         = 0;
 	
-	/* prikeyId assignment */
-	if( ( prikeyId != NULL ) && ( (stringLen = strlen(prikeyId)) > 0 ) )
-	{	
-		// strlen check
-		if( stringLen >= BOAT_KEYID_MAX_LEN )
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "ERROR: length of prikeyId out of limit.");
-			boat_throw(BOAT_ERROR_BAD_FILE_DESCRIPTOR, BoatHlfabricWalletSetTlsInfo_exception);
-		}
-		//assignment
-		wallet_ptr->tlsClinet_info.prikeyId.field_ptr = BoatMalloc(stringLen + 1);
-		if( wallet_ptr->tlsClinet_info.prikeyId.field_ptr == NULL )
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-			boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetTlsInfo_exception);
-		}
-		memcpy(wallet_ptr->tlsClinet_info.prikeyId.field_ptr, prikeyId, stringLen + 1);
-		wallet_ptr->tlsClinet_info.prikeyId.field_len = stringLen + 1;
-	}
+	/* prikey context assignment */
+	memcpy( &wallet_ptr->tlsClinet_info.prikeyCtx, \
+		    &prikeyCtx_config.private_KeyCtx, sizeof(BoatWalletPriKeyCtx));
+
 	/* cert assignment */
 	if( ( certName != NULL ) && ( (stringLen = strlen(certName)) > 0 ) )
 	{
@@ -286,8 +251,6 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
 	 	result = boat_exception;
 		/* free malloc param Deinit */
-		BoatFree(wallet_ptr->tlsClinet_info.prikeyId.field_ptr);
-		wallet_ptr->tlsClinet_info.prikeyId.field_len = 0;
 		BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
 		wallet_ptr->tlsClinet_info.cert.field_len     = 0;
 	}
@@ -577,14 +540,10 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
 	
 	/* initialization */
 	//! @todo prikeyId waiting be update
-	//wallet_ptr->account_info.prikeyId.field_ptr = NULL;
-	//wallet_ptr->account_info.prikeyId.field_len = 0;
 	wallet_ptr->account_info.cert.field_ptr     = NULL;
 	wallet_ptr->account_info.cert.field_len     = 0;
 #if (HLFABRIC_TLS_SUPPORT == 1)
 #if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-	wallet_ptr->tlsClinet_info.prikeyId.field_ptr     = NULL;
-	wallet_ptr->tlsClinet_info.prikeyId.field_len     = 0;
 	wallet_ptr->tlsClinet_info.cert.field_ptr         = NULL;
 	wallet_ptr->tlsClinet_info.cert.field_len         = 0;
 #endif
@@ -608,12 +567,12 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
 	wallet_ptr->http2Context_ptr               = NULL;
 
 	/* account_info assignment */
-	result += BoatHlfabricWalletSetAccountInfo( wallet_ptr,  config_ptr->accountPrikeyId,  
+	result += BoatHlfabricWalletSetAccountInfo( wallet_ptr,  config_ptr->accountPriKey_config,  
 												config_ptr->accountCertFileName );
 	/* tlsClinet_info assignment */
 #if (HLFABRIC_TLS_SUPPORT == 1) 
 #if	(HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-	result += BoatHlfabricWalletSetTlsClientInfo( wallet_ptr,  config_ptr->tlsClientPrikeyId,  
+	result += BoatHlfabricWalletSetTlsClientInfo( wallet_ptr,  config_ptr->tlsPriKey_config,  
 												  config_ptr->tlsClientCertFileName );
 #endif
 	/* tlsRootCa_info assignment */
@@ -647,16 +606,12 @@ void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr )
 
     /* account_info DeInit */
     //! @todo prikeyId waiting be update
-	//BoatFree(wallet_ptr->account_info.prikeyId.field_ptr);
-    //wallet_ptr->account_info.prikeyId.field_len = 0;
     BoatFree(wallet_ptr->account_info.cert.field_ptr);
     wallet_ptr->account_info.cert.field_len     = 0;
 
     /* tlsClinet_info DeInit */
 #if (HLFABRIC_TLS_SUPPORT == 1)
 #if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-    BoatFree(wallet_ptr->tlsClinet_info.prikeyId.field_ptr);
-    wallet_ptr->tlsClinet_info.prikeyId.field_len = 0;
     BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
     wallet_ptr->tlsClinet_info.cert.field_len     = 0;
 #endif /* #if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1) */

@@ -936,13 +936,13 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {	
 	//! @todo
-	return BOAT_SUCCESS;
+	return BOAT_ERROR;
 }
 
 BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx )
 {
 	//! @todo
-	return BOAT_SUCCESS;
+	return BOAT_ERROR;
 }
 
 

@@ -327,120 +327,9 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain,
 						 BSINT32 socketfd, void* tlsContext, void* rsvd )
 {
-	TTLSContext * tlsContext_ptr = (TTLSContext *)tlsContext;
-	mbedtls_entropy_context entropy;
-    mbedtls_ctr_drbg_context ctr_drbg;
 	
-	BOAT_RESULT   result = BOAT_SUCCESS;
-	boat_try_declare;
-
-	tlsContext_ptr->ssl     = BoatMalloc(sizeof(mbedtls_ssl_context));
-	if (tlsContext_ptr->ssl == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to allocate ssl_context.");
-		return BOAT_ERROR;
-	}
-	tlsContext_ptr->ssl_cfg = BoatMalloc(sizeof(mbedtls_ssl_config));
-	if (tlsContext_ptr->ssl_cfg == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to allocate ssl_config.");
-		return BOAT_ERROR;
-	}
-	tlsContext_ptr->ssl_crt = BoatMalloc(sizeof(mbedtls_x509_crt));
-	if (tlsContext_ptr->ssl_crt == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to allocate x509_crt.");
-		return BOAT_ERROR;
-	}
-	tlsContext_ptr->ssl_net = BoatMalloc(sizeof(mbedtls_net_context));
-	if (tlsContext_ptr->ssl_net == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to allocate net_context.");
-		return BOAT_ERROR;
-	}
-	
-    mbedtls_entropy_init( &entropy );
-    mbedtls_ctr_drbg_init( &ctr_drbg );
-	mbedtls_net_init( tlsContext_ptr->ssl_net );
-	mbedtls_ssl_init( tlsContext_ptr->ssl );
-	mbedtls_ssl_config_init( tlsContext_ptr->ssl_cfg );
-	mbedtls_x509_crt_init( tlsContext_ptr->ssl_crt );
-	result = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0 );
-    if( result != BOAT_SUCCESS )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to execute ctr_drbg_seed." );
-        boat_throw( result, BoatTlsInit_exception );
-    }
-
-	result = mbedtls_ssl_config_defaults( tlsContext_ptr->ssl_cfg, MBEDTLS_SSL_IS_CLIENT,
-										  MBEDTLS_SSL_TRANSPORT_STREAM,
-										  MBEDTLS_SSL_PRESET_DEFAULT );
-	if( result != BOAT_SUCCESS )
-    {
-        BoatLog( BOAT_LOG_CRITICAL, "Failed to execute ssl_config_defaults.\n" );
-        boat_throw( result, BoatTlsInit_exception );
-    }
-
-	mbedtls_ssl_conf_rng(tlsContext_ptr->ssl_cfg, mbedtls_ctr_drbg_random, &ctr_drbg);
-
-	for(int i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++)
-	{
-		if( ((caChain + i) != NULL ) && ((caChain + i)->field_ptr != NULL ) ) 
-		{
-			result += mbedtls_x509_crt_parse(tlsContext_ptr->ssl_crt, (caChain + i)->field_ptr, (caChain + i)->field_len);
-		}
-	}
-	if( result != BOAT_SUCCESS )
-    {
-        BoatLog( BOAT_LOG_CRITICAL, "Failed to execute x509_crt_parse: -%x\n", -result );
-        boat_throw( result, BoatTlsInit_exception );
-    }
-
-	mbedtls_ssl_conf_ca_chain(tlsContext_ptr->ssl_cfg, tlsContext_ptr->ssl_crt, NULL);
-	mbedtls_ssl_conf_authmode(tlsContext_ptr->ssl_cfg, MBEDTLS_SSL_VERIFY_REQUIRED);
-	result = mbedtls_ssl_setup(tlsContext_ptr->ssl, tlsContext_ptr->ssl_cfg);
-	if( result != BOAT_SUCCESS )
-    {
-        BoatLog( BOAT_LOG_CRITICAL, "Failed to execute ssl_setup.\n" );
-        boat_throw( result, BoatTlsInit_exception );
-    }
-
-	result = mbedtls_ssl_set_hostname(tlsContext_ptr->ssl, hostName);
-	if( result != BOAT_SUCCESS )
-    {
-        BoatLog( BOAT_LOG_CRITICAL, "Failed to execute hostname_set.\n" );
-        boat_throw( result, BoatTlsInit_exception );
-    }
-
-	((mbedtls_net_context*)(tlsContext_ptr->ssl_net))->fd = socketfd;
-	mbedtls_ssl_set_bio(tlsContext_ptr->ssl, tlsContext_ptr->ssl_net, mbedtls_net_send, mbedtls_net_recv, NULL);
-	result = mbedtls_ssl_handshake(tlsContext_ptr->ssl);
-	if( result != BOAT_SUCCESS )
-    {
-        BoatLog( BOAT_LOG_CRITICAL, "Failed to execute ssl_handshake: -%x\n", -result );
-        boat_throw( result, BoatTlsInit_exception );
-    }
-	BoatLog( BOAT_LOG_NORMAL, "ret = ssl_handshake SUCCESSED!" );
-	
-	/* boat catch handle */
-	boat_catch(BoatTlsInit_exception)
-	{
-        BoatLog( BOAT_LOG_CRITICAL, "Exception: %d", boat_exception );
-        result = boat_exception;
-		mbedtls_ssl_free(tlsContext_ptr->ssl);
-		mbedtls_net_free(tlsContext_ptr->ssl_net);
-		mbedtls_ssl_config_free(tlsContext_ptr->ssl_cfg);
-		mbedtls_x509_crt_free(tlsContext_ptr->ssl_crt);
-		BoatFree( tlsContext_ptr->ssl );
-		BoatFree( tlsContext_ptr->ssl_net );
-		BoatFree( tlsContext_ptr->ssl_cfg );
-		BoatFree( tlsContext_ptr->ssl_crt );
-	}
-	
-	mbedtls_entropy_free( &entropy );
-    mbedtls_ctr_drbg_free( &ctr_drbg );
-	
-	return result;
+	//! @todo BoatTlsInit implementation in crypto default.
+	return BOAT_ERROR;
 }
 #endif
 
@@ -448,12 +337,8 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
 BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, void* rsvd)
 {
 #if (HLFABRIC_TLS_SUPPORT == 1) 
-	if( (tlsContext == NULL) || (((TTLSContext*)tlsContext)->ssl == NULL) )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "tlsContext or tlsContext->ssl can't be NULL." );
-		return -1;
-	}
-	return mbedtls_ssl_write( ((TTLSContext*)tlsContext)->ssl, buf, len );
+	//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
+	return -1;
 #else
 	return send( sockfd, buf, len, 0 );	
 #endif	
@@ -463,12 +348,8 @@ BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, 
 BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* rsvd)
 {
 #if (HLFABRIC_TLS_SUPPORT == 1) 
-	if( (tlsContext == NULL) || (((TTLSContext*)tlsContext)->ssl == NULL) )
-	{
-		//! @todo still receive a unknown data after Boatclose(...)
-		return -1;
-	}
-	return mbedtls_ssl_read( ((TTLSContext*)tlsContext)->ssl, buf, len );
+	//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
+	return -1;
 #else
 	return recv( sockfd, buf, len, 0 );
 #endif	
@@ -480,24 +361,8 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 	close(sockfd);
 #if (HLFABRIC_TLS_SUPPORT == 1) 
 	// free tls releated
-	if(tlsContext != NULL)
-	{
-		mbedtls_ssl_free(((TTLSContext*)tlsContext)->ssl);
-		BoatFree( ((TTLSContext*)tlsContext)->ssl );
-		((TTLSContext*)tlsContext)->ssl     = NULL;
-		
-		mbedtls_ssl_config_free(((TTLSContext*)tlsContext)->ssl_cfg);
-		BoatFree( ((TTLSContext*)tlsContext)->ssl_cfg );
-		((TTLSContext*)tlsContext)->ssl_cfg = NULL;
-		
-		mbedtls_net_free(((TTLSContext*)tlsContext)->ssl_net);
-		BoatFree( ((TTLSContext*)tlsContext)->ssl_net );
-		((TTLSContext*)tlsContext)->ssl_net = NULL;
-		
-		mbedtls_x509_crt_free(((TTLSContext*)tlsContext)->ssl_crt);
-		BoatFree( ((TTLSContext*)tlsContext)->ssl_crt );
-		((TTLSContext*)tlsContext)->ssl_crt = NULL;
-	}
+		//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
+	return -1;
 #endif
 }
 
@@ -646,13 +511,13 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {
 	//! @todo
-	return BOAT_SUCCESS;
+	return BOAT_ERROR;
 }
 
 BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx )
 {
 	//! @todo
-	return BOAT_SUCCESS;
+	return BOAT_ERROR;
 }
 
 

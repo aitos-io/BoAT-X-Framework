@@ -31,10 +31,10 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	BOAT_RESULT index;
 
 	BoatHlfabricWalletConfig wallet_config = {
-		"/mnt/sharework/boatiotsdk_fabric/demo/demo_key/fabric_client.key", // client private key path							
+		{}, // client private key context							
 		"/mnt/sharework/boatiotsdk_fabric/demo/demo_key/fabric_client.cert",// client certificate path		
 
-		"",    // tls client private key path		
+		{},    // tls client private key context		
 		"",    // tls client certificate path	
 		
 		//root ca
