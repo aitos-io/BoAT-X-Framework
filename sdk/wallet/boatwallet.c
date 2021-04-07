@@ -133,31 +133,28 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                     priKeyCtx_configTmp = &((BoatEthWalletConfig*)wallet_config_ptr)->prikeyCtx_config;
                     if( BOAT_SUCCESS != BoatPort_keyCreate( priKeyCtx_configTmp, &priKeyCtxTmp ) )
                     {
-                        BoatLog(BOAT_LOG_CRITICAL, "Failed to BoatPort_keyCreate.");
+                        BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
                         return BOAT_ERROR;
                     }
                 break;
                 default:
                 break;
             }
-
             
             printf("priKeyCtxTmp.pubkey_format        : %d\n", priKeyCtxTmp.pubkey_format);
             BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.pubkey_content", priKeyCtxTmp.pubkey_content, 64);
             BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.extra_data.value", \
                                                     priKeyCtxTmp.extra_data.value, priKeyCtxTmp.extra_data.value_len);
 
-			
 			/* -step-2:  assign value of prikeyIdTmp to wallet_config_ptr */
-			memcpy( &( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->private_KeyCtx), &priKeyCtxTmp, sizeof(priKeyCtxTmp) );
+			memcpy( &( priKeyCtx_configTmp->private_KeyCtx), &priKeyCtxTmp, sizeof(priKeyCtxTmp) );
 			
 			/* -step-3:  clear sensitive information in wallet_config_ptr */
-			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_genMode        = BOAT_WALLET_PRIKEY_GENMODE_UNKNOWN;
-            ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_format         = BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN;
-            ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_type           = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
-			((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content_length = 0;
-			memset( ((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content, 0, \ 
-					sizeof(((BoatWalletPriKeyCtx_config*)wallet_config_ptr)->prikey_content) );
+			priKeyCtx_configTmp->prikey_genMode        = BOAT_WALLET_PRIKEY_GENMODE_UNKNOWN;
+            priKeyCtx_configTmp->prikey_format         = BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN;
+            priKeyCtx_configTmp->prikey_type           = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
+			priKeyCtx_configTmp->prikey_content_length = 0;
+			memset( priKeyCtx_configTmp->prikey_content, 0, sizeof(priKeyCtx_configTmp->prikey_content) );
 			
             /* -step-4: create persistent wallet / Overwrite existed configuration */
             if( BOAT_SUCCESS != BoatPersistStore(wallet_name_str, wallet_config_ptr, wallet_config_size) )

@@ -15,8 +15,8 @@
  *****************************************************************************/
 
 //#define  USE_ONETIME_WALLET        // if expect create a one-time wallet, uncomment this definition
-//#define  USE_CREATE_PERSIST_WALLET // if expect create a persist wallet, uncomment this definition
-#define  USE_LOAD_PERSIST_WALLET   // if expect load a persist wallet, uncomment this definition
+#define  USE_CREATE_PERSIST_WALLET // if expect create a persist wallet, uncomment this definition
+//#define  USE_LOAD_PERSIST_WALLET   // if expect load a persist wallet, uncomment this definition
 
 
 #include "boatiotsdk.h"
