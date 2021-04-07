@@ -93,7 +93,8 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 {
     BSINT32 i;
     BUINT8  loaded_wallet_config_array[wallet_config_size];
-	BoatWalletPriKeyCtx  priKeyCtxTmp;
+	BoatWalletPriKeyCtx          priKeyCtxTmp;
+    BoatWalletPriKeyCtx_config*  priKeyCtx_configTmp = NULL;
 
     /* Check wallet configuration */ 
     if( (wallet_name_str == NULL) && (wallet_config_ptr == NULL) )
@@ -124,12 +125,22 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
         if( wallet_config_ptr != NULL )
         {
 			/* create a persiststore  wallet */
+
 			/* -step-1:  generate prikeyCtxTmp */
-			if( BOAT_SUCCESS != BoatPort_keyCreate( wallet_config_ptr, &priKeyCtxTmp ) )
+            switch(protocol_type)
             {
-                BoatLog(BOAT_LOG_CRITICAL, "Failed to BoatPort_keyCreate.");
-                return BOAT_ERROR;
+                case PROTOCOL_USE_ETHEREUM:
+                    priKeyCtx_configTmp = &((BoatEthWalletConfig*)wallet_config_ptr)->prikeyCtx_config;
+                    if( BOAT_SUCCESS != BoatPort_keyCreate( priKeyCtx_configTmp, &priKeyCtxTmp ) )
+                    {
+                        BoatLog(BOAT_LOG_CRITICAL, "Failed to BoatPort_keyCreate.");
+                        return BOAT_ERROR;
+                    }
+                break;
+                default:
+                break;
             }
+
             
             printf("priKeyCtxTmp.pubkey_format        : %d\n", priKeyCtxTmp.pubkey_format);
             BoatLog_hexasciidump(BOAT_LOG_VERBOSE, "priKeyCtxTmp.pubkey_content", priKeyCtxTmp.pubkey_content, 64);
@@ -180,6 +191,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 
     #if PROTOCOL_USE_ETHEREUM == 1
         case BOAT_PROTOCOL_ETHEREUM:
+
             g_boat_iot_sdk_context.wallet_list[i].wallet_ptr = BoatEthWalletInit((BoatEthWalletConfig*)loaded_wallet_config_array, wallet_config_size);
         break;
     #endif
