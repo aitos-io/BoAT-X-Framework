@@ -169,11 +169,13 @@ typedef struct TBoatHlfabricNodeInfoCfg{
 //!@brief fabric wallet config structure
 //! fabric wallet config structure
 typedef struct TBoatHlfabricWalletConfig{
-	BCHAR   accountPrikeyId[BOAT_KEYID_MAX_LEN]; //!< full path of the prikey file, string
-	BCHAR   accountCertFileName[BOAT_FILENAME_MAX_LEN]; 
+	//BCHAR   accountPrikeyId[BOAT_KEYID_MAX_LEN]; //!< full path of the prikey file, string
+	BoatWalletPriKeyCtx_config  accountPriKey_config;
+	BCHAR                       accountCertFileName[BOAT_FILENAME_MAX_LEN]; 
 
-	BCHAR   tlsClientPrikeyId[BOAT_KEYID_MAX_LEN]; //!< full path of the prikey file, string
-	BCHAR   tlsClientCertFileName[BOAT_FILENAME_MAX_LEN];
+	//BCHAR   tlsClientPrikeyId[BOAT_KEYID_MAX_LEN]; //!< full path of the prikey file, string
+	BoatWalletPriKeyCtx_config  tlsPriKey_config;
+	BCHAR                       tlsClientCertFileName[BOAT_FILENAME_MAX_LEN];
 	
 	BUINT32 rootCaNumber; //the number of rootCA file to be set
 	BCHAR   rootCaFileName[HLFABRIC_ROOTCA_MAX_NUM][BOAT_FILENAME_MAX_LEN]; 
@@ -201,8 +203,8 @@ extern "C" {
  * @param wallet_ptr
  *   fabric wallet pointer
  *
- * @param prikeyId
- *   full path of private key used by transaction
+ * @param prikeyCtx
+ *   xxxxxx
  *
  * @param certName
  *   full path of certificate used by transaction
@@ -211,7 +213,7 @@ extern "C" {
  *   return BOAT_SUCCESS if set successed, otherwise return a failed code.
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr, 
-											  const BCHAR *prikeyId, 
+											  BoatWalletPriKeyCtx  prikeyCtx,
 											  const BCHAR *certName );
 
 
@@ -227,8 +229,8 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
  * @param wallet_ptr 
  *   fabric wallet pointer
  *
- * @param prikeyId 
- *   full path of private key used by TLS.
+ * @param prikeyCtx 
+ *   xxxxx
  *
  * @param certName
  *   full path of certificate used by TLS.
@@ -239,7 +241,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
  *@note this function is reserved for future.
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr, 
-											    const BCHAR *prikeyId, 
+											   BoatWalletPriKeyCtx  prikeyCtx,
 											    const BCHAR *certName );
 #endif
 
