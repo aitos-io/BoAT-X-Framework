@@ -370,8 +370,8 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
-static BOAT_RESULT sBoatPort_keyCreate_intern_generation( const BoatWalletPriKeyCtx_config* config, 
-													      BoatWalletPriKeyCtx* pkCtx )
+static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriKeyCtx_config* config, 
+													        BoatWalletPriKeyCtx* pkCtx )
 {
 	/* Valid private key value (as a UINT256) for Ethereum is [1, n-1], where n is
        0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 */
@@ -419,8 +419,8 @@ static BOAT_RESULT sBoatPort_keyCreate_intern_generation( const BoatWalletPriKey
 	return result;
 }
 
-static BOAT_RESULT sBoatPort_keyCreate_extern_injection_native( const BoatWalletPriKeyCtx_config* config, 
-													            BoatWalletPriKeyCtx* pkCtx )
+static BOAT_RESULT sBoatPort_keyCreate_external_injection_native( const BoatWalletPriKeyCtx_config* config, 
+													              BoatWalletPriKeyCtx* pkCtx )
 {
 	BUINT8       pubKey65[65] = {0};
 	BOAT_RESULT  result = BOAT_SUCCESS;
@@ -474,12 +474,12 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 		return BOAT_ERROR_NULL_POINTER;
 	}
 	
-	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERN_GENERATION)
+	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
 	{
 		BoatLog( BOAT_LOG_VERBOSE, "The private key is generated internally..." );
-		result = sBoatPort_keyCreate_intern_generation(config, pkCtx);
+		result = sBoatPort_keyCreate_internal_generation(config, pkCtx);
 	}
-	else if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_EXTERN_INJECTION)
+	else if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION)
 	{
 		switch (config->prikey_format)
 		{
@@ -487,7 +487,7 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
 				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[native] set..." );
-				result = sBoatPort_keyCreate_extern_injection_native(config, pkCtx);
+				result = sBoatPort_keyCreate_external_injection_native(config, pkCtx);
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
 				BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );

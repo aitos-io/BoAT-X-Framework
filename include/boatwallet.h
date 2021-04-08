@@ -31,13 +31,13 @@ boatwallet.h is the SDK header file.
 //! @brief The generate mode of the used private key
 typedef enum
 {
-    BOAT_WALLET_PRIKEY_GENMODE_UNKNOWN = 0,       //!< Placeholder for unknown prikey format
-    BOAT_WALLET_PRIKEY_GENMODE_EXTERN_INJECTION,  //!< The private key is injected externally
-    BOAT_WALLET_PRIKEY_GENMODE_INTERN_GENERATION, //!< The private key is generated internally
+    BOAT_WALLET_PRIKEY_GENMODE_UNKNOWN = 0,         //!< Placeholder for unknown prikey format
+    BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION,  //!< The private key is injected externally
+    BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION, //!< The private key is generated internally
 }BoatWalletPriKeyGenMode;
 
 //! @brief The format of the externally injected private key
-//! This field will be actived when /ref BOAT_WALLET_PRIKEY_FORMAT_EXTERN_INJECTION be selected.
+//! This field will be actived when @ref BOAT_WALLET_PRIKEY_FORMAT_EXTERN_INJECTION be selected.
 typedef enum
 {
     BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN = 0,     //!< Placeholder for unknown prikey format

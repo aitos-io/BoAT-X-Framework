@@ -780,8 +780,8 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
-static BOAT_RESULT sBoatPort_keyCreate_intern_generation( const BoatWalletPriKeyCtx_config* config, 
-													      BoatWalletPriKeyCtx* pkCtx )
+static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriKeyCtx_config* config, 
+													        BoatWalletPriKeyCtx* pkCtx )
 {
 	mbedtls_entropy_context   entropy;
     mbedtls_ctr_drbg_context  ctr_drbg;
@@ -846,8 +846,8 @@ static BOAT_RESULT sBoatPort_keyCreate_intern_generation( const BoatWalletPriKey
     return result;
 }
 
-static BOAT_RESULT sBoatPort_keyCreate_extern_injection_pkcs( const BoatWalletPriKeyCtx_config* config, 
-															  BoatWalletPriKeyCtx* pkCtx )
+static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs( const BoatWalletPriKeyCtx_config* config, 
+															    BoatWalletPriKeyCtx* pkCtx )
 {
 	mbedtls_pk_context     mbedtls_pkCtx;
 	BOAT_RESULT            result = BOAT_SUCCESS;
@@ -900,18 +900,18 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 		return BOAT_ERROR_NULL_POINTER;
 	}
 	
-	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERN_GENERATION)
+	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
 	{
 		BoatLog( BOAT_LOG_VERBOSE, "The private key is generated internally..." );
-		result = sBoatPort_keyCreate_intern_generation(config, pkCtx);
+		result = sBoatPort_keyCreate_internal_generation(config, pkCtx);
 	}
-	else if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_EXTERN_INJECTION)
+	else if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION)
 	{
 		switch (config->prikey_format)
 		{
 			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
 				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[pkcs] set..." );
-				result = sBoatPort_keyCreate_extern_injection_pkcs(config, pkCtx);
+				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
 			case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
