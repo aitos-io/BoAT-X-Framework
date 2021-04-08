@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#define  USE_ONETIME_WALLET        // if expect create a one-time wallet, uncomment this definition
-//#define  USE_CREATE_PERSIST_WALLET //if expect create a persist wallet, uncomment this definition
+//#define  USE_ONETIME_WALLET        // if expect create a one-time wallet, uncomment this definition
+#define  USE_CREATE_PERSIST_WALLET //if expect create a persist wallet, uncomment this definition
 //#define  USE_LOAD_PERSIST_WALLET   // if expect load a persist wallet, uncomment this definition
 
 
@@ -60,9 +60,9 @@ __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
     BoatPlatoneWalletConfig wallet_config;
 
 	/* wallet_config value assignment */
-	strncpy( (char*)wallet_config.prikeyId, 
-			 "/mnt/sharework/boatiotsdk_fabric/demo/demo_key/platone_client.key", 
-			 BOAT_KEYID_MAX_LEN - 1 );
+    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy( wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_NODE_URL_MAX_LEN - 1 );

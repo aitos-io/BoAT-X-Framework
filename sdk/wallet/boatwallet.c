@@ -129,7 +129,9 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 			/* -step-1:  generate prikeyCtxTmp */
             switch(protocol_type)
             {
-                case PROTOCOL_USE_ETHEREUM:
+                case BOAT_PROTOCOL_ETHEREUM:
+                case BOAT_PROTOCOL_PLATONE:
+                case BOAT_PROTOCOL_FISCOBCOS:
                     priKeyCtx_configTmp = &((BoatEthWalletConfig*)wallet_config_ptr)->prikeyCtx_config;
                     if( BOAT_SUCCESS != BoatPort_keyCreate( priKeyCtx_configTmp, &priKeyCtxTmp ) )
                     {

@@ -15,8 +15,8 @@
  *****************************************************************************/
 
 //#define  USE_ONETIME_WALLET        // if expect create a one-time wallet, uncomment this definition
-//#define  USE_CREATE_PERSIST_WALLET // if expect create a persist wallet, uncomment this definition
-#define  USE_LOAD_PERSIST_WALLET   // if expect load a persist wallet, uncomment this definition
+#define  USE_CREATE_PERSIST_WALLET // if expect create a persist wallet, uncomment this definition
+//#define  USE_LOAD_PERSIST_WALLET   // if expect load a persist wallet, uncomment this definition
 
 
 #include "boatiotsdk.h"
@@ -62,7 +62,7 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
                       "-----END EC PRIVATE KEY-----\n";
 
 	/* wallet_config value assignment */
-    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERN_INJECTION;
+    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
     wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
 
@@ -72,11 +72,16 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
 
 #if 1
     char * nativedemoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
-    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERN_INJECTION;
+    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
     wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     UtilityHex2Bin( wallet_config.prikeyCtx_config.prikey_content, 32, nativedemoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
     wallet_config.prikeyCtx_config.prikey_content_length = 32;
+#endif
+
+#if 1
+    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
 #endif
 
     wallet_config.chain_id                      = 1;
