@@ -62,7 +62,7 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
     if ( (BOAT_SUCCESS != UtilityStringLenCheck(storage_name_str)) )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
-        return NULL;
+        return BOAT_ERROR;
     }
 	
 	/* prepare encrypt raw data */
@@ -126,7 +126,7 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
     if ( (BOAT_SUCCESS != UtilityStringLenCheck(storage_name_str)) )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
-        return NULL;
+        return BOAT_ERROR;
     }
 
 	result += BoatGetFileSize( storage_name_str, &fileSize, NULL );
