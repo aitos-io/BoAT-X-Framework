@@ -280,7 +280,7 @@ BCHAR * BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_prot
 	}
 	
     if ( (BOAT_SUCCESS != UtilityStringLenCheck(func_proto_str)) && \
-	     (BOAT_SUCCESS != UtilityStringLenCheck(func_param_ptr)) )
+	     (BOAT_SUCCESS != UtilityStringLenCheck((BCHAR*)func_param_ptr)) )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
