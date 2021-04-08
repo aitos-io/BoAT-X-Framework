@@ -380,6 +380,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
 	bignum256   priv_key_bn256;
     bignum256   priv_key_max_bn256;
 	BUINT8      prikeyTmp[32];
+	BUINT8      pubKey65[65] = {0};
 	BUINT32     key_try_count;
     BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -415,6 +416,41 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
 			result = BOAT_ERROR;
 		}          
     }
+
+	// 1- update private key
+	memcpy(pkCtx->extra_data.value, prikeyTmp, 32);
+	pkCtx->extra_data.value_len = 32;
+
+	// 2- update private key format
+	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+	
+	// 3- update private key type
+	pkCtx->prikey_type   = config->prikey_type;
+
+	// 4- update private key index
+	// This field should update by 'key secure storage'(such as TE/SE).
+	// When algorithms are implemented by software, this field is default to 0, means
+	// that ignore this field.
+	pkCtx->prikey_index  = 0; 
+
+	// 5- update public key
+	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
+
+	if( config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1 )
+	{
+		ecdsa_get_public_key65(&secp256k1, pkCtx->extra_data.value, pubKey65);
+		memcpy( pkCtx->pubkey_content, &pubKey65[1], 64 );
+	}
+	else if( config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1 )
+	{
+		ecdsa_get_public_key65(&nist256p1, pkCtx->extra_data.value, pubKey65);
+		memcpy( pkCtx->pubkey_content, &pubKey65[1], 64 );
+	}
+	else 
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "Invalid private key type." );
+		result = BOAT_ERROR;
+	}
 
 	return result;
 }
