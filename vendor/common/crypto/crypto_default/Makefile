@@ -58,7 +58,7 @@ $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)/aes
 
 $(OBJECTS_DIR)/%.o:%.c
-	$(CC) -c $(CRYPTO_CFLAGS) -DAES_128 -DAES_192 $< -o $@
+	$(CC) -c $(CRYPTO_CFLAGS) $< -o $@
 
 
 clean:	

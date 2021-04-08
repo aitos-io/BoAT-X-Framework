@@ -544,7 +544,7 @@ BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * in
 
 BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output)
 {
-	aes_encrypt_ctx ctxd;
+	aes_decrypt_ctx ctxd;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
 	/* aes init */
