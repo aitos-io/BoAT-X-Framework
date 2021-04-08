@@ -59,7 +59,7 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
         return BOAT_ERROR;
     }
 
-    if ( (BOAT_SUCCESS != MaxLenCheck(storage_name_str)) )
+    if ( (BOAT_SUCCESS != UtilityStringLenCheck(storage_name_str)) )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
@@ -123,7 +123,7 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
         return BOAT_ERROR;
     }
 
-    if ( (BOAT_SUCCESS != MaxLenCheck(storage_name_str)) )
+    if ( (BOAT_SUCCESS != UtilityStringLenCheck(storage_name_str)) )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;

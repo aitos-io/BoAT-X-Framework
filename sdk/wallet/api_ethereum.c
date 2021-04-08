@@ -566,7 +566,8 @@ BCHAR * BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
         return NULL;
 	}
 
-    if ( (BOAT_SUCCESS != MaxLenCheck(func_proto_str)) && (BOAT_SUCCESS != MaxLenCheck(func_param_ptr)) )
+    if ( (BOAT_SUCCESS != UtilityStringLenCheck(func_proto_str)) && \
+         (BOAT_SUCCESS != UtilityStringLenCheck(func_param_ptr)) )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;

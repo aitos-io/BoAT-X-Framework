@@ -132,7 +132,7 @@ BCHAR * BoatPlatonCallContractFunc( BoatPlatonTx *tx_ptr, BUINT8 *rlp_param_ptr,
         return NULL;
 	}
 
-    if (BOAT_SUCCESS != MaxLenCheck(rlp_param_ptr))
+    if (BOAT_SUCCESS != UtilityStringLenCheck(rlp_param_ptr))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;

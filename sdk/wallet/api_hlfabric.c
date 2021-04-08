@@ -125,7 +125,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 		return BOAT_ERROR;
 	}
 
-	if( BOAT_SUCCESS != MaxLenCheck(certName) )
+	if( BOAT_SUCCESS != UtilityStringLenCheck(certName) )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return BOAT_ERROR;

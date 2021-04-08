@@ -142,7 +142,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	//convert bigendian uint256 to bignumber
 	utility_bignum256 convertTmp;
 	BUINT32   blockLimitOffset = 500; //value should rangle of 1 ~ 1000
-	Utility_readBigendToBignum( &blocklimitTmp.field[0], &convertTmp );
+	UtilityReadBigendToBignum( &blocklimitTmp.field[0], &convertTmp );
 	
 	//execute bignumber plus uint
 	for( i = 0; i < 9; i++ )
@@ -153,7 +153,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	}
 	
 	//convert bignumber to bigendian uint256
-	Utility_writeBignumToBigend( &convertTmp, &blocklimitTmp.field[0] );	
+	UtilityWriteBignumToBigend( &convertTmp, &blocklimitTmp.field[0] );	
 	BoatLog_hexdump(BOAT_LOG_NORMAL, "blocklimitTmp2:", blocklimitTmp.field, 32);
 	memset(tx_ptr->rawtx_fields.blocklimit.field, 0, 32);
 	
@@ -279,7 +279,8 @@ BCHAR * BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_prot
         return NULL;
 	}
 	
-    if ( (BOAT_SUCCESS != MaxLenCheck(func_proto_str)) && (BOAT_SUCCESS != MaxLenCheck(func_param_ptr)) )
+    if ( (BOAT_SUCCESS != UtilityStringLenCheck(func_proto_str)) && \
+	     (BOAT_SUCCESS != UtilityStringLenCheck(func_param_ptr)) )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
