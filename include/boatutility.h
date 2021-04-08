@@ -571,6 +571,17 @@ void UtilityReadBigendToBignum(const BUINT8 *in_number, utility_bignum256 *out_n
 void UtilityWriteBignumToBigend(const utility_bignum256 *in_number, BUINT8 *out_number);
 
 
+/*!****************************************************************************
+* @brief check the string length is out of limit or not
+* @details
+*    check the string length is out of limit or not
+* @param[in] string
+*    The string that to be checked.
+
+* @return
+*   If the string length less than maxium limit, return @ref BOAT_SUCCESS, else
+*   return @ref BOAT_ERROR .
+*******************************************************************************/
 BOAT_RESULT UtilityStringLenCheck( const BCHAR *string );
 
 /*! @}*/
