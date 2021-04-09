@@ -45,10 +45,6 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #include "protocolapi/api_hlfabric.h"
 #endif
 
-#if PROTOCOL_USE_PLATON == 1
-#include "protocolapi/api_platon.h"
-#endif
-
 #if PROTOCOL_USE_PLATONE == 1
 #include "protocolapi/api_platone.h"
 #else

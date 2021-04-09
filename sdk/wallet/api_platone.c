@@ -32,6 +32,60 @@ boatPlatonewallet.c defines the Platone wallet API for BoAT IoT SDK.
 // re-use a lot of Ethereum and PlatON's data structure and API.
 // APIs not listed here are compatible with Ethereum/PlatON.
 
+BOAT_RESULT BoatPlatoneTxInit( BoatPlatoneWallet *wallet_ptr,
+							   BoatPlatoneTx *tx_ptr,
+							   BBOOL is_sync_tx,
+							   BCHAR * gasprice_str,
+							   BCHAR * gaslimit_str,
+							   BCHAR *recipient_str,
+							   BoatPlatoneTxtype txtype)
+{
+    BOAT_RESULT result;
+
+    if( (wallet_ptr == NULL) || (tx_ptr == NULL) || (recipient_str == NULL) )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+
+    tx_ptr->wallet_ptr = wallet_ptr;
+    memset( &tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields) );
+
+    // Re-use Ethereum transaction initialization
+    result = BoatEthTxInit( (BoatEthWallet *)wallet_ptr, (BoatEthTx *)tx_ptr,
+                            is_sync_tx, gasprice_str, gaslimit_str, recipient_str );
+    if( result != BOAT_SUCCESS )
+    {
+		BoatLog(BOAT_LOG_CRITICAL, "platon Tx init failed.");
+        return BOAT_ERROR;
+    }
+
+    // Set transaction type
+    result = BoatPlatoneTxSetTxtype(tx_ptr, txtype);
+
+    if( result != BOAT_SUCCESS )
+    {
+		BoatLog(BOAT_LOG_CRITICAL, "platon set Tx type failed.");
+        return BOAT_ERROR;
+    }
+    
+    return BOAT_SUCCESS;
+}
+
+
+BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txtype)
+{
+    if( tx_ptr == NULL )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+
+    tx_ptr->rawtx_fields.txtype = txtype;
+    
+    return BOAT_SUCCESS;
+}
+
 BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
 {
     BOAT_RESULT result;
@@ -55,6 +109,55 @@ BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
     return result;
 }
 
+BCHAR * BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
+									 BUINT32 rlp_param_len )
+{
+    // *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
+    BCHAR data_str[rlp_param_len*2 + 3]; // Compiler MUST support C99 to allow variable-size local array
+	
+    Param_eth_call param_eth_call;
+    BCHAR *retval_str;
+
+    if( rlp_param_ptr == NULL && rlp_param_len != 0 )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+        return NULL;
+    }
+
+	if (rlp_param_len > BOAT_MAX_LEN)
+	{
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return NULL;
+	}
+
+    if (BOAT_SUCCESS != UtilityStringLenCheck(rlp_param_ptr))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
+        return NULL;
+    }
+
+    BCHAR recipient_hexstr[BOAT_PLATONE_ADDRESS_SIZE*2+3];
+    
+    UtilityBin2Hex( recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_PLATONE_ADDRESS_SIZE,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+    param_eth_call.to = recipient_hexstr;
+
+    // Function call consumes zero gas but gasLimit and gasPrice must be specified.
+    param_eth_call.gas      = "0x1fffff";
+    param_eth_call.gasPrice = "0x8250de00";
+
+    // Set function parameters
+    UtilityBin2Hex( data_str, rlp_param_ptr, rlp_param_len,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+    param_eth_call.data = data_str;
+    param_eth_call.block_num_str = "latest";
+    retval_str = web3_eth_call( tx_ptr->wallet_ptr->web3intf_context_ptr,
+                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                &param_eth_call);
+
+    return retval_str;
+
+}
 
 BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str)
 {

@@ -109,7 +109,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     result = BoatPlatoneTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
 							   "0x333333",
 							   "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45",
-							   BOAT_PLATON_TX_TYPE_CONTRACT_NULL_TERMED_STR);
+							   BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
 
     if( result != BOAT_SUCCESS )
 	{

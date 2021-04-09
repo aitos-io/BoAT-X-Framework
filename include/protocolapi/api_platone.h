@@ -25,7 +25,6 @@ api_platone.h is header file for BoAT IoT SDK PlatONE's interface.
 
 #include "boatiotsdk.h"
 #include "api_ethereum.h"
-#include "api_platon.h"
 
 /*! @defgroup platone-api boat platone-API
  * @{
@@ -34,7 +33,13 @@ api_platone.h is header file for BoAT IoT SDK PlatONE's interface.
 #define BOAT_PLATONE_NONCE_AUTO                  BOAT_ETH_NONCE_AUTO
 #define BOAT_PLATONE_ADDRESS_SIZE                BOAT_ETH_ADDRESS_SIZE
 
-typedef BoatPlatonTxtype    BoatPlatoneTxtype;
+typedef enum
+{
+BOAT_PLATONE_TX_TYPE_NORMAL_TRANSFER = 0x00,
+BOAT_PLATONE_TX_TYPE_CONTRACT = 0x02,
+BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR = 0x09,
+}BoatPlatoneTxtype;
+
 typedef BoatEthAccountInfo  BoatPlatoneAccountInfo;
 typedef BoatEthNetworkInfo  BoatPlatoneNetworkInfo;
 typedef BoatEthWallet       BoatPlatoneWallet;
@@ -162,7 +167,7 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str);
  * @brief Initialize Boat PlatONE Wallet
  * @see BoatEthWalletInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BoatPlatonWallet * BoatPlatoneWalletInit(const BoatPlatoneWalletConfig *config_ptr, BUINT32 config_size)
+__BOATSTATIC __BOATINLINE BoatPlatoneWallet * BoatPlatoneWalletInit(const BoatPlatoneWalletConfig *config_ptr, BUINT32 config_size)
 {
     return BoatEthWalletInit((const BoatEthWalletConfig *) config_ptr, config_size);
 }
@@ -172,7 +177,7 @@ __BOATSTATIC __BOATINLINE BoatPlatonWallet * BoatPlatoneWalletInit(const BoatPla
  * @brief De-initialize Boat PlatONE Wallet
  * @see BoatEthWalletDeInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE void BoatPlatoneWalletDeInit(BoatPlatonWallet *wallet_ptr)
+__BOATSTATIC __BOATINLINE void BoatPlatoneWalletDeInit(BoatPlatoneWallet *wallet_ptr)
 {
     return BoatEthWalletDeInit((BoatEthWallet *) wallet_ptr);
 }
@@ -219,26 +224,15 @@ __BOATSTATIC __BOATINLINE BCHAR * BoatPlatoneWalletGetBalance(BoatPlatoneWallet 
 
 
 /*!****************************************************************************
- * @brief Initialize a transaction
- * @see BoatPlatonTxInit()
+xxx
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
-													    BoatPlatoneTx *tx_ptr,
-													    BBOOL is_sync_tx,
-													    BCHAR * gasprice_str,
-													    BCHAR * gaslimit_str,
-													    BCHAR *recipient_str,
-													    BoatPlatoneTxtype txtype)
-{
-    return BoatPlatonTxInit( (BoatPlatonWallet *)wallet_ptr,
-                             (BoatPlatonTx *)tx_ptr,
-                             is_sync_tx,
-                             gasprice_str,
-                             gaslimit_str,
-                             recipient_str,
-                             (BoatPlatonTxtype)txtype );
-}
- 
+BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
+												BoatPlatoneTx *tx_ptr,
+												BBOOL is_sync_tx,
+												BCHAR * gasprice_str,
+												BCHAR * gaslimit_str,
+												BCHAR *recipient_str,
+												BoatPlatoneTxtype txtype);
 
 /*!****************************************************************************
  * @brief Set Nonce
@@ -301,23 +295,16 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetData(BoatPlatoneTx *tx_ptr
 
 
 /*!****************************************************************************
- * @brief Set transaction type
- * @see BoatPlatonTxSetTxtype()
+xxxx
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txtype)
-{
-    return BoatPlatonTxSetTxtype((BoatPlatonTx *)tx_ptr, (BoatPlatonTxtype) txtype);
-}
+BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txtype);
+
 
 
 /*!****************************************************************************
- * @brief Call a state-less contract function
- * @see BoatPlatonCallContractFunc()
+xxxx
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len)
-{
-    return BoatPlatonCallContractFunc((BoatPlatonTx *)tx_ptr, rlp_param_ptr, rlp_param_len);
-}
+BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
 
 
 /*!****************************************************************************

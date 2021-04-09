@@ -4,8 +4,8 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-.PHONY: all rotocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric
-all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric $(OBJECTS_DIR) $(OBJECTS)
+.PHONY: all rotocol_common protocol_ethereum protocol_platone protocol_fiscobcos protocol_hlfabric
+all: protocol_common protocol_ethereum protocol_platone protocol_fiscobcos protocol_hlfabric $(OBJECTS_DIR) $(OBJECTS)
 
 
 protocol_common:
@@ -13,9 +13,6 @@ protocol_common:
 	
 protocol_ethereum:
 	make -C  boatethereum all
-	
-protocol_platon:
-	make -C  boatplaton all
 	
 protocol_platone:
 	make -C  boatplatone all
@@ -37,7 +34,6 @@ clean:
 	-$(BOAT_RM) $(OBJECTS)
 	make -C common clean
 	make -C boatethereum  clean
-	make -C boatplaton    clean
 	make -C boatplatone   clean
 	make -C boatfiscobcos clean
 	make -C boathlfabric  clean

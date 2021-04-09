@@ -201,12 +201,6 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
         break;
     #endif
 
-    #if PROTOCOL_USE_PLATON == 1
-        case BOAT_PROTOCOL_PLATON:
-            g_boat_iot_sdk_context.wallet_list[i].wallet_ptr  = BoatPlatonWalletInit((BoatPlatonWalletConfig*)loaded_wallet_config_array, wallet_config_size);
-        break;
-    #endif
-
     #if PROTOCOL_USE_PLATONE == 1
         case BOAT_PROTOCOL_PLATONE:
             g_boat_iot_sdk_context.wallet_list[i].wallet_ptr  = BoatPlatoneWalletInit((BoatPlatoneWalletConfig*)loaded_wallet_config_array, wallet_config_size);
