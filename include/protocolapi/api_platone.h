@@ -95,6 +95,115 @@ extern "C" {
 
 
 /*!****************************************************************************
+ * @brief Initialize PlatONE Transaction
+ *
+ * @details
+ *   This function initialize an PlatONE transaction.
+ *   
+ * @param[in] wallet_ptr
+ *   The wallet pointer that this transaction is combined with.
+ *
+ * @param[in] tx_ptr
+ *   Pointer a transaction object.
+ *
+ * @param[in] is_sync_tx
+ *   For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.\n
+ *   Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.\n
+ *   For a state-less contract call, this option is ignored.
+ *
+ * @param[in] gasprice_str
+ *   A HEX string representing the gas price (unit: wei) to be used in the transaction.\n
+ *   Set <gasprice> = NULL to obtain gas price from network.\n
+ *   BoatPlatonTxSetGasPrice() can later be called to modify the gas price at any\n
+ *   time before the transaction is executed.
+ *
+ * @param[in] gaslimit_str
+ *   A HEX string representing the gas limit to be used in the transaction.\n
+ *   BoatPlatonTxSetGasLimit() can later be called to modify the gas limit at any\n
+ *   time before the transaction is executed.
+ *
+ * @param[in] recipient_str
+ *   A HEX string representing the recipient address, in HEX format like\n
+ *   "0x19c91A4649654265823512a457D2c16981bB64F5".\n
+ *   BoatPlatonTxSetRecipient() can later be called to modify the recipient at any\n
+ *   time before the transaction is executed.
+ *
+ * @param[in] txtype
+ *   Transaction type defined by BoatPlatonTxtype.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if initialization is successful.\n
+ *   Otherwise it returns BOAT_ERROR.
+ *
+ * @see BoatEthTxInit()
+ ******************************************************************************/
+BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
+												BoatPlatoneTx *tx_ptr,
+												BBOOL is_sync_tx,
+												BCHAR * gasprice_str,
+												BCHAR * gaslimit_str,
+												BCHAR * recipient_str,
+												BoatPlatoneTxtype txtype);
+
+
+/*!****************************************************************************
+ * @brief Set PlatONE Transaction Parameter: Transaction Type
+ *
+ * @details
+ *   This function sets the type of transaction
+ *
+ * @param[in] tx_ptr
+ *   The nonce obtained from network is set in BoatPlatoneTx structure.
+ *
+ * @param[in] txtype
+ *   The transaction type.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if setting is successful.\n
+ *   Otherwise it returns one of the error codes.      
+ ******************************************************************************/
+BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txtype);
+
+
+/*!****************************************************************************
+ * @brief Call a state-less contract function
+ *
+ * @details
+ *   This function calls contract function that doesn't change the state of the
+ *   contract. "state" is the "global variable" used in a contract.
+ *   \n This function invokes the eth_call RPC method. eth_call method requests the
+ *   blockchain node to execute the function without affecting the block chain.
+ *   The execution runs only on the requested node thus it can return immediately
+ *   after the execution. This function synchronously return the return value
+ *   of the eth_call method, which is the return value of the contract function.
+ *   \n To call contract function that may change the state, use BoatPlatonTxSend()
+ *   instead.
+ *   \n If call a contract function that may change the state with
+ *   BoatPlatoneCallContractFunc(), the function will be executed and return a value,
+ *   but none of the states will change.
+ *
+ * @param[in] tx_ptr
+ *   Transaction pointer
+ *
+ * @param[in] rlp_param_ptr
+ *   A byte stream containing the parameters to pass to the function.\n
+ *   The stream is encoded in RLP format including the function name followed by\n
+ *   all parameters.
+ *
+ * @param[in] rlp_param_len
+ *   Length of <rlp_param_ptr> in byte.
+ *
+ * @return
+ *   This function returns a HEX string representing the return value of the\n
+ *   called contract function.\n
+ *   If any error occurs, it returns NULL.
+ *
+ * @see BoatPlatoneTxSend()
+ ******************************************************************************/
+BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
+
+
+/*!****************************************************************************
  * @brief Sign and send a transaction. Also call a stateful contract function.
  *
  * @details
@@ -131,7 +240,7 @@ extern "C" {
  *   This function returns BOAT_SUCCESS if setting is successful.\n
  *   Otherwise it returns one of the error codes.
  *
- * @see BoatPlatonTxSend()
+ * @see BoatPlatoneTxSend()
  ******************************************************************************/
 BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr);
 
@@ -224,17 +333,6 @@ __BOATSTATIC __BOATINLINE BCHAR * BoatPlatoneWalletGetBalance(BoatPlatoneWallet 
 
 
 /*!****************************************************************************
-xxx
- ******************************************************************************/
-BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
-												BoatPlatoneTx *tx_ptr,
-												BBOOL is_sync_tx,
-												BCHAR * gasprice_str,
-												BCHAR * gaslimit_str,
-												BCHAR *recipient_str,
-												BoatPlatoneTxtype txtype);
-
-/*!****************************************************************************
  * @brief Set Nonce
  * @see BoatEthTxSetNonce()
  ******************************************************************************/
@@ -292,19 +390,6 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetData(BoatPlatoneTx *tx_ptr
 {
     return BoatEthTxSetData((BoatEthTx *)tx_ptr,data_ptr);
 }
-
-
-/*!****************************************************************************
-xxxx
- ******************************************************************************/
-BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txtype);
-
-
-
-/*!****************************************************************************
-xxxx
- ******************************************************************************/
-BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
 
 
 /*!****************************************************************************

@@ -113,7 +113,7 @@ typedef struct TBoatEthTxFieldSig
 
 //!@brief EthereumRAW transaction fields
 
-//! These fields are to be inherited by other Ethereum compatible protocols (such as PlatON).
+//! These fields are to be inherited by other Ethereum compatible protocols (such as PlatONE).
 //! Make sure any inherited struct only appends fields at the end of this struct.
 //! This allow these Ethereum compatible protocols to re-use a lot of Ethereum
 //! APIs by converting inherited struct pointer to base struct pointer, if only
@@ -125,7 +125,6 @@ typedef struct TBoatEthRawtxFields
     // synchronously.
     //
     // Protocols inherited these fileds include:
-    // PlatON
     // PlatONE
     BoatFieldMax32B nonce;        //!< nonce, uint256 in bigendian, equal to the transaction count of the sender's account address
     BoatFieldMax32B gasprice;     //!< gasprice in wei, uint256 in bigendian
@@ -145,7 +144,7 @@ typedef struct TBoatEthRawtxFields
 //!@brief Ethereum Transaction
 
 //! The <rawtx_fields> may be inherited by other Ethereum compatible protocols
-//! (such as PlatON). Thus <rawtx_fields> MUST be the last member in the struct
+//! (such as PlatONE). Thus <rawtx_fields> MUST be the last member in the struct
 //! to allow Ethereum compatible protocols to re-use Ethereum APIs that take
 //! BoatEthTx as function arguments.
 typedef struct TBoatEthTx

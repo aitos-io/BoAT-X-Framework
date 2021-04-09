@@ -28,16 +28,16 @@ boatPlatonewallet.c defines the Platone wallet API for BoAT IoT SDK.
 
 #include "cJSON.h"
 
-// As Platone's wallet structure is mostly the same as Ethereum and PlatON, thus it
-// re-use a lot of Ethereum and PlatON's data structure and API.
-// APIs not listed here are compatible with Ethereum/PlatON.
+// As Platone's wallet structure is mostly the same as Ethereum, thus it
+// re-use a lot of Ethereum's data structure and API. APIs not listed 
+// here are compatible with Ethereum.
 
 BOAT_RESULT BoatPlatoneTxInit( BoatPlatoneWallet *wallet_ptr,
 							   BoatPlatoneTx *tx_ptr,
 							   BBOOL is_sync_tx,
 							   BCHAR * gasprice_str,
 							   BCHAR * gaslimit_str,
-							   BCHAR *recipient_str,
+							   BCHAR * recipient_str,
 							   BoatPlatoneTxtype txtype)
 {
     BOAT_RESULT result;
@@ -56,7 +56,7 @@ BOAT_RESULT BoatPlatoneTxInit( BoatPlatoneWallet *wallet_ptr,
                             is_sync_tx, gasprice_str, gaslimit_str, recipient_str );
     if( result != BOAT_SUCCESS )
     {
-		BoatLog(BOAT_LOG_CRITICAL, "platon Tx init failed.");
+		BoatLog(BOAT_LOG_CRITICAL, "platone Tx init failed.");
         return BOAT_ERROR;
     }
 
@@ -65,7 +65,7 @@ BOAT_RESULT BoatPlatoneTxInit( BoatPlatoneWallet *wallet_ptr,
 
     if( result != BOAT_SUCCESS )
     {
-		BoatLog(BOAT_LOG_CRITICAL, "platon set Tx type failed.");
+		BoatLog(BOAT_LOG_CRITICAL, "platone set Tx type failed.");
         return BOAT_ERROR;
     }
     
@@ -86,28 +86,6 @@ BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txty
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
-{
-    BOAT_RESULT result;
-
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
-    {
-        BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
-    }
-
-
-    if( tx_ptr->is_sync_tx == BOAT_FALSE )
-    {
-        result = PlatoneSendRawtx(tx_ptr);
-    }
-    else
-    {
-        result = PlatoneSendRawtxWithReceipt(tx_ptr);
-    }
-    
-    return result;
-}
 
 BCHAR * BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
 									 BUINT32 rlp_param_len )
@@ -130,7 +108,7 @@ BCHAR * BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_pt
         return NULL;
 	}
 
-    if (BOAT_SUCCESS != UtilityStringLenCheck(rlp_param_ptr))
+    if (BOAT_SUCCESS != UtilityStringLenCheck((BCHAR*)rlp_param_ptr))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
@@ -158,6 +136,31 @@ BCHAR * BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_pt
     return retval_str;
 
 }
+
+
+BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
+{
+    BOAT_RESULT result;
+
+    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+
+
+    if( tx_ptr->is_sync_tx == BOAT_FALSE )
+    {
+        result = PlatoneSendRawtx(tx_ptr);
+    }
+    else
+    {
+        result = PlatoneSendRawtxWithReceipt(tx_ptr);
+    }
+    
+    return result;
+}
+
 
 BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str)
 {
