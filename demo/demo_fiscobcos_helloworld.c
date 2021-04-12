@@ -30,12 +30,23 @@ BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
 __BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatFiscobcosWalletConfig wallet_config;
+    BoatFiscobcosWalletConfig wallet_config = {0};
 
 	/* wallet_config value assignment */
-	//strncpy( (char*)wallet_config.prikeyId, 
-	//		 "/mnt/sharework/boatiotsdk_fabric/demo/demo_key/fiscobcos_client.key", 
-	//		 BOAT_KEYID_MAX_LEN - 1 );
+    //native format demoKey is "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
+    char * demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
+                      "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
+                      "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
+                      "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
+                      "-----END EC PRIVATE KEY-----\n";
+
+	/* wallet_config value assignment */
+    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+    wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+    wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    memcpy(wallet_config.prikeyCtx_config.prikey_content, demoKey, strlen(demoKey) );
+    wallet_config.prikeyCtx_config.prikey_content_length = strlen(demoKey) + 1; //length contain terminator
+    
     strncpy( wallet_config.node_url_str, "http://127.0.0.1:8545", BOAT_NODE_URL_MAX_LEN - 1 );
 
 	/* create fiscobcos wallet */
