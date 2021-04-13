@@ -13,18 +13,91 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#define  USE_CREATE_PERSIST_WALLET //if expect create a persist wallet, uncomment this definition
-//#define  USE_LOAD_PERSIST_WALLET   // if expect load a persist wallet, uncomment this definition
-
-
 #include "boatiotsdk.h"
-
-#if PROTOCOL_USE_FISCOBCOS == 1
 #include "HelloWorld.h"
+
+
+/**
+ * macro used to select wallet type:
+ * - USE_ONETIME_WALLET          : create a one-time wallet
+ * - USE_CREATE_PERSIST_WALLET   : create a persist wallet
+ * - USE_LOAD_PERSIST_WALLET     : load a persist wallet
+ * 
+ *
+ * macro used to select private key format:
+ * - USE_PRIKEY_FORMAT_INTERNAL_GENERATION       : key is internal generated
+ * - USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS   : key is pkcs format via external injection
+ * - USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE : key is native format via external injection
+ * 
+ */
+
+/**
+ * PKCS format demo key. The original private key of 'pkcs_demoKey' is 
+ * "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
+ */
+const char * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
+                             "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
+                             "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
+                             "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
+                             "-----END EC PRIVATE KEY-----\n";
+/**
+ * native demo key
+ */
+const char * native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+
+/**
+ * test node url
+ */
+const char * demoUrl = "http://127.0.0.1:8545";
+
 
 BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
 
+#if defined( USE_ONETIME_WALLET )
+__BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
+{
+    BSINT32 index;
+    BoatEthWalletConfig wallet_config = {0};
+
+	/* wallet_config value assignment */
+    #if defined( USE_PRIKEY_FORMAT_INTERNAL_GENERATION )
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    #elif defined( USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS )
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        memcpy(wallet_config.prikeyCtx_config.prikey_content, pkcs_demoKey, strlen(pkcs_demoKey) );
+        wallet_config.prikeyCtx_config.prikey_content_length = strlen(pkcs_demoKey) + 1; //length contain terminator
+    #elif defined( USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE )
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        UtilityHex2Bin( wallet_config.prikeyCtx_config.prikey_content, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        wallet_config.prikeyCtx_config.prikey_content_length = 32;
+    #else  
+        /* default is internal generation */  
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    #endif
+
+    strncpy(wallet_config.node_url_str, demoUrl, BOAT_NODE_URL_MAX_LEN - 1);
+
+	/* create ethereum wallet */
+    index = BoatWalletCreate( BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig) );
+    if( index == BOAT_ERROR )
+	{
+        BoatLog( BOAT_LOG_CRITICAL, "create one-time wallet failed." );
+        return BOAT_ERROR;
+    }
+    g_fiscobcos_wallet_ptr = BoatGetWalletByIndex( index );
+    
+    return BOAT_SUCCESS;
+}
+#endif
 
 #if defined( USE_CREATE_PERSIST_WALLET )
 __BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR *wallet_name)
@@ -33,21 +106,31 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR *wallet_name)
     BoatFiscobcosWalletConfig wallet_config = {0};
 
 	/* wallet_config value assignment */
-    //native format demoKey is "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
-    char * demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
-                      "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
-                      "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
-                      "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
-                      "-----END EC PRIVATE KEY-----\n";
-
-	/* wallet_config value assignment */
-    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-    wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-    wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    memcpy(wallet_config.prikeyCtx_config.prikey_content, demoKey, strlen(demoKey) );
-    wallet_config.prikeyCtx_config.prikey_content_length = strlen(demoKey) + 1; //length contain terminator
+    #if defined( USE_PRIKEY_FORMAT_INTERNAL_GENERATION )
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    #elif defined( USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS )
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        memcpy(wallet_config.prikeyCtx_config.prikey_content, pkcs_demoKey, strlen(pkcs_demoKey) );
+        wallet_config.prikeyCtx_config.prikey_content_length = strlen(pkcs_demoKey) + 1; //length contain terminator
+    #elif defined( USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE )
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        UtilityHex2Bin( wallet_config.prikeyCtx_config.prikey_content, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        wallet_config.prikeyCtx_config.prikey_content_length = 32;
+    #else  
+        /* default is internal generation */  
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    #endif
     
-    strncpy( wallet_config.node_url_str, "http://127.0.0.1:8545", BOAT_NODE_URL_MAX_LEN - 1 );
+    strncpy( wallet_config.node_url_str, demoUrl, BOAT_NODE_URL_MAX_LEN - 1 );
 
 	/* create fiscobcos wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, wallet_name, &wallet_config, sizeof(BoatFiscobcosWalletConfig));
@@ -128,7 +211,10 @@ int main(int argc, char *argv[])
     BoatIotSdkInit();
     
 	/* step-2: create fiscobcos wallet */
-#if defined( USE_CREATE_PERSIST_WALLET )
+    #if defined( USE_ONETIME_WALLET )
+	BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
+	result = ethereum_createOnetimeWallet();
+#elif defined( USE_CREATE_PERSIST_WALLET )
 	BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
 	result = fiscobcos_createPersistWallet("fiscobcos.cfg");
 #elif defined( USE_LOAD_PERSIST_WALLET )
@@ -160,10 +246,3 @@ int main(int argc, char *argv[])
     
     return 0;
 }
-#else
-int main(int argc, char *argv[])
-{
-    BoatLog(BOAT_LOG_NORMAL, "undefine PROTOCOL_USE_FISCOBCOS");
-    return 0;
-}
-#endif /* end of PROTOCOL_USE_FISCOBCOS */
