@@ -34,7 +34,7 @@
  * PKCS format demo key. The original private key of 'pkcs_demoKey' is 
  * "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
  */
-const char * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
+const BCHAR * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
                              "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
                              "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
                              "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
@@ -42,12 +42,17 @@ const char * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const char * native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+const BCHAR * native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
 
 /**
  * test node url
  */
-const char * demoUrl = "http://116.236.47.90:7545";
+const BCHAR * demoUrl = "http://116.236.47.90:7545";
+
+/**
+ * transfer recipient address
+ */
+const BCHAR * demoRecipirntAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
 
 
 BoatPlatoneWallet *g_platone_wallet_ptr;
@@ -176,7 +181,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     /* Set Contract Address */
     result = BoatPlatoneTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
 							   "0x333333",
-							   "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45",
+							   (BCHAR *)demoRecipirntAddress,
 							   BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
 
     if( result != BOAT_SUCCESS )

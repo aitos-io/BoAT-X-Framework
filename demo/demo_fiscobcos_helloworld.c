@@ -35,7 +35,7 @@
  * PKCS format demo key. The original private key of 'pkcs_demoKey' is 
  * "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
  */
-const char * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
+const BCHAR * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
                              "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
                              "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
                              "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
@@ -43,12 +43,17 @@ const char * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const char * native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+const BCHAR * native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
 
 /**
  * test node url
  */
-const char * demoUrl = "http://127.0.0.1:8545";
+const BCHAR * demoUrl = "http://127.0.0.1:8545";
+
+/**
+ * transfer recipient address
+ */
+const BCHAR * demoRecipirntAddress = "0x22506bd03b8130913efa2f0b6b1db60a2fcda9ff";
 
 
 BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
@@ -174,7 +179,7 @@ BOAT_RESULT fiscobcos_helloworld(BoatFiscobcosWallet *wallet_ptr)
     result = BoatFiscobcosTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, 
 								 "0x11E1A300", //gasprice
 							     "0x33333333", //gaslimit
-							     "0x22506bd03b8130913efa2f0b6b1db60a2fcda9ff", //recipient
+							     (BCHAR *)demoRecipirntAddress, //recipient
 								 "0x01", //chainid
 								 "0x01"  //groupid
 								);
