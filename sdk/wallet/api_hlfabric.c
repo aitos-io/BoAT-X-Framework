@@ -389,7 +389,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 	/* endorser node URL assignment */
 	for (i = 0; i < endorserNumber; i++)
 	{
-		if( ( (endorserInfo_ptr + i) != NULL ) && ( (endorserInfo_ptr + i)->nodeUrl != NULL ) &&
+		if( ( (endorserInfo_ptr + i) != NULL ) && 
 			( (stringLen = strlen( (endorserInfo_ptr + i)->nodeUrl) ) > 0 ) ) 
 		{
 			// stringLen check
