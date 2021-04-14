@@ -22,12 +22,10 @@
  * - USE_CREATE_PERSIST_WALLET   : create a persist wallet
  * - USE_LOAD_PERSIST_WALLET     : load a persist wallet
  * 
- *
  * macro used to select private key format:
  * - USE_PRIKEY_FORMAT_INTERNAL_GENERATION       : key is internal generated
  * - USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS   : key is pkcs format via external injection
  * - USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE : key is native format via external injection
- * 
  */
 
 /**
