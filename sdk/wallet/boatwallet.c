@@ -138,6 +138,14 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                     return BOAT_ERROR;
                 }
             break;
+            case BOAT_PROTOCOL_HLFABRIC:
+                priKeyCtx_configTmp = &((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config;
+                if( BOAT_SUCCESS != BoatPort_keyCreate( priKeyCtx_configTmp, &priKeyCtxTmp ) )
+                {
+                    BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
+                    return BOAT_ERROR;
+                }
+            break;
             default:
             break;
         }

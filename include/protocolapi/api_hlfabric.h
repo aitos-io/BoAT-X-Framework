@@ -175,7 +175,7 @@ typedef struct TBoatHlfabricWalletConfig{
 	BoatWalletPriKeyCtx_config  tlsPriKey_config;
 	BCHAR                       tlsClientCertFileName[BOAT_FILENAME_MAX_LEN];
 	
-	BUINT32 rootCaNumber; //the number of rootCA file to be set
+	BUINT32 rootCaNumber; //!< the number of rootCA file to be set
 	BCHAR   rootCaFileName[HLFABRIC_ROOTCA_MAX_NUM][BOAT_FILENAME_MAX_LEN]; 
 
 	BUINT32                  endorserNumber;//!< the number of endorser to be set
