@@ -441,7 +441,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 	/* orderer node URL assignment */
 	for( i = 0; i < ordererNumber; i++ )
 	{
-		if( ( (ordererInfo_ptr + i) != NULL ) && ( (ordererInfo_ptr + i)->nodeUrl != NULL ) &&
+		if( ( (ordererInfo_ptr + i) != NULL ) && 
 			( (stringLen = strlen( (ordererInfo_ptr + i)->nodeUrl ) ) > 0) )
 		{
 			// stringLen check
