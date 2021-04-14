@@ -93,7 +93,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 {
     BSINT32 i;
     BUINT8  loaded_wallet_config_array[wallet_config_size];
-	BoatWalletPriKeyCtx          priKeyCtxTmp;
+	BoatWalletPriKeyCtx          priKeyCtxTmp = {0};
     BoatWalletPriKeyCtx_config*  priKeyCtx_configTmp = NULL;
 
     /* Check wallet configuration */ 
