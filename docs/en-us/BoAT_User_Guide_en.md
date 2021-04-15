@@ -23,7 +23,7 @@ WASM|Web Assembly|
 
 
 ## Function and architecture
-BoAT IoT Framework is a C language blockchain client framework for cellular modules, which is easy to be transplanted to various modules and helps IoT applications based on cellular modules connect to the blockchain and realize data on-chain services. The functions provided by the framework SDK to IoT applications include initiating on-chain transactions, automatic generation of smart contract C interface code, calling smart contracts, and managing blockchain keys.
+BoAT IoT Framework is a C language blockchain client framework for cellular modules, which is easy to be ported to various modules and helps IoT applications based on cellular modules connect to the blockchain and realize data on-chain services. The functions provided by the framework SDK to IoT applications include initiating on-chain transactions, automatic generation of smart contract C interface code, calling smart contracts, and managing blockchain keys.
 
 **Supported blockchain:**  
 Ethereum  
@@ -68,7 +68,7 @@ The Wallet API is an interface that the SDK provides to the IoT Application to c
 The blockchain client interface protocol mainly implements transaction interface protocols for different blockchains, and interacts with blockchain nodes through the RPC interface.  
 The remote procedure call(RPC) interface implements a warpper for different communication protocols. This component needs to be ported according to the specific communication method supported by the IoT device.  
 Public components implement common functions such as RLP encoding, JSON codec, string processing, etc.  
-Hardware dependent components are transplanted components involving different hardware, such as cryptography accelerators, secure storage, random numbers, etc. This component needs to be transplanted according to specific hardware. SDK also provides a set of default Hardware dependent components witch implementations by software.  
+Hardware dependent components are ported components involving different hardware, such as cryptography accelerators, secure storage, random numbers, etc. This component needs to be ported according to specific hardware. SDK also provides a set of default Hardware dependent components witch implementations by software.  
 The tool component provides a set of  Python tools, that be used to generate C language contract call interface of smart contract ABI interface based on Solidity or WASM C++.  
 
 
