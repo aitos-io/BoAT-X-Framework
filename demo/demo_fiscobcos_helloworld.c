@@ -72,7 +72,7 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        memcpy(wallet_config.prikeyCtx_config.prikey_content, pkcs_demoKey, strlen(pkcs_demoKey) );
+        memcpy(wallet_config.prikeyCtx_config.prikey_content, pkcs_demoKey, strlen(pkcs_demoKey) + 1 );
         wallet_config.prikeyCtx_config.prikey_content_length = strlen(pkcs_demoKey) + 1; //length contain terminator
     #elif defined( USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE )
         BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
