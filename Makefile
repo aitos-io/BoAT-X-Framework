@@ -143,11 +143,11 @@ export BOAT_CFLAGS
 export BOAT_LFLAGS
 export LINK_LIBS
 
-.PHONY: all boatlibs createdir boatwalletlib hwdeplib contractlib demo tests clean cleanboatwallet cleanhwdep cleancontract cleantests
+.PHONY: all boatlibs createdir boatwalletlib vendorlib contractlib demo tests clean cleanboatwallet cleanvendor cleancontract cleantests
 
 all: boatlibs demo tests
 
-boatlibs: createdir boatwalletlib hwdeplib
+boatlibs: createdir boatwalletlib vendorlib
 
 createdir:
 	$(BOAT_MKDIR) -p $(BOAT_LIB_DIR)
@@ -158,7 +158,7 @@ boatwalletlib:
 	make -C $(BOAT_BASE_DIR)/sdk all; \
 	fi
 
-hwdeplib:
+vendorlib:
 	if [ -d "$(BOAT_BASE_DIR)/vendor" ]; then \
 	make -C $(BOAT_BASE_DIR)/vendor all; \
 	fi
@@ -174,7 +174,7 @@ tests: boatlibs contractlib
 	make -C $(BOAT_BASE_DIR)/tests all; \
 	fi
 
-clean: cleanboatwallet cleanhwdep cleancontract cleandemo cleantests
+clean: cleanboatwallet cleanvendor cleancontract cleandemo cleantests
 	-$(BOAT_RM) $(BOAT_BUILD_DIR)
 
 cleanboatwallet:
@@ -182,7 +182,7 @@ cleanboatwallet:
 		make -k -C $(BOAT_BASE_DIR)/sdk clean; \
 	fi
 
-cleanhwdep:
+cleanvendor:
 	if [ -d "$(BOAT_BASE_DIR)/vendor" ]; then \
 	make -C $(BOAT_BASE_DIR)/vendor clean; \
 	fi

@@ -17,17 +17,17 @@ else
     CRYPTO_PORT_DIRECTORY = 
 endif
 
-LIBNAME = $(BOAT_LIB_DIR)/libboathwdep.a
+LIBNAME = $(BOAT_LIB_DIR)/libboatvendor.a
 
-.PHONY: all $(CLEAN_SUBDIRS) boathwdep_objs clean
+.PHONY: all $(CLEAN_SUBDIRS) boatvendor_objs clean
 
-all: boathwdep_objs $(LIBNAME)
+all: boatvendor_objs $(LIBNAME)
 
-$(LIBNAME): boathwdep_objs
+$(LIBNAME): boatvendor_objs
 	$(AR) r $(LIBNAME) $(OBJECTS)
 
 
-boathwdep_objs:
+boatvendor_objs:
 	make -C $(CRYPTO_PORT_DIRECTORY) all
 
 

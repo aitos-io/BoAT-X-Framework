@@ -5,7 +5,7 @@ OBJECTS_DIR = $(BOAT_BUILD_DIR)/demo
 
 DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatcontract.a \
 				  $(BOAT_LIB_DIR)/libboatwallet.a \
-				  $(BOAT_LIB_DIR)/libboathwdep.a \
+				  $(BOAT_LIB_DIR)/libboatvendor.a \
 				  $(LINK_LIBS)
 
 .PHONY: all ethereum_demo platone_demo fiscbcos_demo fabric_demo 
