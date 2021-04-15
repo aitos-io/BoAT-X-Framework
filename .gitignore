@@ -1,0 +1,11 @@
+node_modules
+build/
+.scannerwork/
+.vscode/
+package-lock.json
+contract/
+docs/html/
+docs/latex/
+lib/
+package.json
+BoAT-X-Framework.udb
