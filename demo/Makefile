@@ -57,7 +57,7 @@ ethereum_demo: demo_ethereum_transfer.c demo_ethereum_storeread.c
 		-DUSE_LOAD_PERSIST_WALLET \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_storeread_load	
 
-#Platone transfer demo build	
+#PLATONE transfer demo build	
 platone_demo: demo_platone_mycontract.c
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_platone_mycontract.c \
 		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
