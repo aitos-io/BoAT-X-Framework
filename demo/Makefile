@@ -11,7 +11,7 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatcontract.a \
 .PHONY: all ethereum_demo platone_demo fiscbcos_demo fabric_demo 
 all:$(OBJECTS_DIR) ethereum_demo platone_demo fiscbcos_demo fabric_demo
 
-#Ethereum transfer demo build	
+#ETHEREUM transfer demo build	
 ethereum_demo: demo_ethereum_transfer.c demo_ethereum_storeread.c
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_ethereum_transfer.c \
 		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
