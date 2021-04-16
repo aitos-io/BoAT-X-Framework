@@ -178,14 +178,14 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
 		    &prikeyCtx_config.private_KeyCtx, sizeof(BoatWalletPriKeyCtx));
 
 	/* cert assignment */
-	wallet_ptr->account_info.cert.field_ptr = BoatMalloc(certContent.field_len);
-	if( wallet_ptr->account_info.cert.field_ptr == NULL )
+	wallet_ptr->tlsClinet_info.cert.field_ptr = BoatMalloc(certContent.field_len);
+	if( wallet_ptr->tlsClinet_info.cert.field_ptr == NULL )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetTlsInfo_exception);
 	}
-	memcpy(wallet_ptr->account_info.cert.field_ptr, certContent.field_ptr, certContent.field_len);
-	wallet_ptr->account_info.cert.field_len = certContent.field_len;
+	memcpy(wallet_ptr->tlsClinet_info.cert.field_ptr, certContent.field_ptr, certContent.field_len);
+	wallet_ptr->tlsClinet_info.cert.field_len = certContent.field_len;
 	
 	/* boat catch handle */
 	boat_catch(BoatHlfabricWalletSetTlsInfo_exception)
@@ -461,7 +461,6 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
     }
 	
 	/* initialization */
-	//! @todo prikeyId waiting be update
 	wallet_ptr->account_info.cert.field_ptr     = NULL;
 	wallet_ptr->account_info.cert.field_len     = 0;
 #if (HLFABRIC_TLS_SUPPORT == 1)
@@ -527,7 +526,6 @@ void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr )
     }
 
     /* account_info DeInit */
-    //! @todo prikeyId waiting be update
     BoatFree(wallet_ptr->account_info.cert.field_ptr);
     wallet_ptr->account_info.cert.field_len     = 0;
 

@@ -889,10 +889,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs( const BoatWallet
 
 BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {
-	mbedtls_entropy_context   entropy;
-    mbedtls_ctr_drbg_context  ctr_drbg;
-	mbedtls_pk_context        key;
-	BOAT_RESULT               result = BOAT_SUCCESS;
+	BOAT_RESULT  result = BOAT_SUCCESS;
 	
 	if( (config == NULL) || (pkCtx == NULL) )
 	{

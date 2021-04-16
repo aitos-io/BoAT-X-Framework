@@ -89,11 +89,11 @@ const BCHAR * fabric_ca3_democert    =  "-----BEGIN CERTIFICATE-----\n"
 										"b+hmfwiSjKQxlc4DDDfoFLdDAi4WtBO/QLM=\n"
 										"-----END CERTIFICATE-----\n";
 
-const BCHAR * fabric_demo_endorser1_url      = "172.22.0.5:7051";
+const BCHAR * fabric_demo_endorser1_url      = "172.18.0.5:7051";
 const BCHAR * fabric_demo_endorser1_hostName = "peer0.org1.example.com";
-const BCHAR * fabric_demo_endorser2_url      = "172.22.0.2:7051";
+const BCHAR * fabric_demo_endorser2_url      = "172.18.0.6:7051";
 const BCHAR * fabric_demo_endorser2_hostName = "peer0.org2.example.com";
-const BCHAR * fabric_demo_order1_url         = "172.22.0.6:7050";
+const BCHAR * fabric_demo_order1_url         = "172.18.0.3:7050";
 const BCHAR * fabric_demo_order1_hostName    = "orderer.example.com";
 
 BoatHlfabricWallet *g_fabric_wallet_ptr;
@@ -136,6 +136,7 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	wallet_config.ordererNumber = 1;
 	memcpy(wallet_config.orderer[0].nodeUrl , fabric_demo_order1_url, strlen(fabric_demo_order1_url) + 1);
 	memcpy(wallet_config.orderer[0].hostName, fabric_demo_order1_hostName, strlen(fabric_demo_order1_hostName) + 1);
+	
 
 	/* create fabric wallet */
 	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig) );
