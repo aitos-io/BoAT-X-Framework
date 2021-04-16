@@ -248,7 +248,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
  * @return BOAT_RESULT 
  *   return BOAT_SUCCESS if set successed, otherwise return a failed code.
  *
- *@note this function is reserved for future.
+ *@note this function is reserved for future. DO NOT use it in your application.
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr, 
 											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
