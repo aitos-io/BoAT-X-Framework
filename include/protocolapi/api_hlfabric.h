@@ -170,13 +170,25 @@ typedef struct TBoatHlfabricNodeInfoCfg{
 //! fabric wallet config structure
 typedef struct TBoatHlfabricWalletConfig{
 	BoatWalletPriKeyCtx_config  accountPriKey_config;
-	BCHAR                       accountCertFileName[BOAT_FILENAME_MAX_LEN]; 
+	BoatFieldVariable           accountCertContent;   /*!< A pointer to account certificate content, the content of this field point to 
+														 will be COPYED to the corresponding field of the wallet, if user dynamically 
+														 allocated space for this pointer, then the user should release it after     
+	                                                     @ref BoatWalletCreate invoked. 
+														 @note For content of type string, the length contains the terminator '\0' */  
 
 	BoatWalletPriKeyCtx_config  tlsPriKey_config;
-	BCHAR                       tlsClientCertFileName[BOAT_FILENAME_MAX_LEN];
+	BoatFieldVariable           tlsClientCertContent; /*!< A pointer to account certificate content, the content of this field point to 
+														 will be COPYED to the corresponding field of the wallet, if user dynamically 
+														 allocated space for this pointer, then the user should release it after     
+	                                                     @ref BoatWalletCreate invoked. 
+														 @note For content of type string, the length contains the terminator '\0' */  	
 	
 	BUINT32 rootCaNumber; //!< the number of rootCA file to be set
-	BCHAR   rootCaFileName[HLFABRIC_ROOTCA_MAX_NUM][BOAT_FILENAME_MAX_LEN]; 
+	BoatFieldVariable           rootCaContent[HLFABRIC_ROOTCA_MAX_NUM];/*!< A pointer to rootCA content, the content of this field point to 
+																			will be COPYED to the corresponding field of the wallet, if user dynamically 
+																			allocated space for this pointer, then the user should release it after     
+																			@ref BoatWalletCreate invoked. 
+																			@note For content of type string, the length contains the terminator '\0' */  	
 
 	BUINT32                  endorserNumber;//!< the number of endorser to be set
 	BoatHlfabricNodeInfoCfg  endorser[HLFABRIC_ENDORSER_MAX_NUM];
@@ -204,15 +216,15 @@ extern "C" {
  * @param prikeyCtx_config
  *   xxxxxx
  *
- * @param certName
- *   full path of certificate used by transaction
+ * @param certContent
+ *   xxxxxx
  *
  * @return BOAT_RESULT
  *   return BOAT_SUCCESS if set successed, otherwise return a failed code.
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr, 
 											  const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											  const BCHAR *certName );
+											  const BoatFieldVariable certContent );
 
 
 #if (HLFABRIC_TLS_SUPPORT == 1) && (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
@@ -230,7 +242,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
  * @param prikeyCtx_config 
  *   xxxxx
  *
- * @param certName
+ * @param xxxxxx
  *   full path of certificate used by TLS.
  *
  * @return BOAT_RESULT 
@@ -240,7 +252,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr, 
 											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											    const BCHAR *certName );
+											    const BoatFieldVariable certContent );
 #endif
 
 
@@ -264,7 +276,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
  *   return BOAT_SUCCESS if set successed, otherwise return a failed code.
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr, 
-											 const BCHAR (*rootCaFileName)[BOAT_FILENAME_MAX_LEN],
+											 const BoatFieldVariable *rootCaContent,
 											 BUINT32 rootCaNumber );
 #endif
 
@@ -326,7 +338,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
  *   if initinal success, return fabric wallet pointer, otherwise return NULL.
  ******************************************************************************/
 BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *config_ptr, 
-											 BUINT32 config_size );
+											BUINT32 config_size );
 
 
 /*!****************************************************************************

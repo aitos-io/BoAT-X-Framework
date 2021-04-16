@@ -90,7 +90,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
 }
 
 
-void *BoatMalloc(BUINT32 size)
+void *BoatMalloc(size_t size)
 {
     return(malloc(size));
 }
