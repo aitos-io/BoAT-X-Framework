@@ -117,13 +117,18 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	// blocklimit should be greater than current blocknumber, 
 	// and less than current blocknumber plus 1000.
 	retval_str = BoatFiscobcosGetBlockNumber( tx_ptr );
-	if( retval_str == NULL )
+	result     = BoatFiscobcosPraseRpcResponseResult( retval_str, "", 
+											    &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+	if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosGetBlockNumber failed.");
         return BOAT_ERROR;
 	}
-	tx_ptr->rawtx_fields.blocklimit.field_len = UtilityHex2Bin( tx_ptr->rawtx_fields.blocklimit.field, 32, 
-																retval_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
+
+	tx_ptr->rawtx_fields.blocklimit.field_len = \
+							UtilityHex2Bin( tx_ptr->rawtx_fields.blocklimit.field, 32, 
+											(BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
+											TRIMBIN_LEFTTRIM, BOAT_TRUE );
 	if( tx_ptr->rawtx_fields.blocklimit.field_len == 0 )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "blocklimit Initialize failed.");
@@ -348,20 +353,22 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
         tx_status_str = web3_fiscobcos_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 						tx_ptr->wallet_ptr->network_info.node_url_ptr,
 						&param_fiscobcos_getTransactionReceipt);
-        if( tx_status_str == NULL )
-        {
-            BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction receipt due to RPC failure.");
+		result = BoatFiscobcosPraseRpcResponseResult( tx_status_str, "status", 
+												&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+        if( result != BOAT_SUCCESS )
+		{
+            BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             result = BOAT_ERROR_RPC_FAIL;
             break;
         }
         else
         {
             // tx_status_str == "": the transaction is pending
-            // tx_status_str == "0x1": the transaction is successfully mined
-            // tx_status_str == "0x0": the transaction fails
-            if( tx_status_str[0] != '\0' )
+            // tx_status_str == "0x0": the transaction is successfully mined
+            // tx_status_str == "0x1": the transaction fails
+            if( tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr[0] != '\0' )
             {
-                if( strcmp(tx_status_str, "0x0") == 0 )
+                if( strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x0") == 0 )
                 {
                     BoatLog(BOAT_LOG_NORMAL, "Transaction has got mined.");
 					break;
