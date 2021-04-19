@@ -477,7 +477,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
 	}
 
     tx_ptr->tx_hash.field_len = UtilityHex2Bin( tx_ptr->tx_hash.field, 32, 
-												(BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
+												(BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
 												TRIMBIN_TRIM_NO, BOAT_FALSE);
 
     result = BOAT_SUCCESS;

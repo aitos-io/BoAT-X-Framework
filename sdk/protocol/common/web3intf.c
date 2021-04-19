@@ -1281,7 +1281,7 @@ BCHAR *web3_fiscobcos_getBlockNumber( Web3IntfContext *web3intf_context_ptr,
 
     BoatLog(BOAT_LOG_VERBOSE, "RESPONSE: %s", rpc_response_str);
 	
-		// return entire RESPONSE content	
+    // return entire RESPONSE content	
 	return_value_ptr = rpc_response_str;
 
     // Exceptional Clean Up
