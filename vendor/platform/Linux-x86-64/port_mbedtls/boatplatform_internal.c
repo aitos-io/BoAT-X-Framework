@@ -856,7 +856,6 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs( const BoatWallet
 
 	result = mbedtls_pk_parse_key( &mbedtls_pkCtx, config->prikey_content,
 									config->prikey_content_length, NULL, 0 );
-	printf("result = %x \n", result);
 
 	// 1- update private key
 	memcpy(pkCtx->extra_data.value, config->prikey_content, config->prikey_content_length);
@@ -932,13 +931,13 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 
 BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {	
-	//! @todo
+	//! @todo to be implemented
 	return BOAT_ERROR;
 }
 
 BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx )
 {
-	//! @todo
+	//! @todo to be implemented
 	return BOAT_ERROR;
 }
 
