@@ -500,8 +500,8 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
     tx_hash_str = web3_eth_sendRawTransaction( tx_ptr->wallet_ptr->web3intf_context_ptr,
                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                                &param_eth_sendRawTransaction);
-    result = BoatEthPraseRpcResponseResult( tx_hash_str, "", 
-											&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    result = BoatPlatonePraseRpcResponseResult( tx_hash_str, "", 
+											    &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
