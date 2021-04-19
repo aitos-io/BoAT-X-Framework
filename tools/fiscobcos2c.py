@@ -483,7 +483,7 @@ class CFunctionGen():
         func_body_str     += '    }\n\n'
 
         # Set Nonce
-        if abi_item['stateMutability'] == "pure" or abi_item['stateMutability'] == "view":    
+        if abi_item['stateMutability'] != "pure" and abi_item['stateMutability'] != "view":    
             func_body_str += '    boat_try(BoatFiscobcosTxSetNonce(tx_ptr, BOAT_FISCOBCOS_NONCE_AUTO));\n\n'
 
         # Construct solidity function prototype
