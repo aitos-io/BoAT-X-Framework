@@ -262,7 +262,16 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx
 }
 
 
-
+/*!****************************************************************************
+ * @brief Prase RPC method RESPONSE.
+ * @see BoatEthPraseRpcResponseResult()
+ ******************************************************************************/
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR * json_string, 
+                                                                          const BCHAR * child_name, 
+                                                                          BoatFieldVariable *result_out)
+{
+    return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);
+}
 
 
 /*! @}*/
