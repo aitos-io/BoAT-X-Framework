@@ -592,7 +592,7 @@ void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_n
 
 BOAT_RESULT UtilityStringLenCheck( const BCHAR *string )
 {
-    for (int i = 0; i < BOAT_MAX_LEN; i++)
+    for (int i = 0; i < BOAT_STRING_MAX_LEN; i++)
     {
         if ( *(string + i) == '\0' )
         {

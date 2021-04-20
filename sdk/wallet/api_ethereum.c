@@ -560,7 +560,7 @@ BCHAR * BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
         return NULL;
     }
 
-	if (func_param_len > BOAT_MAX_LEN)
+	if (func_param_len > BOAT_STRING_MAX_LEN)
 	{
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;

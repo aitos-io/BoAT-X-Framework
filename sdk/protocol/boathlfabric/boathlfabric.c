@@ -659,7 +659,7 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	
 	/* step-6: packed length assignment */
 	tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len = packedLength + sizeof(grpcHeader);
-	if( tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > HTTP2_SEND_MAX_BUF )
+	if( tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > HTTP2_SEND_BUF_MAX_LEN )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "packed length out of sendbuffer limit.");
 		boat_throw(BOAT_ERROR_BUFFER_EXHAUSTED, hlfabricProposalTransactionPacked_exception);
