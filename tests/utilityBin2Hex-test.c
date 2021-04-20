@@ -20,11 +20,11 @@ int main(int argc, char *argv[])
 	from_str_len = 4;
 
     UtilityBin2Hex(to_str, from_str, from_str_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-    printf("BIN2HEX_LEFTTRIM_UNFMTDATA = %s\n", to_str);
+    BoatLog(BOAT_LOG_NORMAL,  "BIN2HEX_LEFTTRIM_UNFMTDATA = %s\n", to_str);
 	UtilityBin2Hex(to_str, from_str, from_str_len, BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-	printf("BIN2HEX_LEFTTRIM_QUANTITY = %s\n", to_str);
+    BoatLog(BOAT_LOG_NORMAL, "BIN2HEX_LEFTTRIM_QUANTITY = %s\n", to_str);
 	UtilityBin2Hex(to_str, from_str, from_str_len, BIN2HEX_LEFTTRIM_TWOHEXPERBYTE, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-	printf("BIN2HEX_LEFTTRIM_TWOHEXPERBYTE = %s\n", to_str);
+    BoatLog(BOAT_LOG_NORMAL, "BIN2HEX_LEFTTRIM_TWOHEXPERBYTE = %s\n", to_str);
 
 	return 0;
 }
