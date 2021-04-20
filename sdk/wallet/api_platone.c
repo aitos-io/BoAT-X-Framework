@@ -102,7 +102,7 @@ BCHAR * BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_pt
         return NULL;
     }
 
-	if (rlp_param_len > BOAT_MAX_LEN)
+	if (rlp_param_len > BOAT_STRING_MAX_LEN)
 	{
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;

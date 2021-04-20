@@ -448,7 +448,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
 												     tx_ptr->wallet_ptr->network_info.node_url_ptr,
 												     &param_fiscobcos_sendRawTransaction );
 
-    result = BoatEthPraseRpcResponseResult( tx_hash_str, "", 
+    result = BoatFiscobcosPraseRpcResponseResult( tx_hash_str, "", 
 											&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
     if( result != BOAT_SUCCESS )
 	{

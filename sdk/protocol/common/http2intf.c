@@ -271,7 +271,7 @@ http2IntfContext* http2Init(void)
 	//DO NOTHING
 
 	/* http2Context->sendBuf initial */
-	http2Context->sendBuf.field_ptr = BoatMalloc( HTTP2_SEND_MAX_BUF );
+	http2Context->sendBuf.field_ptr = BoatMalloc( HTTP2_SEND_BUF_MAX_LEN );
 	if( NULL == http2Context->sendBuf.field_ptr )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");

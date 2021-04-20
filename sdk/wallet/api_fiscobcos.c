@@ -145,7 +145,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	BoatLog_hexdump(BOAT_LOG_NORMAL, "blocklimitTmp1:", blocklimitTmp.field, 32);
 	
 	//convert bigendian uint256 to bignumber
-	utility_bignum256 convertTmp;
+	utilityBignum256 convertTmp;
 	BUINT32   blockLimitOffset = 500; //value should rangle of 1 ~ 1000
 	UtilityReadBigendToBignum( &blocklimitTmp.field[0], &convertTmp );
 	
@@ -278,7 +278,7 @@ BCHAR * BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_prot
         return NULL;
     }
 
-	if (func_param_len > BOAT_MAX_LEN)
+	if (func_param_len > BOAT_STRING_MAX_LEN)
 	{
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;

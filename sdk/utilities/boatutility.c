@@ -551,7 +551,7 @@ double UtilityWeiStrToEthDouble(const BCHAR *wei_str)
 }
 
 
-void UtilityReadBigendToBignum(const BUINT8 *in_number, utility_bignum256 *out_number)
+void UtilityReadBigendToBignum(const BUINT8 *in_number, utilityBignum256 *out_number)
 {
 	BUINT32 temp = 0;
 	
@@ -574,7 +574,7 @@ void UtilityReadBigendToBignum(const BUINT8 *in_number, utility_bignum256 *out_n
 }
 
 
-void UtilityWriteBignumToBigend(const utility_bignum256 *in_number, BUINT8 *out_number)
+void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_number)
 {
 	BUINT32 temp = in_number->val[8];
 	
@@ -592,7 +592,7 @@ void UtilityWriteBignumToBigend(const utility_bignum256 *in_number, BUINT8 *out_
 
 BOAT_RESULT UtilityStringLenCheck( const BCHAR *string )
 {
-    for (int i = 0; i < BOAT_MAX_LEN; i++)
+    for (int i = 0; i < BOAT_STRING_MAX_LEN; i++)
     {
         if ( *(string + i) == '\0' )
         {

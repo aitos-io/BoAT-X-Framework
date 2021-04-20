@@ -23,6 +23,7 @@ boattypes.h defines types used in BoAT IoT SDK.
 #ifndef __BOATTYPES_H__
 #define __BOATTYPES_H__
 
+#include <stdbool.h>
 
 #define BOAT_OUT
 #define BOAT_IN
