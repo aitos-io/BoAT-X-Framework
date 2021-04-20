@@ -288,7 +288,7 @@ __BOATSTATIC __BOATINLINE BoatPlatoneWallet * BoatPlatoneWalletInit(const BoatPl
  ******************************************************************************/
 __BOATSTATIC __BOATINLINE void BoatPlatoneWalletDeInit(BoatPlatoneWallet *wallet_ptr)
 {
-    return BoatEthWalletDeInit((BoatEthWallet *) wallet_ptr);
+    BoatEthWalletDeInit((BoatEthWallet *) wallet_ptr);
 }
 
 
