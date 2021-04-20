@@ -69,7 +69,7 @@ typedef struct TStringWithLen
 typedef struct 
 {
 	BUINT32 val[9];
-} utility_bignum256;
+} utilityBignum256;
 
 extern const BCHAR * const g_log_level_name_str[];
 
@@ -552,7 +552,7 @@ double UtilityWeiStrToEthDouble(const BCHAR *wei_str);
 *    The pointer to stored converted data in big number format.
 * @see UtilityWriteBignumToBigend
 *******************************************************************************/
-void UtilityReadBigendToBignum(const BUINT8 *in_number, utility_bignum256 *out_number);
+void UtilityReadBigendToBignum(const BUINT8 *in_number, utilityBignum256 *out_number);
 
 
 /*!****************************************************************************
@@ -568,7 +568,7 @@ void UtilityReadBigendToBignum(const BUINT8 *in_number, utility_bignum256 *out_n
 *    output data pointer, It's should be a 32 bytes length array.
 * @see UtilityReadBigendToBignum
 *******************************************************************************/
-void UtilityWriteBignumToBigend(const utility_bignum256 *in_number, BUINT8 *out_number);
+void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_number);
 
 
 /*!****************************************************************************
