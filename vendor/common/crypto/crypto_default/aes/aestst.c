@@ -50,22 +50,23 @@
 
 #include "aes.h"
 #include "aestst.h"
+#include "boatutility.h"
 
 void out_state(long s0, long s1, long s2, long s3)
 {
-    printf("\n%08lx%08lx%08lx%08lx", s0, s1, s2, s3);
+    BoatLog(BOAT_LOG_VERBOSE, "\n%08lx%08lx%08lx%08lx", s0, s1, s2, s3);
 }
 
 void oblk(char m[], unsigned char v[], unsigned long n)
 {   unsigned long i;
 
-    printf("\n%s", m);
+    BoatLog(BOAT_LOG_VERBOSE, "\n%s", m);
 
     for(i = 0; i < n; ++i)
-        printf("%02x", v[i]);
+       BoatLog(BOAT_LOG_VERBOSE, "%02x", v[i]);
 }
 
-void message(const char *s)   { printf("%s", s); }
+void message(const char *s)   { BoatLog(BOAT_LOG_VERBOSE,"%s", s); }
 
 unsigned char pih[32] = // hex digits of pi
 {
@@ -130,7 +131,7 @@ int main(void)
 
 #if defined( AES_128 )
     memset(out, 0xcc, 16); memset(ret, 0xcc, 16);
-    printf("\n\n// lengths:  block = 16, bytes, key = 16 bytes");
+    BoatLog(BOAT_LOG_VERBOSE, "\n\n// lengths:  block = 16, bytes, key = 16 bytes");
     f_enc_key128(alge, exh);
     oblk("// key     = ", exh, 16);
     oblk("// input   = ", pih, 16);
@@ -145,7 +146,7 @@ int main(void)
 
 #if defined( AES_192 )
     memset(out, 0xcc, 16); memset(ret, 0xcc, 16);
-    printf("\n\n// lengths:  block = 16, bytes, key = 24 bytes");
+    BoatLog(BOAT_LOG_VERBOSE, "\n\n// lengths:  block = 16, bytes, key = 24 bytes");
     f_enc_key192(alge, exh);
     oblk("// key     = ", exh, 24);
     oblk("// input   = ", pih, 16);
@@ -160,7 +161,7 @@ int main(void)
 
 #if defined( AES_256 )
     memset(out, 0xcc, 16); memset(ret, 0xcc, 16);
-    printf("\n\n// lengths:  block = 16, bytes, key = 32 bytes");
+    BoatLog(BOAT_LOG_VERBOSE, "\n\n// lengths:  block = 16, bytes, key = 32 bytes");
     f_enc_key256(alge, exh);
     oblk("// key     = ", exh, 32);
     oblk("// input   = ", pih, 16);
