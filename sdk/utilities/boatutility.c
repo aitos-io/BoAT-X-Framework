@@ -451,7 +451,7 @@ void * UtilityChangeEndian( BOAT_INOUT void *value_ptr, BUINT32 value_len )
 }
 
 
-BUINT32 Utilityhtonl( BUINT32 from_host_integer )
+BUINT32 UtilityHtonl( BUINT32 from_host_integer )
 {
     BUINT32 to_big_integer;
 
@@ -461,7 +461,7 @@ BUINT32 Utilityhtonl( BUINT32 from_host_integer )
 }
 
 
-BUINT32 Utilityntohl( BUINT32 from_big_integer )
+BUINT32 UtilityNtohl( BUINT32 from_big_integer )
 {
     BSINT8 i;
     BUINT32 to_host_integer;

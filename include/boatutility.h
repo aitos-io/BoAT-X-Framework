@@ -494,7 +494,7 @@ void * UtilityChangeEndian(BOAT_INOUT void *value_ptr, BUINT32 value_len);
  * 	
  * @see UtilityUint32ToBigend()
  ******************************************************************************/
-BUINT32 Utilityhtonl(BUINT32 from_host_integer);
+BUINT32 UtilityHtonl(BUINT32 from_host_integer);
 
 
 /*!****************************************************************************
@@ -510,9 +510,9 @@ BUINT32 Utilityhtonl(BUINT32 from_host_integer);
  * @return
  *   This function returns the converted host endian BUINT32 integer.
  *
- * @see Utilityhtonl()
+ * @see UtilityHtonl()
  ******************************************************************************/
-BUINT32 Utilityntohl(BUINT32 from_host_integer);
+BUINT32 UtilityNtohl(BUINT32 from_host_integer);
 
 
 /*!****************************************************************************
