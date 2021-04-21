@@ -89,7 +89,7 @@ BUINT32 UtilityTrimBin( BOAT_OUT BUINT8 *to_ptr,
 }
 
 
-BUINT32 UtilityBin2Hex( BOAT_OUT BCHAR *to_str,
+BUINT32 UtilityBinToHex( BOAT_OUT BCHAR *to_str,
 						const BUINT8 *from_ptr,
 						BUINT32 from_len,
 						BIN2HEX_TRIM_MODE trim_mode,
@@ -196,7 +196,7 @@ BUINT32 UtilityBin2Hex( BOAT_OUT BCHAR *to_str,
 }
 
 
-BUINT32 UtilityHex2Bin( BOAT_OUT BUINT8 *to_ptr,
+BUINT32 UtilityHexToBin( BOAT_OUT BUINT8 *to_ptr,
                         BUINT32 to_size,
                         const BCHAR *from_str,
                         TRIMBIN_TRIM_MODE trim_mode,
@@ -488,7 +488,7 @@ double UtilityWeiStrToEthDouble(const BCHAR *wei_str)
     BUINT32 i;
 
     // Conver wei from HEX to binary with leading zeros trimmed
-    wei_bin_len = UtilityHex2Bin( wei_bin, sizeof(wei_bin), wei_str, 
+    wei_bin_len = UtilityHexToBin( wei_bin, sizeof(wei_bin), wei_str, 
 								  TRIMBIN_LEFTTRIM, BOAT_FALSE );
 
     // Above binary representation of wei is in bigendian and it's possibly

@@ -59,7 +59,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
     
     // Initialize gasprice
 	BoatFieldMax32B gasprice;
-	gasprice.field_len = UtilityHex2Bin( gasprice.field, 32, gasprice_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
+	gasprice.field_len = UtilityHexToBin( gasprice.field, 32, gasprice_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
 	result = BoatFiscobcosTxSetGasPrice(tx_ptr, &gasprice);
 	if( result != BOAT_SUCCESS )
     {
@@ -69,7 +69,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	
     // Initialize gaslimit
     BoatFieldMax32B gaslimit;
-    gaslimit.field_len = UtilityHex2Bin( gaslimit.field, 32, gaslimit_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
+    gaslimit.field_len = UtilityHexToBin( gaslimit.field, 32, gaslimit_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
     result = BoatFiscobcosTxSetGasLimit(tx_ptr, &gaslimit);
     if( result != BOAT_SUCCESS )
     {
@@ -80,7 +80,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
     // Initialize recipient
 	BUINT32 converted_len;
     BUINT8  recipient[BOAT_FISCOBCOS_ADDRESS_SIZE];
-    converted_len = UtilityHex2Bin( recipient, BOAT_FISCOBCOS_ADDRESS_SIZE, 
+    converted_len = UtilityHexToBin( recipient, BOAT_FISCOBCOS_ADDRESS_SIZE, 
 									recipient_str, TRIMBIN_TRIM_NO, BOAT_TRUE );
     if( converted_len == 0 )
     {
@@ -96,7 +96,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
     }
 	
 	//chainid
-	tx_ptr->rawtx_fields.chainid.field_len    = UtilityHex2Bin( tx_ptr->rawtx_fields.chainid.field, 32, 
+	tx_ptr->rawtx_fields.chainid.field_len    = UtilityHexToBin( tx_ptr->rawtx_fields.chainid.field, 32, 
 															    chainid_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
 	if( tx_ptr->rawtx_fields.chainid.field_len == 0 )
     {
@@ -105,7 +105,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
     }
 	
 	//groupid
-	tx_ptr->rawtx_fields.groupid.field_len    = UtilityHex2Bin( tx_ptr->rawtx_fields.groupid.field, 32, 
+	tx_ptr->rawtx_fields.groupid.field_len    = UtilityHexToBin( tx_ptr->rawtx_fields.groupid.field, 32, 
 																groupid_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
 	if( tx_ptr->rawtx_fields.groupid.field_len == 0 )
     {
@@ -126,7 +126,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	}
 
 	tx_ptr->rawtx_fields.blocklimit.field_len = \
-							UtilityHex2Bin( tx_ptr->rawtx_fields.blocklimit.field, 32, 
+							UtilityHexToBin( tx_ptr->rawtx_fields.blocklimit.field, 32, 
 											(BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
 											TRIMBIN_LEFTTRIM, BOAT_TRUE );
 	if( tx_ptr->rawtx_fields.blocklimit.field_len == 0 )
@@ -293,17 +293,17 @@ BCHAR * BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_prot
 
 	//set groupid
 	memset(groupid_hexstr, 0, sizeof(groupid_hexstr));
-	UtilityBin2Hex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
+	UtilityBinToHex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
 					BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
 	param_fiscobcos_call.groupid = groupid_hexstr;
 	//set from
 	memset(from_hexstr, 0, sizeof(from_hexstr));
-	UtilityBin2Hex( from_hexstr, tx_ptr->wallet_ptr->account_info.address, BOAT_FISCOBCOS_ADDRESS_SIZE,
+	UtilityBinToHex( from_hexstr, tx_ptr->wallet_ptr->account_info.address, BOAT_FISCOBCOS_ADDRESS_SIZE,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
 	 param_fiscobcos_call.from  = from_hexstr;
 	//set to
 	 memset(to_hexstr, 0, sizeof(to_hexstr));
-    UtilityBin2Hex( to_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_FISCOBCOS_ADDRESS_SIZE, 
+    UtilityBinToHex( to_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_FISCOBCOS_ADDRESS_SIZE, 
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
     param_fiscobcos_call.to  = to_hexstr;
 	//set value
@@ -312,9 +312,9 @@ BCHAR * BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_prot
 	memset(data_hexstr, 0, sizeof(data_hexstr));
 	BoatHash( BOAT_HASH_KECCAK256, (BUINT8*)func_proto_str, 
 			  strlen(func_proto_str), function_selector, &hashLenDummy, NULL );
-    UtilityBin2Hex( data_hexstr, function_selector, 4,
+    UtilityBinToHex( data_hexstr, function_selector, 4,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES,  BOAT_FALSE );
-	UtilityBin2Hex( data_hexstr+10, func_param_ptr, func_param_len,
+	UtilityBinToHex( data_hexstr+10, func_param_ptr, func_param_len,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
 	param_fiscobcos_call.data  = data_hexstr;
 
@@ -339,12 +339,12 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
 	
 	//set groupid
 	memset(groupid_hexstr, 0, sizeof(groupid_hexstr));
-	UtilityBin2Hex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
+	UtilityBinToHex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
 					BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
 	param_fiscobcos_getTransactionReceipt.groupid = groupid_hexstr;
 	//set txHash
 	memset(txhash_hexstr, 0, sizeof(txhash_hexstr));
-	UtilityBin2Hex( txhash_hexstr, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
+	UtilityBinToHex( txhash_hexstr, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
     param_fiscobcos_getTransactionReceipt.tx_hash_str = txhash_hexstr;
 
@@ -408,7 +408,7 @@ BCHAR * BoatFiscobcosGetBlockNumber( BoatFiscobcosTx *tx_ptr )
 
 	//set groupid
 	memset(groupid_hexstr, 0, sizeof(groupid_hexstr));
-	UtilityBin2Hex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
+	UtilityBinToHex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
 					BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
 	param_fiscobcos_getBlockNumber.groupid = groupid_hexstr;
 

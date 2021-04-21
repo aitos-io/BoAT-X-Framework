@@ -210,7 +210,7 @@ BCHAR * BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_st
     else
     {
         // Query specified altered address
-		UtilityHex2Bin( alt_address, BOAT_ETH_ADDRESS_SIZE, alt_address_str,
+		UtilityHexToBin( alt_address, BOAT_ETH_ADDRESS_SIZE, alt_address_str,
 						TRIMBIN_TRIM_NO, BOAT_TRUE );
 
         address_ptr = alt_address;
@@ -218,7 +218,7 @@ BCHAR * BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_st
     
     // Get balance from network
     // Return value of web3_eth_getBalance() is balance in wei
-    UtilityBin2Hex( address_str, address_ptr, BOAT_ETH_ADDRESS_SIZE,
+    UtilityBinToHex( address_str, address_ptr, BOAT_ETH_ADDRESS_SIZE,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
     param_eth_getBalance.address_str   = address_str;
     param_eth_getBalance.block_num_str = "latest";
@@ -271,7 +271,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     if( gasprice_str != NULL )
     {
         // Manually
-        gasprice.field_len = UtilityHex2Bin( gasprice.field, 32, gasprice_str, 
+        gasprice.field_len = UtilityHexToBin( gasprice.field, 32, gasprice_str, 
 											 TRIMBIN_LEFTTRIM, BOAT_TRUE );
         result = BoatEthTxSetGasPrice(tx_ptr, &gasprice);
     }
@@ -290,7 +290,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     // Initialize gaslimit
     BoatFieldMax32B gaslimit;
     
-    gaslimit.field_len = UtilityHex2Bin( gaslimit.field, 32, gaslimit_str, 
+    gaslimit.field_len = UtilityHexToBin( gaslimit.field, 32, gaslimit_str, 
 										 TRIMBIN_LEFTTRIM, BOAT_TRUE );
     result = BoatEthTxSetGasLimit(tx_ptr, &gaslimit);
     if( result != BOAT_SUCCESS )
@@ -302,7 +302,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     // Initialize recipient
     BUINT8 recipient[BOAT_ETH_ADDRESS_SIZE];
     BUINT32 converted_len;
-    converted_len = UtilityHex2Bin( recipient, BOAT_ETH_ADDRESS_SIZE, recipient_str, 
+    converted_len = UtilityHexToBin( recipient, BOAT_ETH_ADDRESS_SIZE, recipient_str, 
 									TRIMBIN_TRIM_NO, BOAT_TRUE );
     if( converted_len == 0 )
     {
@@ -348,7 +348,7 @@ BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce)
 	{
 		/* Get transaction count from network
 		   Return value of web3_eth_getTransactionCount() is transaction count */
-		UtilityBin2Hex( account_address_str, tx_ptr->wallet_ptr->account_info.address,
+		UtilityBinToHex( account_address_str, tx_ptr->wallet_ptr->account_info.address,
 						BOAT_ETH_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA, 
 						BIN2HEX_PREFIX_0x_YES, BOAT_FALSE ); 
 		param_eth_getTransactionCount.address_str   = account_address_str;
@@ -365,7 +365,7 @@ BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce)
         }
 
 		/* Set nonce from transaction count */
-		tx_ptr->rawtx_fields.nonce.field_len = UtilityHex2Bin( tx_ptr->rawtx_fields.nonce.field, 32,  
+		tx_ptr->rawtx_fields.nonce.field_len = UtilityHexToBin( tx_ptr->rawtx_fields.nonce.field, 32,  
 															   (BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
 															   TRIMBIN_LEFTTRIM, BOAT_TRUE );
 	}
@@ -414,7 +414,7 @@ BOAT_RESULT BoatEthTxSetGasPrice(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_price_p
         {
             // Set transaction gasPrice with the one got from network
             tx_ptr->rawtx_fields.gasprice.field_len =
-				UtilityHex2Bin(
+				UtilityHexToBin(
 					tx_ptr->rawtx_fields.gasprice.field,
 					32,
 					(BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
@@ -582,7 +582,7 @@ BCHAR * BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
 
     BCHAR recipient_hexstr[BOAT_ETH_ADDRESS_SIZE*2+3];
     
-    UtilityBin2Hex( recipient_hexstr, tx_ptr->rawtx_fields.recipient,
+    UtilityBinToHex( recipient_hexstr, tx_ptr->rawtx_fields.recipient,
 					BOAT_ETH_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA,
 					BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
     param_eth_call.to  = recipient_hexstr;
@@ -595,12 +595,12 @@ BCHAR * BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
 			  strlen(func_proto_str), function_selector, &hashLenDummy, NULL );
 
     // Set function selector
-    UtilityBin2Hex( data_str, function_selector, 4,
+    UtilityBinToHex( data_str, function_selector, 4,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES,  BOAT_FALSE);
 
     // Set function parameters.param1 '+10' means skip function selector prefixed
 	// e.g. "0x12345678" is a function selector prefixed
-    UtilityBin2Hex( data_str+10,  func_param_ptr,  func_param_len,
+    UtilityBinToHex( data_str+10,  func_param_ptr,  func_param_len,
 					BIN2HEX_LEFTTRIM_UNFMTDATA,  BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
     param_eth_call.data          = data_str;
     param_eth_call.block_num_str = "latest";
@@ -633,7 +633,7 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR * value_hex_str)
 
     // Set value
 
-    value.field_len = UtilityHex2Bin( value.field, 32, value_hex_str,
+    value.field_len = UtilityHexToBin( value.field, 32, value_hex_str,
 									  TRIMBIN_LEFTTRIM, BOAT_TRUE );
     result = BoatEthTxSetValue(tx_ptr, &value);
     if( result != BOAT_SUCCESS )
@@ -672,7 +672,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
 
     BOAT_RESULT result = BOAT_SUCCESS;
 
-    UtilityBin2Hex( tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
+    UtilityBinToHex( tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
     tx_mined_timeout = BOAT_WAIT_PENDING_TX_TIMEOUT;
     param_eth_getTransactionReceipt.tx_hash_str = tx_hash_str;

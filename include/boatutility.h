@@ -30,7 +30,7 @@ boatutility.h is header file for boatwallet utility functions.
  * @{
  */
 
-//!@brief Argument type for UtilityTrimBin(), UtilityHex2Bin() and UtilityUint32ToBigend()
+//!@brief Argument type for UtilityTrimBin(), UtilityHexToBin() and UtilityUint32ToBigend()
 typedef enum
 {
     TRIMBIN_TRIM_NO,    //!< Don't trim zeros
@@ -38,7 +38,7 @@ typedef enum
 }TRIMBIN_TRIM_MODE;
 
 
-//!@brief Argument type for UtilityHex2Bin()
+//!@brief Argument type for UtilityHexToBin()
 typedef enum
 {
     BIN2HEX_LEFTTRIM_UNFMTDATA = 0,     //!< Trim {0x00, 0x01, 0x00 0xAB} => "0x000100AB" or "000100AB"
@@ -46,7 +46,7 @@ typedef enum
 	BIN2HEX_LEFTTRIM_TWOHEXPERBYTE      //!< Trim {0x00, 0x01, 0x00 0xAB} => "0x0100AB" or "0100AB"
 }BIN2HEX_TRIM_MODE;
 
-//!@brief Argument type for UtilityBin2Hex()
+//!@brief Argument type for UtilityBinToHex()
 typedef enum
 {
     BIN2HEX_PREFIX_0x_NO = 0,   //<! Prepend "0x" to converted HEX string
@@ -330,7 +330,7 @@ BUINT32 UtilityTrimBin( BOAT_OUT BUINT8 *to_ptr,
  *   If <from_len> is 0 or <from_ptr> is NULL, and <to_str> is NOT NULL, this
  *   function writes a '\0' to <to_str>, i.e. a NULL string and returns 0.
  ******************************************************************************/
-BUINT32 UtilityBin2Hex( BOAT_OUT BCHAR *to_str,
+BUINT32 UtilityBinToHex( BOAT_OUT BCHAR *to_str,
 						const BUINT8 *from_ptr,
 						BUINT32 from_len,
 						BIN2HEX_TRIM_MODE trim_mode,
@@ -390,7 +390,7 @@ BUINT32 UtilityBin2Hex( BOAT_OUT BCHAR *to_str,
  *	
  * @see UtilityTrimBin()
 *******************************************************************************/
-BUINT32 UtilityHex2Bin( BOAT_OUT BUINT8 *to_ptr,
+BUINT32 UtilityHexToBin( BOAT_OUT BUINT8 *to_ptr,
                         BUINT32 to_size,
                         const BCHAR *from_str,
                         TRIMBIN_TRIM_MODE trim_mode,

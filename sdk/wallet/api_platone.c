@@ -116,7 +116,7 @@ BCHAR * BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_pt
 
     BCHAR recipient_hexstr[BOAT_PLATONE_ADDRESS_SIZE*2+3];
     
-    UtilityBin2Hex( recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_PLATONE_ADDRESS_SIZE,
+    UtilityBinToHex( recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_PLATONE_ADDRESS_SIZE,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
     param_eth_call.to = recipient_hexstr;
 
@@ -125,7 +125,7 @@ BCHAR * BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_pt
     param_eth_call.gasPrice = "0x8250de00";
 
     // Set function parameters
-    UtilityBin2Hex( data_str, rlp_param_ptr, rlp_param_len,
+    UtilityBinToHex( data_str, rlp_param_ptr, rlp_param_len,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
     param_eth_call.data = data_str;
     param_eth_call.block_num_str = "latest";
@@ -180,7 +180,7 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str)
     if( result != BOAT_SUCCESS ) return BOAT_ERROR;
     
     // Set value
-    value.field_len = UtilityHex2Bin( value.field, 32, value_hex_str,
+    value.field_len = UtilityHexToBin( value.field, 32, value_hex_str,
 									  TRIMBIN_LEFTTRIM, BOAT_TRUE  );
     result = BoatPlatoneTxSetValue(tx_ptr, &value);
     if( result != BOAT_SUCCESS ) return BOAT_ERROR;

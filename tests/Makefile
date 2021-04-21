@@ -26,11 +26,11 @@ clean:
 	
 	
 	
-#UTILITYBIN2HEXTEST = utilityBin2Hex-test
-#$(UTILITYBIN2HEXTEST) : utilityBin2Hex-test.c
-#	gcc -o $(UTILITYBIN2HEXTEST) UtilityBin2Hex-test.c ../sdk/utilities/boatutility.c -I ../include  -I../sdk/include/ -I ../sdk/platform/
+#UtilityBinToHexTEST = UtilityBinToHex-test
+#$(UtilityBinToHexTEST) : UtilityBinToHex-test.c
+#	gcc -o $(UtilityBinToHexTEST) UtilityBinToHex-test.c ../sdk/utilities/boatutility.c -I ../include  -I../sdk/include/ -I ../sdk/platform/
 #	
 #.PHONY: clean
 #clean :
-#	rm $(UTILITYBIN2HEXTEST)
+#	rm $(UtilityBinToHexTEST)
 

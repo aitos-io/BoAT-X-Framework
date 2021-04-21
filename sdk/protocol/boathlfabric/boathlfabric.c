@@ -210,7 +210,7 @@ __BOATSTATIC BOAT_RESULT hlfabricChannelHeaderPacked(const BoatHlfabricTx *tx_pt
 	channelHeader.channel_id             = (BCHAR *)tx_ptr->var.channelId;
 	/* -txID */
 	memset( txIdString, 0, sizeof(txIdString) );
-	UtilityBin2Hex( txIdString, txIdBin, 32, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
+	UtilityBinToHex( txIdString, txIdBin, 32, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
 	channelHeader.tx_id                  = txIdString;
 	/* -extension */
 	chaincodeHeaderExtension.has_payload_visibility = false;
