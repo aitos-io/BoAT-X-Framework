@@ -77,7 +77,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR * json_string,
 	if( (json_string == NULL) || (child_name == NULL) || (result_out == NULL) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	// Convert string to cJSON
