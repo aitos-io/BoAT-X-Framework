@@ -98,9 +98,6 @@ typedef struct TBoatWalletPriKeyCtx_config
     BoatWalletPriKeyType     prikey_type;           //!< Type of private key
     BUINT8                   prikey_content[512];   //!< The externally injected private key contents
 	BUINT32                  prikey_content_length; //!< The externally injected private key length, it contains the terminator for the string format.
-	
-	//! This field will be updated by sdk internal
-	BoatWalletPriKeyCtx     private_KeyCtx;         //!< Private key context
 }BoatWalletPriKeyCtx_config;
 
 

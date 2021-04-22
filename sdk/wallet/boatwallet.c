@@ -93,8 +93,6 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 {
     BSINT32 i;
     BUINT8  loaded_wallet_config_array[wallet_config_size];
-	BoatWalletPriKeyCtx          priKeyCtxTmp = {0};
-    BoatWalletPriKeyCtx_config*  priKeyCtx_configTmp = NULL;
 
     /* Check wallet configuration */ 
     if( (wallet_name_str == NULL) && (wallet_config_ptr == NULL) )
@@ -124,42 +122,6 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 
     if( wallet_config_ptr != NULL )
     {
-        /* private key context update */
-        /* -step-1:  generate prikeyCtxTmp */
-        switch(protocol_type)
-        {
-            case BOAT_PROTOCOL_ETHEREUM:
-            case BOAT_PROTOCOL_PLATONE:
-            case BOAT_PROTOCOL_FISCOBCOS:
-                priKeyCtx_configTmp = &((BoatEthWalletConfig*)wallet_config_ptr)->prikeyCtx_config;
-                if( BOAT_SUCCESS != BoatPort_keyCreate( priKeyCtx_configTmp, &priKeyCtxTmp ) )
-                {
-                    BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
-                    return BOAT_ERROR;
-                }
-            break;
-            case BOAT_PROTOCOL_HLFABRIC:
-                priKeyCtx_configTmp = &((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config;
-                if( BOAT_SUCCESS != BoatPort_keyCreate( priKeyCtx_configTmp, &priKeyCtxTmp ) )
-                {
-                    BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
-                    return BOAT_ERROR;
-                }
-            break;
-            default:
-            break;
-        }
-
-        /* -step-2:  assign value of prikeyIdTmp to wallet_config_ptr */
-        memcpy( &( priKeyCtx_configTmp->private_KeyCtx), &priKeyCtxTmp, sizeof(priKeyCtxTmp) );
-        
-        /* -step-3:  clear sensitive information in wallet_config_ptr */
-        priKeyCtx_configTmp->prikey_genMode        = BOAT_WALLET_PRIKEY_GENMODE_UNKNOWN;
-        priKeyCtx_configTmp->prikey_format         = BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN;
-        priKeyCtx_configTmp->prikey_type           = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
-        priKeyCtx_configTmp->prikey_content_length = 0;
-        memset( priKeyCtx_configTmp->prikey_content, 0, sizeof(priKeyCtx_configTmp->prikey_content) );
-        
         if( wallet_name_str != NULL )
         {
             /* -step-4: create persistent wallet / Overwrite existed configuration */
@@ -188,7 +150,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 
     /* Check protocol type */
     g_boat_iot_sdk_context.wallet_list[i].protocol_type = protocol_type;
-    
+
     switch(protocol_type)
     {
 

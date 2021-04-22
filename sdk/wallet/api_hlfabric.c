@@ -128,8 +128,11 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 	wallet_ptr->account_info.cert.field_len     = 0;
 	
 	/* prikey context assignment */
-	memcpy( &wallet_ptr->account_info.prikeyCtx, \
-		    &prikeyCtx_config.private_KeyCtx, sizeof(BoatWalletPriKeyCtx));
+	if( BOAT_SUCCESS != BoatPort_keyCreate( &prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx ) )
+    {
+        BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
 	
 	/* cert assignment */
 	wallet_ptr->account_info.cert.field_ptr = BoatMalloc(certContent.field_len);
