@@ -317,7 +317,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
 	if( result != BOAT_SUCCESS )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to BoatSignature signature.");
-        boat_throw(BOAT_ERROR_FAILED_GEN_SIGNATURE, PlatoneSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, PlatoneSendRawtx_cleanup);
     }
 
     // assign signature value
@@ -500,12 +500,18 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
     tx_hash_str = web3_eth_sendRawTransaction( tx_ptr->wallet_ptr->web3intf_context_ptr,
                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                                &param_eth_sendRawTransaction);
+    if( tx_hash_str == NULL )
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
+		boat_throw(BOAT_ERROR_RPC_FAILED, PlatoneSendRawtx_cleanup);
+    }
+
     result = BoatPlatonePraseRpcResponseResult( tx_hash_str, "", 
 											    &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if( result != BOAT_SUCCESS )
 	{
-		BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
-		boat_throw(BOAT_ERROR_RPC_FAIL, PlatoneSendRawtx_cleanup);
+		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");
+		boat_throw(result, PlatoneSendRawtx_cleanup);
 	}
 
     tx_ptr->tx_hash.field_len = UtilityHexToBin( tx_ptr->tx_hash.field, 32, 

@@ -639,13 +639,13 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
-		boat_throw(BOAT_ERROR_FAILED_GEN_SIGNATURE, hlfabricProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, hlfabricProposalTransactionPacked_exception);
 	}
 	
 	if( !signatureResult.pkcs_format_used )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
-		boat_throw(BOAT_ERROR_FAILED_GEN_SIGNATURE, hlfabricProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, hlfabricProposalTransactionPacked_exception);
 	}
 
 	/* step-5: pack the envelope */
@@ -662,7 +662,7 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	if( tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > HTTP2_SEND_BUF_MAX_LEN )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "packed length out of sendbuffer size limit.");
-		boat_throw(BOAT_ERROR_BUFFER_EXHAUSTED, hlfabricProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricProposalTransactionPacked_exception);
 	}
 	
 	/* step-7: packed data assignment */

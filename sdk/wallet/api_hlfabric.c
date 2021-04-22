@@ -64,7 +64,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec( BoatHlfabricTx *tx_ptr,
 	if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
-		boat_throw(BOAT_ERROR_BUFFER_EXHAUSTED, BoatHlfabricTxProposal_exception);
+		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);
 	}
 
 	/* prepare http2-request argument */
@@ -119,7 +119,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 	if( wallet_ptr == NULL )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	/* initialization */
@@ -165,7 +165,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
 	if( wallet_ptr == NULL )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	/* initialization */
@@ -214,12 +214,12 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr,
 	if( rootCaContent == NULL )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	if( ( rootCaNumber == 0 ) || ( rootCaNumber > HLFABRIC_ROOTCA_MAX_NUM ) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter rootCaNumber out of limit.");
-		return BOAT_ERROR_INVALID_LENGTH;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	/* initialization */
@@ -283,17 +283,17 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 	if( wallet_ptr == NULL )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	if( ( endorserNumber == 0 ) || ( endorserNumber > HLFABRIC_ENDORSER_MAX_NUM ) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter endorserNumber out of limit.");
-		return BOAT_ERROR_INVALID_LENGTH;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	if( ( ordererNumber == 0 ) || ( ordererNumber > HLFABRIC_ORDERER_MAX_NUM ) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter ordererNumber out of limit.");
-		return BOAT_ERROR_INVALID_LENGTH;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	/* initialization */
@@ -588,7 +588,7 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
 	if( ( tx_ptr == NULL ) || (wallet_ptr == NULL) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments 'tx_ptr' or 'wallet_ptr' cannot be NULL.");
-        return BOAT_ERROR_NULL_POINTER;
+        return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	/* tx_ptr instance reset */
@@ -722,7 +722,7 @@ BOAT_RESULT BoatHlfabricTxSetTimestamp( BoatHlfabricTx *tx_ptr,
    if( tx_ptr == NULL )
    {
 	   BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-	   return BOAT_ERROR_NULL_POINTER;
+	   return BOAT_ERROR_INVALID_ARGUMENT;
    }
    
    tx_ptr->var.timestamp.sec   = sec;
@@ -743,7 +743,7 @@ BOAT_RESULT BoatHlfabricTxSetArgs( BoatHlfabricTx *tx_ptr,
 	if( tx_ptr == NULL )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
 	tx_ptr->var.args.nArgs = 0;
@@ -759,7 +759,7 @@ BOAT_RESULT BoatHlfabricTxSetArgs( BoatHlfabricTx *tx_ptr,
 		tx_ptr->var.args.nArgs++;
 		if( tx_ptr->var.args.nArgs > HLFABRIC_ARGS_MAX_NUM )
 		{
-			result = BOAT_ERROR_BUFFER_EXHAUSTED;
+			result = BOAT_ERROR_OUT_OF_MEMORY;
 			break;
 		}
 	}

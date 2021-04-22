@@ -40,7 +40,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
 	if( ( hashed == NULL ) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'hashed' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	if( type == BOAT_HASH_KECCAK256 )

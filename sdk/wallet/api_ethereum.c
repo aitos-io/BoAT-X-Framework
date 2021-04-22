@@ -284,7 +284,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     if( result != BOAT_SUCCESS )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "set gas price failed: %d.", result);
-        return BOAT_ERROR;
+        return result;
     }
 
     // Initialize gaslimit
@@ -296,7 +296,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     if( result != BOAT_SUCCESS )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxSetGasLimit failed.");
-        return BOAT_ERROR;
+        return result;
     }
 
     // Initialize recipient
@@ -307,7 +307,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     if( converted_len == 0 )
     {
         BoatLog(BOAT_LOG_CRITICAL, "recipient Initialize failed.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
     result = BoatEthTxSetRecipient(tx_ptr, recipient);
@@ -315,7 +315,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     if( result != BOAT_SUCCESS )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxSetRecipient failed.");
-        return BOAT_ERROR;
+        return result;
     }
 
     // Initialize value = 0
@@ -324,7 +324,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     if( result != BOAT_SUCCESS )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxSetValue failed.");
-        return BOAT_ERROR;
+        return result;
     }
     
     return BOAT_SUCCESS;
@@ -403,14 +403,14 @@ BOAT_RESULT BoatEthTxSetGasPrice(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_price_p
         // Return value of web3_eth_gasPrice is in wei
         gas_price_from_net_str = web3_eth_gasPrice( tx_ptr->wallet_ptr->web3intf_context_ptr, 
 												    tx_ptr->wallet_ptr->network_info.node_url_ptr );
-		result = BoatEthPraseRpcResponseResult( gas_price_from_net_str, "", 
-												&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-        if( result != BOAT_SUCCESS )
+		if( gas_price_from_net_str == NULL)
         {
-            BoatLog(BOAT_LOG_NORMAL, "Fail to get gasPrice from network.");
-            result = BOAT_ERROR;
+            return BOAT_ERROR_RPC_FAILED;
         }
-        else
+
+        result = BoatEthPraseRpcResponseResult( gas_price_from_net_str, "", 
+												&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+        if( result == BOAT_SUCCESS )
         {
             // Set transaction gasPrice with the one got from network
             tx_ptr->rawtx_fields.gasprice.field_len =
@@ -423,6 +423,10 @@ BOAT_RESULT BoatEthTxSetGasPrice(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_price_p
 				);
 
             BoatLog(BOAT_LOG_VERBOSE, "Use gasPrice from network: %s wei.", gas_price_from_net_str);
+        }
+        else
+        {
+            BoatLog(BOAT_LOG_NORMAL, "Fail to get gasPrice from network.");
         }
     }
     
@@ -628,7 +632,7 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR * value_hex_str)
     if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "nonce set failed.");
-		return BOAT_ERROR;
+		return result;
     }
 
     // Set value
@@ -639,7 +643,7 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR * value_hex_str)
     if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "value set failed.");
-		return BOAT_ERROR;
+		return result;
 	}
 	
     // Set data
@@ -647,7 +651,7 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR * value_hex_str)
 	if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "data set failed.");
-		return BOAT_ERROR;
+		return result;
 	}
 
     // Perform the transaction
@@ -656,7 +660,7 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR * value_hex_str)
 	if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "transaction send failed.");
-		return BOAT_ERROR;
+		return result;
 	}
 
     return BOAT_SUCCESS;
@@ -687,7 +691,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
         if( result != BOAT_SUCCESS )
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
-            result = BOAT_ERROR_RPC_FAIL;
+            result = BOAT_ERROR_RPC_FAILED;
             break;
         }
         else
@@ -716,7 +720,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
     if( tx_mined_timeout <= 0)
     {
         BoatLog(BOAT_LOG_NORMAL, "Wait for pending transaction timeout. This does not mean the transaction fails.");
-        result = BOAT_ERROR_TX_NOT_MINED;
+        result = BOAT_ERROR_TX_PENDING;
     }
 
     return result;

@@ -179,7 +179,7 @@ BOAT_RESULT CurlPortSetOpt(CurlPortContext * curlport_context_ptr, BCHAR *remote
 {
     if( curlport_context_ptr == NULL || remote_url_str == NULL)
     {
-        return BOAT_ERROR_NULL_POINTER;
+        return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
     curlport_context_ptr->remote_url_str = remote_url_str;
@@ -210,7 +210,7 @@ BOAT_RESULT CurlPortRequestSync( CurlPortContext * curlport_context_ptr,
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         result = BOAT_ERROR;
-        boat_throw(BOAT_ERROR_NULL_POINTER, CurlPortRequestSync_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, CurlPortRequestSync_cleanup);
     }
 
     curl_ctx_ptr = curl_easy_init();
