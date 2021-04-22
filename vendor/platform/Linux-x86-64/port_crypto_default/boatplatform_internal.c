@@ -460,7 +460,19 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native( const BoatWall
 	BUINT8       pubKey65[65] = {0};
 	BOAT_RESULT  result = BOAT_SUCCESS;
 
+	// 0- check input parameter
+	if( (config == NULL) || (pkCtx == NULL) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "input parameter can not be NULL." );
+		return BOAT_ERROR;
+	}
+
 	// 1- update private key
+	if( config->prikey_content_length > sizeof(config->prikey_content) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "Error: length of injection key is too long." );
+		return BOAT_ERROR;
+	}
 	memcpy(pkCtx->extra_data.value, config->prikey_content, config->prikey_content_length);
 	pkCtx->extra_data.value_len = config->prikey_content_length;
 

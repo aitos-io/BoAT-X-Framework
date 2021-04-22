@@ -852,12 +852,24 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs( const BoatWallet
 	mbedtls_pk_context     mbedtls_pkCtx;
 	BOAT_RESULT            result = BOAT_SUCCESS;
 
+	// 0- check input parameter
+	if( (config == NULL) || (pkCtx == NULL) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "input parameter can not be NULL." );
+		return BOAT_ERROR;
+	}
+
 	mbedtls_pk_init( &mbedtls_pkCtx );
 
 	result = mbedtls_pk_parse_key( &mbedtls_pkCtx, config->prikey_content,
 									config->prikey_content_length, NULL, 0 );
 
 	// 1- update private key
+	if( config->prikey_content_length > sizeof(config->prikey_content) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "Error: length of injection key is too long." );
+		return BOAT_ERROR;
+	}
 	memcpy(pkCtx->extra_data.value, config->prikey_content, config->prikey_content_length);
 	pkCtx->extra_data.value_len = config->prikey_content_length;
 
