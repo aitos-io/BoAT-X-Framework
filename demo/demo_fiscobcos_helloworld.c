@@ -52,7 +52,7 @@ const BCHAR * demoUrl = "http://127.0.0.1:8545";
 /**
  * transfer recipient address
  */
-const BCHAR * demoRecipirntAddress = "0x2474bc01af5b2648f0d554dbddda0e4fd8198f2f";
+const BCHAR * demoRecipientAddress = "0x2474bc01af5b2648f0d554dbddda0e4fd8198f2f";
 
 
 BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
@@ -178,7 +178,7 @@ BOAT_RESULT fiscobcos_helloworld(BoatFiscobcosWallet *wallet_ptr)
     result = BoatFiscobcosTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, 
 								 "0x11E1A300", //gasprice
 							     "0x33333333", //gaslimit
-							     (BCHAR *)demoRecipirntAddress, //recipient
+							     (BCHAR *)demoRecipientAddress, //recipient
 								 "0x01", //chainid
 								 "0x01"  //groupid
 								);

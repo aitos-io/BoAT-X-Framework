@@ -50,7 +50,7 @@ const BCHAR * demoUrl = "http://192.168.132.200:7545";
 /**
  * transfer recipient address
  */
-const BCHAR * demoRecipirntAddress = "0x4BeC3cDD520B7985067219F6f596EF7a55Ee5963";
+const BCHAR * demoRecipientAddress = "0x4BeC3cDD520B7985067219F6f596EF7a55Ee5963";
 
 BoatEthWallet *g_ethereum_wallet_ptr;
 
@@ -201,7 +201,7 @@ BOAT_RESULT ethereumTransfer(BoatEthWallet *wallet_ptr)
     /* Set Recipient Address */
     result = BoatEthTxInit( wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
 						    "0x333333",
-						    (BCHAR *)demoRecipirntAddress );
+						    (BCHAR *)demoRecipientAddress );
 
     if( result != BOAT_SUCCESS )
     {

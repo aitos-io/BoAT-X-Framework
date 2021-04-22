@@ -50,7 +50,7 @@ const BCHAR * demoUrl = "http://192.168.132.200:7545";
 /**
  * transfer recipient address
  */
-const BCHAR * demoRecipirntAddress = "0xDED9ea325f8D657614f0F96444ca9DF1d7E2f27c";
+const BCHAR * demoRecipientAddress = "0xDED9ea325f8D657614f0F96444ca9DF1d7E2f27c";
 
 
 BoatEthWallet *g_ethereum_wallet_ptr;
@@ -183,7 +183,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
     /* Set Contract Address */
     result = BoatEthTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
 						   "0x333333",
-						   (BCHAR *)demoRecipirntAddress);
+						   (BCHAR *)demoRecipientAddress);
 
     if( result != BOAT_SUCCESS )
 	{

@@ -50,7 +50,7 @@ const BCHAR * demoUrl = "http://116.236.47.90:7545";
 /**
  * transfer recipient address
  */
-const BCHAR * demoRecipirntAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
+const BCHAR * demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
 
 
 BoatPlatoneWallet *g_platone_wallet_ptr;
@@ -179,7 +179,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     /* Set Contract Address */
     result = BoatPlatoneTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
 							   "0x333333",
-							   (BCHAR *)demoRecipirntAddress,
+							   (BCHAR *)demoRecipientAddress,
 							   BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
 
     if( result != BOAT_SUCCESS )
