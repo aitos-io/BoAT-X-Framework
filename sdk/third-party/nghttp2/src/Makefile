@@ -10,7 +10,7 @@ $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
 
 $(OBJECTS_DIR)/%.o:%.c
-	$(CC) -c $(BOAT_CFLAGS) $< -o $@
+	$(CC) -c -DHAVE_ARPA_INET_H $(BOAT_CFLAGS) $< -o $@
 
 clean:
 	-$(BOAT_RM) $(OBJECTS)

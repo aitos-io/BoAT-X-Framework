@@ -23,27 +23,26 @@
  * - USE_CREATE_PERSIST_WALLET   : create a persist wallet
  * - USE_LOAD_PERSIST_WALLET     : load a persist wallet
  * 
- *
  * macro used to select private key format:
  * - USE_PRIKEY_FORMAT_INTERNAL_GENERATION       : key is internal generated
  * - USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS   : key is pkcs format via external injection
  * - USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE : key is native format via external injection
- * 
  */
 
 /**
  * PKCS format demo key. The original private key of 'pkcs_demoKey' is 
- * "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
+ * "78a42562c1d19843fd6f5a0f07de0206fdcf2a682c5e0a9a814019abb531da3a"
  */
-const BCHAR * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
-                             "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
-                             "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
-                             "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
-                             "-----END EC PRIVATE KEY-----\n";
+const BCHAR * pkcs_demoKey =  "-----BEGIN PRIVATE KEY-----\n"
+                              "MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQgeKQlYsHRmEP9b1oPB94C\n"
+                              "Bv3PKmgsXgqagUAZq7Ux2jqhRANCAAQc/KEqonVm+mcT4I1Gqz0onHHSXQhqICEG\n"
+                              "1w2bbtfzYbkc7HnkEUyGHBdwus55Js8RoZdxcKjC9OTHsrgvOHts\n"
+                              "-----END PRIVATE KEY-----\n";
+
 /**
  * native demo key
  */
-const BCHAR * native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+const BCHAR * native_demoKey = "0x78a42562c1d19843fd6f5a0f07de0206fdcf2a682c5e0a9a814019abb531da3a";
 
 /**
  * test node url
@@ -53,7 +52,7 @@ const BCHAR * demoUrl = "http://127.0.0.1:8545";
 /**
  * transfer recipient address
  */
-const BCHAR * demoRecipirntAddress = "0x22506bd03b8130913efa2f0b6b1db60a2fcda9ff";
+const BCHAR * demoRecipirntAddress = "0x2474bc01af5b2648f0d554dbddda0e4fd8198f2f";
 
 
 BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
@@ -74,14 +73,14 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        memcpy(wallet_config.prikeyCtx_config.prikey_content, pkcs_demoKey, strlen(pkcs_demoKey) );
+        memcpy(wallet_config.prikeyCtx_config.prikey_content, pkcs_demoKey, strlen(pkcs_demoKey) + 1 );
         wallet_config.prikeyCtx_config.prikey_content_length = strlen(pkcs_demoKey) + 1; //length contain terminator
     #elif defined( USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE )
         BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        UtilityHex2Bin( wallet_config.prikeyCtx_config.prikey_content, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        UtilityHexToBin( wallet_config.prikeyCtx_config.prikey_content, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
         wallet_config.prikeyCtx_config.prikey_content_length = 32;
     #else  
         /* default is internal generation */  
@@ -127,7 +126,7 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR *wallet_name)
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        UtilityHex2Bin( wallet_config.prikeyCtx_config.prikey_content, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        UtilityHexToBin( wallet_config.prikeyCtx_config.prikey_content, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
         wallet_config.prikeyCtx_config.prikey_content_length = 32;
     #else  
         /* default is internal generation */  

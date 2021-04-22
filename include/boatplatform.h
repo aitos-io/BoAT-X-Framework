@@ -82,7 +82,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
  *   This function returns the address of the allocated memory. If allocation\n
  *  fails, it returns NULL.
  ******************************************************************************/
-void   *BoatMalloc(BUINT32 size);
+void   *BoatMalloc(size_t size);
 
 
 /*!****************************************************************************

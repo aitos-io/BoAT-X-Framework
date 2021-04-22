@@ -5,7 +5,7 @@ OBJECTS_DIR = $(BOAT_BUILD_DIR)/demo
 
 DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatcontract.a \
 				  $(BOAT_LIB_DIR)/libboatwallet.a \
-				  $(BOAT_LIB_DIR)/libboathwdep.a \
+				  $(BOAT_LIB_DIR)/libboatvendor.a \
 				  $(LINK_LIBS)
 
 .PHONY: all ethereum_demo platone_demo fiscbcos_demo fabric_demo 
@@ -32,14 +32,8 @@ ethereum_demo: demo_ethereum_transfer.c demo_ethereum_storeread.c
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_transfer_create_native
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_ethereum_transfer.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_transfer_load_internalGen
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_ethereum_transfer.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_transfer_load_pkcs
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_ethereum_transfer.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_transfer_load_native
+		-DUSE_LOAD_PERSIST_WALLET \
+		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_transfer_load
 
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_ethereum_storeread.c \
 		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
@@ -60,16 +54,10 @@ ethereum_demo: demo_ethereum_transfer.c demo_ethereum_storeread.c
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_storeread_create_native
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_ethereum_storeread.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_storeread_load_internalGen
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_ethereum_storeread.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_storeread_load_pkcs
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_ethereum_storeread.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_storeread_load_native		
+		-DUSE_LOAD_PERSIST_WALLET \
+		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_storeread_load	
 
-#Platone transfer demo build	
+#PLATONE transfer demo build	
 platone_demo: demo_platone_mycontract.c
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_platone_mycontract.c \
 		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
@@ -90,14 +78,8 @@ platone_demo: demo_platone_mycontract.c
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/platone/demo_platone_mycontract_create_native
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_platone_mycontract.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/platone/demo_platone_mycontract_load_internalGen
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_platone_mycontract.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/platone/demo_platone_mycontract_load_pkcs
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_platone_mycontract.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/platone/demo_platone_mycontract_load_native
+		-DUSE_LOAD_PERSIST_WALLET \
+		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/platone/demo_platone_mycontract_load
 
 #Fiscobcos transfer demo build	
 fiscbcos_demo: demo_fiscobcos_helloworld.c
@@ -120,14 +102,8 @@ fiscbcos_demo: demo_fiscobcos_helloworld.c
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fiscobcos/demo_fiscobcos_helloworld_create_native
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fiscobcos_helloworld.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fiscobcos/demo_fiscobcos_helloworld_load_internalGen
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fiscobcos_helloworld.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fiscobcos/demo_fiscobcos_helloworld_load_pkcs
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fiscobcos_helloworld.c \
-		-DUSE_LOAD_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fiscobcos/demo_fiscobcos_helloworld_load_native
+		-DUSE_LOAD_PERSIST_WALLET \
+		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fiscobcos/demo_fiscobcos_helloworld_load
 
 #Fabric transfer demo build	
 fabric_demo: demo_fabric_invoke.c

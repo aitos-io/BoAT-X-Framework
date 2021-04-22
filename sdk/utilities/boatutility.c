@@ -89,7 +89,7 @@ BUINT32 UtilityTrimBin( BOAT_OUT BUINT8 *to_ptr,
 }
 
 
-BUINT32 UtilityBin2Hex( BOAT_OUT BCHAR *to_str,
+BUINT32 UtilityBinToHex( BOAT_OUT BCHAR *to_str,
 						const BUINT8 *from_ptr,
 						BUINT32 from_len,
 						BIN2HEX_TRIM_MODE trim_mode,
@@ -196,7 +196,7 @@ BUINT32 UtilityBin2Hex( BOAT_OUT BCHAR *to_str,
 }
 
 
-BUINT32 UtilityHex2Bin( BOAT_OUT BUINT8 *to_ptr,
+BUINT32 UtilityHexToBin( BOAT_OUT BUINT8 *to_ptr,
                         BUINT32 to_size,
                         const BCHAR *from_str,
                         TRIMBIN_TRIM_MODE trim_mode,
@@ -451,7 +451,7 @@ void * UtilityChangeEndian( BOAT_INOUT void *value_ptr, BUINT32 value_len )
 }
 
 
-BUINT32 Utilityhtonl( BUINT32 from_host_integer )
+BUINT32 UtilityHtonl( BUINT32 from_host_integer )
 {
     BUINT32 to_big_integer;
 
@@ -461,7 +461,7 @@ BUINT32 Utilityhtonl( BUINT32 from_host_integer )
 }
 
 
-BUINT32 Utilityntohl( BUINT32 from_big_integer )
+BUINT32 UtilityNtohl( BUINT32 from_big_integer )
 {
     BSINT8 i;
     BUINT32 to_host_integer;
@@ -488,7 +488,7 @@ double UtilityWeiStrToEthDouble(const BCHAR *wei_str)
     BUINT32 i;
 
     // Conver wei from HEX to binary with leading zeros trimmed
-    wei_bin_len = UtilityHex2Bin( wei_bin, sizeof(wei_bin), wei_str, 
+    wei_bin_len = UtilityHexToBin( wei_bin, sizeof(wei_bin), wei_str, 
 								  TRIMBIN_LEFTTRIM, BOAT_FALSE );
 
     // Above binary representation of wei is in bigendian and it's possibly
@@ -551,7 +551,7 @@ double UtilityWeiStrToEthDouble(const BCHAR *wei_str)
 }
 
 
-void UtilityReadBigendToBignum(const BUINT8 *in_number, utility_bignum256 *out_number)
+void UtilityReadBigendToBignum(const BUINT8 *in_number, utilityBignum256 *out_number)
 {
 	BUINT32 temp = 0;
 	
@@ -574,7 +574,7 @@ void UtilityReadBigendToBignum(const BUINT8 *in_number, utility_bignum256 *out_n
 }
 
 
-void UtilityWriteBignumToBigend(const utility_bignum256 *in_number, BUINT8 *out_number)
+void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_number)
 {
 	BUINT32 temp = in_number->val[8];
 	
@@ -592,7 +592,7 @@ void UtilityWriteBignumToBigend(const utility_bignum256 *in_number, BUINT8 *out_
 
 BOAT_RESULT UtilityStringLenCheck( const BCHAR *string )
 {
-    for (int i = 0; i < BOAT_MAX_LEN; i++)
+    for (int i = 0; i < BOAT_STRING_MAX_LEN; i++)
     {
         if ( *(string + i) == '\0' )
         {

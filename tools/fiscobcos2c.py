@@ -483,7 +483,7 @@ class CFunctionGen():
         func_body_str     += '    }\n\n'
 
         # Set Nonce
-        if abi_item['stateMutability'] == "pure" or abi_item['stateMutability'] == "view":    
+        if abi_item['stateMutability'] != "pure" and abi_item['stateMutability'] != "view":    
             func_body_str += '    boat_try(BoatFiscobcosTxSetNonce(tx_ptr, BOAT_FISCOBCOS_NONCE_AUTO));\n\n'
 
         # Construct solidity function prototype
@@ -597,7 +597,7 @@ class CFunctionGen():
             # for stateful transaction
             func_body_str += '    boat_try(BoatFiscobcosTxSetData(tx_ptr, &data_field));\n\n'
             func_body_str += '    boat_try(BoatFiscobcosTxSend(tx_ptr));\n\n'
-            func_body_str += '    UtilityBin2Hex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
+            func_body_str += '    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
          
         
         # Cleanup Label

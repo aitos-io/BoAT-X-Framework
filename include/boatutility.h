@@ -30,7 +30,7 @@ boatutility.h is header file for boatwallet utility functions.
  * @{
  */
 
-//!@brief Argument type for UtilityTrimBin(), UtilityHex2Bin() and UtilityUint32ToBigend()
+//!@brief Argument type for UtilityTrimBin(), UtilityHexToBin() and UtilityUint32ToBigend()
 typedef enum
 {
     TRIMBIN_TRIM_NO,    //!< Don't trim zeros
@@ -38,7 +38,7 @@ typedef enum
 }TRIMBIN_TRIM_MODE;
 
 
-//!@brief Argument type for UtilityHex2Bin()
+//!@brief Argument type for UtilityHexToBin()
 typedef enum
 {
     BIN2HEX_LEFTTRIM_UNFMTDATA = 0,     //!< Trim {0x00, 0x01, 0x00 0xAB} => "0x000100AB" or "000100AB"
@@ -46,7 +46,7 @@ typedef enum
 	BIN2HEX_LEFTTRIM_TWOHEXPERBYTE      //!< Trim {0x00, 0x01, 0x00 0xAB} => "0x0100AB" or "0100AB"
 }BIN2HEX_TRIM_MODE;
 
-//!@brief Argument type for UtilityBin2Hex()
+//!@brief Argument type for UtilityBinToHex()
 typedef enum
 {
     BIN2HEX_PREFIX_0x_NO = 0,   //<! Prepend "0x" to converted HEX string
@@ -69,7 +69,7 @@ typedef struct TStringWithLen
 typedef struct 
 {
 	BUINT32 val[9];
-} utility_bignum256;
+} utilityBignum256;
 
 extern const BCHAR * const g_log_level_name_str[];
 
@@ -330,7 +330,7 @@ BUINT32 UtilityTrimBin( BOAT_OUT BUINT8 *to_ptr,
  *   If <from_len> is 0 or <from_ptr> is NULL, and <to_str> is NOT NULL, this
  *   function writes a '\0' to <to_str>, i.e. a NULL string and returns 0.
  ******************************************************************************/
-BUINT32 UtilityBin2Hex( BOAT_OUT BCHAR *to_str,
+BUINT32 UtilityBinToHex( BOAT_OUT BCHAR *to_str,
 						const BUINT8 *from_ptr,
 						BUINT32 from_len,
 						BIN2HEX_TRIM_MODE trim_mode,
@@ -390,7 +390,7 @@ BUINT32 UtilityBin2Hex( BOAT_OUT BCHAR *to_str,
  *	
  * @see UtilityTrimBin()
 *******************************************************************************/
-BUINT32 UtilityHex2Bin( BOAT_OUT BUINT8 *to_ptr,
+BUINT32 UtilityHexToBin( BOAT_OUT BUINT8 *to_ptr,
                         BUINT32 to_size,
                         const BCHAR *from_str,
                         TRIMBIN_TRIM_MODE trim_mode,
@@ -494,7 +494,7 @@ void * UtilityChangeEndian(BOAT_INOUT void *value_ptr, BUINT32 value_len);
  * 	
  * @see UtilityUint32ToBigend()
  ******************************************************************************/
-BUINT32 Utilityhtonl(BUINT32 from_host_integer);
+BUINT32 UtilityHtonl(BUINT32 from_host_integer);
 
 
 /*!****************************************************************************
@@ -510,9 +510,9 @@ BUINT32 Utilityhtonl(BUINT32 from_host_integer);
  * @return
  *   This function returns the converted host endian BUINT32 integer.
  *
- * @see Utilityhtonl()
+ * @see UtilityHtonl()
  ******************************************************************************/
-BUINT32 Utilityntohl(BUINT32 from_host_integer);
+BUINT32 UtilityNtohl(BUINT32 from_host_integer);
 
 
 /*!****************************************************************************
@@ -552,7 +552,7 @@ double UtilityWeiStrToEthDouble(const BCHAR *wei_str);
 *    The pointer to stored converted data in big number format.
 * @see UtilityWriteBignumToBigend
 *******************************************************************************/
-void UtilityReadBigendToBignum(const BUINT8 *in_number, utility_bignum256 *out_number);
+void UtilityReadBigendToBignum(const BUINT8 *in_number, utilityBignum256 *out_number);
 
 
 /*!****************************************************************************
@@ -568,7 +568,7 @@ void UtilityReadBigendToBignum(const BUINT8 *in_number, utility_bignum256 *out_n
 *    output data pointer, It's should be a 32 bytes length array.
 * @see UtilityReadBigendToBignum
 *******************************************************************************/
-void UtilityWriteBignumToBigend(const utility_bignum256 *in_number, BUINT8 *out_number);
+void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_number);
 
 
 /*!****************************************************************************

@@ -361,8 +361,7 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 	close(sockfd);
 #if (HLFABRIC_TLS_SUPPORT == 1) 
 	// free tls releated
-		//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
-	return -1;
+	//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
 #endif
 }
 

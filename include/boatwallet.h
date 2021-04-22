@@ -26,7 +26,7 @@ boatwallet.h is the SDK header file.
 /*! @defgroup wallet boat wallet API
  * @{
  */
-#include <stdbool.h>
+
 #include "boattypes.h"
 
 //! @brief The generate mode of the used private key

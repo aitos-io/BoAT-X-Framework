@@ -213,7 +213,7 @@ class CFunctionGen():
             func_body_str += '    data_field.field_len = rlp_stream_ptr->stream_len;\n'
             func_body_str += '    boat_try(BoatPlatoneTxSetData(tx_ptr, &data_field));\n\n'
             func_body_str += '    boat_try(BoatPlatoneTxSend(tx_ptr));\n\n'
-            func_body_str += '    UtilityBin2Hex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
+            func_body_str += '    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
          
         
         # Cleanup Label

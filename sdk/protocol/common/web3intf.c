@@ -77,7 +77,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR * json_string,
 	if( (json_string == NULL) || (child_name == NULL) || (result_out == NULL) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	// Convert string to cJSON
@@ -1281,7 +1281,7 @@ BCHAR *web3_fiscobcos_getBlockNumber( Web3IntfContext *web3intf_context_ptr,
 
     BoatLog(BOAT_LOG_VERBOSE, "RESPONSE: %s", rpc_response_str);
 	
-		// return entire RESPONSE content	
+    // return entire RESPONSE content	
 	return_value_ptr = rpc_response_str;
 
     // Exceptional Clean Up

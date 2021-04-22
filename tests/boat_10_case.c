@@ -216,7 +216,7 @@ START_TEST(test_Api_SetGasprice) {
 	//Set Gasprice
 	//case 1:
 	BoatFieldMax32B gas_price_ptr;
-	ck_assert(UtilityHex2Bin(gas_price_ptr.field,32,TEST_ETH_GASPRICE,TRIMBIN_LEFTTRIM,BOAT_TRUE) != 0);
+	ck_assert(UtilityHexToBin(gas_price_ptr.field,32,TEST_ETH_GASPRICE,TRIMBIN_LEFTTRIM,BOAT_TRUE) != 0);
 	ck_assert(BoatEthTxSetGasPrice(&g_test_tx_ptr,gas_price_ptr.field) == BOAT_SUCCESS);
 	ck_assert_str_eq(g_test_tx_ptr.rawtx_fields.gasprice.field,gas_price_ptr.field);
 
@@ -233,7 +233,7 @@ START_TEST(test_Api_SetGaslimit) {
 	//Set GasLimit
 	//case 1:
 	BoatFieldMax32B gas_limit_ptr;
-	ck_assert(UtilityHex2Bin(gas_limit_ptr.field,32,TEST_ETH_GASLIMIT,TRIMBIN_LEFTTRIM,BOAT_TRUE) != 0);
+	ck_assert(UtilityHexToBin(gas_limit_ptr.field,32,TEST_ETH_GASLIMIT,TRIMBIN_LEFTTRIM,BOAT_TRUE) != 0);
 	ck_assert(BoatEthTxSetGasLimit(&g_test_tx_ptr,gas_limit_ptr.field) == BOAT_SUCCESS);
 	ck_assert_str_eq(g_test_tx_ptr.rawtx_fields.gaslimit.field,gas_limit_ptr.field);
 	//case 2:
@@ -249,7 +249,7 @@ START_TEST(test_Api_SetRecipientAddr) {
 	//Set GasLimit
 	//case 1:
 	BUINT8 recipient_address[BOAT_ETH_ADDRESS_SIZE];
-	ck_assert(UtilityHex2Bin(recipient_address,20,TEST_ETH_RECIPIENT_ADDR,TRIMBIN_TRIM_NO,BOAT_TRUE) != 0);
+	ck_assert(UtilityHexToBin(recipient_address,20,TEST_ETH_RECIPIENT_ADDR,TRIMBIN_TRIM_NO,BOAT_TRUE) != 0);
 	ck_assert(BoatEthTxSetRecipient(&g_test_tx_ptr,recipient_address) == BOAT_SUCCESS);
 	ck_assert_str_eq(g_test_tx_ptr.rawtx_fields.recipient,recipient_address);
 
@@ -263,7 +263,7 @@ START_TEST(test_Api_SetValue) {
 	//Set value
 	//case 1:
 	BoatFieldMax32B value_ptr;
-	ck_assert(UtilityHex2Bin(value_ptr.field,32,TEST_ETH_VALUE,TRIMBIN_LEFTTRIM,BOAT_TRUE) != 0);
+	ck_assert(UtilityHexToBin(value_ptr.field,32,TEST_ETH_VALUE,TRIMBIN_LEFTTRIM,BOAT_TRUE) != 0);
 	ck_assert(BoatEthTxSetValue(&g_test_tx_ptr,value_ptr.field) == BOAT_SUCCESS);
 	ck_assert_str_eq(g_test_tx_ptr.rawtx_fields.value.field,value_ptr.field);
 

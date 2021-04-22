@@ -288,7 +288,7 @@ __BOATSTATIC __BOATINLINE BoatPlatoneWallet * BoatPlatoneWalletInit(const BoatPl
  ******************************************************************************/
 __BOATSTATIC __BOATINLINE void BoatPlatoneWalletDeInit(BoatPlatoneWallet *wallet_ptr)
 {
-    return BoatEthWalletDeInit((BoatEthWallet *) wallet_ptr);
+    BoatEthWalletDeInit((BoatEthWallet *) wallet_ptr);
 }
 
 
@@ -399,6 +399,17 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetData(BoatPlatoneTx *tx_ptr
 __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneGetTransactionReceipt(BoatPlatoneTx *tx_ptr)
 {
     return BoatEthGetTransactionReceipt((BoatEthTx *) tx_ptr);
+}
+
+/*!****************************************************************************
+ * @brief Prase RPC method RESPONSE.
+ * @see BoatEthPraseRpcResponseResult()
+ ******************************************************************************/
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR * json_string, 
+                                                                        const BCHAR * child_name, 
+                                                                        BoatFieldVariable *result_out)
+{
+    return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);
 }
 
 /*! @}*/

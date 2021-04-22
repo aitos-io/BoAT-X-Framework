@@ -411,7 +411,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     // which is printed.
     
     // Print transaction recipient to log
-    if( 0 == UtilityBin2Hex( rlp_stream_hex_str, tx_ptr->rawtx_fields.recipient, BOAT_FISCOBCOS_ADDRESS_SIZE,
+    if( 0 == UtilityBinToHex( rlp_stream_hex_str, tx_ptr->rawtx_fields.recipient, BOAT_FISCOBCOS_ADDRESS_SIZE,
 							 BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE) )
     {
         strcpy(rlp_stream_hex_str, "NULL");
@@ -432,7 +432,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
 					 tx_ptr->rawtx_fields.data.field_ptr, tx_ptr->rawtx_fields.data.field_len);
 
 	//set signedtx
-    UtilityBin2Hex( rlp_stream_hex_str,
+    UtilityBinToHex( rlp_stream_hex_str,
 					rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
     param_fiscobcos_sendRawTransaction.signedtx_str = rlp_stream_hex_str;
@@ -440,7 +440,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
 	//set groupid
 	BCHAR   groupid_hexstr[67];
 	memset(groupid_hexstr, 0, sizeof(groupid_hexstr));
-	UtilityBin2Hex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
+	UtilityBinToHex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
 					BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
 	param_fiscobcos_sendRawTransaction.groupid = groupid_hexstr;
 	
@@ -448,10 +448,17 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
 												     tx_ptr->wallet_ptr->network_info.node_url_ptr,
 												     &param_fiscobcos_sendRawTransaction );
 
-    if( tx_hash_str == NULL ) boat_throw(BOAT_ERROR_RPC_FAIL, FiscobcosSendRawtx_cleanup);
+    result = BoatFiscobcosPraseRpcResponseResult( tx_hash_str, "", 
+											&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    if( result != BOAT_SUCCESS )
+	{
+		BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
+		boat_throw(BOAT_ERROR_RPC_FAIL, FiscobcosSendRawtx_cleanup);
+	}                                        
 
-    tx_ptr->tx_hash.field_len = UtilityHex2Bin( tx_ptr->tx_hash.field, 32, 
-								                tx_hash_str, TRIMBIN_TRIM_NO, BOAT_FALSE );
+    tx_ptr->tx_hash.field_len = UtilityHexToBin( tx_ptr->tx_hash.field, 32, 
+								                (BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, 
+                                                TRIMBIN_TRIM_NO, BOAT_FALSE );
 
     result = BOAT_SUCCESS;
 

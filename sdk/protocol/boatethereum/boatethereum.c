@@ -440,7 +440,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     // which is printed.
     
     // Print transaction recipient to log
-    if( 0 == UtilityBin2Hex(rlp_stream_hex_str, tx_ptr->rawtx_fields.recipient, 20, 
+    if( 0 == UtilityBinToHex(rlp_stream_hex_str, tx_ptr->rawtx_fields.recipient, 20, 
 							BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE) )
     {
         strcpy(rlp_stream_hex_str, "NULL");
@@ -460,7 +460,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
 	BoatLog_hexdump( BOAT_LOG_VERBOSE, "Transaction Message(Data     )", 
 					 tx_ptr->rawtx_fields.data.field_ptr, tx_ptr->rawtx_fields.data.field_len);
 
-    UtilityBin2Hex( rlp_stream_hex_str, rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len,
+    UtilityBinToHex( rlp_stream_hex_str, rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len,
 				    BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
 
     param_eth_sendRawTransaction.signedtx_str = rlp_stream_hex_str;
@@ -476,8 +476,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
 		boat_throw(BOAT_ERROR_RPC_FAIL, EthSendRawtx_cleanup);
 	}
 
-    tx_ptr->tx_hash.field_len = UtilityHex2Bin( tx_ptr->tx_hash.field, 32, 
-												(BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
+    tx_ptr->tx_hash.field_len = UtilityHexToBin( tx_ptr->tx_hash.field, 32, 
+												(BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
 												TRIMBIN_TRIM_NO, BOAT_FALSE);
 
     result = BOAT_SUCCESS;

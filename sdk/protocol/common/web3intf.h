@@ -133,7 +133,7 @@ extern "C" {
    If "result" object is string, this function will returns contents of "result" . 
    If "result" object is still json object, the parameter named "child_name" will actived,
    if "child_name" object is string, this function will returns contents of "child_name"; 
-   if "child_name" object is other types, his function will prompt "un-implemention yet".
+   if "child_name" object is other types, this function will prompt "un-implemention yet".
    For other types of "result" this function is not support yet.
 
 @param[in] json_string

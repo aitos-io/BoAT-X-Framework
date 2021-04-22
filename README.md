@@ -141,7 +141,7 @@ $make boatlibs
 ```
 The built libraries locate at:
 ./lib/libboatwallet.a
-./lib/libboathwdep.a
+./lib/libboatvendor.a
 
 
 #### To clean everything
@@ -210,7 +210,7 @@ Add include file search path:
     
 Add to link options all library files in <SDKRoot>/lib in sequence:
 +   libboatwallet.a
-+   libboathwdep.a
++   libboatvendor.a
 
 Add to link options: -lcurl -lcrypto
 

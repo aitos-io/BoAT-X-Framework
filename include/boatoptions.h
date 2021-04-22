@@ -98,15 +98,15 @@ boatoptions.h defines options for compiling.
 #define HLFABRIC_ENDORSER_MAX_NUM                10  //!< support endorser max number
 #define HLFABRIC_ORDERER_MAX_NUM                 4   //!< support orderer max number
 
-#define HLFABRIC_TLS_SUPPORT                     0 //!< If need client support TLS, set it to 1.
-#define HLFABRIC_TLS_IDENTIFY_CLIENT             1 //!< If server need identify client, set it to 1.
+#define HLFABRIC_TLS_SUPPORT                     1 //!< If need client support TLS, set it to 1.
+#define HLFABRIC_TLS_IDENTIFY_CLIENT             0 //!< If server need identify client, set it to 1.
                                                    //!< this macro valid only HLFABRIC_TLS_SUPPORT has
                                                    //!< set to 1.
-#define HLFABRIC_ROOTCA_MAX_NUM                  5 //!< support ROOT CA certificate max number
+#define HLFABRIC_ROOTCA_MAX_NUM                  3 //!< support ROOT CA certificate max number
 
-#define HTTP2_SEND_MAX_BUF                       4096
+#define HTTP2_SEND_BUF_MAX_LEN                   4096 //!< The maximum length of HTTP2 send buffer
 
-#define BOAT_MAX_LEN							 4096
+#define BOAT_STRING_MAX_LEN					     4096 //!< The maximum allowed string length
 
 #endif /* end of PROTOCOL_USE_HLFABRIC */
 
