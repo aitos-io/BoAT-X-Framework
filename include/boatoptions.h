@@ -106,8 +106,10 @@ boatoptions.h defines options for compiling.
 
 #define HTTP2_SEND_BUF_MAX_LEN                   4096 //!< The maximum length of HTTP2 send buffer
 
-#define BOAT_STRING_MAX_LEN					     4096 //!< The maximum allowed string length
+
 
 #endif /* end of PROTOCOL_USE_HLFABRIC */
+
+#define BOAT_STRING_MAX_LEN					     4096 //!< The maximum allowed string length
 
 #endif /* end of __BOATOPTIONS_H__ */
