@@ -102,18 +102,18 @@ PLATFORM_TARGET ?= LINUX-X86-64
 
 
 # Soft-crypto Dependencies
-# The valid option value of SOFT_CRYPTO_DEP list as below:
+# The valid option value of SOFT_CRYPTO list as below:
 # - CRYPTO_DEFAULT      : default soft crypto algorithm
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
-SOFT_CRYPTO_DEP ?= CRYPTO_DEFAULT
+SOFT_CRYPTO ?= CRYPTO_DEFAULT
 
-ifeq ($(SOFT_CRYPTO_DEP), CRYPTO_DEFAULT)
+ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default \
 	                -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default/aes \
                     -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
                     -I$(BOAT_BASE_DIR)/vendor/common/storage \
 					-I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_crypto_default
-else ifeq ($(SOFT_CRYPTO_DEP), CRYPTO_MBEDTLS)
+else ifeq ($(SOFT_CRYPTO), CRYPTO_MBEDTLS)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS/include \
                     -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
                     -I$(BOAT_BASE_DIR)/vendor/common/storage \
@@ -134,7 +134,7 @@ BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \
 BOAT_LFLAGS := $(BOAT_COMMON_LINK_FLAGS) $(TARGET_SPEC_LINK_FLAGS)
 LINK_LIBS := $(EXTERNAL_LIBS) $(TARGET_SPEC_LIBS)
 
-export SOFT_CRYPTO_DEP
+export SOFT_CRYPTO
 export PLATFORM_TARGET
 export BOAT_BASE_DIR
 export BOAT_LIB_DIR
