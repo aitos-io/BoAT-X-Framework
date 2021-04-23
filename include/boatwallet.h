@@ -72,7 +72,7 @@ typedef enum
 typedef struct TBoatWalletExtraData
 {
     BUINT32  value_len;  //!< Length of the stored private key
-    BUINT8   value[512]; //!< Private key content when a secure storage environment is not available
+    BUINT8   value[256]; //!< Private key content when a secure storage environment is not available
 }BoatWalletExtraData;
 
 
@@ -96,8 +96,13 @@ typedef struct TBoatWalletPriKeyCtx_config
 	BoatWalletPriKeyGenMode  prikey_genMode;        //!< Generate mode of private key
 	BoatWalletPriKeyFormat   prikey_format;         //!< Format of private key
     BoatWalletPriKeyType     prikey_type;           //!< Type of private key
-    BUINT8                   prikey_content[512];   //!< The externally injected private key contents
-	BUINT32                  prikey_content_length; //!< The externally injected private key length, it contains the terminator for the string format.
+    BoatFieldVariable        prikey_content;        /*!< The externally injected private key contents.\n
+                                                         A pointer to externally injected private key content, the content of this 
+														 field point to  will be COPYED to the corresponding field of the wallet, 
+														 if user dynamically allocated space for this pointer, then the user should      
+	                                                     free it after @ref BoatWalletCreate invoked. 
+														 @note For content of type string, such as PEM format data, the length includes 
+                                                         the terminating null byte */  
 }BoatWalletPriKeyCtx_config;
 
 

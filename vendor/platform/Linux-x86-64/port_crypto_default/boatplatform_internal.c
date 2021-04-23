@@ -468,13 +468,13 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native( const BoatWall
 	}
 
 	// 1- update private key
-	if( config->prikey_content_length > sizeof(config->prikey_content) )
+	if( config->prikey_content.field_len > sizeof(pkCtx->extra_data.value) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "Error: length of injection key is too long." );
 		return BOAT_ERROR;
 	}
-	memcpy(pkCtx->extra_data.value, config->prikey_content, config->prikey_content_length);
-	pkCtx->extra_data.value_len = config->prikey_content_length;
+	memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
+	pkCtx->extra_data.value_len = config->prikey_content.field_len;
 
 	// 2- update private key format
 	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;

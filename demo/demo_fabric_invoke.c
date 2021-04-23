@@ -107,13 +107,12 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	wallet_config.accountPriKey_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
 	wallet_config.accountPriKey_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
 	wallet_config.accountPriKey_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-	memcpy(wallet_config.accountPriKey_config.prikey_content, fabric_client_demokey, strlen(fabric_client_demokey) + 1 );
-	wallet_config.accountPriKey_config.prikey_content_length = strlen(fabric_client_demokey) + 1;
+	wallet_config.accountPriKey_config.prikey_content.field_ptr = (BUINT8 *)fabric_client_demokey;
+	wallet_config.accountPriKey_config.prikey_content.field_len = strlen(fabric_client_demokey) + 1; //length contain terminator
 
 	//set cert context
 	wallet_config.accountCertContent.field_ptr = (BUINT8 *)fabric_client_democert;
 	wallet_config.accountCertContent.field_len = strlen(fabric_client_democert) + 1;
-
 
 	//set rootCA info
 	wallet_config.rootCaNumber = 3;
@@ -123,7 +122,6 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	wallet_config.rootCaContent[1].field_ptr = (BUINT8 *)fabric_ca2_democert;
 	wallet_config.rootCaContent[2].field_len =  strlen(fabric_ca3_democert) + 1;
 	wallet_config.rootCaContent[2].field_ptr = (BUINT8 *)fabric_ca3_democert;
-
 
 	//set endorser info
 	wallet_config.endorserNumber = 2;
@@ -136,7 +134,6 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	wallet_config.ordererNumber = 1;
 	memcpy(wallet_config.orderer[0].nodeUrl , fabric_demo_order1_url, strlen(fabric_demo_order1_url) + 1);
 	memcpy(wallet_config.orderer[0].hostName, fabric_demo_order1_hostName, strlen(fabric_demo_order1_hostName) + 1);
-	
 
 	/* create fabric wallet */
 	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig) );
