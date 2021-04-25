@@ -70,9 +70,11 @@ BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32
     {
         if( BOAT_SUCCESS != BoatPort_keyCreate( &config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx ) )
         {
+            web3_deinit(wallet_ptr->web3intf_context_ptr);
+            BoatFree(wallet_ptr);
             BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
             return NULL;
-        }    
+        }
     }
     
 	// Configure account address	

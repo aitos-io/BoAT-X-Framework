@@ -532,6 +532,8 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 		switch (config->prikey_format)
 		{
 			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
+				BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );
+				result = BOAT_ERROR;
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
 				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[native] set..." );
