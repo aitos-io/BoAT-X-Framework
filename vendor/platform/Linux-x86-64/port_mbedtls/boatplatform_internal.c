@@ -853,7 +853,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs( const BoatWallet
 	BOAT_RESULT            result = BOAT_SUCCESS;
 
 	// 0- check input parameter
-	if( (config == NULL) || (pkCtx == NULL) )
+	if( (config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "input parameter can not be NULL." );
 		return BOAT_ERROR;

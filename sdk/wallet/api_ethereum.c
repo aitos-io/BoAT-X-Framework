@@ -66,12 +66,15 @@ BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32
     BoatEthWalletSetEIP155Comp(wallet_ptr, config_ptr->eip155_compatibility);
 	
 	//Configure priKey context information
-    if( BOAT_SUCCESS != BoatPort_keyCreate( &config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx ) )
+    if(config_ptr->prikeyCtx_config.prikey_content.field_ptr != NULL)
     {
-        BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
-        return NULL;
+        if( BOAT_SUCCESS != BoatPort_keyCreate( &config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx ) )
+        {
+            BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
+            return NULL;
+        }    
     }
-	
+    
 	// Configure account address	
 	BoatHash(BOAT_HASH_KECCAK256, wallet_ptr->account_info.prikeyCtx.pubkey_content, 
 			 64, pubkeyHash, &hashLenDummy, NULL);
