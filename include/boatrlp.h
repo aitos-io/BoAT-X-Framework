@@ -156,9 +156,10 @@ BOAT_RESULT RlpInitListObject(RlpObject *rlp_object_ptr);
  *   The child RlpObject to append.
  *
  *@return
- *   This function returns non-negative descriptor index where the RlpObject is\n
+ *   This function returns non-negative descriptor index where the RlpObject is
  *   appended if successful.\n
- *   Otherwise it returns one of the error codes.
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *   for details.
  ******************************************************************************/
 BOAT_RESULT RlpEncoderAppendObjectToList(RlpObject *to_list_object_ptr, RlpObject *from_object_ptr);
 
@@ -184,8 +185,8 @@ BOAT_RESULT RlpEncoderAppendObjectToList(RlpObject *to_list_object_ptr, RlpObjec
  *
  * @return
  *   This function returns the replaced RlpObject's descriptor index in the parent
- *   LIST RlpObject if successful.\n
- *   Otherwise it returns one of the error codes.
+ *   LIST RlpObject if successful.
+ *   \n It returns one of the error codes if append. Refer to header file boaterrcode.h for details.
  ******************************************************************************/
 BSINT32 RlpEncoderReplaceObjectInList(RlpObject *to_list_object_ptr, BSINT32 replace_index, RlpObject *from_object_ptr);
 
@@ -209,9 +210,9 @@ BSINT32 RlpEncoderReplaceObjectInList(RlpObject *to_list_object_ptr, BSINT32 rep
  *   The descriptor index to get the RlpObject.
  *
  * @return
- *   This function returns the pointer to the RlpObject specified by the descriptor\n
- *   index in the parent if successful.\n
- *   Otherwise it returns NULL.
+ *   This function returns the pointer to the RlpObject specified by the descriptor
+ *   index in the parent if successful.
+ *   \n It returns NULL if encode failed.
  ******************************************************************************/
 RlpObject * RlpEncoderGetListDescriptor(RlpObject *rlp_object_ptr, BUINT32 descriptor_index);
 
@@ -300,7 +301,7 @@ BUINT32 RlpRecursiveCalcEncodingSize(RlpObject *rlp_object_ptr, BOAT_OUT BUINT8 
  *   where "|" means concatenaion.
  *   \n If encoding completes successfully, call RlpGetEncodedStream() to get the
  *   encoded RLP stream.
- *   \nIf the RlpObject is no longer required, call RlpRecursiveDeleteObject() to
+ *   \n If the RlpObject is no longer required, call RlpRecursiveDeleteObject() to
  *   delete all tree-ed RlpObject.
  *
  * @note
@@ -311,15 +312,15 @@ BUINT32 RlpRecursiveCalcEncodingSize(RlpObject *rlp_object_ptr, BOAT_OUT BUINT8 
  *
  * @param[in] parent_storage_ptr
  *   The parent stream object to store the encoded RLP stream.\n\n
- *   If the <rlp_object_ptr> is the most outer LIST RlpObject, <parent_storage_ptr>\n
- *   can be specified with NULL, which allows the RLP encoder to automatically\n
+ *   If the <rlp_object_ptr> is the most outer LIST RlpObject, <parent_storage_ptr>
+ *   can be specified with NULL, which allows the RLP encoder to automatically
  *   calculate the stream size and allocate memory for it.\n\n
- *   For a STRING RlpObject, the caller must calculate its size with\n
+ *   For a STRING RlpObject, the caller must calculate its size with
  *   RlpRecursiveCalcEncodingSize() and allcoate <parent_storage_ptr> for it. 
  *
  * @return 
- *   This function returns BOAT_SUCCESS if successful.\n
- *   Otherwise it returns one of the error codes.
+ *   This function returns BOAT_SUCCESS if successful.
+ *   \n It returns one of the error codes if encode failed. Refer to header file boaterrcode.h for details.
  *
  * @see RlpRecursiveCalcEncodingSize() RlpGetEncodedStream() RlpRecursiveDeleteObject()
  ******************************************************************************/
@@ -345,8 +346,8 @@ BOAT_RESULT RlpEncode(RlpObject *rlp_object_ptr, RlpEncodedStreamObject *parent_
  *   RlpRecursiveCalcEncodingSize() and allcoate <parent_storage_ptr> for it. 
  *
  * @return 
- *   This function returns BOAT_SUCCESS if successful.\n
- *   Otherwise it returns one of the error codes.
+ *   This function returns BOAT_SUCCESS if successful.
+ *   \n It returns one of the error codes if re-encode failed. Refer to header file boaterrcode.h for details.
  *
  * @see RlpEncode()
  ******************************************************************************/
@@ -365,8 +366,8 @@ BOAT_RESULT RlpReEncode(RlpObject *rlp_object_ptr, RlpEncodedStreamObject *paren
  *   The encoded RlpObject.
  *  
  * @return 
- *   This function returns pointer to the encoded RLP stream object.\n
- *   Otherwise it returns NULL.
+ *   This function returns pointer to the encoded RLP stream object.
+ *   \n It returns NULL if get failed.
  * 
  * @see RlpEncode() RlpReEncode()
  ******************************************************************************/
