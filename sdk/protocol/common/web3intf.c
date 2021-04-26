@@ -299,7 +299,7 @@ BCHAR *web3_eth_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_getTransactionCount_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getTransactionCount_cleanup);
     }
     
     web3intf_context_ptr->web3_message_id++;
@@ -307,7 +307,7 @@ BCHAR *web3_eth_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
     if( node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_getTransactionCount_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getTransactionCount_cleanup);
     }
     
     // Construct the REQUEST
@@ -390,7 +390,7 @@ BCHAR *web3_eth_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_gasPrice_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_gasPrice_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -398,7 +398,7 @@ BCHAR *web3_eth_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_
     if( node_url_str == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_gasPrice_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_gasPrice_cleanup);
     }
     
     // Construct the REQUEST
@@ -479,7 +479,7 @@ BCHAR *web3_eth_getBalance(Web3IntfContext *web3intf_context_ptr,
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_getBalance_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getBalance_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -487,7 +487,7 @@ BCHAR *web3_eth_getBalance(Web3IntfContext *web3intf_context_ptr,
     if( node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_getBalance_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getBalance_cleanup);
     }
     
     // Construct the REQUEST
@@ -570,7 +570,7 @@ BCHAR *web3_eth_sendRawTransaction( Web3IntfContext *web3intf_context_ptr,
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_sendRawTransaction_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_sendRawTransaction_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -578,7 +578,7 @@ BCHAR *web3_eth_sendRawTransaction( Web3IntfContext *web3intf_context_ptr,
     if( node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_sendRawTransaction_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_sendRawTransaction_cleanup);
     }
     
     // Construct the REQUEST
@@ -661,7 +661,7 @@ BCHAR *web3_eth_getStorageAt( Web3IntfContext *web3intf_context_ptr,
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_getStorageAt_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getStorageAt_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -669,7 +669,7 @@ BCHAR *web3_eth_getStorageAt( Web3IntfContext *web3intf_context_ptr,
     if( node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_getStorageAt_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getStorageAt_cleanup);
     }
     
     // Construct the REQUEST
@@ -753,7 +753,7 @@ BCHAR *web3_eth_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_pt
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_getTransactionReceiptStatus_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getTransactionReceiptStatus_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -761,7 +761,7 @@ BCHAR *web3_eth_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_pt
     if( node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_getTransactionReceiptStatus_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getTransactionReceiptStatus_cleanup);
     }
     
    
@@ -844,7 +844,7 @@ BCHAR *web3_eth_call(Web3IntfContext *web3intf_context_ptr,
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_call_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_call_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -852,7 +852,7 @@ BCHAR *web3_eth_call(Web3IntfContext *web3intf_context_ptr,
     if( node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_eth_call_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_call_cleanup);
     }
     
     // Construct the REQUEST
@@ -946,7 +946,7 @@ BCHAR *web3_fiscobcos_call( Web3IntfContext *web3intf_context_ptr,
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_fiscobcos_call_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_call_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -954,7 +954,7 @@ BCHAR *web3_fiscobcos_call( Web3IntfContext *web3intf_context_ptr,
     if( node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_fiscobcos_call_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_call_cleanup);
     }
     
     // Construct the REQUEST
@@ -1039,7 +1039,7 @@ BCHAR *web3_fiscobcos_sendRawTransaction( Web3IntfContext *web3intf_context_ptr,
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_fiscobcos_sendRawTransaction_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_sendRawTransaction_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -1047,7 +1047,7 @@ BCHAR *web3_fiscobcos_sendRawTransaction( Web3IntfContext *web3intf_context_ptr,
     if( node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_fiscobcos_sendRawTransaction_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_sendRawTransaction_cleanup);
     }
     
     // Construct the REQUEST
@@ -1130,7 +1130,7 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus( Web3IntfContext *web3intf_con
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -1138,7 +1138,7 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus( Web3IntfContext *web3intf_con
     if( node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
     }
     
 	
@@ -1221,7 +1221,7 @@ BCHAR *web3_fiscobcos_getBlockNumber( Web3IntfContext *web3intf_context_ptr,
     if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_fiscobcos_getBlockNumber_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getBlockNumber_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -1229,7 +1229,7 @@ BCHAR *web3_fiscobcos_getBlockNumber( Web3IntfContext *web3intf_context_ptr,
     if( node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_NULL_POINTER, web3_fiscobcos_getBlockNumber_cleanup);
+        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getBlockNumber_cleanup);
     }
     
 	

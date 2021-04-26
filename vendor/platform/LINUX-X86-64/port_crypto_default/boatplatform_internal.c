@@ -84,7 +84,7 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 	if( (digest == NULL) || (signatureResult == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
 	if( prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1 )
@@ -138,7 +138,7 @@ BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 	if( (fileName == NULL) || (size == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'size' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	file_ptr = fopen( fileName, "rb" );
@@ -169,7 +169,7 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
 	if( (fileName == NULL) || (writeBuf == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'writeBuf' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
 	/* write to file-system */
@@ -205,7 +205,7 @@ BOAT_RESULT  BoatReadFile( const BCHAR *fileName,
 	if( (fileName == NULL) || (readBuf == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'readBuf' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
 	/* read from file-system */
@@ -234,7 +234,7 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd )
 	if( fileName == NULL )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	if( 0 != remove(fileName) )
@@ -460,9 +460,22 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native( const BoatWall
 	BUINT8       pubKey65[65] = {0};
 	BOAT_RESULT  result = BOAT_SUCCESS;
 
+	// 0- check input parameter
+	if( (config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "input parameter can not be NULL." );
+		return BOAT_ERROR;
+	}
+
 	// 1- update private key
-	memcpy(pkCtx->extra_data.value, config->prikey_content, config->prikey_content_length);
-	pkCtx->extra_data.value_len = config->prikey_content_length;
+	if( config->prikey_content.field_len > sizeof(pkCtx->extra_data.value) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "Error: length of injection key is too long." );
+		return BOAT_ERROR;
+	}
+
+	memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
+	pkCtx->extra_data.value_len = config->prikey_content.field_len;
 
 	// 2- update private key format
 	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
@@ -506,7 +519,7 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 	if( (config == NULL) || (pkCtx == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
@@ -519,6 +532,8 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 		switch (config->prikey_format)
 		{
 			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
+				BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );
+				result = BOAT_ERROR;
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
 				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[native] set..." );

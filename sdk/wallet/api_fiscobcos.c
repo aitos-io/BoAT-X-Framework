@@ -64,7 +64,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	if( result != BOAT_SUCCESS )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosTxSetGasPrice failed.");
-        return BOAT_ERROR;
+        return result;
     }
 	
     // Initialize gaslimit
@@ -74,7 +74,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
     if( result != BOAT_SUCCESS )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosTxSetGasLimit failed.");
-        return BOAT_ERROR;
+        return result;
     }
 
     // Initialize recipient
@@ -85,14 +85,14 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
     if( converted_len == 0 )
     {
         BoatLog(BOAT_LOG_CRITICAL, "recipient Initialize failed.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
     result = BoatFiscobcosTxSetRecipient(tx_ptr, recipient);
     if( result != BOAT_SUCCESS )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosTxSetRecipient failed.");
-        return BOAT_ERROR;
+        return result;
     }
 	
 	//chainid
@@ -101,7 +101,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	if( tx_ptr->rawtx_fields.chainid.field_len == 0 )
     {
         BoatLog(BOAT_LOG_CRITICAL, "chainid Initialize failed.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_INVALID_ARGUMENT;
     }
 	
 	//groupid
@@ -110,7 +110,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	if( tx_ptr->rawtx_fields.groupid.field_len == 0 )
     {
         BoatLog(BOAT_LOG_CRITICAL, "groupid Initialize failed.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_INVALID_ARGUMENT;
     }
 	
 	// Initialize blocklimit
@@ -122,7 +122,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	if( result != BOAT_SUCCESS )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosGetBlockNumber failed.");
-        return BOAT_ERROR;
+        return result;
 	}
 
 	tx_ptr->rawtx_fields.blocklimit.field_len = \
@@ -132,7 +132,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	if( tx_ptr->rawtx_fields.blocklimit.field_len == 0 )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "blocklimit Initialize failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
 	//convert to bigendian uint256
@@ -182,7 +182,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
     if( result != BOAT_SUCCESS )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosTxSetValue failed.");
-        return BOAT_ERROR;
+        return result;
     }
 
     return BOAT_SUCCESS;
@@ -358,7 +358,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
         if( result != BOAT_SUCCESS )
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
-            result = BOAT_ERROR_RPC_FAIL;
+            result = BOAT_ERROR_RPC_FAILED;
             break;
         }
         else
@@ -387,7 +387,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
     if( tx_mined_timeout <= 0)
     {
         BoatLog(BOAT_LOG_NORMAL, "Wait for pending transaction timeout. This does not mean the transaction fails.");
-        result = BOAT_ERROR_TX_NOT_MINED;
+        result = BOAT_ERROR_TX_PENDING;
     }
 
     return result;

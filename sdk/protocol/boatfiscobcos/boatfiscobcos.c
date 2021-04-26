@@ -296,7 +296,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
 	if( result != BOAT_SUCCESS )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to BoatSignature signature.");
-        boat_throw(BOAT_ERROR_FAILED_GEN_SIGNATURE, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, FiscobcosSendRawtx_cleanup);
     }
 
     // assign signature value
@@ -447,13 +447,18 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     tx_hash_str = web3_fiscobcos_sendRawTransaction( tx_ptr->wallet_ptr->web3intf_context_ptr,
 												     tx_ptr->wallet_ptr->network_info.node_url_ptr,
 												     &param_fiscobcos_sendRawTransaction );
+    if( tx_hash_str == NULL )
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
+		boat_throw(BOAT_ERROR_RPC_FAILED, FiscobcosSendRawtx_cleanup);
+    }
 
     result = BoatFiscobcosPraseRpcResponseResult( tx_hash_str, "", 
 											&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
     if( result != BOAT_SUCCESS )
 	{
-		BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
-		boat_throw(BOAT_ERROR_RPC_FAIL, FiscobcosSendRawtx_cleanup);
+		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");
+		boat_throw(result, FiscobcosSendRawtx_cleanup);
 	}                                        
 
     tx_ptr->tx_hash.field_len = UtilityHexToBin( tx_ptr->tx_hash.field, 32, 

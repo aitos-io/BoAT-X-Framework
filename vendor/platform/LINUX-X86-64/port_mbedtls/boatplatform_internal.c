@@ -334,7 +334,7 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 	if( (digest == NULL) || (signatureResult == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
     mbedtls_entropy_init( &entropy );
@@ -419,7 +419,7 @@ BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 	if( (fileName == NULL) || (size == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'size' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	file_ptr = fopen( fileName, "rb" );
@@ -448,7 +448,7 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
 	if( (fileName == NULL) || (writeBuf == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'writeBuf' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
 	/* write to file-system */
@@ -482,7 +482,7 @@ BOAT_RESULT  BoatReadFile( const BCHAR *fileName,
 	if( (fileName == NULL) || (readBuf == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'readBuf' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
 	/* read from file-system */
@@ -511,7 +511,7 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd )
 	if( fileName == NULL )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	if( 0 != remove(fileName) )
@@ -791,7 +791,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
 	if( (config == NULL) || (pkCtx == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
     mbedtls_entropy_init( &entropy );
@@ -852,14 +852,26 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs( const BoatWallet
 	mbedtls_pk_context     mbedtls_pkCtx;
 	BOAT_RESULT            result = BOAT_SUCCESS;
 
+	// 0- check input parameter
+	if( (config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "input parameter can not be NULL." );
+		return BOAT_ERROR;
+	}
+
 	mbedtls_pk_init( &mbedtls_pkCtx );
 
-	result = mbedtls_pk_parse_key( &mbedtls_pkCtx, config->prikey_content,
-									config->prikey_content_length, NULL, 0 );
+	result = mbedtls_pk_parse_key( &mbedtls_pkCtx, config->prikey_content.field_ptr,
+								   config->prikey_content.field_len, NULL, 0 );
 
 	// 1- update private key
-	memcpy(pkCtx->extra_data.value, config->prikey_content, config->prikey_content_length);
-	pkCtx->extra_data.value_len = config->prikey_content_length;
+	if( config->prikey_content.field_len > sizeof(pkCtx->extra_data.value) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "Error: length of injection key is too long." );
+		return BOAT_ERROR;
+	}
+	memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
+	pkCtx->extra_data.value_len = config->prikey_content.field_len;
 
 	// 2- update private key format
 	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
@@ -893,7 +905,7 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 	if( (config == NULL) || (pkCtx == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
-		return BOAT_ERROR_NULL_POINTER;
+		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)

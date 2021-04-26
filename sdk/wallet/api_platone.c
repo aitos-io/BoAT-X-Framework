@@ -57,7 +57,7 @@ BOAT_RESULT BoatPlatoneTxInit( BoatPlatoneWallet *wallet_ptr,
     if( result != BOAT_SUCCESS )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "platone Tx init failed.");
-        return BOAT_ERROR;
+        return result;
     }
 
     // Set transaction type
@@ -66,7 +66,7 @@ BOAT_RESULT BoatPlatoneTxInit( BoatPlatoneWallet *wallet_ptr,
     if( result != BOAT_SUCCESS )
     {
 		BoatLog(BOAT_LOG_CRITICAL, "platone set Tx type failed.");
-        return BOAT_ERROR;
+        return result;
     }
     
     return BOAT_SUCCESS;
@@ -177,13 +177,19 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str)
     
     // Set nonce
     result = BoatPlatoneTxSetNonce(tx_ptr, BOAT_PLATONE_NONCE_AUTO);
-    if( result != BOAT_SUCCESS ) return BOAT_ERROR;
+    if( result != BOAT_SUCCESS )
+    {
+         return result;
+    }
     
     // Set value
     value.field_len = UtilityHexToBin( value.field, 32, value_hex_str,
 									  TRIMBIN_LEFTTRIM, BOAT_TRUE  );
     result = BoatPlatoneTxSetValue(tx_ptr, &value);
-    if( result != BOAT_SUCCESS ) return BOAT_ERROR;
+    if( result != BOAT_SUCCESS )
+    {
+         return result;
+    }
 	
     // Set data (contains txtype only)
     UtilityUint64ToBigend( (BUINT8*)&tx_type_big, 0,  TRIMBIN_TRIM_NO );
@@ -191,12 +197,18 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str)
     data.field_len = sizeof(BUINT64);
     
     result = BoatPlatoneTxSetData(tx_ptr, &data);
-    if( result != BOAT_SUCCESS ) return BOAT_ERROR;
+    if( result != BOAT_SUCCESS )
+    {
+         return result;
+    }
     
     // Perform the transaction
     // NOTE: Field v,r,s are calculated automatically
     result = BoatPlatoneTxSend( tx_ptr );
-    if( result != BOAT_SUCCESS ) return BOAT_ERROR;
+    if( result != BOAT_SUCCESS )
+    {
+         return result;
+    }
 
     return BOAT_SUCCESS;
 }
