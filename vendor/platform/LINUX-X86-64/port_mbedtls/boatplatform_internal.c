@@ -363,7 +363,7 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 		BoatLog( BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET." );
         boat_throw( BOAT_ERROR, BoatSignature_exception );
 	}
-    if(result != 0)
+    if(result != BOAT_SUCCESS)
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_pk_parse." );
         boat_throw( result, BoatSignature_exception );
@@ -863,6 +863,12 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs( const BoatWallet
 
 	result = mbedtls_pk_parse_key( &mbedtls_pkCtx, config->prikey_content.field_ptr,
 								   config->prikey_content.field_len, NULL, 0 );
+	if(result != BOAT_SUCCESS)
+	{
+		mbedtls_pk_free( &mbedtls_pkCtx );
+		BoatLog( BOAT_LOG_CRITICAL, "Error: pkcs key prase failed." );
+		return BOAT_ERROR;
+	}
 
 	// 1- update private key
 	if( config->prikey_content.field_len > sizeof(pkCtx->extra_data.value) )
