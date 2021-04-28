@@ -50,6 +50,17 @@ void RpcDeinit(void *rpc_context_ptr)
 }
 
 
+BOAT_RESULT RpcRequestSet(void *rpc_context_ptr, BCHAR *remote_url_str)
+{
+    BOAT_RESULT result = BOAT_ERROR;
+
+#if RPC_USE_LIBCURL == 1    
+    return CurlPortSetOpt( (CurlPortContext*)rpc_context_ptr, remote_url_str);
+#endif
+    return result;
+}
+
+
 BOAT_RESULT RpcRequestSync( void *rpc_context_ptr,
                             BUINT8 *request_ptr,
                             BUINT32 request_len,

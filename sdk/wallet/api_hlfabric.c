@@ -41,8 +41,8 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
  *  
  * @param nodeMaxNum 
  *   support maxium node number.
- *   \n for endorser node, this param is equeal with the macro #HLFABRIC_ENDORSER_MAX_NUM,
- *   for orderer node, this param is equeal with the macro #HLFABRIC_ORDERER_MAX_NUM.
+ *   \n for endorser node, this param is equeal with the macro #BOAT_HLFABRIC_ENDORSER_MAX_NUM,
+ *   for orderer node, this param is equeal with the macro #BOAT_HLFABRIC_ORDERER_MAX_NUM.
  *
  * @return BOAT_RESULT 
  *   return BOAT_SUCCESS if set successed, otherwise return a failed code.
@@ -74,7 +74,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec( BoatHlfabricTx *tx_ptr,
 		    ( (nodeInfo + i)->nodeUrl != NULL ) && ( strlen((nodeInfo + i)->nodeUrl) > 0 ) )
 		{
 			tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = (nodeInfo + i)->nodeUrl;
-#if (HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 			if( ( (nodeInfo + i)->hostName != NULL ) && ( strlen((nodeInfo + i)->hostName) > 0 ) )
 			{
 				tx_ptr->wallet_ptr->http2Context_ptr->hostName   = (nodeInfo + i)->hostName;
@@ -157,7 +157,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 	return result;
 }
 
-#if (HLFABRIC_TLS_SUPPORT == 1) && (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
 BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr, 
 											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
 												const BoatFieldVariable certContent )
@@ -204,7 +204,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
 }
 #endif
 
-#if ( HLFABRIC_TLS_SUPPORT == 1 )
+#if ( BOAT_HLFABRIC_TLS_SUPPORT == 1 )
 BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr, 
 											 const BoatFieldVariable *rootCaContent,
 											 BUINT32 rootCaNumber )
@@ -219,14 +219,14 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-	if( ( rootCaNumber == 0 ) || ( rootCaNumber > HLFABRIC_ROOTCA_MAX_NUM ) )
+	if( ( rootCaNumber == 0 ) || ( rootCaNumber > BOAT_HLFABRIC_ROOTCA_MAX_NUM ) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter rootCaNumber out of limit.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	/* initialization */
-	for( i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
+	for( i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++ )
 	{
 		wallet_ptr->tlsCAchain.ca[i].field_len = 0;
 		wallet_ptr->tlsCAchain.ca[i].field_ptr = NULL;
@@ -288,24 +288,24 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-	if( ( endorserNumber == 0 ) || ( endorserNumber > HLFABRIC_ENDORSER_MAX_NUM ) )
+	if( ( endorserNumber == 0 ) || ( endorserNumber > BOAT_HLFABRIC_ENDORSER_MAX_NUM ) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter endorserNumber out of limit.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-	if( ( ordererNumber == 0 ) || ( ordererNumber > HLFABRIC_ORDERER_MAX_NUM ) )
+	if( ( ordererNumber == 0 ) || ( ordererNumber > BOAT_HLFABRIC_ORDERER_MAX_NUM ) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter ordererNumber out of limit.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
 	/* initialization */
-	for( i = 0; i < HLFABRIC_ORDERER_MAX_NUM; i++ )
+	for( i = 0; i < BOAT_HLFABRIC_ORDERER_MAX_NUM; i++ )
 	{
 		wallet_ptr->network_info.orderer[i].nodeUrl   = NULL;
 		wallet_ptr->network_info.orderer[i].hostName  = NULL;
 	}
-	for( i = 0; i < HLFABRIC_ENDORSER_MAX_NUM; i++ )
+	for( i = 0; i < BOAT_HLFABRIC_ENDORSER_MAX_NUM; i++ )
 	{
 		wallet_ptr->network_info.endorser[i].nodeUrl   = NULL;
 		wallet_ptr->network_info.endorser[i].hostName  = NULL;
@@ -318,7 +318,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 			( (stringLen = strlen( (endorserInfo_ptr + i)->nodeUrl) ) > 0 ) ) 
 		{
 			// stringLen check
-			if( stringLen >= BOAT_FILENAME_MAX_LEN )
+			if( stringLen >= BOAT_HLFABRIC_NODE_URL_MAX_LEN )
 			{
 				BoatLog( BOAT_LOG_CRITICAL, "ERROR: length of endorser->nodeUrl out of limit.." );
 				boat_throw( BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception );
@@ -333,13 +333,13 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 			}
 			memcpy(wallet_ptr->network_info.endorser[i].nodeUrl, (endorserInfo_ptr + i)->nodeUrl, stringLen + 1);
 			
-#if (HLFABRIC_TLS_SUPPORT == 1)		
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)		
 			/* endorser node hostName assignment */
 			if( ( (endorserInfo_ptr + i) != NULL )  && ( (endorserInfo_ptr + i)->hostName != NULL ) &&
 				( (stringLen = strlen( (endorserInfo_ptr + i)->hostName) ) > 0 ) )
 			{
 				// stringLen check
-				if( stringLen >= BOAT_FILENAME_MAX_LEN )
+				if( stringLen >= BOAT_HLFABRIC_HOSTNAME_MAX_LEN )
 				{
 					BoatLog( BOAT_LOG_CRITICAL, "ERROR: length of endorser->hostName out of limit.." );
 					boat_throw( BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception );
@@ -370,7 +370,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 			( (stringLen = strlen( (ordererInfo_ptr + i)->nodeUrl ) ) > 0) )
 		{
 			// stringLen check
-			if( stringLen >= BOAT_FILENAME_MAX_LEN )
+			if( stringLen >= BOAT_HLFABRIC_NODE_URL_MAX_LEN )
 			{
 				BoatLog( BOAT_LOG_CRITICAL, "ERROR: length of orderer->nodeUrl out of limit.." );
 				boat_throw( BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception );
@@ -384,13 +384,13 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 				boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
 			}
 			memcpy(wallet_ptr->network_info.orderer[i].nodeUrl, (ordererInfo_ptr + i)->nodeUrl, stringLen + 1);
-#if (HLFABRIC_TLS_SUPPORT == 1)	
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
 			/* endorser node hostName assignment */
 			if( ( (ordererInfo_ptr + i) != NULL ) && ( (ordererInfo_ptr + i)->hostName != NULL ) &&
 					((stringLen = strlen( (ordererInfo_ptr + i)->hostName) ) > 0) )
 			{
 				// stringLen check
-				if( stringLen >= BOAT_FILENAME_MAX_LEN )
+				if( stringLen >= BOAT_HLFABRIC_HOSTNAME_MAX_LEN )
 				{
 					BoatLog( BOAT_LOG_CRITICAL, "ERROR: length of orderer->hostName out of limit.." );
 					boat_throw( BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception );
@@ -466,23 +466,23 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
 	/* initialization */
 	wallet_ptr->account_info.cert.field_ptr     = NULL;
 	wallet_ptr->account_info.cert.field_len     = 0;
-#if (HLFABRIC_TLS_SUPPORT == 1)
-#if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
 	wallet_ptr->tlsClinet_info.cert.field_ptr         = NULL;
 	wallet_ptr->tlsClinet_info.cert.field_len         = 0;
 #endif
-	for( i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
+	for( i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++ )
 	{
 		wallet_ptr->tlsCAchain.ca[i].field_len = 0;
 		wallet_ptr->tlsCAchain.ca[i].field_ptr = NULL;
 	}
 #endif
-	for( i = 0; i < HLFABRIC_ORDERER_MAX_NUM; i++ )
+	for( i = 0; i < BOAT_HLFABRIC_ORDERER_MAX_NUM; i++ )
 	{
 		wallet_ptr->network_info.orderer[i].nodeUrl   = NULL;
 		wallet_ptr->network_info.orderer[i].hostName  = NULL;
 	}
-	for( i = 0; i < HLFABRIC_ENDORSER_MAX_NUM; i++ )
+	for( i = 0; i < BOAT_HLFABRIC_ENDORSER_MAX_NUM; i++ )
 	{
 		wallet_ptr->network_info.endorser[i].nodeUrl   = NULL;
 		wallet_ptr->network_info.endorser[i].hostName  = NULL;
@@ -494,8 +494,8 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
 	result += BoatHlfabricWalletSetAccountInfo( wallet_ptr,  config_ptr->accountPriKey_config,  
 												config_ptr->accountCertContent );
 	/* tlsClinet_info assignment */
-#if (HLFABRIC_TLS_SUPPORT == 1) 
-#if	(HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+#if	(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
 	result += BoatHlfabricWalletSetTlsClientInfo( wallet_ptr,  config_ptr->tlsPriKey_config,  
 												  config_ptr->tlsClientCertContent );
 #endif
@@ -533,19 +533,19 @@ void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr )
     wallet_ptr->account_info.cert.field_len     = 0;
 
     /* tlsClinet_info DeInit */
-#if (HLFABRIC_TLS_SUPPORT == 1)
-#if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
     BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
     wallet_ptr->tlsClinet_info.cert.field_len     = 0;
-#endif /* #if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1) */
+#endif /* #if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1) */
     // for c99, free(NULL) will return directly, so here
-    // use HLFABRIC_ROOTCA_MAX_NUM as cyclic maximum is acceptable.
-    for( i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++ )
+    // use BOAT_HLFABRIC_ROOTCA_MAX_NUM as cyclic maximum is acceptable.
+    for( i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++ )
     {
         BoatFree( wallet_ptr->tlsCAchain.ca[i].field_ptr );
         wallet_ptr->tlsCAchain.ca[i].field_len = 0;
     }
-#endif /* #if (HLFABRIC_TLS_SUPPORT == 1) */
+#endif /* #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) */
 
     /* network_info DeInit */
     for( i = 0; i < wallet_ptr->network_info.ordererNum; i++ )
@@ -610,7 +610,7 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
 	tx_ptr->var.chaincodeId.path    = NULL;
 	tx_ptr->var.chaincodeId.version = NULL;
 	tx_ptr->var.args.nArgs       = 0;
-	for( i = 0; i < HLFABRIC_ARGS_MAX_NUM; i++ )
+	for( i = 0; i < BOAT_HLFABRIC_ARGS_MAX_NUM; i++ )
 	{
 		tx_ptr->var.args.args[i] = NULL;
 	}
@@ -618,7 +618,7 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
 	tx_ptr->var.orgName             = NULL;
 	/* ----->tx_ptr->endorserResponse reset */
 	tx_ptr->endorserResponse.responseCount = 0;
-	for( i = 0; i < HLFABRIC_ENDORSER_MAX_NUM; i++)
+	for( i = 0; i < BOAT_HLFABRIC_ENDORSER_MAX_NUM; i++)
 	{
 		tx_ptr->endorserResponse.response[i].contentPtr          = NULL;
 		tx_ptr->endorserResponse.response[i].responseType        = HLFABRIC_TYPE_IDLE;
@@ -702,7 +702,7 @@ void BoatHlfabricTxDeInit( BoatHlfabricTx *tx_ptr )
 	tx_ptr->var.chaincodeId.version = NULL;
 	/* -----var.args */
 	tx_ptr->var.args.nArgs = 0;
-	for( int i = 0; i < HLFABRIC_ARGS_MAX_NUM; i++ )
+	for( int i = 0; i < BOAT_HLFABRIC_ARGS_MAX_NUM; i++ )
 	{
 		tx_ptr->var.args.args[i] = NULL;
 	}
@@ -760,7 +760,7 @@ BOAT_RESULT BoatHlfabricTxSetArgs( BoatHlfabricTx *tx_ptr,
 	{
 		tx_ptr->var.args.args[tx_ptr->var.args.nArgs] = (BCHAR *)args;
 		tx_ptr->var.args.nArgs++;
-		if( tx_ptr->var.args.nArgs > HLFABRIC_ARGS_MAX_NUM )
+		if( tx_ptr->var.args.nArgs > BOAT_HLFABRIC_ARGS_MAX_NUM )
 		{
 			result = BOAT_ERROR_OUT_OF_MEMORY;
 			break;
@@ -796,7 +796,7 @@ BOAT_RESULT BoatHlfabricTxSubmit( BoatHlfabricTx *tx_ptr )
 		/* submit query */
 		tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
 		urlTmp[0]        = tx_ptr->wallet_ptr->network_info.endorser[0];
-		result           = BoatHlfabricTxExec(tx_ptr, &urlTmp[0], HLFABRIC_ENDORSER_MAX_NUM);
+		result           = BoatHlfabricTxExec(tx_ptr, &urlTmp[0], BOAT_HLFABRIC_ENDORSER_MAX_NUM);
 		BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result", 
 							 tx_ptr->endorserResponse.response[0].payload.field_ptr,
 					         tx_ptr->endorserResponse.response[0].payload.field_len);
@@ -807,11 +807,11 @@ BOAT_RESULT BoatHlfabricTxSubmit( BoatHlfabricTx *tx_ptr )
 		
 		/* invoke-step1: submit proposal to endorer */
 		tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
-		result           = BoatHlfabricTxExec(tx_ptr, &tx_ptr->wallet_ptr->network_info.endorser[0], HLFABRIC_ENDORSER_MAX_NUM);
+		result           = BoatHlfabricTxExec(tx_ptr, &tx_ptr->wallet_ptr->network_info.endorser[0], BOAT_HLFABRIC_ENDORSER_MAX_NUM);
 		
 		/* invoke-step2: submit transaction to orderer */
 		tx_ptr->var.type = HLFABRIC_TYPE_TRANSACTION;
-		result           = BoatHlfabricTxExec(tx_ptr, &tx_ptr->wallet_ptr->network_info.orderer[0], HLFABRIC_ORDERER_MAX_NUM);
+		result           = BoatHlfabricTxExec(tx_ptr, &tx_ptr->wallet_ptr->network_info.orderer[0], BOAT_HLFABRIC_ORDERER_MAX_NUM);
 	}
 	else
 	{

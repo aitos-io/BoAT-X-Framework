@@ -32,7 +32,7 @@ http2intf.h is the header file for http2 interface.
  */
 
 
-#if (HLFABRIC_TLS_SUPPORT == 1) 	
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 	
 //!@brief TLS releated structure 
 //!@note this structure only suitable for mbedtls, if use other TLS libiary,
 //! please modify this specific structure
@@ -48,7 +48,7 @@ http2intf.h is the header file for http2 interface.
 typedef struct Thttp2IntfContext{
 	nghttp2_session     *session;     //!< nghttp2 session
 	BCHAR               *nodeUrl;     //!< example: orderer.example.com:7050
-#if (HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	BCHAR               *hostName;    //!< CN field in remote certificate. example: orderer.example.com
 	BoatFieldVariable   *tlsCAchain;  //!< rootCA certificate content list
 	

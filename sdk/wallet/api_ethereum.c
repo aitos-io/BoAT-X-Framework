@@ -687,11 +687,11 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
 
     UtilityBinToHex( tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
-    tx_mined_timeout = BOAT_WAIT_PENDING_TX_TIMEOUT;
+    tx_mined_timeout = BOAT_ETH_WAIT_PENDING_TX_TIMEOUT;
     param_eth_getTransactionReceipt.tx_hash_str = tx_hash_str;
 
     do{
-        BoatSleep(BOAT_MINE_INTERVAL); // Sleep waiting for the block being mined 
+        BoatSleep(BOAT_ETH_MINE_INTERVAL); // Sleep waiting for the block being mined 
         tx_status_str = web3_eth_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 															 tx_ptr->wallet_ptr->network_info.node_url_ptr,
 															 &param_eth_getTransactionReceipt);
@@ -717,11 +717,11 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
                 }
                 else
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_MINE_INTERVAL);
+                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_ETH_MINE_INTERVAL);
                 }
             }
 
-            tx_mined_timeout -= BOAT_MINE_INTERVAL;
+            tx_mined_timeout -= BOAT_ETH_MINE_INTERVAL;
         }
         
     }while(tx_mined_timeout > 0);

@@ -53,10 +53,10 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
 				  -I$(BOAT_SDK_DIR)/protocol/boatethereum \
 				  -I$(BOAT_SDK_DIR)/protocol/boatplatone \
 				  -I$(BOAT_SDK_DIR)/protocol/boatfiscobcos \
-                  -I$(BOAT_SDK_DIR)/rpc \
 				  -I$(BOAT_SDK_DIR)/third-party/cJSON \
                   -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
                   -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include \
+                  -I$(BOAT_BASE_DIR)/vendor/platform/include \
                   -I$(BOAT_BASE_DIR)/contract/generated \
                   -I$(BOAT_BASE_DIR)/demo \
 				  -I$(BOAT_BASE_DIR)/tests \

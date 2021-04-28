@@ -22,10 +22,7 @@
 #include "boatinternal.h"
 
 #include "rpcintf.h"
-#include "curlport.h"
-
 #include "cJSON.h"
-
 #include "web3intf.h"
 
 
@@ -340,7 +337,7 @@ BCHAR *web3_eth_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
     // POST the REQUEST through curl
 
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getTransactionCount_cleanup);
@@ -427,7 +424,7 @@ BCHAR *web3_eth_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_
 
     // POST the REQUEST through curl
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_gasPrice_cleanup);
@@ -518,7 +515,7 @@ BCHAR *web3_eth_getBalance(Web3IntfContext *web3intf_context_ptr,
 
     // POST the REQUEST through curl
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getBalance_cleanup);
@@ -609,7 +606,7 @@ BCHAR *web3_eth_sendRawTransaction( Web3IntfContext *web3intf_context_ptr,
     // POST the REQUEST through curl
 
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_sendRawTransaction_cleanup);
@@ -702,7 +699,7 @@ BCHAR *web3_eth_getStorageAt( Web3IntfContext *web3intf_context_ptr,
     // POST the REQUEST through curl
 
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getStorageAt_cleanup);
@@ -792,7 +789,7 @@ BCHAR *web3_eth_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_pt
 
     // POST the REQUEST through curl
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_getTransactionReceiptStatus_cleanup);
@@ -886,7 +883,7 @@ BCHAR *web3_eth_call(Web3IntfContext *web3intf_context_ptr,
 
     // POST the REQUEST through curl
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_eth_call_cleanup);
@@ -988,7 +985,7 @@ BCHAR *web3_fiscobcos_call( Web3IntfContext *web3intf_context_ptr,
 
     // POST the REQUEST through curl
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_call_cleanup);
@@ -1078,7 +1075,7 @@ BCHAR *web3_fiscobcos_sendRawTransaction( Web3IntfContext *web3intf_context_ptr,
 
     // POST the REQUEST through curl
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_sendRawTransaction_cleanup);
@@ -1170,7 +1167,7 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus( Web3IntfContext *web3intf_con
 
     // POST the REQUEST through curl
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
@@ -1260,7 +1257,7 @@ BCHAR *web3_fiscobcos_getBlockNumber( Web3IntfContext *web3intf_context_ptr,
 
     // POST the REQUEST through curl
 #if RPC_USE_LIBCURL == 1
-    result = CurlPortSetOpt((CurlPortContext *)web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if( result != BOAT_SUCCESS )
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getBlockNumber_cleanup);

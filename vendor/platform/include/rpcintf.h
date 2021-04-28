@@ -73,6 +73,24 @@ void RpcDeinit(void *rpc_context_ptr);
 
 
 /*!****************************************************************************
+ * @brief Set options for rpc context.
+ *
+ * @details
+ *   This function is to set rpc parameter.	 
+ *
+ * @param[in] rpc_context_ptr
+ *   A pointer to the rpc context context
+ *	 
+ * @param[in] remote_url_str
+ *   The URL of the remote server.
+ *
+ * @return
+ *   This function always returns BOAT_SUCCESS.
+ ******************************************************************************/
+BOAT_RESULT RpcRequestSet(void *rpc_context_ptr, BCHAR *remote_url_str);
+
+
+/*!****************************************************************************
  * @brief Wrapper function to perform RPC request and receive its response synchronously.
  *
  * @details

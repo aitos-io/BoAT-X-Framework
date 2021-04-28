@@ -21,6 +21,7 @@
 
 //! self header include
 #include "boatplatform_internal.h"
+#include "boatiotsdk.h"
 #include "boattypes.h"
 #include "boatwallet.h"
 
@@ -50,7 +51,7 @@
 
 #include <sys/time.h>
 
-#if (HLFABRIC_TLS_SUPPORT == 1) 
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
 // for TTLSContext structure
 #include "http2intf.h"
 #endif
@@ -597,7 +598,7 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 }
 
 
-#if (HLFABRIC_TLS_SUPPORT == 1)	
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
 BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain,
 						 BSINT32 socketfd, void* tlsContext, void* rsvd )
 {
@@ -657,7 +658,7 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
 
 	mbedtls_ssl_conf_rng(tlsContext_ptr->ssl_cfg, mbedtls_ctr_drbg_random, &ctr_drbg);
 
-	for(int i = 0; i < HLFABRIC_ROOTCA_MAX_NUM; i++)
+	for(int i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++)
 	{
 		if( ((caChain + i) != NULL ) && ((caChain + i)->field_ptr != NULL ) ) 
 		{
@@ -721,7 +722,7 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
 
 BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, void* rsvd)
 {
-#if (HLFABRIC_TLS_SUPPORT == 1) 
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
 	if( (tlsContext == NULL) || (((TTLSContext*)tlsContext)->ssl == NULL) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "tlsContext or tlsContext->ssl can't be NULL." );
@@ -736,7 +737,7 @@ BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, 
 
 BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* rsvd)
 {
-#if (HLFABRIC_TLS_SUPPORT == 1) 
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
 	if( (tlsContext == NULL) || (((TTLSContext*)tlsContext)->ssl == NULL) )
 	{
 		//! @todo still receive a unknown data after Boatclose(...)
@@ -752,7 +753,7 @@ BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* 
 void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 {
 	close(sockfd);
-#if (HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	// free tls releated
 	if(tlsContext != NULL)
 	{

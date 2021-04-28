@@ -23,20 +23,20 @@ boatoptions.h defines options for compiling.
 #ifndef __BOATOPTIONS_H__
 #define __BOATOPTIONS_H__
 
-// BOAT LOG LEVEL DEFINITION
-// Log level is used to control the detail of log output.
-// 3 types of detail level can be specified in BoatLog():
-// "CRITICAL" is for critical exceptions that may halt the wallet from going on.
-// "NORMAL" is for warnings that may imply some error but could be held.
-// "VERBOSE" is for detail information that is only useful for debug.
-#define BOAT_LOG_NONE                            0
-#define BOAT_LOG_CRITICAL                        1
-#define BOAT_LOG_NORMAL                          2
-#define BOAT_LOG_VERBOSE                         3
+// // BOAT LOG LEVEL DEFINITION
+// // Log level is used to control the detail of log output.
+// // 3 types of detail level can be specified in BoatLog():
+// // "CRITICAL" is for critical exceptions that may halt the wallet from going on.
+// // "NORMAL" is for warnings that may imply some error but could be held.
+// // "VERBOSE" is for detail information that is only useful for debug.
+// #define BOAT_LOG_NONE                            0
+// #define BOAT_LOG_CRITICAL                        1
+// #define BOAT_LOG_NORMAL                          2
+// #define BOAT_LOG_VERBOSE                         3
 
-// BOAT_LOG_LEVEL is a macro that limits the log detail up to that level.
-// Seting it to BOAT_LOG_NONE means outputing nothing.
-#define BOAT_LOG_LEVEL   BOAT_LOG_VERBOSE
+// // BOAT_LOG_LEVEL is a macro that limits the log detail up to that level.
+// // Seting it to BOAT_LOG_NONE means outputing nothing.
+// #define BOAT_LOG_LEVEL   BOAT_LOG_VERBOSE
 
 // RPC USE OPTION: One and only one RPC_USE option shall be set to 1
 #define RPC_USE_LIBCURL                          1
@@ -83,33 +83,32 @@ boatoptions.h defines options for compiling.
 #undef PROTOCOL_USE_COUNT
 
 //! Mining interval and Pending transaction timeout
-#define BOAT_MINE_INTERVAL                       3  //!< Mining Interval of the blockchain, in seconds
-#define BOAT_WAIT_PENDING_TX_TIMEOUT             30 //!< Timeout waiting for a transaction being mined, in seconds
+//#define BOAT_MINE_INTERVAL                       3  //!< Mining Interval of the blockchain, in seconds
+//#define BOAT_WAIT_PENDING_TX_TIMEOUT             30 //!< Timeout waiting for a transaction being mined, in seconds
 
 
 //! Maxmum length for node's URL
-#define BOAT_NODE_URL_MAX_LEN                    127
-#define BOAT_KEYID_MAX_LEN                       300
-#define BOAT_FILENAME_MAX_LEN                    127
+//#define BOAT_NODE_URL_MAX_LEN                    127
+//#define BOAT_FILENAME_MAX_LEN                    127
 
 #if PROTOCOL_USE_HLFABRIC == 1
 //! hyperledger fabric configuration items
-#define HLFABRIC_ARGS_MAX_NUM                    4   //!< arguments max number in fabric command
-#define HLFABRIC_ENDORSER_MAX_NUM                10  //!< support endorser max number
-#define HLFABRIC_ORDERER_MAX_NUM                 4   //!< support orderer max number
+// #define BOAT_HLFABRIC_ARGS_MAX_NUM                    4   //!< arguments max number in fabric command
+// #define BOAT_HLFABRIC_ENDORSER_MAX_NUM                10  //!< support endorser max number
+// #define BOAT_HLFABRIC_ORDERER_MAX_NUM                 4   //!< support orderer max number
 
-#define HLFABRIC_TLS_SUPPORT                     1 //!< If need client support TLS, set it to 1.
-#define HLFABRIC_TLS_IDENTIFY_CLIENT             0 //!< If server need identify client, set it to 1.
-                                                   //!< this macro valid only HLFABRIC_TLS_SUPPORT has
-                                                   //!< set to 1.
-#define HLFABRIC_ROOTCA_MAX_NUM                  3 //!< support ROOT CA certificate max number
+// #define BOAT_HLFABRIC_TLS_SUPPORT                     1 //!< If need client support TLS, set it to 1.
+// #define BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT             0 //!< If server need identify client, set it to 1.
+//                                                    //!< this macro valid only BOAT_HLFABRIC_TLS_SUPPORT has
+//                                                    //!< set to 1.
+// #define BOAT_HLFABRIC_ROOTCA_MAX_NUM                  3 //!< support ROOT CA certificate max number
 
-#define HTTP2_SEND_BUF_MAX_LEN                   4096 //!< The maximum length of HTTP2 send buffer
+// #define BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN                   4096 //!< The maximum length of HTTP2 send buffer
 
 
 
 #endif /* end of PROTOCOL_USE_HLFABRIC */
 
-#define BOAT_STRING_MAX_LEN					     4096 //!< The maximum allowed string length
+//#define BOAT_STRING_MAX_LEN					     4096 //!< The maximum allowed string length
 
 #endif /* end of __BOATOPTIONS_H__ */

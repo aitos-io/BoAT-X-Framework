@@ -235,7 +235,7 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd );
 BSINT32 BoatConnect(const BCHAR *address, void* rsvd);
 
 
-#if (HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 /*!****************************************************************************
  * @brief initinal TLS connection
  * 
@@ -331,14 +331,12 @@ BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* 
 void    BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd);
 
 
-
 BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx );
 BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx );
 BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx );
 
 BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
 BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
-
 
 /*! @}*/
 

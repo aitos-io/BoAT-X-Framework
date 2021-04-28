@@ -277,7 +277,7 @@ __BOATSTATIC BOAT_RESULT hlfabricProposalPayloadDataPacked(BoatHlfabricTx *tx_pt
 	Protos__ChaincodeSpec  chaincodeSpec  = PROTOS__CHAINCODE_SPEC__INIT;
     Protos__ChaincodeID    chaincodeId    = PROTOS__CHAINCODE_ID__INIT;
     Protos__ChaincodeInput input          = PROTOS__CHAINCODE_INPUT__INIT;
-	ProtobufCBinaryData    argsTmp[HLFABRIC_ARGS_MAX_NUM];
+	ProtobufCBinaryData    argsTmp[BOAT_HLFABRIC_ARGS_MAX_NUM];
 	BUINT8 *chaincodeInvocationSpecBuffer = NULL;
 	BUINT16 packedLength;
 	
@@ -298,7 +298,7 @@ __BOATSTATIC BOAT_RESULT hlfabricProposalPayloadDataPacked(BoatHlfabricTx *tx_pt
     /* ------------>input */
 	chaincodeInvocationSpec.chaincode_spec->input = &input;
     input.n_args           = tx_ptr->var.args.nArgs;
-	for( int i = 0; i < HLFABRIC_ARGS_MAX_NUM; i++ )
+	for( int i = 0; i < BOAT_HLFABRIC_ARGS_MAX_NUM; i++ )
 	{
 		argsTmp[i].data = (BUINT8 *)tx_ptr->var.args.args[i];
 		if(tx_ptr->var.args.args[i] != NULL)
@@ -374,8 +374,8 @@ __BOATSTATIC BOAT_RESULT hlfabricProposalPayloadDataPacked(BoatHlfabricTx *tx_pt
 __BOATSTATIC BOAT_RESULT hlfabricTransactionPayloadDataPacked(BoatHlfabricTx *tx_ptr,
 															  BoatFieldVariable *output_ptr)
 {
-	Protos__Endorsement  endorsement[HLFABRIC_ENDORSER_MAX_NUM] = {PROTOS__ENDORSEMENT__INIT};
-    Protos__Endorsement *endorsement_ptr[HLFABRIC_ENDORSER_MAX_NUM];
+	Protos__Endorsement  endorsement[BOAT_HLFABRIC_ENDORSER_MAX_NUM] = {PROTOS__ENDORSEMENT__INIT};
+    Protos__Endorsement *endorsement_ptr[BOAT_HLFABRIC_ENDORSER_MAX_NUM];
 	Protos__Transaction transaction                           = PROTOS__TRANSACTION__INIT;
 	Protos__TransactionAction  transactionAction              = PROTOS__TRANSACTION_ACTION__INIT;
     Protos__TransactionAction *transactionAction_ptr          = NULL;
@@ -659,7 +659,7 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	
 	/* step-6: packed length assignment */
 	tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len = packedLength + sizeof(grpcHeader);
-	if( tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > HTTP2_SEND_BUF_MAX_LEN )
+	if( tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "packed length out of sendbuffer size limit.");
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricProposalTransactionPacked_exception);

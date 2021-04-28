@@ -30,6 +30,11 @@ api_fiscobcos.h is header file for BoAT IoT SDK FISCOBCOS's interface.
  * @{
  */
 
+
+#define BOAT_FISCOBCOS_MINE_INTERVAL             3  //!< Mining Interval of the blockchain, in seconds
+#define BOAT_FISCOBCOS_WAIT_PENDING_TX_TIMEOUT   30 //!< Timeout waiting for a transaction being mined, in seconds
+
+#define BOAT_FISCOBCOS_NODE_URL_MAX_LEN          BOAT_ETH_NODE_URL_MAX_LEN
 #define BOAT_FISCOBCOS_NONCE_AUTO                BOAT_ETH_NONCE_AUTO
 #define BOAT_FISCOBCOS_ADDRESS_SIZE              BOAT_ETH_ADDRESS_SIZE
 

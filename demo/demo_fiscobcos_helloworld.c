@@ -93,7 +93,7 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
 
-    strncpy(wallet_config.node_url_str, demoUrl, BOAT_NODE_URL_MAX_LEN - 1);
+    strncpy(wallet_config.node_url_str, demoUrl, BOAT_FISCOBCOS_NODE_URL_MAX_LEN - 1);
 
 	/* create fiscobcos wallet */
     index = BoatWalletCreate( BOAT_PROTOCOL_FISCOBCOS, NULL, &wallet_config, sizeof(BoatFiscobcosWalletConfig) );
@@ -143,7 +143,7 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR *wallet_name)
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
     
-    strncpy( wallet_config.node_url_str, demoUrl, BOAT_NODE_URL_MAX_LEN - 1 );
+    strncpy( wallet_config.node_url_str, demoUrl, BOAT_FISCOBCOS_NODE_URL_MAX_LEN - 1 );
 
 	/* create fiscobcos wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, wallet_name, &wallet_config, sizeof(BoatFiscobcosWalletConfig));

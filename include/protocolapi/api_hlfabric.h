@@ -29,6 +29,21 @@ api_hlfabric.h is header file for fabric transaction construction and performing
  * @{
  */
 
+#define BOAT_HLFABRIC_NODE_URL_MAX_LEN           127 //!< Maxmum length of node's URL
+#define BOAT_HLFABRIC_HOSTNAME_MAX_LEN           127 //!< Maxmum length of hostname
+
+#define BOAT_HLFABRIC_ARGS_MAX_NUM               4   //!< arguments max number in fabric command
+#define BOAT_HLFABRIC_ENDORSER_MAX_NUM           10  //!< support endorser max number
+#define BOAT_HLFABRIC_ORDERER_MAX_NUM            4   //!< support orderer max number
+
+#define BOAT_HLFABRIC_TLS_SUPPORT                1 //!< If need client support TLS, set it to 1.
+#define BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT        0 //!< If server need identify client, set it to 1.
+                                                   //!< this macro valid only BOAT_HLFABRIC_TLS_SUPPORT has
+                                                   //!< set to 1.
+#define BOAT_HLFABRIC_ROOTCA_MAX_NUM             3 //!< support ROOT CA certificate max number
+
+#define BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN     4096 //!< The maximum length of HTTP2 send buffer
+
 //!@brief fabric transaction type
 //! 
 typedef enum{
@@ -49,7 +64,7 @@ typedef struct TBoatHlfabricKeyPair{
 //!@brief fabric all fully trusted top-level CAs
 //! fabric all fully trusted top-level CAs
 typedef struct TBoatHlfabricTlsCAchain{
-	BoatFieldVariable      ca[HLFABRIC_ROOTCA_MAX_NUM]; //!< rootCA certificate content
+	BoatFieldVariable      ca[BOAT_HLFABRIC_ROOTCA_MAX_NUM]; //!< rootCA certificate content
 }BoatHlfabricTlsCAchain;
 
 
@@ -58,7 +73,7 @@ typedef struct TBoatHlfabricTlsCAchain{
 typedef struct TBoatHlfabricNodeInfo{
 	BCHAR*  nodeUrl;  //!< URL of the blockchain node, e.g. "http://a.b.com:8545"	
 	BCHAR*  hostName; //!< tls server hostname, it's 'CN' field in server certificate
-					  //!< if HLFABRIC_TLS_SUPPORT is enabled, set is a correct value, otherwise set it NULL.
+					  //!< if BOAT_HLFABRIC_TLS_SUPPORT is enabled, set is a correct value, otherwise set it NULL.
 }BoatHlfabricNodeInfo;
 
 
@@ -67,8 +82,8 @@ typedef struct TBoatHlfabricNodeInfo{
 typedef struct TBoatHlfabricNetworkInfo{
 	BUINT16 endorserNum;  //!< this field is update by SDK, caller should not modify it manually
 	BUINT16 ordererNum;   //!< this field is update by SDK, caller should not modify it manually
-    BoatHlfabricNodeInfo  endorser[HLFABRIC_ENDORSER_MAX_NUM]; //!< endorser node information
-	BoatHlfabricNodeInfo  orderer[HLFABRIC_ORDERER_MAX_NUM];   //!< orderer node information
+    BoatHlfabricNodeInfo  endorser[BOAT_HLFABRIC_ENDORSER_MAX_NUM]; //!< endorser node information
+	BoatHlfabricNodeInfo  orderer[BOAT_HLFABRIC_ORDERER_MAX_NUM];   //!< orderer node information
 }BoatHlfabricNetworkInfo;
 
 
@@ -76,12 +91,12 @@ typedef struct TBoatHlfabricNetworkInfo{
 //! fabric wallet structure
 typedef struct TBoatHlfabricWallet{
 	BoatHlfabricKeyPair   account_info; //!< Account information
-#if (HLFABRIC_TLS_SUPPORT == 1)	
-#if (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
+#if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
 	BoatHlfabricKeyPair       tlsClinet_info;//!< tls information
-#endif /* end of HLFABRIC_TLS_IDENTIFY_CLIENT */
+#endif /* end of BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT */
 	BoatHlfabricTlsCAchain    tlsCAchain;   //!< tls rootCA certificate list
-#endif /* end of HLFABRIC_TLS_SUPPORT */
+#endif /* end of BOAT_HLFABRIC_TLS_SUPPORT */
     BoatHlfabricNetworkInfo   network_info; //!< Network information
 	
 	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
@@ -107,7 +122,7 @@ typedef struct TBoatHlfabricChaincodeId{
 //! transaction command arguments
 typedef struct TBoatHlfabricArgs{
 	BUINT32    nArgs;
-	BCHAR*     args[HLFABRIC_ARGS_MAX_NUM];
+	BCHAR*     args[BOAT_HLFABRIC_ARGS_MAX_NUM];
 }BoatHlfabricArgs;
 
 
@@ -133,7 +148,7 @@ typedef struct TBoatHlfabricSingleEndorserResponse{
 //! endorser node respond array
 typedef struct TBoatHlfabricProposalResponseArray{
 	BUINT16                            responseCount;
-	BoatHlfabricSingleEndorserResponse response[HLFABRIC_ENDORSER_MAX_NUM];
+	BoatHlfabricSingleEndorserResponse response[BOAT_HLFABRIC_ENDORSER_MAX_NUM];
 }BoatHlfabricEndorserResponse;
 
 
@@ -162,8 +177,8 @@ typedef struct TBoatHlfabricTx{
 //!@brief fabric node information config structure
 //! fabric node information config structure
 typedef struct TBoatHlfabricNodeInfoCfg{
-	BCHAR  nodeUrl[BOAT_FILENAME_MAX_LEN];  //!< URL of the blockchain node, e.g. "http://a.b.com:8545"	
-	BCHAR  hostName[BOAT_FILENAME_MAX_LEN]; //!< tls server hostname, it's 'CN' field in server certificate
+	BCHAR  nodeUrl[BOAT_HLFABRIC_NODE_URL_MAX_LEN];  //!< URL of the blockchain node, e.g. "http://a.b.com:8545"	
+	BCHAR  hostName[BOAT_HLFABRIC_HOSTNAME_MAX_LEN]; //!< tls server hostname, it's 'CN' field in server certificate
 }BoatHlfabricNodeInfoCfg;
 
 //!@brief fabric wallet config structure
@@ -184,16 +199,16 @@ typedef struct TBoatHlfabricWalletConfig{
 														 @note For content of type string, the length contains the terminator '\0' */  	
 	
 	BUINT32 rootCaNumber; //!< the number of rootCA file to be set
-	BoatFieldVariable           rootCaContent[HLFABRIC_ROOTCA_MAX_NUM];/*!< A pointer to rootCA content, the content of this field point to 
+	BoatFieldVariable           rootCaContent[BOAT_HLFABRIC_ROOTCA_MAX_NUM];/*!< A pointer to rootCA content, the content of this field point to 
 																			will be COPYED to the corresponding field of the wallet, if user dynamically 
 																			allocated space for this pointer, then the user should release it after     
 																			@ref BoatWalletCreate invoked. 
 																			@note For content of type string, the length contains the terminator '\0' */  	
 
 	BUINT32                  endorserNumber;//!< the number of endorser to be set
-	BoatHlfabricNodeInfoCfg  endorser[HLFABRIC_ENDORSER_MAX_NUM];
+	BoatHlfabricNodeInfoCfg  endorser[BOAT_HLFABRIC_ENDORSER_MAX_NUM];
 	BUINT32                  ordererNumber; //!< the number of orderer to be set
-	BoatHlfabricNodeInfoCfg  orderer[HLFABRIC_ORDERER_MAX_NUM];
+	BoatHlfabricNodeInfoCfg  orderer[BOAT_HLFABRIC_ORDERER_MAX_NUM];
 }BoatHlfabricWalletConfig;
 
 #ifdef __cplusplus
@@ -227,7 +242,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 											  const BoatFieldVariable certContent );
 
 
-#if (HLFABRIC_TLS_SUPPORT == 1) && (HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
 /*!****************************************************************************
  * @brief 
  *   set TLS key pairs of client.
@@ -256,7 +271,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
 #endif
 
 
-#if ( HLFABRIC_TLS_SUPPORT == 1 )
+#if ( BOAT_HLFABRIC_TLS_SUPPORT == 1 )
 /*!****************************************************************************
  * @brief set root CA certificate for TLS connection
  * 

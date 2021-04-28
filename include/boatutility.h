@@ -30,6 +30,25 @@ boatutility.h is header file for boatwallet utility functions.
  * @{
  */
 
+
+//! BOAT LOG LEVEL DEFINITION
+//! Log level is used to control the detail of log output.
+//! 3 types of detail level can be specified in BoatLog():
+//! "CRITICAL" is for critical exceptions that may halt the wallet from going on.
+//! "NORMAL" is for warnings that may imply some error but could be held.
+//! "VERBOSE" is for detail information that is only useful for debug.
+#define BOAT_LOG_NONE                            0
+#define BOAT_LOG_CRITICAL                        1
+#define BOAT_LOG_NORMAL                          2
+#define BOAT_LOG_VERBOSE                         3
+
+//! BOAT_LOG_LEVEL is a macro that limits the log detail up to that level.
+//! Seting it to BOAT_LOG_NONE means outputing nothing.
+#define BOAT_LOG_LEVEL   BOAT_LOG_VERBOSE
+
+//! The maximum allowed string length
+#define BOAT_STRING_MAX_LEN					     4096 
+
 //!@brief Argument type for UtilityTrimBin(), UtilityHexToBin() and UtilityUint32ToBigend()
 typedef enum
 {

@@ -20,7 +20,9 @@
 */
 
 //! self header include
+#include "protocolapi/api_hlfabric.h"
 #include "boatplatform_internal.h"
+
 #include "boattypes.h"
 
 #include "rand.h"
@@ -40,7 +42,7 @@
 
 #include <sys/time.h>
 
-#if (HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 // for TTLSContext structure
 #include "http2intf.h"
 #endif
@@ -66,7 +68,6 @@ BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
 	
 	return result;
 }
-
 
 
 BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
@@ -323,7 +324,7 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 }
 
 
-#if (HLFABRIC_TLS_SUPPORT == 1)	
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
 BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain,
 						 BSINT32 socketfd, void* tlsContext, void* rsvd )
 {
@@ -336,8 +337,8 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
 
 BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, void* rsvd)
 {
-#if (HLFABRIC_TLS_SUPPORT == 1) 
-	//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
 	return -1;
 #else
 	return send( sockfd, buf, len, 0 );	
@@ -347,8 +348,8 @@ BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, 
 
 BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* rsvd)
 {
-#if (HLFABRIC_TLS_SUPPORT == 1) 
-	//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
 	return -1;
 #else
 	return recv( sockfd, buf, len, 0 );
@@ -359,9 +360,9 @@ BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* 
 void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 {
 	close(sockfd);
-#if (HLFABRIC_TLS_SUPPORT == 1) 
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
 	// free tls releated
-	//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
+	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
 #endif
 }
 
