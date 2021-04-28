@@ -38,7 +38,7 @@ typedef enum
 }BoatWalletPriKeyGenMode;
 
 //! @brief The format of the externally injected private key
-//! This field will be actived when @ref BOAT_WALLET_PRIKEY_FORMAT_EXTERN_INJECTION be selected.
+//! This field will be actived when BOAT_WALLET_PRIKEY_FORMAT_EXTERN_INJECTION be selected.
 typedef enum
 {
     BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN = 0,     //!< Placeholder for unknown prikey format
@@ -49,7 +49,7 @@ typedef enum
 
 //! Type of private key
 //! @note For PKCS format private key, the key type is already included in it,
-//!       but still suggest to fill this field.
+//!       but it's still suggest to fill this field.
 typedef enum
 {
     BOAT_WALLET_PRIKEY_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown signature algorithm
@@ -62,13 +62,11 @@ typedef enum
 {
 	BOAT_WALLET_PUBKEY_FORMAT_UNKNOWN = 0, //!< Placeholder for unknown prikey
     BOAT_WALLET_PUBKEY_FORMAT_NATIVE,      //!< The 64 bytes public key, it's a coordinate of an elliptic curve 
-	//! @todo
 }BoatWalletPubKeyFormat;
 
 //!@brief The extension field of prikey context
-//! \n This field is only used for secret key storage in a keyless secure 
-//! \n storage environment, and the practice of the security specification is 
-//! \n still to store it in TE/SE.
+//!  This field is only used for secret key storage when secure storage environment is not available. 
+//!  \n The practice of the security specification is still to store it in TE/SE.
 typedef struct TBoatWalletExtraData
 {
     BUINT32  value_len;  //!< Length of the stored private key
@@ -90,19 +88,19 @@ typedef struct TBoatWalletPriKeyCtx
 }BoatWalletPriKeyCtx;
 
 
-//!@brief Boat wallet config context
+//!@brief Boat wallet config context  
 typedef struct TBoatWalletPriKeyCtx_config
 {
 	BoatWalletPriKeyGenMode  prikey_genMode;        //!< Generate mode of private key
 	BoatWalletPriKeyFormat   prikey_format;         //!< Format of private key
     BoatWalletPriKeyType     prikey_type;           //!< Type of private key
-    BoatFieldVariable        prikey_content;        /*!< The externally injected private key contents.\n
-                                                         A pointer to externally injected private key content, the content of this 
-														 field point to  will be COPYED to the corresponding field of the wallet, 
-														 if user dynamically allocated space for this pointer, then the user should      
-	                                                     free it after @ref BoatWalletCreate invoked. 
-														 @note For content of type string, such as PEM format data, the length includes 
-                                                         the terminating null byte */  
+    BoatFieldVariable        prikey_content;        //!< The externally injected private key contents.
+                                                    //!< \n A pointer to externally injected private key content, the content of this 
+													//!< field point to  will be COPYED to the corresponding field of the wallet, 
+													//!< if user dynamically allocated space for this pointer, then the user should 
+	                                                //!< free it after BoatWalletCreate invoked. 
+													//!< @note For content of type string, such as PEM format data, the length includes 
+                                                    //!< the terminating null byte.
 }BoatWalletPriKeyCtx_config;
 
 
@@ -267,7 +265,8 @@ void BoatWalletDelete(BCHAR * wallet_name_str);
  * @param[in] wallet_index
  *   The wallet index.
  *
- * @return This function returns a pointer to the wallet context.
+ * @return This function returns a pointer to the wallet context. 
+ *         \n This function returns a NULL if the indexed wallet is not exist.
  ******************************************************************************/
 void * BoatGetWalletByIndex(BSINT32 wallet_index);
 
