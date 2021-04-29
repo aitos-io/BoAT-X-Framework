@@ -40,6 +40,6 @@ boatLogConfig.h defines options for compiling.
 
 
 
-#define BoatPrintf                               printf
+#define BoatPrintf                               boat_nwy_ext_echo
 
 #endif
