@@ -38,19 +38,19 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include <sys/time.h>
+
 #endif
+#include <sys/time.h>
 
-
+#if (PROTOCOL_USE_HLFABRIC == 1)
 #if (HLFABRIC_TLS_SUPPORT == 1)
 // for TTLSContext structure
 #include "http2intf.h"
 #endif
-#include "options.h"
+#endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
 
-#if (BOAT_USE_NWY_FILESYSTEM == 1)
 #include "nwy_file.h"
-#endif
+
 
 uint32_t random32(void)
 {

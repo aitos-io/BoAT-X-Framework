@@ -17,11 +17,11 @@
 /*!@brief Boatwallet options
 
 @file
-boatoptions.h defines options for compiling.
+boatconfig.h defines options for compiling.
 */
 
-#ifndef __BOATOPTIONS_H__
-#define __BOATOPTIONS_H__
+#ifndef __BOATCONFIG_H__
+#define __BOATCONFIG_H__
 
 // // BOAT LOG LEVEL DEFINITION
 // // Log level is used to control the detail of log output.
@@ -50,6 +50,8 @@ boatoptions.h defines options for compiling.
 #endif
 #undef RPC_USE_COUNT
 
+
+#define BOAT_USE_NWY_FILESYSTEM                  1
 
 // Blockchain Protocol OPTION
 #define PROTOCOL_USE_ETHEREUM   	             1
@@ -112,4 +114,4 @@ boatoptions.h defines options for compiling.
 
 //#define BOAT_STRING_MAX_LEN					     4096 //!< The maximum allowed string length
 
-#endif /* end of __BOATOPTIONS_H__ */
+#endif /* end of __BOATCONFIG_H__ */

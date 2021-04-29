@@ -28,21 +28,17 @@ nwyhttpport.h is the header file of nwy's HTTP porting of RPC.
 DO NOT call functions in this file directly. Instead call wrapper functions
 provided by rpcport.
 
-To use nwy HTTP RPC porting, RPC_USE_NWYHTTPPORT in boatoptions.h must set to 1.
+To use nwy HTTP RPC porting, RPC_USE_NWYHTTPPORT in boatconfig.h must set to 1.
 */
 
 #ifndef __NWYHTTPPORT_H__
 #define __NWYHTTPPORT_H__
 
-#if RPC_USE_NWYHTTPPORT == 1
-
 #include "boatinternal.h"
-
+#include "nwy_osi_api.h"
 
 //!Receiving buffer size
 #define NWYHTTPPORT_RECV_BUF_SIZE 4096
-
-
 
 typedef struct NwyHttpPortContext
 {
@@ -70,8 +66,6 @@ BOAT_RESULT NwyHttpPortRequestSync(NwyHttpPortContext * nwyhttpport_context_ptr,
 #ifdef __cplusplus
 }
 #endif /* end of __cplusplus */
-
-#endif // end of #if RPC_USE_NWYHTTPPORT == 1
 
 #endif
 
