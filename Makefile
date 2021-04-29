@@ -73,6 +73,7 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
                   -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
                   -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include \
                   -I$(BOAT_BASE_DIR)/vendor/platform/include \
+                  -I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/log \
                   -I$(BOAT_BASE_DIR)/contract/generated \
                   -I$(BOAT_BASE_DIR)/demo \
 				  -I$(BOAT_BASE_DIR)/tests \
@@ -90,15 +91,15 @@ BOAT_COMMON_LINK_FLAGS := -Wl,-Map,$(BOAT_BUILD_DIR)/boat.map
 # Target-specific Flags
 ifeq ($(COMPILER_TYPE), "ARM")
     TARGET_SPEC_CFLAGS := -mthumb
-    TARGET_SPEC_LIBS := -lcurl
+    TARGET_SPEC_LIBS := 
     TARGET_SPEC_LINK_FLAGS :=
 else ifeq ($(COMPILER_TYPE), "LINUX")
     TARGET_SPEC_CFLAGS := -ffunction-sections -fdata-sections
-    TARGET_SPEC_LIBS := -lcurl
+    TARGET_SPEC_LIBS := 
     TARGET_SPEC_LINK_FLAGS := -Wl,-gc-sections
 else ifeq ($(COMPILER_TYPE), "CYGWIN")
     TARGET_SPEC_CFLAGS :=
-    TARGET_SPEC_LIBS := -lcurl
+    TARGET_SPEC_LIBS := 
     TARGET_SPEC_LINK_FLAGS :=
 else
     TARGET_SPEC_CFLAGS :=
@@ -156,7 +157,8 @@ export LINK_LIBS
 
 .PHONY: all boatlibs createdir boatwalletlib vendorlib contractlib demo tests clean cleanboatwallet cleanvendor cleancontract cleantests
 
-all: boatlibs demo tests
+#all: boatlibs demo tests
+all: boatlibs
 
 boatlibs: createdir boatwalletlib vendorlib
 

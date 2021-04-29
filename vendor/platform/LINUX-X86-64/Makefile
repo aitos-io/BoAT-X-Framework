@@ -1,5 +1,5 @@
 # Source and Objects
-SRC_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/rpc/*.o) 
+SRC_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/rpc/*.o) 
 
 PORT_CRYPTO_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/keccak/*.o) \
 		  			  $(wildcard $(BOAT_BUILD_DIR)/vendor/common/storage/*.o) 
@@ -7,11 +7,11 @@ PORT_CRYPTO_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/keccak/*
 ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
     PORT_CRYPTO_OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/crypto_default/*.o) \
 			   $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/crypto_default/aes/*.o) \
-	           $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_crypto_default/*.o) 
+	           $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/port_crypto_default/*.o) 
     PORT_CRYPTO_DIRECTORY = port_crypto_default
 else ifeq ($(SOFT_CRYPTO), CRYPTO_MBEDTLS)
     PORT_CRYPTO_OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/mbedtls/*.o) \
-	           $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_mbedTLS/*.o)
+	           $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/port_mbedTLS/*.o)
     PORT_CRYPTO_DIRECTORY = port_mbedtls
 else
     PORT_CRYPTO_OBJECTS += 
@@ -29,8 +29,8 @@ $(LIBNAME): boatvendor_objs
 
 
 boatvendor_objs:
-	make -C $(PORT_CRYPTO_DIRECTORY) all
-	make -C rpc all
+	make -C src/$(PORT_CRYPTO_DIRECTORY) all
+	make -C src/rpc all
 
 
 clean: $(CLEAN_SUBDIRS)

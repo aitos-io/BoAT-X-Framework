@@ -24,27 +24,12 @@ boatutility.h is header file for boatwallet utility functions.
 #define __BOATUTILITY_H__
 
 #include "boatiotsdk.h"
+#include "boatLogconfig.h"
 
 
 /*! @defgroup utility boat utility
  * @{
  */
-
-
-//! BOAT LOG LEVEL DEFINITION
-//! Log level is used to control the detail of log output.
-//! 3 types of detail level can be specified in BoatLog():
-//! "CRITICAL" is for critical exceptions that may halt the wallet from going on.
-//! "NORMAL" is for warnings that may imply some error but could be held.
-//! "VERBOSE" is for detail information that is only useful for debug.
-#define BOAT_LOG_NONE                            0
-#define BOAT_LOG_CRITICAL                        1
-#define BOAT_LOG_NORMAL                          2
-#define BOAT_LOG_VERBOSE                         3
-
-//! BOAT_LOG_LEVEL is a macro that limits the log detail up to that level.
-//! Seting it to BOAT_LOG_NONE means outputing nothing.
-#define BOAT_LOG_LEVEL   BOAT_LOG_VERBOSE
 
 //! The maximum allowed string length
 #define BOAT_STRING_MAX_LEN					     4096 
@@ -107,7 +92,7 @@ extern const BCHAR * const g_log_level_name_str[];
 #else
 #define BoatLog(level, format,...)\
     do{\
-        if( level <= BOAT_LOG_LEVEL ) {printf("%s: "__FILE__":%d, %s(): "format"\n", g_log_level_name_str[level-1], __LINE__, __func__, ##__VA_ARGS__);}\
+        if( level <= BOAT_LOG_LEVEL ) {BoatPrintf("%s: "__FILE__":%d, %s(): "format"\n", g_log_level_name_str[level-1], __LINE__, __func__, ##__VA_ARGS__);}\
     }while(0)
 #endif
 
@@ -136,13 +121,13 @@ extern const BCHAR * const g_log_level_name_str[];
 #define BoatLog_hexdump(level, title, buf, len)\
 	do{\
 		if( level <= BOAT_LOG_LEVEL ){\
-			printf( "%s: %s[%03d]: ", g_log_level_name_str[level-1], title, len );\
+			BoatPrintf( "%s: %s[%03d]: ", g_log_level_name_str[level-1], title, len );\
 			if( len > 0 ){\
-				for( int i = 0; i < len; i++ ){printf( "%c%c", "0123456789ABCDEF" [buf[i] / 16],"0123456789ABCDEF" [buf[i] % 16] );}\
+				for( int i = 0; i < len; i++ ){BoatPrintf( "%c%c", "0123456789ABCDEF" [buf[i] / 16],"0123456789ABCDEF" [buf[i] % 16] );}\
 			}else{\
-				printf("(nil)");\
+				BoatPrintf("(nil)");\
 			}\
-			printf( "\n" );\
+			BoatPrintf( "\n" );\
 		}\
 	}while(0)
 #endif
@@ -172,32 +157,32 @@ extern const BCHAR * const g_log_level_name_str[];
 #define BoatLog_hexasciidump(level, title, buf, len)\
 	   do{\
 		   if( level <= BOAT_LOG_LEVEL ){\
-		   printf( "%s: %s[%03d]: \n", g_log_level_name_str[level-1], title, len );\
+		   BoatPrintf( "%s: %s[%03d]: \n", g_log_level_name_str[level-1], title, len );\
 			   if( len > 0 ){\
 				   for( int j = 0; j < len / 16 + 1; j++ ){\
-					   printf("%08x  ", j * 16);\
+					   BoatPrintf("%08x  ", j * 16);\
 					   for( int i = 0; i < 16; i++ ){\
-						   printf( "%c%c ",\
+						   BoatPrintf( "%c%c ",\
 								   "0123456789ABCDEF " [(i + j * 16 < len) ? buf[i + j * 16] / 16 : 16],\
 								   "0123456789ABCDEF " [(i + j * 16 < len) ? buf[i + j * 16] % 16 : 16] );}\
-					   printf( " |" );\
+					   BoatPrintf( " |" );\
 					   for( int i = 0; i < 16; i++ ){\
 						   if( i + j * 16 < len ){\
 							   if( (buf[i + j * 16] > 32) && (buf[i + j * 16] < 127) ){\
-								   printf( "%c", buf[ i + j * 16] );\
+								   BoatPrintf( "%c", buf[ i + j * 16] );\
 							   }else{\
-								   printf( "." );\
+								   BoatPrintf( "." );\
 							   }\
 						   }else{\
-						   	   printf( " " );\
+						   	   BoatPrintf( " " );\
 						   }\
 					   }\
-					   printf( "|\n" );\
+					   BoatPrintf( "|\n" );\
 				   }\
 		   }else{\
-			   printf("(nil)");\
+			   BoatPrintf("(nil)");\
 		   }\
-		   printf( "\n" );\
+		   BoatPrintf( "\n" );\
 	   }\
    }while(0)
    #endif

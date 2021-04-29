@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 
-/*!@brief Boatwallet options
+/*!@brief Boat configure options
 
 @file
 boatconfig.h defines options for compiling.
