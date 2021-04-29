@@ -20,9 +20,7 @@
 */
 
 //! self header include
-#include "protocolapi/api_hlfabric.h"
 #include "boatplatform_internal.h"
-
 #include "boattypes.h"
 
 #include "rand.h"
@@ -31,6 +29,7 @@
 #include "secp256k1.h"
 #include "nist256p1.h"
 #include "bignum.h"
+#include <string.h>
 
 /* net releated include */
 #if (PROTOCOL_USE_HLFABRIC == 1)
@@ -39,13 +38,18 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include <string.h>
 #include <sys/time.h>
 #endif
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+
+#if (HLFABRIC_TLS_SUPPORT == 1)
 // for TTLSContext structure
 #include "http2intf.h"
+#endif
+#include "options.h"
+
+#if (BOAT_USE_NWY_FILESYSTEM == 1)
+#include "nwy_file.h"
 #endif
 
 uint32_t random32(void)
@@ -69,6 +73,7 @@ BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
 	
 	return result;
 }
+
 
 
 BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
@@ -133,7 +138,11 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 *******************************************************************************/
 BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 {
+#if BOAT_USE_NWY_FILESYSTEM == 1
+	BSINT32 file_fd = -1;
+#else
 	FILE   *file_ptr;
+#endif
 	
 	(void)rsvd;
 	
@@ -142,7 +151,20 @@ BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'size' can't be NULL." );
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-	
+#if BOAT_USE_NWY_FILESYSTEM == 1
+	file_fd = nwy_sdk_fopen(fileName, NWY_RDONLY);
+
+	if( file_fd >= 0 )
+	{
+        	*size = nwy_sdk_fsize_fd(file_fd);
+		nwy_sdk_fclose(file_fd);
+	}
+	else
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName );
+		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+	}
+#else
 	file_ptr = fopen( fileName, "rb" );
 	if( file_ptr == NULL )
 	{
@@ -153,7 +175,8 @@ BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 	fseek( file_ptr, 0, SEEK_END );
 	*size   = ftell( file_ptr );
 	fclose( file_ptr );
-	
+#endif
+
 	return BOAT_SUCCESS;
 }
 
@@ -161,7 +184,11 @@ BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 BOAT_RESULT  BoatWriteFile( const BCHAR *fileName, 
 						    BUINT8* writeBuf, BUINT32 writeLen, void* rsvd )
 {
+#if BOAT_USE_NWY_FILESYSTEM == 1
+	BSINT32 file_fd = -1;
+#else
 	FILE         *file_ptr;
+#endif
 	BSINT32      count = 0;
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	
@@ -175,6 +202,19 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
 	}
 
 	/* write to file-system */
+#if BOAT_USE_NWY_FILESYSTEM == 1
+	file_fd = nwy_sdk_fopen(fileName, NWY_WRONLY | NWY_CREAT);
+	if( file_fd >= 0)
+	{
+		count = nwy_sdk_fwrite(file_fd, (const void *)writeBuf, writeLen);
+		nwy_sdk_fclose(file_fd);
+	}
+	else
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "Failed to create file: %s.", fileName );
+		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+	}
+#else
 	file_ptr = fopen( fileName, "wb" );
 	if( file_ptr == NULL )
 	{
@@ -184,6 +224,8 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
 	
 	count = fwrite( writeBuf, 1, writeLen, file_ptr );
 	fclose( file_ptr );
+#endif
+
 	if( count != writeLen )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "Failed to write file: %s.", fileName );
@@ -197,7 +239,11 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
 BOAT_RESULT  BoatReadFile( const BCHAR *fileName, 
 						   BUINT8 *readBuf, BUINT32 readLen, void* rsvd )
 {
+#if BOAT_USE_NWY_FILESYSTEM == 1
+	BSINT32 file_fd = -1;
+#else
 	FILE         *file_ptr;
+#endif
 	BSINT32      count = 0;
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	
@@ -211,6 +257,21 @@ BOAT_RESULT  BoatReadFile( const BCHAR *fileName,
 	}
 
 	/* read from file-system */
+#if BOAT_USE_NWY_FILESYSTEM == 1
+	file_fd = nwy_sdk_fopen(fileName, NWY_RDONLY);
+
+	if( file_fd >= 0 )
+	{
+		count = nwy_sdk_fread(file_fd, readBuf, readLen);
+		nwy_sdk_fclose(file_fd);
+	}
+	else
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName );
+		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+	}
+#else
+	
 	file_ptr = fopen(fileName, "rb");
 	if( file_ptr == NULL )
 	{
@@ -219,6 +280,8 @@ BOAT_RESULT  BoatReadFile( const BCHAR *fileName,
 	}
 	count = fread( readBuf, 1, readLen, file_ptr );
 	fclose( file_ptr );
+#endif
+
 	if( count != readLen )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName );
@@ -238,8 +301,11 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd )
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL." );
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-	
+#if BOAT_USE_NWY_FILESYSTEM == 1
+	if (0 != nwy_sdk_file_unlink(fileName))
+#else
 	if( 0 != remove(fileName) )
+#endif
     {
         return BOAT_ERROR;
     }
@@ -249,11 +315,11 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd )
     }
 }
 
+#if (PROTOCOL_USE_HLFABRIC == 1)
 /******************************************************************************
                               BOAT SOCKET WARPPER
 					        THIS ONLY USED BY FABRIC
 *******************************************************************************/
-#if (PROTOCOL_USE_HLFABRIC == 1)
 BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 {
     int                 connectfd;
@@ -326,7 +392,7 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 }
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
+#if (HLFABRIC_TLS_SUPPORT == 1)	
 BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain,
 						 BSINT32 socketfd, void* tlsContext, void* rsvd )
 {
@@ -339,8 +405,8 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
 
 BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, void* rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
-	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
+#if (HLFABRIC_TLS_SUPPORT == 1) 
+	//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
 	return -1;
 #else
 	return send( sockfd, buf, len, 0 );	
@@ -350,8 +416,8 @@ BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, 
 
 BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
-	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
+#if (HLFABRIC_TLS_SUPPORT == 1) 
+	//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
 	return -1;
 #else
 	return recv( sockfd, buf, len, 0 );
@@ -362,9 +428,9 @@ BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* 
 void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 {
 	close(sockfd);
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+#if (HLFABRIC_TLS_SUPPORT == 1) 
 	// free tls releated
-	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
+	//! @todo HLFABRIC_TLS_SUPPORT implementation in crypto default.
 #endif
 }
 #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */

@@ -39,10 +39,11 @@ boatoptions.h defines options for compiling.
 // #define BOAT_LOG_LEVEL   BOAT_LOG_VERBOSE
 
 // RPC USE OPTION: One and only one RPC_USE option shall be set to 1
-#define RPC_USE_LIBCURL                          1
+#define RPC_USE_LIBCURL                          0
+#define RPC_USE_NWYHTTPPORT                      1
 #define RPC_USE_NOTHING                          0
 
-#define RPC_USE_COUNT                            (RPC_USE_LIBCURL + RPC_USE_NOTHING)
+#define RPC_USE_COUNT                            (RPC_USE_NWYHTTPPORT + RPC_USE_LIBCURL + RPC_USE_NOTHING)
 
 #if (RPC_USE_COUNT != 1)
 #error "One and only one RPC_USE option shall be set to 1"
@@ -53,7 +54,7 @@ boatoptions.h defines options for compiling.
 // Blockchain Protocol OPTION
 #define PROTOCOL_USE_ETHEREUM   	             1
 #define PROTOCOL_USE_PLATONE    	             1
-#define PROTOCOL_USE_HLFABRIC                    1
+#define PROTOCOL_USE_HLFABRIC                    0
 #define PROTOCOL_USE_FISCOBCOS    	             1
 
 // Protocol dependency

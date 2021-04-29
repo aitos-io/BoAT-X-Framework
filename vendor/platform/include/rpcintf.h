@@ -27,7 +27,7 @@ RPC_USE_XXX macros.
 #include "boatinternal.h"
 
 #if RPC_USE_LIBCURL == 1
-#include "curl/curl.h"
+//#include "curl/curl.h"
 #endif
 
 #ifdef __cplusplus

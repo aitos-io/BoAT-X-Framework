@@ -1,5 +1,34 @@
+# Directories
+BOAT_BASE_DIR  := $(CURDIR)
+BOAT_SDK_DIR   := $(BOAT_BASE_DIR)/sdk
+BOAT_LIB_DIR   := $(BOAT_BASE_DIR)/lib
+BOAT_BUILD_DIR := $(BOAT_BASE_DIR)/build
+
+# set chain support
+# Set to 1 to enable releated chain, to 0 to disable
+BOAT_PROTOCOL_USE_ETHEREUM  ?= 1
+BOAT_PROTOCOL_USE_PLATONE   ?= 1
+BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
+BOAT_PROTOCOL_USE_HLFABRIC  ?= 0
+
+export BOAT_PROTOCOL_USE_ETHEREUM
+export BOAT_PROTOCOL_USE_PLATONE
+export BOAT_PROTOCOL_USE_FISCOBCOS
+export BOAT_PROTOCOL_USE_HLFABRIC
+
+
+# Platform target
+# The valid option value of PLATFORM_TARGET list as below:
+# - LINUX-X86-64      : default platform
+# - BG95              : a LPWA module of quectel
+# - L610              : a CAT1 module of fibocom
+# - N58               : a CAT1 module of neoway
+# - L718              : a LTE module of fibocom
+#PLATFORM_TARGET ?= LINUX-X86-64
+PLATFORM_TARGET ?= N58
+
 # Environment-specific Settings
-include external.env
+include $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/external.env
 
 # Commands
 BOAT_RM := rm -rf
@@ -10,7 +39,6 @@ export BOAT_RM BOAT_MKDIR BOAT_FIND
 
 
 # Check gcc version
-
 ifneq (,$(CC))
     GCCVERSION := $(shell $(CC) -v 2>&1)
 else
@@ -31,14 +59,6 @@ endif
 # Environment Language
 LANG := en_US  # zh_CN.UTF-8
 
-
-# Directories
-BOAT_BASE_DIR := $(CURDIR)
-BOAT_SDK_DIR := $(BOAT_BASE_DIR)/sdk
-BOAT_LIB_DIR := $(BOAT_BASE_DIR)/lib
-BOAT_BUILD_DIR := $(BOAT_BASE_DIR)/build
-
-
 # Compiling Flags
 
 # Target-independent Flags
@@ -47,7 +67,8 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
                   -I$(BOAT_SDK_DIR)/include \
 				  -I$(BOAT_SDK_DIR)/platform \
                   -I$(BOAT_SDK_DIR)/protocol \
-                  -I$(BOAT_SDK_DIR)/protocol/common \
+                  -I$(BOAT_SDK_DIR)/protocol/common/http2intf \
+                  -I$(BOAT_SDK_DIR)/protocol/common/web3intf \
 				  -I$(BOAT_SDK_DIR)/protocol/boathlfabric \
                   -I$(BOAT_SDK_DIR)/protocol/boathlfabric/protos \
 				  -I$(BOAT_SDK_DIR)/protocol/boatethereum \
@@ -89,17 +110,6 @@ else
     TARGET_SPEC_LIBS :=
     TARGET_SPEC_LINK_FLAGS :=
 endif
-
-
-
-# Platform target
-# The valid option value of PLATFORM_TARGET list as below:
-# - LINUX-X86-64      : default platform
-# - BG95              : a LPWA module of quectel
-# - L610              : a CAT1 module of fibocom
-# - L718              : a LTE module of fibocom
-PLATFORM_TARGET ?= LINUX-X86-64
-
 
 # Soft-crypto Dependencies
 # The valid option value of SOFT_CRYPTO list as below:
