@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Copyright (C) 2018-2020 aitos.io
+# Copyright (C) 2018-2021 aitos.io
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ This file is generated from contract ABI. DO NOT modify it by hand.
 generated_include_block_str = '''
 // Generated C function interface from smart contract ABI
 
+#include "boatconfig.h"
 #include "boatiotsdk.h"
 
 '''
@@ -213,14 +214,13 @@ class CFunctionGen():
             func_body_str += '    data_field.field_len = rlp_stream_ptr->stream_len;\n'
             func_body_str += '    boat_try(BoatPlatoneTxSetData(tx_ptr, &data_field));\n\n'
             func_body_str += '    boat_try(BoatPlatoneTxSend(tx_ptr));\n\n'
-            func_body_str += '    UtilityBin2Hex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
+            func_body_str += '    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
          
         
         # Cleanup Label
         func_body_str += '''
     boat_catch(cleanup)
     {
-        BoatLog(BOAT_LOG_VERBOSE, "Exception: %d", boat_exception);
         RlpRecursiveDeleteObject(&rlp_object_list);
         return(NULL);
     }

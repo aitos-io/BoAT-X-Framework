@@ -29,12 +29,17 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #include <unistd.h>
 #include <string.h>
 
-#include "boatoptions.h"
+#include "boatwallet.h"
 #include "boaterrcode.h"
 #include "boattypes.h"
 #include "boatexception.h"
 #include "boatutility.h"
 #include "boatrlp.h"
+#include "boatplatform.h"
+
+#if PROTOCOL_USE_ETHEREUM == 1
+#include "protocolapi/api_ethereum.h"
+#endif
 #if PROTOCOL_USE_ETHEREUM == 1
 #include "protocolapi/api_ethereum.h"
 #endif
@@ -47,7 +52,9 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #include "protocolapi/api_platone.h"
 #endif
 
-#include "boatwallet.h"
 
+#if PROTOCOL_USE_FISCOBCOS == 1
+#include "protocolapi/api_fiscobcos.h"
+#endif
 
 #endif

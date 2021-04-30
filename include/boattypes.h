@@ -23,6 +23,7 @@ boattypes.h defines types used in BoAT IoT SDK.
 #ifndef __BOATTYPES_H__
 #define __BOATTYPES_H__
 
+#include <stdbool.h>
 
 #define BOAT_OUT
 #define BOAT_IN
@@ -34,20 +35,17 @@ boattypes.h defines types used in BoAT IoT SDK.
 #define __BOATSTATIC static
 #define __BOATINLINE inline
 
-// Basic Types, prefixed with "B" to avoid possible conflict with customer's typedef
+//!@brief Basic Types, prefixed with "B" to avoid possible conflict with customer's typedef
 typedef bool BBOOL;
 typedef char BCHAR;
 typedef unsigned char BUINT8;
 typedef unsigned short BUINT16;
 typedef unsigned int BUINT32;
 typedef unsigned long long int BUINT64;
-//typedef __uint128_t BUINT128;
 typedef signed char BSINT8;
 typedef signed short BSINT16;
 typedef signed int BSINT32;
 typedef signed long long int BSINT64;
-//typedef __int128_t BSINT128;
-
 
 typedef BSINT32 BOAT_RESULT;
 typedef BUINT8 BoatAddress[20];
@@ -59,8 +57,34 @@ typedef enum
     BOAT_PROTOCOL_UNKNOWN = 0,     //!< Placeholder for unknown protocol
     BOAT_PROTOCOL_ETHEREUM,        //!< Ethereum
     BOAT_PROTOCOL_HLFABRIC,        //!< HyperLedger Fabric
-    BOAT_PROTOCOL_PLATONE          //!< PlatONE Enterprise consortium chain
+    BOAT_PROTOCOL_PLATONE,         //!< PlatONE Enterprise consortium chain
+	BOAT_PROTOCOL_FISCOBCOS        //!< FISCOBCOS Enterprise consortium chain
 }BoatProtocolType;
+
+//!@brief Blockchain hash algorithm
+typedef enum
+{
+    BOAT_HASH_UNKNOWN = 0,    //!< Placeholder for unknown hash algorithm
+	BOAT_HASH_KECCAK256,      //!< keccak256 hash algorithm
+	BOAT_HASH_SHA256          //!< sha256 hash algorithm
+}BoatHashAlgType;
+
+
+//!@brief boat SDK signature result
+typedef struct TBoatSignatureResult
+{
+	BBOOL    native_format_used;  //!< ture: used, false:unused
+	BUINT8   native_sign[64];
+	
+	BBOOL    pkcs_format_used;
+	BUINT8   pkcs_sign[139];  //!< 139 is ECDSA MAX LENGTH, If another type of signature should be
+	                          //!< added later, this value maybe need extend.
+	BUINT32  pkcs_sign_length;
+	
+	BBOOL    signPrefix_used;
+	BUINT8   signPrefix;
+}BoatSignatureResult;
+
 
 //!@brief common struct for variable length fields
 typedef struct TBoatFieldVariable
@@ -89,5 +113,12 @@ typedef struct TBoatFieldMax8B
     BUINT8 field[8];     //!< Field storage
     BUINT32 field_len;   //!< The effective length of the field in byte
 }BoatFieldMax8B;      
+
+//!@brief common struct for 24-byte (192-bit) length transaction fields
+typedef struct TBoatFieldMax24B
+{
+    BUINT8 field[24];     //!< Field storage
+    BUINT32 field_len;    //!< The effective length of the field in byte
+}BoatFieldMax24B;  
 
 #endif

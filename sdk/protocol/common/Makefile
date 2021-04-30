@@ -1,19 +1,16 @@
 # Source and Objects
 
-SOURCES = $(wildcard *.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol/common
-OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-
-all: $(OBJECTS_DIR) $(OBJECTS)
-
-
-$(OBJECTS_DIR):
-	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
-
-$(OBJECTS_DIR)/%.o:%.c
-	$(CC) -c $(BOAT_CFLAGS) $< -o $@
-
-
+all:
+ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1) 
+	make -C http2intf all 
+endif
+# If BOAT_PROTOCOL_USE_ETHEREUM, BOAT_PROTOCOL_USE_PLATONE, BOAT_PROTOCOL_USE_FISCOBCOS has one setted to 1, 
+# then build web3intf
+ifeq ($(findstring $(BOAT_PROTOCOL_USE_ETHEREUM)$(BOAT_PROTOCOL_USE_PLATONE)$(BOAT_PROTOCOL_USE_FISCOBCOS), 000),)
+	make -C web3intf  all
+endif	
+	
 clean:
-	-$(BOAT_RM) $(OBJECTS)
+	make -C http2intf clean
+	make -C web3intf  clean
