@@ -24,6 +24,7 @@
 #include "boatplatform.h"
 #include "boattypes.h"
 #include "boatutility.h"
+#include "boatLog.h"
 
 #include "keccak.h"
 
