@@ -54,7 +54,7 @@ uint32_t random32(void) {
 // The following code is platform independent
 //
 
-#if __CYGWIN__ == 1
+#ifdef __CYGWIN__
 void random_buffer(uint8_t *buf, size_t len) {
 #else
 void __attribute__((weak)) random_buffer(uint8_t *buf, size_t len) {
