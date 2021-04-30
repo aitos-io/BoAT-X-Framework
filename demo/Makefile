@@ -13,6 +13,7 @@ all:$(OBJECTS_DIR) ethereum_demo platone_demo fiscbcos_demo fabric_demo
 
 #ETHEREUM transfer demo build	
 ethereum_demo: demo_ethereum_transfer.c demo_ethereum_storeread.c
+ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_ethereum_transfer.c \
 		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_transfer_onetime_internalGen
@@ -56,9 +57,11 @@ ethereum_demo: demo_ethereum_transfer.c demo_ethereum_storeread.c
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_ethereum_storeread.c \
 		-DUSE_LOAD_PERSIST_WALLET \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/ethereum/demo_ethereum_storeread_load	
+endif
 
 #PLATONE transfer demo build	
 platone_demo: demo_platone_mycontract.c
+ifeq ($(BOAT_PROTOCOL_USE_PLATONE), 1)
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_platone_mycontract.c \
 		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/platone/demo_platone_mycontract_onetime_internalGen
@@ -80,9 +83,11 @@ platone_demo: demo_platone_mycontract.c
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_platone_mycontract.c \
 		-DUSE_LOAD_PERSIST_WALLET \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/platone/demo_platone_mycontract_load
+endif
 
 #Fiscobcos transfer demo build	
 fiscbcos_demo: demo_fiscobcos_helloworld.c
+ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS), 1)
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fiscobcos_helloworld.c \
 		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fiscobcos/demo_fiscobcos_helloworld_onetime_internalGen
@@ -104,12 +109,14 @@ fiscbcos_demo: demo_fiscobcos_helloworld.c
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fiscobcos_helloworld.c \
 		-DUSE_LOAD_PERSIST_WALLET \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fiscobcos/demo_fiscobcos_helloworld_load
+endif
 
 #Fabric transfer demo build	
 fabric_demo: demo_fabric_invoke.c
+ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_invoke.c \
 		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fabric/demo_fabric_invoke
-	
+endif	
 
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)/ethereum

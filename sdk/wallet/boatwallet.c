@@ -33,6 +33,10 @@ boatwallet.c is the SDK main entry.
 
 #include "persiststore.h"
 
+#if RPC_USE_LIBCURL == 1
+#include "curl/curl.h"
+#endif
+
 BoatIotSdkContext g_boat_iot_sdk_context;
 
 

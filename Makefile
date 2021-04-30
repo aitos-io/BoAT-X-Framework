@@ -11,6 +11,11 @@ BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 0
 
+SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
+                 "BOAT_PROTOCOL_USE_PLATONE=$(BOAT_PROTOCOL_USE_PLATONE)" \
+                 "BOAT_PROTOCOL_USE_FISCOBCOS=$(BOAT_PROTOCOL_USE_FISCOBCOS)" \
+                 "BOAT_PROTOCOL_USE_HLFABRIC=$(BOAT_PROTOCOL_USE_HLFABRIC)"
+
 
 # Platform target
 # The valid option value of PLATFORM_TARGET list as below:
@@ -19,8 +24,8 @@ BOAT_PROTOCOL_USE_HLFABRIC  ?= 0
 # - L610              : a CAT1 module of fibocom
 # - N58               : a CAT1 module of neoway
 # - L718              : a LTE module of fibocom
-#PLATFORM_TARGET ?= LINUX-X86-64
-PLATFORM_TARGET ?= N58
+PLATFORM_TARGET ?= LINUX-X86-64
+#PLATFORM_TARGET ?= N58
 
 # Environment-specific Settings
 include $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/external.env
@@ -159,10 +164,14 @@ export LINK_LIBS
 
 #all: boatlibs demo tests
 all: boatlibs
-
+	
 boatlibs: createdir boatwalletlib vendorlib
 
 createdir:
+	@echo generate header file boatConfig.h...
+	$(shell python ./vendor/platform/$(PLATFORM_TARGET)/scripts/gen.py $(PLATFORM_TARGET) $(SCRIPTS_PARAM) )
+	@echo generate done.
+
 	$(BOAT_MKDIR) -p $(BOAT_LIB_DIR)
 	$(BOAT_MKDIR) -p $(BOAT_BUILD_DIR)
 
