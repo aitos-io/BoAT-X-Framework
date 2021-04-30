@@ -216,7 +216,12 @@ Add to link options: -lcurl -lcrypto
 
 
 #### Modify your C code
-Add: #include "boatiotsdk.h"
+Add include header files:
+```
+#include "boatconfig.h"
+#include "boatiotsdk.h"
+```
+
 Follow instructions in [*How to Call a Contract in Your C code*](#how-to-call-a-contract-in-your-c-code).
 
 
