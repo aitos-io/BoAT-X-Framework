@@ -24,7 +24,7 @@ boatutility.h is header file for boatwallet utility functions.
 #define __BOATUTILITY_H__
 
 #include "boatiotsdk.h"
-#include "boatLog.h"
+//#include "boatLog.h"
 
 /*! @defgroup utility boat utility
  * @{
@@ -74,117 +74,7 @@ typedef struct
 	BUINT32 val[9];
 } utilityBignum256;
 
-extern const BCHAR * const g_log_level_name_str[];
 
-/*!****************************************************************************
- * @brief Log Output
- *
- * @param level
- *   Log priority level. 
- *   One of BOAT_LOG_CRITICAL, BOAT_LOG_NORMAL or BOAT_LOG_VERBOSE.
- *
- *@param format
- *   Similar to that in printf().
- ******************************************************************************/
-#if BOAT_LOG_LEVEL == BOAT_LOG_NONE
-#define BoatLog(level, format,...)
-#else
-#define BoatLog(level, format,...)\
-    do{\
-        if( level <= BOAT_LOG_LEVEL ) {BoatPrintf("%s: "__FILE__":%d, %s(): "format"\n", g_log_level_name_str[level-1], __LINE__, __func__, ##__VA_ARGS__);}\
-    }while(0)
-#endif
-
-
-/*!****************************************************************************
- * @brief Log Output in hex mode
- *
- * @param level
- *   Log priority level. 
- *   One of BOAT_LOG_CRITICAL, BOAT_LOG_NORMAL or BOAT_LOG_VERBOSE.
- *
- * @param title
- *   Tips of this dump.
- *
- * @param buf
- *   Buffer to be dump.
- *
- * @param len
- *   Size of parameter <buf>.
- *
- * @see BoatLog BoatLog_hexasciidump
- ******************************************************************************/
-#if BOAT_LOG_LEVEL == BOAT_LOG_NONE
-#define BoatLog_hexdump(level, title, buf, len)
-#else
-#define BoatLog_hexdump(level, title, buf, len)\
-	do{\
-		if( level <= BOAT_LOG_LEVEL ){\
-			BoatPrintf( "%s: %s[%03d]: ", g_log_level_name_str[level-1], title, len );\
-			if( len > 0 ){\
-				for( int i = 0; i < len; i++ ){BoatPrintf( "%c%c", "0123456789ABCDEF" [buf[i] / 16],"0123456789ABCDEF" [buf[i] % 16] );}\
-			}else{\
-				BoatPrintf("(nil)");\
-			}\
-			BoatPrintf( "\n" );\
-		}\
-	}while(0)
-#endif
-   
-   
-/*!****************************************************************************
- * @brief Log Output in hex and acsii mode
- *
- * @param level
- *   Log priority level. 
- *   One of BOAT_LOG_CRITICAL, BOAT_LOG_NORMAL or BOAT_LOG_VERBOSE.
- *
- * @param title
- *   Tips of this dump.
- *
- * @param buf
- *   Buffer to be dump.
- *
- * @param len
- *   Size of parameter <buf>.
- *
- * @see BoatLog BoatLog_hexdump
- ******************************************************************************/
-#if BOAT_LOG_LEVEL == BOAT_LOG_NONE
-#define BoatLog_hexasciidump(level, title, buf, len)
-#else
-#define BoatLog_hexasciidump(level, title, buf, len)\
-	   do{\
-		   if( level <= BOAT_LOG_LEVEL ){\
-		   BoatPrintf( "%s: %s[%03d]: \n", g_log_level_name_str[level-1], title, len );\
-			   if( len > 0 ){\
-				   for( int j = 0; j < len / 16 + 1; j++ ){\
-					   BoatPrintf("%08x  ", j * 16);\
-					   for( int i = 0; i < 16; i++ ){\
-						   BoatPrintf( "%c%c ",\
-								   "0123456789ABCDEF " [(i + j * 16 < len) ? buf[i + j * 16] / 16 : 16],\
-								   "0123456789ABCDEF " [(i + j * 16 < len) ? buf[i + j * 16] % 16 : 16] );}\
-					   BoatPrintf( " |" );\
-					   for( int i = 0; i < 16; i++ ){\
-						   if( i + j * 16 < len ){\
-							   if( (buf[i + j * 16] > 32) && (buf[i + j * 16] < 127) ){\
-								   BoatPrintf( "%c", buf[ i + j * 16] );\
-							   }else{\
-								   BoatPrintf( "." );\
-							   }\
-						   }else{\
-						   	   BoatPrintf( " " );\
-						   }\
-					   }\
-					   BoatPrintf( "|\n" );\
-				   }\
-		   }else{\
-			   BoatPrintf("(nil)");\
-		   }\
-		   BoatPrintf( "\n" );\
-	   }\
-   }while(0)
-   #endif
 
 /*!****************************************************************************
  * @brief Round value up to the nearest multiple of step

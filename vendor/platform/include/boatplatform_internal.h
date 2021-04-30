@@ -23,7 +23,10 @@
 #define __BOATPLATFORM_INTERNAL_H__
 
 /* self header include */
+
+#include "boatconfig.h"
 #include "boatinternal.h"
+#include "boatLog.h"
 
 #ifdef __cplusplus
 extern "C" {
