@@ -20,7 +20,7 @@
 */
 
 /* self header include */
-#include "boatconfig.h"
+#include "boatConfig.h"
 
 #if PROTOCOL_USE_HLFABRIC == 1
 

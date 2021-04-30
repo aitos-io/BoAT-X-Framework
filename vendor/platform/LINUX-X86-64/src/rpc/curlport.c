@@ -24,7 +24,7 @@ provided by rpcport.
 
 To use libcurl porting, RPC_USE_LIBCURL in boatconfig.h must set to 1.
 */
-#include "boatconfig.h"
+#include "boatConfig.h"
 #include "boatinternal.h"
 
 #if RPC_USE_LIBCURL == 1

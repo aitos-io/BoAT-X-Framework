@@ -21,7 +21,7 @@ boatwallet.c is the SDK main entry.
 
 @author aitos.io
 */
-#include "boatconfig.h"
+#include "boatConfig.h"
 #include "boatinternal.h"
 #include "boatwallet.h"
 
