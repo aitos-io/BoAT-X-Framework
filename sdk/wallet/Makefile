@@ -1,6 +1,22 @@
 # Source and Objects
 
-SOURCES = $(wildcard *.c)
+#SOURCES = $(wildcard *.c)
+SOURCES = boatwallet.c \
+          boatversion.c
+		  
+ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
+	SOURCES += api_ethereum.c
+endif			  
+ifeq ($(BOAT_PROTOCOL_USE_PLATONE), 1)
+	SOURCES += api_platone.c
+endif	
+ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS), 1)
+	SOURCES += api_fiscobcos.c
+endif
+ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)
+	SOURCES += api_hlfabric.c
+endif
+
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/wallet
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 

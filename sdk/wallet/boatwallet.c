@@ -43,15 +43,19 @@ BoatIotSdkContext g_boat_iot_sdk_context;
 BOAT_RESULT BoatIotSdkInit(void)
 {
     BUINT32 i;
+#if ( (PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) )    
     cJSON_Hooks hooks;
+#endif    
     
 #if RPC_USE_LIBCURL == 1
     CURLcode curl_result;
 #endif
 
+#if ( (PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) )
     hooks.malloc_fn = BoatMalloc;
     hooks.free_fn   = BoatFree;
     cJSON_InitHooks(&hooks);
+#endif
 
 	// For Multi-Thread Support: CreateMutex Here
 
@@ -95,11 +99,13 @@ void BoatIotSdkDeInit(void)
 BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_name_str, 
 						  const void * wallet_config_ptr, BUINT32 wallet_config_size )
 {
-    BUINT8  pubkeyHashDummy[32];
-    BUINT8  hashLenDummy;
     BSINT32 i;
     void *wallet_ptr = NULL;
-
+#if ( (PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) )    
+    BUINT8  pubkeyHashDummy[32];
+    BUINT8  hashLenDummy;
+#endif    
+    
     struct TBoatwalletStore{
         BUINT8  loaded_wallet_config_array[wallet_config_size];
         BoatWalletPriKeyCtx  load_prikeyCtx;

@@ -24,6 +24,7 @@
 
 #if PROTOCOL_USE_HLFABRIC == 1
 
+#include "boatplatform_internal.h"
 #include "http2intf.h"
 #include "protocolapi/api_hlfabric.h"
 /* protos header include */
