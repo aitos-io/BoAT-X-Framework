@@ -21,7 +21,7 @@ ethereum.c contains functions to construct a raw transaction, serialize it with 
 perform it and wait for its receipt.
 */
 
-#include "boatconfig.h"
+#include "boatConfig.h"
 #include "boatinternal.h"
 #if PROTOCOL_USE_PLATONE == 1
 #include "web3intf.h"

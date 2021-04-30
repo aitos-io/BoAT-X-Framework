@@ -21,7 +21,7 @@ boatfiscobcos.c contains functions to construct a raw transaction, serialize it 
 perform it and wait for its receipt.
 */
 
-#include "boatconfig.h"
+#include "boatConfig.h"
 #include "boatinternal.h"
 
 #if PROTOCOL_USE_FISCOBCOS == 1

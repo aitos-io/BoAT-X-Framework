@@ -22,7 +22,7 @@ The exact implementation of the actual RPC mechanism is controlled by
 RPC_USE_XXX macros.
 */
 
-#include "boatconfig.h"
+#include "boatConfig.h"
 #include "boatinternal.h"
 #include "rpcport.h"
 

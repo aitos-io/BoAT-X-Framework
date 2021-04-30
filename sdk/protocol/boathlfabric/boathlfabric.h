@@ -23,7 +23,7 @@ boathlfabric.h is header file for RAW transaction construction and performing.
 #ifndef __BOATHLFABRIC_H__
 #define __BOATHLFABRIC_H__
 
-#include "boatconfig.h"
+#include "boatConfig.h"
 #include "boatinternal.h"
 
 #if PROTOCOL_USE_HLFABRIC == 1

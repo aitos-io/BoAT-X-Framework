@@ -24,7 +24,7 @@
 
 /* self header include */
 
-#include "boatconfig.h"
+#include "boatConfig.h"
 #include "boatinternal.h"
 #include "boatLog.h"
 
