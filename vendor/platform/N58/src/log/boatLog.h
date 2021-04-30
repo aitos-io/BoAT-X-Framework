@@ -20,8 +20,8 @@
 boatLogConfig.h defines options for compiling.
 */
 
-#ifndef __BOATCONFIG_H__
-#define __BOATCONFIG_H__
+#ifndef __BOATLOG_H__
+#define __BOATLOG_H__
 
 //! BOAT LOG LEVEL DEFINITION
 //! Log level is used to control the detail of log output.

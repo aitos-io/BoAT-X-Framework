@@ -1,13 +1,13 @@
 # Source and Objects
-RPC_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/rpc/*.o) \
-			  $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/log/*.o) 
+SRC_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/rpc/*.o) \
+			  $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/log/*.o) 
 
 PORT_CRYPTO_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/keccak/*.o) \
 		  			  $(wildcard $(BOAT_BUILD_DIR)/vendor/common/storage/*.o) 
 
 PORT_CRYPTO_OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/crypto_default/*.o) \
 			$(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/crypto_default/aes/*.o) \
-			$(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_crypto_default/*.o) 
+			$(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/port_crypto_default/*.o) 
 
 
 LIBNAME = $(BOAT_LIB_DIR)/libboatvendor.a
@@ -17,7 +17,7 @@ LIBNAME = $(BOAT_LIB_DIR)/libboatvendor.a
 all: boatvendor_objs $(LIBNAME)
 
 $(LIBNAME): boatvendor_objs
-	$(AR) r $(LIBNAME) $(PORT_CRYPTO_OBJECTS) $(RPC_OBJECTS)
+	$(AR) r $(LIBNAME) $(PORT_CRYPTO_OBJECTS) $(SRC_OBJECTS)
 
 
 boatvendor_objs:
