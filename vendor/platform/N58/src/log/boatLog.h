@@ -39,7 +39,7 @@ boatLogConfig.h defines options for compiling.
 #define BOAT_LOG_LEVEL   BOAT_LOG_VERBOSE
 
 
+void BoatPrintf(char* fmt, ...);
 
-#define BoatPrintf                               boat_nwy_ext_echo
 
 #endif

@@ -8,7 +8,7 @@
 
 #define BOAT_NWY_EXT_SIO_RX_MAX          (2*1024)
 
-void boat_nwy_ext_echo(char* fmt, ...)
+void BoatPrintf(char* fmt, ...)
 {
     static char    echo_str[BOAT_NWY_EXT_SIO_RX_MAX];
     static nwy_osiMutex_t *echo_mutex = NULL;
