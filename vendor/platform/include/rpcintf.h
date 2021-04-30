@@ -24,6 +24,7 @@ RPC_USE_XXX macros.
 #ifndef __RPCINTF_H__
 #define __RPCINTF_H__
 
+#include "boatConfig.h"
 #include "boatinternal.h"
 
 #if RPC_USE_LIBCURL == 1
