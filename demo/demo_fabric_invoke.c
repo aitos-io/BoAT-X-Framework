@@ -18,6 +18,7 @@
 	#define _POSIX_C_SOURCE 200809L
 	#include <time.h>
 #endif
+#include "boatconfig.h"
 #include "boatiotsdk.h"
 
 const BCHAR * fabric_client_demokey  = "-----BEGIN PRIVATE KEY-----\n"
@@ -139,7 +140,7 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig) );
 	if(index == BOAT_ERROR)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );
+		//BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );
 		return BOAT_ERROR;
 	}
 	g_fabric_wallet_ptr = BoatGetWalletByIndex( index );
@@ -159,7 +160,7 @@ int main(int argc, char *argv[])
 	result = fabricWalletPrepare();
 	if( result != BOAT_SUCCESS )
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );
+		//BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );
 		return -1;
 	}
 
@@ -167,7 +168,7 @@ int main(int argc, char *argv[])
 	result = BoatHlfabricTxInit( &tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP" );
 	if( result != BOAT_SUCCESS )
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed." );
+		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed." );
 		return -1;
 	}
 	
@@ -183,7 +184,7 @@ int main(int argc, char *argv[])
 #endif
 	if( result != BOAT_SUCCESS )
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed." );
+		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed." );
 		return -1;
 	}
 	
@@ -192,7 +193,7 @@ int main(int argc, char *argv[])
 	result += BoatHlfabricTxSubmit( &tx_ptr );
 	if( result != BOAT_SUCCESS )
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(invoke) failed." );
+		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(invoke) failed." );
 		return -1;
 	}
 	
@@ -202,7 +203,7 @@ int main(int argc, char *argv[])
 	result += BoatHlfabricTxSubmit( &tx_ptr );
 	if( result != BOAT_SUCCESS )
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(query) failed." );
+		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(query) failed." );
 		return -1;
 	}
 	

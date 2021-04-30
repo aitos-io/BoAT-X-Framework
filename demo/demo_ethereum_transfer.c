@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include "boatconfig.h"
 #include "boatiotsdk.h"
 
 
@@ -65,18 +66,18 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
 
 	/* wallet_config value assignment */
     #if defined( USE_PRIKEY_FORMAT_INTERNAL_GENERATION )
-        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #elif defined( USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS )
-        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
         wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
         wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
     #elif defined( USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE )
-        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
@@ -97,7 +98,7 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
     index = BoatWalletCreate( BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig) );
     if( index == BOAT_ERROR )
 	{
-        BoatLog( BOAT_LOG_CRITICAL, "create one-time wallet failed." );
+        //BoatLog( BOAT_LOG_CRITICAL, "create one-time wallet failed." );
         return BOAT_ERROR;
     }
     g_ethereum_wallet_ptr = BoatGetWalletByIndex( index );
@@ -117,18 +118,18 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
 
     /* wallet_config value assignment */
     #if defined( USE_PRIKEY_FORMAT_INTERNAL_GENERATION )
-        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #elif defined( USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS )
-        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
         wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
         wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
     #elif defined( USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE )
-        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
@@ -149,7 +150,7 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, wallet_name, &wallet_config, sizeof(BoatEthWalletConfig));
     if( index == BOAT_ERROR )
 	{
-        BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
+        //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR;
     }
 
@@ -168,7 +169,7 @@ __BOATSTATIC BOAT_RESULT ethereum_loadPersistWallet(BCHAR *wallet_name)
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, wallet_name, NULL, sizeof(BoatEthWalletConfig));
     if( index == BOAT_ERROR )
 	{
-        BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
+        //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR;
     }
     g_ethereum_wallet_ptr = BoatGetWalletByIndex( index );
@@ -188,14 +189,14 @@ BOAT_RESULT ethereumGetBalance(BoatEthWallet *wallet_ptr)
 	result          = BoatEthPraseRpcResponseResult( cur_balance_wei, "", &prase_result);
 	if( result == BOAT_SUCCESS )
 	{
-		BoatLog( BOAT_LOG_NORMAL, "BoatEthWalletGetBalance returns: %s", prase_result.field_ptr );
+		//BoatLog( BOAT_LOG_NORMAL, "BoatEthWalletGetBalance returns: %s", prase_result.field_ptr );
 	}
 	else
 	{
 		return BOAT_ERROR;
 	}
 
-    BoatLog(BOAT_LOG_NORMAL, "Balance: %s wei", prase_result.field_ptr);
+    //BoatLog(BOAT_LOG_NORMAL, "Balance: %s wei", prase_result.field_ptr);
 
     return BOAT_SUCCESS;
 }
@@ -213,7 +214,7 @@ BOAT_RESULT ethereumTransfer(BoatEthWallet *wallet_ptr)
 
     if( result != BOAT_SUCCESS )
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxInit failed.");
+        //BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxInit failed.");
         return BOAT_ERROR;
     }
     
@@ -233,21 +234,21 @@ int main(int argc, char *argv[])
     
 	/* step-2: create ethereum wallet */
 #if defined( USE_ONETIME_WALLET )
-	BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
+	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
 	result = ethereum_createOnetimeWallet();
 #elif defined( USE_CREATE_PERSIST_WALLET )
-	BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
+	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
 	result = ethereum_createPersistWallet("eth.cfg");
 #elif defined( USE_LOAD_PERSIST_WALLET )
-	BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: load persist wallet.");
+	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: load persist wallet.");
 	result = ethereum_loadPersistWallet("eth.cfg");
 #else
-	BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
+	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
 	return -1;
 #endif	
     if( result != BOAT_SUCCESS )
 	{
-		 BoatLog(BOAT_LOG_CRITICAL, "ethereumWalletPrepare_create failed : %d.", result);
+		 //BoatLog(BOAT_LOG_CRITICAL, "ethereumWalletPrepare_create failed : %d.", result);
 		return -1;
 	}
     
@@ -257,11 +258,11 @@ int main(int argc, char *argv[])
 	result += ethereumGetBalance( g_ethereum_wallet_ptr );
     if( result != BOAT_SUCCESS )
 	{
-        BoatLog(BOAT_LOG_NORMAL, "CaseEthereum Failed: %d.", result);
+        //BoatLog(BOAT_LOG_NORMAL, "CaseEthereum Failed: %d.", result);
     }
 	else
 	{
-        BoatLog(BOAT_LOG_NORMAL, "CaseEthereum Passed.");
+        //BoatLog(BOAT_LOG_NORMAL, "CaseEthereum Passed.");
     }
 	
 	/* step-4: Boat SDK Deinitialization */

@@ -46,6 +46,7 @@ This file is generated from contract ABI. DO NOT modify it by hand.
 generated_include_block_str = '''
 // Generated C function interface from smart contract ABI
 
+#include "boatconfig.h"
 #include "boatiotsdk.h"
 
 '''
@@ -91,9 +92,9 @@ generated_types_for_solidity_str = '''
     typedef BUINT8 Bbytes32[32];
 
     typedef Bbytes16 BUINT128;
-    typedef Bbytes16 SUINT128;
+    typedef Bbytes16 BSINT128;
     typedef Bbytes32 BUINT256;
-    typedef Bbytes32 SUINT256;
+    typedef Bbytes32 BSINT256;
 
 '''
 
@@ -101,14 +102,69 @@ generated_types_for_solidity_str = '''
 # Map from type used in smart contract to type in C
 # Types not listed are not supported
 type_mapping = {
-    # Variable-length types not supported yet
+    #Non-fixed size types and Non-fixed size Non-fixed array types
     'string'    :'BCHAR*',
     'bytes'     :'BUINT8*',
     'bytes[]'   :'BoatFieldVariable*',
     'string[]'  :'BoatFieldVariable*',
     #'address[]' :'BoatAddress*',
 
-    #Fixed-length types
+    #Fixed size Non-fixed array types
+    'address[]'   :'BoatAddress *',
+    'bool[]'      :'BUINT8 *',
+    'uint8[]'     :'BUINT8 *',
+    'uint16[]'    :'BUINT16 *',
+    'uint32[]'    :'BUINT32 *',
+    'uint64[]'    :'BUINT64 *',
+    'uint128[]'   :'BUINT128 *',
+
+    'uint256[]'   :'BUINT256 *',
+
+    'int8[]'      :'BSINT8 *',
+    'int16[]'     :'BSINT16 *',
+    'int32[]'     :'BSINT32 *',
+    'int64[]'     :'BSINT64 *',
+    'int128[]'    :'BSINT128 *',
+
+    'int256[]'    :'BSINT256 *',
+    
+    'bytes1[]'    :'Bbytes1 *',
+    'bytes2[]'    :'Bbytes2 *',
+    'bytes3[]'    :'Bbytes3 *',
+    'bytes4[]'    :'Bbytes4 *',
+    'bytes5[]'    :'Bbytes5 *',
+    'bytes6[]'    :'Bbytes6 *',
+    'bytes7[]'    :'Bbytes7 *',
+    'bytes8[]'    :'Bbytes8 *',
+    
+    'bytes9[]'    :'Bbytes9 *',
+    'bytes10[]'   :'Bbytes10 *',
+    'bytes11[]'   :'Bbytes11 *',
+    'bytes12[]'   :'Bbytes12 *',
+    'bytes13[]'   :'Bbytes13 *',
+    'bytes14[]'   :'Bbytes14 *',
+    'bytes15[]'   :'Bbytes15 *',
+    'bytes16[]'   :'Bbytes16 *',
+    
+    'bytes17[]'   :'Bbytes17 *',
+    'bytes18[]'   :'Bbytes18 *',
+    'bytes19[]'   :'Bbytes19 *',
+    'bytes20[]'   :'Bbytes20 *',
+    'bytes21[]'   :'Bbytes21 *',
+    'bytes22[]'   :'Bbytes22 *',
+    'bytes23[]'   :'Bbytes23 *',
+    'bytes24[]'   :'Bbytes24 *',
+    
+    'bytes25[]'   :'Bbytes25 *',
+    'bytes26[]'   :'Bbytes26 *',
+    'bytes27[]'   :'Bbytes27 *',
+    'bytes28[]'   :'Bbytes28 *',
+    'bytes29[]'   :'Bbytes29 *',
+    'bytes30[]'   :'Bbytes30 *',
+    'bytes31[]'   :'Bbytes31 *',
+    'bytes32[]'   :'Bbytes32 *',
+
+    #Fixed size types
     'address'   :'BoatAddress',
     'bool'      :'BUINT8',
     'uint8'     :'BUINT8',
@@ -183,19 +239,38 @@ class CFunctionGen():
 
     def require_endian_change(self, abitype):
         types_to_change_endian = {
-            'bool'      :'BUINT8',
-            'uint8'     :'BUINT8',
+            #'bool'      :'BUINT8',
+            #'uint8'     :'BUINT8',
             'uint16'    :'BUINT16',
             'uint32'    :'BUINT32',
             'uint64'    :'BUINT64',
             'uint128'   :'BUINT128',
             'uint256'   :'BUINT256',
-            'int8'      :'BSINT8',
+            #'int8'      :'BSINT8',
             'int16'     :'BSINT16',
             'int32'     :'BSINT32',
             'int64'     :'BSINT64',
             'int128'    :'BSINT128',
-            'int256'    :'BSINT256'
+            'int256'    :'BSINT256',
+            'address'   :'BoatAddress',
+
+            'address[]'   :'BoatAddress *',
+            'bool[]'      :'BUINT8 *',
+            'uint8[]'     :'BUINT8 *',
+            'uint16[]'    :'BUINT16 *',
+            'uint32[]'    :'BUINT32 *',
+            'uint64[]'    :'BUINT64 *',
+            'uint128[]'   :'BUINT128 *',
+
+            'uint256[]'   :'BUINT256 *',
+
+            'int8[]'      :'BSINT8 *',
+            'int16[]'     :'BSINT16 *',
+            'int32[]'     :'BSINT32 *',
+            'int64[]'     :'BSINT64 *',
+            'int128[]'    :'BSINT128 *',
+
+            'int256[]'    :'BSINT256 *'
         }
 
         if abitype in types_to_change_endian.keys():
@@ -203,70 +278,130 @@ class CFunctionGen():
         else:
             return False
 
+    #check the input type is supported or not
+    def is_supported_type(self, abitype):
+        if abitype in type_mapping.keys():
+            return True
+        elif abitype[abitype.find('[') + 1:].find('[') != -1:
+            return False
+        elif abitype[0:abitype.find('[')] in type_mapping.keys():
+            return True
+        else: 
+            return False
+    
+    def is_value_type(self, abitype):
+        types_of_value = {
+            'bool'      :'BUINT8',
+            'uint8'     :'BUINT8',
+            'uint16'    :'BUINT16',
+            'uint32'    :'BUINT32',
+            'uint64'    :'BUINT64',
 
-    def is_array_type(self, abitype):
-        types_of_array = {
-            'address'   :'BoatAddress',
-            'uint128'   :'BUINT128',
-            'int128'    :'BSINT128',
-            'uint256'   :'BUINT256',
-            'int256'    :'BSINT256',
-            'bytes1'    :'Bbytes1',
-            'bytes2'    :'Bbytes2',
-            'bytes3'    :'Bbytes3',
-            'bytes4'    :'Bbytes4',
-            'bytes5'    :'Bbytes5',
-            'bytes6'    :'Bbytes6',
-            'bytes7'    :'Bbytes7',
-            'bytes8'    :'Bbytes8',
-            
-            'bytes9'    :'Bbytes9',
-            'bytes10'   :'Bbytes10',
-            'bytes11'   :'Bbytes11',
-            'bytes12'   :'Bbytes12',
-            'bytes13'   :'Bbytes13',
-            'bytes14'   :'Bbytes14',
-            'bytes15'   :'Bbytes15',
-            'bytes16'   :'Bbytes16',
-            
-            'bytes17'   :'Bbytes17',
-            'bytes18'   :'Bbytes18',
-            'bytes19'   :'Bbytes19',
-            'bytes20'   :'Bbytes20',
-            'bytes21'   :'Bbytes21',
-            'bytes22'   :'Bbytes22',
-            'bytes23'   :'Bbytes23',
-            'bytes24'   :'Bbytes24',
-            
-            'bytes25'   :'Bbytes25',
-            'bytes26'   :'Bbytes26',
-            'bytes27'   :'Bbytes27',
-            'bytes28'   :'Bbytes28',
-            'bytes29'   :'Bbytes29',
-            'bytes30'   :'Bbytes30',
-            'bytes31'   :'Bbytes31',
-            'bytes32'   :'Bbytes32'
+            'int8'      :'BSINT8',
+            'int16'     :'BSINT16',
+            'int32'     :'BSINT32',
+            'int64'     :'BSINT64',
         }
 
-        if abitype in types_of_array.keys():
+        if abitype.find('[') != -1:
+            if abitype[:abitype.find('[')] in types_of_value.keys():
+                return True
+        elif abitype in types_of_value.keys():
             return True
         else:
             return False
 
-    #check abitype is non-fixed array type or not,the array lenth could be fixed or non-fixed
-    def is_nonFixedSizeArray_type(self, abitype):
-        if ((abitype.find('bytes') != -1) and (abitype.find('[') != -1)):
-            return True
-        elif ((abitype.find('string') != -1) and (abitype.find('[') != -1)):
+    def is_right_aligned_type(self,abitype):
+        types_of_left_aligned = {
+            'address'   :'BoatAddress',
+            'bool'      :'BUINT8',
+            'uint8'     :'BUINT8',
+            'uint16'    :'BUINT16',
+            'uint32'    :'BUINT32',
+            'uint64'    :'BUINT64',
+            'uint128'   :'BUINT128',
+
+            'uint256'   :'BUINT256',
+
+            'int8'      :'BSINT8',
+            'int16'     :'BSINT16',
+            'int32'     :'BSINT32',
+            'int64'     :'BSINT64',
+            'int128'    :'BSINT128',
+
+            'int256'    :'BSINT256',
+
+            'address[]'   :'BoatAddress *',
+            'bool[]'      :'BUINT8 *',
+            'uint8[]'     :'BUINT8 *',
+            'uint16[]'    :'BUINT16 *',
+            'uint32[]'    :'BUINT32 *',
+            'uint64[]'    :'BUINT64 *',
+            'uint128[]'   :'BUINT128 *',
+
+            'uint256[]'   :'BUINT256 *',
+
+            'int8[]'      :'BSINT8 *',
+            'int16[]'     :'BSINT16 *',
+            'int32[]'     :'BSINT32 *',
+            'int64[]'     :'BSINT64 *',
+            'int128[]'    :'BSINT128 *',
+
+            'int256[]'    :'BSINT256 *'
+        }
+
+        if abitype in types_of_left_aligned.keys():
             return True
         else:
             return False
-    def is_nonFixedSize_type(self, abitype):
+
+    def get_FixedArray_length(self, abitype):
+        s = abitype.find('[')
+        e = abitype.find(']')
+        return int(abitype[s + 1 : e])
+
+    def get_FixedArray_type(self, abitype):
+        e = abitype.find('[')
+        return type_mapping[abitype[:e]]
+
+    #check abitype is non-fixed size non-fixed array type or not
+    def is_NonFixedSizeNonFixedArray_type(self, abitype):
+        if abitype == 'bytes[]':
+            return True
+        elif abitype == 'string[]':
+            return True
+        else:
+            return False
+
+    #check abitype is non-fixed size fixed array type or not
+    def is_NonFixedSizeFixedArray_type(self, abitype):
+        if ((abitype.find('bytes[') != -1) and (abitype != 'bytes[]')):
+            return True
+        elif ((abitype.find('string[') != -1) and (abitype != 'string[]')):
+            return True
+        else:
+            return False
+    
+    #check abitype is non-fixed type or not
+    def is_NonFixedSize_type(self, abitype):
         if abitype == 'string':
             return True
         elif abitype == 'bytes':
             return True
-        elif abitype.find('[]') != -1:
+        else:
+            return False
+
+    #check abitype is fixed size non-fixed array type or not
+    def is_FixedSizeNonFixedArray_type(self, abitype):
+        if ((abitype.find('[]') != -1) and (abitype != 'string[]') and (abitype != 'bytes[]')):
+            return True
+        else:
+            return False
+
+    #check abitype is fixed size fixed array type or not
+    def is_FixedSizeFixedArray_type(self, abitype):
+        if ((abitype.find('[') != -1) and (abitype.find('[]') == -1) and \
+            (abitype.find('string') == -1) and (abitype.find('bytes[') == -1)):
             return True
         else:
             return False
@@ -278,6 +413,7 @@ class CFunctionGen():
             return True
         else:
             return False
+
     #check function has non-fixed array input type or not,such as bytes[],string[],bytes[5],etc
     def is_has_nonFixedArray_type(self, abi_item):
         inputs     = abi_item['inputs']
@@ -286,7 +422,9 @@ class CFunctionGen():
         i = 0
         while  i < inputs_len:
             inputType = inputs[i]['type']
-            if self.is_nonFixedSizeArray_type(inputType) == True:
+            if (self.is_NonFixedSizeFixedArray_type(inputType) == True or\
+                self.is_FixedSizeNonFixedArray_type(inputType) == True or\
+                self.is_NonFixedSizeNonFixedArray_type(inputType) == True):
                 return True
             i += 1
         
@@ -300,11 +438,26 @@ class CFunctionGen():
         i = 0
         while  i < inputs_len:
             inputType = inputs[i]['type']
-            if self.is_nonFixedSize_type(inputType) == True:
+            if (self.is_NonFixedSizeFixedArray_type(inputType) == True or\
+                self.is_FixedSizeNonFixedArray_type(inputType) == True or
+                self.is_FixedSizeFixedArray_type(inputType) == True or
+                self.is_NonFixedSize_type(inputType) == True or\
+                self.is_NonFixedSizeNonFixedArray_type(inputType) == True):
                 return True
             i += 1
         
         return False
+
+    def get_input_type(self, abi_item):
+        if abi_item in type_mapping:
+            return abi_item
+        elif (self.is_NonFixedSizeFixedArray_type(abi_item) == True or\
+            self.is_FixedSizeFixedArray_type(abi_item) == True):
+            return abi_item[:abi_item.find('[')]
+        else: #not supported
+            print(abi_item + '(): Solidity type (' + abi_item + ') is incompatible with C interface auto generator.')
+            print('You may have to manually construct the transaction.')
+            quit(-1)
 
     def gen_input_name(self, abi_item):
         if len(abi_item['name']) == 0:
@@ -322,9 +475,11 @@ class CFunctionGen():
         while  i < inputs_len:
             inputType = inputs[i]['type']
             inputName = self.gen_input_name(inputs[i])
-            if self.is_nonFixedSizeArray_type(inputType) == True:
-                pass #can't compute non-Fixed Size Array length here
-            elif self.is_nonFixedSize_type(inputType) == True:
+            if (self.is_NonFixedSizeNonFixedArray_type(inputType) == True or \
+                self.is_NonFixedSizeFixedArray_type(inputType) == True or \
+                self.is_FixedSizeNonFixedArray_type(inputType) == True):
+                pass #can't compute length here,compute teh length later
+            elif self.is_NonFixedSize_type(inputType) == True:
                 if len(nonFixedSize_type_malloc) != 0:
                     nonFixedSize_type_malloc +=  ' ' * spaceNum
                 if self.is_needFlagInputLen_type(inputType) == True:
@@ -339,24 +494,55 @@ class CFunctionGen():
         if len(nonFixedSize_type_malloc) != 0:
             nonFixedSize_type_malloc += ' ' * spaceNum
         return nonFixedSize_type_malloc
+    
+    def gen_Fixed_mallocSize_exp(self, abi_item):
+        inputs     = abi_item['inputs']
+        inputs_len = len(inputs)
+
+        cnt = 0
+        i = 0
+        while  i < inputs_len:
+            inputType = inputs[i]['type']
+            if self.is_FixedSizeFixedArray_type(inputType) == True:
+                cnt += self.get_FixedArray_length(inputType)
+            else:
+                cnt = cnt + 1
+            
+            i += 1
+
+        return str(cnt)
         
     #gen non-fixed type offset location
     #string rtn
     def get_nonFixed_offset(self, abi_item, index):
         inputs     = abi_item['inputs']
         inputs_len = len(inputs)
-        offset_int = inputs_len * 32
+        #offset_int = inputs_len * 32
+        offset_int = 0
         offset_str = ''
+
+        i = 0
+        while  i < inputs_len:
+            inputType = inputs[i]['type']
+            inputName = self.gen_input_name(inputs[i])
+            if self.is_FixedSizeFixedArray_type(inputType) == True:
+                offset_int += self.get_FixedArray_length(inputType) * 32
+            else:
+                offset_int += 32
+
+            i += 1
         
         i = 0
         while  i < index:
             inputType = inputs[i]['type']
             inputName = self.gen_input_name(inputs[i])
-            if self.is_nonFixedSizeArray_type(inputType) == True:
+            if (self.is_NonFixedSizeNonFixedArray_type(inputType) == True or \
+                self.is_NonFixedSizeFixedArray_type(inputType) == True or \
+                self.is_FixedSizeNonFixedArray_type(inputType) == True):
                 if len(offset_str) != 0:
                     offset_str +=  ' ' * 27
                 offset_str += inputName + '_data_length + \\\n'
-            elif self.is_nonFixedSize_type(inputType) == True:
+            elif self.is_NonFixedSize_type(inputType) == True:
                 if len(offset_str) != 0:
                     offset_str +=  ' ' * 27
                 if self.is_needFlagInputLen_type(inputType) == True:
@@ -372,26 +558,26 @@ class CFunctionGen():
         return str(offset_int)
 
     #genetate non-fixed data length
-    def get_nonFixed_length(self, abi_item,input_nonFixed_type):
-        inputs     = abi_item['inputs']
-        inputs_len = len(inputs)
+    def get_nonFixed_length(self, input):
+        inputType = input['type']
+        inputName = self.gen_input_name(input)
         length_str = ''
         
-        i = 0
-        while  i < inputs_len:
-            inputType = inputs[i]['type']
-            inputName = self.gen_input_name(inputs[i])
-            if self.is_nonFixedSize_type(inputType) == True:
-                if input_nonFixed_type == inputType:
-                    if self.is_needFlagInputLen_type(inputType) == True:
-                        length_str += 'BOAT_ROUNDUP(' + inputName + 'Len , 32)'
-                    else:
-                        length_str += 'BOAT_ROUNDUP(' + 'strlen(' + inputName + '), 32)'
-                    break
+        if self.is_NonFixedSize_type(inputType) == True:
+            if self.is_needFlagInputLen_type(inputType) == True:
+                length_str += 'BOAT_ROUNDUP(' + inputName + 'Len , 32)'
             else:
-                pass
-            i += 1
+                length_str += 'BOAT_ROUNDUP(' + 'strlen(' + inputName + '), 32)'
+        elif (self.is_NonFixedSizeFixedArray_type(inputType) == True or\
+            self.is_NonFixedSizeNonFixedArray_type(inputType) == True):
+            length_str += 'BOAT_ROUNDUP(' + inputName + 'Len , 32)'
+        elif self.is_FixedSizeNonFixedArray_type(inputType) == True:
+            length_str += inputName + 'Len;\n'
+        else:
+            pass
+
         return length_str
+    
     def generate_nonFixedArray_values(self, abi_item):
         vaules_str = ''
 
@@ -402,14 +588,25 @@ class CFunctionGen():
         while  i < inputs_len:
             inputType = inputs[i]['type']
             inputName = self.gen_input_name(inputs[i])
-            if self.is_nonFixedSizeArray_type(inputType) == True:
+            if (self.is_NonFixedSizeNonFixedArray_type(inputType) == True or \
+                self.is_NonFixedSizeFixedArray_type(inputType) == True or \
+                self.is_FixedSizeNonFixedArray_type(inputType) == True):
+
+                # Generate C code for set non-fixed size fixed array input length
+                if self.is_NonFixedSizeFixedArray_type(inputType) == True:
+                    vaules_str += '    BUINT32 ' + inputName + 'Len = ' + str(self.get_FixedArray_length(inputType)) + ';\n'
+
                 vaules_str += '    BUINT32 ' + inputName + '_data_length = 0;\n'
                 vaules_str += '    BUINT32 ' + inputName + '_offset_location[' + inputName + 'Len];\n'
                 vaules_str += '    BUINT32 ' + inputName + '_filled_length[' + inputName + 'Len];\n'
                 vaules_str += '    BUINT32 ' + inputName + '_actual_length[' + inputName + 'Len];\n'
-                vaules_str += '    BoatFieldVariable *' + inputName + '_ptr;\n'
-            else:
-                pass
+                if self.is_FixedSizeNonFixedArray_type(inputType) == True:
+                    vaules_str += '    ' + self.get_FixedArray_type(inputType) + ' * ' + inputName + '_ptr;\n'
+                else:
+                    vaules_str += '    BoatFieldVariable *' + inputName + '_ptr;\n'
+                
+            elif inputType == 'string':
+                vaules_str += '    BUINT32 ' + inputName + 'Len;\n'
             i += 1
 
         return vaules_str
@@ -424,7 +621,8 @@ class CFunctionGen():
         while  i < inputs_len:
             inputType = inputs[i]['type']
             inputName = self.gen_input_name(inputs[i])
-            if self.is_nonFixedSizeArray_type(inputType) == True:
+            if (self.is_NonFixedSizeNonFixedArray_type(inputType) == True or\
+                self.is_NonFixedSizeFixedArray_type(inputType) == True):
                 length_str += '    ' + inputName + '_ptr = ' + inputName + ';\n'
                 length_str += '    for(i = 0; i < ' + inputName + 'Len; i++)\n'
                 length_str += '    {\n'
@@ -432,6 +630,12 @@ class CFunctionGen():
                 length_str += '        ' + inputName + '_data_length += ' + inputName + '_filled_length[i];\n'
                 length_str += '        ' + inputName + '_ptr++;\n'
                 length_str += '    }\n'
+                if self.is_NonFixedSizeFixedArray_type(inputType) == True:
+                    length_str += '    ' + inputName + '_data_length += ' + inputName + 'Len * 32;\n'
+                else:
+                    length_str += '    ' + inputName + '_data_length += ' + inputName + 'Len * 32 + 32;\n'
+                length_str += '    data_field.field_len += ' + inputName + '_data_length;\n\n'
+            elif self.is_FixedSizeNonFixedArray_type(inputType) == True:
                 length_str += '    ' + inputName + '_data_length += ' + inputName + 'Len * 32 + 32;\n'
                 length_str += '    data_field.field_len += ' + inputName + '_data_length;\n\n'
             else:
@@ -439,6 +643,45 @@ class CFunctionGen():
             i += 1
 
         return length_str
+
+    def generate_NonFixedSizeFixedArray_inputs(self, abi_item):
+        result_str = ''
+
+        inputs     = abi_item['inputs']
+        inputs_len = len(inputs)
+        
+        i = 0
+        while  i < inputs_len:
+            inputType = inputs[i]['type']
+            inputName = self.gen_input_name(inputs[i])
+            if self.is_NonFixedSizeFixedArray_type(inputType) == True:
+                result_str += '    ' + inputName + 'Len = ' + str(self.get_FixedArray_length(inputType)) + ';\n'
+
+            i += 1
+
+        result_str += '\n'
+
+        return result_str
+
+    def add_Fill_Offset_String(self,layers):
+        fill_offset_str = ""
+        fill_offset_str += '    ' * layers + 'UtilityChangeEndian(&data_offset_location, sizeof(BUINT32));\n'
+        fill_offset_str += '    ' * layers + 'memset(data_offset_ptr, 0x00, 32);\n'
+        fill_offset_str += '    ' * layers + 'memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &data_offset_location, sizeof(BUINT32));\n'
+        fill_offset_str += '    ' * layers + 'data_offset_ptr += 32;\n\n'
+        return fill_offset_str
+
+    def add_FixedSize_String(self,inputType,c_address_sign,inputName,param_size_str,layers):
+        fixed_size_str = ""
+        if self.require_endian_change(inputType) == True:
+            fixed_size_str += '    ' * layers + 'UtilityChangeEndian(' + c_address_sign + inputName + ', ' + param_size_str + ');\n'
+
+        if self.is_right_aligned_type(inputType) == False:
+            fixed_size_str += '    ' * layers + 'memcpy(data_offset_ptr, ' + c_address_sign + inputName + ', ' + param_size_str + ');\n'
+        else:
+            fixed_size_str += '    ' * layers + 'memcpy(data_offset_ptr + 32 - ' + param_size_str + ', ' + c_address_sign + inputName + ', ' + param_size_str + ');\n'
+        fixed_size_str += '    ' * layers + 'data_offset_ptr += 32;\n'
+        return fixed_size_str
 
     def generate_c_funcs(self):
     
@@ -456,8 +699,6 @@ class CFunctionGen():
                 if abi_item['type'] == 'function':
                     self.generate_func_prototype(abi_item)
                     self.generate_func_body(abi_item)
-                    
- 
     
     def generate_func_prototype(self, abi_item):
         inputName_str = ''
@@ -486,22 +727,31 @@ class CFunctionGen():
             input_str += ', '
 
         i = 0
-        while  i < inputs_len:
+        while i < inputs_len:
             input = inputs[i]
+
+            # bytes3[5] -> bytes3
+            inputType = self.get_input_type(input['type'])
             inputName_str = self.gen_input_name(input)
-            try:
-                input_str    += type_mapping[input['type']] + ' ' + inputName_str
-                #for type 'bytes', <type>[], add a input param to indicate the input lengths
-                if self.is_needFlagInputLen_type(input['type']) == True:
-                    input_str += ', BUINT32 ' + inputName_str + 'Len'
-            except:
+            if self.is_supported_type(input['type']) == False:
                 print(abi_item['name'] + '(): Solidity type (' + input['type'] + ') is incompatible with C interface auto generator.')
                 print('You may have to manually construct the transaction.')
                 quit(-1)
+
+            
+            if self.is_NonFixedSizeFixedArray_type(input['type']) == True:
+                input_str += 'BoatFieldVariable * ' + inputName_str
+            elif self.is_FixedSizeFixedArray_type(input['type']) == True:
+                input_str += type_mapping[inputType] + ' ' + inputName_str + '[' + str(self.get_FixedArray_length(input['type'])) + ']'
+            else:
+                input_str += type_mapping[inputType] + ' ' + inputName_str
+
+            if self.is_needFlagInputLen_type(input['type']) == True:
+                input_str += ', BUINT32 ' + inputName_str + 'Len'
                 
-            if i != inputs_len -1:
+            if i != inputs_len - 1:
                 input_str += ', '
-            i = i+1
+            i = i + 1
         
         input_str += ')'
 
@@ -524,14 +774,14 @@ class CFunctionGen():
         func_body_str += '    BoatFieldVariable data_field;\n'
         func_body_str += '    BCHAR *function_prototye_str;\n'
         func_body_str += '    BUINT8 field_bytes32[32];\n'
+        func_body_str += '    BUINT8 fixedsize_bytes32[32];\n'
         func_body_str += '    BUINT8 *data_offset_ptr;\n'
         if self.is_has_nonFixed_type(abi_item) == True:
             func_body_str += '    BUINT32 data_offset_location;\n'
             func_body_str += '    BUINT32 nonFixed_filled_length;\n'
             func_body_str += '    BUINT32 nonFixed_actual_length;\n'
-        if self.is_has_nonFixedArray_type(abi_item) == True:
-            func_body_str += self.generate_nonFixedArray_values(abi_item)
-            func_body_str += '    BUINT32 i;\n'
+        func_body_str += self.generate_nonFixedArray_values(abi_item)
+        func_body_str += '    BUINT32 i;\n'
 
         func_body_str += '    boat_try_declare;\n\n'
 
@@ -541,14 +791,13 @@ class CFunctionGen():
         inputs_param     = abi_item['inputs']
         inputs_param_len = len(inputs_param)
         inputs_param_body_str_tmp = ''
-
         if inputs_param_len != 0:
             i = 0
             while  i < inputs_param_len:
-                if self.is_nonFixedSize_type(inputs_param[i]['type']) or self.is_array_type(inputs_param[i]['type']):
+                if (self.is_NonFixedSize_type(inputs_param[i]['type']) or not(self.is_value_type(inputs_param[i]['type']))):
                     inputParamName_str = self.gen_input_name(inputs_param[i])
                     inputs_param_body_str_tmp  += '|| (' + inputParamName_str + ' == NULL)'
-                i = i+1
+                i = i + 1
             if len(inputs_param_body_str_tmp) == 0:
                 func_body_str += '    if( tx_ptr == NULL )\n'
             else:
@@ -557,7 +806,6 @@ class CFunctionGen():
             func_body_str += '    if( tx_ptr == NULL )\n'
 
         func_body_str     += '    {\n'
-        func_body_str     += '        BoatLog(BOAT_LOG_CRITICAL, \"An NULL input parameter be detected.\");\n'
         func_body_str     += '        return NULL;\n'
         func_body_str     += '    }\n\n'
 
@@ -566,30 +814,31 @@ class CFunctionGen():
             func_body_str += '    boat_try(BoatEthTxSetNonce(tx_ptr, BOAT_ETH_NONCE_AUTO));\n\n'
 
 
-        # Construct solidity function prototype
 
-        # Solidity function name
-        sol_func_proto_str = abi_item['name'] + '('
-        
         # Extract solidity function inputs
         inputs_len = len(inputs)
         nonFixed_filedLen_str = self.gen_nonFixed_mallocSize_exp(abi_item, 27)
-        fixed_size_str        = '(' + str(inputs_len) + ' * 32 + 4)'
+        fixed_size_str        = '(' + self.gen_Fixed_mallocSize_exp(abi_item) + ' * 32 + 4)'
         func_body_str += '    data_field.field_len = ' + nonFixed_filedLen_str + fixed_size_str + ';\n'
         func_body_str += self.generate_nonFixedArray_length(abi_item)
+        
         func_body_str += '    data_field.field_ptr = BoatMalloc(data_field.field_len);\n'
         func_body_str += '    if(data_field.field_ptr == NULL) boat_throw(BOAT_ERROR, cleanup);\n'
         func_body_str += '    data_offset_ptr = data_field.field_ptr;\n\n'
 
+
         #func_body_str += '    printf("The filled length is %x\\n", data_field.field_len);\n'
 
+        # Construct solidity function prototype
+        # Solidity function name
+        sol_func_proto_str = abi_item['name'] + '('
         i = 0
         while  i < inputs_len:
             input = inputs[i]
             sol_func_proto_str += input['type']
-            if i != inputs_len -1:
+            if i != inputs_len - 1:
                 sol_func_proto_str += ','
-            i = i+1
+            i = i + 1
         sol_func_proto_str += ')'
 
         # Generate C code for function selector
@@ -603,41 +852,47 @@ class CFunctionGen():
         inputIndex = 0
         for input in inputs:
             inputIndex += 1 #only be used for third param of get_nonFixed_offset(...)
-            try:
-                param_size_str = 'sizeof(' + type_mapping[input['type']] + ')'
-            
-            except:
-                print(abi_item['name'] + '(): Solidity type (' + input['type'] + ') is incompatible with C interface auto generator.')
-                print('You may have to manually construct the transaction.')
-                quit(-1)
+
+            inputType = self.get_input_type(input['type'])
+            inputName_str = self.gen_input_name(input)
+            #param_size_str is a single value size(byte)
+            if (inputType.find('[') != -1):
+                param_size_str = 'sizeof(' + type_mapping[inputType[:inputType.find('[')]] + ')'
+            param_size_str = 'sizeof(' + type_mapping[inputType] + ')'
             
             # Only prefix "&" to native C integer types to obtain its address. No "&" for an array type.
-            if self.is_array_type(input['type']) == True:
-                c_address_sign = ''
-            else:
+            if self.is_value_type(input['type']) == True:
                 c_address_sign = '&'
-
-            inputName_str = self.gen_input_name(input)
-            if self.require_endian_change(input['type']) == True:
-                func_body_str += '    UtilityChangeEndian(' + c_address_sign + inputName_str + ', ' + param_size_str + ');\n'
-                func_body_str += '    memset(data_offset_ptr, 0x00, 32);\n'
-                func_body_str += '    memcpy(data_offset_ptr+(32-' + param_size_str + '), ' + c_address_sign + inputName_str + ', ' + param_size_str + ');\n'
             else:
-                if self.is_nonFixedSize_type(input['type']) == False:
-                    func_body_str += '    memset(data_offset_ptr, 0x00, 32);\n'
-                    func_body_str += '    memcpy(data_offset_ptr, ' + c_address_sign + inputName_str + ', ' + param_size_str + ');\n'
-                else:
-                    #fill offset location value
-                    #offset         = self.get_nonFixed_offset(abi_item, inputIndex - 1)
-                    func_body_str += '    //param \'' + inputName_str + '\' offset location filled\n'
-                    func_body_str += '    data_offset_location = ' + self.get_nonFixed_offset( abi_item, inputIndex - 1) + ';\n'
-                    #func_body_str += '    data_offset_location = ' + offset.replace('\\\n', '') + ';\n'
+                c_address_sign = ''
 
-                    func_body_str += '    UtilityChangeEndian(&data_offset_location, sizeof(BUINT32));\n'
-                    func_body_str += '    memset(data_offset_ptr, 0x00, 32);\n'
-                    func_body_str += '    memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &data_offset_location, sizeof(BUINT32));\n'
+            if (self.is_NonFixedSizeNonFixedArray_type(input['type']) == True or \
+                self.is_FixedSizeNonFixedArray_type(input['type']) == True or \
+                self.is_NonFixedSizeFixedArray_type(input['type']) == True or \
+                self.is_NonFixedSize_type(input['type']) == True):
+                #fill offset location value
+                func_body_str += '    //param \'' + inputName_str + '\' offset location filled\n'
+                func_body_str += '    data_offset_location = ' + self.get_nonFixed_offset( abi_item, inputIndex - 1) + ';\n'
 
-            func_body_str += '    data_offset_ptr += 32;\n\n'
+                func_body_str += self.add_Fill_Offset_String(1)
+            elif self.is_FixedSizeFixedArray_type(input['type']) == True:
+
+                func_body_str += '    //param \'' + inputName_str + '\' data filled\n'
+                func_body_str += '    for(i = 0; i < ' + str(self.get_FixedArray_length(input['type'])) + '; i++)\n'
+                func_body_str += '    {\n'
+                func_body_str += '        memcpy(fixedsize_bytes32, ' + c_address_sign + inputName_str + '[i], ' + param_size_str + ');\n'
+                func_body_str += '        if (' + inputName_str + '[i] >= 0)\n'
+                func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
+                func_body_str += '        else\n'
+                func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
+                func_body_str += self.add_FixedSize_String(inputType, c_address_sign,'fixedsize_bytes32',param_size_str, 2)
+                func_body_str += '    }\n\n'
+            else:
+                func_body_str += '    if (' + inputName_str + ' >= 0)\n'
+                func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
+                func_body_str += '    else\n'
+                func_body_str += '        memset(data_offset_ptr, 0xFF, 32);\n'
+                func_body_str += self.add_FixedSize_String(inputType, c_address_sign, inputName_str, param_size_str, 1)
 
         #non-fixed data fill
         i = 0
@@ -645,68 +900,97 @@ class CFunctionGen():
             input = inputs[i]
 
             inputName_str   = self.gen_input_name(input)
-            nonFixed_length = self.get_nonFixed_length(abi_item, input['type'])
-            if len(nonFixed_length) != 0:
-                func_body_str  += '    //non-fixed param \'' + inputName_str + '\' data filled\n'
-                #non-fixed data length
+            #if len(nonFixed_length) != 0:
 
-                if self.is_nonFixedSizeArray_type(input['type']) == True:
+            if (self.is_NonFixedSizeNonFixedArray_type(input['type']) == False and \
+                self.is_NonFixedSizeFixedArray_type(input['type']) == False and \
+                self.is_FixedSizeNonFixedArray_type(input['type']) == False and \
+                self.is_NonFixedSize_type(input['type']) == False):
+                i += 1
+                continue
+            
+            func_body_str  += '    //non-fixed param \'' + inputName_str + '\' data filled\n'
+            #non-fixed data length
+
+            if (self.is_NonFixedSizeNonFixedArray_type(input['type']) == True or \
+                self.is_NonFixedSizeFixedArray_type(input['type']) == True):
+                    
+                if self.is_NonFixedSizeNonFixedArray_type(input['type']) == True:
+                    func_body_str += '    //filled non-fixed size non-fixed array length\n'
                     func_body_str += '    nonFixed_actual_length  = ' + inputName_str + 'Len' + ';\n'
                     func_body_str += '    UtilityChangeEndian(&nonFixed_actual_length, sizeof(BUINT32));\n'
                     func_body_str += '    memset(data_offset_ptr, 0x00, 32);\n'
                     func_body_str += '    memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &nonFixed_actual_length, sizeof(BUINT32));\n'
                     func_body_str += '    data_offset_ptr += 32;\n\n'
-                    func_body_str += '    for (i = 0; i < ' + inputName_str + 'Len; i++)\n'
-                    func_body_str += '    {\n'
-                    func_body_str += '        if (i == 0) ' + inputName_str + '_offset_location[i] = ' + inputName_str + 'Len * 32;\n'
-                    func_body_str += '        else ' + inputName_str + '_offset_location[i] = ' + inputName_str + '_offset_location[i - 1] + ' + inputName_str + '_filled_length[i - 1];\n'
-                    func_body_str += '        data_offset_location = ' + inputName_str + '_offset_location[i];\n'
-                    func_body_str += '        UtilityChangeEndian(&data_offset_location, sizeof(BUINT32));\n'
-                    func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
-                    func_body_str += '        memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &data_offset_location, sizeof(BUINT32));\n'
-                    func_body_str += '        data_offset_ptr += 32;\n'
-                    func_body_str += '    }\n\n'
 
-                    func_body_str += '    ' + inputName_str + '_ptr = ' + inputName_str + ';\n'
+                func_body_str += '    //filled non-fixed size array data offset\n'
+                func_body_str += '    for (i = 0; i < ' + inputName_str + 'Len; i++)\n'
+                func_body_str += '    {\n'
+                func_body_str += '        if (i == 0) ' + inputName_str + '_offset_location[i] = ' + inputName_str + 'Len * 32;\n'
+                func_body_str += '        else ' + inputName_str + '_offset_location[i] = ' + inputName_str + '_offset_location[i - 1] + ' + inputName_str + '_filled_length[i - 1];\n'
+                func_body_str += '        data_offset_location = ' + inputName_str + '_offset_location[i];\n'
+                func_body_str += self.add_Fill_Offset_String(2)
+                func_body_str += '    }\n\n'
 
-                    func_body_str += '    for (i = 0; i < ' + inputName_str + 'Len; i++)\n'
-                    func_body_str += '    {\n'
-                    func_body_str += '        ' + inputName_str + '_actual_length[i] = ' + inputName_str + '_ptr->field_len;\n'
-                    func_body_str += '        UtilityChangeEndian(&' + inputName_str + '_actual_length[i], sizeof(BUINT32));\n'
-                    func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
-                    func_body_str += '        memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &'+ inputName_str +'_actual_length[i], sizeof(BUINT32));\n'
-                    func_body_str += '        data_offset_ptr += 32;\n\n'
-                    func_body_str += '        ' + inputName_str + '_filled_length[i] = BOAT_ROUNDUP(' + inputName_str + '_ptr->field_len, 32);\n'
-                    #func_body_str += '        printf("The filled length is %x\\n", ' + inputName_str + '_filled_length[i]);\n'
-                    func_body_str += '        memset(data_offset_ptr, 0x00, ' + inputName_str + '_filled_length[i]);\n'
-                    func_body_str += '        memcpy(data_offset_ptr, ' + inputName_str + '_ptr->field_ptr, ' + inputName_str + '_ptr->field_len);\n'
-                    func_body_str += '        data_offset_ptr += ' + inputName_str + '_filled_length[i];\n'
-                    func_body_str += '        ' + inputName_str + '_ptr++;\n'
-                    func_body_str += '    }\n\n'
-                    pass
-                elif self.is_needFlagInputLen_type(input['type']) == True:
-                    func_body_str  += '    nonFixed_actual_length  = ' + inputName_str + 'Len' + ';\n'
-                    func_body_str  += '    UtilityChangeEndian(&nonFixed_actual_length, sizeof(BUINT32));\n'
-                    func_body_str  += '    memset(data_offset_ptr, 0x00, 32);\n'
-                    func_body_str  += '    memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &nonFixed_actual_length, sizeof(BUINT32));\n'
-                    func_body_str  += '    data_offset_ptr += 32;\n\n'
+                func_body_str += '    ' + inputName_str + '_ptr = ' + inputName_str + ';\n'
 
-                    func_body_str  += '    nonFixed_filled_length  = ' + nonFixed_length + ';\n'
-                    func_body_str  += '    memset(data_offset_ptr, 0x00, nonFixed_filled_length);\n'
-                    func_body_str  += '    memcpy(data_offset_ptr, ' + inputName_str + ', ' + inputName_str + 'Len' + ');\n'
-                    func_body_str  += '    data_offset_ptr += nonFixed_filled_length;\n\n'
+                func_body_str += '    for (i = 0; i < ' + inputName_str + 'Len; i++)\n'
+                func_body_str += '    {\n'
+                func_body_str += '        ' + inputName_str + '_actual_length[i] = ' + inputName_str + '_ptr->field_len;\n'
+                func_body_str += '        UtilityChangeEndian(&' + inputName_str + '_actual_length[i], sizeof(BUINT32));\n'
+                func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
+                func_body_str += '        memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &'+ inputName_str +'_actual_length[i], sizeof(BUINT32));\n'
+                func_body_str += '        data_offset_ptr += 32;\n\n'
+                func_body_str += '        ' + inputName_str + '_filled_length[i] = BOAT_ROUNDUP(' + inputName_str + '_ptr->field_len, 32);\n'
+                #func_body_str += '        printf("The filled length is %x\\n", ' + inputName_str + '_filled_length[i]);\n'
+                func_body_str += '        memset(data_offset_ptr, 0x00, ' + inputName_str + '_filled_length[i]);\n'
+                func_body_str += '        memcpy(data_offset_ptr, ' + inputName_str + '_ptr->field_ptr, ' + inputName_str + '_ptr->field_len);\n'
+                func_body_str += '        data_offset_ptr += ' + inputName_str + '_filled_length[i];\n'
+                func_body_str += '        ' + inputName_str + '_ptr++;\n'
+                func_body_str += '    }\n\n'
+            
+            elif self.is_NonFixedSize_type(input['type']) == True:
+                func_body_str += '    //filled fixed size non-fixed array length\n'
+                if (input['type'] == 'string'):
+                    func_body_str += '    ' + inputName_str + 'Len = strlen(' + inputName_str + ');\n'
+
+                func_body_str += '    nonFixed_actual_length = ' + inputName_str + 'Len' + ';\n'
+                func_body_str += '    UtilityChangeEndian(&nonFixed_actual_length, sizeof(BUINT32));\n'
+                func_body_str += '    memset(data_offset_ptr, 0x00, 32);\n'
+                func_body_str += '    memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &nonFixed_actual_length, sizeof(BUINT32));\n'
+                func_body_str += '    data_offset_ptr += 32;\n\n'
+
+                func_body_str += '    nonFixed_filled_length = ' + self.get_nonFixed_length(input) + ';\n'
+                func_body_str += '    memset(data_offset_ptr, 0x00, nonFixed_filled_length);\n'
+                func_body_str += '    memcpy(data_offset_ptr, ' + inputName_str + ', ' + inputName_str + 'Len' + ');\n'
+                func_body_str += '    data_offset_ptr += nonFixed_filled_length;\n\n'
+            else:#fixed size non-fixed array
+                inputType = self.get_input_type(input['type'])
+                if (inputType.find('[') != -1):
+                    param_size_str = 'sizeof(' + type_mapping[inputType[:inputType.find('[')]] + ')'
                 else:
-                    func_body_str  += '    nonFixed_actual_length  = ' + 'strlen(' + inputName_str + ');\n'
-                    func_body_str  += '    UtilityChangeEndian(&nonFixed_actual_length, sizeof(BUINT32));\n'
-                    func_body_str  += '    memset(data_offset_ptr, 0x00, 32);\n'
-                    func_body_str  += '    memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &nonFixed_actual_length, sizeof(BUINT32));\n'
-                    func_body_str  += '    data_offset_ptr += 32;\n\n'
+                    param_size_str = 'sizeof(' + type_mapping[inputType] + ')'
 
-                    func_body_str  += '    nonFixed_filled_length  = ' + nonFixed_length + ';\n'
-                    func_body_str  += '    memset(data_offset_ptr, 0x00, nonFixed_filled_length);\n'
-                    func_body_str  += '    memcpy(data_offset_ptr, ' + inputName_str + ', ' + 'strlen(' + inputName_str + ')' + ');\n'
-                    func_body_str  += '    data_offset_ptr += nonFixed_filled_length;\n\n'
-            i = i+1
+                func_body_str += '    //filled fixed size non-fixed array length\n'
+                func_body_str += '    nonFixed_actual_length = ' + inputName_str + 'Len' + ';\n'
+                func_body_str += '    UtilityChangeEndian(&nonFixed_actual_length, sizeof(BUINT32));\n'
+                func_body_str += '    memset(data_offset_ptr, 0x00, 32);\n'
+                func_body_str += '    memcpy(data_offset_ptr + 32 - sizeof(BUINT32), &nonFixed_actual_length, sizeof(BUINT32));\n'
+                func_body_str += '    data_offset_ptr += 32;\n\n'
+
+                func_body_str += '    //filled fixed size non-fixed array data\n'
+                func_body_str += '    ' + inputName_str + '_ptr = ' + inputName_str + ';\n'
+                func_body_str += '    for(i = 0; i < ' + inputName_str + 'Len; i++)\n'
+                func_body_str += '    {\n'
+                func_body_str += '        memcpy(fixedsize_bytes32, ' + inputName_str + '_ptr, ' + param_size_str + ');\n'
+                func_body_str += '        if (*' + inputName_str + '_ptr >= 0)\n'
+                func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
+                func_body_str += '        else\n'
+                func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
+                func_body_str += self.add_FixedSize_String(inputType, '','fixedsize_bytes32',param_size_str, 2)
+                func_body_str += '        ' + inputName_str + '_ptr++;\n'
+                func_body_str += '    }\n\n'
+            i = i + 1
 
         if abi_item['constant'] == True:
             # for state-less funciton call
@@ -722,7 +1006,6 @@ class CFunctionGen():
         func_body_str += '''
     boat_catch(cleanup)
     {
-        BoatLog(BOAT_LOG_VERBOSE, "Exception: %d", boat_exception);
         if(data_field.field_ptr != NULL) BoatFree(data_field.field_ptr);
         return(NULL);
     }

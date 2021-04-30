@@ -45,6 +45,7 @@ This file is generated from contract ABI. DO NOT modify it by hand.
 generated_include_block_str = '''
 // Generated C function interface from smart contract ABI
 
+#include "boatconfig.h"
 #include "boatiotsdk.h"
 
 '''
@@ -220,7 +221,6 @@ class CFunctionGen():
         func_body_str += '''
     boat_catch(cleanup)
     {
-        BoatLog(BOAT_LOG_VERBOSE, "Exception: %d", boat_exception);
         RlpRecursiveDeleteObject(&rlp_object_list);
         return(NULL);
     }
