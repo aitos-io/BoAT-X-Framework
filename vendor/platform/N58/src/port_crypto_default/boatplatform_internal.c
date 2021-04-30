@@ -20,6 +20,7 @@
 */
 
 //! self header include
+#include "boatConfig.h"
 #include "boatplatform_internal.h"
 #include "boattypes.h"
 
