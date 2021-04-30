@@ -24,7 +24,6 @@ boatutility.h is header file for boatwallet utility functions.
 #define __BOATUTILITY_H__
 
 #include "boatiotsdk.h"
-//#include "boatLog.h"
 
 /*! @defgroup utility boat utility
  * @{
