@@ -30,6 +30,8 @@ api_platone.h is header file for BoAT IoT SDK PlatONE's interface.
  * @{
  */
 
+#define BOAT_PLATONE_NODE_URL_MAX_LEN           BOAT_ETH_NODE_URL_MAX_LEN
+
 #define BOAT_PLATONE_NONCE_AUTO                  BOAT_ETH_NONCE_AUTO
 #define BOAT_PLATONE_ADDRESS_SIZE                BOAT_ETH_ADDRESS_SIZE
 

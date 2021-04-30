@@ -1,19 +1,14 @@
 # Source and Objects
 
-SOURCES = $(wildcard *.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol/common
-OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-
-all: $(OBJECTS_DIR) $(OBJECTS)
-
-
-$(OBJECTS_DIR):
-	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
-
-$(OBJECTS_DIR)/%.o:%.c
-	$(CC) -c $(BOAT_CFLAGS) $< -o $@
-
-
+all:
+ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1) 
+	make -C http2intf all 
+endif
+	make -C web3intf  all
+	
 clean:
-	-$(BOAT_RM) $(OBJECTS)
+ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)
+	make -C http2intf clean
+endif
+	make -C web3intf  clean

@@ -26,7 +26,7 @@
 //#include "boatinternal.h"
 #include <stdbool.h>
 #include <stddef.h>
-#include "boatoptions.h"
+//#include "boatconfig.h"
 #include "boattypes.h"
 #include "boaterrcode.h"
 

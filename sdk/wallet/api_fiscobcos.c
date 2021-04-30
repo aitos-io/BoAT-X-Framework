@@ -20,6 +20,7 @@
 boatFiscobcoswallet.c defines the FISCOBCOS wallet API for BoAT IoT SDK.
 */
 
+#include "boatconfig.h"
 #include "boatinternal.h"
 #if PROTOCOL_USE_FISCOBCOS == 1
 #include "web3intf.h"
@@ -335,7 +336,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
     BSINT32 tx_mined_timeout;
     BOAT_RESULT result = BOAT_SUCCESS;
 
-    tx_mined_timeout = BOAT_WAIT_PENDING_TX_TIMEOUT;
+    tx_mined_timeout = BOAT_FISCOBCOS_WAIT_PENDING_TX_TIMEOUT;
 	
 	//set groupid
 	memset(groupid_hexstr, 0, sizeof(groupid_hexstr));
@@ -349,7 +350,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
     param_fiscobcos_getTransactionReceipt.tx_hash_str = txhash_hexstr;
 
     do{
-        BoatSleep(BOAT_MINE_INTERVAL); // Sleep waiting for the block being mined 
+        BoatSleep(BOAT_FISCOBCOS_MINE_INTERVAL); // Sleep waiting for the block being mined 
         tx_status_str = web3_fiscobcos_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 						tx_ptr->wallet_ptr->network_info.node_url_ptr,
 						&param_fiscobcos_getTransactionReceipt);
@@ -375,11 +376,11 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
                 }
                 else
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_MINE_INTERVAL);
+                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_FISCOBCOS_MINE_INTERVAL);
                 }
             }
 
-            tx_mined_timeout -= BOAT_MINE_INTERVAL;
+            tx_mined_timeout -= BOAT_FISCOBCOS_MINE_INTERVAL;
         }
         
     }while(tx_mined_timeout > 0);

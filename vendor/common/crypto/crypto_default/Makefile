@@ -34,7 +34,6 @@ CRYPTO_CFLAGS += -DUSE_MONERO=1
 CRYPTO_CFLAGS += -DUSE_NEM=1
 CRYPTO_CFLAGS += -DUSE_CARDANO=1
 CRYPTO_CFLAGS += -DUSE_RFC6979
-CRYPTO_CFLAGS += $(shell pkg-config --cflags openssl)
 
 # use platform depedent random mechanism
 CRYPTO_CFLAGS += -DRAND_PLATFORM_INDEPENDENT

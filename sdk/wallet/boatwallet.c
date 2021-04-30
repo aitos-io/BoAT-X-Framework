@@ -21,7 +21,7 @@ boatwallet.c is the SDK main entry.
 
 @author aitos.io
 */
-
+#include "boatconfig.h"
 #include "boatinternal.h"
 #include "boatwallet.h"
 
@@ -32,6 +32,10 @@ boatwallet.c is the SDK main entry.
 #include "cJSON.h"
 
 #include "persiststore.h"
+
+#if RPC_USE_LIBCURL == 1
+#include "curl/curl.h"
+#endif
 
 BoatIotSdkContext g_boat_iot_sdk_context;
 

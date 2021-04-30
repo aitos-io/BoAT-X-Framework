@@ -29,6 +29,11 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
  * @{
  */
 
+#define BOAT_ETH_MINE_INTERVAL                   3  //!< Mining Interval of the blockchain, in seconds
+#define BOAT_ETH_WAIT_PENDING_TX_TIMEOUT         30 //!< Timeout waiting for a transaction being mined, in seconds
+
+#define BOAT_ETH_NODE_URL_MAX_LEN                127 //!< Maxmum length for node's URL
+
 #define BOAT_ETH_NONCE_AUTO                      0xFFFFFFFFFFFFFFFF
 #define BOAT_ETH_ADDRESS_SIZE                    20
 
@@ -91,7 +96,7 @@ typedef struct TBoatEthWalletConfig
 	                                              //!< because in function BoatWalletCreate(), 
     BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
     BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatEthNetworkInfo
-    BCHAR    node_url_str[BOAT_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
+    BCHAR    node_url_str[BOAT_ETH_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
 }BoatEthWalletConfig;
 
 

@@ -92,7 +92,7 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 	
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
-    strncpy( wallet_config.node_url_str, demoUrl, BOAT_NODE_URL_MAX_LEN - 1 );
+    strncpy( wallet_config.node_url_str, demoUrl, BOAT_PLATONE_NODE_URL_MAX_LEN - 1 );
 
 	/* create platone wallet */
     index = BoatWalletCreate( BOAT_PROTOCOL_PLATONE, NULL, &wallet_config, sizeof(BoatPlatoneWalletConfig) );
@@ -144,7 +144,7 @@ __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
-    strncpy( wallet_config.node_url_str, demoUrl, BOAT_NODE_URL_MAX_LEN - 1 );
+    strncpy( wallet_config.node_url_str, demoUrl, BOAT_PLATONE_NODE_URL_MAX_LEN - 1 );
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, &wallet_config, sizeof(BoatPlatoneWalletConfig));

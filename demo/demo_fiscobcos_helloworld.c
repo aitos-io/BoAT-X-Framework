@@ -58,11 +58,11 @@ const BCHAR * demoRecipientAddress = "0x2474bc01af5b2648f0d554dbddda0e4fd8198f2f
 BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
 
 #if defined( USE_ONETIME_WALLET )
-__BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
+__BOATSTATIC BOAT_RESULT fiscobcos_createOnetimeWallet()
 {
     BSINT32 index;
-    BoatEthWalletConfig wallet_config = {0};
-    BUINT8 binFormatKey[32]           = {0};
+    BoatFiscobcosWalletConfig wallet_config = {0};
+    BUINT8 binFormatKey[32]                 = {0};
 
     (void)binFormatKey; //avoid warning
 
@@ -93,10 +93,10 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
 
-    strncpy(wallet_config.node_url_str, demoUrl, BOAT_NODE_URL_MAX_LEN - 1);
+    strncpy(wallet_config.node_url_str, demoUrl, BOAT_FISCOBCOS_NODE_URL_MAX_LEN - 1);
 
-	/* create ethereum wallet */
-    index = BoatWalletCreate( BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig) );
+	/* create fiscobcos wallet */
+    index = BoatWalletCreate( BOAT_PROTOCOL_FISCOBCOS, NULL, &wallet_config, sizeof(BoatFiscobcosWalletConfig) );
     if( index == BOAT_ERROR )
 	{
         BoatLog( BOAT_LOG_CRITICAL, "create one-time wallet failed." );
@@ -143,7 +143,7 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR *wallet_name)
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
     
-    strncpy( wallet_config.node_url_str, demoUrl, BOAT_NODE_URL_MAX_LEN - 1 );
+    strncpy( wallet_config.node_url_str, demoUrl, BOAT_FISCOBCOS_NODE_URL_MAX_LEN - 1 );
 
 	/* create fiscobcos wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, wallet_name, &wallet_config, sizeof(BoatFiscobcosWalletConfig));
@@ -226,7 +226,7 @@ int main(int argc, char *argv[])
 	/* step-2: create fiscobcos wallet */
     #if defined( USE_ONETIME_WALLET )
 	BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
-	result = ethereum_createOnetimeWallet();
+	result = fiscobcos_createOnetimeWallet();
 #elif defined( USE_CREATE_PERSIST_WALLET )
 	BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
 	result = fiscobcos_createPersistWallet("fiscobcos.cfg");
