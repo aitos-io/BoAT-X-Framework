@@ -31,21 +31,21 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
 
 
 /*!****************************************************************************
- * @brief access to the specified node 
+ * @brief Access to the specified node 
  * 
  * @param tx_ptr 
- *   fabric transaction structure pointer
+ *   Fabric transaction structure pointer
  *
  * @param nodeInfo 
-*    the first element address of nodeinfo structure.
+*    The first element address of nodeinfo structure.
  *  
  * @param nodeMaxNum 
- *   support maxium node number.
- *   \n for endorser node, this param is equeal with the macro #BOAT_HLFABRIC_ENDORSER_MAX_NUM,
+ *   Support maxium node number.
+ *   \n For endorser node, this param is equeal with the macro #BOAT_HLFABRIC_ENDORSER_MAX_NUM,
  *   for orderer node, this param is equeal with the macro #BOAT_HLFABRIC_ORDERER_MAX_NUM.
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if set successed, otherwise return a failed code.
+ * @return 
+ *   Return \c BOAT_SUCCESS if set successed, otherwise return a failed code.
  ******************************************************************************/
 __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec( BoatHlfabricTx *tx_ptr, 
 											 BoatHlfabricNodeInfo *nodeInfo, 

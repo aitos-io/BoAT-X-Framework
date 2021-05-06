@@ -48,7 +48,7 @@
  * @param length 
  * @param flags 
  * @param user_data 
- * @return __BOATSTATIC 
+ * @return  
  ******************************************************************************/
 __BOATSTATIC ssize_t send_callback(nghttp2_session *session, const uint8_t *data,
 								  size_t length, int flags, void *user_data) 
@@ -72,7 +72,7 @@ __BOATSTATIC ssize_t send_callback(nghttp2_session *session, const uint8_t *data
  * @param length 
  * @param flags 
  * @param user_data 
- * @return __BOATSTATIC 
+ * @return  
  ******************************************************************************/
 __BOATSTATIC ssize_t recv_callback(nghttp2_session *session, uint8_t *buf,
 								   size_t length, int flags, void *user_data) 
@@ -99,7 +99,7 @@ __BOATSTATIC ssize_t recv_callback(nghttp2_session *session, uint8_t *buf,
  * @param session 
  * @param frame 
  * @param user_data 
- * @return __BOATSTATIC 
+ * @return  
  ******************************************************************************/
 __BOATSTATIC int on_frame_recv_callback(nghttp2_session *session,
 										const nghttp2_frame *frame, void *user_data)
@@ -137,7 +137,7 @@ __BOATSTATIC int on_frame_recv_callback(nghttp2_session *session,
  * @param data 
  * @param len 
  * @param user_data 
- * @return __BOATSTATIC 
+ * @return  
  ******************************************************************************/
 __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t flags, 
 											 int32_t stream_id, const uint8_t *data, 
@@ -200,7 +200,7 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
  * @param data_flags 
  * @param source 
  * @param user_data 
- * @return __BOATSTATIC 
+ * @return  
  ******************************************************************************/
 __BOATSTATIC ssize_t data_source_read_callback(nghttp2_session *session,
 											   int32_t stream_id, uint8_t *buf, size_t length,
@@ -221,7 +221,7 @@ __BOATSTATIC ssize_t data_source_read_callback(nghttp2_session *session,
  * @param stream_id 
  * @param error_code 
  * @param user_data 
- * @return __BOATSTATIC 
+ * @return  
  ******************************************************************************/
 __BOATSTATIC int on_stream_close_callback(nghttp2_session *session, int32_t stream_id, 
 		                                  uint32_t error_code, void *user_data)

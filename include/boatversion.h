@@ -47,8 +47,8 @@ extern "C" {
 /*!****************************************************************************
  * @brief   Get the version number.
  *
- * @return   The constructed version number in the format
- *           MMNNPP00 (Major, Minor, Patch).
+ * @return   
+ *    The constructed version number in the format MMNNPP00 (Major, Minor, Patch).       
  ******************************************************************************/
 BUINT32 BoatIotSdkVersion( void );
 
@@ -56,7 +56,8 @@ BUINT32 BoatIotSdkVersion( void );
 /*!****************************************************************************
  * @brief   Get the version string.
  *
- * @return   The constructed version string.
+ * @return   
+ *   The constructed version string.
  ******************************************************************************/
 BCHAR * BoatIotSdkVersionString( void );
 

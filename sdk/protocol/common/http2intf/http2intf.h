@@ -73,11 +73,11 @@ extern "C" {
  * @brief http2context initialization
  * 
  * @details
- *   allocate memory for http2Context structure and it's member, set pointer as NULL
+ *   Allocate memory for http2Context structure and it's member, set pointer as NULL
  *   and integer as 0.
  *
- * @return http2IntfContext*
- *   return the address of http2IntfContext structure if initialization success, 
+ * @return 
+ *   Return the address of http2IntfContext structure if initialization success, 
  *   otherwise return NULL.
  ******************************************************************************/
 http2IntfContext *http2Init(void);
@@ -102,8 +102,8 @@ void http2DeInit(http2IntfContext *http2Context);
  * @param context 
  *   http2 context of submit request
  *
- * @return BOAT_RESULT 
- *   reuturn BOAT_SUCCESS if submit success, otherwise return failed code.
+ * @return 
+ *   Return \c BOAT_SUCCESS if submit success, otherwise return failed code.
  ******************************************************************************/
 BOAT_RESULT http2SubmitRequest(http2IntfContext *context);
 

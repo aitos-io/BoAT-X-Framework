@@ -213,7 +213,8 @@ BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32
  * @param[in] wallet_ptr
  *   Wallet context pointer
  *
- * @return This function doesn't return any thing.
+ * @return 
+ *   This function doesn't return any thing.
  *
  * @see BoatEthWalletInit()
  ******************************************************************************/

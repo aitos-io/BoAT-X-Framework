@@ -154,7 +154,8 @@ BOAT_RESULT BoatIotSdkInit(void);
  *   \n BoatIotSdkInit() MUST be called before any use of BoAT IoT SDK per process.
  *   BoatIotSdkDeInit() MUST be called after use of BoAT IoT SDK.
  *   
- * @return This function doesn't return any thing.
+ * @return 
+ *   This function doesn't return any thing.
  *
  * @see BoatIotSdkInit()
  ******************************************************************************/
@@ -265,8 +266,9 @@ void BoatWalletDelete(BCHAR * wallet_name_str);
  * @param[in] wallet_index
  *   The wallet index.
  *
- * @return This function returns a pointer to the wallet context. 
- *         \n This function returns a NULL if the indexed wallet is not exist.
+ * @return 
+ *   This function returns a pointer to the wallet context. 
+ *   \n Otherwise returns a \c NULL if the indexed wallet is not exist.
  ******************************************************************************/
 void * BoatGetWalletByIndex(BSINT32 wallet_index);
 
