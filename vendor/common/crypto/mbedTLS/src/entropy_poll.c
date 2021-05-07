@@ -48,6 +48,10 @@
 #include "mbedtls/platform.h"
 #endif
 
+#if defined(MBEDTLS_PLATFORM_QSEE_ENTROPY)
+#include "qsee_heap.h"
+#endif
+
 #if !defined(MBEDTLS_NO_PLATFORM_ENTROPY)
 
 #if !defined(unix) && !defined(__unix__) && !defined(__unix) && \
@@ -219,6 +223,26 @@ int mbedtls_null_entropy_poll( void *data,
     *olen = sizeof(unsigned char);
 
     return( 0 );
+}
+#endif
+
+#if defined(MBEDTLS_PLATFORM_QSEE_ENTROPY)
+int mbedtls_platform_qsee_entroy( void *data,
+                           unsigned char *output, size_t len, size_t *olen )
+{
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
+    ((void) data);
+
+    ret = qsee_get_random_bytes(buf, len);
+    if( ret == 0 )
+    {
+        *olen = len;
+        return( 0 );
+    }
+    else
+    {
+        return( MBEDTLS_ERR_ENTROPY_SOURCE_FAILED );
+    }
 }
 #endif
 
