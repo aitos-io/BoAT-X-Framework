@@ -29,8 +29,10 @@ api_hlfabric.h is header file for fabric transaction construction and performing
  * @{
  */
 
-#define BOAT_HLFABRIC_NODE_URL_MAX_LEN           127 //!< Maxmum length of node's URL
-#define BOAT_HLFABRIC_HOSTNAME_MAX_LEN           127 //!< Maxmum length of hostname
+#define BOAT_HLFABRIC_NODE_URL_MAX_LEN           127  //!< Maxmum length of node's URL
+#define BOAT_HLFABRIC_HOSTNAME_MAX_LEN           127  //!< Maxmum length of hostname
+#define BOAT_HLFABRIC_CERT_MAX_LEN               1024 //!< Maxmum length of certificate
+
 
 #define BOAT_HLFABRIC_ARGS_MAX_NUM               4   //!< Arguments max number in fabric command
 #define BOAT_HLFABRIC_ENDORSER_MAX_NUM           10  //!< Support endorser max number
@@ -176,6 +178,13 @@ typedef struct TBoatHlfabricTx{
 	BoatHlfabricEndorserResponse endorserResponse; //!< Endorser respond contents
 }BoatHlfabricTx;
 
+//!@brief fabric certificate information config structure
+//! fabric certificate information config structure
+typedef struct TBoatHlfabricCertInfoCfg{
+	BUINT32  length;                              //!< length of certificate content, this length contains the terminator '\0'.
+	BCHAR    content[BOAT_HLFABRIC_CERT_MAX_LEN]; //!< content of certificate.
+}BoatHlfabricCertInfoCfg;
+
 //!@brief fabric node information config structure
 //! fabric node information config structure
 typedef struct TBoatHlfabricNodeInfoCfg{
@@ -187,30 +196,30 @@ typedef struct TBoatHlfabricNodeInfoCfg{
 //! fabric wallet config structure
 typedef struct TBoatHlfabricWalletConfig{
 	BoatWalletPriKeyCtx_config  accountPriKey_config;
-	BoatFieldVariable           accountCertContent;   /*!< A pointer to account certificate content, the content of this field point to 
+	BoatHlfabricCertInfoCfg     accountCertContent;   /*!< A pointer to account certificate content, the content of this field point to 
 														 will be COPYED to the corresponding field of the wallet, if user dynamically 
 														 allocated space for this pointer, then the user should release it after     
 	                                                     BoatWalletCreate() invoked. 
 														 @note For content of type string, the length contains the terminator '\0' */  
 
 	BoatWalletPriKeyCtx_config  tlsPriKey_config;
-	BoatFieldVariable           tlsClientCertContent; /*!< A pointer to account certificate content, the content of this field point to 
+	BoatHlfabricCertInfoCfg     tlsClientCertContent; /*!< A pointer to account certificate content, the content of this field point to 
 														 will be COPYED to the corresponding field of the wallet, if user dynamically 
 														 allocated space for this pointer, then the user should release it after     
 	                                                     BoatWalletCreate() invoked. 
 														 @note For content of type string, the length contains the terminator '\0' */  	
 	
 	BUINT32 rootCaNumber; //!< The number of rootCA file to be set
-	BoatFieldVariable           rootCaContent[BOAT_HLFABRIC_ROOTCA_MAX_NUM];/*!< A pointer to rootCA content, the content of this field point to 
+	BoatHlfabricCertInfoCfg     rootCaContent[BOAT_HLFABRIC_ROOTCA_MAX_NUM];/*!< A pointer to rootCA content, the content of this field point to 
 																			will be COPYED to the corresponding field of the wallet, if user dynamically 
 																			allocated space for this pointer, then the user should release it after     
 																			BoatWalletCreate() invoked. 
 																			@note For content of type string, the length contains the terminator '\0' */  	
 
-	BUINT32                  endorserNumber;//!< The number of endorser to be set
-	BoatHlfabricNodeInfoCfg  endorser[BOAT_HLFABRIC_ENDORSER_MAX_NUM];
-	BUINT32                  ordererNumber; //!< The number of orderer to be set
-	BoatHlfabricNodeInfoCfg  orderer[BOAT_HLFABRIC_ORDERER_MAX_NUM];
+	BUINT32                     endorserNumber;//!< The number of endorser to be set
+	BoatHlfabricNodeInfoCfg     endorser[BOAT_HLFABRIC_ENDORSER_MAX_NUM];
+	BUINT32                     ordererNumber; //!< The number of orderer to be set
+	BoatHlfabricNodeInfoCfg     orderer[BOAT_HLFABRIC_ORDERER_MAX_NUM];
 }BoatHlfabricWalletConfig;
 
 #ifdef __cplusplus
@@ -240,7 +249,7 @@ extern "C" {
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr, 
 											  const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											  const BoatFieldVariable certContent );
+											  const BoatHlfabricCertInfoCfg certContent );
 
 
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
@@ -268,7 +277,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr, 
 											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											    const BoatFieldVariable certContent );
+											    const BoatHlfabricCertInfoCfg certContent );
 #endif
 
 
@@ -292,7 +301,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr, 
-											 const BoatFieldVariable *rootCaContent,
+											 const BoatHlfabricCertInfoCfg *rootCaContent,
 											 BUINT32 rootCaNumber );
 #endif
 

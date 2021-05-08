@@ -167,7 +167,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                     else
                     {
                         /* create one-time wallet */
-                    // nothing to do
+                        // nothing to do
                     } 
                 }    
             }
@@ -220,7 +220,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                     else
                     {
                         /* create one-time wallet */
-                    // nothing to do
+                        // nothing to do
                     } 
                 }   
             }
@@ -233,9 +233,10 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                     return BOAT_ERROR;
                 }
                 // 
+                //BoatLog_hexasciidump(BOAT_LOG_CRITICAL, "ERERER", boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx));
                 BoatHlfabricWalletConfig *load_wallet_config_ptr = (BoatHlfabricWalletConfig*)boatwalletStore_ptr; 
-                load_wallet_config_ptr->accountCertContent.field_ptr = NULL;
-                load_wallet_config_ptr->accountCertContent.field_len = 0;
+                load_wallet_config_ptr->accountPriKey_config.prikey_content.field_ptr = NULL;
+                load_wallet_config_ptr->accountPriKey_config.prikey_content.field_len = 0;
                 wallet_ptr = BoatHlfabricWalletInit(load_wallet_config_ptr, wallet_config_size);
                 if(wallet_ptr != NULL)
                 {
@@ -269,7 +270,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                     else
                     {
                         /* create one-time wallet */
-                    // nothing to do
+                        // nothing to do
                     }
                 }   
             }
@@ -321,7 +322,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                     else
                     {
                         /* create one-time wallet */
-                    // nothing to do
+                        // nothing to do
                     } 
                 }   
             }

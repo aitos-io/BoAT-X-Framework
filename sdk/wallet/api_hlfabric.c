@@ -111,7 +111,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec( BoatHlfabricTx *tx_ptr,
 
 BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr, 
 											  const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											  const BoatFieldVariable certContent )
+											  const BoatHlfabricCertInfoCfg certContent )
 {
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	boat_try_declare;
@@ -128,21 +128,24 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 	wallet_ptr->account_info.cert.field_len     = 0;
 	
 	/* prikey context assignment */
-	if( BOAT_SUCCESS != BoatPort_keyCreate( &prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx ) )
-    {
-        BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
-        return BOAT_ERROR_INVALID_ARGUMENT;
-    }
+	if( prikeyCtx_config.prikey_content.field_ptr != NULL )
+	{
+		if( BOAT_SUCCESS != BoatPort_keyCreate( &prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx ) )
+		{
+			BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
+			return BOAT_ERROR_INVALID_ARGUMENT;
+		}
+	}
 	
 	/* cert assignment */
-	wallet_ptr->account_info.cert.field_ptr = BoatMalloc(certContent.field_len);
+	wallet_ptr->account_info.cert.field_ptr = BoatMalloc(certContent.length);
 	if( wallet_ptr->account_info.cert.field_ptr == NULL )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetAccountInfo_exception);
 	}
-	memcpy(wallet_ptr->account_info.cert.field_ptr, certContent.field_ptr, certContent.field_len);
-	wallet_ptr->account_info.cert.field_len = certContent.field_len;
+	memcpy(wallet_ptr->account_info.cert.field_ptr, certContent.content, certContent.length);
+	wallet_ptr->account_info.cert.field_len = certContent.length;
 	
 	/* boat catch handle */
 	boat_catch(BoatHlfabricWalletSetAccountInfo_exception)
@@ -160,7 +163,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr,
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
 BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr, 
 											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
-												const BoatFieldVariable certContent )
+												const BoatHlfabricCertInfoCfg certContent )
 {	
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	boat_try_declare;
@@ -181,14 +184,14 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
 		    &prikeyCtx_config.private_KeyCtx, sizeof(BoatWalletPriKeyCtx));
 
 	/* cert assignment */
-	wallet_ptr->tlsClinet_info.cert.field_ptr = BoatMalloc(certContent.field_len);
+	wallet_ptr->tlsClinet_info.cert.field_ptr = BoatMalloc(certContent.length);
 	if( wallet_ptr->tlsClinet_info.cert.field_ptr == NULL )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetTlsInfo_exception);
 	}
-	memcpy(wallet_ptr->tlsClinet_info.cert.field_ptr, certContent.field_ptr, certContent.field_len);
-	wallet_ptr->tlsClinet_info.cert.field_len = certContent.field_len;
+	memcpy(wallet_ptr->tlsClinet_info.cert.field_ptr, certContent.content, certContent.length);
+	wallet_ptr->tlsClinet_info.cert.field_len = certContent.length;
 	
 	/* boat catch handle */
 	boat_catch(BoatHlfabricWalletSetTlsInfo_exception)
@@ -206,7 +209,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
 
 #if ( BOAT_HLFABRIC_TLS_SUPPORT == 1 )
 BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr, 
-											 const BoatFieldVariable *rootCaContent,
+											 const BoatHlfabricCertInfoCfg *rootCaContent,
 											 BUINT32 rootCaNumber )
 {
 	BUINT16      i = 0;
@@ -235,20 +238,17 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr,
 	/* assignment */
 	for( i = 0 ; i < rootCaNumber; i++ )
 	{
-		if( (rootCaContent + i)->field_ptr != NULL )
-		{
-			/* get rootCA file size */
-			wallet_ptr->tlsCAchain.ca[i].field_len = (rootCaContent + i)->field_len;
+		/* get rootCA file size */
+		wallet_ptr->tlsCAchain.ca[i].field_len  = (rootCaContent + i)->length;
 
-			wallet_ptr->tlsCAchain.ca[i].field_ptr  = BoatMalloc( wallet_ptr->tlsCAchain.ca[i].field_len );
-			if( wallet_ptr->tlsCAchain.ca[i].field_ptr == NULL )
-			{
-				BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-				boat_throw( BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetRootCaInfo_exception );
-			}
-			memset(wallet_ptr->tlsCAchain.ca[i].field_ptr, 0, wallet_ptr->tlsCAchain.ca[i].field_len);
-			memcpy(wallet_ptr->tlsCAchain.ca[i].field_ptr, (rootCaContent + i)->field_ptr, wallet_ptr->tlsCAchain.ca[i].field_len);
+		wallet_ptr->tlsCAchain.ca[i].field_ptr  = BoatMalloc( wallet_ptr->tlsCAchain.ca[i].field_len );
+		if( wallet_ptr->tlsCAchain.ca[i].field_ptr == NULL )
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
+			boat_throw( BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetRootCaInfo_exception );
 		}
+		memset(wallet_ptr->tlsCAchain.ca[i].field_ptr, 0, wallet_ptr->tlsCAchain.ca[i].field_len);
+		memcpy(wallet_ptr->tlsCAchain.ca[i].field_ptr, (rootCaContent + i)->content, wallet_ptr->tlsCAchain.ca[i].field_len);
 	}
 	
 	/* boat catch handle */
@@ -314,11 +314,11 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 	/* endorser node URL assignment */
 	for (i = 0; i < endorserNumber; i++)
 	{
-		if( ( (endorserInfo_ptr + i) != NULL ) && 
+		if( ( (endorserInfo_ptr + i) != NULL ) && ( (endorserInfo_ptr + i)->nodeUrl != NULL ) && 
 			( (stringLen = strlen( (endorserInfo_ptr + i)->nodeUrl) ) > 0 ) ) 
 		{
 			// stringLen check
-			if( stringLen >= BOAT_HLFABRIC_NODE_URL_MAX_LEN )
+			if( BOAT_SUCCESS != UtilityStringLenCheck( (endorserInfo_ptr + i)->nodeUrl ) )
 			{
 				BoatLog( BOAT_LOG_CRITICAL, "ERROR: length of endorser->nodeUrl out of limit.." );
 				boat_throw( BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception );
@@ -339,7 +339,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 				( (stringLen = strlen( (endorserInfo_ptr + i)->hostName) ) > 0 ) )
 			{
 				// stringLen check
-				if( stringLen >= BOAT_HLFABRIC_HOSTNAME_MAX_LEN )
+				if( BOAT_SUCCESS != UtilityStringLenCheck( (endorserInfo_ptr + i)->hostName ) )
 				{
 					BoatLog( BOAT_LOG_CRITICAL, "ERROR: length of endorser->hostName out of limit.." );
 					boat_throw( BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception );
@@ -370,7 +370,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 			( (stringLen = strlen( (ordererInfo_ptr + i)->nodeUrl ) ) > 0) )
 		{
 			// stringLen check
-			if( stringLen >= BOAT_HLFABRIC_NODE_URL_MAX_LEN )
+			if( BOAT_SUCCESS != UtilityStringLenCheck( (endorserInfo_ptr + i)->nodeUrl ) )
 			{
 				BoatLog( BOAT_LOG_CRITICAL, "ERROR: length of orderer->nodeUrl out of limit.." );
 				boat_throw( BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception );
@@ -390,7 +390,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 					((stringLen = strlen( (ordererInfo_ptr + i)->hostName) ) > 0) )
 			{
 				// stringLen check
-				if( stringLen >= BOAT_HLFABRIC_HOSTNAME_MAX_LEN )
+				if( BOAT_SUCCESS != UtilityStringLenCheck( (endorserInfo_ptr + i)->hostName ) )
 				{
 					BoatLog( BOAT_LOG_CRITICAL, "ERROR: length of orderer->hostName out of limit.." );
 					boat_throw( BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception );
@@ -440,8 +440,8 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *config_ptr, 
 								   		    BUINT32 config_size )
 {
-    BoatHlfabricWallet  *wallet_ptr;
-    BOAT_RESULT         result = BOAT_SUCCESS;
+    BoatHlfabricWallet*  wallet_ptr = NULL;
+    BOAT_RESULT         result      = BOAT_SUCCESS;
     BUINT16      i = 0;
 
 	if( ( config_ptr == NULL ) || ( config_size == 0 ) )
@@ -491,8 +491,8 @@ BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
 	wallet_ptr->http2Context_ptr               = NULL;
 
 	/* account_info assignment */
-	result += BoatHlfabricWalletSetAccountInfo( wallet_ptr,  config_ptr->accountPriKey_config,  
-												config_ptr->accountCertContent );
+	result += BoatHlfabricWalletSetAccountInfo( wallet_ptr,  config_ptr->accountPriKey_config, 
+	                                            config_ptr->accountCertContent );
 	/* tlsClinet_info assignment */
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
 #if	(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
