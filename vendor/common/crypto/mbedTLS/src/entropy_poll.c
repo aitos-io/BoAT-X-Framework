@@ -49,7 +49,7 @@
 #endif
 
 #if defined(MBEDTLS_PLATFORM_QSEE_ENTROPY)
-#include "qsee_heap.h"
+#include "qsee_ecc.h"
 #endif
 
 #if !defined(MBEDTLS_NO_PLATFORM_ENTROPY)
@@ -233,7 +233,7 @@ int mbedtls_platform_qsee_entroy( void *data,
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     ((void) data);
 
-    ret = qsee_get_random_bytes(buf, len);
+    ret = qsee_get_random_bytes(output, len);
     if( ret == 0 )
     {
         *olen = len;
