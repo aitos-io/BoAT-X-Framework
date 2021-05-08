@@ -196,25 +196,13 @@ typedef struct TBoatHlfabricNodeInfoCfg{
 //! fabric wallet config structure
 typedef struct TBoatHlfabricWalletConfig{
 	BoatWalletPriKeyCtx_config  accountPriKey_config;
-	BoatHlfabricCertInfoCfg     accountCertContent;   /*!< A pointer to account certificate content, the content of this field point to 
-														 will be COPYED to the corresponding field of the wallet, if user dynamically 
-														 allocated space for this pointer, then the user should release it after     
-	                                                     BoatWalletCreate() invoked. 
-														 @note For content of type string, the length contains the terminator '\0' */  
+	BoatHlfabricCertInfoCfg     accountCertContent;   //!< certificate content of account
 
 	BoatWalletPriKeyCtx_config  tlsPriKey_config;
-	BoatHlfabricCertInfoCfg     tlsClientCertContent; /*!< A pointer to account certificate content, the content of this field point to 
-														 will be COPYED to the corresponding field of the wallet, if user dynamically 
-														 allocated space for this pointer, then the user should release it after     
-	                                                     BoatWalletCreate() invoked. 
-														 @note For content of type string, the length contains the terminator '\0' */  	
+	BoatHlfabricCertInfoCfg     tlsClientCertContent; //!< certificate content of TLS 	
 	
 	BUINT32 rootCaNumber; //!< The number of rootCA file to be set
-	BoatHlfabricCertInfoCfg     rootCaContent[BOAT_HLFABRIC_ROOTCA_MAX_NUM];/*!< A pointer to rootCA content, the content of this field point to 
-																			will be COPYED to the corresponding field of the wallet, if user dynamically 
-																			allocated space for this pointer, then the user should release it after     
-																			BoatWalletCreate() invoked. 
-																			@note For content of type string, the length contains the terminator '\0' */  	
+	BoatHlfabricCertInfoCfg     rootCaContent[BOAT_HLFABRIC_ROOTCA_MAX_NUM];//!< certificate content of rootCA
 
 	BUINT32                     endorserNumber;//!< The number of endorser to be set
 	BoatHlfabricNodeInfoCfg     endorser[BOAT_HLFABRIC_ENDORSER_MAX_NUM];
