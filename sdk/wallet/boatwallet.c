@@ -107,6 +107,13 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
     BUINT8  hashLenDummy;
 #endif    
 
+    /* Check wallet configuration */ 
+    if( (wallet_name_str == NULL) && (wallet_config_ptr == NULL) )
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Invalid wallet configuration.");
+        return BOAT_ERROR;
+    }
+    
     boatwalletStore_ptr = BoatMalloc(wallet_config_size + sizeof(BoatWalletPriKeyCtx));
     if( NULL == boatwalletStore_ptr )
     {
@@ -114,15 +121,6 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
         return BOAT_ERROR;
     }
     memset(boatwalletStore_ptr, 0, wallet_config_size + sizeof(BoatWalletPriKeyCtx));
-
-    /* Check wallet configuration */ 
-    if( (wallet_name_str == NULL) && (wallet_config_ptr == NULL) )
-    {
-        BoatLog(BOAT_LOG_NORMAL, "Invalid wallet configuration.");
-        return BOAT_ERROR;
-    }
-    /* Check the parameter of config is valid or not */
-    //! @todo Check the parameter of config is valid or not
     
     /* For Multi-Thread Support: ObtainMutex Here */
     for( i = 0; i < BOAT_MAX_WALLET_NUM; i++ )
@@ -142,7 +140,6 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
 
     /* Check protocol type */
     g_boat_iot_sdk_context.wallet_list[i].protocol_type = protocol_type;
-
 
     switch(protocol_type)
     {
