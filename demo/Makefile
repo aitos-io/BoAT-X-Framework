@@ -115,7 +115,14 @@ endif
 fabric_demo: demo_fabric_invoke.c
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_invoke.c \
-		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fabric/demo_fabric_invoke
+	    -DUSE_ONETIME_WALLET \
+		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fabric/demo_fabric_invoke_onetime
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_invoke.c \
+	    -DUSE_CREATE_PERSIST_WALLET \
+		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fabric/demo_fabric_invoke_pesist	
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_invoke.c \
+	    -DUSE_LOAD_PERSIST_WALLET \
+		$(DEPENDENCE_LIBS) -o $(BOAT_BUILD_DIR)/demo/fabric/demo_fabric_invoke_load		
 endif	
 
 $(OBJECTS_DIR):

@@ -92,7 +92,7 @@ const BCHAR * fabric_ca3_democert    =  "-----BEGIN CERTIFICATE-----\n"
 
 const BCHAR * fabric_demo_endorser1_url      = "172.18.0.5:7051";
 const BCHAR * fabric_demo_endorser1_hostName = "peer0.org1.example.com";
-const BCHAR * fabric_demo_endorser2_url      = "172.18.0.6:7051";
+const BCHAR * fabric_demo_endorser2_url      = "172.18.0.4:7051";
 const BCHAR * fabric_demo_endorser2_hostName = "peer0.org2.example.com";
 const BCHAR * fabric_demo_order1_url         = "172.18.0.3:7050";
 const BCHAR * fabric_demo_order1_hostName    = "orderer.example.com";
@@ -137,7 +137,15 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	memcpy(wallet_config.orderer[0].hostName, fabric_demo_order1_hostName, strlen(fabric_demo_order1_hostName) + 1);
 
 	/* create fabric wallet */
+#if defined( USE_ONETIME_WALLET )
+	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig) );
+#elif defined( USE_CREATE_PERSIST_WALLET )	
 	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig) );
+#elif defined( USE_LOAD_PERSIST_WALLET )	
+	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", NULL, sizeof(BoatHlfabricWalletConfig) );
+#else
+	return BOAT_ERROR;
+#endif	
 	if(index == BOAT_ERROR)
 	{
 		//BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );
