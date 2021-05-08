@@ -314,7 +314,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 	/* endorser node URL assignment */
 	for (i = 0; i < endorserNumber; i++)
 	{
-		if( ( (endorserInfo_ptr + i) != NULL ) && ( (endorserInfo_ptr + i)->nodeUrl != NULL ) && 
+		if( ( (endorserInfo_ptr + i) != NULL ) &&
 			( (stringLen = strlen( (endorserInfo_ptr + i)->nodeUrl) ) > 0 ) ) 
 		{
 			// stringLen check
@@ -335,7 +335,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 			
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)		
 			/* endorser node hostName assignment */
-			if( ( (endorserInfo_ptr + i) != NULL )  && ( (endorserInfo_ptr + i)->hostName != NULL ) &&
+			if( ( (endorserInfo_ptr + i) != NULL )  && 
 				( (stringLen = strlen( (endorserInfo_ptr + i)->hostName) ) > 0 ) )
 			{
 				// stringLen check
@@ -366,7 +366,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 	/* orderer node URL assignment */
 	for( i = 0; i < ordererNumber; i++ )
 	{
-		if( ( (ordererInfo_ptr + i) != NULL ) && ( (ordererInfo_ptr + i)->nodeUrl != NULL ) &&
+		if( ( (ordererInfo_ptr + i) != NULL ) && 
 			( (stringLen = strlen( (ordererInfo_ptr + i)->nodeUrl ) ) > 0) )
 		{
 			// stringLen check
@@ -386,7 +386,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
 			memcpy(wallet_ptr->network_info.orderer[i].nodeUrl, (ordererInfo_ptr + i)->nodeUrl, stringLen + 1);
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
 			/* endorser node hostName assignment */
-			if( ( (ordererInfo_ptr + i) != NULL ) && ( (ordererInfo_ptr + i)->hostName != NULL ) &&
+			if( ( (ordererInfo_ptr + i) != NULL ) && 
 					((stringLen = strlen( (ordererInfo_ptr + i)->hostName) ) > 0) )
 			{
 				// stringLen check
