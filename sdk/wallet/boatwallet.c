@@ -135,6 +135,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
     if( i >= BOAT_MAX_WALLET_NUM )
     {
         BoatLog(BOAT_LOG_NORMAL, "Too many wallets was loaded.");
+        BoatFree(boatwalletStore_ptr);
         return BOAT_ERROR;
     }
 
@@ -158,6 +159,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                         if( BOAT_SUCCESS != BoatPersistStore(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)) )
                         {
                             BoatLog(BOAT_LOG_NORMAL, "persistent wallet create failed.");
+                            BoatFree(boatwalletStore_ptr);
                             return BOAT_ERROR;
                         }
                     }
@@ -174,6 +176,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                 if( BOAT_SUCCESS != BoatPersistRead(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)) )
                 {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
+                    BoatFree(boatwalletStore_ptr);
                     return BOAT_ERROR;
                 }
                 //
@@ -211,6 +214,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                         if( BOAT_SUCCESS != BoatPersistStore(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)) )
                         {
                             BoatLog(BOAT_LOG_NORMAL, "persistent wallet create failed.");
+                            BoatFree(boatwalletStore_ptr);
                             return BOAT_ERROR;
                         }
                     }
@@ -227,6 +231,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                 if( BOAT_SUCCESS != BoatPersistRead(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)) )
                 {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
+                    BoatFree(boatwalletStore_ptr);
                     return BOAT_ERROR;
                 }
                 // 
@@ -261,6 +266,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                         if( BOAT_SUCCESS != BoatPersistStore(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)) )
                         {
                             BoatLog(BOAT_LOG_NORMAL, "persistent wallet create failed.");
+                            BoatFree(boatwalletStore_ptr);
                             return BOAT_ERROR;
                         }
                     }
@@ -277,6 +283,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                 if( BOAT_SUCCESS != BoatPersistRead(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)) )
                 {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
+                    BoatFree(boatwalletStore_ptr);
                     return BOAT_ERROR;
                 }
                 // 
@@ -313,6 +320,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                         if( BOAT_SUCCESS != BoatPersistStore(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)) )
                         {
                             BoatLog(BOAT_LOG_NORMAL, "persistent wallet create failed.");
+                            BoatFree(boatwalletStore_ptr);
                             return BOAT_ERROR;
                         }
                     }
@@ -329,6 +337,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
                 if( BOAT_SUCCESS != BoatPersistRead(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)) )
                 {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
+                    BoatFree(boatwalletStore_ptr);
                     return BOAT_ERROR;
                 }
                 // 
@@ -359,10 +368,12 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to create wallet: protocol type: %d.", (BSINT32)protocol_type);
         g_boat_iot_sdk_context.wallet_list[i].is_used = BOAT_FALSE;
-
+        BoatFree(boatwalletStore_ptr);
         return BOAT_ERROR;
     }
 
+    BoatFree(boatwalletStore_ptr);
+    
     return i;
 }
 
