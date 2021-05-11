@@ -12,7 +12,7 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 				  $(BOAT_LIB_DIR)/libboatvendor.a \
 				  $(LINK_LIBS)
 
-all: $(OBJECTS_DIR) $(OUTPUT_CONTRACT_SOURCES)
+all: $(OBJECTS_DIR)
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_invoke.c \
 	    -DUSE_ONETIME_WALLET \
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fabric_invoke_onetime
