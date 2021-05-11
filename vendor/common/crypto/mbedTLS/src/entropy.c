@@ -98,6 +98,14 @@ void mbedtls_entropy_init( mbedtls_entropy_context *ctx )
     return;
 #endif
 
+/* DT50 platform support */
+#if defined(MBEDTLS_PLATFORM_DT50_ENTROPY)
+    mbedtls_entropy_add_source( ctx, mbedtls_platform_dt50_entroy, NULL,
+                                MBEDTLS_ENTROPY_MIN_PLATFORM, 
+                                MBEDTLS_ENTROPY_SOURCE_STRONG );
+    return;
+#endif
+
 #if !defined(MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES)
 #if !defined(MBEDTLS_NO_PLATFORM_ENTROPY)
     mbedtls_entropy_add_source( ctx, mbedtls_platform_entropy_poll, NULL,
