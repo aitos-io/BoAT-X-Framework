@@ -22,7 +22,7 @@ curlport.c is the libcurl porting of RPC.
 DO NOT call functions in this file directly. Instead call wrapper functions
 provided by rpcport.
 
-To use libcurl porting, RPC_USE_LIBCURL in boatconfig.h must set to 1.
+To use libcurl porting, RPC_USE_LIBCURL in boatConfig.h must set to 1.
 */
 #include "boatConfig.h"
 #include "boatinternal.h"
