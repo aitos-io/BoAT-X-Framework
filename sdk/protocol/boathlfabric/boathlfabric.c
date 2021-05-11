@@ -592,11 +592,9 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	Common__Envelope envelope       = COMMON__ENVELOPE__INIT;
 	BoatFieldVariable payloadPacked = {NULL, 0};
 	BoatSignatureResult signatureResult;
-	BUINT8  grpcHeader[5];
-	BUINT8  hash[32];
-	//BUINT8  signature[139];//139 is ECDSA MAX LENGTH
-	//size_t  signatureLen;
-	BUINT32 packedLength;
+	BUINT8   grpcHeader[5];
+	BUINT8   hash[32];
+	BUINT32  packedLength;
 	BUINT8  *packedData = NULL;
 	
 	BOAT_RESULT result = BOAT_SUCCESS;
