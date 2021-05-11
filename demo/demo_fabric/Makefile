@@ -13,15 +13,15 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 				  $(LINK_LIBS)
 
 all: $(OBJECTS_DIR)
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_invoke.c \
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_abac.c \
 	    -DUSE_ONETIME_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fabric_invoke_onetime
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_invoke.c \
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fabric_abac_onetime
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_abac.c \
 	    -DUSE_CREATE_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fabric_invoke_pesist	
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_invoke.c \
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fabric_abac_persist	
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_fabric_abac.c \
 	    -DUSE_LOAD_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fabric_invoke_load		
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fabric_abac_load		
 
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
