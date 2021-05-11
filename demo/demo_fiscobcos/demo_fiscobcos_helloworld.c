@@ -52,7 +52,7 @@ const BCHAR * demoUrl = "http://127.0.0.1:8545";
 /**
  * transfer recipient address
  */
-const BCHAR * demoRecipientAddress = "0x2474bc01af5b2648f0d554dbddda0e4fd8198f2f";
+const BCHAR * demoRecipientAddress = "0x706578ff2a43709f92e7b358940ea23b19605f08";
 
 
 BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
