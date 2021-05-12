@@ -28,7 +28,7 @@ nwyhttpport.c is the AT command porting of RPC.
 DO NOT call functions in this file directly. Instead call wrapper functions
 provided by rpcport.
 
-To use nwy HTTP RPC porting, RPC_USE_NWYHTTPPORT in boatConfig.h must set to 1.
+To use nwy HTTP RPC porting, RPC_USE_NWYHTTPPORT in boatconfig.h must set to 1.
 */
 
 #include "boatinternal.h"

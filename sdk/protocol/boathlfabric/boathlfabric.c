@@ -23,7 +23,7 @@ wait for its receipt.
 
 
 /* self-header include */
-#include "boatConfig.h"
+#include "boatconfig.h"
 #include "boathlfabric.h"
 
 #if PROTOCOL_USE_HLFABRIC == 1

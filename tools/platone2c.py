@@ -45,7 +45,7 @@ This file is generated from contract ABI. DO NOT modify it by hand.
 generated_include_block_str = '''
 // Generated C function interface from smart contract ABI
 
-#include "boatConfig.h"
+#include "boatconfig.h"
 #include "boatiotsdk.h"
 
 '''

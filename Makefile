@@ -179,7 +179,7 @@ all: boatlibs
 boatlibs: createdir boatwalletlib vendorlib
 
 createdir:
-	@echo generate header file boatConfig.h...
+	@echo generate header file boatconfig.h...
 	$(shell python ./vendor/platform/$(PLATFORM_TARGET)/scripts/gen.py $(PLATFORM_TARGET) $(SCRIPTS_PARAM) )
 	@echo generate done.
 

@@ -220,7 +220,7 @@ Add to link options: -lcurl
 #### Modify your C code
 Add include header files:
 ```
-#include "boatConfig.h"
+#include "boatconfig.h"
 #include "boatiotsdk.h"
 ```
 

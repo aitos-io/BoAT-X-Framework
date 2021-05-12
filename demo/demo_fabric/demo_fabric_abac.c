@@ -18,7 +18,7 @@
 	#define _POSIX_C_SOURCE 200809L
 	#include <time.h>
 #endif
-#include "boatConfig.h"
+#include "boatconfig.h"
 #include "boatiotsdk.h"
 
 const BCHAR * fabric_client_demokey  = "-----BEGIN PRIVATE KEY-----\n"

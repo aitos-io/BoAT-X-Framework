@@ -18,7 +18,7 @@
 
 @file web3intf.c contains web3 interface functions for RPC.
 */
-#include "boatLog.h"
+#include "boatlog.h"
 #include "boatinternal.h"
 
 #include "rpcintf.h"

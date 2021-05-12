@@ -24,9 +24,9 @@
 
 /* self header include */
 
-#include "boatConfig.h"
+#include "boatconfig.h"
 #include "boatinternal.h"
-#include "boatLog.h"
+#include "boatlog.h"
 
 #ifdef __cplusplus
 extern "C" {
