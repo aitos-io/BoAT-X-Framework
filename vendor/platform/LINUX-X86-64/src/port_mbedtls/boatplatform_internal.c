@@ -103,13 +103,13 @@ cleanup:
  * both generates ASN.1 format signatures and native signatures consisting of R and S.
  * 
  * @param[in] ctx 
- *   ecdsa context
+ *   ECDSA context.
  *
  * @param[in] digest
- *   a digest message. 
+ *   A digest message. 
  *
  * @param[in] digestLen 
- *   the length of digiest message.
+ *   The length of digiest message.
  *
  * @param[out] signature 
  *   ASN.1 format signature.The signature size maximum 139 bytes, caller needs to 
@@ -126,24 +126,24 @@ cleanup:
  *   Caller needs to make sure that there is enough space to store it.
  *
  * @param[in] f_rng
- *   the function of random number generation. This function is used to generate a 
+ *   The function of random number generation. This function is used to generate a 
  *   random number to generate r filed of signature.
  *
  * @param[in] p_rng 
- *   the parameter f_rng.
+ *   The parameter f_rng.
  *
  * @param[in] f_rng_blind 
- *   the function of random number generation. This function is used to generate a 
+ *   The function of random number generation. This function is used to generate a 
  *   random number to counter side-channel attacks.
  *
  * @param[in] p_rng_blind 
- *   the parameter f_rng_blind.
+ *   The parameter f_rng_blind.
  *
  * @param[out] ecdsPrefix
- *   the generate signature Prefix.
+ *   The generate signature Prefix.
  *
- * @return BOAT_RESULT 
-  *   return BOAT_SUCCESS if generate success; otherwise return a negative error code
+ * @return 
+  *   Return \c BOAT_SUCCESS if generate success; otherwise return a negative error code.
  ******************************************************************************/
 static BOAT_RESULT Boat_private_ecdsa_sign( mbedtls_ecdsa_context *ctx, 
 									const BUINT8 *digest, size_t digestLen,

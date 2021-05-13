@@ -9,8 +9,20 @@ BOAT_BUILD_DIR := $(BOAT_BASE_DIR)/build
 BOAT_PROTOCOL_USE_ETHEREUM  ?= 1
 BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
-BOAT_PROTOCOL_USE_HLFABRIC  ?= 0
+BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 
+# Chain config check
+ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATONE)_$(BOAT_PROTOCOL_USE_FISCOBCOS)_$(BOAT_PROTOCOL_USE_HLFABRIC), 0_0_0_0)
+    $(error Select at least one chain)
+endif
+ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_FISCOBCOS), 0_1)
+    $(error FISCOBCOS depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_ETHEREUM' to 1 if enable FISCOBCOS)
+endif
+ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATONE), 0_1)
+    $(error PLATONE depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_ETHEREUM' to 1 if enable PLATONE)
+endif
+
+# Set parameter to scripts
 SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
                  "BOAT_PROTOCOL_USE_PLATONE=$(BOAT_PROTOCOL_USE_PLATONE)" \
                  "BOAT_PROTOCOL_USE_FISCOBCOS=$(BOAT_PROTOCOL_USE_FISCOBCOS)" \
@@ -25,7 +37,6 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - N58               : a CAT1 module of neoway
 # - L718              : a LTE module of fibocom
 PLATFORM_TARGET ?= LINUX-X86-64
-#PLATFORM_TARGET ?= N58
 
 # Environment-specific Settings
 include $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/external.env
@@ -160,7 +171,7 @@ export BOAT_CFLAGS
 export BOAT_LFLAGS
 export LINK_LIBS
 
-.PHONY: all boatlibs createdir boatwalletlib vendorlib contractlib demo tests clean cleanboatwallet cleanvendor cleancontract cleantests
+.PHONY: all boatlibs createdir boatwalletlib vendorlib demo tests clean cleanboatwallet cleanvendor cleantests
 
 #all: boatlibs demo tests
 all: boatlibs
@@ -168,7 +179,7 @@ all: boatlibs
 boatlibs: createdir boatwalletlib vendorlib
 
 createdir:
-	@echo generate header file boatConfig.h...
+	@echo generate header file boatconfig.h...
 	$(shell python ./vendor/platform/$(PLATFORM_TARGET)/scripts/gen.py $(PLATFORM_TARGET) $(SCRIPTS_PARAM) )
 	@echo generate done.
 
@@ -185,18 +196,15 @@ vendorlib:
 	make -C $(BOAT_BASE_DIR)/vendor all; \
 	fi
 
-contractlib:
-	make -C $(BOAT_BASE_DIR)/contract all 
-
-demo: boatlibs contractlib
+demo: boatlibs
 	make -C $(BOAT_BASE_DIR)/demo all
 
-tests: boatlibs contractlib
-	if [ -d "$(BOAT_BASE_DIR)/tests" ]; then \
-	make -C $(BOAT_BASE_DIR)/tests all; \
-	fi
+#tests: boatlibs
+#	if [ -d "$(BOAT_BASE_DIR)/tests" ]; then \
+#	make -C $(BOAT_BASE_DIR)/tests all; \
+#	fi
 
-clean: cleanboatwallet cleanvendor cleancontract cleandemo cleantests
+clean: cleanboatwallet cleanvendor cleandemo cleantests
 	-$(BOAT_RM) $(BOAT_BUILD_DIR)
 
 cleanboatwallet:
@@ -208,9 +216,6 @@ cleanvendor:
 	if [ -d "$(BOAT_BASE_DIR)/vendor" ]; then \
 	make -C $(BOAT_BASE_DIR)/vendor clean; \
 	fi
-
-cleancontract:
-	make -C $(BOAT_BASE_DIR)/contract clean
 
 cleandemo:
 	make -C $(BOAT_BASE_DIR)/demo clean

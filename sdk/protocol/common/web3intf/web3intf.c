@@ -18,7 +18,7 @@
 
 @file web3intf.c contains web3 interface functions for RPC.
 */
-
+#include "boatlog.h"
 #include "boatinternal.h"
 
 #include "rpcintf.h"
@@ -909,6 +909,8 @@ BCHAR *web3_eth_call(Web3IntfContext *web3intf_context_ptr,
 /***************************************************************************************************
                                   FISCO BCOS JSONRPC INTERFACE
 ***************************************************************************************************/
+#if (PROTOCOL_USE_FISCOBCOS == 1)	
+
 BCHAR *web3_fiscobcos_call( Web3IntfContext *web3intf_context_ptr,
 						    BCHAR *node_url_str,
 						    const Param_fiscobcos_call *param_ptr )
@@ -1265,3 +1267,5 @@ BCHAR *web3_fiscobcos_getBlockNumber( Web3IntfContext *web3intf_context_ptr,
 
     return return_value_ptr;
 }
+
+#endif /* #if (PROTOCOL_USE_FISCOBCOS == 1) */

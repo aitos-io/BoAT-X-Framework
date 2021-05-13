@@ -24,7 +24,6 @@ boatutility.h is header file for boatwallet utility functions.
 #define __BOATUTILITY_H__
 
 #include "boatiotsdk.h"
-//#include "boatLog.h"
 
 /*! @defgroup utility boat utility
  * @{
@@ -483,7 +482,7 @@ void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_n
 *    The string that to be checked.
 
 * @return
-*   If the string length less than maxium limit, return BOAT_SUCCESS, else
+*   If the string length less than maxium limit, return \c BOAT_SUCCESS, else
 *   return  BOAT_ERROR.
 *******************************************************************************/
 BOAT_RESULT UtilityStringLenCheck( const BCHAR *string );

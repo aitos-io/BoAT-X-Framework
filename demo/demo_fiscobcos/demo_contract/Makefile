@@ -1,13 +1,15 @@
 # Auto generate C/H source files from contract ABI JSON files
 
 # Specify generator script
+# Specify generator script
+PY             = python
 AUTOGEN_SCRIPT = $(BOAT_BASE_DIR)/tools/fiscobcos2c.py
 
 # Search all files with .json extension
 ABIJSONS = $(wildcard *.json)
 
 # Output directory for generated C/H source files
-OUTPUT_SOURCES_DIR = $(BOAT_BASE_DIR)/contract/generated
+OUTPUT_SOURCES_DIR = $(BOAT_BUILD_DIR)/demo/demo_fiscobcos/demo_contract
 
 OUTPUT_H_SOURCES = $(patsubst %.json, $(OUTPUT_SOURCES_DIR)/%.h, $(ABIJSONS))
 OUTPUT_C_SOURCES = $(patsubst %.json, $(OUTPUT_SOURCES_DIR)/%.c, $(ABIJSONS))

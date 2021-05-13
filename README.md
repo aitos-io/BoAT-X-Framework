@@ -104,7 +104,6 @@ Modify the demo code in ./demo:
 <SDKRoot>
 |
 +---build           | Directory to store object and executable files
-+---contract        | Demo smart contract ABI and generated C interface file
 +---demo            | Demo application
 +---docs            | API reference manual
 +---vendor          | Special vendor dependency
@@ -117,7 +116,6 @@ Modify the demo code in ./demo:
 |   +---include     |     Header files for SDK internal use
 |   +---protocol    |     Blockchain client protocol implementation
 |   +---rlp         |     RLP encoder
-|   +---rpc         |     Remote procedure call wrapper
 |   +---utilities   |     Utility APIs
 |   \---wallet      |     SDK entry API implementation
 +---tests           | Test cases
@@ -137,6 +135,10 @@ The built demo application locates at:
 
 #### To build BoAT libraries only
 ```
+$make
+```
+or
+```
 $make boatlibs
 ```
 The built libraries locate at:
@@ -155,10 +157,10 @@ $make clean
 If BoAT is built for Cygwin or linux-x86_64, run the demo application:
 real node of an Ethereum compatible blockchain network must be available.
 ```
-$chmod a+x ./build/demo/boatdemo
-$./build/demo/boatdemo
+$chmod a+x ./build/demo/demo_<protocol>/<demo_name>
+$./build/demo/demo_<protocol>/<demo_name>
 ```
-
+< protocol> can be `ethereum` `fiscobcos` `platone` `fabric`.
 Make sure the network connection to the blockchain node (or blockchain simulator) is available.
 
 
@@ -212,11 +214,16 @@ Add to link options all library files in <SDKRoot>/lib in sequence:
 +   libboatwallet.a
 +   libboatvendor.a
 
-Add to link options: -lcurl -lcrypto
+Add to link options: -lcurl
 
 
 #### Modify your C code
-Add: #include "boatiotsdk.h"
+Add include header files:
+```
+#include "boatconfig.h"
+#include "boatiotsdk.h"
+```
+
 Follow instructions in [*How to Call a Contract in Your C code*](#how-to-call-a-contract-in-your-c-code).
 
 

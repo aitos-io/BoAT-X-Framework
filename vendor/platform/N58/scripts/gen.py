@@ -44,8 +44,8 @@ class ConfigContentGen():
         self.config_content = ''
 
     def save_config_file(self):
-            config_file_name = './vendor/platform/include/boatConfig.h'
-            #config_file_name = './boatConfig.h'
+            config_file_name = './vendor/platform/include/boatconfig.h'
+            #config_file_name = './boatconfig.h'
             with open(config_file_name, 'w') as config_file_handle:
                 config_file_handle.write(self.config_content)
     
@@ -54,7 +54,6 @@ class ConfigContentGen():
         self.config_content += '#define  RPC_USE_NWYHTTPPORT     1'
         self.config_content += '\n'
 
-
     def gen_config_tips(self, platform):
         self.config_content +=license
         self.config_content += \
@@ -62,6 +61,15 @@ class ConfigContentGen():
             ' THIS FILE IS AUTO GENERATED FOR SPECIAL PLATFORM ' + platform + '\n'            +\
             ' DO NOT MODIFY THIS FILE MANUALLY\n'                                             +\
             ' ****************************************************************************/\n\n'    
+    def gen_condHead(self):  
+        self.config_content += '#ifndef __BOATCONFIG_H__\n'
+        self.config_content += '#define __BOATCONFIG_H__\n'
+        self.config_content += '\n\n'
+
+    def gen_condTail(self):  
+        self.config_content += '\n\n'
+        self.config_content += '#endif\n'
+
 
 def main():
     argc  = len(sys.argv)
@@ -70,6 +78,9 @@ def main():
 
     #generate tips, input parameter argv[1] is the platform name
     configContent_obj.gen_config_tips(sys.argv[1])
+
+    #generate conditional compilation head
+    configContent_obj.gen_condHead()
 
     #generate chain config content
     i = 2
@@ -82,6 +93,9 @@ def main():
     
     #generate RPC config content
     configContent_obj.gen_config_content()
+
+    #generate conditional compilation tail
+    configContent_obj.gen_condTail()
 
     #save config file
     configContent_obj.save_config_file()

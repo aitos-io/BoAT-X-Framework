@@ -48,11 +48,19 @@
 #include "mbedtls/platform.h"
 #endif
 
+#if defined(MBEDTLS_PLATFORM_QSEE_ENTROPY)
+#include "qsee_ecc.h"
+#endif
+
+#if defined(MBEDTLS_PLATFORM_DT50_ENTROPY)
+#include <lib/rng/trusty_rng.h>
+#endif
+
 #if !defined(MBEDTLS_NO_PLATFORM_ENTROPY)
 
 #if !defined(unix) && !defined(__unix__) && !defined(__unix) && \
     !defined(__APPLE__) && !defined(_WIN32) && !defined(__QNXNTO__) && \
-    !defined(__HAIKU__) && !defined(__midipix__)
+    !defined(__HAIKU__) && !defined(__midipix__) && !defined(__clang__)
 #error "Platform entropy sources only work on Unix and Windows, see MBEDTLS_NO_PLATFORM_ENTROPY in config.h"
 #endif
 
@@ -221,6 +229,47 @@ int mbedtls_null_entropy_poll( void *data,
     return( 0 );
 }
 #endif
+
+#if defined(MBEDTLS_PLATFORM_QSEE_ENTROPY)
+int mbedtls_platform_qsee_entroy( void *data,
+                           unsigned char *output, size_t len, size_t *olen )
+{
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
+    ((void) data);
+
+    ret = qsee_get_random_bytes(output, len);
+    if( ret == 0 )
+    {
+        *olen = len;
+        return( 0 );
+    }
+    else
+    {
+        return( MBEDTLS_ERR_ENTROPY_SOURCE_FAILED );
+    }
+}
+#endif
+
+#if defined(MBEDTLS_PLATFORM_DT50_ENTROPY)
+int mbedtls_platform_dt50_entroy( void *data,
+                           unsigned char *output, size_t len, size_t *olen )
+{
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
+    ((void) data);
+
+    ret =  trusty_rng_hw_rand(output, len);
+    if( ret == 0 )
+    {
+        *olen = len;
+        return( 0 );
+    }
+    else
+    {
+        return( MBEDTLS_ERR_ENTROPY_SOURCE_FAILED );
+    }
+}
+#endif
+
 
 #if defined(MBEDTLS_TIMING_C)
 int mbedtls_hardclock_poll( void *data,

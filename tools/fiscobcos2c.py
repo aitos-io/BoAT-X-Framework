@@ -46,6 +46,7 @@ This file is generated from contract ABI. DO NOT modify it by hand.
 generated_include_block_str = '''
 // Generated C function interface from smart contract ABI
 
+#include "boatconfig.h"
 #include "boatiotsdk.h"
 
 '''
@@ -806,7 +807,6 @@ class CFunctionGen():
             func_body_str += '    if( tx_ptr == NULL )\n'
 
         func_body_str     += '    {\n'
-        func_body_str     += '        BoatLog(BOAT_LOG_CRITICAL, \"An NULL input parameter be detected.\");\n'
         func_body_str     += '        return NULL;\n'
         func_body_str     += '    }\n\n'
 
@@ -1007,7 +1007,6 @@ class CFunctionGen():
         func_body_str += '''
     boat_catch(cleanup)
     {
-        BoatLog(BOAT_LOG_VERBOSE, "Exception: %d", boat_exception);
         if(data_field.field_ptr != NULL) BoatFree(data_field.field_ptr);
         return(NULL);
     }

@@ -66,6 +66,24 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
   4.2、my_contract.cpp.abi.c my_contract.cpp.abi.h 是boat2.0 make all后自动生成的合约，在BoAT-X-Framework\contract\generated\目录下
      智能合约的生成，详细信息，可参考 BoAT-X-Framework\README.md
 	
+5、修改BoAT-X-Framework编译平台为N58
+  打开 BoAT-X-Framework\Makefile文件
+  找到 PLATFORM_TARGET ?= XXX 修改其值为 N58, 即：
+  PLATFORM_TARGET ?= N58
+
+
+注：以下6、7两条修改，是把BoAT-X-Framework编译环境从Linux改成windows下的Cygwin。否则，不用修改。
+
+6、修改BoAT-X-Framework编译命令为Cygwin命令，如Cygwin安装在C:/cygwin64
+  打开 BoAT-X-Framework\Makefile文件，修改为以下值：
+  CYGWIN_BASE := C:/cygwin64
+  BOAT_RM := $(CYGWIN_BASE)/bin/rm -rf
+  BOAT_MKDIR := $(CYGWIN_BASE)/bin/mkdir
+  BOAT_FIND := $(CYGWIN_BASE)/bin/find
+
+7、打开 BoAT-X-Framework\vendor\platform\N58\external.env文件，修改为以下值：
+  CC := $(CURDIR)/../prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-gcc
+  AR := $(CURDIR)/../prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ar
 
 四 编译程序
 

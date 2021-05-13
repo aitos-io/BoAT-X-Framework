@@ -24,6 +24,7 @@
 #include "boatplatform.h"
 #include "boattypes.h"
 #include "boatutility.h"
+#include "boatlog.h"
 
 #include "sha3.h"
 
@@ -87,5 +88,5 @@ void BoatFree(void *mem_ptr)
 
 void BoatSleep(BUINT32 second)
 {
-    nwy_sleep(second);
+    nwy_sleep(1000*second);
 }

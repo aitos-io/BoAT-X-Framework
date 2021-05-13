@@ -43,8 +43,8 @@ extern "C" {
  * @param tx_ptr 
  *   fabric transaction structure pointer
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if packed successed, otherwise return a failed code.
+ * @return 
+ *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code.
  ******************************************************************************/
 BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr);
 

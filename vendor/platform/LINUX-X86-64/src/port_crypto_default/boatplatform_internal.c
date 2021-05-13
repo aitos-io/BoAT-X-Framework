@@ -51,6 +51,10 @@
 uint32_t random32(void)
 {
 	static uint32_t seed = 0;
+	if(seed == 0)
+	{
+		seed = time(NULL);
+	}
 	// Linear congruential generator from Numerical Recipes
 	// https://en.wikipedia.org/wiki/Linear_congruential_generator
 	seed = 1664525 * seed + 1013904223;

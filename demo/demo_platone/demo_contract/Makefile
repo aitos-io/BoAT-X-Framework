@@ -1,13 +1,15 @@
 # Auto generate C/H source files from contract ABI JSON files
 
 # Specify generator script
-AUTOGEN_SCRIPT = $(BOAT_BASE_DIR)/tools/eth2c.py
+# Specify generator script
+PY             = python
+AUTOGEN_SCRIPT = $(BOAT_BASE_DIR)/tools/platone2c.py
 
 # Search all files with .json extension
 ABIJSONS = $(wildcard *.json)
 
 # Output directory for generated C/H source files
-OUTPUT_SOURCES_DIR = $(BOAT_BASE_DIR)/contract/generated
+OUTPUT_SOURCES_DIR = $(BOAT_BUILD_DIR)/demo/demo_platone/demo_contract
 
 OUTPUT_H_SOURCES = $(patsubst %.json, $(OUTPUT_SOURCES_DIR)/%.h, $(ABIJSONS))
 OUTPUT_C_SOURCES = $(patsubst %.json, $(OUTPUT_SOURCES_DIR)/%.c, $(ABIJSONS))
@@ -26,9 +28,6 @@ $(OUTPUT_H_SOURCES): $(OUTPUT_SOURCES_DIR)/%.h : %.json
 
 $(OUTPUT_C_SOURCES): $(OUTPUT_SOURCES_DIR)/%.c : %.json
 	$(PY) $(AUTOGEN_SCRIPT) $< $(OUTPUT_SOURCES_DIR)
-
-	
-
 
 clean:
 	-$(BOAT_RM) $(OUTPUT_H_SOURCES)

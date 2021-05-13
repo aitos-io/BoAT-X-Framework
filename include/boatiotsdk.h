@@ -30,14 +30,14 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #include <string.h>
 
 #include "boatwallet.h"
-//#include "boatconfig.h"
 #include "boaterrcode.h"
 #include "boattypes.h"
 #include "boatexception.h"
 #include "boatutility.h"
 #include "boatrlp.h"
 #include "boatplatform.h"
-#if 1//PROTOCOL_USE_ETHEREUM == 1
+
+#if PROTOCOL_USE_ETHEREUM == 1
 #include "protocolapi/api_ethereum.h"
 #endif
 #if PROTOCOL_USE_ETHEREUM == 1
