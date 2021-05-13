@@ -771,7 +771,7 @@ class CFunctionGen():
         else:
             func_body_str += '    static BCHAR tx_hash_str[67] = \"\";\n'
 
-        func_body_str += '    BoatFieldVariable data_field;\n'
+        func_body_str += '    BoatFieldVariable data_field = {NULL, 0};\n'
         func_body_str += '    BCHAR *function_prototye_str;\n'
         func_body_str += '    BUINT8 field_bytes32[32];\n'
         func_body_str += '    BUINT8 fixedsize_bytes32[32];\n'
