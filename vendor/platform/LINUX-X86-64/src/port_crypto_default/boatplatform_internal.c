@@ -405,7 +405,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
         {
             BoatLog(BOAT_LOG_CRITICAL, "Fail to generate private key.");
             break;
-        }        
+        }
 
 		/* check the generated private key is valid or not */
 		if( ( bn_is_zero(&priv_key_bn256) == 0) && \
@@ -415,13 +415,18 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
 			memcpy( pkCtx->extra_data.value, prikeyTmp, 32 );
 			result = BOAT_SUCCESS;
 			break;
-
 		}
 		else
 		{
 			result = BOAT_ERROR;
-		}          
+		}
     }
+
+	if( result == BOAT_ERROR )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "generate private key failed." );
+		return result;
+	}
 
 	// 1- update private key
 	memcpy(pkCtx->extra_data.value, prikeyTmp, 32);

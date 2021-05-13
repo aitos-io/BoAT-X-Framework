@@ -199,10 +199,10 @@ vendorlib:
 demo: boatlibs
 	make -C $(BOAT_BASE_DIR)/demo all
 
-#tests: boatlibs
-#	if [ -d "$(BOAT_BASE_DIR)/tests" ]; then \
-#	make -C $(BOAT_BASE_DIR)/tests all; \
-#	fi
+tests: boatlibs
+	if [ -d "$(BOAT_BASE_DIR)/tests" ]; then \
+	make -C $(BOAT_BASE_DIR)/tests all; \
+	fi
 
 clean: cleanboatwallet cleanvendor cleandemo cleantests
 	-$(BOAT_RM) $(BOAT_BUILD_DIR)
