@@ -779,9 +779,13 @@ class CFunctionGen():
         if self.is_has_nonFixed_type(abi_item) == True:
             func_body_str += '    BUINT32 data_offset_location;\n'
             func_body_str += '    BUINT32 nonFixed_filled_length;\n'
+            func_body_str += '    (void) nonFixed_filled_length;\n'
             func_body_str += '    BUINT32 nonFixed_actual_length;\n'
         func_body_str += self.generate_nonFixedArray_values(abi_item)
         func_body_str += '    BUINT32 i;\n'
+
+        func_body_str += '    (void) fixedsize_bytes32;\n'
+        func_body_str += '    (void) i;\n'
 
         func_body_str += '    boat_try_declare;\n\n'
 
