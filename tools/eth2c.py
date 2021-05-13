@@ -46,7 +46,6 @@ This file is generated from contract ABI. DO NOT modify it by hand.
 generated_include_block_str = '''
 // Generated C function interface from smart contract ABI
 
-#include "boatconfig.h"
 #include "boatiotsdk.h"
 
 '''
@@ -779,9 +778,13 @@ class CFunctionGen():
         if self.is_has_nonFixed_type(abi_item) == True:
             func_body_str += '    BUINT32 data_offset_location;\n'
             func_body_str += '    BUINT32 nonFixed_filled_length;\n'
+            func_body_str += '    (void) nonFixed_filled_length;\n'
             func_body_str += '    BUINT32 nonFixed_actual_length;\n'
         func_body_str += self.generate_nonFixedArray_values(abi_item)
         func_body_str += '    BUINT32 i;\n'
+
+        func_body_str += '    (void) fixedsize_bytes32;\n'
+        func_body_str += '    (void) i;\n'
 
         func_body_str += '    boat_try_declare;\n\n'
 
@@ -806,6 +809,7 @@ class CFunctionGen():
             func_body_str += '    if( tx_ptr == NULL )\n'
 
         func_body_str     += '    {\n'
+        func_body_str     += '        BoatLog(BOAT_LOG_CRITICAL, \"An NULL input parameter be detected.\");\n'
         func_body_str     += '        return NULL;\n'
         func_body_str     += '    }\n\n'
 
@@ -1006,6 +1010,7 @@ class CFunctionGen():
         func_body_str += '''
     boat_catch(cleanup)
     {
+        BoatLog(BOAT_LOG_VERBOSE, "Exception: %d", boat_exception);
         if(data_field.field_ptr != NULL) BoatFree(data_field.field_ptr);
         return(NULL);
     }
