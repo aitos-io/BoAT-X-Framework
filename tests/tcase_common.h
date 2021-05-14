@@ -14,31 +14,15 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include "boattypes.h"
-#include "boatutility.h"
-#include "tcase_common.h"
-#include "check.h"
+#define TEST_ETH_NODE_URL		"HTTP://127.0.0.1:7545"
 
+#define TEST_ETH_NODE_URL_1		"HTTP//127.0.0.17545"
 
-START_TEST(test_utility_xxxxx) {
-    ck_assert(1);
-}
-END_TEST
+#define TEST_ETH_WALLET_ADDR_0	"0xEF5D6d9D037Faa6493637E26A2B5d604f7722779"
+#define TEST_ETH_WALLET_ADDR_1	"0xEF5D6d9D037Faa6493637E26A2B5d604f7722779"
 
+#define TEST_ETH_RECIPIENT_ADDR	"0xEF5D6d9D037Faa6493637E26A2B5d604f7722779"
 
-Suite * make_utility_suite(void) {
-    /* Create Suite */
-    Suite *s_utility = suite_create("utility");
-    /* Create test cases */
-    TCase *tc_uti_api = tcase_create("utility_api");
-    /* Add a test case to the Suite */  
-    suite_add_tcase(s_utility, tc_uti_api);
-    /* Test cases are added to the test set */
-    tcase_add_test(tc_uti_api, test_utility_xxxxx); 
-    
-    return s_utility;
-}
-
+#define TEST_ETH_GASPRICE 		"0x333333"
+#define TEST_ETH_GASLIMIT 		"0x333333"
+#define TEST_ETH_VALUE			"0xDE0B6B3A7640000"

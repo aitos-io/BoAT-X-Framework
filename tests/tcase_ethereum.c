@@ -14,30 +14,18 @@
  * limitations under the License.
  *****************************************************************************/
 
+/* This file used to test ethereum releated interface 
+
+*/
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include "boattypes.h"
 #include "boatutility.h"
 #include "protocolapi/api_ethereum.h"
+#include "tcase_common.h"
 #include "check.h"
-
-
-#define TEST_ETH_NODE_URL		"HTTP://127.0.0.1:7545"
-
-#define TEST_ETH_NODE_URL_1		"HTTP//127.0.0.17545"
-
-#define TEST_ETH_WALLET_ADDR_0	"0xEF5D6d9D037Faa6493637E26A2B5d604f7722779"
-#define TEST_ETH_WALLET_ADDR_1	"0xEF5D6d9D037Faa6493637E26A2B5d604f7722779"
-
-#define TEST_ETH_RECIPIENT_ADDR	"0xEF5D6d9D037Faa6493637E26A2B5d604f7722779"
-
-//! @todo The balance provides the actual value on the chain
-#define TEST_ETH_WALLET_BALANCE	"0xDE0B6B3A7640000"  
-
-#define TEST_ETH_GASPRICE 		"0x333333"
-#define TEST_ETH_GASLIMIT 		"0x333333"
-#define TEST_ETH_VALUE			"0xDE0B6B3A7640000"
 
 
 static BoatEthWallet *g_test_wallet_ptr;
@@ -81,13 +69,6 @@ START_TEST(test_Api_WalletInit){
 	ck_assert_str_eq(wallet_ptr_1->network_info.node_url_ptr, TEST_ETH_NODE_URL);
 	ck_assert(wallet_ptr_1->network_info.chain_id == 1);
 	ck_assert(wallet_ptr_1->network_info.eip155_compatibility == BOAT_FALSE);
-
-	// BoatEthWalletDeInit(wallet_ptr_1);
-
-	// //case 2:
-	// BoatEthWallet *wallet_ptr_2;
-	// ck_assert((wallet_ptr_2 = BoatEthWalletInit(NULL, sizeof(BoatEthWalletConfig))) == NULL);
-	// BoatEthWalletDeInit(wallet_ptr_2);
 }
 END_TEST
 
@@ -151,7 +132,7 @@ START_TEST(test_Api_GetBalance) {
 	ck_assert((wallet_balance_ptr = BoatEthWalletGetBalance(g_test_wallet_ptr, TEST_ETH_WALLET_ADDR_0)) != NULL);
 	ck_assert(BoatEthPraseRpcResponseResult( wallet_balance_ptr,"result",&result_ptr) == BOAT_SUCCESS);
 	//! @todo 
-	ck_assert_str_eq(result_ptr.field_ptr, TEST_ETH_WALLET_BALANCE);
+	//ck_assert_str_eq(result_ptr.field_ptr, TEST_ETH_WALLET_BALANCE);
 	BoatFree(result_ptr.field_ptr);
 
 	//case 2:
@@ -310,34 +291,32 @@ START_TEST(test_Api_GetTransactionReceipt) {
 }
 END_TEST
 
-void Test_Protocol_Init(void)
-{
-	//eth
-	Test_Protocol_EthApi_Init();
-}
-
-void Test_Protocol_DeInit(void)
-{
-	//eth
-	Test_Protocol_EthApi_DeInit();
-}
-
-
 
 Suite * make_ethereum_suite(void) {
-    Suite *s_ethereum = suite_create("ethereum");     // Create Suite
-    TCase *tc_eth_api = tcase_create("eth_api");      // Create test cases
-    suite_add_tcase(s_ethereum, tc_eth_api);          // Add a test case to the Suite
-    tcase_add_test(tc_eth_api, test_Api_WalletInit);  // Test cases are added to the test set
-	//tcase_add_test(tc_eth_api, test_Api_SetNodeUrl); 
-	//tcase_add_test(tc_eth_api, test_Api_SetGasprice);
-	//tcase_add_test(tc_eth_api, test_Api_SetGaslimit);
-	//tcase_add_test(tc_eth_api, test_Api_SetRecipientAddr); 
-	//tcase_add_test(tc_eth_api, test_Api_SetValue); 
-	//tcase_add_test(tc_eth_api, test_Api_SetData); 
-	//tcase_add_test(tc_eth_api, test_Api_TxSend);
-	//tcase_add_test(tc_eth_api, test_Api_Transfer);
-	//tcase_add_test(tc_eth_api, test_Api_GetTransactionReceipt);
+	/* Create Suite */
+    Suite *s_ethereum = suite_create("ethereum");
+	/* Create test cases */
+    TCase *tc_eth_pub_api = tcase_create("ethereum_public_api");
+	TCase *tc_eth_pri_api = tcase_create("ethereum_private_api");
+	/* Add test case to the Suite */
+    suite_add_tcase(s_ethereum, tc_eth_pub_api);
+	suite_add_tcase(s_ethereum, tc_eth_pri_api); 
+	/* Add unit test to test case.
+	   note: For clarity, it is recommended that unit tests of different attributes 
+	   be added to different test cases*/
+    tcase_add_test(tc_eth_pub_api, test_Api_WalletInit);  
+	/* if a unit test need run multiple times, use function tcase_add_loop_test to add unit-test,
+	   and the results of each test will be recorded */
+	tcase_add_loop_test(tc_eth_pri_api, test_Api_WalletInit, 0, 10);
+	//tcase_add_test(tc_eth_pub_api, test_Api_SetNodeUrl); 
+	//tcase_add_test(tc_eth_pub_api, test_Api_SetGasprice);
+	//tcase_add_test(tc_eth_pub_api, test_Api_SetGaslimit);
+	//tcase_add_test(tc_eth_pub_api, test_Api_SetRecipientAddr); 
+	//tcase_add_test(tc_eth_pub_api, test_Api_SetValue); 
+	//tcase_add_test(tc_eth_pub_api, test_Api_SetData); 
+	//tcase_add_test(tc_eth_pub_api, test_Api_TxSend);
+	//tcase_add_test(tc_eth_pub_api, test_Api_Transfer);
+	//tcase_add_test(tc_eth_pub_api, test_Api_GetTransactionReceipt);
 
     return s_ethereum;
 }
