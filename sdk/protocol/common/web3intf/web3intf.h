@@ -26,7 +26,7 @@ web3intf.h is the header file for web3 interface.
 /*! @defgroup web3intf communication-web3 
  * @{
  */
-#include "boatLog.h"
+#include "boatlog.h"
 
 //!@brief step size of the buffer to store RPC "REQUEST/RESPONSE" string and RPC "result" string.
 #define WEB3_STRING_BUF_STEP_SIZE       1024

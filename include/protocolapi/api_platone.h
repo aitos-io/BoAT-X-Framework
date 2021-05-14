@@ -109,25 +109,25 @@ extern "C" {
  *   Pointer a transaction object.
  *
  * @param[in] is_sync_tx
- *   For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.\n
- *   Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.\n
+ *   For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.
+ *   Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.
  *   For a state-less contract call, this option is ignored.
  *
  * @param[in] gasprice_str
- *   A HEX string representing the gas price (unit: wei) to be used in the transaction.\n
- *   Set <gasprice> = NULL to obtain gas price from network.\n
- *   BoatPlatonTxSetGasPrice() can later be called to modify the gas price at any\n
+ *   A HEX string representing the gas price (unit: wei) to be used in the transaction.
+ *   Set <gasprice> = NULL to obtain gas price from network.
+ *   BoatPlatonTxSetGasPrice() can later be called to modify the gas price at any
  *   time before the transaction is executed.
  *
  * @param[in] gaslimit_str
- *   A HEX string representing the gas limit to be used in the transaction.\n
- *   BoatPlatonTxSetGasLimit() can later be called to modify the gas limit at any\n
+ *   A HEX string representing the gas limit to be used in the transaction.
+ *   BoatPlatonTxSetGasLimit() can later be called to modify the gas limit at any
  *   time before the transaction is executed.
  *
  * @param[in] recipient_str
- *   A HEX string representing the recipient address, in HEX format like\n
- *   "0x19c91A4649654265823512a457D2c16981bB64F5".\n
- *   BoatPlatonTxSetRecipient() can later be called to modify the recipient at any\n
+ *   A HEX string representing the recipient address, in HEX format like
+ *   "0x19c91A4649654265823512a457D2c16981bB64F5".
+ *   BoatPlatonTxSetRecipient() can later be called to modify the recipient at any
  *   time before the transaction is executed.
  *
  * @param[in] txtype
@@ -189,14 +189,14 @@ BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txty
  *
  * @param[in] rlp_param_ptr
  *   A byte stream containing the parameters to pass to the function.\n
- *   The stream is encoded in RLP format including the function name followed by\n
+ *   The stream is encoded in RLP format including the function name followed by
  *   all parameters.
  *
  * @param[in] rlp_param_len
  *   Length of <rlp_param_ptr> in byte.
  *
  * @return
- *   This function returns a HEX string representing the return value of the\n
+ *   This function returns a HEX string representing the return value of the
  *   called contract function.\n
  *   If any error occurs, it returns NULL.
  *
@@ -260,9 +260,9 @@ BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr);
  *   Transaction pointer.
  *
  * @param[in] value_hex_str
- *   A string representing the value (Unit: wei) to transfer, in HEX format like\n
+ *   A string representing the value (Unit: wei) to transfer, in HEX format like
  *   "0x89AB3C".\n
- *   Note that decimal value is not accepted. If a decimal value such as "1234"\n
+ *   Note that decimal value is not accepted. If a decimal value such as "1234"
  *   is specified, it's treated as "0x1234".
  *
  * @return

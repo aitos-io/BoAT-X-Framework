@@ -23,7 +23,7 @@ wait for its receipt.
 
 
 /* self-header include */
-#include "boatConfig.h"
+#include "boatconfig.h"
 #include "boathlfabric.h"
 
 #if PROTOCOL_USE_HLFABRIC == 1
@@ -64,8 +64,8 @@ wait for its receipt.
  *   In internal of this function, the memory of store serialize data has been alloced,
  *   caller SHOULD NOT alloc memory for this pointer again.
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if packed successed, otherwise return a failed code. 
+ * @return 
+ *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
  *
  * @see hlfabricChannelHeaderPacked
  ******************************************************************************/
@@ -178,8 +178,8 @@ __BOATSTATIC BOAT_RESULT hlfabricSignatureHeaderPacked(const BoatHlfabricTx *tx_
  *   In internal of this function, the memory of store serialize data has been alloced,
  *   caller SHOULD NOT alloc memory for this pointer again.
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if packed successed, otherwise return a failed code. 
+ * @return 
+ *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
  *
  * @see hlfabricSignatureHeaderPacked
  ******************************************************************************/
@@ -267,8 +267,8 @@ __BOATSTATIC BOAT_RESULT hlfabricChannelHeaderPacked(const BoatHlfabricTx *tx_pt
  *   In internal of this function, the memory of store serialize data has been alloced,
  *   caller SHOULD NOT alloc memory for this pointer again.
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if packed successed, otherwise return a failed code. 
+ * @return 
+ *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
  ******************************************************************************/
 __BOATSTATIC BOAT_RESULT hlfabricProposalPayloadDataPacked(BoatHlfabricTx *tx_ptr, 
 														   BoatFieldVariable *output_ptr)
@@ -369,8 +369,8 @@ __BOATSTATIC BOAT_RESULT hlfabricProposalPayloadDataPacked(BoatHlfabricTx *tx_pt
  *   In internal of this function, the memory of store serialize data has been alloced,
  *   caller SHOULD NOT alloc memory for this pointer again.
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if packed successed, otherwise return a failed code. 
+ * @return 
+ *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
  ******************************************************************************/
 __BOATSTATIC BOAT_RESULT hlfabricTransactionPayloadDataPacked(BoatHlfabricTx *tx_ptr,
 															  BoatFieldVariable *output_ptr)
@@ -498,8 +498,8 @@ __BOATSTATIC BOAT_RESULT hlfabricTransactionPayloadDataPacked(BoatHlfabricTx *tx
  *   In internal of this function, the memory of store serialize data has been alloced,
  *   caller SHOULD NOT alloc memory for this pointer again.
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if packed successed, otherwise return a failed code. 
+ * @return 
+ *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
  ******************************************************************************/
 __BOATSTATIC BOAT_RESULT hlfabricPayloadPacked(BoatHlfabricTx *tx_ptr, 
 		                                       BoatFieldVariable *output_ptr)
@@ -592,11 +592,9 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	Common__Envelope envelope       = COMMON__ENVELOPE__INIT;
 	BoatFieldVariable payloadPacked = {NULL, 0};
 	BoatSignatureResult signatureResult;
-	BUINT8  grpcHeader[5];
-	BUINT8  hash[32];
-	//BUINT8  signature[139];//139 is ECDSA MAX LENGTH
-	//size_t  signatureLen;
-	BUINT32 packedLength;
+	BUINT8   grpcHeader[5];
+	BUINT8   hash[32];
+	BUINT32  packedLength;
 	BUINT8  *packedData = NULL;
 	
 	BOAT_RESULT result = BOAT_SUCCESS;

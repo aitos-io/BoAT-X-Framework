@@ -92,7 +92,7 @@ const BCHAR * fabric_ca3_democert    =  "-----BEGIN CERTIFICATE-----\n"
 
 const BCHAR * fabric_demo_endorser1_url      = "172.18.0.5:7051";
 const BCHAR * fabric_demo_endorser1_hostName = "peer0.org1.example.com";
-const BCHAR * fabric_demo_endorser2_url      = "172.18.0.6:7051";
+const BCHAR * fabric_demo_endorser2_url      = "172.18.0.4:7051";
 const BCHAR * fabric_demo_endorser2_hostName = "peer0.org2.example.com";
 const BCHAR * fabric_demo_order1_url         = "172.18.0.3:7050";
 const BCHAR * fabric_demo_order1_hostName    = "orderer.example.com";
@@ -112,17 +112,17 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	wallet_config.accountPriKey_config.prikey_content.field_len = strlen(fabric_client_demokey) + 1; //length contain terminator
 
 	//set cert context
-	wallet_config.accountCertContent.field_ptr = (BUINT8 *)fabric_client_democert;
-	wallet_config.accountCertContent.field_len = strlen(fabric_client_democert) + 1;
+	wallet_config.accountCertContent.length = strlen(fabric_client_democert) + 1;
+	memcpy(wallet_config.accountCertContent.content , fabric_client_democert, wallet_config.accountCertContent.length);
 
 	//set rootCA info
 	wallet_config.rootCaNumber = 3;
-	wallet_config.rootCaContent[0].field_len =  strlen(fabric_ca1_democert) + 1;
-	wallet_config.rootCaContent[0].field_ptr = (BUINT8 *)fabric_ca1_democert;
-	wallet_config.rootCaContent[1].field_len =  strlen(fabric_ca2_democert) + 1;
-	wallet_config.rootCaContent[1].field_ptr = (BUINT8 *)fabric_ca2_democert;
-	wallet_config.rootCaContent[2].field_len =  strlen(fabric_ca3_democert) + 1;
-	wallet_config.rootCaContent[2].field_ptr = (BUINT8 *)fabric_ca3_democert;
+	wallet_config.rootCaContent[0].length  = strlen(fabric_ca1_democert) + 1;
+	memcpy(wallet_config.rootCaContent[0].content , fabric_ca1_democert,wallet_config.rootCaContent[0].length );
+	wallet_config.rootCaContent[1].length  = strlen(fabric_ca2_democert) + 1;
+	memcpy(wallet_config.rootCaContent[1].content , fabric_ca2_democert,wallet_config.rootCaContent[1].length );
+	wallet_config.rootCaContent[2].length  = strlen(fabric_ca3_democert) + 1;
+	memcpy(wallet_config.rootCaContent[2].content , fabric_ca3_democert,wallet_config.rootCaContent[2].length );
 
 	//set endorser info
 	wallet_config.endorserNumber = 2;
@@ -137,7 +137,15 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	memcpy(wallet_config.orderer[0].hostName, fabric_demo_order1_hostName, strlen(fabric_demo_order1_hostName) + 1);
 
 	/* create fabric wallet */
+#if defined( USE_ONETIME_WALLET )
+	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig) );
+#elif defined( USE_CREATE_PERSIST_WALLET )
 	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig) );
+#elif defined( USE_LOAD_PERSIST_WALLET )
+	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", NULL, sizeof(BoatHlfabricWalletConfig) );
+#else
+	return BOAT_ERROR;
+#endif
 	if(index == BOAT_ERROR)
 	{
 		//BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );

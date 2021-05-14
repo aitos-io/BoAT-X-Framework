@@ -12,4 +12,4 @@ package-lock.json
 .vscode/settings.json
 html/
 latex/
-vendor/platform/include/boatConfig.h
+vendor/platform/include/boatconfig.h

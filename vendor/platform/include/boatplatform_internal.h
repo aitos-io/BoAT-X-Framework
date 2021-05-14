@@ -24,9 +24,9 @@
 
 /* self header include */
 
-#include "boatConfig.h"
+#include "boatconfig.h"
 #include "boatinternal.h"
-#include "boatLog.h"
+#include "boatlog.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,8 +54,8 @@ extern "C" {
  * @param rsvd 
  *   reserved for futrue. 
  *
- * @return BOAT_RESULT
- *   return BOAT_SUCCESS if generate success; otherwise return a negative error code.
+ * @return 
+ *   Return \c BOAT_SUCCESS if generate success; otherwise return a negative error code.
  ******************************************************************************/
 BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
 
@@ -68,7 +68,7 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
  *   elliptic curve signature function.
  *
  * @param[in] prikeyCtx 
- *   xxxxx
+ *   Private key context.
  *
  * @param[in] digest
  *   pointer to disgest message.
@@ -77,13 +77,13 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
  *   the length of digiest message.
  *
  * @param[out] signatureResult 
- *   xxxx
+ *   The buffer to stored signature result.
  *
  * @param rsvd 
- *   reserved for futrue. 
+ *   Reserved for futrue. 
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if generate success; otherwise return a negative error code
+ * @return 
+ *   Return \c BOAT_SUCCESS if generate success; otherwise return a negative error code.
  ******************************************************************************/
 BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
 						   const BUINT8* digest, BUINT32 digestLen, 
@@ -108,13 +108,13 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
  *    File name of to be get size. 
  *
  * @param[out] size 
- *   file size. this field only valid when return BOAT_SUCCESS.
+ *   File size. this field only valid when return \c BOAT_SUCCESS.
  *
  * @param rsvd
- *   reserved for futrue. 
+ *   Reserved for futrue. 
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if read success, otherwise return a negative error code
+ * @return 
+ *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code.
  ******************************************************************************/
 BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd );
 
@@ -145,8 +145,8 @@ BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
  * @param rsvd
  *   reserved for futrue. 
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if write success, otherwise return a negative error code.
+ * @return  
+ *   Return \c BOAT_SUCCESS if write success, otherwise return a negative error code.
  *
  * @see BoatReadFile
  ******************************************************************************/
@@ -156,7 +156,7 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
 
 /*!****************************************************************************
  * @brief 
- *   read data from a file
+ *   Read data from a file
  *
  * @details
  *   This function both supports file system and no file system operations.
@@ -172,20 +172,20 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
  *   File name of to be read. 
  *
  * @param readBuf 
- *   to be read data store buffer pointer.
+ *   To be read data store buffer pointer.
  *
  * @param readLen 
- *   to be read data length.
- *   \n NOTE: if parameter 'fileName' is not NULL, and parameter 'readLen' is 
+ *   To be read data length.
+ *   \n NOTE: If parameter 'fileName' is not NULL, and parameter 'readLen' is 
  *   greater than file size, the parameter 'readLen' will be considered to 
  *   have no exception, and read entire file. So, caller can assign a large
  *    value to this parameter if want read entire file. 
  *
  * @param rsvd
- *   reserved for futrue. 
+ *   Reserved for futrue. 
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if read success, otherwise return a negative error code
+ * @return 
+ *   return \c BOAT_SUCCESS if read success, otherwise return a negative error code.
  *
  * @see BoatWriteFile
  ******************************************************************************/
@@ -211,10 +211,10 @@ BOAT_RESULT  BoatReadFile( const BCHAR *fileName,
  *   File name of to be removed. 
  *
  * @param rsvd
- *   reserved for futrue. 
+ *   Reserved for futrue. 
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if read success, otherwise return a negative error code
+ * @return  
+ *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code.
  ******************************************************************************/
 BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd );
 
@@ -230,10 +230,10 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd );
  *   network address, include URL/IP adress and IP port. e.g. a.b.com:7051
  *
  * @param rsvd
- *   reserved for futrue. 
+ *   Reserved for futrue. 
  *
- * @return BSINT32 
- *   return a socket descriptor if commect success; otherwise return -1.
+ * @return  
+ *   Return a socket descriptor if commect success; otherwise return -1.
  ******************************************************************************/
 BSINT32 BoatConnect(const BCHAR *address, void* rsvd);
 
@@ -252,16 +252,16 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd);
  *   rootCA certificate content list address.
  *
  * @param socketfd 
- *   the raw socket connection file descriptor.
+ *   The raw socket connection file descriptor.
  *
  * @param tlsContext 
  *   TLS context. it's defined at http2intf.h.
  *
  * @param rsvd 
- *   reserved for futrue. 
+ *   Reserved for futrue. 
  *
- * @return BOAT_RESULT 
- *   return BOAT_SUCCESS if read success, otherwise return a negative error code
+ * @return 
+ *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code
  ******************************************************************************/
 BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain,
 						 BSINT32 socketfd, void* tlsContext, void* rsvd );
@@ -285,51 +285,51 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
  *   send data length
  *
  * @param rsvd 
- *        reserved for futrue. 
+ *   Reserved for futrue. 
  *
- * @return BSINT32 
- *   return send length.
+ * @return  
+ *   Return send length.
  ******************************************************************************/
 BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, void* rsvd);
 
 
 /*!****************************************************************************
  * @brief 
- *   received data from remote net
+ *   Received data from remote net.
  * 
  * @details
- *   received data from remote net
+ *   Received data from remote net.
  *
  * @param sockfd 
- *   socket descriptor
+ *   Socket descriptor.
  *
  * @param buf 
- *   receive data buffer
+ *   Receive data buffer.
  *
  * @param len 
- *   receive buffer size
+ *   Receive buffer size.
  *
  *@param rsvd 
- *        reserved for futrue. 
+ *   Reserved for futrue. 
  *
- *@return BSINT32 
-  *   return received length.
+ *@return  
+  *   Return received length.
  ******************************************************************************/
 BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* rsvd);
 
 
 /*!****************************************************************************
  * @brief 
- *   colose a socket commection
+ *   Colose a socket commection.
  *
  * @details
- *   colose a socket commection
+ *   Colose a socket commection.
  *
  * @param sockfd 
- *   socket descriptor
+ *   Socket descriptor.
  *
  * @param rsvd 
- *        reserved for futrue. 
+ *   Reserved for futrue. 
  ******************************************************************************/
 void    BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd);
 

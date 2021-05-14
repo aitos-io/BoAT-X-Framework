@@ -21,7 +21,7 @@
 
 //! self header include
 #include <stdlib.h>
-#include "boatLog.h"
+#include "boatlog.h"
 #include "boatplatform.h"
 #include "boattypes.h"
 #include "boatutility.h"

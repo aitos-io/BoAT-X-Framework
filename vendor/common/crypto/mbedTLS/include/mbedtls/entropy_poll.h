@@ -54,6 +54,16 @@ extern "C" {
                                 unsigned char *output, size_t len, size_t *olen );
 #endif
 
+#if defined(MBEDTLS_PLATFORM_QSEE_ENTROPY)
+int mbedtls_platform_qsee_entroy( void *data,
+                           unsigned char *output, size_t len, size_t *olen );
+#endif
+
+#if defined(MBEDTLS_PLATFORM_DT50_ENTROPY)
+int mbedtls_platform_dt50_entroy( void *data,
+                           unsigned char *output, size_t len, size_t *olen );
+#endif
+
 #if !defined(MBEDTLS_NO_PLATFORM_ENTROPY)
 /**
  * \brief           Platform-specific entropy poll callback

@@ -87,7 +87,23 @@ void mbedtls_entropy_init( mbedtls_entropy_context *ctx )
 
 #if defined(MBEDTLS_TEST_NULL_ENTROPY)
     mbedtls_entropy_add_source( ctx, mbedtls_null_entropy_poll, NULL,
-                                1, MBEDTLS_ENTROPY_SOURCE_STRONG );
+                                , MBEDTLS_ENTROPY_SOURCE_STRONG );
+#endif
+
+/* QSEE platform support */
+#if defined(MBEDTLS_PLATFORM_QSEE_ENTROPY)
+    mbedtls_entropy_add_source( ctx, mbedtls_platform_qsee_entroy, NULL,
+                                MBEDTLS_ENTROPY_MIN_PLATFORM, 
+                                MBEDTLS_ENTROPY_SOURCE_STRONG );
+    return;
+#endif
+
+/* DT50 platform support */
+#if defined(MBEDTLS_PLATFORM_DT50_ENTROPY)
+    mbedtls_entropy_add_source( ctx, mbedtls_platform_dt50_entroy, NULL,
+                                MBEDTLS_ENTROPY_MIN_PLATFORM, 
+                                MBEDTLS_ENTROPY_SOURCE_STRONG );
+    return;
 #endif
 
 #if !defined(MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES)

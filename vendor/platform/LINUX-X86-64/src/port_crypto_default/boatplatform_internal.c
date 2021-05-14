@@ -51,6 +51,10 @@
 uint32_t random32(void)
 {
 	static uint32_t seed = 0;
+	if(seed == 0)
+	{
+		seed = time(NULL);
+	}
 	// Linear congruential generator from Numerical Recipes
 	// https://en.wikipedia.org/wiki/Linear_congruential_generator
 	seed = 1664525 * seed + 1013904223;
@@ -401,7 +405,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
         {
             BoatLog(BOAT_LOG_CRITICAL, "Fail to generate private key.");
             break;
-        }        
+        }
 
 		/* check the generated private key is valid or not */
 		if( ( bn_is_zero(&priv_key_bn256) == 0) && \
@@ -411,13 +415,18 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
 			memcpy( pkCtx->extra_data.value, prikeyTmp, 32 );
 			result = BOAT_SUCCESS;
 			break;
-
 		}
 		else
 		{
 			result = BOAT_ERROR;
-		}          
+		}
     }
+
+	if( result == BOAT_ERROR )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "generate private key failed." );
+		return result;
+	}
 
 	// 1- update private key
 	memcpy(pkCtx->extra_data.value, prikeyTmp, 32);

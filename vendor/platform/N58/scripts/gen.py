@@ -44,8 +44,8 @@ class ConfigContentGen():
         self.config_content = ''
 
     def save_config_file(self):
-            config_file_name = './vendor/platform/include/boatConfig.h'
-            #config_file_name = './boatConfig.h'
+            config_file_name = './vendor/platform/include/boatconfig.h'
+            #config_file_name = './boatconfig.h'
             with open(config_file_name, 'w') as config_file_handle:
                 config_file_handle.write(self.config_content)
     

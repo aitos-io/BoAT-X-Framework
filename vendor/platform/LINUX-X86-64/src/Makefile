@@ -11,7 +11,7 @@ ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
     PORT_CRYPTO_DIRECTORY = port_crypto_default
 else ifeq ($(SOFT_CRYPTO), CRYPTO_MBEDTLS)
     PORT_CRYPTO_OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/mbedtls/*.o) \
-	           $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_mbedTLS/*.o)
+	           $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_mbedtls/*.o)
     PORT_CRYPTO_DIRECTORY = port_mbedtls
 else
     PORT_CRYPTO_OBJECTS += 

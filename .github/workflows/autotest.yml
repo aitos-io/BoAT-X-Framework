@@ -17,13 +17,13 @@ jobs:
     - name: prepare curl
       run:  sudo apt-get install libcurl4-openssl-dev
       shell: bash
+
+    - name: prepare libcheck
+      run:  sudo apt-get install check
+      shell: bash    
       
-    - name: prepare openssl
-      run:  sudo apt-get install openssl libssl-dev
-      shell: bash
-      
-    - name: make
-      run:  make
+    - name: make tests
+      run:  make tests
       
     - name: run
       run:  ./build/tests/boattest
