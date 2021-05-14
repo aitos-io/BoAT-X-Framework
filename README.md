@@ -40,6 +40,10 @@ More blockchains are to be supported.
 For full list of new features, please read [aitos.io Release Notes](https://github.com/aitos-io/BoAT-X-Framework/releases).
 
 
+### Project Status Report
+For project status update, please visit [BoAT Project Status Update Reports](https://github.com/aitos-io/project-status-update).
+
+
 ## Quick Start
 
 ### Dependencies 
