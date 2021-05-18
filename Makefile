@@ -209,7 +209,7 @@ clean: cleanboatwallet cleanvendor cleandemo cleantests
 
 cleanboatwallet:
 	if [ -d "$(BOAT_BASE_DIR)/sdk" ]; then \
-		make -k -C $(BOAT_BASE_DIR)/sdk clean; \
+		make -C $(BOAT_BASE_DIR)/sdk clean; \
 	fi
 
 cleanvendor:
