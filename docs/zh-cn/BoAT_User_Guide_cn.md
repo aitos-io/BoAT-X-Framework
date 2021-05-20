@@ -3,7 +3,7 @@
 ## 引言
 
 ### 概述
-本文介绍BoAT IoT Framework SDK 1.x的功能和使用方法。  
+本文介绍BoAT IoT Framework SDK 2.x的功能和使用方法。  
 本文的预期读者为集成BoAT IoT Framework SDK的客户。
 
 ### 缩写术语
@@ -24,7 +24,7 @@
 
 
 ## 功能和架构
-BoAT IoT Framework是面向蜂窝模组的C语言区块链客户端框架，便于移植到各类模组中，帮助基于蜂窝模组的物联网应用连接区块链，实现数据上链等业务。框架SDK向物联网应用提供的功能包括发起链上交易、智能合约C接口代码自动生成、调用智能合约、管理区块链密钥等。
+BoAT IoT Framework是面向蜂窝模组的C语言区块链应用框架客户端软件，便于移植到各类模组中，帮助基于蜂窝模组的物联网应用连接区块链，实现数据上链等业务。BoAT IoT Framework SDK向物联网应用提供的功能包括发起链上交易、智能合约C接口代码自动生成、调用智能合约、管理区块链密钥等。
 
 **已支持的区块链:**  
 以太坊  
@@ -54,9 +54,9 @@ linux/cygwin
 
 BoAT IoT Framework以软件lib库的形式，运行于蜂窝模组的应用处理器上。其SDK以C源文件形式提供，在蜂窝模组的开发环境中编译。  
 
-对于OpenCPU形态的蜂窝模组，BoAT IoT Framework库被IoT Application链接，形成具备区块链链接能力的物联网应用程序。  
+对于OpenCPU形态的蜂窝模组，BoAT IoT Framework库被物联网应用链接，形成具备区块链链接能力的物联网应用程序。  
 
-图 2‑1展示了BoAT IoT Framwork在OpenCPU模组中的位置。BoAT作为应用层协议，位于模组已有的协议栈上方，向IoT Application提供区块链服务。BoAT的对等层是区块链网络。  
+图 2‑1展示了BoAT IoT Framwork在OpenCPU模组中的位置。BoAT作为应用层协议，位于模组已有的协议栈上方，向物联网应用提供区块链服务。BoAT的对等层是区块链网络。  
 
 ![BoAT IoT Framework在系统中的位置](./images/BoAT_User_Guide_cn-F2-1-BoAT_in_system.png)
 图 2-1 BoAT IoT Framework在系统中的位置
@@ -69,12 +69,12 @@ BoAT IoT Framework SDK如图 2‑2所示，主要包含Wallet API、区块链客
 ![BoAT IoT Framework SDK架构](./images/BoAT_User_Guide_cn-F2-2-BoAT_architecture.png)
 图 2-2 BoAT IoT Framework SDK架构
  
-Wallet API是SDK提供给IoT Application调用的接口，具体包括SDK公共接口和针对不同区块链协议的钱包和交易接口。  
-区块链客户端接口协议主要实现针对不同区块链的交易接口协议，并通过RPC接口与区块链节点进行交互。  
-远程过程调用（RPC）接口实现针对不同通信承载的接口方式。该组件需要根据IoT设备支持的具体通信方式进行移植。  
-公共组件实现RLP编码、JSON编解码、字符串处理等公共功能。  
+Wallet API是SDK提供给物联网应用调用的接口，具体包括SDK公共接口和针对不同区块链协议的钱包和交易接口。
+区块链客户端接口协议主要实现针对不同区块链的交易接口协议，并通过RPC接口与区块链节点进行交互。
+远程过程调用（RPC）接口实现针对不同通信承载的接口方式。该组件需要根据IoT设备支持的具体通信方式进行移植。
+公共组件实现RLP编码、JSON编解码、字符串处理等公共功能。
 硬件依赖组件为涉及不同硬件的移植组件，例如密码学加速器、安全存储、随机数等。该组件需要根据具体硬件进行移植。SDK亦提供一套全软件的默认实现。
-工具组件提供了根据Solidity或者WASM C++的智能合约ABI接口，生成C语言合约调用接口的Python工具。  
+工具组件提供了根据Solidity或者WASM C++的智能合约ABI接口，生成C语言合约调用接口的Python工具。
 
 
 ### SDK代码结构
@@ -90,7 +90,7 @@ Wallet API是SDK提供给IoT Application调用的接口，具体包括SDK公共�
 +---include         | Header files for application to include
 +---lib             | Lib files for application to link with
 +---sdk             | SDK source
-|   +---third-party |     Three party libraries
+|   +---third-party |     Third party libraries
 |   +---include     |     Header files for SDK internal use
 |   +---protocol    |     Blockchain client protocol implementation
 |   +---rlp         |     RLP encoder
@@ -99,7 +99,7 @@ Wallet API是SDK提供给IoT Application调用的接口，具体包括SDK公共�
 +---tests           | Test cases
 \---tools           | Tools for generating C interface from contract ABI
 ```
-注：build和lib目录在编译中生成。编译完成后，只有一级目录的include、lib，以及编译后自动生成的boatconfig.h(位于`vendor/platform/include`路径)头文件是应用需要的。  
+注：`build`和`lib`目录在编译中生成。编译完成后，只有一级目录的`include`、`lib`，以及编译后自动生成的`boatconfig.h`(位于`vendor/platform/include`路径)头文件是应用需要的。  
 
 ## SDK编译
 ### 软件依赖
@@ -118,15 +118,14 @@ BoAT IoT Framework SDK依赖于以下软件:
 
 在编译SDK和使用之前，需要确保这些软件已经安装。在Ubuntu下，可以使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
 
-在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照3.5.2节对编译文件进行调整。
+在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](####以Windows为编译环境)章节对编译文件进行调整。
 
 在RTOS上移植SDK时，应对libcurl依赖进行移植或将RPC方法重写。  
 
 
 ### 编译准备
 #### SDK源码路径
-SDK源码的保存路径中，自根目录起，各级目录名称应全部为英文字母、数字、下划线和减号组成，避免空格、中文以及加号、@、括号等特殊符号。
-  
+SDK源码的保存路径中，自根目录起，各级目录名称应由英文字母、数字、下划线或减号组成，不应出现空格、中文以及加号、@、括号等特殊符号。
   
   
 例如，以下为适合的路径：  
@@ -170,17 +169,17 @@ BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 
 SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，使得C代码中，可以像调用一般C函数一样，通过生成的接口代码调用链上智能合约：  
 
-|**转换工具**                   |**用途**                            |
-| :----------------------------| :---------------------------------| 
+|**转换工具**                  |**用途**                              |
+|:-----------------------------|:------------------------------------|
 |\<SDKRoot\>/tools/eth2c.py    |根据以太坊Solidity的ABI，生成C调用代码 |
-|\<SDKRoot\>/tools/platone2c.py|根据PlatONE（WASM）的ABI，生成C调用代码|
+|\<SDKRoot\>/tools/platone2c.py|根据PlatONE WASM的ABI，生成C调用代码|
 
 由于合约编程语言一般支持面向对象，而C语言不支持面向对象，无法使用统一范式传递对象，因此只有参数类型与C语言内置类型一致的合约函数，可以通过工具转换为C调用代码。
 
 在进行调用前，首先需要编译合约，将合约编译中生成的ABI接口描述JSON文件，拷贝至SDK相应目录中：
  
 
-|**合约ABI存放路径**            |**用途**                                  |
+|**合约ABI存放路径**           |**用途**                                  |
 | :---------------------------| :----------------------------------------| 
 |\<SDKRoot\>/demo/demo_ethereum/demo_contract|将以太坊的ABI JSON文件拷贝至该目录下  |
 |\<SDKRoot\>/demo/demo_platone/demo_contract |将PlatONE（WASM）的ABI JSON文件拷贝至该目录下 |
@@ -188,7 +187,7 @@ SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，�
 
 *注1：ABI的JSON文件必须以“.json”为文件名后缀。
 
-在编译过程中，自动生成工具将根据合约ABI JSON文件，生成相应的C接口调用代码。如果编译中自动生成C接口失败，则需要从<SDKRoot>/contract的相应目录中，删除无法支持的ABI JSON文件（或者删除其中无法支持的接口），手工编写C代码，进行ABI接口组装，详见4.5节。  
+在编译过程中，自动生成工具将根据合约ABI JSON文件，生成相应的C接口调用代码。如果编译中自动生成C接口失败，则需要从<SDKRoot>/contract的相应目录中，删除无法支持的ABI JSON文件（或者删除其中无法支持的接口），手工编写C代码，进行ABI接口组装，详见 [转账调用](###转账调用) 章节。  
 ### Host编译
 Host编译指编译环境与目标环境一致，例如，在x86上编译x86程序。通常有两种使用Host编译的场景: 
 1. 在软件调测阶段，在PC机上对软件功能进行测试。
@@ -196,15 +195,15 @@ Host编译指编译环境与目标环境一致，例如，在x86上编译x86程�
 
 
 #### 以linux为编译环境
-基于linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。  
+基于linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。
 
 编译遵照如下步骤:
-1. 将SDK源码存放在符合3.2.1节要求的路径中
+1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中
 2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见3.3节）
 3. 在\<SDKRoot\>目录下，执行以下命令:  
 $make boatlibs
 
-编译完成后，生成的库文件在./lib中。应用应当包含./include下的头文件，并链接./lib下的库，实现访问区块链的功能。参见4.1节。
+编译完成后，生成的库文件在./lib中。应用应当包含./include下的头文件，并链接./lib下的库，实现访问区块链的功能。参见[头文件和库](###头文件和库)章节。
 
 #### 以Cygwin为编译环境
 在Windows上，SDK不支持在Cygwin以外的环境进行编译，也不支持使用gcc以外的编译器进行编译。
@@ -251,7 +250,7 @@ ${CC} -v
 
 ${AR} -v
 
-以上配置完成后，遵照3.4.1节的步骤进行编译。
+以上配置完成后，遵照[以linux为编译环境](####以linux为编译环境)章节的步骤进行编译。
 
 
 ##### 与模组开发环境整合的交叉编译环境
@@ -261,7 +260,7 @@ ${AR} -v
 ###### 模组开发环境以GNU make为编译工程
 若模组开发环境以GNU make为编译工程（各级源码目录内有Makefile），可以对BoAT IoT Framework SDK调整编译配置，将其纳入整合的模组开发环境中编译。
 
-通常，模组开发环境中会提供客户代码的Example，并在编译体系中包含对客户示例代码Example的编译配置。首先将\<SDKRoot\>目录（以下例子中以bootiotsdk为目录名）复制到模组开发环境中的客户代码Example目录，然后修改针对客户代码Example的Makefile，增加一个编译BoAT IoT Framework SDK的target。
+通常，模组开发环境中会提供客户代码的Example，并在编译体系中包含对客户示例代码Example的编译配置。首先将\<SDKRoot\>目录（以下例子中以boatiotsdk为目录名）复制到模组开发环境中的客户代码Example目录，然后修改针对客户代码Example的Makefile，增加一个编译BoAT IoT Framework SDK的target。
   
 例如:  
 假设原有编译环境中，客户代码Example的Makefile如下:  
@@ -294,21 +293,21 @@ boatiotsdkclean:
 
 *注：Makefile中，target下的命令，必须一个Tab（ASCII码0x09）开头，而不能以空格开头。*
 
-以上步骤仅仅是用于执行对SDK库的编译。SDK库编译完成后，还需将编译生成的lib库整合入模组开发环境。详见4.1节。
+以上步骤仅仅是用于执行对SDK库的编译。SDK库编译完成后，还需将编译生成的lib库整合入模组开发环境。详见[头文件和库](###头文件和库)章节。
 
 ###### 模组开发环境采用非GNU Make编译工程
 由于BoAT IoT Framework SDK以GNU make为编译工程，若模组开发环境采用非GNU Make的编译工程（例如Ninja、ant等），或者使用了编译工程的自动生成工具（如automake、CMake），则不能直接在模组开发环境中编译SDK。
 
-在此类模组开发环境中编译SDK，需要将模组开发环境中的gcc、binutils编译工具释出，配置3.5.1.1节所述环境变量，使之可以在系统中调用，等同于独立交叉编译环境，然后编译SDK。
+在此类模组开发环境中编译SDK，需要将模组开发环境中的gcc、binutils编译工具释出，配置[独立的交叉编译环境](#####独立的交叉编译环境)章节所述环境变量，使之可以在系统中调用，等同于独立交叉编译环境，然后编译SDK。
 
 
 #### 以Windows为编译环境
-在Windows下，SDK不支持在Cygwin以外的环境下编译。如果以Windows为Build环境的交叉编译器只能在Cygwin以外运行，应对编译环境和编译配置文件进行调整。  
+在Windows下，SDK不支持在Cygwin以外的环境下编译。如果以Windows为编译环境的交叉编译器只能在Cygwin以外运行，应对编译环境和编译配置文件进行调整。  
 在Cygwin以外进行交叉编译时，仍然需要安装Cygwin，并调整Makefile。
 
 ###### 安装Cygwin
 
-在Cygwin以外进行交叉编译时，仍然需要安装Cygwin。因为SDK编译工程依赖于一些Cygwin工具。需要安装的工具如下:  
+SDK编译工程依赖于一些Cygwin工具，需要安装的工具如下:  
 
 |**所需工具**|**用途**                                                                                                             |
 | :---------| :------------------------------------------------------------------------------------------------------------------| 
@@ -349,7 +348,7 @@ f)	在“编辑环境变量”页中点击“新建”，新增Cygwin的安装�
 在Cygwin以外进行交叉编译时，除上节所述外，还需要进行下列调整：
 
 1. 尝试make，如果提示路径错误，则将Makefile中相应的路径分隔符，从“/”修改为“\\”。不要一开始就把所有的“/”都改为“\\”，因为部分源自linux的工具的Windows版本，可以识别“/”作为路径分隔符。
-2. 配置3.5.1.1节所述环境变量，使之指向正确的交叉编译环境。在这些环境变量中，路径应以“\\”为分隔符
+2. 配置[独立的交叉编译环境](#####独立的交叉编译环境)章节所述环境变量，使之指向正确的交叉编译环境。在这些环境变量中，路径应以“\\”为分隔符
 
 ### 编译和运行Demo
 #### 准备
@@ -441,7 +440,7 @@ mkdir… 命令语法不正确。
 FIND: 参数格式不正确  
   
   
-该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照3.5.2节安装Cygwin和配置Makefile。
+该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[以Windows为编译环境](####以Windows为编译环境)章节安装Cygwin和配置Makefile。
 
 
 ## 编程模型
@@ -458,7 +457,7 @@ BoAT IoT Framework SDK编译完成后，应用可以通过SDK头文件和库，�
 1. 在应用中引用SDK头文件
 
 - 在应用的头文件搜索路径中，增加\<SDKRoot\>/include，或者将\<SDKRoot\>/include下所有头文件拷贝至应用头文件目录中。
-- 在应用的头文件搜索路径中，增加\<SDKRoot\>//vendor/platform/include，或者将\<SDKRoot\>//vendor/platform/include下的boatconfig.h头文件拷贝至应用头文件目录中。
+- 在应用的头文件搜索路径中，增加\<SDKRoot\>/vendor/platform/include，或者将\<SDKRoot\>/vendor/platform/include下的boatconfig.h头文件拷贝至应用头文件目录中。
 - 在应用相关C代码中，添加以下头文件:
   ```
   #include "boatiotsdk.h" //SDK的入口头文件
@@ -471,13 +470,14 @@ BoAT IoT Framework SDK编译完成后，应用可以通过SDK头文件和库，�
 
 2. 在应用中链接SDK库文件
 
-    (1)在应用的链接库中，依次增加\<SDKRoot\>/lib中两个静态库：  
-libboatwallet.a libboatvendor.a
+- 在应用的链接库中，依次增加\<SDKRoot\>/lib中两个静态库：  
+  `libboatwallet.a`
+  `libboatvendor.a`
 
-    (2)在应用的链接库中，增加curl的动态库：  
--lcurl
+- 在应用的链接库中，增加curl的动态库：  
+  `-lcurl`
 
-对于交叉编译，应当保证开发环境中的curl和openssl版本与目标板运行环境中的一致。
+对于交叉编译，应当保证开发环境中的curl版本与目标板运行环境中的一致。
 
 
 ### SDK初始化和销毁
@@ -512,12 +512,12 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type,
 ```
 参数:
 
-|    |                      |                                                                  |
-|----|--------------------- |------------------------------------------------------------------|
-|[in]|**protocol_type**     |The blockchain protocol. See boattypes.h for supported protocol.  |
-|[in]|**wallet_name_str**   |A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded.|
-|[in]|**wallet_config_ptr** |Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>.                                                                |
-|[in]|**wallet_config_size**|Size (in byte) of configuration specified by \<wallet_config_ptr\>.|
+|参数名称               |参数描述                                                          |
+|:---------------------|:-----------------------------------------------------------------|
+|**protocol_type**     |The blockchain protocol. See boattypes.h for supported protocol.  |
+|**wallet_name_str**   |A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded.|
+|**wallet_config_ptr** |Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>.                                                                |
+|**wallet_config_size**|Size (in byte) of configuration specified by \<wallet_config_ptr\>.|
 
 **返回值:**  
 This function returns the non-negative index of the loaded wallet.
@@ -548,9 +548,9 @@ void BoatWalletUnload(BSINT32 wallet_index);
 ```
 参数:
 
-|    |                |                           |
-|----|----------------|---------------------------|
-|[in]|**wallet_index**|The wallet index to unload.|
+|参数名称        |参数描述                    |
+|:---------------|:--------------------------|
+|**wallet_index**|The wallet index to unload.|
 
 
 #### 删除钱包
@@ -560,9 +560,9 @@ void BoatWalletDelete(BCHAR * wallet_name_str);
 ```
 参数:
 
-|     |                   |                          |
-|-----|------------------ |--------------------------|
-|[in] |**wallet_name_str**|The wallet name to delete.|
+|参数名称           |参数描述                       |
+|:------------------|:-----------------------------|
+|**wallet_name_str**|The wallet name to delete.    |
 
 ### 密钥生成
 创建钱包时需要配置的密钥，可以由外部输入，也可以由SDK生成， 通过设置`prikeyCtx_config.prikey_genMode`为相应的值实现。
@@ -578,10 +578,10 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr,
 
 参数:
 
-|    |                 |                                                                        |
-|----|-----------------|------------------------------------------------------------------------|
-|[in]|**tx_ptr**       |Transaction pointer.                                                    |
-|[in]|**value_hex_str**|A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234".|
+|参数名称          |参数描述                                                                |
+|:----------------|:-----------------------------------------------------------------------|
+|**tx_ptr**       |Transaction pointer.                                                    |
+|**value_hex_str**|A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234".|
 
 **返回值:**  
 This function returns BOAT_SUCCESS if transfer is successful.
@@ -747,14 +747,14 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
 ```						 
 参数:
 
-|    |                 |                                                                                                |
-|----|--------------   |------------------------------------------------------------------------------------------------|
-|[in]|**wallet_ptr**   |The wallet pointer that this transaction is combined with.                                      |
-|[in]|**tx_ptr**       |Pointer a transaction object.                                                                   |
-|[in]|**is_sync_tx**   |For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored.|
-|[in]|**gasprice**     |A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed.                                                                                                |
-|[in]|**gaslimit**     |A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed.                                          |
-|[in]|**recipient_str**|A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed. |
+|参数名称          |参数描述                                                                                        |
+|:----------------|:-----------------------------------------------------------------------------------------------|
+|**wallet_ptr**   |The wallet pointer that this transaction is combined with.                                      |
+|**tx_ptr**       |Pointer a transaction object.                                                                   |
+|**is_sync_tx**   |For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored.|
+|**gasprice**     |A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed.                                                                                                |
+|**gaslimit**     |A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed.                                          |
+|**recipient_str**|A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed. |
 
 **返回值:**  
 This function returns BOAT_SUCCESS if initialization is successful.
@@ -780,94 +780,98 @@ result = BoatEthTxInit(
 BCHAR *result_str;
 result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ```
-注：返回值的说明见4.4.2
 
 ### 手动构造合约调用
 如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。
 
 手工构造交易需要遵循具体区块链协议的ABI接口，。
 
-例1：以太坊交易构造
-Step 1：调用BoatEthTxInit()进行交易初始化
+**例1：以太坊交易构造**
+- **步骤1** 调用BoatEthTxInit()进行交易初始化
+- **步骤2** 设置交易参数
+  - 设置交易参数nonce：  
+    ```
+    BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr,
+    BUINT64 nonce);
+    nonce通常设置为BOAT_ETH_NONCE_AUTO，从网络获取nonce值。
+    ```
+  - 需要的话，设置交易参数value（初始化的交易对象中，value默认为0）:  
+    ```
+    BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr,
+    BoatFieldMax32B *value_ptr);
+    ```
+- **步骤3** 对于改变区块链状态的合约调用（交易），设置交易参数data:
+  ```
+  BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr,
+  BoatFieldVariable *data_ptr);
+  ```
+  其中，data_ptr的格式遵循以太坊ABI，包括合约函数原型的Keccak-256哈希的前4字节作为Function Selector，随后依次排列各个参数：
+  https://solidity.readthedocs.io/en/develop/abi-spec.html  
+- **步骤4** 发送交易
+  - 对于改变区块链状态的合约调用，调用如下合约函数：
+    ```
+    BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
+    ```
+  - 对于不改变区块链状态的合约调用，调用State-less合约函数：
+    ```
+    BCHAR * BoatEthCallContractFunc(BoatEthTx *tx_ptr,
+                                    BCHAR *func_proto_str,
+                                    BUINT8 *func_param_ptr,
+                                    BUINT32 func_param_len);
+    ```
+    其中，func_param_ptr的格式遵循与步骤3相同的规则。
 
-Step 2.1：设置交易参数nonce：  
-BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr,
-BUINT64 nonce);
-nonce通常设置为BOAT_ETH_NONCE_AUTO，从网络获取nonce值。
-Step 2.2：需要的话，设置交易参数value（初始化的交易对象中，value默认为0）:  
-```
-BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr,
-BoatFieldMax32B *value_ptr);
-```
-Step 3a：对于改变区块链状态的合约调用（交易），设置交易参数data:
-```
-BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr,
-BoatFieldVariable *data_ptr);
-```
-其中，data_ptr的格式遵循以太坊ABI，包括合约函数原型的Keccak-256哈希的前4字节作为Function Selector，随后依次排列各个参数：
-https://solidity.readthedocs.io/en/develop/abi-spec.html  
-Step 4a：发送交易
-```
-BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
-```
-Step 4b：对于不改变区块链状态的合约调用，调用State-less合约函
-```
-BCHAR * BoatEthCallContractFunc(BoatEthTx *tx_ptr,
-                                BCHAR *func_proto_str,
-                                BUINT8 *func_param_ptr,
-                                BUINT32 func_param_len);
-```
-其中，func_param_ptr的格式遵循与Step 3a相同的规则。
-例2：PlatONE交易构造
-Step 1：调用BoatPlatONETxInit()进行交易初始化，其中交易类型字段根据实际交易类型进行设置。
-Step 2.1：设置交易参数nonce：
-BOAT_RESULT BoatPlatoneTxSetNonce(BoatEthTx *tx_ptr,
-BUINT64 nonce); 
-nonce通常设置为BOAT_PLATONE_NONCE_AUTO，从网络获取nonce值。
-Step 2.2：需要的话，设置交易参数value（初始化的交易对象中，value默认为0）:
-```
-BOAT_RESULT BoatPlatoneTxSetValue(BoatEthTx *tx_ptr,
-BoatFieldMax32B *value_ptr);
-```
-Step 3a：对于改变区块链状态的合约调用（交易），设置交易参数data:
-```
-BOAT_RESULT BoatPlatoneTxSetData(BoatEthTx *tx_ptr,
-BoatFieldVariable *data_ptr);
-```
-其中，data_ptr按RLP编码，依次编入如下字段:
-```
-{
-  TransactionType (Fixed unsigned 64bit, BigEndian),
-  FunctionName,
-  FunctionArgument1,
-  FunctionArgument2,
-…
-}
-```
-RLP编码按以下方法:
-- a) 调用RlpInitListObject()初始化顶层LIST对象
-- b) 调用RlpInitStringObject()初始化第一个编码字段对象
-- c) 调用RlpEncoderAppendObjectToList()将第一个编码字段对象加入顶层LIST对象
-- d) 重复b和c，直至所有编码对象都加入顶层LIST对象
-- e) 调用RlpEncode()对顶层LIST对象及其子对象进行RLP编码
-- f) 调用RlpGetEncodedStream()获取编码后的码流
-- g) 完成合约调用后，调用RlpRecursiveDeleteObject()销毁顶层LIST对象及其所有子对象
+**例2：PlatONE交易构造**
+- **步骤1** 调用BoatPlatONETxInit()进行交易初始化，其中交易类型字段根据实际交易类型进行设置。
+- **步骤2** 设置交易参数
+  - 设置交易参数nonce：
+    ```
+    BOAT_RESULT BoatPlatoneTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce); 
+    ```
+    nonce通常设置为BOAT_PLATONE_NONCE_AUTO，从网络获取nonce值。
+  - 需要的话，设置交易参数value（初始化的交易对象中，value默认为0）:
+    ```
+    BOAT_RESULT BoatPlatoneTxSetValue(BoatEthTx *tx_ptr,
+    BoatFieldMax32B *value_ptr);
+    ```
+- **步骤3** 对于改变区块链状态的合约调用（交易），设置交易参数data:
+  ```
+  BOAT_RESULT BoatPlatoneTxSetData(BoatEthTx *tx_ptr,
+  BoatFieldVariable *data_ptr);
+  ```
+  其中，data_ptr按RLP编码，依次编入如下字段:
+  ```
+  {
+    TransactionType (Fixed unsigned 64bit, BigEndian),
+    FunctionName,
+    FunctionArgument1,
+    FunctionArgument2,
+  …
+  }
+  ```
+  RLP编码按以下方法:
+  - a) 调用RlpInitListObject()初始化顶层LIST对象
+  - b) 调用RlpInitStringObject()初始化第一个编码字段对象
+  - c) 调用RlpEncoderAppendObjectToList()将第一个编码字段对象加入顶层LIST对象
+  - d) 重复b和c，直至所有编码对象都加入顶层LIST对象
+  - e) 调用RlpEncode()对顶层LIST对象及其子对象进行RLP编码
+  - f) 调用RlpGetEncodedStream()获取编码后的码流
+  - g) 完成合约调用后，调用RlpRecursiveDeleteObject()销毁顶层LIST对象及其所有子对象
 
-Step 4a: 发送交易
-```
-BOAT_RESULT BoatPlatoneTxSend(BoatEthTx *tx_ptr);
-```
+- **步骤4** 发送交易
+  - 对于改变区块链状态的合约调用，调用如下合约函数：
+    ```
+    BOAT_RESULT BoatPlatoneTxSend(BoatEthTx *tx_ptr);
+    ```
 
-Step 3b: 对于不改变区块链状态的合约调用，调用State-less合约函数
-```
-BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr,
-                                    BUINT8 *rlp_param_ptr,
-                                    BUINT32 rlp_param_len)
-```
-其中，rlp_param_ptr的格式遵循与Step 3a相同的规则。
-
-
-具体调用方法，可参照SDK所附的Demo的自动生成代码，这些代码位于\<SDKRoot\>/contract/generated下。
+  - 对于不改变区块链状态的合约调用，调用State-less合约函数
+    ```
+    BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr,
+                                        BUINT8 *rlp_param_ptr,
+                                        BUINT32 rlp_param_len)
+    ```
+    其中，rlp_param_ptr的格式遵循与步骤3相同的规则。
+    具体调用方法，可参照SDK所附的Demo的自动生成代码，这些代码位于\<SDKRoot\>/contract/generated下。
 
 ## SDK往RTOS移植的建议
 若将SDK移植到RTOS上，一般应遵循以下几点:
