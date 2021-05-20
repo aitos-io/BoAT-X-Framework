@@ -41,13 +41,6 @@ PLATFORM_TARGET ?= LINUX-X86-64
 # Environment-specific Settings
 include $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/external.env
 
-# Commands
-BOAT_RM := rm -rf
-BOAT_MKDIR := mkdir
-BOAT_FIND := find
-
-export BOAT_RM BOAT_MKDIR BOAT_FIND
-
 
 # Check gcc version
 ifneq (,$(CC))
@@ -187,40 +180,29 @@ createdir:
 	$(BOAT_MKDIR) -p $(BOAT_BUILD_DIR)
 
 boatwalletlib:
-	if [ -d "$(BOAT_BASE_DIR)/sdk" ]; then \
-	make -C $(BOAT_BASE_DIR)/sdk all; \
-	fi
+	make -C $(BOAT_BASE_DIR)/sdk all
 
 vendorlib:
-	if [ -d "$(BOAT_BASE_DIR)/vendor" ]; then \
-	make -C $(BOAT_BASE_DIR)/vendor all; \
-	fi
+	make -C $(BOAT_BASE_DIR)/vendor all
 
 demo: boatlibs
 	make -C $(BOAT_BASE_DIR)/demo all
 
 tests: boatlibs
-	if [ -d "$(BOAT_BASE_DIR)/tests" ]; then \
-	make -C $(BOAT_BASE_DIR)/tests all; \
-	fi
+	make -C $(BOAT_BASE_DIR)/tests all
 
 clean: cleanboatwallet cleanvendor cleandemo cleantests
 	-$(BOAT_RM) $(BOAT_BUILD_DIR)
 
 cleanboatwallet:
-	if [ -d "$(BOAT_BASE_DIR)/sdk" ]; then \
-		make -C $(BOAT_BASE_DIR)/sdk clean; \
-	fi
+	make -C $(BOAT_BASE_DIR)/sdk clean
 
 cleanvendor:
-	if [ -d "$(BOAT_BASE_DIR)/vendor" ]; then \
-	make -C $(BOAT_BASE_DIR)/vendor clean; \
-	fi
+	make -C $(BOAT_BASE_DIR)/vendor clean
 
 cleandemo:
 	make -C $(BOAT_BASE_DIR)/demo clean
 
 cleantests:
-	if [ -d "$(BOAT_BASE_DIR)/tests" ]; then \
-	make -C $(BOAT_BASE_DIR)/tests clean; \
-	fi
+	make -C $(BOAT_BASE_DIR)/tests clean
+
