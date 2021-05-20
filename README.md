@@ -116,7 +116,7 @@ Modify the demo code in ./demo:
 +---include         | Header files for application to include
 +---lib             | Lib files for application to link with
 +---sdk             | SDK source
-|   +---third-party |     Three party libraries
+|   +---third-party |     Third party libraries
 |   +---include     |     Header files for SDK internal use
 |   +---protocol    |     Blockchain client protocol implementation
 |   +---rlp         |     RLP encoder
