@@ -63,7 +63,7 @@ BoAT IoT Framework以软件lib库的形式，运行于蜂窝模组的应用处�
 
 对于非OpenCPU形态的蜂窝模组，BoAT IoT Framework库被模组固件链接，并由模组厂商扩展为AT命令，供上位机上的物联网应用调用，不再赘述。  
 
-### SDK架构
+### BoAT IoT Framework SDK架构
 BoAT IoT Framework SDK如图 2‑2所示，主要包含Wallet API、区块链客户端接口协议、远程过程调用接口、公共组件、硬件依赖组件以及工具组件。  
 
 ![BoAT IoT Framework SDK架构](./images/BoAT_User_Guide_cn-F2-2-BoAT_architecture.png)
@@ -77,7 +77,7 @@ Wallet API是SDK提供给物联网应用调用的接口，具体包括SDK公共�
 工具组件提供了根据Solidity或者WASM C++的智能合约ABI接口，生成C语言合约调用接口的Python工具。
 
 
-### SDK代码结构
+### BoAT IoT Framework SDK代码结构
 ```
 <SDKRoot>
 |
@@ -101,7 +101,7 @@ Wallet API是SDK提供给物联网应用调用的接口，具体包括SDK公共�
 ```
 注：`build`和`lib`目录在编译中生成。编译完成后，只有一级目录的`include`、`lib`，以及编译后自动生成的`boatconfig.h`(位于`vendor/platform/include`路径)头文件是应用需要的。  
 
-## SDK编译
+## BoAT IoT Framework SDK编译
 ### 软件依赖
 BoAT IoT Framework SDK依赖于以下软件:
 
@@ -124,7 +124,7 @@ BoAT IoT Framework SDK依赖于以下软件:
 
 
 ### 编译准备
-#### SDK源码路径
+#### BoAT IoT Framework SDK源码路径
 SDK源码的保存路径中，自根目录起，各级目录名称应由英文字母、数字、下划线或减号组成，不应出现空格、中文以及加号、@、括号等特殊符号。
   
   
@@ -149,7 +149,7 @@ C:\Documents and Settings\developer\project\boatiotsdk
 在Host编译时，如果gcc和binutils已经安装在系统中，通常不需要修改这些环境变量配置。  
 在交叉编译时，如果交叉编译环境需要配置特定的INCLUDE路径，需要在上述文件中添加路径。    
 
-#### SDK配置
+#### BoAT IoT Framework SDK配置
 - 使能/禁能区块链协议
 顶层makefile中：
 ```
