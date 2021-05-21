@@ -29,7 +29,7 @@ BoAT IoT Framework是面向蜂窝模组的C语言区块链应用框架客户端�
 **已支持的区块链:**  
 以太坊  
 PlatONE
-FISCOBCOS
+FISCO-BCOS
 Hyperledger Fabric
 
 
@@ -56,7 +56,7 @@ BoAT IoT Framework以软件lib库的形式，运行于蜂窝模组的应用处�
 
 对于OpenCPU形态的蜂窝模组，BoAT IoT Framework库被物联网应用链接，形成具备区块链链接能力的物联网应用程序。  
 
-图 2‑1展示了BoAT IoT Framwork在OpenCPU模组中的位置。BoAT作为应用层协议，位于模组已有的协议栈上方，向物联网应用提供区块链服务。BoAT的对等层是区块链网络。  
+图 2‑1展示了BoAT IoT Framwork在OpenCPU模组中的位置。BoAT作为应用层协议，位于模组已有的协议栈上方，向物联网应用提供区块链服务。BoAT的对等层是区块链网络层。  
 
 ![BoAT IoT Framework在系统中的位置](./images/BoAT_User_Guide_cn-F2-1-BoAT_in_system.png)
 图 2-1 BoAT IoT Framework在系统中的位置
@@ -183,7 +183,7 @@ SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，�
 | :---------------------------| :----------------------------------------| 
 |\<SDKRoot\>/demo/demo_ethereum/demo_contract|将以太坊的ABI JSON文件拷贝至该目录下  |
 |\<SDKRoot\>/demo/demo_platone/demo_contract |将PlatONE（WASM）的ABI JSON文件拷贝至该目录下 |
-|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract|将FISCOBCOS的ABI JSON文件拷贝至该目录下  |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract|将FISCO-BCOS的ABI JSON文件拷贝至该目录下  |
 
 *注1：ABI的JSON文件必须以“.json”为文件名后缀。
 
@@ -323,7 +323,7 @@ set PATH=%PATH%;\<Path_to_Cygwin\>\bin
 其中<Path_to_Cygwin>是Cygwin安装目录的绝对路径，如：C:\Cygwin64  
   
 
-*注：上述命令可以编写在一个bat批处理文件中，或者直接加入Windows系统环境变量中，方便调用。注意，如果直接加入Windows系统环境变量，不得将Cygwin置于%SystemRoot%\System32路径之前，否则在其他场景中调用Windows的FIND命令时，将错误地调用Cygwin的find版本，这将影响其他场景中使用Windows自带命令。*  
+<font color=grey>注：上述命令可以编写在一个bat批处理文件中，或者直接加入Windows系统环境变量中，方便调用。注意，如果直接加入Windows系统环境变量，不得将Cygwin置于%SystemRoot%\System32路径之前，否则在其他场景中调用Windows的FIND命令时，将错误地调用Cygwin的find版本，这将影响其他场景中使用Windows自带命令。</font>
 
 然后，修改`\<SDKRoot\>/vendor/platform/<platform_name>/external.env`，为依赖工具加上路径:
 ```
@@ -352,7 +352,7 @@ f)	在“编辑环境变量”页中点击“新建”，新增Cygwin的安装�
 
 ### 编译和运行Demo
 #### 准备
-SDK提供基于以太坊、PlatONE、FISCOBCOS和fabric的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
+SDK提供基于以太坊、PlatONE、FISCO-BCOS和fabric的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
 
 Demo所使用的智能合约及其ABI JSON文件放置在：  
 
@@ -360,7 +360,7 @@ Demo所使用的智能合约及其ABI JSON文件放置在：
 | :------------------------------------------| :---------------------------------------------------| :--------| 
 |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.sol |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.json |以太坊演示  |
 |\<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.sol |\<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.json |PlatONE演示  |
-|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json |FISCOBCOS演示  |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json |FISCO-BCOS演示  |
 
 
 在运行以太坊的Demo之前，需要安装以太坊节点模拟器ganache，以及以太坊智能合约编译部署工具truffle。  
@@ -371,8 +371,8 @@ ganache有命令行界面的ganache-cli版本，以及图形界面的Ganache版�
 在运行PlatONE的Demo之前，需要安装PlatONE节点，以及智能合约编译和部署工具。  
 PlatONE源码及工具可以访问该网站：https://platone.wxblockchain.com
 
-在运行FISCOBCOS的Demo之前，需要安装FISCOBCOS节点和合约部署。  
-FISCOBCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-documentation.readthedocs.io
+在运行FISCO-BCOS的Demo之前，需要安装FISCO-BCOS节点和合约部署。  
+FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-documentation.readthedocs.io
 
 在完成节点（或模拟器）部署后，需要分别遵照相关网站的说明，部署Demo智能合约。智能合约部署成功后，将生成合约地址。
 
@@ -383,19 +383,19 @@ FISCOBCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-d
 |\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c|以太坊合约演示用例  |
 |\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c|以太坊转账演示用例  |
 |\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c|PLATONE合约演示用例  |
-|\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c|FISCOBCOS合约演示用例  |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c|FISCO-BCOS合约演示用例  |
 
 编译Demo之前，需要修改Demo的C代码中以下部分：
-- 对于ETHEREUM、FISCOBCOS、PLATONE:
+- 对于ETHEREUM、FISCO-BCOS、PLATONE:
   1.	搜索`demoUrl`，将节点URL（含端口）填写为实际部署的节点或模拟器的IP地址和RPC端口
   2.	如果demo需使用原生私钥, 则搜索`native_demoKey`，并将客户端私钥设置为：  
-    a)	对于ETHEREUM，设置为ganache生成的任意一个账户的私钥  
-    b)	对于PlatONE，无需修改Demo中的私钥
-    c)	对于FISCOBCOS，设置为<FISCOBCOS_ROOT>/console/accounts下私钥对应的原生格式私钥
+        -	对于ETHEREUM，设置为ganache生成的任意一个账户的私钥  
+        - 对于PlatONE，无需修改Demo中的私钥
+        - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥对应的原生格式私钥
   3.	如果demo需使用原生私钥, 则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
-    a)	对于以太坊，设置为ganache生成的任意一个账户的私钥对应的PKCS格式私钥
-    b)	对于PlatONE，无需修改Demo中的私钥
-    c)	对于FISCOBCOS，设置为<FISCOBCOS_ROOT>/console/accounts下私钥
+        - 对于以太坊，设置为ganache生成的任意一个账户的私钥对应的PKCS格式私钥
+        - 对于PlatONE，无需修改Demo中的私钥
+        - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥
   4.	搜索`demoRecipientAddress`，修改为Demo合约的部署地址。
 - 对于FABRIC:  
   1. 搜索`fabric_client_demokey`，设置客户端使用的私钥
@@ -409,7 +409,7 @@ FISCOBCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-d
 ```
 $make demo
 ```
-生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下,< protocol>可以为`ethereum` `fiscobcos` `platone` `fabric`.
+生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下,< protocol>可以为`ethereum` `fisco-bcos` `platone` `fabric`.
 
 
 
@@ -876,30 +876,30 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ## SDK往RTOS移植的建议
 若将SDK移植到RTOS上，一般应遵循以下几点:
 1. 解除对curl的依赖
-curl是一个linux下的通信协议库，在SDK中用于支持http/https通信。区块链节点通常采用http/https协议进行通信。
+    curl是一个linux下的通信协议库，在SDK中用于支持http/https通信。区块链节点通常采用http/https协议进行通信。
 
-对于采用RTOS的模组，应当在\<SDKRoot\>/vendor/platform/\<platform_name\>/src/rpc中增加对模组的http/https的接口的调用封装，并修改\<SDKRoot\>/vendor/platform/\<platform_name\>/scripts/gen.py，关闭RPC_USE_LIBCURL并设置新增的RPC USE OPTION
+    对于采用RTOS的模组，应当在\<SDKRoot\>/vendor/platform/\<platform_name\>/src/rpc中增加对模组的http/https的接口的调用封装，并修改\<SDKRoot\>/vendor/platform/\<platform_name\>/scripts/gen.py，关闭RPC_USE_LIBCURL并设置新增的RPC USE OPTION
 
 
 2. 解除对文件系统的依赖
 
-SDK中使用文件作为钱包的持久化保存方法。若RTOS不支持文件系统，应当修改\<SDKRoot\>/vendor/platform/\<platform_name\>/port_xx/boatplatform_internal.c中文件操作相关的`BoatGetFileSize`, `BoatWriteFile`, `BoatReadFile`, `BoatRemoveFile`四个函数，将读/写文件修改为系统支持的持久化方法。
+    SDK中使用文件作为钱包的持久化保存方法。若RTOS不支持文件系统，应当修改\<SDKRoot\>/vendor/platform/\<platform_name\>/port_xx/boatplatform_internal.c中文件操作相关的`BoatGetFileSize`, `BoatWriteFile`, `BoatReadFile`, `BoatRemoveFile`四个函数，将读/写文件修改为系统支持的持久化方法。
 
 
-4. 内存裁剪
+3. 内存裁剪
 
-若目标系统内存较为紧张，以致无法装入时，可以尝试对内存进行裁剪。可以裁剪的点包括：
+    若目标系统内存较为紧张，以致无法装入时，可以尝试对内存进行裁剪。可以裁剪的点包括：
 
-a)	根据实际需要，在<SDKRoot>/makefile中，关闭不需要支持的区块链Protocol  
-b)	根据实际情况，减小<SDKRoot>/include/api_\<protocol\>.h中，节点URL字符串的存储空间BOAT_XXX_NODE_URL_MAX_LEN  
-c)	根据实际需要，减小<SDKRoot>/include/boatwallet.h中，支持的钱包数量BOAT_MAX_WALLET_NUM  
-d)	根据实际情况，减小<SDKRoot>/include/boatrlp.h中，一个LIST中支持的最大成员个数MAX_RLP_LIST_DESC_NUM  
-e)	根据实际情况，减小<SDKRoot>/sdk/protocol/common/web3intf/web3intf.h中，web3数据缓冲区的自增步长WEB3_STRING_BUF_STEP_SIZE
+    a)	根据实际需要，在<SDKRoot>/makefile中，关闭不需要支持的区块链Protocol  
+    b)	根据实际情况，减小<SDKRoot>/include/api_\<protocol\>.h中，节点URL字符串的存储空间BOAT_XXX_NODE_URL_MAX_LEN  
+    c)	根据实际需要，减小<SDKRoot>/include/boatwallet.h中，支持的钱包数量BOAT_MAX_WALLET_NUM  
+    d)	根据实际情况，减小<SDKRoot>/include/boatrlp.h中，一个LIST中支持的最大成员个数MAX_RLP_LIST_DESC_NUM  
+    e)	根据实际情况，减小<SDKRoot>/sdk/protocol/common/web3intf/web3intf.h中，web3数据缓冲区的自增步长WEB3_STRING_BUF_STEP_SIZE
 
 
-如果经过上述裁剪，内存仍然过大无法装入，可以尝试：  
-a)	根据实际需要，采用针对具体交易参数的简易RLP编码方法，替代<SDKRoot>/sdk/rlp中递归的通用RLP编码方法  
-b)	根据实际需要，裁剪实际不会用到的API  
+    如果经过上述裁剪，内存仍然过大无法装入，可以尝试：  
+    a)	根据实际需要，采用针对具体交易参数的简易RLP编码方法，替代<SDKRoot>/sdk/rlp中递归的通用RLP编码方法  
+    b)	根据实际需要，裁剪实际不会用到的API  
 
 ## BoAT的扩展AT命令建议
 
