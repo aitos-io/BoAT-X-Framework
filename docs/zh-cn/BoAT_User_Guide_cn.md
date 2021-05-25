@@ -95,9 +95,9 @@ Wallet API是SDK提供给物联网应用调用的接口，具体包括SDK公共�
 |   +---protocol    |     Blockchain client protocol implementation
 |   +---rlp         |     RLP encoder
 |   +---utilities   |     Utility APIs
-|   \---wallet      |     SDK entry API implementation
+|   +---wallet      |     SDK entry API implementation
 +---tests           | Test cases
-\---tools           | Tools for generating C interface from contract ABI
++---tools           | Tools for generating C interface from contract ABI
 ```
 注：`build`和`lib`目录在编译中生成。编译完成后，只有一级目录的`include`、`lib`，以及编译后自动生成的`boatconfig.h`(位于`vendor/platform/include`路径)头文件是应用需要的。  
 

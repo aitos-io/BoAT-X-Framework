@@ -6,11 +6,14 @@ AITOS.20.70.103RS
 
 ## 存储需求
 
-支持以太坊时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
-- Flash（代码和只读数据）：约180kB
-- Flash（持久性读写数据): 数十Byte
+仅支持以太坊/PLATONE/FISCBCOS时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
+- Flash（代码和只读数据）：约210kB
+- Flash（持久性读写数据): 数百Byte
 - RAM（全局变量、堆、栈）：约30kB
-
+仅支持FABRIC时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
+- Flash（代码和只读数据）：约520kB
+- Flash（持久性读写数据): 数千Byte
+- RAM（全局变量、堆、栈）：约30kB
 以上不含BoAT Framework SDK（C语言版本）所依赖的系统库，具体数值随不同区块链协议而有所不同。
 
 ## 处理能力需求
@@ -61,7 +64,7 @@ BoAT Framework SDK（C语言版本）对操作系统没有特别要求，linux�
 ## 密码学运算硬件加速（可选）
 
 若硬件支持密码学运算加速，可以提高密码运算性能。
-支持以太坊、PLATONE\FISCOBCOS时，BoAT至少需要如下密码学运算：<bf>
+支持以太坊/PLATONE/FISCOBCOS时，BoAT至少需要如下密码学运算：<bf>
 1. 椭圆曲线签名ECDSA（secp256k1曲线）<bf>
 2. SHA2-256和Keccak-256（Keccak-256为SHA3-256的变种）
 
