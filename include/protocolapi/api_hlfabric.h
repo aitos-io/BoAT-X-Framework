@@ -34,7 +34,7 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 #define BOAT_HLFABRIC_CERT_MAX_LEN               1024 //!< Maxmum length of certificate
 
 
-#define BOAT_HLFABRIC_ARGS_MAX_NUM               4   //!< Arguments max number in fabric command
+#define BOAT_HLFABRIC_ARGS_MAX_NUM               10   //!< Arguments max number in fabric command
 #define BOAT_HLFABRIC_ENDORSER_MAX_NUM           10  //!< Support endorser max number
 #define BOAT_HLFABRIC_ORDERER_MAX_NUM            4   //!< Support orderer max number
 

@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
 	/* step-6: wait seconds and 'query' the tansaction */
 	BoatSleep(3);
 	result += BoatHlfabricTxSetArgs( &tx_ptr, "query", "a", NULL );
-	result += BoatHlfabricTxSubmit( &tx_ptr );
+	result += BoatHlfabricTxEvaluate( &tx_ptr );
 	if( result != BOAT_SUCCESS )
 	{
 		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(query) failed." );

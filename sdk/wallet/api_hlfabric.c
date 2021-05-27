@@ -771,6 +771,54 @@ BOAT_RESULT BoatHlfabricTxSetArgs( BoatHlfabricTx *tx_ptr,
 	return result;
 }
 
+BOAT_RESULT BoatHlfabricTxEvaluate( BoatHlfabricTx *tx_ptr )
+{
+	BoatHlfabricNodeInfo urlTmp[2]    = {{NULL,NULL}, {NULL,NULL}};
+	BOAT_RESULT result  = BOAT_SUCCESS;
+    boat_try_declare;
+	
+	if( tx_ptr == NULL )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
+	if( tx_ptr->var.args.args[0] == NULL )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Arguments args[0] cannot be NULL.");
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
+	
+
+	BoatLog(BOAT_LOG_NORMAL, "Evaluate will execute...");
+	
+	/* submit query */
+	tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
+	urlTmp[0]        = tx_ptr->wallet_ptr->network_info.endorser[0];
+	result           = BoatHlfabricTxExec(tx_ptr, &urlTmp[0], BOAT_HLFABRIC_ENDORSER_MAX_NUM);
+	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result", 
+							tx_ptr->endorserResponse.response[0].payload.field_ptr,
+							tx_ptr->endorserResponse.response[0].payload.field_len);
+	
+	/* free the unpacked response data */
+	for( int i = 0; i < tx_ptr->endorserResponse.responseCount; i++ )
+	{
+		if( tx_ptr->endorserResponse.response[i].responseType == HLFABRIC_TYPE_PROPOSAL )
+		{
+			protos__proposal_response__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
+		}
+	}
+	tx_ptr->endorserResponse.responseCount = 0;
+	
+	/* boat catch handle */
+	boat_catch(BoatHlfabricTxEvaluate_exception)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+	 	result = boat_exception;
+	}
+
+	return result;
+}
+
 
 BOAT_RESULT BoatHlfabricTxSubmit( BoatHlfabricTx *tx_ptr )
 {
@@ -789,36 +837,16 @@ BOAT_RESULT BoatHlfabricTxSubmit( BoatHlfabricTx *tx_ptr )
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
-	if( 0 == memcmp(tx_ptr->var.args.args[0], "query", strlen("query")) )
-	{
-		BoatLog(BOAT_LOG_NORMAL, "query will execute...");
-		
-		/* submit query */
-		tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
-		urlTmp[0]        = tx_ptr->wallet_ptr->network_info.endorser[0];
-		result           = BoatHlfabricTxExec(tx_ptr, &urlTmp[0], BOAT_HLFABRIC_ENDORSER_MAX_NUM);
-		BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result", 
-							 tx_ptr->endorserResponse.response[0].payload.field_ptr,
-					         tx_ptr->endorserResponse.response[0].payload.field_len);
-	}
-	else if( 0 == memcmp(tx_ptr->var.args.args[0], "invoke", strlen("invoke")) )
-	{
-		BoatLog(BOAT_LOG_NORMAL, "invoke will execute...");
-		
-		/* invoke-step1: submit proposal to endorer */
-		tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
-		result           = BoatHlfabricTxExec(tx_ptr, &tx_ptr->wallet_ptr->network_info.endorser[0], BOAT_HLFABRIC_ENDORSER_MAX_NUM);
-		
-		/* invoke-step2: submit transaction to orderer */
-		tx_ptr->var.type = HLFABRIC_TYPE_TRANSACTION;
-		result           = BoatHlfabricTxExec(tx_ptr, &tx_ptr->wallet_ptr->network_info.orderer[0], BOAT_HLFABRIC_ORDERER_MAX_NUM);
-	}
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "unknown param :%s.", tx_ptr->var.args.args[0]);
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlfabricTxSubmit_exception);
-	}
+	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
 	
+	/* invoke-step1: submit proposal to endorer */
+	tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
+	result           = BoatHlfabricTxExec(tx_ptr, &tx_ptr->wallet_ptr->network_info.endorser[0], BOAT_HLFABRIC_ENDORSER_MAX_NUM);
+	
+	/* invoke-step2: submit transaction to orderer */
+	tx_ptr->var.type = HLFABRIC_TYPE_TRANSACTION;
+	result           = BoatHlfabricTxExec(tx_ptr, &tx_ptr->wallet_ptr->network_info.orderer[0], BOAT_HLFABRIC_ORDERER_MAX_NUM);
+
 	/* free the unpacked response data */
 	for( int i = 0; i < tx_ptr->endorserResponse.responseCount; i++ )
 	{
