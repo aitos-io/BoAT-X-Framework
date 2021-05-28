@@ -34,7 +34,7 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 #define BOAT_HLFABRIC_CERT_MAX_LEN               1024 //!< Maxmum length of certificate
 
 
-#define BOAT_HLFABRIC_ARGS_MAX_NUM               4   //!< Arguments max number in fabric command
+#define BOAT_HLFABRIC_ARGS_MAX_NUM               10   //!< Arguments max number in fabric command
 #define BOAT_HLFABRIC_ENDORSER_MAX_NUM           10  //!< Support endorser max number
 #define BOAT_HLFABRIC_ORDERER_MAX_NUM            4   //!< Support orderer max number
 
@@ -46,7 +46,7 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 												   //!< @note This macro is reserved for future.
 #define BOAT_HLFABRIC_ROOTCA_MAX_NUM             3 //!< Support ROOT CA certificate max number
 
-#define BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN     4096 //!< The maximum length of HTTP2 send buffer
+#define BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN     8192 //!< The maximum length of HTTP2 send buffer
 
 //!@brief fabric transaction type
 //! 
@@ -469,6 +469,22 @@ BOAT_RESULT BoatHlfabricTxSetArgs( BoatHlfabricTx *tx_ptr,
 								   const BCHAR *arg1, 
 								   ... );
 
+/*!****************************************************************************
+ * @brief 
+ *   Evaluate transaction.
+ *
+ * @details
+ *   This function should be invoked after BoatHlfabricTxSetTimestamp() and
+ *   BoatHlfabricTxSetArgs() had excuted.When you need to get states from
+ *   Hlfabric,use this function.
+ *
+ * @param tx_ptr 
+ *   Fabric transaction structure pointer.
+ *
+ * @return 
+ *   Return \c BOAT_SUCCESS if evaluate success, otherwise return a error code.
+ ******************************************************************************/
+BOAT_RESULT BoatHlfabricTxEvaluate( BoatHlfabricTx *tx_ptr );
 
 /*!****************************************************************************
  * @brief 
@@ -476,8 +492,8 @@ BOAT_RESULT BoatHlfabricTxSetArgs( BoatHlfabricTx *tx_ptr,
  *
  * @details
  *   This function should be invoked after BoatHlfabricTxSetTimestamp() and
- *   BoatHlfabricTxSetArgs() had excuted.
- *
+ *   BoatHlfabricTxSetArgs() had excuted.When you need to set states to
+ *   Hlfabric,use this function.
  * @param tx_ptr 
  *   Fabric transaction structure pointer.
  *

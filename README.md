@@ -25,15 +25,9 @@ The other method is, the IoT devices directly invoke on-chain smart contract via
 The latter is the way **BoAT** is walking on. To ease off the effort that IoT device manufacturers have to take, *aitos.io* initiates and contributes to **BoAT**, the C-language blockchain application framework, enabling IoT device to easily access the blockchain. 
 
 
-### Supported Blockchain
+### Supported Blockchains and IoT Modules
 
-This version supports:
-+ Ethereum
-+ PlatON Enterprise (PlatONE)
-+ FISCO-BCOS
-+ Hyperledger Fabric
-
-More blockchains are to be supported.
+See [Supported List](./SUPPORTED_LIST.md) for supported blockchains and IoT modules.
 
 
 ### Release
@@ -116,7 +110,7 @@ Modify the demo code in ./demo:
 +---include         | Header files for application to include
 +---lib             | Lib files for application to link with
 +---sdk             | SDK source
-|   +---third-party |     Three party libraries
+|   +---third-party |     Third party libraries
 |   +---include     |     Header files for SDK internal use
 |   +---protocol    |     Blockchain client protocol implementation
 |   +---rlp         |     RLP encoder
