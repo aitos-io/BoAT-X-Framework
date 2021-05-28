@@ -9,7 +9,7 @@ AITOS.20.70.103RS
 仅支持以太坊/PLATONE/FISCBCOS时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
 - Flash（代码和只读数据）：约210kB
 - Flash（持久性读写数据): 数百Byte
-- RAM（全局变量、堆、栈）：约30kB
+- RAM（全局变量、堆、栈）：约10kB
 仅支持FABRIC时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
 - Flash（代码和只读数据）：约520kB
 - Flash（持久性读写数据): 数千Byte
