@@ -32,10 +32,12 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # Platform target
 # The valid option value of PLATFORM_TARGET list as below:
 # - LINUX-X86-64      : default platform
-# - BG95              : a LPWA module of quectel
-# - L610              : a CAT1 module of fibocom
-# - N58               : a CAT1 module of neoway
-# - L718              : a LTE module of fibocom
+# - Quectel-BG95              : a LPWA module of quectel
+# - Fibocom-L610              : a CAT1 module of fibocom
+# - Neoway-N58                : a CAT1 module of neoway
+# - Fibocom-L718              : a LTE module of fibocom
+# - Neoway-N58                : a CAT1 module of neoway
+# - ChinaMobile-ML302         : a CAT1 module of neoway
 PLATFORM_TARGET ?= LINUX-X86-64
 
 # Environment-specific Settings
