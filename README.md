@@ -238,6 +238,8 @@ TBD
 The BoAT-X Framework community can be found at:
 + Contact Mail: info@aitos.io
 + Report Bugs: [BoAT-X Issues](https://github.com/aitos-io/BoAT-X-Framework/issues)
++ Medium: https://aitos-io.medium.com/
++ LinkedIn: https://www.linkedin.com/company/aitos-io
 + WeChat Group: Add WeChat "miatang51213" to join the group
 
 To chat with other community members you can join the [BoAT-X Gitter](https://gitter.im/BoAT-X/community)
