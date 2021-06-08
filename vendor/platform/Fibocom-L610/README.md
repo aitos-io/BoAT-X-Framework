@@ -43,8 +43,8 @@
   
   把以下两行添加到对应可加载到的地方：
   ```
-  set(libboatwallet_file_name ${CMAKE_CURRENT_SOURCE_DIR}/components/newlib/armca5/libboatwallet.a)
-  set(libboathvendor_file_name ${CMAKE_CURRENT_SOURCE_DIR}/components/newlib/armca5/libboatvendor.a)
+  set(libboatwallet_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatwallet.a)
+  set(libboathvendor_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatvendor.a)
   ```
 
 ### 2、添加BoAT-X-Framework有关头文件路径到L610平台

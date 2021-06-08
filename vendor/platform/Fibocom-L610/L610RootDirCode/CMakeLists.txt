@@ -1,5 +1,5 @@
 
-include_directories(boatiotsdk/include boatiotsdk/include/protocolapi)
+include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
 
     add_appimg(${target} ${flash_ldscript} 
     	demo.c my_contract.cpp.abi.c)
