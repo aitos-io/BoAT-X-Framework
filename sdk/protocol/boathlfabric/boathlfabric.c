@@ -382,7 +382,7 @@ __BOATSTATIC BOAT_RESULT hlfabricTransactionPayloadDataPacked(BoatHlfabricTx *tx
     Protos__TransactionAction *transactionAction_ptr          = NULL;
 	Protos__ChaincodeActionPayload chaincodeActionPayload     = PROTOS__CHAINCODE_ACTION_PAYLOAD__INIT;
 	Protos__ChaincodeEndorsedAction chaincodeEndorsedAction   = PROTOS__CHAINCODE_ENDORSED_ACTION__INIT;
-	BUINT8 *chaincodeProposalPayloadBuffer                    = NULL;
+	//BUINT8 *chaincodeProposalPayloadBuffer                    = NULL;
 	BUINT8 *chaincodeActionPayloadBuffer                      = NULL;	
 	BUINT32 transactionBufferLen;
 	BUINT32 chaincodeActionPayloadBufferLen;
@@ -474,7 +474,7 @@ __BOATSTATIC BOAT_RESULT hlfabricTransactionPayloadDataPacked(BoatHlfabricTx *tx
 
 	/* free malloc */
 	BoatFree(signatureHeadPacked.field_ptr);
-	BoatFree(chaincodeProposalPayloadBuffer);
+	// BoatFree(chaincodeProposalPayloadBuffer);
 	BoatFree(chaincodeActionPayloadBuffer);
 	BoatFree(payloadDataPacked.field_ptr);
 
