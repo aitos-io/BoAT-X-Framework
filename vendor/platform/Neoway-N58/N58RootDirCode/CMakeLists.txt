@@ -1,5 +1,5 @@
 
-include_directories(boatiotsdk/include boatiotsdk/include/protocolapi)
+include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
 
 target_link_libraries(${target} PRIVATE ${libbw_file_name} ${libbh_file_name}  ${libc_file_name} ${libm_file_name} ${libgcc_file_name})
 

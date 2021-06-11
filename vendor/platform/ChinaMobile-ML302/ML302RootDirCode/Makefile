@@ -1,5 +1,5 @@
 
-BOAT_BASE := ./boatiotsdk
+BOAT_BASE := ./BoAT-X-Framework
 
 
 INC +=  -I$(BOAT_BASE)\include -I$(BOAT_BASE)\include\protocolapi

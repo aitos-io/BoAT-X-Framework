@@ -3,7 +3,7 @@ N58调用boat2.0整合说明
 
 一 前言
 
-按照文档全部移植完整后，boat2.0需要重新make clean,再make all整个boatiotsdk。
+按照文档全部移植完整后，boat2.0需要重新make clean,再make all整个BoAT-X-Framework。
 N58平台代码也需要先删除out下的所有文件，再执行编译指令生成可下载.pac文件。
 
 
@@ -39,14 +39,14 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
   打开N58平台代码根目录\cmake\toolchain-gcc.cmake文件
   在set(libc_file_name ${CMAKE_CURRENT_SOURCE_DIR}/components/newlib/armca5/libc.a)之前添加以下内容：
     
-	set(libbw_file_name ${CMAKE_CURRENT_SOURCE_DIR}/boatiotsdk/lib/libboatwallet.a)
-    set(libbh_file_name ${CMAKE_CURRENT_SOURCE_DIR}/boatiotsdk/lib/libboatvendor.a)
+	set(libbw_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatwallet.a)
+    set(libbh_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatvendor.a)
 	
 2、添加boat2.0有关头文件路径到N58平台
   打开N58平台代码根目录\cmake\CMakeLists.txt文件
   在include_directories(XXX) 之后添加以下内容：
   
-  include_directories(boatiotsdk/include boatiotsdk/include/protocolapi)
+  include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
   
 3、添加boat2.0 lib文件到target_link_libraries
   打开N58平台代码根目录\cmake\CMakeLists.txt文件

@@ -49,7 +49,7 @@ BCHAR * my_contract_cpp_abi_setName(BoatPlatoneTx *tx_ptr, BCHAR* msg)
 
     boat_catch(cleanup)
     {
-//        BoatLog(BOAT_LOG_VERBOSE, "Exception: %d", boat_exception);
+        //BoatLog(BOAT_LOG_VERBOSE, "Exception: %d", boat_exception);
         RlpRecursiveDeleteObject(&rlp_object_list);
         return(NULL);
     }
@@ -87,7 +87,7 @@ BCHAR * my_contract_cpp_abi_getName(BoatPlatoneTx *tx_ptr)
 
     boat_catch(cleanup)
     {
- //       BoatLog(BOAT_LOG_VERBOSE, "Exception: %d", boat_exception);
+       // BoatLog(BOAT_LOG_VERBOSE, "Exception: %d", boat_exception);
         RlpRecursiveDeleteObject(&rlp_object_list);
         return(NULL);
     }
