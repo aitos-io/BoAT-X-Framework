@@ -30,7 +30,7 @@ As a middleware of the IoT blockchain, BoAT should be easily and quickly transpl
 
 ## The position of BoAT SDK in the entire blockchain network
 As a middleware connecting IoT devices and blockchain, BoAT SDK's position in the entire interactive network is shown in Figure 3-1.
-![BoAT position](/images/BoAT_Overall_Design_en-F3-1-Boat_Position.png)  
+![BoAT position](./images/BoAT_Overall_Design_en-F3-1-Boat_Position.png)  
 Figure 3-1 The position of BoAT in the blockchain interactive network
 
 
@@ -44,7 +44,7 @@ BoAT follows a hierarchical design, which is divided into interface layer, proto
 + The general tool layer is used to generate the C language interface of the smart contract and provide services such as data encoding and format conversion for the remaining layers.  
 + The utility program provides services such as data format conversion, message encoding and decoding to each layer.  
 The overall framework of BoAT is shown in Figure 4-1.
-![BoAT overall framework diagram](/images/BoAT_Overall_Design_en-F4-1-BoAT_Overall_Framework_Diagram.png)  
+![BoAT overall framework diagram](./images/BoAT_Overall_Design_en-F4-1-BoAT_Overall_Framework_Diagram.png)  
 Figure 4-1 BoAT overall framework diagram
 
 ### Interface layer
@@ -56,7 +56,7 @@ The interface layer is located at the top layer of BoAT and provides users with 
 + Transaction interface
    * Each blockchain provides a set of transaction interfaces with similar functions but different implementations.  
 
-The wallet interface of the interface layer is supported by the hardware dependent layer. For the description of the hardware dependent layer, please refer to [Hardware dependency layer](#Hardware-dependency-layer)  
+The wallet interface of the interface layer is supported by the hardware dependent layer. For the description of the hardware dependent layer, please refer to [Hardware dependency layer](#Hardware-dependency-layer).  
 The transaction interface of the interface layer is supported by the protocol layer. For a description of the protocol layer, please refer to [Protocol layer](#Protocol-layer).  
 
 #### Wallet interface
@@ -152,8 +152,6 @@ The transaction should contain at least the following elements:
 + Transaction identification
 + Messages required for transactions  
 
-Depending on specific needs, the transaction can also optionally include:
-
 The transaction should provide the following functions:
 + Wallet initialization
 + Wallet de-initialization
@@ -215,7 +213,7 @@ In addition to the initialization steps described by Ethereum, PlatONE also:
 
 
 It can be seen from the foregoing that the difference between PlatONE and Ethereum is very small. When designing the data structure and code implementation of PlatONE, the inheritance of the data structure and the reuse of code implementation should be considered, which not only reduces the amount of code, but also facilitates maintenance. For example, the composition of the transaction structure. The transaction structure of PlatONE has one more transaction type field than the transaction structure of Ethereum. Therefore, in the design of the data structure, a possible design idea is shown in Figure 4-2.  
-![A possible design idea of data structure](/images/BoAT_Overall_Design_en-F4-2-Data_Structure.png)  
+![A possible design idea of data structure](./images/BoAT_Overall_Design_en-F4-2-Data_Structure.png)  
 Figure 4-2 A possible design idea of data structure  
 Figure 4-2 describes a possible data structure design idea of PlatONE. Please note that the transaction type field of PlatONE should be placed at the end of the data structure, and the integrity of the data structure of the multiplexed Ethereum should not be destroyed. If the integrity of the data structure of Ethereum is destroyed, the implementation methods related to the data structure in Ethereum will not be reused.
 
@@ -373,12 +371,15 @@ The implementation of PlatONE's protocol layer is almost the same as that of Eth
 
 #### Protocol layer implementation of Fabric
 ##### Brief description of Fabric protocol layer
-The Fabric protocol layer mainly contains proposal protocol and transaction protocol, and the query protocol is the same as the proposal protocol.Proposal agreement and transaction agreement are respectively as follows image 4-3，image 4-4:
-![Fabric proposal protocol struct](./images/fabric-proposal.png)
-![Fabric transaction protocol struct](./images/fabric-transaction.png)
+The Fabric protocol layer mainly contains proposal protocol and transaction protocol, and the query protocol is the same as the proposal protocol.Proposal agreement and transaction agreement are respectively as follows Figure 4-3,Figure 4-4:
+![ Fabric proposal protocol struct](./images/BoAT_Overall_Design_en-F4-3-Fabric-Proposal.png)
+Figure 4-3 Fabric proposal protocol struct
+![ Fabric transaction protocol struct](./images/BoAT_Overall_Design_en-F4-4-Fabric-Transaction.png)
+Figure 4-4 Fabric transaction protocol struct
 
 When Fabric client launches a deal,will first send proposal to endorse node, get the data of proposal signature returned after endorsed node signatures. then the Fabric client puts the data endor node signature together with transaction parameters according to the transaction message format and sends to order nodes. After order node check through, it will updating the state of the chain.The detailed transaction process is shown in Figure 4-5,This figure is taken from the <Hyperledger-FabricDocs Master> document.For more information on Fabric, refer to the Fabric documentation <https://hyperledger-fabric.readthedocs.io/en/release-1.4/>
-![ Fabric transaction flow](./images/fabric-transaction-flow.png)
+![ Fabric transaction flow](./images/BoAT_Overall_Design_en-F4-5-Fabric-Transaction-Flow.png)
+Figure 4-5 Fabric transaction flow
 #####	Fabric protocol interface implementation
 In the Fabric message, the fields in the protocol are serialized through ProtoBuf and then sent out through the HTTP2 protocol.As can be seen from the preface section, there are some duplicates and similarities between the proposal and transaction messages, and these duplicates can be split into a submodule for easier reuse.One possible split is listed as follows:
 -	channelHeader packaging
@@ -539,9 +540,9 @@ In addition, in order to adapt the SDK to more environments, you can also encaps
 
 ##### Structure of RLP
 RLP encoding is used in two places. One is that the protocol layer organizes transaction messages to use RLP encoding, and the other is that RLP encoding may be used in the generated C language contract interface code.  
-The definition of RLP encoding only handles two types of data: one is a string and the other is a list. String refer to a string of binary data, such as a byte array; List is a nested recursive structure, which can contain strings and lists, and its structure is shown in Figure 4-3:
-![The structure of the RLP list](/images/BoAT_Overall_Design_en-F4-3-Structure_Of_RLP.png)  
-Figure 4-3 The structure of the RLP list
+The definition of RLP encoding only handles two types of data: one is a string and the other is a list. String refer to a string of binary data, such as a byte array; List is a nested recursive structure, which can contain strings and lists, and its structure is shown in Figure 4-6:
+![The structure of the RLP list](./images/BoAT_Overall_Design_en-F4-6-Structure_Of_RLP.png)  
+Figure 4-6 The structure of the RLP list
 
 ##### RLP encoding rules
 The encoding rules of RLP are described as follows:
@@ -554,9 +555,9 @@ For a more detailed description of RLP encoding rules, please refer to the refer
 
 
 ##### RLP encoding implementation
-RLP encoding can be implemented in many different ways. As can be seen from the foregoing chapters, a possible data structure composition description of RLP encoding is shown in Figure 4-4:
-![A possible data structure of RLP encoding](/images/BoAT_Overall_Design_en-F4-4-Data_Structure_Of_RLP.png)  
-Figure 4-4 A possible data structure of RLP encoding
+RLP encoding can be implemented in many different ways. As can be seen from the foregoing chapters, a possible data structure composition description of RLP encoding is shown in Figure 4-7:
+![A possible data structure of RLP encoding](./images/BoAT_Overall_Design_en-F4-7-Data_Structure_Of_RLP.png)  
+Figure 4-7 A possible data structure of RLP encoding
 
 The figure defines four types to express the nested recursive structure of the RLP list. If there is a list object named List, it contains three string objects: stringA, stringB, stringC,Then a possible process of performing RLP encoding on the list object List is described as follows:
 1. Initialize the list object List
