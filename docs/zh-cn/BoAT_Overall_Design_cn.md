@@ -25,14 +25,14 @@
 + 层次化设计  
 + 多个区块链协议支持  
 + 可扩展设计  
-+ 秘钥安全设计  
++ 密钥安全设计  
 + 针对不同区块链提供相应的C语言接口合约自动生成工具  
 
 
 ## BoAT SDK在整个区块链网络中的位置
-BoAT SDK作为连接物联网设备和区块链的中间件，其在整个交互网络中的位置如图3- 1所示。
-![BoAT position](./images/BoAT_Overall_Design_cn-F3-1-Boat_Position.png)  
-图 3-1 BoAT在区块链交互网络中的位置
+BoAT SDK作为连接物联网设备和区块链的中间件，其在整个交互网络中的位置如图3-1所示。<br>
+![BoAT position](./images/BoAT_Overall_Design_cn-F3-1-Boat_Position.png)  <br>
+图 3-1 BoAT在区块链交互网络中的位置<br>
 
 
 
@@ -45,9 +45,9 @@ BoAT遵循层次化设计，分为接口层，协议层，RPC层，硬件依赖�
 + 通用工具层用于智能合约的C语言接口生成和为其余各层提供数据编码、格式转换等服务。
 + 实用程序向各层提供如数据格式转换、报文编解码等服务。
 
-BoAT的整体框架如图4- 1所示。
-![BoAT总体框图](./images/BoAT_Overall_Design_cn-F4-1-BoAT_Overall_Framework_Diagram.png)
-图 4-1 BoAT总体框图
+BoAT的整体框架如图4-1所示。<br>
+![BoAT总体框图](./images/BoAT_Overall_Design_cn-F4-1-BoAT_Overall_Framework_Diagram.png)<br>
+图 4-1 BoAT总体框图<br>
 
 ### 接口层
 #### 概述
@@ -58,11 +58,11 @@ BoAT的整体框架如图4- 1所示。
 + 交易接口
    * 每个区块链都提供一套交易接口，其功能类似，具体实现有所不同。
 
-接口层的钱包接口由硬件依赖层提供支持，有关硬件依赖层的描述请参见[硬件依赖层](#硬件依赖层)
-接口层的交易接口由协议层提供支持，有关协议层的描述请参见[协议层](#协议层). 
+接口层的钱包接口由硬件依赖层提供支持，有关硬件依赖层的描述请参见[硬件依赖层](#硬件依赖层)。
+接口层的交易接口由协议层提供支持，有关协议层的描述请参见[协议层](#协议层)。
 #### 钱包接口
 ##### 钱包的数据结构和功能实现清单
-钱包是一个容器，容器里除了存储着访问区块链所必须的信息，还包含了一个秘钥管理系统，它们分别对应着钱包的数据结构和实现方法。
+钱包是一个容器，容器里除了存储着访问区块链所必须的信息，还包含了一个密钥管理系统，它们分别对应着钱包的数据结构和实现方法。
 BoAT SDK运行在蜂窝模组的应用处理器上，其运行环境的资源是受限的，如有的蜂窝模组可能并不提供非易失性存储器的访问接口；另一方面，从用户的角度讲，可能有的用户仅仅希望创建一个临时的钱包用于测试，而不想长久的存储它。鉴于此，在BoAT SDK的设计里将钱包分为两类：持久化钱包和一次性钱包。持久化钱包存储在运行环境的非易失性存储器里，掉电不会丢失；一次性钱包存储在运行环境的RAM中，掉电即丢失。
 在钱包的数据结构中，应至少包含以下元素：
   + 账户私钥
@@ -72,7 +72,7 @@ BoAT SDK运行在蜂窝模组的应用处理器上，其运行环境的资源是
 除必须包含的元素外，钱包的数据结构可选择包含：
   + 账户地址
 
-钱包应提供以下功能实现：  
+钱包应当实现以下功能：  
   + SDK初始化
   + SDK反初始化
   + 钱包创建
@@ -134,14 +134,12 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 ##### 交易的数据结构和功能实现清单
 交易是经过签名后的一条消息， 通过区块链的网络传播， 被记录在区块链上。不同的区块链提供的交易接口的功能基本一致。  
 
-对于Ethereum/PlatONE/FISCOBCOS：
+对于Ethereum/PlatONE/FISCO BCOS：
 
 交易应至少包含如下元素：
 + 钱包的数据结构
 + 交易标识
 + 交易所需的报文  
-
-视具体需求，交易还可选择包含：  
 
 交易应提供以下功能实现：  
 + 钱包初始化
@@ -204,12 +202,12 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
   1. 设置交易类型字段  
 
 
-由前所述可以看出，PlatONE和Ethereum的差异非常的小，在设计PlatONE的数据结构及代码实现时，应考虑数据结构的继承及代码实现的复用，这样既减少代码量，也便于维护。比如在交易结构上的组成上，PlatONE的交易结构比Ethereum的交易结构多了一个交易类型字段，因此，在数据结构的设计中，一种可能的设计思路如图4- 2所示：  
-![数据结构的一种可能的设计思路](./images/BoAT_Overall_Design_cn-F4-2-Data_Structure.png)  
-图 4-2 数据结构的一种可能的设计思路  
-图4- 2描述了PlatONE的一种可能的数据结构设计思路，请注意，PlatONE的交易类型字段应放置在数据结构的最末位置，不能破坏复用的Ethereum的数据结构的完整性。如果破坏了Ethereum的数据结构的完整性，将导致Ethereum中与该数据结构相关的实现方法不可复用。
+由前所述可以看出，PlatONE和Ethereum的差异非常的小，在设计PlatONE的数据结构及代码实现时，应考虑数据结构的继承及代码实现的复用，这样既减少代码量，也便于维护。比如在交易结构上的组成上，PlatONE的交易结构比Ethereum的交易结构多了一个交易类型字段，因此，在数据结构的设计中，一种可能的设计思路如图4-2所示： <br>
+![数据结构的一种可能的设计思路](./images/BoAT_Overall_Design_cn-F4-2-Data_Structure.png)  <br>
+图 4-2 数据结构的一种可能的设计思路  <br>
+图4-2描述了PlatONE的一种可能的数据结构设计思路，请注意，PlatONE的交易类型字段应放置在数据结构的最末位置，不能破坏复用的Ethereum的数据结构的完整性。如果破坏了Ethereum的数据结构的完整性，将导致Ethereum中与该数据结构相关的实现方法不可复用。
 
-##### FISCOBCOS交易接口功能实现简述
+##### FISCO BCOS交易接口功能实现简述
 和Ethereum相比，其有差异的地方列出如下：
 @todo
 
@@ -249,14 +247,11 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
   该接口执行的内容包括：
   1. 发送查询相关的报文。
   2. 发送调用相关的报文。
--	查询交易回执
-  该接口执行的内容包括：
-  1. 查询交易可通过交易参数的设置实现。
 
 
 ### 协议层
 #### 概述
-协议层位于BoAT SDK的第二层，主要实现各个区块链的协议部分。对于Ethereum系的区块链，其协议比较相似，如Ethereum、PlatONE和FISCOBCOS。   
+协议层位于BoAT SDK的第二层，主要实现各个区块链的协议部分。对于Ethereum系的区块链，其协议比较相似，如Ethereum、PlatONE和FISCO BCOS。   
 协议层由RPC层提供支持。RPC层描述请参考 [RPC层](#RPC层).  
 
 #### Ethereum的协议层实现
@@ -357,17 +352,20 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 
 #### PlatONE的协议层实现
 PlatONE的协议层实现与Ethereum的协议层几乎一样，其唯一的区别是：raw transaction的data字段的填充和raw transaction的RLP编码过程中，多了交易类型的编码。因为data字段的填充和对raw transaction的RLP编码，是由使用BoAT SDK的用户在调用BoAT SDK相关的API之前实现的，因此PlatONE的协议层可以复用Ethereum的协议层。
-#### FISCOBCOS的协议层实现
+#### FISCO BCOS的协议层实现
 @todo
 
 #### Fabric的协议层实现
 ##### Fabric协议概述
-Fabric协议层主要包含提案协议和交易协议，查询的协议与提案协议相同。提案协议与交易协议分别如图4-3，图4-4所示
-![Fabric提案报文结构](./images/fabric-proposal.png)
-![Fabric交易报文结构](./images/fabric-transaction.png)
+Fabric协议层主要包含提案协议和交易协议，查询的协议与提案协议相同。提案协议与交易协议分别如图4-3，图4-4所示<br>
+![Fabric提案报文结构](./images/BoAT_Overall_Design_cn-F4-3-Fabric-Proposal.png)<br>
+图 4-3 Fabric提案报文结构<br>
+![Fabric交易报文结构](./images/BoAT_Overall_Design_cn-F4-4-Fabric-Transaction.png)<br>
+图 4-4 Fabric交易报文结构<br>
 
-Fabric客户端发起一笔的交易的时候，会首先向背书节点发送提案，背书节点对提案签名后返回签名数据，然后Fabric客户端连同背书节点的签名数据和交易参数按交易报文的格式组织好后发送给排序节点，排序节点校验通过后写更新链的状态。详细的交易流程如图4-5所示，该图是是从《hyperledger-fabricdocs master》文档中摘取的。关于Fabric更多的介绍，可以参考Fabric文档< https://hyperledger-fabric.readthedocs.io/en/release-1.4/>
-![ Fabric交易流程](./images/fabric-transaction-flow.png)
+Fabric客户端发起一笔的交易的时候，会首先向背书节点发送提案，背书节点对提案签名后返回签名数据，然后Fabric客户端连同背书节点的签名数据和交易参数按交易报文的格式组织好后发送给排序节点，排序节点校验通过后写更新链的状态。详细的交易流程如图4-5所示，该图是是从《hyperledger-fabricdocs master》文档中摘取的。关于Fabric更多的介绍，可以参考Fabric文档< https://hyperledger-fabric.readthedocs.io/en/release-1.4/><br>
+![ Fabric交易流程](./images/BoAT_Overall_Design_cn-F4-5-Fabric-Transaction-Flow.png)<br>
+图 4-5 Fabric交易流程
 #####	Fabric协议接口实现
 在Fabric报文中，协议中的各字段通过protobuf实现序列化，然后通过HTTP2协议发送出去。由前序章节可知，提案报文和交易报文有一些重复和相似的地方，可以把这些重复的部分拆分为一个子模块，以便于重用。一种可能的拆分方式列出如下：
 -	channelHeader打包
@@ -523,9 +521,9 @@ BoAT的设计应考虑TE环境的支持。对于有TE环境的硬件，BoAT应�
 #### RLP编码
 ##### RLP的结构
 RLP编码用于两个地方，一个是协议层组织交易报文会用到RLP编码，另一个是生成的C语言合约接口代码里可能会用到RLP编码。  
-RLP编码的定义里只处理两类数据：一类是字符串，一类是列表。字符串指的是一串二进制数据，如字节数组；列表是一个嵌套递归的结构，里面可以包含字符串和列表，其结构形式如图4- 3所示：  
-![RLP列表的结构](./images/BoAT_Overall_Design_cn-F4-3-Structure_Of_RLP.png)  
-图 4-3 RLP列表的结构
+RLP编码的定义里只处理两类数据：一类是字符串，一类是列表。字符串指的是一串二进制数据，如字节数组；列表是一个嵌套递归的结构，里面可以包含字符串和列表，其结构形式如图4- 6所示： <br>
+![RLP列表的结构](./images/BoAT_Overall_Design_cn-F4-6-Structure_Of_RLP.png) <br>
+图 4-6 RLP列表的结构<br>
 
 ##### RLP编码规则
 RLP的编码规则描述如下：   
@@ -538,9 +536,9 @@ RLP的编码规则描述如下：
 
 
 ##### RLP编码实现
-RLP编码实现可以有多种不同的方式。由前述章节可知，RLP编码的一种可能的数据结构组成描述如图4- 4所示：  
-![RLP编码的一种可能的数据结构](/images/BoAT_Overall_Design_cn-F4-4-Data_Structure_Of_RLP.png)  
-图 4-4 RLP编码的一种可能的数据结构
+RLP编码实现可以有多种不同的方式。由前述章节可知，RLP编码的一种可能的数据结构组成描述如图4-7所示：<br>  
+![RLP编码的一种可能的数据结构](./images/BoAT_Overall_Design_cn-F4-7-Data_Structure_Of_RLP.png)  <br>
+图 4-7 RLP编码的一种可能的数据结构<br>
 
 图中定义了四种类型，来表达RLP列表的嵌套递归结构，假如有一个名为List的列表对象，其包含了三个字符串对象分别为stringA，stringB，stringC，则对列表对象List执行RLP编码的一种可能的流程描述如下：
 1. 初始化列表对象List
@@ -568,9 +566,9 @@ cJSON是C语言编写的一个轻量级的JSON编解码器，遵循ANSI-C标准�
 
 ## 使用BoAT创建一笔区块链交易的流程
 ### 使用BoAT创建一笔Ethereum交易的流程
-一个典型的使用BoAT创建一笔Ethereum交易的流程如图5- 1所示：  
-![使用BoAT创建一笔交易的流程](./images/BoAT_Overall_Design_cn-F5-1-Create_Ttransaction.png)  
-图 5-1 使用BoAT创建一笔交易的流程
+一个典型的使用BoAT创建一笔Ethereum交易的流程如图5-1所示：  <br>
+![使用BoAT创建一笔交易的流程](./images/BoAT_Overall_Design_cn-F5-1-Create_Ttransaction.png)  <br>
+图 5-1 使用BoAT创建一笔交易的流程<br>
 
 其中：
 + BoAT SDK初始化：  
