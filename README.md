@@ -2,7 +2,7 @@
 # BoAT Framework
 [![Issue](https://img.shields.io/github/issues/aitos-io/BoAT-X-Framework)](https://github.com/aitos-io/BoAT-X-Framework/issues)![Forks](https://img.shields.io/github/forks/aitos-io/BoAT-X-Framework)![Stars](https://img.shields.io/github/stars/aitos-io/BoAT-X-Framework)[![GitHub Release](https://img.shields.io/github/license/aitos-io/BoAT-X-Framework)](https://github.com/aitos-io/BoAT-X-Framework/blob/master/LICENSE)[![Join the chat at https://gitter.im/BoAT-X/community](https://badges.gitter.im/BoAT-X/community.svg)](https://gitter.im/BoAT-X/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![aitos.io](https://aitos-io.github.io/BoAT-X-Framework/logo/aitos_logo_100.png)](http://www.aitos.io/)
+[![BoAT logo](https://aitos-io.github.io/BoAT-X-Framework/logo/BoAT_RGB_Horizontal_100.png)]
 
 
 ## Introduction
@@ -260,4 +260,7 @@ Submit Pull Requests at [Pull Requests](https://github.com/aitos-io/BoAT-X-Frame
 Apache License 2.0, see [LICENSE](./LICENSE).
 
 
-## Join us as a BoAT-Mariner and pioneer your IoT+Blockchain path in 2021
+## Join us as a BoAT-Mariner and pioneer your IoT+Blockchain path
+
+**Open source by [aitos.io](http://www.aitos.io/)
+[![aitos.io](https://aitos-io.github.io/BoAT-X-Framework/logo/aitos_logo_100.png)](http://www.aitos.io/)
