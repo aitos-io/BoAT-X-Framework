@@ -262,5 +262,6 @@ Apache License 2.0, see [LICENSE](./LICENSE).
 
 ## Join us as a BoAT-Mariner and pioneer your IoT+Blockchain path
 
-**Open source by [aitos.io](http://www.aitos.io/)
+**Open source by [aitos.io](http://www.aitos.io/)**
+
 [![aitos.io](https://aitos-io.github.io/BoAT-X-Framework/logo/aitos_logo_100.png)](http://www.aitos.io/)
