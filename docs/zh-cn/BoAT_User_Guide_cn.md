@@ -28,13 +28,12 @@ BoAT IoT Framework是面向蜂窝模组的C语言区块链应用框架客户端�
 
 **已支持的区块链:**  
 以太坊  
-PlatONE
-FISCO-BCOS
+PlatONE  
+FISCO-BCOS  
 Hyperledger Fabric
 
-
 **支持的Target操作系统：**  
-linux
+linux  
 RTOS
 
 
