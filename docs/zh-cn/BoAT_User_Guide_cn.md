@@ -159,7 +159,7 @@ BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 ```
 根据需要，将相应变量的值改为`1`或`0`以使能或禁能相应的区块链协议。或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁能相应的区块链协议。
 - 日志打印级别调整
-根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印机别。
+根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
 
 ### 合约C接口代码自动生成
 智能合约是区块链上的可执行代码，在区块链虚拟机（例如EVM和WASM）上执行，并以远程过程调用（RPC）方式被客户端调用。  
@@ -197,8 +197,8 @@ Host编译指编译环境与目标环境一致，例如，在x86上编译x86程�
 基于linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。
 
 编译遵照如下步骤:
-1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中
-2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见3.3节）
+1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中  
+2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见[合约C接口代码自动生成](###合约C接口代码自动生成)章节）  
 3. 在\<SDKRoot\>目录下，执行以下命令:  
 $make boatlibs
 
