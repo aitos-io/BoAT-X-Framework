@@ -31,8 +31,8 @@
 
 ## BoAT SDK在整个区块链网络中的位置
 BoAT SDK作为连接物联网设备和区块链的中间件，其在整个交互网络中的位置如图3-1所示。<br>
-![BoAT position](./images/BoAT_Overall_Design_cn-F3-1-Boat_Position.png)  
-图 3-1 BoAT在区块链交互网络中的位置
+![BoAT position](./images/BoAT_Overall_Design_cn-F3-1-Boat_Position.png)  <br>
+图 3-1 BoAT在区块链交互网络中的位置<br>
 
 
 
@@ -46,8 +46,8 @@ BoAT遵循层次化设计，分为接口层，协议层，RPC层，硬件依赖�
 + 实用程序向各层提供如数据格式转换、报文编解码等服务。
 
 BoAT的整体框架如图4-1所示。<br>
-![BoAT总体框图](./images/BoAT_Overall_Design_cn-F4-1-BoAT_Overall_Framework_Diagram.png)
-图 4-1 BoAT总体框图
+![BoAT总体框图](./images/BoAT_Overall_Design_cn-F4-1-BoAT_Overall_Framework_Diagram.png)<br>
+图 4-1 BoAT总体框图<br>
 
 ### 接口层
 #### 概述
@@ -203,8 +203,8 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 
 
 由前所述可以看出，PlatONE和Ethereum的差异非常的小，在设计PlatONE的数据结构及代码实现时，应考虑数据结构的继承及代码实现的复用，这样既减少代码量，也便于维护。比如在交易结构上的组成上，PlatONE的交易结构比Ethereum的交易结构多了一个交易类型字段，因此，在数据结构的设计中，一种可能的设计思路如图4-2所示： <br>
-![数据结构的一种可能的设计思路](./images/BoAT_Overall_Design_cn-F4-2-Data_Structure.png)  
-图 4-2 数据结构的一种可能的设计思路  
+![数据结构的一种可能的设计思路](./images/BoAT_Overall_Design_cn-F4-2-Data_Structure.png)  <br>
+图 4-2 数据结构的一种可能的设计思路  <br>
 图4-2描述了PlatONE的一种可能的数据结构设计思路，请注意，PlatONE的交易类型字段应放置在数据结构的最末位置，不能破坏复用的Ethereum的数据结构的完整性。如果破坏了Ethereum的数据结构的完整性，将导致Ethereum中与该数据结构相关的实现方法不可复用。
 
 ##### FISCO BCOS交易接口功能实现简述

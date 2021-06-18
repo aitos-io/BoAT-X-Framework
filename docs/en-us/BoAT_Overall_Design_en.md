@@ -587,7 +587,7 @@ cJSON is a lightweight JSON codec written in C language. It follows the ANSI-C s
 
 ### The process of creating an Ethereum transaction using BoAT
 A typical process of using BoAT to create an Ethereum transaction is shown in Figure 5-1:  <br>
-![The process of creating a transaction using BoAT](/images/BoAT_Overall_Design_en-F5-1-Create_Ttransaction.png)  <br>
+![The process of creating a transaction using BoAT](./images/BoAT_Overall_Design_en-F5-1-Create_Ttransaction.png)  <br>
 Figure 5-1 The process of creating a transaction using BoAT<br>
 
 among them:
