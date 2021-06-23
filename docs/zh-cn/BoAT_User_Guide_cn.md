@@ -28,13 +28,12 @@ BoAT IoT Framework是面向蜂窝模组的C语言区块链应用框架客户端�
 
 **已支持的区块链:**  
 以太坊  
-PlatONE
-FISCO-BCOS
+PlatONE  
+FISCO-BCOS  
 Hyperledger Fabric
 
-
 **支持的Target操作系统：**  
-linux
+linux  
 RTOS
 
 
@@ -160,7 +159,7 @@ BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 ```
 根据需要，将相应变量的值改为`1`或`0`以使能或禁能相应的区块链协议。或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁能相应的区块链协议。
 - 日志打印级别调整
-根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印机别。
+根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
 
 ### 合约C接口代码自动生成
 智能合约是区块链上的可执行代码，在区块链虚拟机（例如EVM和WASM）上执行，并以远程过程调用（RPC）方式被客户端调用。  
@@ -198,8 +197,8 @@ Host编译指编译环境与目标环境一致，例如，在x86上编译x86程�
 基于linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。
 
 编译遵照如下步骤:
-1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中
-2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见3.3节）
+1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中  
+2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见[合约C接口代码自动生成](###合约C接口代码自动生成)章节）  
 3. 在\<SDKRoot\>目录下，执行以下命令:  
 $make boatlibs
 
@@ -245,7 +244,7 @@ $. cross_compiler_config.sh
 $export
 
 
-若环境变量CC和AR已设置，可以执行以下命令查看当前CC和AR的版本，以便确认是否已经指向了期望的交叉编译环境:
+若环境变量CC和AR已设置，可以执行以下命令查看当前CC和AR的版本，以便确认是否已经指向了期望的交叉编译环境:  
 ${CC} -v  
 
 ${AR} -v
@@ -730,7 +729,7 @@ contract StoreRead {
 
 对区块链状态的任何改变，都需要通过区块链交易实施并在全网达成共识。改变区块链状态的合约函数是异步调用，在调用时，只是发起该次区块链交易，而在区块链网络将该交易打包出块前，该合约不会被执行。因此，调用改变区块链状态的合约函数时，其返回值仅仅是用于标识该次交易的哈希值，而不是该合约函数形式上的返回值。在设计智能合约时，改变区块链状态的对外（public）接口函数，其试图返回的信息，应当保存在合约成员变量中，通过BoatEthGetTransactionReceipt()查询该次交易的回执，成功后，用另一个读函数的形式获取。
 
-不改变区块链状态的合约函数，只需区块链节点读取其数据库内的已有信息，无需交易和共识，因此对该类函数的调用是同步调用，其返回值是合约函数形式上的返回值
+不改变区块链状态的合约函数，只需区块链节点读取其数据库内的已有信息，无需交易和共识，因此对该类函数的调用是同步调用，其返回值是合约函数形式上的返回值。
 
 #### 交易初始化
 调用自动生成的合约接口，首先应初始化一个交易对象，然后调用生成的合约接口。
@@ -784,7 +783,7 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ### 手动构造合约调用
 如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。
 
-手工构造交易需要遵循具体区块链协议的ABI接口，。
+手工构造交易需要遵循具体区块链协议的ABI接口。
 
 **例1：以太坊交易构造**
 - **步骤1** 调用BoatEthTxInit()进行交易初始化
@@ -868,7 +867,7 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
     ```
     BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr,
                                         BUINT8 *rlp_param_ptr,
-                                        BUINT32 rlp_param_len)
+                                        BUINT32 rlp_param_len);
     ```
     其中，rlp_param_ptr的格式遵循与步骤3相同的规则。
     具体调用方法，可参照SDK所附的Demo的自动生成代码，这些代码位于\<SDKRoot\>/contract/generated下。
