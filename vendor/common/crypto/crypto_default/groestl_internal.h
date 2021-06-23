@@ -114,6 +114,16 @@ typedef int64_t sph_s64;
 #define SPH_DETECT_LITTLE_ENDIAN     1
 #define SPH_DETECT_BIG_ENDIAN        0
 
+/*
+ * Default: little-endian
+ */
+#else
+
+#pragma message "Cannot automatically determine the byte order, assuming little-endian"
+
+#define SPH_DETECT_LITTLE_ENDIAN     1
+#define SPH_DETECT_BIG_ENDIAN        0
+
 #endif
 
 
