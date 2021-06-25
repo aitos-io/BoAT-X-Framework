@@ -1,19 +1,20 @@
 # BoAT系统需求
-AITOS.20.70.103RS
 
 
 本文描述BoAT Framework SDK区块链客户端（C语言版本）对蜂窝模组的系统需求。BoAT是一个运行在模组的应用处理器上的SDK。对于OpenCPU的蜂窝模组，BoAT作为库被应用程序链接和调用。对于非OpenCPU的蜂窝模组，BoAT的API需要扩展为AT命令，供上位机上的应用调用。
 
 ## 存储需求
 
-仅支持以太坊/PLATONE/FISCBCOS时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
+仅支持以太坊/PlatONE/FISCO BCOS时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
 - Flash（代码和只读数据）：约210kB
 - Flash（持久性读写数据): 数百Byte
 - RAM（全局变量、堆、栈）：约10kB
-仅支持FABRIC时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
+
+仅支持HyperLedger Fabric时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
 - Flash（代码和只读数据）：约520kB
 - Flash（持久性读写数据): 数千Byte
 - RAM（全局变量、堆、栈）：约30kB
+
 以上不含BoAT Framework SDK（C语言版本）所依赖的系统库，具体数值随不同区块链协议而有所不同。
 
 ## 处理能力需求
@@ -49,27 +50,28 @@ BoAT Framework SDK（C语言版本）对操作系统没有特别要求，linux�
 
 ### TEE
 
-若蜂窝模组的应用处理器支持TEE（Trusted Execution Environment），则可以利用TEE来保护密钥、签名、加密等敏感数据和过程。TEE至少应支持以下能力：<br>
-(1)	开放客户二次开发TA（Trusted Application）的能力（如开放必要的密钥）<br>
-(2)	配套支持Secure Boot、fuse等 <br>
-(3)	支持安全存储
+若蜂窝模组的应用处理器支持TEE（Trusted Execution Environment），则可以利用TEE来保护密钥、签名、加密等敏感数据和过程。TEE至少应支持以下能力：
+1. 开放客户二次开发TA（Trusted Application）的能力（如开放必要的密钥）
+2. 配套支持Secure Boot、fuse等
+3. 支持安全存储
 
 ### 远程认证
 
-远程认证（Remote Attestation）是利用芯片中预埋的Root of Trust，为设备的数据提供签名服务，并可能采集设备运行环境特征信息的机制。远程认证可以帮助服务商远程认证设备的真伪。若模组的芯片支持远程认证，至少应支持以下能力：<br>
-(1)	支持对给定的数据进行认证签名，且可在远端服务器上验证签名 <br>
-(2)	若支持TEE，应支持在TEE内对数据进行认证签名（可选）
+远程认证（Remote Attestation）是利用芯片中预埋的Root of Trust，为设备的数据提供签名服务，并可能采集设备运行环境特征信息的机制。远程认证可以帮助服务商远程认证设备的真伪。若模组的芯片支持远程认证，至少应支持以下能力：
+1. 支持对给定的数据进行认证签名，且可在远端服务器上验证签名
+2. 若支持TEE，应支持在TEE内对数据进行认证签名（可选）
 
 
 ## 密码学运算硬件加速（可选）
 
 若硬件支持密码学运算加速，可以提高密码运算性能。
-支持以太坊/PLATONE/FISCOBCOS时，BoAT至少需要如下密码学运算：<bf>
-1. 椭圆曲线签名ECDSA（secp256k1曲线）<bf>
-2. SHA2-256和Keccak-256（Keccak-256为SHA3-256的变种）
 
-支持FABRIC时，BoAT至少需要如下密码学运算：<bf>
-1. 椭圆曲线签名ECDSA（secp256p1曲线）<bf>
+支持以太坊/PlatONE/FISCO BCOS时，BoAT至少需要如下密码学运算：
+1. 椭圆曲线签名ECDSA（secp256k1曲线）
+2. Keccak-256（Keccak-256为SHA3-256的变种）
+
+支持HyperLedger Fabric时，BoAT至少需要如下密码学运算：
+1. 椭圆曲线签名ECDSA（secp256r1曲线）
 2. SHA2-256
 
 
