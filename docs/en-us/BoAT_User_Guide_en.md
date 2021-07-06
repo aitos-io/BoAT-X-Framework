@@ -33,12 +33,12 @@ Hyperledger Fabric
 
 
 **Supported Target Operating System:**  
-linux 
+Linux 
 RTOS
 
 
 **Supported Build Operating System:**  
-linux/cygwin  
+Linux/Cygwin  
 
 **Main features:**  
 Blockchain account (wallet) parameter configuration  
