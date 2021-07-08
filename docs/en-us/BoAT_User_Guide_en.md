@@ -72,7 +72,7 @@ The blockchain client interface protocol mainly implements transaction interface
 The remote procedure call(RPC) interface implements a warpper for different communication protocols. This component needs to be ported according to the specific communication method supported by the IoT device.  
 Public components implement common functions such as RLP encoding, JSON codec, string processing, etc.  
 Hardware dependent components are ported components involving different hardware, such as cryptography accelerators, secure storage, random numbers, etc. This component needs to be ported according to specific hardware. SDK also provides a set of default Hardware dependent components witch implementations by software.  
-The tool component provides a set of  Python tools, that be used to generate C language contract call interface of smart contract ABI interface based on Solidity or WASM C++.  
+The tool component provides a set of  Python tools, which are used to generate C language contract call interface of smart contract ABI interface based on Solidity or WASM C++.  
 
 
 
