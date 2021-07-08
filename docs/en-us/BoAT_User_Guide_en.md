@@ -689,15 +689,15 @@ In some contract programming languages, the two types of contract functions have
 For example, take the following Ethereum Solidity contract as an example:
 
     contract StoreRead {
-    bytes32[] eventList;
+        bytes32[] eventList;
     
-    function saveList(bytes32 newEvent) public {
-        eventList.push(newEvent);
-    }
+        function saveList(bytes32 newEvent) public {
+            eventList.push(newEvent);
+        }
     
-    function readListLength() public view returns (uint32 length_) {
-        length_ = uint32(eventList.length);
-    }
+        function readListLength() public view returns (uint32 length_) {
+            length_ = uint32(eventList.length);
+        }
     }
 
 
