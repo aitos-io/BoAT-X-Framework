@@ -369,8 +369,7 @@ Ganache has a ganache-cli version of the command line interface, and a Ganache v
 In addition to using the ganache simulator, you can also use the Ethereum test network such as Ropsten (you need to apply for a free test token).  
 
 
-Before running the PlatONE Demo, you need to install the PlatONE node, as well as smart contract compilation and deployment tools.  
-PlatONE source code and tools can visit this website: https://platone.wxblockchain.com  
+Before running the PlatONE Demo, you need to install the PlatONE node, as well as smart contract compilation and deployment tools,could visit this website: https://platone.wxblockchain.com  .
 
 Before running the FISCO-BCOS Demo, you need to install the FISCO-BCOS node and contract deployment.
 FISCO-BCOS source code and installation and deployment steps can visit this website: https://fisco-bcos-documentation.readthedocs.io
