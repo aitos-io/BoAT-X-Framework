@@ -37,9 +37,9 @@ Figure 3-1 The position of BoAT in the blockchain interactive network<br>
 
 ## BoAT implementation framework 
 BoAT follows a hierarchical design, which is divided into interface layer, protocol layer, RPC layer, hardware dependency layer, general tools and utility programs. among them:   
-+ The interface provided by the interface layer is for users to call to access the corresponding blockchain.  
-+ The protocol layer provides services to the interface layer.  
-+ The RPC layer provides services to the protocol layer.  
++ The interface provided by the interface layer is for users to access the corresponding blockchain..  
++ The protocol layer provides blockchain adpatation services to the interface layer.  
++ The RPC layer provides remote process call services to the protocol layer.  
 + The hardware dependency layer provides encryption, signature, storage and other services for the wallet at the interface layer.  
 + The general tool layer is used to generate the C language interface of the smart contract and provide services such as data encoding and format conversion for the remaining layers.  
 + The utility program provides services such as data format conversion, message encoding and decoding to each layer.  
