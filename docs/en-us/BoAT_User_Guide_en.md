@@ -291,7 +291,7 @@ Among them, boatiotsdk is the directory where the SDK is located, and the -C par
 
 *Note: In the Makefile, the command under target must start with a Tab (ASCII code 0x09), not a space.*
 
-The above steps are only used to compile the SDK library. After the SDK library compile completed, the compiled library needs to be integrated into the module development environment. See the [Header Files and Libraries](###Header Files and Libraries) chapter for details.
+The above steps are only used to compile the SDK library. After the SDK library compilation completes, the compiled library needs to be integrated into the module development environment. See the [Header Files and Libraries](###Header Files and Libraries) chapter for details.
 
 ###### The module development environment is compiled with non-GNU make
 Since BoAT IoT Framework SDK uses GNU make as the compilation project, if the module development environment uses non-GNU Make compilation projects (such as Ninja, ant, etc.), or uses the automatic generation tools of the compilation project (such as automake, CMake), it cannot Compile the SDK directly in the module development environment.  
