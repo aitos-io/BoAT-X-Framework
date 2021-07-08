@@ -457,15 +457,15 @@ After the SDK is compiled, only the following files are needed for the applicati
 1. Refer to the SDK header file in the application
 
 - Add \<SDKRoot\>/include to the header file search path of the application, or copy all header files under \<SDKRoot\>/include to the application header file directory.
-  -In the application header file search path, add \<SDKRoot\>/vendor/platform/include, or copy the boatconfig.h header file under \<SDKRoot\>/vendor/platform/include to the application header file directory .
-  -In the application-related C code, add the following header files:
+- In the application header file search path, add \<SDKRoot\>/vendor/platform/include, or copy the boatconfig.h header file under \<SDKRoot\>/vendor/platform/include to the application header file directory .
+- In the application-related C code, add the following header files:
 
    ````
    #include "boatiotsdk.h" //SDK entry header file
    #include "boatconfig.h" //SDK configuration header file
    ````
 
--The application does not need to include the other header file directories of the SDK into the search path.
+- The application does not need to include the other header file directories of the SDK into the search path.
 
 If you use the automatically generated C interface code based on the contract ABI JSON file, you also need to include the generated smart contract C interface code header file, and add the generated `*.c` file to the application compilation script.
 
