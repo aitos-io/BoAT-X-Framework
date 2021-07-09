@@ -72,7 +72,7 @@ The blockchain client interface protocol mainly implements transaction interface
 The remote procedure call(RPC) interface implements a warpper for different communication protocols. This component needs to be ported according to the specific communication method supported by the IoT device.  
 Public components implement common functions such as RLP encoding, JSON codec, string processing, etc.  
 Hardware dependent components are ported components involving different hardware, such as cryptography accelerators, secure storage, random numbers, etc. This component needs to be ported according to specific hardware. SDK also provides a set of default Hardware dependent components witch implementations by software.  
-The tool component provides a set of  Python tools, that be used to generate C language contract call interface of smart contract ABI interface based on Solidity or WASM C++.  
+The tool component provides a set of  Python tools, which are used to generate C language contract call interface of smart contract ABI interface based on Solidity or WASM C++.  
 
 
 
@@ -162,7 +162,7 @@ BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 ````
 
-As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or when compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.
+As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or while compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.
 -Log printing level adjustment
 If necessary, adjust the value of `BOAT_LOG_LEVEL` in the path \<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h to adjust the printer type of the log.
 
@@ -291,7 +291,7 @@ Among them, boatiotsdk is the directory where the SDK is located, and the -C par
 
 *Note: In the Makefile, the command under target must start with a Tab (ASCII code 0x09), not a space.*
 
-The above steps are only used to compile the SDK library. After the SDK library compile completed, the compiled library needs to be integrated into the module development environment. See the [Header Files and Libraries](###Header Files and Libraries) chapter for details.
+The above steps are only used to compile the SDK library. After the SDK library compilation completes, the compiled library needs to be integrated into the module development environment. See the [Header Files and Libraries](###Header Files and Libraries) chapter for details.
 
 ###### The module development environment is compiled with non-GNU make
 Since BoAT IoT Framework SDK uses GNU make as the compilation project, if the module development environment uses non-GNU Make compilation projects (such as Ninja, ant, etc.), or uses the automatic generation tools of the compilation project (such as automake, CMake), it cannot Compile the SDK directly in the module development environment.  
@@ -363,14 +363,13 @@ The smart contract used by the demo and its ABI JSON file are placed in:
 | \<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol | \<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json | FISCO-BCOS demo |
 
 
-Before running Ethereum's Demo, you need to install the Ethereum node simulator ganache, as well as the Ethereum smart contract compilation deployment tool truffle.  
-Ganache and truffle tools can visit this website: https://truffleframework.com  
+Before running Ethereum's Demo, you need to install the Ethereum node simulator ganache, as well as the Ethereum smart contract compilation deployment tool truffle, could visit this website: https://truffleframework.com  .
+	
 Ganache has a ganache-cli version of the command line interface, and a Ganache version of the graphical interface. The ganache-cli of the command line interface and the Ganache 1.x version of the graphical interface will not be saved. If the process of ganache-cli or Ganache 1.x is terminated, the deployed contract will be lost. The command truffle migrate - reset Redeploy the contract, the address of the redeployed contract may change. The Ganache 2.x version of the graphical interface can create a Workspace save state. After closing and reopening the Workspace next time, the deployed contract still does not need to be redeployed.  
 In addition to using the ganache simulator, you can also use the Ethereum test network such as Ropsten (you need to apply for a free test token).  
 
 
-Before running the PlatONE Demo, you need to install the PlatONE node, as well as smart contract compilation and deployment tools.  
-PlatONE source code and tools can visit this website: https://platone.wxblockchain.com  
+Before running the PlatONE Demo, you need to install the PlatONE node, as well as smart contract compilation and deployment tools,could visit this website: https://platone.wxblockchain.com  .
 
 Before running the FISCO-BCOS Demo, you need to install the FISCO-BCOS node and contract deployment.
 FISCO-BCOS source code and installation and deployment steps can visit this website: https://fisco-bcos-documentation.readthedocs.io
@@ -458,15 +457,15 @@ After the SDK is compiled, only the following files are needed for the applicati
 1. Refer to the SDK header file in the application
 
 - Add \<SDKRoot\>/include to the header file search path of the application, or copy all header files under \<SDKRoot\>/include to the application header file directory.
-  -In the application header file search path, add \<SDKRoot\>/vendor/platform/include, or copy the boatconfig.h header file under \<SDKRoot\>/vendor/platform/include to the application header file directory .
-  -In the application-related C code, add the following header files:
+- In the application header file search path, add \<SDKRoot\>/vendor/platform/include, or copy the boatconfig.h header file under \<SDKRoot\>/vendor/platform/include to the application header file directory .
+- In the application-related C code, add the following header files:
 
    ````
    #include "boatiotsdk.h" //SDK entry header file
    #include "boatconfig.h" //SDK configuration header file
    ````
 
--The application does not need to include the other header file directories of the SDK into the search path.
+- The application does not need to include the other header file directories of the SDK into the search path.
 
 If you use the automatically generated C interface code based on the contract ABI JSON file, you also need to include the generated smart contract C interface code header file, and add the generated `*.c` file to the application compilation script.
 
@@ -690,15 +689,15 @@ In some contract programming languages, the two types of contract functions have
 For example, take the following Ethereum Solidity contract as an example:
 
     contract StoreRead {
-    bytes32[] eventList;
+        bytes32[] eventList;
     
-    function saveList(bytes32 newEvent) public {
-        eventList.push(newEvent);
-    }
+        function saveList(bytes32 newEvent) public {
+            eventList.push(newEvent);
+        }
     
-    function readListLength() public view returns (uint32 length_) {
-        length_ = uint32(eventList.length);
-    }
+        function readListLength() public view returns (uint32 length_) {
+            length_ = uint32(eventList.length);
+        }
     }
 
 
@@ -739,7 +738,7 @@ After the contract is compiled, the ABI corresponding to the two functions are d
 
 In the above contract, eventList is a member variable of the contract. saveList() will change the value of eventList, which is a contract function that changes the state of the blockchain; readListLength() has a view modifier and only reads the attributes of eventList without changing its value. It is a contract function that does not change the state of the blockchain .
 
-Pay special attention to the fact that although the contract function and C call interface function that change the state of the blockchain and do not change the state of the blockchain are very similar in prototype, the calling principles of the two are quite different.
+In particular, there are significant differences in the principles of invoking between smart contract functions that update the ledger and those who don’t, even though the two types of functions are quite similar in prototype. The same is true for the interface functions in C language generated through the conversion tool.
 
 Any change to the state of the blockchain needs to be implemented through blockchain transactions and reach a consensus across the entire network. The contract function that changes the state of the blockchain is called asynchronously. When called, it only initiates the blockchain transaction, and the contract will not be executed before the blockchain network packs the transaction into blocks. Therefore, when the contract function that changes the state of the blockchain is called, the return value is only the hash value used to identify the transaction, not the return value in the form of the contract function. When designing a smart contract, the public interface function that changes the state of the blockchain, the information it tries to return should be stored in the contract member variable, and the receipt of the transaction is queried through BoatEthGetTransactionReceipt(). After success, use another Obtained in the form of a read function.
 
