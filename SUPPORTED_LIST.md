@@ -31,8 +31,9 @@ BF2                       |跃昉LeapFive     |WiFi                  |LeapFive B
 SLM320                    |美格 MEIG        |LTE Cat.1             |UNISOC UIS8910DM
 Yanfei CUIoT-MZ-6         |联通 China Unicom|LTE Cat.1             |UNISOC UIS8910DM
 MN316                     |中移物联 China Mobile|NB-IoT            |Xinyi XY1100
+BeagleV-StarLight星光     |seeed, StarFive and beagleboard|Ethernet|StarFive JH7100      |BeagleV-StarLight星光 is a development board
 
 
-*Last update on April 4th, 2021*
+*Last update on June 29th, 2021*
 
 NOTE: Some of the blockchains are not supported on some modules due to resource constraint.
