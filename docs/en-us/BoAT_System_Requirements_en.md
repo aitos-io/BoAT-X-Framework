@@ -25,7 +25,7 @@ The exact computing performance requirements depend on the power consumption and
 
 ## Part Three. Operating System and Communication Requirements 
 
-There really are no special requirements for the operating system. Generally BoAT Framework (C language version) can be ported over most operating systems (e.g. linux, various RTOS), as long as the following capabilities (below) are supported: 
+There really are no special requirements for the operating system. Generally BoAT Framework (C language version) can be ported over most operating systems (e.g. Linux, various RTOS), as long as the following capabilities (below) are supported: 
 
 1. Support dynamic memory allocation / free. 
 2. Support mutual exclusion (mutex) protection mechanism.
@@ -54,7 +54,7 @@ If the device can only connect to the IoT platform of a specific operator or ser
 
 8. If the cellular IoT Module utilizes a Linux operating system, during debugging it should support adb or similar login mechanism and have root privileges.
 
-## Part Four TEE and Remote Attestation (optional)
+## Part Four. TEE and Remote Attestation (optional)
 
 ### TEE
 
