@@ -97,7 +97,7 @@ void BoatIotSdkDeInit(void)
 
 
 BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_name_str, 
-						  const void * wallet_config_ptr, BUINT32 wallet_config_size )
+						  const void *wallet_config_ptr, BUINT32 wallet_config_size )
 {
     BSINT32 i;
     BUINT8 *boatwalletStore_ptr = NULL;
@@ -429,14 +429,14 @@ void BoatWalletUnload(BSINT32 wallet_index)
 }
 
 
-void BoatWalletDelete(BCHAR * wallet_name_str)
+void BoatWalletDelete(BCHAR *wallet_name_str)
 {
     // Delete persistent wallet
     BoatPersistDelete(wallet_name_str);
 }
 
 
-void * BoatGetWalletByIndex(BSINT32 wallet_index)
+void *BoatGetWalletByIndex(BSINT32 wallet_index)
 {
     if( wallet_index >= 0 && wallet_index < BOAT_MAX_WALLET_NUM )
     {

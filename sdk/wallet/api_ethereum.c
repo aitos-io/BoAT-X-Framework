@@ -26,7 +26,7 @@ api_ethereum.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "rpcintf.h"
 #include "cJSON.h"
 
-BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 config_size)
+BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 config_size)
 {
     BoatEthWallet *wallet_ptr;
     BOAT_RESULT result;
@@ -193,7 +193,7 @@ BOAT_RESULT BoatEthWalletSetChainId(BoatEthWallet *wallet_ptr, BUINT32 chain_id)
 }
 
 
-BCHAR * BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str)
+BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str)
 {
     BUINT8 alt_address[BOAT_ETH_ADDRESS_SIZE]; // Binary altered address converted from alt_address_str
     BUINT8 *address_ptr;     // Point to an address in binary format, either wallet
@@ -245,8 +245,8 @@ BCHAR * BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_st
 }
 
 
-BOAT_RESULT BoatEthPraseRpcResponseResult( const BCHAR * json_string, 
-										   const BCHAR * child_name, 
+BOAT_RESULT BoatEthPraseRpcResponseResult( const BCHAR *json_string, 
+										   const BCHAR *child_name, 
 										   BoatFieldVariable *result_out )
 {
 	return web3_parse_json_result(json_string, child_name, result_out);
@@ -256,8 +256,8 @@ BOAT_RESULT BoatEthPraseRpcResponseResult( const BCHAR * json_string,
 BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
                           BoatEthTx *tx_ptr,
                           BBOOL is_sync_tx,
-                          BCHAR * gasprice_str,
-                          BCHAR * gaslimit_str,
+                          BCHAR *gasprice_str,
+                          BCHAR *gaslimit_str,
                           BCHAR *recipient_str)
 {
     BOAT_RESULT result;
@@ -556,7 +556,7 @@ BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr)
 }
 
 
-BCHAR * BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
+BCHAR *BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
 								 BUINT8 *func_param_ptr, BUINT32 func_param_len )
 {
     BUINT8 function_selector[32];
@@ -625,7 +625,7 @@ BCHAR * BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
 }
 
 
-BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR * value_hex_str)
+BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str)
 {
     BoatFieldMax32B value;
     BOAT_RESULT result;

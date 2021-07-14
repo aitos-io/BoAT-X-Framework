@@ -20,7 +20,7 @@ BUINT32 BoatIotSdkVersion( void )
     return( BOAT_VERSION_NUMBER );
 }
 
-BCHAR * BoatIotSdkVersionString( void )
+BCHAR *BoatIotSdkVersionString( void )
 {
 	return BOAT_VERSION_STRING;
 }
