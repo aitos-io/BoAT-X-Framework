@@ -1,4 +1,4 @@
-# BoAT-X-Framework for 中移物联L610整合说明
+# BoAT-X-Framework for 广和通L610整合说明
 
 
 ## 一、前言
