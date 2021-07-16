@@ -1,25 +1,25 @@
-# BoAT-X-Framework for ÖĞÒÆÎïÁªL610ÕûºÏËµÃ÷
+# BoAT-X-Framework for ä¸­ç§»ç‰©è”L610æ•´åˆè¯´æ˜
 
 
-## Ò»¡¢Ç°ÑÔ
+## ä¸€ã€å‰è¨€
 
-±¾ÎÄµµËµÃ÷ÈçºÎÔÚL610 OpenCPU¿ª·¢»·¾³ÖĞÕûºÏBoAT-X-Framework£¬±àÒëBoAT-X-Framework¾²Ì¬¿â£¬ÒÔ¼°Éú³Édemo³ÌĞò¡£
-
-
-## ¶ş¡¢¿½±´ÎÄ¼ş
-
-1¡¢¿½±´ BoAT´úÂë£¬BoAT-X-Framework Õû¸öÎÄ¼ş¼Ğ·ÅÔÚL610Æ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂ£¬¼´ÓëÖ÷CMakeLists.txtÆ½¼¶¡£
-
-2¡¢¿½±´ BoAT-X-Framework\vendor\platform\Fibocom-L610\L610RootDirCode\demo.cµ½L610Æ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂ¡£
-
-3¡¢¿½±´ BoAT-X-Framework\vendor\platform\Fibocom-L610\L610RootDirCode\my_contract.cpp.abi.cµ½L610Æ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂ¡£
-
-4¡¢¿½±´ BoAT-X-Framework\vendor\platform\Fibocom-L610\L610RootDirCode\my_contract.cpp.abi.hµ½L610Æ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂ¡£
+æœ¬æ–‡æ¡£è¯´æ˜å¦‚ä½•åœ¨L610 OpenCPUå¼€å‘ç¯å¢ƒä¸­æ•´åˆBoAT-X-Frameworkï¼Œç¼–è¯‘BoAT-X-Frameworké™æ€åº“ï¼Œä»¥åŠç”Ÿæˆdemoç¨‹åºã€‚
 
 
-¿½±´ºóµÄÄ¿Â¼ºÍÎÄ¼ş½á¹¹ÈçÏÂ£º
+## äºŒã€æ‹·è´æ–‡ä»¶
+
+1ã€æ‹·è´ BoATä»£ç ï¼ŒBoAT-X-Framework æ•´ä¸ªæ–‡ä»¶å¤¹æ”¾åœ¨L610å¹³å°ä»£ç æ ¹ç›®å½•ä¸‹ï¼Œå³ä¸ä¸»CMakeLists.txtå¹³çº§ã€‚
+
+2ã€æ‹·è´ BoAT-X-Framework\vendor\platform\Fibocom-L610\L610RootDirCode\demo.cåˆ°L610å¹³å°ä»£ç æ ¹ç›®å½•ä¸‹ã€‚
+
+3ã€æ‹·è´ BoAT-X-Framework\vendor\platform\Fibocom-L610\L610RootDirCode\my_contract.cpp.abi.cåˆ°L610å¹³å°ä»£ç æ ¹ç›®å½•ä¸‹ã€‚
+
+4ã€æ‹·è´ BoAT-X-Framework\vendor\platform\Fibocom-L610\L610RootDirCode\my_contract.cpp.abi.håˆ°L610å¹³å°ä»£ç æ ¹ç›®å½•ä¸‹ã€‚
+
+
+æ‹·è´åçš„ç›®å½•å’Œæ–‡ä»¶ç»“æ„å¦‚ä¸‹ï¼š
 ```
-<L610Æ½Ì¨´úÂë¸ùÄ¿Â¼>
+<L610å¹³å°ä»£ç æ ¹ç›®å½•>
 |
 +---BoAT-X-Framework
 +---cmake
@@ -35,77 +35,77 @@
 ```
 
 
-## Èı¡¢ÎÄ¼şĞŞ¸Ä
+## ä¸‰ã€æ–‡ä»¶ä¿®æ”¹
 
-### 1¡¢Ìí¼ÓBoAT-X-FrameworkÉú³ÉµÄ¾²Ì¬¿â.aÎÄ¼şµ½L610Æ½Ì¨
+### 1ã€æ·»åŠ BoAT-X-Frameworkç”Ÿæˆçš„é™æ€åº“.aæ–‡ä»¶åˆ°L610å¹³å°
 
-  ´ò¿ªL610Æ½Ì¨´úÂë¸ùÄ¿Â¼\cmake\toolchain-gcc.cmakeÎÄ¼ş
+  æ‰“å¼€L610å¹³å°ä»£ç æ ¹ç›®å½•\cmake\toolchain-gcc.cmakeæ–‡ä»¶
   
-  °ÑÒÔÏÂÁ½ĞĞÌí¼Óµ½¶ÔÓ¦¿É¼ÓÔØµ½µÄµØ·½£º
+  æŠŠä»¥ä¸‹ä¸¤è¡Œæ·»åŠ åˆ°å¯¹åº”å¯åŠ è½½åˆ°çš„åœ°æ–¹ï¼š
   ```
   set(libboatwallet_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatwallet.a)
-  set(libboathvendor_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatvendor.a)
+  set(libboatvendor_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatvendor.a)
   ```
 
-### 2¡¢Ìí¼ÓBoAT-X-FrameworkÓĞ¹ØÍ·ÎÄ¼şÂ·¾¶µ½L610Æ½Ì¨
+### 2ã€æ·»åŠ BoAT-X-Frameworkæœ‰å…³å¤´æ–‡ä»¶è·¯å¾„åˆ°L610å¹³å°
 
-  ´ò¿ªL610Æ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂµÄÖ÷CMakeLists.txtÎÄ¼ş
+  æ‰“å¼€L610å¹³å°ä»£ç æ ¹ç›®å½•ä¸‹çš„ä¸»CMakeLists.txtæ–‡ä»¶
   
-  ÕÒµ½include_directories(xxx ), ÔÚ×îºóÌí¼ÓÒÔÏÂBoAT-X-FrameworktÄÚÈİ£º
+  æ‰¾åˆ°include_directories(xxx ), åœ¨æœ€åæ·»åŠ ä»¥ä¸‹BoAT-X-Frameworktå†…å®¹ï¼š
   ```
   include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
   ```
 
-### 3¡¢Ìí¼ÓBoAT-X-Framework libÎÄ¼şµ½target_link_libraries
+### 3ã€æ·»åŠ BoAT-X-Framework libæ–‡ä»¶åˆ°target_link_libraries
 
-  ´ò¿ªL610Æ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂµÄÖ÷CMakeLists.txtÎÄ¼ş
+  æ‰“å¼€L610å¹³å°ä»£ç æ ¹ç›®å½•ä¸‹çš„ä¸»CMakeLists.txtæ–‡ä»¶
   
-  ÕÒµ½target_link_libraries(XXX ${libc_file_name}) ×ÖÑù£¬ÔÚ${libc_file_name} Ç°ÃæÌí¼Ó ${libboatwallet_file_name} ${libboathvendor_file_name} £¬Èç£º
+  æ‰¾åˆ°target_link_libraries(XXX ${libc_file_name}) å­—æ ·ï¼Œåœ¨${libc_file_name} å‰é¢æ·»åŠ  ${libboatwallet_file_name} ${libboatvendor_file_name} ï¼Œå¦‚ï¼š
   ```
-  target_link_libraries(${target} PRIVATE ${libboatwallet_file_name} ${libboathvendor_file_name} ${libc_file_name} ${libm_file_name} 
+  target_link_libraries(${target} PRIVATE ${libboatwallet_file_name} ${libboatvendor_file_name} ${libc_file_name} ${libm_file_name} 
   ```
 
-### 4¡¢Ìí¼ÓBoAT-X-Framework²âÊÔDemo¡¢ÖÇÄÜºÏÔ¼ÎÄ¼şµ½±àÒëÄ¿Â¼
+### 4ã€æ·»åŠ BoAT-X-Frameworkæµ‹è¯•Demoã€æ™ºèƒ½åˆçº¦æ–‡ä»¶åˆ°ç¼–è¯‘ç›®å½•
 
-  ´ò¿ªL610Æ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂµÄÖ÷CMakeLists.txtÎÄ¼ş
+  æ‰“å¼€L610å¹³å°ä»£ç æ ¹ç›®å½•ä¸‹çš„ä¸»CMakeLists.txtæ–‡ä»¶
 
-  ÕÒµ½add_appimg(${target} xxx ) ×ÖÑù£¬ÔÚ×îºóÌí¼Ódemo.c my_contract.cpp.abi.c£¬Èç£º
+  æ‰¾åˆ°add_appimg(${target} xxx ) å­—æ ·ï¼Œåœ¨æœ€åæ·»åŠ demo.c my_contract.cpp.abi.cï¼Œå¦‚ï¼š
   ```
   add_appimg(${target} ${flash_ldscript} demo.c my_contract.cpp.abi.c)
   ```
 
-## ËÄ¡¢±àÒëBoAT-X-Framework¾²Ì¬¿â
+## å››ã€ç¼–è¯‘BoAT-X-Frameworké™æ€åº“
 
-### 1¡¢ÔÚLinux»·¾³ÏÂ±àÒëBoAT-X-Framework¾²Ì¬¿â.aÎÄ¼ş
+### 1ã€åœ¨Linuxç¯å¢ƒä¸‹ç¼–è¯‘BoAT-X-Frameworké™æ€åº“.aæ–‡ä»¶
 
-   #### a¡¢ĞŞ¸ÄBoAT-X-Framework\MakefileÖĞµÄtarget
+   #### aã€ä¿®æ”¹BoAT-X-Framework\Makefileä¸­çš„target
    ```
    PLATFORM_TARGET ?= Fibocom-L610
    ```
    
-   #### b¡¢´ò¿ªLinuxÖÕ¶Ë½øÈëBoAT-X-FrameworkÄ¿Â¼±àÒëBoAT¾²Ì¬¿â
+   #### bã€æ‰“å¼€Linuxç»ˆç«¯è¿›å…¥BoAT-X-Frameworkç›®å½•ç¼–è¯‘BoATé™æ€åº“
    ```
    cd BoAT-X-Framework
    make clean
    make all
    ```
    
-   ±àÒë³É¹¦ºó£¬ÔÚBoAT-X-Framework\libÏÂ»áÉú³É¾²Ì¬¿âlibboatvendor.a¡¢libboatwallet.a¡£
+   ç¼–è¯‘æˆåŠŸåï¼Œåœ¨BoAT-X-Framework\libä¸‹ä¼šç”Ÿæˆé™æ€åº“libboatvendor.aã€libboatwallet.aã€‚
    
 
-### 2¡¢±àÒëL610ÑİÊ¾demo³ÌĞò£¬Éú³É.pacÏÂÔØÎÄ¼ş
+### 2ã€ç¼–è¯‘L610æ¼”ç¤ºdemoç¨‹åºï¼Œç”Ÿæˆ.pacä¸‹è½½æ–‡ä»¶
 
-   Í¨¹ıBoAT-X-Framework·ÃÎÊÇø¿éÁ´µÄÑİÊ¾´úÂë£¬ÔÚL610Æ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂµÄdemo.c
+   é€šè¿‡BoAT-X-Frameworkè®¿é—®åŒºå—é“¾çš„æ¼”ç¤ºä»£ç ï¼Œåœ¨L610å¹³å°ä»£ç æ ¹ç›®å½•ä¸‹çš„demo.c
    
-   ´ò¿ªLinuxÖÕ¶Ë½øÈëL610¸ùÄ¿Â¼
+   æ‰“å¼€Linuxç»ˆç«¯è¿›å…¥L610æ ¹ç›®å½•
    ```
-   cd L610´úÂë¸ùÄ¿Â¼
+   cd L610ä»£ç æ ¹ç›®å½•
    cd out
-   rm -r appimage_release//ĞèÒªÏÈÉ¾³ı±¾µØÖ®Ç°Éú³ÉµÄÎÄ¼ş
+   rm -r appimage_release//éœ€è¦å…ˆåˆ é™¤æœ¬åœ°ä¹‹å‰ç”Ÿæˆçš„æ–‡ä»¶
    cd ..
    . tools/core_launch.sh
    cout
    cmake ../.. -G Ninja
    ninja
    ```
-   ±àÒë³É¹¦»áÔÚout\appimage_debug\hexÏÂÉú³É.pacÎÄ¼ş	
+   ç¼–è¯‘æˆåŠŸä¼šåœ¨out\appimage_debug\hexä¸‹ç”Ÿæˆ.pacæ–‡ä»¶	
