@@ -41,7 +41,7 @@
 
   打开L610平台代码根目录\cmake\toolchain-gcc.cmake文件
   
-  把以下两行添加到对应可加载到的地方：
+  首先找到if(CONFIG_CPU_ARM_CA5)，然后在下方大括号内添加以内容：
   ```
   set(libboatwallet_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatwallet.a)
   set(libboatvendor_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatvendor.a)
@@ -51,7 +51,7 @@
 
   打开L610平台代码根目录下的主CMakeLists.txt文件
   
-  找到include_directories(xxx ), 在最后添加以下BoAT-X-Frameworkt内容：
+  找到include_directories(xxx ), 在最后添加以下BoAT-X-Framework内容：
   ```
   include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
   ```
@@ -60,7 +60,7 @@
 
   打开L610平台代码根目录下的主CMakeLists.txt文件
   
-  找到target_link_libraries(XXX ${libc_file_name}) 字样，在${libc_file_name} 前面添加 ${libboatwallet_file_name} ${libboatvendor_file_name} ，如：
+  在if(CONFIG_APPIMG_LOAD_FLASH)下方大括号内找到target_link_libraries(XXX ${libc_file_name}) 字样，在${libc_file_name} 前面添加 ${libboatwallet_file_name} ${libboatvendor_file_name} ，如：
   ```
   target_link_libraries(${target} PRIVATE ${libboatwallet_file_name} ${libboatvendor_file_name} ${libc_file_name} ${libm_file_name} 
   ```
@@ -69,7 +69,7 @@
 
   打开L610平台代码根目录下的主CMakeLists.txt文件
 
-  找到add_appimg(${target} xxx ) 字样，在最后添加demo.c my_contract.cpp.abi.c，如：
+  在if(CONFIG_APPIMG_LOAD_FLASH)下方大括号内找到add_appimg(${target} xxx ) 字样，在最后添加demo.c my_contract.cpp.abi.c，如：
   ```
   add_appimg(${target} ${flash_ldscript} demo.c my_contract.cpp.abi.c)
   ```
