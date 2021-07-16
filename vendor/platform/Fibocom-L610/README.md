@@ -41,7 +41,7 @@
 
   打开L610平台代码根目录\cmake\toolchain-gcc.cmake文件
   
-  首先找到if(CONFIG_CPU_ARM_CA5)，然后在下方大括号内添加以内容：
+  首先找到if(CONFIG_CPU_ARM_CA5)，然后在下方大括号内添加以下内容：
   ```
   set(libboatwallet_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatwallet.a)
   set(libboatvendor_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatvendor.a)
