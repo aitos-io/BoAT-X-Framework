@@ -48,7 +48,7 @@ There really are no special requirements for the operating system. Generally BoA
 
 If the device can only connect to the IoT platform of a specific operator or service provider (such as OneNET, OceanConnect), the communication protocol follows the operator's requirements.
 
-7. Supports commonly used standard C library functions such as memcpy (), strcpy (), snprintf () (optional for I/O-related functions such as printf()).
+7. Supports commonly used standard C library functions such as memcpy(), strcpy(), snprintf()(optional for I/O-related functions such as printf()).
 
 8. If the cellular IoT Module utilizes a Linux operating system, it should support adb or similar login mechanism and have root privileges during debugging.
 
