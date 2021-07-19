@@ -68,22 +68,14 @@
 
 ## 四、编译BoAT-X-Framework静态库
 
-### 1、在Windows环境下编译BoAT-X-Framework静态库.a文件
-
-   #### a、安装Cygwin，并配置Cygwin安装路径
+### 1、在Linux环境下编译BoAT-X-Framework静态库.a文件
    
-   打开BoAT-X-Framework\vendor\platform\ChinaMobile-ML302\external.env文件，修改以下值为当前电脑CygWin的实际安装目录，例如：
-   ```
-   CYGWIN_BASE := D:\cygwin64
-   ```
-   **注意：需要安装Cygwin，但后续编译过程要在Windows自带的cmd终端中执行，不要在Cygwin的shell下执行。**
-   
-   #### b、修改BoAT-X-Framework\Makefile中的target
+   #### a、修改BoAT-X-Framework\Makefile中的target
    ```
    PLATFORM_TARGET ?= ChinaMobile-ML302
    ```
    
-   #### c、打开cmd终端进入BoAT-X-Framework目录编译BoAT静态库
+   #### b、打开cmd终端进入BoAT-X-Framework目录编译BoAT静态库
    ```
    cd BoAT-X-Framework
    make clean
@@ -97,7 +89,7 @@
 
    通过BoAT-X-Framework访问区块链的演示代码，在ML302平台代码根目录下的src\boatdemo.c
    
-   打开cmd终端进入ML302根目录
+   打开Linux终端进入ML302根目录
    ```
    cd ML302代码根目录
    build.bat CLEAN
