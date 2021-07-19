@@ -511,7 +511,7 @@ When creating a wallet, you need to pass in wallet configuration parameters acco
 ````
 BSINT32 BoatWalletCreate(BoatProtocolType protocol_type,
                          const BCHAR *wallet_name_str,
-                         const void * wallet_config_ptr,
+                         const void *wallet_config_ptr,
                          BUINT32 wallet_config_size);
 ````
 
@@ -564,7 +564,7 @@ Parameters:
 Deleting the wallet will delete the persistent wallet. If the wallet has been loaded before the deletion, after the deletion, the persistent wallet will become a one-time wallet, which can still be used before being unload.
 
 ````
-void BoatWalletDelete(BCHAR * wallet_name_str);
+void BoatWalletDelete(BCHAR *wallet_name_str);
 ````
 
 Parameters:
@@ -583,7 +583,7 @@ Take Ethereum as an example:
 
 ````
 BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr,
-                            BCHAR * value_hex_str);
+                            BCHAR *value_hex_str);
 ````
 
 Parameters:
@@ -670,11 +670,11 @@ If the contract function contains unsupported parameter types, the automatic con
 #### Automatically generated contract call interface
 The successfully generated contract call interface is the following C function:
 
-`BCHAR * <Contract ABI JSON file name >_< Contract function name>(<Wallet type> *tx_ptr, …);`
+`BCHAR *<Contract ABI JSON file name >_< Contract function name>(<Wallet type> *tx_ptr, …);`
 
 E.g:
 
-`BCHAR * StoreRead_saveList(BoatEthTx *tx_ptr, Bbytes32 newEvent);`
+`BCHAR *StoreRead_saveList(BoatEthTx *tx_ptr, Bbytes32 newEvent);`
 
 The first parameter of the calling interface is always the pointer of the initialized transaction object.
 
@@ -755,8 +755,8 @@ Take Ethereum as an example (different blockchain protocol parameters are differ
 BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
                           BoatEthTx *tx_ptr,
                           BBOOL is_sync_tx,
-                          BCHAR * gasprice_str,
-                          BCHAR * gaslimit_str,
+                          BCHAR *gasprice_str,
+                          BCHAR *gaslimit_str,
                           BCHAR *recipient_str)
 ````
 
@@ -837,7 +837,7 @@ BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
 
 -For contract calls that do not change the state of the blockchain, call the State-less contract function
 ```
-BCHAR * BoatEthCallContractFunc(BoatEthTx *tx_ptr,
+BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr,
                                 BCHAR *func_proto_str,
                                 BUINT8 *func_param_ptr,
                                 BUINT32 func_param_len);
@@ -888,7 +888,7 @@ BOAT_RESULT BoatPlatoneTxSend(BoatEthTx *tx_ptr);
 
 -For contract calls that do not change the state of the blockchain, call the State-less contract function
 ```
-BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr,
+BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr,
                                     BUINT8 *rlp_param_ptr,
                                     BUINT32 rlp_param_len)
 ```
