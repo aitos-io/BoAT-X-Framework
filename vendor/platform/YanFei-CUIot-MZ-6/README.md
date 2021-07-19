@@ -1,21 +1,21 @@
-# BoAT-X-Framework for ÖĞÒÆÎïÁªYanfeiÕûºÏËµÃ÷
+# BoAT-X-Framework for ä¸­ç§»ç‰©è”Yanfeiæ•´åˆè¯´æ˜
 
 
-## Ò»¡¢Ç°ÑÔ
+## ä¸€ã€å‰è¨€
 
-±¾ÎÄµµËµÃ÷ÈçºÎÔÚYanfei OpenCPU¿ª·¢»·¾³ÖĞÕûºÏBoAT-X-Framework£¬±àÒëBoAT-X-Framework¾²Ì¬¿â£¬ÒÔ¼°Éú³Édemo³ÌĞò¡£
-
-
-## ¶ş¡¢¿½±´ÎÄ¼ş
-
-1¡¢¿½±´ BoAT´úÂë£¬BoAT-X-Framework Õû¸öÎÄ¼ş¼Ğ·ÅÔÚYanfeiÆ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂ£¬¼´ÓëÖ÷CMakeLists.txtÆ½¼¶¡£
-
-2¡¢¿½±´ BoAT-X-Framework\vendor\platform\YanFei-CUIot-MZ-60\YanfeiRootDirCode\app\demo\srcµ½YanfeiÆ½Ì¨´úÂë¸ùÄ¿Â¼\app\demo\src\ÏÂ¡£
+æœ¬æ–‡æ¡£è¯´æ˜å¦‚ä½•åœ¨Yanfei OpenCPUå¼€å‘ç¯å¢ƒä¸­æ•´åˆBoAT-X-Frameworkï¼Œç¼–è¯‘BoAT-X-Frameworké™æ€åº“ï¼Œä»¥åŠç”Ÿæˆdemoç¨‹åºã€‚
 
 
-¿½±´ºóµÄÄ¿Â¼ºÍÎÄ¼ş½á¹¹ÈçÏÂ£º
+## äºŒã€æ‹·è´æ–‡ä»¶
+
+1ã€æ‹·è´ BoATä»£ç ï¼ŒBoAT-X-Framework æ•´ä¸ªæ–‡ä»¶å¤¹æ”¾åœ¨Yanfeiå¹³å°ä»£ç æ ¹ç›®å½•ä¸‹ï¼Œå³ä¸ä¸»CMakeLists.txtå¹³çº§ã€‚
+
+2ã€æ‹·è´ BoAT-X-Framework\vendor\platform\YanFei-CUIot-MZ-60\YanfeiRootDirCode\app\demo\srcåˆ°Yanfeiå¹³å°ä»£ç æ ¹ç›®å½•\app\demo\src\ä¸‹ã€‚
+
+
+æ‹·è´åçš„ç›®å½•å’Œæ–‡ä»¶ç»“æ„å¦‚ä¸‹ï¼š
 ```
-<YanfeiÆ½Ì¨´úÂë¸ùÄ¿Â¼>
+<Yanfeiå¹³å°ä»£ç æ ¹ç›®å½•>
 |
 +---app
 +---BoAT-X-Framework
@@ -31,77 +31,77 @@
 ```
 
 
-## Èı¡¢ÎÄ¼şĞŞ¸Ä
+## ä¸‰ã€æ–‡ä»¶ä¿®æ”¹
 
-### 1¡¢Ìí¼ÓBoAT-X-FrameworkÉú³ÉµÄ¾²Ì¬¿â.aÎÄ¼şµ½YanfeiÆ½Ì¨
+### 1ã€æ·»åŠ BoAT-X-Frameworkç”Ÿæˆçš„é™æ€åº“.aæ–‡ä»¶åˆ°Yanfeiå¹³å°
 
-  ´ò¿ªYanfeiÆ½Ì¨´úÂë¸ùÄ¿Â¼\cmake\toolchain-gcc.cmakeÎÄ¼ş
+  æ‰“å¼€Yanfeiå¹³å°ä»£ç æ ¹ç›®å½•\cmake\toolchain-gcc.cmakeæ–‡ä»¶
   
-  Ìí¼ÓÒÔÏÂÁ½ĞĞµ½¶ÔÓ¦¿É¼ÓÔØµ½µÄµØ·½£º
+  æ·»åŠ ä»¥ä¸‹ä¸¤è¡Œåˆ°å¯¹åº”å¯åŠ è½½åˆ°çš„åœ°æ–¹ï¼š
   ```
   set(libbw_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Frameworkt/lib/libboatwallet.a)
-  set(libbh_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Frameworkt/lib/libboatvendor.a)
+  set(libbv_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Frameworkt/lib/libboatvendor.a)
   ```
 
-### 2¡¢Ìí¼ÓBoAT-X-Framework libÎÄ¼şµ½target_link_libraries
+### 2ã€æ·»åŠ BoAT-X-Framework libæ–‡ä»¶åˆ°target_link_libraries
 
-  ´ò¿ªYanfeiÆ½Ì¨´úÂë¸ùÄ¿Â¼\app\demo\CMakeList.txtÎÄ¼ş
+  æ‰“å¼€Yanfeiå¹³å°ä»£ç æ ¹ç›®å½•\app\demo\CMakeList.txtæ–‡ä»¶
   
-  ÕÒµ½target_link_libraries(XXX ${libc_file_name}) ×ÖÑù£¬ÔÚ${libc_file_name} Ç°ÃæÌí¼Ó ${libbw_file_name} ${libbh_file_name} £¬Èç£º
+  æ‰¾åˆ°target_link_libraries(XXX ${libc_file_name}) å­—æ ·ï¼Œåœ¨${libc_file_name} å‰é¢æ·»åŠ  ${libbw_file_name} ${libbv_file_name} ï¼Œå¦‚ï¼š
   ```
-  target_link_libraries(${target} PRIVATE ${libbw_file_name} ${libbh_file_name} ${libc_file_name} ${libm_file_name} ${libgcc_file_name})
+  target_link_libraries(${target} PRIVATE ${libbw_file_name} ${libbv_file_name} ${libc_file_name} ${libm_file_name} ${libgcc_file_name})
   ```
 
-### 3¡¢Ìí¼ÓBoAT-X-FrameworkÓĞ¹ØÍ·ÎÄ¼şÂ·¾¶µ½YanfeiÆ½Ì¨
+### 3ã€æ·»åŠ BoAT-X-Frameworkæœ‰å…³å¤´æ–‡ä»¶è·¯å¾„åˆ°Yanfeiå¹³å°
 
-  ´ò¿ªYanfeiÆ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂµÄÖ÷CMakeLists.txtÎÄ¼ş
+  æ‰“å¼€Yanfeiå¹³å°ä»£ç æ ¹ç›®å½•ä¸‹çš„ä¸»CMakeLists.txtæ–‡ä»¶
   
-  ÕÒµ½include_directories(xxx ), ÔÚ×îºóĞÂ½¨Ò»ĞĞÌí¼ÓÒÔÏÂBoAT-X-FrameworktÄÚÈİ£º
+  æ‰¾åˆ°include_directories(xxx ), åœ¨æœ€åæ–°å»ºä¸€è¡Œæ·»åŠ ä»¥ä¸‹BoAT-X-Frameworktå†…å®¹ï¼š
   ```
   include_directories(BoAT-X-Frameworkt/include BoAT-X-Frameworkt/include/protocolapi)
   ```
 
-### 4¡¢Ìí¼ÓBoAT-X-Framework²âÊÔDemo¡¢ÖÇÄÜºÏÔ¼ÎÄ¼şµ½±àÒëÄ¿Â¼
+### 4ã€æ·»åŠ BoAT-X-Frameworkæµ‹è¯•Demoã€æ™ºèƒ½åˆçº¦æ–‡ä»¶åˆ°ç¼–è¯‘ç›®å½•
 
-  ´ò¿ªYanfeiÆ½Ì¨´úÂë¸ùÄ¿Â¼\app\demo\CMakeList.txtÎÄ¼ş
+  æ‰“å¼€Yanfeiå¹³å°ä»£ç æ ¹ç›®å½•\app\demo\CMakeList.txtæ–‡ä»¶
 
-  ÕÒµ½add_appimg(${target} xxx ) ×ÖÑù£¬ÔÚºóÃæÌí¼Ó${target_file_path}/my_contract.c£¬Èç£º
+  æ‰¾åˆ°add_appimg(${target} xxx ) å­—æ ·ï¼Œåœ¨åé¢æ·»åŠ ${target_file_path}/my_contract.cï¼Œå¦‚ï¼š
   ```
   add_appimg(${target} ${flash_ldscript} ${target_file_path}/${target_file}.c ${target_file_path}/my_contract.c ${OEM})
   ```
 
-## ËÄ¡¢±àÒëBoAT-X-Framework¾²Ì¬¿â
+## å››ã€ç¼–è¯‘BoAT-X-Frameworké™æ€åº“
 
-### 1¡¢ÔÚLinux»·¾³ÏÂ±àÒëBoAT-X-Framework¾²Ì¬¿â.aÎÄ¼ş
+### 1ã€åœ¨Linuxç¯å¢ƒä¸‹ç¼–è¯‘BoAT-X-Frameworké™æ€åº“.aæ–‡ä»¶
 
-   #### a¡¢ĞŞ¸ÄBoAT-X-Framework\MakefileÖĞµÄtarget
+   #### aã€ä¿®æ”¹BoAT-X-Framework\Makefileä¸­çš„target
    ```
    PLATFORM_TARGET ?= YanFei-CUIot-MZ-6
    ```
    
-   #### b¡¢´ò¿ªLinuxÖÕ¶Ë½øÈëBoAT-X-FrameworkÄ¿Â¼±àÒëBoAT¾²Ì¬¿â
+   #### bã€æ‰“å¼€Linuxç»ˆç«¯è¿›å…¥BoAT-X-Frameworkç›®å½•ç¼–è¯‘BoATé™æ€åº“
    ```
    cd BoAT-X-Framework
    make clean
    make all
    ```
    
-   ±àÒë³É¹¦ºó£¬ÔÚBoAT-X-Framework\libÏÂ»áÉú³É¾²Ì¬¿âlibboatvendor.a¡¢libboatwallet.a¡£
+   ç¼–è¯‘æˆåŠŸåï¼Œåœ¨BoAT-X-Framework\libä¸‹ä¼šç”Ÿæˆé™æ€åº“libboatvendor.aã€libboatwallet.aã€‚
    
 
-### 2¡¢±àÒëYanfeiÑİÊ¾demo³ÌĞò£¬Éú³É.pacÏÂÔØÎÄ¼ş
+### 2ã€ç¼–è¯‘Yanfeiæ¼”ç¤ºdemoç¨‹åºï¼Œç”Ÿæˆ.pacä¸‹è½½æ–‡ä»¶
 
-   Í¨¹ıBoAT-X-Framework·ÃÎÊÇø¿éÁ´µÄÑİÊ¾´úÂë£¬ÔÚYanfeiÆ½Ì¨´úÂë¸ùÄ¿Â¼ÏÂµÄ\app\demo\src\main.c
+   é€šè¿‡BoAT-X-Frameworkè®¿é—®åŒºå—é“¾çš„æ¼”ç¤ºä»£ç ï¼Œåœ¨Yanfeiå¹³å°ä»£ç æ ¹ç›®å½•ä¸‹çš„\app\demo\src\main.c
    
-   ´ò¿ªLinuxÖÕ¶Ë½øÈëYanfei¸ùÄ¿Â¼
+   æ‰“å¼€Linuxç»ˆç«¯è¿›å…¥Yanfeiæ ¹ç›®å½•
    ```
-   cd Yanfei´úÂë¸ùÄ¿Â¼
+   cd Yanfeiä»£ç æ ¹ç›®å½•
    cd out
-   rm -r appimage_debug//ĞèÒªÏÈÉ¾³ı±¾µØÖ®Ç°Éú³ÉµÄÎÄ¼ş
+   rm -r appimage_debug//éœ€è¦å…ˆåˆ é™¤æœ¬åœ°ä¹‹å‰ç”Ÿæˆçš„æ–‡ä»¶
    cd ..
    . tools/core_launch.sh
    cout
    cmake ../.. -G Ninja
    ninja
    ```
-   ±àÒë³É¹¦»áÔÚout\appimage_debug\hexÏÂÉú³Émain_flash.pacÎÄ¼ş	
+   ç¼–è¯‘æˆåŠŸä¼šåœ¨out\appimage_debug\hexä¸‹ç”Ÿæˆmain_flash.pacæ–‡ä»¶	
