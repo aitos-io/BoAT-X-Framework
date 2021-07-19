@@ -327,7 +327,7 @@ set PATH=%PATH%;\<Path_to_Cygwin\>\bin
 
 <font color=grey>注：上述命令可以编写在一个bat批处理文件中，或者直接加入Windows系统环境变量中，方便调用。注意，如果直接加入Windows系统环境变量，不得将Cygwin置于%SystemRoot%\System32路径之前，否则在其他场景中调用Windows的FIND命令时，将错误地调用Cygwin的find版本，这将影响其他场景中使用Windows自带命令。</font>
 
-然后，修改`\<SDKRoot\>/vendor/platform/<platform_name>/external.env`，为依赖工具加上路径:
+然后，修改`<SDKRoot>/vendor/platform/<platform_name>/external.env`，为依赖工具加上路径:
 ```
 # Commands
 CYGWIN_BASE := C:\cygwin64  # Modify to actual path to Cygwin
