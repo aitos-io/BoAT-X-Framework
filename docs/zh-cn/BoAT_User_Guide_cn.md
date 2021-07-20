@@ -144,7 +144,7 @@ C:\Documents and Settings\developer\project\boatiotsdk
 
 #### 引用的外部环境变量
 根据需要，修改SDK以下文件中的环境变量：  
-\<SDKRoot\>/vendor/platform/\<platform_name\>/external.env：配置外部编译环境依赖、或硬件相关的头文件搜索路径.
+\<SDKRoot\>/vendor/platform/\<platform_name\>/external.env：配置外部编译环境依赖、或硬件相关的头文件搜索路径。
 在Host编译时，如果gcc和binutils已经安装在系统中，通常不需要修改这些环境变量配置。  
 在交叉编译时，如果交叉编译环境需要配置特定的INCLUDE路径，需要在上述文件中添加路径。    
 
