@@ -585,8 +585,7 @@ Token transfer from this account to other accounts (not all blockchain protocols
 Take Ethereum as an example:
 
 ````
-BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr,
-                            BCHAR *value_hex_str);
+BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str);
 ````
 
 Parameters:
@@ -799,7 +798,7 @@ E.g:
 
 ```
 BCHAR *result_str;
-result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
+result_str = StoreRead_saveList(&tx_ctx, (BUINT8 *)"HelloWorld");
 ```
 ### Manually Construct Contract Calls
 If the automatic generation tool cannot generate the C call interface, you need to manually construct the transaction message.
@@ -812,8 +811,7 @@ The manual construction of transactions needs to follow the ABI interface of the
 -Set transaction parameter nonce:
 
 ```
-BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr,
-BUINT64 nonce);
+BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce);
 ```
 
 Nonce is usually set to BOAT_ETH_NONCE_AUTO, and the nonce value is obtained from the network.
@@ -821,13 +819,11 @@ Nonce is usually set to BOAT_ETH_NONCE_AUTO, and the nonce value is obtained fro
 -If necessary, set the "value" parameter of the transaction(in the initialized transaction object, value defaults to 0):
 
 ```
-BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr,
-BoatFieldMax32B *value_ptr);
+BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
 ```
 -**Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
 ```
-BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr,
-BoatFieldVariable *data_ptr);
+BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
 ```
 Among them, the format of data_ptr follows the Ethereum ABI, including the first 4 bytes of the Keccak-256 hash of the contract function prototype as the Function Selector, and then the parameters are arranged in sequence:
 <https://solidity.readthedocs.io/en/develop/abi-spec.html>
@@ -852,17 +848,17 @@ Among them, the format of func_param_ptr follows the same rules as Step 3.
 
 -**Step 2** Set transaction parameter:
 ```
-BOAT_RESULT BoatPlatoneTxSetNonce(BoatEthTx *tx_ptr,BUINT64 nonce); 
+BOAT_RESULT BoatPlatoneTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce); 
 ```
 The nonce is usually set to BOAT_PLATONE_NONCE_AUTO, and the nonce value is obtained from the network.
 
 -If necessary, set the "value" parameter of the transaction (in the initialized transaction object, value defaults to 0):
 ```
-BOAT_RESULT BoatPlatoneTxSetValue(BoatEthTx *tx_ptr,BoatFieldMax32B *value_ptr);
+BOAT_RESULT BoatPlatoneTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
 ```
 -**Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
 ```
-BOAT_RESULT BoatPlatoneTxSetData(BoatEthTx *tx_ptr,BoatFieldVariable *data_ptr);
+BOAT_RESULT BoatPlatoneTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
 ```
 Among them, data_ptr is coded according to RLP and is sequentially compiled into the following fields:
 ```
