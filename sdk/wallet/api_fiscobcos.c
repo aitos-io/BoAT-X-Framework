@@ -36,11 +36,11 @@ boatFiscobcoswallet.c defines the FISCOBCOS wallet API for BoAT IoT SDK.
 BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 							    BoatFiscobcosTx *tx_ptr,
 							    BBOOL is_sync_tx,
-							    BCHAR * gasprice_str,
-							    BCHAR * gaslimit_str,
-							    BCHAR * recipient_str,
-								BCHAR * chainid_str,
-								BCHAR * groupid_str)
+							    BCHAR *gasprice_str,
+							    BCHAR *gaslimit_str,
+							    BCHAR *recipient_str,
+								BCHAR *chainid_str,
+								BCHAR *groupid_str)
 {
 	BCHAR   *retval_str = NULL;
     BOAT_RESULT result;
@@ -253,7 +253,7 @@ BOAT_RESULT BoatFiscobcosTxSend(BoatFiscobcosTx *tx_ptr)
 }
 
 
-BCHAR * BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_str,
+BCHAR *BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_str,
 									   BUINT8 *func_param_ptr, BUINT32 func_param_len )
 {
     Param_fiscobcos_call param_fiscobcos_call;
@@ -395,7 +395,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
 }
 
 
-BCHAR * BoatFiscobcosGetBlockNumber( BoatFiscobcosTx *tx_ptr )
+BCHAR *BoatFiscobcosGetBlockNumber( BoatFiscobcosTx *tx_ptr )
 {
     Param_fiscobcos_getBlockNumber param_fiscobcos_getBlockNumber;
 	BCHAR  groupid_hexstr[67];
