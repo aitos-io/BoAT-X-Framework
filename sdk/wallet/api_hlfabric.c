@@ -581,8 +581,8 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
 						        const BCHAR *orgName_str )
 {
 	BUINT32       stringLen;
-	BCHAR *        paramSrcList[5];
-	BCHAR **       paramDstList[5];
+	BCHAR *paramSrcList[5];
+	BCHAR **paramDstList[5];
 	BUINT16      i = 0;
     BOAT_RESULT  result = BOAT_SUCCESS;
 
