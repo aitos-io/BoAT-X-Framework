@@ -502,14 +502,14 @@ A wallet is a collection of attributes of a blockchain account. These attributes
 #### Create and Load Wallet
 The SDK supports two types of wallets: one-time wallets and persistent wallets.
 
-One-time wallets are created temporarily when in use, only exist in memory, and become invalid after shutdown.
+One-time wallets are created temporarily when in use and only exist in memory; they become invalid after shutdown.
 Persistent wallets will be persistently saved when they are created. After turning off and on again, the persistent wallet that has been created before can be loaded.
 
 *Note: The persistence implementation method in <SDKRoot>/vendor/common/storage is for reference only. In commercial products, it is recommended to consider a more secure persistence method based on actual hardware capabilities.*
 
 When creating and loading a wallet, you should always call BoatWalletCreate() in the same thread.
 
-When creating a wallet, you need to pass in wallet configuration parameters according to the specific blockchain protocol.The function of creating a wallet is described as follows:
+When creating a wallet, you need to pass in wallet configuration parameters according to the specific blockchain protocol. The function of creating a wallet is described as follows:
 
 ````
 BSINT32 BoatWalletCreate(BoatProtocolType protocol_type,
