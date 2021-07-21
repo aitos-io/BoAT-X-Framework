@@ -550,7 +550,7 @@ index = BoatWalletCreate( BOAT_PROTOCOL_ETHEREUM, "boateth.keystore", &wallet_co
 ````
 
 #### Unload Wallet
-Unloading the wallet will unload the loaded wallet from the memory. It will not delete the persistent wallet, but the persistent wallet cannot be used until it is loaded again.
+Unloading the wallet will unload the wallet from the memory. It will not delete the persistent wallet, but the persistent wallet cannot be used until it is loaded again.
 
 ````
 void BoatWalletUnload(BSINT32 wallet_index);
@@ -684,7 +684,7 @@ If the call is successful, the return value of the call interface is a string in
 
 *Note: The memory of the string is allocated inside the SDK. The application must copy the string to the memory allocated by the application for subsequent use, and must not modify the content of the returned string or save the pointer to the string for use.*
 
-The contract function that changes the state of the blockchain refers to any function that changes the persistent storage information in the blockchain ledger.For example, functions that write and modify member variables in the contract are all contract functions that change the state of the blockchain.If a contract function only modifies the local variables in the function, but does not modify the contract member variables, then the contract function is a contract function that does not change the state of the blockchain.
+The contract function that changes the state of the blockchain refers to any function that changes the persistent storage information in the blockchain ledger. For example, functions that write and modify member variables in the contract are all contract functions that change the state of the blockchain.If a contract function only modifies the local variables in the function, but does not modify the contract member variables, then the contract function is a contract function that does not change the state of the blockchain.
 
 In some contract programming languages, the two types of contract functions have a clear modifier difference on the prototype, while in other programming languages, there is no obvious mark. In the ABI, these two types of functions have different identifiers.
 
@@ -745,7 +745,7 @@ In particular, there are significant differences in the principles of invoking b
 Any change to the state of the blockchain needs to be implemented through blockchain transactions and reach a consensus across the entire network. The contract function that changes the state of the blockchain is called asynchronously. When called, it only initiates the blockchain transaction, and the contract will not be executed before the blockchain network packs the transaction into blocks. Therefore, when the contract function that changes the state of the blockchain is called, the return value is only the hash value used to identify the transaction, not the return value in the form of the contract function. When designing a smart contract, the public interface function that changes the state of the blockchain, the information it tries to return should be stored in the contract member variable, and the receipt of the transaction is queried through BoatEthGetTransactionReceipt(). After success, use another Obtained in the form of a read function.
 
 
-Contract functions that do not change the state of the blockchain, only need the blockchain node to read the existing information in its database, without transactions and consensus, so the call to this type of function is a synchronous call.The return value is the return value in the form of the contract function.
+Contract functions that do not change the state of the blockchain, only need the blockchain node to read the existing information in its database, without transactions and consensus, so the call to this type of function is a synchronous call. The return value is the return value in the form of the contract function.
 
 #### Transaction Initialization
 To call the automatically generated contract interface, first initialize a transaction object, and then call the generated contract interface.  
