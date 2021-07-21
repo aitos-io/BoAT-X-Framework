@@ -33,7 +33,7 @@ web3intf.h is the header file for web3 interface.
 
 typedef struct TWeb3IntfContext
 {
-    void * rpc_context_ptr;   //!< The RPC context. The exact type depends on the RPC method
+    void *rpc_context_ptr;   //!< The RPC context. The exact type depends on the RPC method
     BUINT32 web3_message_id;  //!< Random Message ID to distinguish different messages.
 	BoatFieldVariable web3_json_string_buf;   //!< A JSON string buffer used for both REQUEST and RESPONSE
 	BoatFieldVariable web3_result_string_buf; //!< A string buffer to store RPC "result" string parsed from JSON RESPONSE
@@ -151,8 +151,8 @@ extern "C" {
     This function returns BOAT_SUCCESS if prase successed. Otherwise
     it returns an error code.
 *******************************************************************************/
-BOAT_RESULT web3_parse_json_result(const BCHAR * json_string, 
-								   const BCHAR * child_name, 
+BOAT_RESULT web3_parse_json_result(const BCHAR *json_string, 
+								   const BCHAR *child_name, 
 								   BoatFieldVariable *result_out);
 
 
@@ -168,7 +168,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR * json_string,
  *   This function always returns a pointer to the Web3 Interface context.\n
  *   It returns NULL if initialization fails.
  ******************************************************************************/
-Web3IntfContext * web3_init(void);
+Web3IntfContext *web3_init(void);
 
 
 /*!****************************************************************************
@@ -233,9 +233,9 @@ void web3_deinit(Web3IntfContext *web3intf_context_ptr);
  *   The transaction count is typically used as the "nonce" in a new transaction.\n
  *   If any error occurs or RPC call timeouts, it returns NULL.
  ******************************************************************************/
-BCHAR *web3_eth_getTransactionCount( Web3IntfContext *web3intf_context_ptr,
-                                     BCHAR *node_url_str,
-                                     const Param_eth_getTransactionCount *param_ptr );
+BCHAR *web3_eth_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
+                                    BCHAR *node_url_str,
+                                    const Param_eth_getTransactionCount *param_ptr );
 
 
 /*!****************************************************************************
@@ -281,9 +281,9 @@ BCHAR *web3_eth_getTransactionCount( Web3IntfContext *web3intf_context_ptr,
  *   block_num_str:\n
  *       QUANTITY|TAG - a string of integer block number, or "latest", "earliest" or "pending"       
  ******************************************************************************/
-BCHAR *web3_eth_getBalance( Web3IntfContext *web3intf_context_ptr,
-							BCHAR *node_url_str,
-							const Param_eth_getBalance *param_ptr );
+BCHAR *web3_eth_getBalance(Web3IntfContext *web3intf_context_ptr,
+						   BCHAR *node_url_str,
+						   const Param_eth_getBalance *param_ptr);
 
 
 /*!****************************************************************************
@@ -329,9 +329,9 @@ BCHAR *web3_eth_getBalance( Web3IntfContext *web3intf_context_ptr,
  *   using eth_getTransactionReceipt method with the transaction hash returned\n
  *   by eth_sendRawTransaction.
  ******************************************************************************/
-BCHAR *web3_eth_sendRawTransaction( Web3IntfContext *web3intf_context_ptr,
-                                    BCHAR *node_url_str,
-                                    const Param_eth_sendRawTransaction *param_ptr );
+BCHAR *web3_eth_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
+                                   BCHAR *node_url_str,
+                                   const Param_eth_sendRawTransaction *param_ptr);
 
 
 /*!****************************************************************************
@@ -429,8 +429,8 @@ BCHAR *web3_eth_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_
  *   If the blockchain node returns error or RPC call timeouts, it returns NULL.
  ******************************************************************************/
 BCHAR *web3_eth_getStorageAt(Web3IntfContext *web3intf_context_ptr,
-                                    BCHAR *node_url_str,
-                                    const Param_eth_getStorageAt *param_ptr);
+                             BCHAR *node_url_str,
+                             const Param_eth_getStorageAt *param_ptr);
 
 
 /*!****************************************************************************
@@ -493,9 +493,9 @@ BCHAR *web3_eth_getStorageAt(Web3IntfContext *web3intf_context_ptr,
  *   instead of a NULL pointer.\n
  *   If any error occurs or RPC call timeouts, it returns NULL.  
  ******************************************************************************/
-BCHAR *web3_eth_getTransactionReceiptStatus( Web3IntfContext *web3intf_context_ptr,
-											 BCHAR *node_url_str,
-											 const Param_eth_getTransactionReceipt *param_ptr );
+BCHAR *web3_eth_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
+											BCHAR *node_url_str,
+											const Param_eth_getTransactionReceipt *param_ptr );
 
 
 /*!****************************************************************************
