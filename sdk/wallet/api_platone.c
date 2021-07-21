@@ -126,13 +126,14 @@ BCHAR *BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr
     param_eth_call.gasPrice = "0x8250de00";
 
     // Set function parameters
-    UtilityBinToHex( data_str, rlp_param_ptr, rlp_param_len,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+    UtilityBinToHex(data_str, rlp_param_ptr, rlp_param_len,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
+    param_eth_call.method_name_str = "eth_call";
     param_eth_call.data = data_str;
     param_eth_call.block_num_str = "latest";
-    retval_str = web3_eth_call( tx_ptr->wallet_ptr->web3intf_context_ptr,
-                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
-                                &param_eth_call);
+    retval_str = web3_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
+                           tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                           &param_eth_call);
 
     return retval_str;
 

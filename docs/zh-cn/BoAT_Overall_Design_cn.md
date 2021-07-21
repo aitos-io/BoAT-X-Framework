@@ -311,43 +311,43 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“获取区块链指定位置存储内容”的json串报文
-  3. 调用RPC方法“web3_eth_getStorageAt”将请求报文发送给区块链
+  3. 调用RPC方法“web3_getStorageAt”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 获取账户交易次数  
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“获取账户交易次数”的json串报文
-  3. 调用RPC方法“web3_eth_getTransactionCount”将请求报文发送给区块链
+  3. 调用RPC方法“web3_getTransactionCount”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 获取区块链的gasPrice  
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“获取区块链的gasPrice”的json串报文
-  3. 调用RPC方法“web3_eth_gasPrice”将请求报文发送给区块链
+  3. 调用RPC方法“web3_gasPrice”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 获取账户余额  
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“获取账户余额”的json串报文
-  3. 调用RPC方法“web3_eth_getBalance”将请求报文发送给区块链
+  3. 调用RPC方法“web3_getBalance”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 获取交易回执  
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“获取交易回执”的json串报文
-  3. 调用RPC方法“web3_eth_getTransactionReceiptStatus”将请求报文发送给区块链
+  3. 调用RPC方法“web3_getTransactionReceiptStatus”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 区块链无状态调用  
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“区块链无状态调用”的json串报文
-  3. 调用RPC方法“web3_eth_call”将请求报文发送给区块链
+  3. 调用RPC方法“web3_call”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 发送raw transaction  
   该接口执行的内容包括：
   1. web3消息ID自增 
   2. 组织用于向区块链发起请求的“发送raw transaction”的json串报文
-  3. 调用RPC方法“web3_eth_sendRawTransaction”将请求报文发送给区块链
+  3. 调用RPC方法“web3_sendRawTransaction”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 
 #### PlatONE的协议层实现
@@ -486,11 +486,11 @@ BoAT的设计应考虑TEE环境的支持。对于有TEE环境的硬件，BoAT应
     <tr>
         <td colspan="2" rowspan="2">Constant</td>
         <td>True</td>
-        <td>函数通过RPC方法“web3_eth_call”访问区块链</td>
+        <td>函数通过RPC方法“web3_call”访问区块链</td>
     </tr>
     <tr>
         <td>False</td>
-        <td>函数通过RPC方法“web3_eth_sendRawTransaction”访问区块链 </td>
+        <td>函数通过RPC方法“web3_sendRawTransaction”访问区块链 </td>
     </tr>
 </table>
 

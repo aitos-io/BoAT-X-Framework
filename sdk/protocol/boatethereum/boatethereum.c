@@ -463,11 +463,12 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     UtilityBinToHex( rlp_stream_hex_str, rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len,
 				    BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
 
+    param_eth_sendRawTransaction.method_name_str = "eth_sendRawTransaction";
     param_eth_sendRawTransaction.signedtx_str = rlp_stream_hex_str;
     
-    tx_hash_str = web3_eth_sendRawTransaction( tx_ptr->wallet_ptr->web3intf_context_ptr,
-                                               tx_ptr->wallet_ptr->network_info.node_url_ptr,
-                                               &param_eth_sendRawTransaction);
+    tx_hash_str = web3_sendRawTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
+                                          tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                          &param_eth_sendRawTransaction);
 	if( tx_hash_str == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
