@@ -57,7 +57,7 @@ Smart contract call (manual construction)
  Figure 2-1 shows the position of BoAT IoT Framwork in the OpenCPU module. As an application layer protocol, BoAT is located above the existing protocol stack of the module and provides blockchain services to IoT Application. The peer layer of BoAT is a blockchain network.  
 
  ![BoAT in System](/images/BoAT_User_Guide_en-F2-1-BoAT_in_system.png)
- Figure 2-1 The location of the BoAT in the system
+ Figure 2-1 BoAT System Location
 
  For non-OpenCPU cellular modules, the BoAT IoT Framework library is linked by the module firmware and expanded into AT commands by the module manufacturer for invocation of IoT applications on the host computer, no longer repeated.
 
@@ -180,7 +180,7 @@ The SDK provides the following tools to generate the corresponding C interface c
 | \<SDKRoot\>/tools/platoneSolidity2c.py | Generate C calling code according to PlatONE (Solidity) ABI      |
 | \<SDKRoot\>/tools/platoneWASM2c.py | Generate C calling code according to PlatONE (WASM) ABI      |
 
-Since contract programming languages generally support object-oriented, and C language does not support object-oriented, and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools. The specific input types of support contract functions are described in the [Contract Call (Automatically Generated)](#Contract-Call-(automatically-generated)) chapter.
+Contract programming languages generally support "object-oriented". However, since C language does not support "object-oriented" and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools. The specific input types of support contract functions are described in the [Contract Call (Automatically Generated)](#Contract-Call-(automatically-generated)) chapter.
 
 Before making the call, you first need to compile the contract, and copy the ABI interface description JSON file generated in the contract compilation to the corresponding directory of the SDK: 
 
