@@ -54,7 +54,7 @@ Smart contract call (manual construction)
 
  For the cellular module in the form of OpenCPU, the BoAT IoT Framework library is linked by the IoT Application to form an IoT application with blockchain link capabilities.
 
- Figure 2-1 shows the position of BoAT IoT Framwork in the OpenCPU module. As an application layer protocol, BoAT is located above the existing protocol stack of the module and provides blockchain services to IoT Application. The peer layer of BoAT is a blockchain network.  
+ Figure 2-1 shows the position of BoAT IoT Framework in the OpenCPU module. As an application layer protocol, BoAT is located above the existing protocol stack of the module and provides blockchain services to IoT Application. The peer layer of BoAT is a blockchain network.  
 
  ![BoAT in System](/images/BoAT_User_Guide_en-F2-1-BoAT_in_system.png)
  Figure 2-1 BoAT System Location
