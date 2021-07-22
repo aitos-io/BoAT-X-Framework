@@ -64,8 +64,8 @@ extern "C" {
  * @return 
  *   Return \c BOAT_SUCCESS if generate success; otherwise return a negative error code
  ******************************************************************************/
-BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 inputLen, 
-				       BUINT8* hashed, BUINT8* hashedLen, void* rsvd );
+BOAT_RESULT BoatHash(const BoatHashAlgType type, const BUINT8* input, BUINT32 inputLen, 
+				     BUINT8* hashed, BUINT8* hashedLen, void* rsvd);
 
 
 /*!****************************************************************************
@@ -81,7 +81,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
  *   This function returns the address of the allocated memory. If allocation\n
  *  fails, it returns NULL.
  ******************************************************************************/
-void   *BoatMalloc(size_t size);
+void *BoatMalloc(size_t size);
 
 
 /*!****************************************************************************
@@ -94,7 +94,7 @@ void   *BoatMalloc(size_t size);
  * @param[in] mem_ptr
  *   The address to free. The address must be the one returned by BoatMalloc().
  ******************************************************************************/
-void    BoatFree(void *mem_ptr);
+void BoatFree(void *mem_ptr);
 
 
 /*!****************************************************************************
@@ -108,7 +108,7 @@ void    BoatFree(void *mem_ptr);
  * @param[in] second
  *   How many seconds to sleep.
  ******************************************************************************/
-void    BoatSleep(BUINT32 second);
+void BoatSleep(BUINT32 second);
 
 /*! @}*/
 

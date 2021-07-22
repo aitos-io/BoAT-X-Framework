@@ -154,11 +154,11 @@ extern "C" {
  * @return
  *   This function returns how many bytes the trimmed binary stream is.
  ******************************************************************************/
-BUINT32 UtilityTrimBin( BOAT_OUT BUINT8 *to_ptr,
-						const BUINT8 *from_ptr,
-						BUINT32 from_len,
-						TRIMBIN_TRIM_MODE trim_mode,
-						BBOOL zero_as_null );
+BUINT32 UtilityTrimBin(BOAT_OUT BUINT8 *to_ptr,
+					   const BUINT8 *from_ptr,
+					   BUINT32 from_len,
+					   TRIMBIN_TRIM_MODE trim_mode,
+					   BBOOL zero_as_null);
 
 
 /*!****************************************************************************
@@ -222,12 +222,12 @@ BUINT32 UtilityTrimBin( BOAT_OUT BUINT8 *to_ptr,
  *   \n If <from_len> is 0 or <from_ptr> is NULL, and <to_str> is NOT NULL, this
  *   function writes a '\0' to <to_str>, i.e. a NULL string and returns 0.
  ******************************************************************************/
-BUINT32 UtilityBinToHex( BOAT_OUT BCHAR *to_str,
+BUINT32 UtilityBinToHex(BOAT_OUT BCHAR *to_str,
 						const BUINT8 *from_ptr,
 						BUINT32 from_len,
 						BIN2HEX_TRIM_MODE trim_mode,
 						BIN2HEX_PREFIX_0x_MODE prefix_0x_mode,
-						BBOOL zero_as_null );
+						BBOOL zero_as_null);
 
 
 /*!****************************************************************************
@@ -284,11 +284,11 @@ BUINT32 UtilityBinToHex( BOAT_OUT BCHAR *to_str,
  *	
  * @see UtilityTrimBin()
 *******************************************************************************/
-BUINT32 UtilityHexToBin( BOAT_OUT BUINT8 *to_ptr,
+BUINT32 UtilityHexToBin(BOAT_OUT BUINT8 *to_ptr,
                         BUINT32 to_size,
                         const BCHAR *from_str,
                         TRIMBIN_TRIM_MODE trim_mode,
-                        BBOOL zero_as_null );
+                        BBOOL zero_as_null);
 
 
 /*!****************************************************************************
@@ -318,9 +318,9 @@ BUINT32 UtilityHexToBin( BOAT_OUT BUINT8 *to_ptr,
  *   \n If <trim_mode> = TRIMBIN_TRIM_NO, it always returns 4.
  * @see UtilityTrimBin()
  ******************************************************************************/
-BUINT8 UtilityUint32ToBigend( BOAT_OUT BUINT8 *to_big_ptr,
-							  BUINT32 from_host_integer,
-							  TRIMBIN_TRIM_MODE trim_mode );
+BUINT8 UtilityUint32ToBigend(BOAT_OUT BUINT8 *to_big_ptr,
+							 BUINT32 from_host_integer,
+							 TRIMBIN_TRIM_MODE trim_mode);
 
 
 /*!****************************************************************************
@@ -348,9 +348,9 @@ BUINT8 UtilityUint32ToBigend( BOAT_OUT BUINT8 *to_big_ptr,
  *
  * @see UtilityUint32ToBigend()  UtilityTrimBin()
 *******************************************************************************/
-BUINT8 UtilityUint64ToBigend( BOAT_OUT BUINT8 *to_big_ptr,
-							  BUINT64 from_host_integer,
-							  TRIMBIN_TRIM_MODE trim_mode );
+BUINT8 UtilityUint64ToBigend(BOAT_OUT BUINT8 *to_big_ptr,
+							 BUINT64 from_host_integer,
+							 TRIMBIN_TRIM_MODE trim_mode);
 
 
 /*!****************************************************************************
@@ -485,7 +485,7 @@ void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_n
 *   If the string length less than maxium limit, return \c BOAT_SUCCESS, else
 *   return  BOAT_ERROR.
 *******************************************************************************/
-BOAT_RESULT UtilityStringLenCheck( const BCHAR *string );
+BOAT_RESULT UtilityStringLenCheck(const BCHAR *string);
 
 /*! @}*/
 

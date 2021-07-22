@@ -100,14 +100,14 @@ extern "C" {
  * @brief Initialize a transaction
  * @see BoatEthTxInit()
  ******************************************************************************/
-BOAT_RESULT BoatFiscobcosTxInit( BoatFiscobcosWallet *wallet_ptr,
-								 BoatFiscobcosTx *tx_ptr,
-								 BBOOL is_sync_tx,
-								 BCHAR * gasprice_str,
-								 BCHAR * gaslimit_str,
-								 BCHAR * recipient_str,
-								 BCHAR * chainid_str,
-								 BCHAR * groupid_str );
+BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
+								BoatFiscobcosTx *tx_ptr,
+								BBOOL is_sync_tx,
+								BCHAR *gasprice_str,
+								BCHAR *gaslimit_str,
+								BCHAR *recipient_str,
+								BCHAR *chainid_str,
+								BCHAR *groupid_str );
 
 
 /*!****************************************************************************
@@ -163,8 +163,8 @@ BOAT_RESULT BoatFiscobcosTxSend(BoatFiscobcosTx *tx_ptr);
  * @brief Call a state-less contract function
  * @see BoatEthCallContractFunc()
  ******************************************************************************/
-BCHAR * BoatFiscobcosCallContractFunc(BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_str, 
-									  BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
+BCHAR *BoatFiscobcosCallContractFunc(BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_str, 
+									 BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
 
 
 /*!****************************************************************************
@@ -176,7 +176,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr);
 /*!****************************************************************************
  * @brief query current group block number.
  ******************************************************************************/
-BCHAR * BoatFiscobcosGetBlockNumber( BoatFiscobcosTx *tx_ptr );
+BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr);
 
 // Ethereum APIs compatible for FISCOBCOS
 
@@ -184,9 +184,9 @@ BCHAR * BoatFiscobcosGetBlockNumber( BoatFiscobcosTx *tx_ptr );
  * @brief Initialize Boat FISCOBCOS Wallet
  * @see BoatEthWalletInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BoatFiscobcosWallet * BoatFiscobcosWalletInit(const BoatFiscobcosWalletConfig *config_ptr, BUINT32 config_size)
+__BOATSTATIC __BOATINLINE BoatFiscobcosWallet *BoatFiscobcosWalletInit(const BoatFiscobcosWalletConfig *config_ptr, BUINT32 config_size)
 {
-    return BoatEthWalletInit((const BoatEthWalletConfig *) config_ptr, config_size);
+    return BoatEthWalletInit((const BoatEthWalletConfig *)config_ptr, config_size);
 }
 
 
@@ -196,7 +196,7 @@ __BOATSTATIC __BOATINLINE BoatFiscobcosWallet * BoatFiscobcosWalletInit(const Bo
  ******************************************************************************/
 __BOATSTATIC __BOATINLINE void BoatFiscobcosWalletDeInit(BoatFiscobcosWallet *wallet_ptr)
 {
-    return BoatEthWalletDeInit((BoatEthWallet *) wallet_ptr);
+    return BoatEthWalletDeInit((BoatEthWallet *)wallet_ptr);
 }
 
 
@@ -271,8 +271,8 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx
  * @brief Prase RPC method RESPONSE.
  * @see BoatEthPraseRpcResponseResult()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR * json_string, 
-                                                                          const BCHAR * child_name, 
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
+                                                                          const BCHAR *child_name, 
                                                                           BoatFieldVariable *result_out)
 {
     return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);

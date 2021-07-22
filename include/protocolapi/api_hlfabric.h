@@ -50,7 +50,8 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 
 //!@brief fabric transaction type
 //! 
-typedef enum{
+typedef enum
+{
 	HLFABRIC_TYPE_IDLE = 0,
 	HLFABRIC_TYPE_PROPOSAL,
 	HLFABRIC_TYPE_TRANSACTION,
@@ -58,7 +59,8 @@ typedef enum{
 
 //!@brief fabric key pairs structure
 //!fabric key pairs structure
-typedef struct TBoatHlfabricKeyPair{
+typedef struct TBoatHlfabricKeyPair
+{
 	BoatWalletPriKeyCtx  prikeyCtx; //!< @NOTE This field MUST BE placed in the first member of the structure
 	                                //!< because in function BoatWalletCreate(), 
 	BoatFieldVariable    cert;      //!< client certificate content
@@ -67,14 +69,16 @@ typedef struct TBoatHlfabricKeyPair{
 
 //!@brief fabric all fully trusted top-level CAs
 //! fabric all fully trusted top-level CAs
-typedef struct TBoatHlfabricTlsCAchain{
+typedef struct TBoatHlfabricTlsCAchain
+{
 	BoatFieldVariable      ca[BOAT_HLFABRIC_ROOTCA_MAX_NUM]; //!< rootCA certificate content
 }BoatHlfabricTlsCAchain;
 
 
 //!@brief fabric node information
 //! fabric node information
-typedef struct TBoatHlfabricNodeInfo{
+typedef struct TBoatHlfabricNodeInfo
+{
 	BCHAR*  nodeUrl;  //!< URL of the blockchain node, e.g. "http://a.b.com:8545"	
 	BCHAR*  hostName; //!< tls server hostname, it's 'CN' field in server certificate
 					  //!< if BOAT_HLFABRIC_TLS_SUPPORT is enabled, set is a correct value, otherwise set it NULL.
@@ -83,7 +87,8 @@ typedef struct TBoatHlfabricNodeInfo{
 
 //!@brief fabric network information structure
 //! fabric network information structure
-typedef struct TBoatHlfabricNetworkInfo{
+typedef struct TBoatHlfabricNetworkInfo
+{
 	BUINT16 endorserNum;  //!< this field is update by SDK, caller should not modify it manually
 	BUINT16 ordererNum;   //!< this field is update by SDK, caller should not modify it manually
     BoatHlfabricNodeInfo  endorser[BOAT_HLFABRIC_ENDORSER_MAX_NUM]; //!< endorser node information
@@ -93,7 +98,8 @@ typedef struct TBoatHlfabricNetworkInfo{
 
 //!@brief fabric wallet structure
 //! fabric wallet structure
-typedef struct TBoatHlfabricWallet{
+typedef struct TBoatHlfabricWallet
+{
 	BoatHlfabricKeyPair   account_info; //!< Account information
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
 #if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
@@ -109,7 +115,8 @@ typedef struct TBoatHlfabricWallet{
 
 //!@brief fabric transaction timestamp structure
 //! fabric transaction timestamp structure
-typedef struct TBoatHlfabricTimestamp{
+typedef struct TBoatHlfabricTimestamp
+{
 	BUINT64 sec;   //!< passing seconds from 1970-01-01 00:00:00
 	BUINT64 nanos; //!< Non-negative fractions of a second at nanosecond resolution
 }BoatHlfabricTimestamp;
@@ -117,14 +124,16 @@ typedef struct TBoatHlfabricTimestamp{
 
 //!@brief chaincodeId structure
 //! chaincodeId structure
-typedef struct TBoatHlfabricChaincodeId{
+typedef struct TBoatHlfabricChaincodeId
+{
 	BCHAR*     path;    //!< The chaincode path, if unused, set it as NULL.
 	BCHAR*     name;    //!< The chaincode name
 	BCHAR*     version; //!< The chaincode version, if unused, set it as NULL.
 }BoatHlfabricChaincodeId;
 
 //! Transaction command arguments
-typedef struct TBoatHlfabricArgs{
+typedef struct TBoatHlfabricArgs
+{
 	BUINT32    nArgs;
 	BCHAR*     args[BOAT_HLFABRIC_ARGS_MAX_NUM];
 }BoatHlfabricArgs;
@@ -132,16 +141,20 @@ typedef struct TBoatHlfabricArgs{
 
 //!@brief endorser node respond structure
 //! 
-typedef struct TBoatHlfabricSingleEndorserResponse{
+typedef struct TBoatHlfabricSingleEndorserResponse
+{
 	void*            contentPtr; //!< response content point
 	BoatHlfabricType responseType;
-	union{
-		struct{ //!< endorserResponse
+	union
+	{
+		struct
+		{ //!< endorserResponse
 			BoatFieldVariable     payload;
 			BoatFieldVariable     endorser;
 			BoatFieldVariable     signature;
 		};
-		struct{ //!< ordererResponse
+		struct
+		{ //!< ordererResponse
 			BSINT32               status;//!< for 'query' operation, remote will respond a state code
 		};
 	};
@@ -150,7 +163,8 @@ typedef struct TBoatHlfabricSingleEndorserResponse{
 
 //!@brief endorser node respond array
 //! endorser node respond array
-typedef struct TBoatHlfabricProposalResponseArray{
+typedef struct TBoatHlfabricProposalResponseArray
+{
 	BUINT16                            responseCount;
 	BoatHlfabricSingleEndorserResponse response[BOAT_HLFABRIC_ENDORSER_MAX_NUM];
 }BoatHlfabricEndorserResponse;
@@ -158,7 +172,8 @@ typedef struct TBoatHlfabricProposalResponseArray{
 
 //!@brief fabric transaction variable structure
 //! fabric transaction variable structure
-typedef struct TBoatHlfabricVariable{
+typedef struct TBoatHlfabricVariable
+{
 	BoatHlfabricType             type; //!< Frame is proposal or trancaction,this field will maintenance by sdk,
 	                                   //!< caller should not modify it manually. this field maybe removed in future version!
 	BoatHlfabricTimestamp        timestamp;  //!< Transaction occurred datatime
@@ -172,7 +187,8 @@ typedef struct TBoatHlfabricVariable{
 
 //!@brief fabric transaction high level structure
 //! fabric transaction high level structure
-typedef struct TBoatHlfabricTx{
+typedef struct TBoatHlfabricTx
+{
 	BoatHlfabricWallet*          wallet_ptr;       //!< Pointer of the transaction wallet
 	BoatHlfabricVariable         var;              //!< Necessary variable in transaction
 	BoatHlfabricEndorserResponse endorserResponse; //!< Endorser respond contents
@@ -180,21 +196,24 @@ typedef struct TBoatHlfabricTx{
 
 //!@brief fabric certificate information config structure
 //! fabric certificate information config structure
-typedef struct TBoatHlfabricCertInfoCfg{
+typedef struct TBoatHlfabricCertInfoCfg
+{
 	BUINT32  length;                              //!< length of certificate content, this length contains the terminator '\0'.
 	BCHAR    content[BOAT_HLFABRIC_CERT_MAX_LEN]; //!< content of certificate.
 }BoatHlfabricCertInfoCfg;
 
 //!@brief fabric node information config structure
 //! fabric node information config structure
-typedef struct TBoatHlfabricNodeInfoCfg{
+typedef struct TBoatHlfabricNodeInfoCfg
+{
 	BCHAR  nodeUrl[BOAT_HLFABRIC_NODE_URL_MAX_LEN];  //!< URL of the blockchain node, e.g. "http://a.b.com:8545"	
 	BCHAR  hostName[BOAT_HLFABRIC_HOSTNAME_MAX_LEN]; //!< TLS server hostname, it's 'CN' field in server certificate
 }BoatHlfabricNodeInfoCfg;
 
 //!@brief fabric wallet config structure
 //! fabric wallet config structure
-typedef struct TBoatHlfabricWalletConfig{
+typedef struct TBoatHlfabricWalletConfig
+{
 	BoatWalletPriKeyCtx_config  accountPriKey_config;
 	BoatHlfabricCertInfoCfg     accountCertContent;   //!< certificate content of account
 
@@ -235,9 +254,9 @@ extern "C" {
  * @return
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlfabricWalletSetAccountInfo( BoatHlfabricWallet *wallet_ptr, 
-											  const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											  const BoatHlfabricCertInfoCfg certContent );
+BOAT_RESULT BoatHlfabricWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr, 
+											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
+											 const BoatHlfabricCertInfoCfg certContent);
 
 
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
@@ -269,7 +288,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
 #endif
 
 
-#if ( BOAT_HLFABRIC_TLS_SUPPORT == 1 )
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 /*!****************************************************************************
  * @brief Set root CA certificate for TLS connection.
  * 
@@ -288,9 +307,9 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr, 
-											 const BoatHlfabricCertInfoCfg *rootCaContent,
-											 BUINT32 rootCaNumber );
+BOAT_RESULT BoatHlfabricWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr, 
+											const BoatHlfabricCertInfoCfg *rootCaContent,
+											BUINT32 rootCaNumber);
 #endif
 
 
@@ -328,9 +347,11 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr, 
-							const BoatHlfabricNodeInfoCfg *endorserInfo_ptr, BUINT32 endorserNumber,
-							const BoatHlfabricNodeInfoCfg *ordererInfo_ptr , BUINT32 ordererNumber );
+BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr, 
+											 const BoatHlfabricNodeInfoCfg *endorserInfo_ptr, 
+											 BUINT32 endorserNumber,
+											 const BoatHlfabricNodeInfoCfg *ordererInfo_ptr, 
+											 BUINT32 ordererNumber);
 
 
 /*!****************************************************************************
@@ -350,8 +371,8 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
  * @return
  *   If initinal success, return fabric wallet pointer, otherwise return \c NULL.
  ******************************************************************************/
-BoatHlfabricWallet* BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *config_ptr, 
-											BUINT32 config_size );
+BoatHlfabricWallet *BoatHlfabricWalletInit(const BoatHlfabricWalletConfig *config_ptr, 
+										   BUINT32 config_size);
 
 
 /*!****************************************************************************
@@ -396,13 +417,13 @@ void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr );
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr, 
-							    const BoatHlfabricWallet *wallet_ptr,
-							    const BCHAR *chaincodeId_path_str,
-							    const BCHAR *chaincodeId_name_str,
-							    const BCHAR *chaincodeId_version_str,
-							    const BCHAR *channelId_str,
-						        const BCHAR *orgName_str );
+BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr, 
+							   const BoatHlfabricWallet *wallet_ptr,
+							   const BCHAR *chaincodeId_path_str,
+							   const BCHAR *chaincodeId_name_str,
+							   const BCHAR *chaincodeId_version_str,
+							   const BCHAR *channelId_str,
+						       const BCHAR *orgName_str);
 
 
 /*!****************************************************************************
@@ -418,7 +439,7 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
  * @return 
  *   This function doesn't return any thing.
  ******************************************************************************/
-void BoatHlfabricTxDeInit( BoatHlfabricTx *tx_ptr );
+void BoatHlfabricTxDeInit(BoatHlfabricTx *tx_ptr);
 
 
 /*!****************************************************************************
@@ -441,9 +462,9 @@ void BoatHlfabricTxDeInit( BoatHlfabricTx *tx_ptr );
  * @return  
  *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlfabricTxSetTimestamp( BoatHlfabricTx *tx_ptr, 
-										const BUINT64 sec, 
-										const BUINT64 nanos );
+BOAT_RESULT BoatHlfabricTxSetTimestamp(BoatHlfabricTx *tx_ptr, 
+									   const BUINT64 sec, 
+									   const BUINT64 nanos);
 
 
 /*!****************************************************************************
@@ -465,9 +486,9 @@ BOAT_RESULT BoatHlfabricTxSetTimestamp( BoatHlfabricTx *tx_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlfabricTxSetArgs( BoatHlfabricTx *tx_ptr, 
-								   const BCHAR *arg1, 
-								   ... );
+BOAT_RESULT BoatHlfabricTxSetArgs(BoatHlfabricTx *tx_ptr, 
+								  const BCHAR *arg1, 
+								  ...);
 
 /*!****************************************************************************
  * @brief 
@@ -484,7 +505,7 @@ BOAT_RESULT BoatHlfabricTxSetArgs( BoatHlfabricTx *tx_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if evaluate success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlfabricTxEvaluate( BoatHlfabricTx *tx_ptr );
+BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief 
@@ -500,7 +521,7 @@ BOAT_RESULT BoatHlfabricTxEvaluate( BoatHlfabricTx *tx_ptr );
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlfabricTxSubmit( BoatHlfabricTx *tx_ptr );
+BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr);
 
 /*! @}*/
 
