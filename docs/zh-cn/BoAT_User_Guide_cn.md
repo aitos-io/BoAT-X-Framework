@@ -149,7 +149,7 @@ C:\Documents and Settings\developer\project\boatiotsdk
 在交叉编译时，如果交叉编译环境需要配置特定的INCLUDE路径，需要在上述文件中添加路径。    
 
 #### BoAT IoT Framework SDK配置
-- 使能/禁能区块链协议
+- 使能/禁能区块链协议  
 顶层makefile中：
 ```
 BOAT_PROTOCOL_USE_ETHEREUM  ?= 1
