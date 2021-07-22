@@ -6,7 +6,10 @@ SOURCES = boatwallet.c \
 		  
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
 	SOURCES += api_ethereum.c
-endif			  
+endif
+ifeq ($(BOAT_PROTOCOL_USE_PLATON), 1)
+	SOURCES += api_platon.c
+endif		  
 ifeq ($(BOAT_PROTOCOL_USE_PLATONE), 1)
 	SOURCES += api_platone.c
 endif	

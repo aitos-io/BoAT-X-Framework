@@ -16,6 +16,7 @@ OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/cJSON/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/protos/*/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/protos/*/*/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatethereum/*.o) \
+		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatplaton/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatplatone/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatfiscobcos/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/platform/*.o) \
