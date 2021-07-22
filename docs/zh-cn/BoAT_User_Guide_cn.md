@@ -115,7 +115,7 @@ BoAT IoT Framework SDK依赖于以下软件:
 |curl          |libcurl及其开发文件(7.55.1 is tested)     |Required on linux default |Required on linux default |
 
 
-在编译SDK和使用之前，需要确保这些软件已经安装。在Ubuntu下，可以使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
+在编译和使用SDK之前，需要确保这些软件已经安装。在Ubuntu下，可以使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
 
 在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](####以Windows为编译环境)章节对编译文件进行调整。
 
