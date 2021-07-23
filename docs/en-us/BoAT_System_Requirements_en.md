@@ -1,8 +1,12 @@
 # BoAT System Requirements
 
+
+## Introduction
+
+### Overview
 This technical paper describes the system requirements of the BoAT Framework (C language version) for cellular modules. BoAT is an SDK that runs on the module's application processor. For the OpenCPU cellular module, BoAT is linked and called by the application as a library. For non-OpenCPU cellular modules, BoAT's API needs to be extended to AT commands for applications on the upper MCU to call.
 
-## Part One. Storage Requirements
+## Part 1 Storage Requirements
 
 For Ethereum/PlatONE/FISCO BCOS, the storage requirements of the BoAT Framework (C language version) itself are:
 - Flash (code and read-only data): about 210kB
@@ -17,32 +21,30 @@ For HyperLedger Fabric, the storage requirements of the BoAT Framework (C langua
 
 The above does not include the system libraries that the BoAT Framework (C language version) depends on. The exact values may vary with different blockchain protocols.
 
-## Part Two. Computing Performance Requirements
+## Part 2 Computing Performance Requirements
 
 For supporting Ethereum, the BoAT Framework (C language version)  takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, on an ARM Cortex M4 running at about 100MHz . The exact time can vary with different blockchain protocols.
 
 The exact computing performance requirements depend on the power consumption and latency requirements of the application calling (porting in) the BoAT Framework SDK. BoAT itself has no special requirements.
 
-## Part Three. Operating System and Communication Requirements 
+## Part 3 Operating System and Communication Requirements 
 
-There really are no special requirements for the operating system. Generally BoAT Framework (C language version) can be ported over most operating systems (e.g. linux, various RTOS), as long as the following capabilities (below) are supported: 
+There really are no special requirements for the operating system. Generally BoAT Framework (C language version) can be ported over most operating systems (e.g. Linux, various RTOS), as long as the following capabilities (below) are supported: 
 
 1. Support dynamic memory allocation / free. 
 2. Support mutual exclusion (mutex) protection mechanism.
 3. Supports thread suspension for a specified duration (optional). If not, BoAT does not support timeout or polling functions, and other functions are not affected. 
-4. According to priority, from either high to low, at least one of the following random number generators is supported: <br>
+4. According to priority from high to low, at least one of the following random number generators is supported: <br>
    (1) TRNG, true random number generator (requires hardware support) <br>
    (2) CSPRNG, a cryptographically secure pseudo-random number generator. For Linux, this capability can be provided by the OpenSSL library <br>
    (3) PRNG, a (non-cryptographically secure) pseudo-random number generator <br>
 
-5. Depending on either a high to low minimum priority, at least one of the following types of times below is supported (for the pseudo-random number seed and the time in the data and log): <br>
-
+5. Depending on a high to low minimum priority, at least one of the following types of times below is supported (for the pseudo-random number seed and the time in the data and log): <br>
    (1) RTC time, and can be consistent with the real time through protocols such as NTP <br>
    (2) RTC time, needs to set the time manually <br>
    (3) Tick since power on <br>
 
 6. According to priority from high to low, at least one of the following communication protocols is supported: <br>
-
    (1) HTTP / HTTPS (for Linux, this capability can be provided by the curl library) <br>
    (2) CoAP <br>
    (3) MQTT <br>
@@ -50,11 +52,11 @@ There really are no special requirements for the operating system. Generally BoA
 
 If the device can only connect to the IoT platform of a specific operator or service provider (such as OneNET, OceanConnect), the communication protocol follows the operator's requirements.
 
-7. Supports commonly used standard C library functions such as memcpy (), strcpy (), snprintf () (optional for I/O-related functions such as printf()).
+7. Supports commonly used standard C library functions such as memcpy(), strcpy(), snprintf()(optional for I/O-related functions such as printf()).
 
-8. If the cellular IoT Module utilizes a Linux operating system, during debugging it should support adb or similar login mechanism and have root privileges.
+8. If the cellular IoT Module utilizes a Linux operating system, it should support adb or similar login mechanism and have root privileges during debugging.
 
-## Part Four TEE and Remote Attestation (optional)
+## Part 4 TEE and Remote Attestation (optional)
 
 ### TEE
 
@@ -72,7 +74,7 @@ Remote attestation is a mechanism that uses the Root of Trust embedded in the ch
 2. If the TEE is supported, the data should be signed in TEE (optional)
 
 
-## Part Five. Cryptography Hardware Acceleration (optional)
+## Part 5 Cryptography Hardware Acceleration (optional)
 
 If the hardware supports cryptographic hardware acceleration, utilizing this technology will improve the performance of cryptographic operations.
 

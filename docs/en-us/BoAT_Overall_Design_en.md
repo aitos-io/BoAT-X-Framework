@@ -20,12 +20,12 @@ The intended readers of this article are: BoAT SDK detailed designers.
 
 
 ## BoAT Design Goals
-As a middleware of the IoT blockchain, BoAT should be easily and quickly transplanted to various IoT modules with minimal changes，The design of BoAT follows the following goals:
+As a middleware fusing Blockchain and IoT technologies, It should be easily and quickly transplanted into various IoT modules at the minimum cost of modification. The design of BoAT follows the following goals:
 + Hierarchical design  
 + Multiple blockchain protocols are supported  
 + Scalable design  
 + Secret key security design  
-+ Provide corresponding C language interface contract automatic generation tools for different blockchains  
++ C interface code generation tool for corresponding smart contracts of different blockchains. 
 
 
 ## The Position of BoAT SDK in The Entire Blockchain Network
@@ -64,7 +64,7 @@ The transaction interface of the interface layer is supported by the protocol la
 ##### The Data Structure and Function Implementation List of The Wallet
 The wallet is a container. In addition to storing the information necessary to access the blockchain, the container also contains a key management system, which corresponds to the data structure and implementation method of the wallet.
 
-The BoAT SDK runs on the application processor of the cellular module, and the resources of its operating environment are limited. For example, some cellular modules may not provide non-volatile memory access interfaces; on the other hand, from the user's point of view, some users may just want to create a temporary wallet for testing, but don't want to store it for a long time. In view of this, in the design of BoAT SDK, wallets are divided into two categories: persistent wallets and one-time wallets. Persistent wallets are stored in the non-volatile memory of the operating environment and will not be lost when power is off; one-time wallets are stored in the RAM of the operating environment and will be lost when power is off.  
+When the BoAT SDK runs on the application processor of the cellular module, which can only provide resource-constrained operating environment. For example, some cellular modules may not provide non-volatile memory access interfaces; on the other hand, from the user's point of view, some users may just want to create a temporary wallet for testing, but don't want to store it for a long time. In view of this, in the design of BoAT SDK, wallets are divided into two categories: persistent wallets and one-time wallets. Persistent wallets are stored in the non-volatile memory of the operating environment and will not be lost when power is off; one-time wallets are stored in the RAM of the operating environment and will be lost when power is off.  
   
 In the data structure of the wallet, It should contain at least the following elements:  
   + Account private key
@@ -261,7 +261,7 @@ Compared with Ethereum, the differences are listed below:
 ### Protocol Layer
 #### Overview
 The protocol layer is located in the second layer of the BoAT SDK, which mainly implements the protocol part of each blockchain. For Ethereum series blockchains, their protocols are very similar, such as Ethereum and PlatONE.   
-The protocol layer is supported by the RPC layer. Please refer to [Protocol layer](#Protocol-layer).  
+The protocol layer is supported by the RPC layer. Please refer to [RPC Layer](#RPC-Layer).  
 
 #### Ethereum's Protocol Layer Implementation
 ##### Raw Transaction Interface

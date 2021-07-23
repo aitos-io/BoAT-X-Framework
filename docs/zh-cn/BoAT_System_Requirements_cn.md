@@ -7,12 +7,12 @@
 
 仅支持以太坊/PlatONE/FISCO BCOS时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
 - Flash（代码和只读数据）：约210kB
-- Flash（持久性读写数据): 数百Byte
+- Flash（持久性读写数据）：数百Byte
 - RAM（全局变量、堆、栈）：约10kB
 
 仅支持HyperLedger Fabric时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
 - Flash（代码和只读数据）：约520kB
-- Flash（持久性读写数据): 数千Byte
+- Flash（持久性读写数据）：数千Byte
 - RAM（全局变量、堆、栈）：约30kB
 
 以上不含BoAT Framework SDK（C语言版本）所依赖的系统库，具体数值随不同区块链协议而有所不同。
@@ -24,13 +24,13 @@
 
 ## 操作系统和通信需求
 
-BoAT Framework SDK（C语言版本）对操作系统没有特别要求，linux和各种RTOS均可移植，但至少应支持以下能力：
+BoAT Framework SDK（C语言版本）对操作系统没有特别要求，Linux和各种RTOS均可移植，但至少应支持以下能力：
 1. 支持动态内存分配/释放。
 2. 支持互斥量保护机制。
 3. 支持按指定时长挂起线程（可选）。若不支持，则BoAT不支持超时或轮询功能，其他功能不受影响。
 4. 按优先级从高到低，至少支持如下随机数生成器之一：<br>
    (1)	TRNG，真随机数发生器（需硬件支持）<br>
-   (2)	CSPRNG，密码学安全伪随机数发生器。对于linux，可由OpenSSL库提供该能力 <br>
+   (2)	CSPRNG，密码学安全伪随机数发生器。对于Linux，可由OpenSSL库提供该能力 <br>
    (3)	PRNG，（非密码学安全的）伪随机数发生器
 5. 按优先级从高到低，至少支持获得如下时间之一（用于伪随机数种子以及数据和日志中的时刻）：<br>
    (1)	RTC时刻，且可通过NTP等协议与真实时间保持一致 <br>
@@ -38,13 +38,13 @@ BoAT Framework SDK（C语言版本）对操作系统没有特别要求，linux�
    (3)	自上电以来的tick
 
 6. 按优先级从高到低，至少支持如下通信协议之一：<br>
-   (1)	HTTP/HTTPS（对于linux，可由curl库提供该能力）<br>
+   (1)	HTTP/HTTPS（对于Linux，可由curl库提供该能力）<br>
    (2)	CoAP <br>
    (3)	MQTT <br>
    (4)	TCP <br>
 若受运营商限制，设备只能连接特定运营商、服务商的IoT平台（例如OneNET、OceanConnect），则通信协议遵循运营商要求。
 7. 支持memcpy()、strcpy()、snprintf()等常用标准C库函数（printf等涉及I/O的可选）。
-8. 对于采用linux操作系统的蜂窝模组，在调试期间应支持adb或类似的登录机制，且具有root权限。
+8. 对于采用Linux操作系统的蜂窝模组，在调试期间应支持adb或类似的登录机制，且具有root权限。
 
 ## TEE和远程认证（可选）
 

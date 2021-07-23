@@ -115,7 +115,7 @@ BoAT IoT Framework SDK依赖于以下软件:
 |curl          |libcurl及其开发文件(7.55.1 is tested)     |Required on linux default |Required on linux default |
 
 
-在编译SDK和使用之前，需要确保这些软件已经安装。在Ubuntu下，可以使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
+在编译和使用SDK之前，需要确保这些软件已经安装。在Ubuntu下，可以使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
 
 在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](####以Windows为编译环境)章节对编译文件进行调整。
 
@@ -144,12 +144,12 @@ C:\Documents and Settings\developer\project\boatiotsdk
 
 #### 引用的外部环境变量
 根据需要，修改SDK以下文件中的环境变量：  
-\<SDKRoot\>/vendor/platform/\<platform_name\>/external.env：配置外部编译环境依赖、或硬件相关的头文件搜索路径.
+\<SDKRoot\>/vendor/platform/\<platform_name\>/external.env：配置外部编译环境依赖、或硬件相关的头文件搜索路径。
 在Host编译时，如果gcc和binutils已经安装在系统中，通常不需要修改这些环境变量配置。  
 在交叉编译时，如果交叉编译环境需要配置特定的INCLUDE路径，需要在上述文件中添加路径。    
 
 #### BoAT IoT Framework SDK配置
-- 使能/禁能区块链协议
+- 使能/禁能区块链协议  
 顶层makefile中：
 ```
 BOAT_PROTOCOL_USE_ETHEREUM  ?= 1
@@ -158,7 +158,7 @@ BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 ```
 根据需要，将相应变量的值改为`1`或`0`以使能或禁能相应的区块链协议。或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁能相应的区块链协议。
-- 日志打印级别调整
+- 日志打印级别调整  
 根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
 
 ### 合约C接口代码自动生成
@@ -171,22 +171,25 @@ SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，�
 |**转换工具**                  |**用途**                              |
 |:-----------------------------|:------------------------------------|
 |\<SDKRoot\>/tools/eth2c.py    |根据以太坊Solidity的ABI，生成C调用代码 |
-|\<SDKRoot\>/tools/platone2c.py|根据PlatONE WASM的ABI，生成C调用代码|
+|\<SDKRoot\>/tools/fiscobcos2c.py|根据FISCO-BCOS Solidity的ABI，生成C调用代码 |
+|\<SDKRoot\>/tools/platoneSolidity2c.py|根据PlatONE Solidity的ABI，生成C调用代码|
+|\<SDKRoot\>/tools/platoneWASM2c.py|根据PlatONE WASM的ABI，生成C调用代码|
 
-由于合约编程语言一般支持面向对象，而C语言不支持面向对象，无法使用统一范式传递对象，因此只有参数类型与C语言内置类型一致的合约函数，可以通过工具转换为C调用代码。
+由于合约编程语言一般支持面向对象，而C语言不支持面向对象，无法使用统一范式传递对象，因此只有参数类型与C语言内置类型一致的合约函数，可以通过工具转换为C调用代码。具体的支持合约函数输入类型详见[合约调用（自动生成）](###合约调用（自动生成）) 章节。
 
 在进行调用前，首先需要编译合约，将合约编译中生成的ABI接口描述JSON文件，拷贝至SDK相应目录中：
- 
 
 |**合约ABI存放路径**           |**用途**                                  |
 | :---------------------------| :----------------------------------------| 
 |\<SDKRoot\>/demo/demo_ethereum/demo_contract|将以太坊的ABI JSON文件拷贝至该目录下  |
-|\<SDKRoot\>/demo/demo_platone/demo_contract |将PlatONE（WASM）的ABI JSON文件拷贝至该目录下 |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract|将FISCO-BCOS的ABI JSON文件拷贝至该目录下  |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/Solidity|将PlatONE（Solidity）的ABI JSON文件拷贝至该目录下 |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/WSAM|将PlatONE（WASM）的ABI JSON文件拷贝至该目录下 |
 
 *注1：ABI的JSON文件必须以“.json”为文件名后缀。
 
-在编译过程中，自动生成工具将根据合约ABI JSON文件，生成相应的C接口调用代码。如果编译中自动生成C接口失败，则需要从<SDKRoot>/contract的相应目录中，删除无法支持的ABI JSON文件（或者删除其中无法支持的接口），手工编写C代码，进行ABI接口组装，详见 [转账调用](###转账调用) 章节。  
+在编译Demo过程中，自动生成工具将根据合约ABI JSON文件，生成相应的C接口调用代码。如果编译中自动生成C接口失败，则需要从<SDKRoot>/contract的相应目录中，删除无法支持的ABI JSON文件（或者删除其中无法支持的接口），手工编写C代码，进行ABI接口组装，详见 [转账调用](###转账调用) 章节。  
+
 ### Host编译
 Host编译指编译环境与目标环境一致，例如，在x86上编译x86程序。通常有两种使用Host编译的场景: 
 1. 在软件调测阶段，在PC机上对软件功能进行测试。
@@ -586,7 +589,7 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr,
 This function returns BOAT_SUCCESS if transfer is successful.
 Otherwise it returns one of the error codes.
 
-### 合约调用（自动生成)
+### 合约调用（自动生成）
 
 #### 自动生成合约的限制
 由于合约编程语言一般支持面向对象，而C语言不支持面向对象，无法使用统一范式传递对象，因此只有参数类型与C语言内置类型一致的合约函数，可以通过工具转换为C调用代码。

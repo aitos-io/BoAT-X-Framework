@@ -36,9 +36,9 @@ boatPlatonewallet.c defines the Platone wallet API for BoAT IoT SDK.
 BOAT_RESULT BoatPlatoneTxInit( BoatPlatoneWallet *wallet_ptr,
 							   BoatPlatoneTx *tx_ptr,
 							   BBOOL is_sync_tx,
-							   BCHAR * gasprice_str,
-							   BCHAR * gaslimit_str,
-							   BCHAR * recipient_str,
+							   BCHAR *gasprice_str,
+							   BCHAR *gaslimit_str,
+							   BCHAR *recipient_str,
 							   BoatPlatoneTxtype txtype)
 {
     BOAT_RESULT result;
@@ -88,7 +88,7 @@ BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txty
 }
 
 
-BCHAR * BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
+BCHAR *BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
 									 BUINT32 rlp_param_len )
 {
     // *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
@@ -163,7 +163,7 @@ BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
 }
 
 
-BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str)
+BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
 {
     BoatFieldMax32B   value;
     BoatFieldVariable data;
