@@ -261,7 +261,7 @@ Compared with Ethereum, the differences are listed below:
 ### Protocol Layer
 #### Overview
 The protocol layer is located in the second layer of the BoAT SDK, which mainly implements the protocol part of each blockchain. For Ethereum series blockchains, their protocols are very similar, such as Ethereum and PlatONE.   
-The protocol layer is supported by the RPC layer. Please refer to [Protocol layer](#Protocol-layer).  
+The protocol layer is supported by the RPC layer. Please refer to [RPC Layer](#RPC-Layer).  
 
 #### Ethereum's Protocol Layer Implementation
 ##### Raw Transaction Interface
