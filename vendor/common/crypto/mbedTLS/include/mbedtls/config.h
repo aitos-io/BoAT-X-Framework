@@ -3282,7 +3282,7 @@
  *
  * This module provides run-time version information.
  */
-//#define MBEDTLS_VERSION_C
+#define MBEDTLS_VERSION_C
 
 /**
  * \def MBEDTLS_X509_USE_C
