@@ -831,7 +831,7 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ```
 
 ### 手动构造合约调用
-如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。
+如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。另外，因为Fabric的调用本身就非常便捷，不需要自动生成合约调用接口的工具，所以需要手动调用合约。
 
 手工构造交易需要遵循具体区块链协议的ABI接口。
 
@@ -921,6 +921,27 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
     ```
     其中，rlp_param_ptr的格式遵循与步骤3相同的规则。
     具体调用方法，可参照SDK所附的Demo的自动生成代码，这些代码位于\<SDKRoot\>/contract/generated下。
+
+**例3：Hyperledger Fabric交易构造**
+- **步骤1** 调用BoatHlfabricTxInit()进行交易初始化，其中参数根据实际使用进行设置。
+- **步骤2** 调用BoatHlfabricTxSetTimestamp()设置时间戳，实时时间通过硬件相应功能获取。
+- **步骤3** 设置交易参数。  
+    使用demo_fabric_abac.c中的代码举例：  
+    ```
+    result = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
+    ```  
+    Fabric所有的函数调用输入数据均为string类型。拿上述代码来说，"invoke"是abac链码中的函数名。"a","b","10"均为该函数的相应的三个输入，不论链码中的相应变量是什么类型，均以string的形视作为输入。这也是不需要自动生成合约调用接口工具的原因。  
+- **步骤4** 发送交易。
+  - 对于改变区块链状态的合约调用，调用BoatHlfabricTxSubmit函数：
+    ```
+    BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr);
+    ```
+
+  - 对于不改变区块链状态的合约调用，调用BoatHlfabricTxEvaluate合约函数：
+    ```
+    BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr);
+    ```
+  当返回的结果为BOAT_SUCCESS时，说明调用成功。
 
 ## SDK往RTOS移植的建议
 若将SDK移植到RTOS上，一般应遵循以下几点:

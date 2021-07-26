@@ -824,8 +824,7 @@ E.g:
 ````
 BoatEthTx tx_ctx;
 BOAT_RESULT result;
-result = BoatEthTxInit(
-                       wallet_ptr,
+result = BoatEthTxInit(wallet_ptr,
                        &tx_ctx,
                        BOAT_TRUE,
                        NULL,
@@ -843,100 +842,125 @@ BCHAR *result_str;
 result_str = StoreRead_saveList(&tx_ctx, (BUINT8 *)"HelloWorld");
 ```
 ### Manually Construct Contract Calls
-If the automatic generation tool cannot generate the C call interface, you need to manually construct the transaction message.
+If the automatic generation tool cannot generate the C call interface, you need to manually construct the transaction message. In addition, because the Fabric invocation itself is so convenient that there is no need to use automatically generate interface tools, all contracts need to be invoked manually.
 
 The manual construction of transactions needs to follow the ABI interface of the specific blockchain protocol.
 
 **Example 1: Ethereum transaction structure**
--**Step 1** Call BoatEthTxInit() to initialize the transaction
--**Step 2** Set transaction parameters
--Set transaction parameter nonce:
+- **Step 1** Call BoatEthTxInit() to initialize the transaction
+- **Step 2** Set transaction parameters
+  -Set transaction parameter nonce:
 
-```
-BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce);
-```
+  ```
+  BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce);
+  ```
 
-Nonce is usually set to BOAT_ETH_NONCE_AUTO, and the nonce value is obtained from the network.
+  Nonce is usually set to BOAT_ETH_NONCE_AUTO, and the nonce value is obtained from the network.
 
--If necessary, set the "value" parameter of the transaction(in the initialized transaction object, value defaults to 0):
+  -If necessary, set the "value" parameter of the transaction(in the initialized transaction object, value defaults to 0):
 
-```
-BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
-```
--**Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
-```
-BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
-```
-Among them, the format of data_ptr follows the Ethereum ABI, including the first 4 bytes of the Keccak-256 hash of the contract function prototype as the Function Selector, and then the parameters are arranged in sequence:
-<https://solidity.readthedocs.io/en/develop/abi-spec.html>
+  ```
+  BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
+  ```
+  - **Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
+  ```
+  BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
+  ```
+  Among them, the format of data_ptr follows the Ethereum ABI, including the first 4 bytes of the Keccak-256 hash of the contract function prototype as the Function Selector, and then the parameters are arranged in sequence:
+  <https://solidity.readthedocs.io/en/develop/abi-spec.html>
 
--**Step 4** Send transaction
--For contract calls that change the state of the blockchain, the following contract functions are called:
-```
-BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
-```
+- **Step 4** Send transaction
+  - For contract calls that change the state of the blockchain, the following contract functions are called:
+  ```
+  BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
+  ```
 
--For contract calls that do not change the state of the blockchain, call the State-less contract function
-```
-BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr,
-                                BCHAR *func_proto_str,
-                                BUINT8 *func_param_ptr,
-                                BUINT32 func_param_len);
-```
-Among them, the format of func_param_ptr follows the same rules as Step 3.
+  - For contract calls that do not change the state of the blockchain, call the State-less contract function
+  ```
+  BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr,
+                                  BCHAR *func_proto_str,
+                                  BUINT8 *func_param_ptr,
+                                  BUINT32 func_param_len);
+  ```
+  Among them, the format of func_param_ptr follows the same rules as Step 3.
 
 **Example 2: PlatONE transaction structure
--**Step 1** Call BoatPlatONETxInit() to initialize the transaction, and the transaction type field is set according to the actual transaction type.
+- **Step 1** Call BoatPlatONETxInit() to initialize the transaction, and the transaction type field is set according to the actual transaction type.
 
--**Step 2** Set transaction parameter:
-```
-BOAT_RESULT BoatPlatoneTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce); 
-```
-The nonce is usually set to BOAT_PLATONE_NONCE_AUTO, and the nonce value is obtained from the network.
+- **Step 2** Set transaction parameter:
+  ```
+  BOAT_RESULT BoatPlatoneTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce); 
+  ```
+  The nonce is usually set to BOAT_PLATONE_NONCE_AUTO, and the nonce value is obtained from the network.
 
--If necessary, set the "value" parameter of the transaction (in the initialized transaction object, value defaults to 0):
-```
-BOAT_RESULT BoatPlatoneTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
-```
--**Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
-```
-BOAT_RESULT BoatPlatoneTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
-```
-Among them, data_ptr is coded according to RLP and is sequentially compiled into the following fields:
-```
-{
-  TransactionType (Fixed unsigned 64bit, BigEndian),
-  FunctionName,
-  FunctionArgument1,
-  FunctionArgument2,
-…
-}
-```
-RLP encoding is as follows:
-- a) Call RlpInitListObject() to initialize the top-level LIST object
-- b) Call RlpInitStringObject() to initialize the first encoding field object
-- c) Call RlpEncoderAppendObjectToList() to add the first encoding field object to the top-level LIST object
-- d) Repeat b and c until all code objects are added to the top LIST object
-- e) Call RlpEncode() to perform RLP encoding on the top-level LIST object and its subobjects
-- f) Call RlpGetEncodedStream() to get the encoded stream
-- g) After completing the contract call, call RlpRecursiveDeleteObject() to destroy the top-level LIST object and all its child objects
+  - If necessary, set the "value" parameter of the transaction (in the initialized transaction object, value defaults to 0):
+  ```
+  BOAT_RESULT BoatPlatoneTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
+  ```
+  - **Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
+  ```
+  BOAT_RESULT BoatPlatoneTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
+  ```
+  Among them, data_ptr is coded according to RLP and is sequentially compiled into the following fields:
+  ```
+  {
+    TransactionType (Fixed unsigned 64bit, BigEndian),
+    FunctionName,
+    FunctionArgument1,
+    FunctionArgument2,
+  …
+  }
+  ```
+  RLP encoding is as follows:
+  - a) Call RlpInitListObject() to initialize the top-level LIST object
+  - b) Call RlpInitStringObject() to initialize the first encoding field object
+  - c) Call RlpEncoderAppendObjectToList() to add the first encoding field object to the top-level LIST object
+  - d) Repeat b and c until all code objects are added to the top LIST object
+  - e) Call RlpEncode() to perform RLP encoding on the top-level LIST object and its subobjects
+  - f) Call RlpGetEncodedStream() to get the encoded stream
+  - g) After completing the contract call, call RlpRecursiveDeleteObject() to destroy the top-level LIST object and all its child objects
 
--**Step 4** Send transaction
--For contract calls that change the state of the blockchain, the following contract functions are called:
-```
-BOAT_RESULT BoatPlatoneTxSend(BoatEthTx *tx_ptr);
-```
+- **Step 4** Send transaction
+  - For contract calls that change the state of the blockchain, the following contract functions are called:
+  ```
+  BOAT_RESULT BoatPlatoneTxSend(BoatEthTx *tx_ptr);
+  ```
 
--For contract calls that do not change the state of the blockchain, call the State-less contract function
-```
-BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr,
-                                    BUINT8 *rlp_param_ptr,
-                                    BUINT32 rlp_param_len)
-```
-Among them, the format of rlp_param_ptr follows the same rules as Step 3.
+  - For contract calls that do not change the state of the blockchain, call the State-less contract function
+  ```
+  BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr,
+                                      BUINT8 *rlp_param_ptr,
+                                      BUINT32 rlp_param_len)
+  ```
+  Among them, the format of rlp_param_ptr follows the same rules as Step 3.
 
 
-For the specific calling method, please refer to the automatically generated code of the Demo attached to the SDK, which is located under \<SDKRoot\>/contract/generated.
+  For the specific calling method, please refer to the automatically generated code of the Demo attached to the SDK, which is located under \<SDKRoot\>/contract/generated.
+
+**Example 3: Hyperledger Fabric transaction structure**  
+- **Step 1** Call BoatHlfabricTxInit() to initialize the transaction, The parameters are set based on actual usage.  
+  
+- **Step 2** Call BoatHlfabricTxSetTimestamp() to set timestamp, The real-time is obtained based on hardware functions.
+
+- **Step 3** Set trasaction parameters.  
+  Examples of using demo_fabric_abac.c code:  
+  ```
+  result = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
+  ```  
+  All function call of Fabric's input data are string. In the above code, "invoke" is the function name in the ABAC chain code. "a", "b", and "10" are the corresponding three inputs to the function. Regardless of the type of the corresponding variable in the chain code, the shape of string is used as the input.This is why there is no need to use automatically generate the contract interface tool.  
+
+- **Step 4** Send the transaction.  
+  - For contract calls that change the state of the blockchain, call the BoatHlfabricTxSubmit function：
+    ```
+    BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr);
+    ```
+
+  - For contract calls that do not change the state of the blockchain, call the BoatHlfabricTxEvaluate contract function：
+    ```
+    BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr);
+    ```
+  When the return result is BOAT_SUCCESS, the call succeeds。
+
 
 ## Suggestions for Porting SDK to RTOS
 If the SDK is ported to RTOS, the following points should generally be followed:
