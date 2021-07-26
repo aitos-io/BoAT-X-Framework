@@ -643,7 +643,8 @@ Otherwise it returns one of the error codes.
   - bytes32
   - bytes
   - string
-  - bytes[]
+  - T[N] : N > 0, N是整数, T是上面已支持的任意类型.
+  - T[]  : T是上面已支持的任意类型，除了T[N].
 
 对于C++编写的WASM合约，工具支持以下参数类型:
   - string

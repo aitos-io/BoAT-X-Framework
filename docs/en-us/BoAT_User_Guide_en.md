@@ -653,7 +653,8 @@ For contracts written by Solidity, the tool supports the following parameter typ
   - bytes32
   - bytes
   - string
-  - bytes[]
+  - T[N] : N > 0, N is an integer, T is Any of the above types.
+  - T[]  : T is Any of the above types except T[N].
 
 For WASM contracts written in C++, the tool supports the following parameter types:
   - string
