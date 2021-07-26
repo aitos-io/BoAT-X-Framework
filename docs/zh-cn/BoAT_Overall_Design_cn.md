@@ -156,7 +156,7 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 + 钱包初始化：
   该接口执行的内容包括：
   1. 设置区块链合约地址
-  2. 设置交易的EIP-155兼容性
+  2. 设置交易是否指定链ID
   3. 设置链ID
 + 钱包反初始化：  
   该接口执行的内容包括：
@@ -264,19 +264,20 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 
 ##### raw transaction接口简述
 + raw transaction异步发送  
-该接口实现了raw transaction的数据编码，如各字段RLP编码、哈希计算、签名等，并在协议层内部调用web3接口发送到区块链，不等待交易执行成功直接返回。数据编码分为不兼容EIP-155规范和兼容EIP-155规范两部分。该接口执行的内容包括：
-   - 如果数据编码不兼容EIP-155规范：  
+该接口实现了raw transaction的数据编码，如各字段RLP编码、哈希计算、签名等，并在协议层内部调用web3接口发送到区块链，不等待交易执行成功直接返回。数据编码分为指定链ID和不指定链ID两种。具体细节参照EIP-155 <https://eips.ethereum.org/EIPS/eip-155>。  
+该接口执行的内容包括：
+   - 如果数据编码采用不指定链ID方式：  
   1. 对交易的nonce、gasPrice、gasLimit、recipient、value、data等六个字段执行RLP编码
-  2. 计算前一步骤中RPL编码的keccak-256哈希值
+  2. 计算前一步骤中RLP编码的keccak-256哈希值
   3. 对前一步骤的哈希值签名，得到奇偶标识parity、r、s三个值
   4. 对交易的nonce、gasPrice、gasLimit、recipient、value、data、v、r、s等九个字段执行RLP编码，其中v = parity + 27，parity、r、s已在前一步骤中给出
   5. 调用web3接口“发送rawtransaction”发送到区块链
-   - 如果数据编码兼容EIP-155规范：
+   - 如果数据编码采用指定链ID方式：
   1. 对交易的nonce、gasPrice、gasLimit、recipient、value、data、v、r、s等九个字段执行RLP编码，其中v = chainID，r = 0， s = 0
-  2. 同“不兼容EIP-155规范”的步骤2
-  3. 同“不兼容EIP-155规范”的步骤3
+  2. 同“不指定链ID方式”的步骤2
+  3. 同“不指定链ID方式”的步骤3
   4. 对交易的nonce、gasPrice、gasLimit、recipient、value、data、v、r、s等九个字段执行RLP编码，其中v = Chain ID * 2 + parity + 35，parity、r、s已在前一步骤中给出
-  5. 同“不兼容EIP-155规范”的步骤5
+  5. 同“不指定链ID方式”的步骤5
 + raw transaction同步发送  
 该接口执行“rawtransaction异步发送”并等待交易成功或超时后返回。该接口执行的内容包括:
   1. 执行raw transaction异步发送
@@ -589,7 +590,7 @@ cJSON是C语言编写的一个轻量级的JSON编解码器，遵循ANSI-C标准�
 
 
 ## 参考文档
-[1]. cJSON<https://github.com/DaveGamble/cJSON#welcome-to-cjson>  
-[2]. cURL<https://curl.haxx.se/libcurl/>  
-[3]. RLP wiki<https://eth.wiki/en/fundamentals/rlp>  
+[1]. cJSON <https://github.com/DaveGamble/cJSON#welcome-to-cjson>  
+[2]. cURL <https://curl.haxx.se/libcurl/>  
+[3]. RLP wiki <https://eth.wiki/en/fundamentals/rlp>  
 

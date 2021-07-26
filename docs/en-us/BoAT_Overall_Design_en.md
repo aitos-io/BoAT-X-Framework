@@ -167,7 +167,7 @@ The transaction should provide the following functions:
 + Wallet initialization:
   The content implemented by this interface includes:
   1. Set the blockchain contract address
-  2. Set EIP-155 compatibility for transactions
+  2. Set whether the transaction specifies a chain ID
   3. Set chain ID
 + Wallet de-initialization:
   The content implemented by this interface includes:
@@ -274,21 +274,22 @@ In addition, raw transaction can also choose to provide the following interfaces
 ##### Brief Description of Raw Transaction Interface
 
 + raw transaction sent asynchronously  
-This interface implements the data encoding of raw transaction, such as RLP encoding of each field, hash calculation, signature, etc., and calls the web3 interface within the protocol layer to send it to the blockchain, and returns directly without waiting for the transaction be confirmed. Data encoding is divided into two parts: incompatible with EIP-155 specification and compatible with EIP-155 specification. The content implemented by this interface includes:
+This interface implements the data encoding of raw transaction, such as RLP encoding of each field, hash calculation, signature, etc., and calls the web3 interface within the protocol layer to send it to the blockchain, and returns directly without waiting for the transaction be confirmed. There are two types of data encoding: specifying the chain ID and not specifying the chain ID. Refer to EIP-155 for details <https://eips.ethereum.org/EIPS/eip-155>.  
+The content implemented by this interface includes:
 
-   - If the data encoding is incompatible with EIP-155 specification:
+   - If the data encoding is not specifying the chain ID:
   1. Perform RLP encoding on the six fields of nonce, gasPrice, gasLimit, recipient, value, and data of the transaction
-  2. Calculate the keccak-256 hash value of the RPL encoding in the previous step
+  2. Calculate the keccak-256 hash value of the RLP encoding in the previous step
   3. Sign the hash value of the previous step, and get the three values of parity, r, and s
   4. Perform RLP encoding on the nine fields of transaction nonce, gasPrice, gasLimit, recipient, value, data, v, r, s, where v = parity + 27, parity, r, s have been given in the previous step
   5. Call the web3 interface "send rawtransaction" to send to the blockchain
 
-   - If the data encoding is compatible with EIP-155 specification:
+   - If the data encoding is specifying the chain ID:
   1. Perform RLP encoding on the nine fields of transaction nonce, gasPrice, gasLimit, recipient, value, data, v, r, s, where v = chainID, r = 0, s = 0
-  2. Same as step 2 of "Incompatible with EIP-155 specification"
-  3. Same as step 3 of "Incompatible with EIP-155 specification"
+  2. Same as step 2 of "not specifying the chain ID"
+  3. Same as step 3 of "not specifying the chain ID"
   4. Perform RLP encoding on the nine fields of the transaction, including nonce, gasPrice, gasLimit, recipient, value, data, v, r, s, where v = Chain ID * 2 + parity + 35, and parity, r, s have been given in the previous step
-  5. Same as step 5 of "Incompatible with EIP-155 specification"
+  5. Same as step 5 of "not specifying the chain ID"
 
 + raw transaction sent synchronously  
 This interface executes "raw transaction asynchronous sending" and waits for the transaction to be confirmed after success or timeout. The content implemented by this interface includes:
