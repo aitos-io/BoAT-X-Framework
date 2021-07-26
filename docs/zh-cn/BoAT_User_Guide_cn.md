@@ -691,9 +691,15 @@ contract StoreRead {
     function readListLength() public view returns (uint32 length_) {
         length_ = uint32(eventList.length);
     }
+
+    function readListByIndex(uint32 index) public view returns (bytes32 event_) {
+        if (eventList.length > index) {
+            event_ = eventList[index];
+        }
+    }
 }
 ```
-合约编译后，两个函数对应的ABI描述如下:
+合约编译后，三个函数对应的ABI描述如下:
 ```
 "abi": [
     {
@@ -708,7 +714,8 @@ contract StoreRead {
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xe648ba32"
     },
     {
       "constant": true,
@@ -722,17 +729,56 @@ contract StoreRead {
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    }
+      "type": "function",
+      "signature": "0xd0a80818"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "index",
+          "type": "uint32"
+        }
+      ],
+      "name": "readListByIndex",
+      "outputs": [
+        {
+          "name": "event_",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xaa1a7122"
+    },
 ]
 ```
-上述合约中，eventList是合约的成员变量。saveList()会改变eventList的值，是改变区块链状态的合约函数；readListLength()有view修饰符，只读取eventList的属性，不改变它的值，是不改变区块链状态的合约函数。
+上述合约中，eventList是合约的成员变量。saveList()会改变eventList的值，是改变区块链状态的合约函数；readListLength()和readListByIndex()函数有view修饰符，只读取eventList的值，是不改变区块链状态的合约函数。
 
 特别注意，尽管改变区块链状态和不改变区块链状态的合约函数在原型上非常相似，但两者的调用原理有很大差别。通过该工具生成的C接口函数也是同样情况。
 
-对区块链状态的任何改变，都需要通过区块链交易实施并在全网达成共识。改变区块链状态的合约函数是异步调用，在调用时，只是发起该次区块链交易，而在区块链网络将该交易打包出块前，该合约不会被执行。因此，调用改变区块链状态的合约函数时，其返回值仅仅是用于标识该次交易的哈希值，而不是该合约函数形式上的返回值。在设计智能合约时，改变区块链状态的对外（public）接口函数，其试图返回的信息，应当保存在合约成员变量中，通过BoatEthGetTransactionReceipt()查询该次交易的回执，成功后，用另一个读函数的形式获取。
 
-不改变区块链状态的合约函数，只需区块链节点读取其数据库内的已有信息，无需交易和共识，因此对该类函数的调用是同步调用，其返回值是合约函数形式上的返回值。
+对区块链状态的任何改变，都需要通过区块链交易实施并在全网达成共识。改变区块链状态的合约函数是异步调用，在调用时，只是发起该次区块链交易，而在区块链网络将该交易打包出块前，该合约不会被执行。拿StoreRead的demo举例，相关调用代码如下所示：    
+```
+  BCHAR *result_str;
+  result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
+```
+通过StoreRead_saveList函数获得的返回值result_str仅仅是用于标识该次交易的哈希值，而不是该StoreRead合约saveList函数的返回值。所以，在设计智能合约时，改变区块链状态的对外（public）接口函数，其试图返回的信息，应当保存在合约成员变量中。如果想获得经过更改后区块链的值，参考以下代码，其中hash为上一步中获得的交易的哈希值。
+```
+    BUINT32 list_len;
+    if (BOAT_SUCCESS == BoatEthGetTransactionReceipt(hash))
+    {
+        list_len = StoreRead_readListLength(&tx_ctx);
+        result_str = StoreRead_readListByIndex(&tx_ctx, list_len - 1);
+    }
+```
+当BoatEthGetTransactionReceipt(hash)的返回值为BOAT_SUCCESS时，说明相应的改变区块链状态的合约函数调用已被成功上链。假设该合约只会由用户一人改变状态，然后通过StoreRead_readListLength()获得eventList数组的长度list_len，再通过StoreRead_readListByIndex()函数的调用获得StoreRead_saveList()上传上去的值"HelloWorld"。
+而不改变区块链状态的合约函数，只需区块链节点读取其数据库内的已有信息，无需交易和共识。因此对该类函数的调用是同步调用，其返回值是就是相应合约函数的返回值。StoreRead合约的readListLength和readListByIndex两个函数就是此类合约函数。
+
+注意：该处代码只能算伪代码，为了方便理解，进行了一定的简化。实际使用过程中，还需要对返回值进行相应的转换，具体细节可以参考demo_ethereum_storeread.c。
+
+
 
 #### 交易初始化
 调用自动生成的合约接口，首先应初始化一个交易对象，然后调用生成的合约接口。
@@ -743,8 +789,8 @@ contract StoreRead {
 BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
                           BoatEthTx *tx_ptr,
                           BBOOL is_sync_tx,
-                          BCHAR * gasprice_str,
-                          BCHAR * gaslimit_str,
+                          BCHAR *gasprice_str,
+                          BCHAR *gaslimit_str,
                           BCHAR *recipient_str)
 ```						 
 参数:

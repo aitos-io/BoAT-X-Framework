@@ -700,13 +700,17 @@ For example, take the following Ethereum Solidity contract as an example:
         function readListLength() public view returns (uint32 length_) {
             length_ = uint32(eventList.length);
         }
+    function readListByIndex(uint32 index) public view returns (bytes32 event_) {
+        if (eventList.length > index) {
+            event_ = eventList[index];
+        }
     }
 
 
-After the contract is compiled, the ABI corresponding to the two functions are described as follows:
+After the contract is compiled, the ABI corresponding to the three functions are described as follows:
 
 ````
- "abi": [
+"abi": [
     {
       "constant": false,
       "inputs": [
@@ -719,7 +723,8 @@ After the contract is compiled, the ABI corresponding to the two functions are d
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xe648ba32"
     },
     {
       "constant": true,
@@ -733,19 +738,55 @@ After the contract is compiled, the ABI corresponding to the two functions are d
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    }
+      "type": "function",
+      "signature": "0xd0a80818"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "index",
+          "type": "uint32"
+        }
+      ],
+      "name": "readListByIndex",
+      "outputs": [
+        {
+          "name": "event_",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xaa1a7122"
+    },
 ]
 ````
 
-In the above contract, eventList is a member variable of the contract. saveList() will change the value of eventList, which is a contract function that changes the state of the blockchain; readListLength() has a view modifier and only reads the attributes of eventList without changing its value. It is a contract function that does not change the state of the blockchain .
+In the above contract, eventList is a member variable of the contract. saveList() will change the value of eventList, which is a contract function that changes the state of the blockchain; readListLength() and readListByIndex() fuction have a view modifier and only reads the value of eventList. It is a contract function that does not change the state of the blockchain.  
 
 In particular, there are significant differences in the principles of invoking between smart contract functions that update the ledger and those who don’t, even though the two types of functions are quite similar in prototype. The same is true for the interface functions in C language generated through the conversion tool.
 
-Any change to the state of the blockchain needs to be implemented through blockchain transactions and reach a consensus across the entire network. The contract function that changes the state of the blockchain is called asynchronously. When called, it only initiates the blockchain transaction, and the contract will not be executed before the blockchain network packs the transaction into blocks. Therefore, when the contract function that changes the state of the blockchain is called, the return value is only the hash value used to identify the transaction, not the return value in the form of the contract function. When designing a smart contract, the public interface function that changes the state of the blockchain, the information it tries to return should be stored in the contract member variable, and the receipt of the transaction is queried through BoatEthGetTransactionReceipt(). After success, use another Obtained in the form of a read function.
+Any change to the state of the blockchain needs to be implemented through blockchain transaction and reach a consensus across the entire network. The contract function that changes the state of the blockchain is called asynchronously. When called, it merely initiates the blockchain transaction, and the contract is not executed until the blockchain network packages the transaction into a block. Take StoreRead demo as an example. The related calling code is as follows:  
+```
+  BCHAR *result_str;
+  result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
+```
+The return value result_str obtained from the StoreRead_saveList function is only the hash value used to identify the transaction, not the return value of the StoreRead contract saveList function. Therefore, when designing a smart contract, the public interface function that changes the state of the blockchain, the information it tries to return should be stored in the contract member variable. To get the value of the changed blockchain, refer to the following code, where the "hash" is the hash of the transaction obtained in the previous step.  
+```
+  BUINT32 list_len;
+  if (BOAT_SUCCESS == BoatEthGetTransactionReceipt(hash))
+  {
+    list_len = StoreRead_readListLength(&tx_ctx);
+    result_str = StoreRead_readListByIndex(&tx_ctx, list_len - 1);
+  }
+```
+When BoatEthGetTransactionReceipt (hash) return value is BOAT_SUCCESS, shows the state of the corresponding change block chain contract function call has been mined. Assume that the contract will only be changed by the user, and then get the length list_len of the eventList array from StoreRead_readListLength().The value "HelloWorld" is uploaded by StoreRead_saveList() through a call to StoreRead_readListByIndex().  
 
+Contract functions that do not change the state of the blockchain, only need the blockchain node to read the existing information in its database, without transactions and consensus. So the call to this type of function is a synchronous call. The return value is the return value in the form of the contract function. The readListLength and readListByIndex functions of the StoreRead contract are such contract functions.
 
-Contract functions that do not change the state of the blockchain, only need the blockchain node to read the existing information in its database, without transactions and consensus, so the call to this type of function is a synchronous call. The return value is the return value in the form of the contract function.
+Note: This code can only be pseudocode, in order to facilitate understanding, the return value needs to be converted accordingly. For details, see Demo_ethereum_Storeread.c.
 
 #### Transaction Initialization
 To call the automatically generated contract interface, first initialize a transaction object, and then call the generated contract interface.  
