@@ -33,12 +33,12 @@ FISCO-BCOS
 Hyperledger Fabric
 
 **支持的Target操作系统：**  
-linux  
+Linux  
 RTOS
 
 
 **支持的Build操作系统：**  
-linux/cygwin  
+Linux/Cygwin  
 
 **主要特性：**  
 区块链账号（钱包）参数配置  
@@ -138,7 +138,7 @@ C:\Documents and Settings\developer\project\boatiotsdk
  
 
 如果无法避免在路径中出现上述不适字符，请使用以下方法规避：  
-对于linux：在一个没有不适字符的路径中，建立一个指向SDK目录的符号链接：ln -s \<SDKRoot\> boatiotsdk，在该符号链接的路径下进行编译。  
+对于Linux：在一个没有不适字符的路径中，建立一个指向SDK目录的符号链接：ln -s \<SDKRoot\> boatiotsdk，在该符号链接的路径下进行编译。  
 对于Windows：使用SUBST Z: \<SDKRoot\>命令虚拟一个盘符Z:（也可以是其他未使用的盘符），在Z:盘下进行编译。  
 
 
@@ -196,8 +196,8 @@ Host编译指编译环境与目标环境一致，例如，在x86上编译x86程�
 2. 目标软件本身运行于基于x86/x86-64处理器的设备上，例如某些边缘网关。
 
 
-#### 以linux为编译环境
-基于linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。
+#### 以Linux为编译环境
+基于Linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。
 
 编译遵照如下步骤:
 1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中  
@@ -210,15 +210,15 @@ $make boatlibs
 #### 以Cygwin为编译环境
 在Windows上，SDK不支持在Cygwin以外的环境进行编译，也不支持使用gcc以外的编译器进行编译。
 
-编译步骤与在linux下相同。
+编译步骤与在Linux下相同。
 
 
 ### 交叉编译
 交叉编译中，一般需要根据具体编译环境，对编译配置文件等进行配置。
 
-#### 以linux为编译环境
+#### 以Linux为编译环境
 ##### 独立的交叉编译环境
-独立的编译环境是指arm-oe-linux-gnueabi-gcc（或类似交叉编译器）已经安装在linux系统中，可以独立调用。
+独立的编译环境是指arm-oe-linux-gnueabi-gcc（或类似交叉编译器）已经安装在Linux系统中，可以独立调用。
 
 SDK要求系统中至少应该设置以下环境变量，使之指向交叉编译环境：
   
@@ -229,7 +229,7 @@ SDK要求系统中至少应该设置以下环境变量，使之指向交叉编�
 |AR         |指向交叉编译器ar可执行文件 |
 
 
-当环境中没有定义CC和AR环境变量时，GNU make会默认CC=cc，AR=ar。通常，linux系统中会安装host的gcc及bintuils编译环境，因此，未定义上述环境变量时，将会执行host编译。
+当环境中没有定义CC和AR环境变量时，GNU make会默认CC=cc，AR=ar。通常，Linux系统中会安装host的gcc及bintuils编译环境，因此，未定义上述环境变量时，将会执行host编译。
 
 在配置交叉编译环境时，通常需要执行特定shell脚本，对上述环境变量进行设置，使之指向交叉编译环境。对于bash shell，通常会执行类似如下的命令：
 ```
@@ -252,11 +252,11 @@ ${CC} -v
 
 ${AR} -v
 
-以上配置完成后，遵照[以linux为编译环境](####以linux为编译环境)章节的步骤进行编译。
+以上配置完成后，遵照[以Linux为编译环境](####以Linux为编译环境)章节的步骤进行编译。
 
 
 ##### 与模组开发环境整合的交叉编译环境
-有些OpenCPU模组在其所提供的开发环境中，已经整合了配套的交叉编译环境，使得客户无需另行在linux系统中安装交叉编译器。这尤其便于在一台host电脑上，开发多个不同型号模组上的应用软件，而无需反复切换交叉编译环境。
+有些OpenCPU模组在其所提供的开发环境中，已经整合了配套的交叉编译环境，使得客户无需另行在Linux系统中安装交叉编译器。这尤其便于在一台host电脑上，开发多个不同型号模组上的应用软件，而无需反复切换交叉编译环境。
 
 
 ###### 模组开发环境以GNU make为编译工程
@@ -420,7 +420,7 @@ $make demo
 该问题一般是因为Makefile中的target下的命令不是以Tab（ASCII码0x09）开头引起。注意按Tab键时，文本编辑器可能将Tab字符替换为若干空格。应将文本编辑器设置为不要用空格替代Tab。
 
 2. 编译中提示“curl/curl.h”找不到  
-该问题是因为系统中未安装curl及其开发文件引起。对于在linux发行版上做Host编译而言，注意只安装curl包不够，还需要安装其开发文件包。开发文件包在不同的linux发行版中有不同的名称，通常会命名为类似curl-devel，或者libcurl。具体请参照所使用的linux发行版的软件包管理工具。    
+该问题是因为系统中未安装curl及其开发文件引起。对于在Linux发行版上做Host编译而言，注意只安装curl包不够，还需要安装其开发文件包。开发文件包在不同的Linux发行版中有不同的名称，通常会命名为类似curl-devel，或者libcurl。具体请参照所使用的Linux发行版的软件包管理工具。    
   
   
 如果curl采用源码编译，且未安装到系统目录，则应在external.env中指定其搜索路径，并在链接时指定curl库所在路径。  
@@ -946,7 +946,7 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ## SDK往RTOS移植的建议
 若将SDK移植到RTOS上，一般应遵循以下几点:
 1. 解除对curl的依赖
-    curl是一个linux下的通信协议库，在SDK中用于支持http/https通信。区块链节点通常采用http/https协议进行通信。
+    curl是一个Linux下的通信协议库，在SDK中用于支持http/https通信。区块链节点通常采用http/https协议进行通信。
 
     对于采用RTOS的模组，应当在\<SDKRoot\>/vendor/platform/\<platform_name\>/src/rpc中增加对模组的http/https的接口的调用封装，并修改\<SDKRoot\>/vendor/platform/\<platform_name\>/scripts/gen.py，关闭RPC_USE_LIBCURL并设置新增的RPC USE OPTION
 
