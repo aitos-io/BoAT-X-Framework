@@ -122,6 +122,32 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr);
 *******************************************************************************/
 BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr);
 
+/*!****************************************************************************
+ * @brief Generates the Bech32 address of PlatON.
+ *
+ * @details
+ *   This function references the Java SDK source code for PlatON. 
+ *   
+ *   
+ * @param[in] in
+ *   A pointer to the HEX array that needs encoding.
+ * 
+ * @param[in] inlen
+ *   The length of in.
+ * 
+ * @param[out] out
+ *   A pointer to encoded array. Need to free up space after use.
+ * 
+* @param[in] hrp
+ *   A pointer to the human-readable part array that needs encoding.
+ * 
+ * @param[in] hrplen
+ *   The length of hrp. The length need to Between 1 and 83.
+ * 
+ * @return
+ *   This function returns the length of out array.
+*******************************************************************************/
+BSINT32 BoatBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUINT8 *hrp, BUINT8 hrplen);
 /*! @}*/
 
 #ifdef __cplusplus
