@@ -45,6 +45,7 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_addre
         //***************************************
         //需要将钱包地址转换为bech32格式的字符串
         //address_ptr = wallet_ptr->account_info.address;
+        BoatBech32Encode(alt_address_str, strlen(alt_address_str), address_ptr, "lax", 3);
     }
     else
     {
@@ -56,15 +57,16 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_addre
     param_platon_getBalance.method_name_str = "platon_getBalance";
     param_platon_getBalance.address_str     = address_ptr;
     param_platon_getBalance.block_num_str   = "latest";
-    tx_balance_str = web3_eth_getBalance(wallet_ptr->web3intf_context_ptr,
-										 wallet_ptr->network_info.node_url_ptr,
-										 &param_platon_getBalance);
+    tx_balance_str = web3_getBalance(wallet_ptr->web3intf_context_ptr,
+									 wallet_ptr->network_info.node_url_ptr,
+									 &param_platon_getBalance);
 
     if (tx_balance_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to get balance from network.");
         return NULL;
     }
+    BoatFree(address_ptr);
 
     return tx_balance_str;
 }
@@ -72,13 +74,14 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_addre
 BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
                              BoatPlatONTx *tx_ptr,
                              BBOOL is_sync_tx,
-                             BCHAR *gasprice_str,
-                             BCHAR *gaslimit_str,
-                             BCHAR *recipient_str)
+                             const BCHAR *gasprice_str,
+                             const BCHAR *gaslimit_str,
+                             const BCHAR *recipient_str,
+                             const BCHAR *hrp_str)
 {
     BOAT_RESULT result;
 
-    if (wallet_ptr == NULL || tx_ptr == NULL || recipient_str == NULL)
+    if (wallet_ptr == NULL || tx_ptr == NULL || recipient_str == NULL || hrp_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
@@ -87,9 +90,9 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
     tx_ptr->wallet_ptr = wallet_ptr;
     memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
 
-    //*****************************************************************************
-    //need to compute tx_ptr->address
-    //*****************************************************************************
+    // Generate platon's Bech32 address from the Ethereum address
+    BoatBech32Encode(wallet_ptr->account_info.address , strlen(wallet_ptr->account_info.address),
+                     tx_ptr->address, hrp_str, strlen(hrp_str));
 
     // Set synchronous transaction flag
     tx_ptr->is_sync_tx = is_sync_tx;
@@ -249,7 +252,7 @@ BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_p
     return result;
 }
 
-BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BUINT8 address[BOAT_PLATON_ADDRESS_SIZE])
+BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BSINT8 *address_str)
 {
     if( tx_ptr == NULL )
     {
@@ -258,7 +261,7 @@ BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BUINT8 address[BOAT_P
     }
     
     // Set recipient's address
-    memcpy(&tx_ptr->rawtx_fields.recipientbech32, address, BOAT_PLATON_ADDRESS_SIZE);
+    memcpy(&tx_ptr->rawtx_fields.recipientbech32, address_str, BOAT_PLATON_ADDRESS_SIZE);
 
     return BOAT_SUCCESS;    
 }

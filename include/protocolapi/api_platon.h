@@ -109,10 +109,11 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_addre
  ******************************************************************************/
 BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
                              BoatPlatONTx *tx_ptr,
-                             BBOOL is_sync_tx,
-                             BCHAR *gasprice_str,
-                             BCHAR *gaslimit_str,
-                             BCHAR *recipient_str);
+                             const BBOOL is_sync_tx,
+                             const BCHAR *gasprice_str,
+                             const BCHAR *gaslimit_str,
+                             const BCHAR *recipient_str,
+                             const BCHAR *hrp_str);
 
 
 /*!****************************************************************************
@@ -212,7 +213,7 @@ BCHAR *BoatPlatONGetBlockNumber(BoatPlatONTx *tx_ptr);
  * @brief Set Recipient
  * @see BoatEthTxSetRecipient()
  ******************************************************************************/
-BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BUINT8 address[BOAT_PLATON_ADDRESS_SIZE]);
+BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BSINT8 *address_str);
 
 // Ethereum APIs compatible for PlatON
 

@@ -30,6 +30,10 @@ boatprotocols.h is a wrapper header file for protocols.
 #include "boathlfabric/boathlfabric.h"
 #endif
 
+#if PROTOCOL_USE_PLATON
+#include "boatplaton.h"
+#endif
+
 #if PROTOCOL_USE_PLATONE
 #include "boatplatone.h"
 #endif

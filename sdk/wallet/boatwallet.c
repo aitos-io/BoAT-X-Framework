@@ -43,7 +43,7 @@ BoatIotSdkContext g_boat_iot_sdk_context;
 BOAT_RESULT BoatIotSdkInit(void)
 {
     BUINT32 i;
-#if ( (PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) )    
+#if ( (PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATON == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) )    
     cJSON_Hooks hooks;
 #endif    
     
@@ -51,7 +51,7 @@ BOAT_RESULT BoatIotSdkInit(void)
     CURLcode curl_result;
 #endif
 
-#if ( (PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) )
+#if ( (PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATON == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) )
     hooks.malloc_fn = BoatMalloc;
     hooks.free_fn   = BoatFree;
     cJSON_InitHooks(&hooks);
@@ -102,7 +102,7 @@ BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_na
     BSINT32 i;
     BUINT8 *boatwalletStore_ptr = NULL;
     void   *wallet_ptr          = NULL;
-#if ( (PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) )    
+#if ( (PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATON == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) )    
     BUINT8  pubkeyHashDummy[32];
     BUINT8  hashLenDummy;
 #endif    
@@ -402,6 +402,12 @@ void BoatWalletUnload(BSINT32 wallet_index)
                 BoatHlfabricWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
             break;
         #endif
+
+        #if PROTOCOL_USE_PLATON == 1
+            case BOAT_PROTOCOL_PLATON:
+                BoatPlatONWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
+            break;
+		#endif
 
         #if PROTOCOL_USE_PLATONE == 1
             case BOAT_PROTOCOL_PLATONE:

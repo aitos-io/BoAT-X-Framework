@@ -83,6 +83,7 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
 				  -I$(BOAT_SDK_DIR)/protocol/boathlfabric \
                   -I$(BOAT_SDK_DIR)/protocol/boathlfabric/protos \
 				  -I$(BOAT_SDK_DIR)/protocol/boatethereum \
+                  -I$(BOAT_SDK_DIR)/protocol/boatplaton \
 				  -I$(BOAT_SDK_DIR)/protocol/boatplatone \
 				  -I$(BOAT_SDK_DIR)/protocol/boatfiscobcos \
 				  -I$(BOAT_SDK_DIR)/third-party/cJSON \

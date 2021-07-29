@@ -215,7 +215,7 @@ void BoatIotSdkDeInit(void);
  * @see BoatWalletUnload() BoatWalletDelete()
  ******************************************************************************/
 BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_name_str, 
-						 const void *wallet_config_ptr, BUINT32 wallet_config_size );
+						 const void *wallet_config_ptr, BUINT32 wallet_config_size);
 
 
 /*!****************************************************************************
