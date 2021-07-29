@@ -263,7 +263,7 @@ Some OpenCPU modules have integrated a supporting cross-compiler environment in 
 If the module development environment uses GNU make as the compilation project (makefiles in the source code directories at all levels), you can adjust the compilation configuration for the BoAT IoT Framework SDK and incorporate it into the integrated module development environment for compilation.  
 
 Usually, the example of the customer code is provided in the module development environment, and the compilation configuration of the example code of the customer is included in the compilation system.First copy the \<SDKRoot\> directory (boatiotsdk is the directory name in the following example) to the source code in the module development environment, and then modify the Makefile in example directory, to add a target to compile BoAT IoT Framework SDK.  
-E.g:  
+E.g. :  
 Assuming that in the original compilation environment, the Makefile of the example in customer source code is as follows:  
 
 ````
@@ -675,7 +675,7 @@ The successfully generated contract call interface is the following C function:
 
 `BCHAR *<Contract ABI JSON file name >_< Contract function name>(<Wallet type> *tx_ptr, …);`
 
-E.g:
+E.g. :
 
 `BCHAR *StoreRead_saveList(BoatEthTx *tx_ptr, Bbytes32 newEvent);`
 
@@ -819,7 +819,7 @@ Parameters:
 This function returns `BOAT_SUCCESS` if initialization is successful.
 Otherwise it returns one of the error codes.
 
-E.g:
+E.g. :
 
 ````
 BoatEthTx tx_ctx;
@@ -835,7 +835,7 @@ result = BoatEthTxInit(wallet_ptr,
 #### Call Contract Interface
 After completing the transaction initialization, you can call the automatically generated contract interface:
 
-E.g:
+E.g. :
 
 ```
 BCHAR *result_str;
