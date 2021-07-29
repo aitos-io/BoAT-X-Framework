@@ -102,7 +102,7 @@ The tool component provides a set of  Python tools, which are used to generate C
 
 
 
-Note: The `build` and `lib` directories are generated during compilation. After the compilation is complete, only the `include`, `lib` in the first level directory, and the header file of `boatconfig.h` (located in the `vendor/platform/include` path) automatically generated after compilation is required by the application
+Note: The `build` and `lib` directories are generated during compilation. After the compilation is complete, only the `include`, `lib` in the first level directory, and the header file of `boatconfig.h` (located in the `vendor/platform/include` path) automatically generated after compilation is required by the application.
 
 ## BoAT IoT Framework SDK Compilation
 
