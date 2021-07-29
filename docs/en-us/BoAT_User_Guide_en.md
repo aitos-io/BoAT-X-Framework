@@ -973,7 +973,7 @@ For modules using RTOS, you should add a call package to the module's http/https
 
 ###### 2. Remove Dependence on The File System
 
-The SDK uses files as a persistent storage method for the wallet. If the RTOS does not support the file system, you should modify the file operation related `BoatGetFileSize`, `BoatWriteFile`, `BoatReadFile`, `BoatRemoveFile` in \<SDKRoot\>/vendor/platform/\<platform_name\>/port_xx/boatplatform_internal.c Four functions, modify the read/write file to the persistence method supported by the system.
+The SDK uses files as a persistent storage method for the wallet. If the RTOS does not support the file system, you should modify the file operation related to  `BoatGetFileSize` , `BoatWriteFile` , `BoatReadFile` , `BoatRemoveFile` ,from \<SDKRoot\>/vendor/platform/\<platform_name\>/port_xx/boatplatform_internal.c, modify the read/write file to the persistence method supported by the system.
 
 ###### 3. Memory Trimming
 
