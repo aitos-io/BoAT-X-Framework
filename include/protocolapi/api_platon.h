@@ -36,7 +36,8 @@ api_platon.h is header file for BoAT IoT SDK PlatON's interface.
 
 #define BOAT_PLATON_NODE_URL_MAX_LEN          BOAT_ETH_NODE_URL_MAX_LEN
 #define BOAT_PLATON_NONCE_AUTO                BOAT_ETH_NONCE_AUTO
-#define BOAT_PLATON_ADDRESS_SIZE              45
+#define BOAT_PLATON_ADDRESS_SIZE              BOAT_ETH_ADDRESS_SIZE
+#define BOAT_PLATON_BECH32_ADDRESS_SIZE       45
 
 typedef BoatEthAccountInfo  BoatPlatONAccountInfo;
 typedef BoatEthNetworkInfo  BoatPlatONNetworkInfo;
@@ -64,7 +65,7 @@ typedef struct TBoatPlatONRawtxFields
     BoatEthTxFieldSig sig;        //!< ECDSA signature, including r and s parts
     
     // PlatON specific fields are appended here.
-    BUINT8 recipientbech32[BOAT_ETH_ADDRESS_SIZE];
+    BUINT8 recipientbech32[BOAT_PLATON_BECH32_ADDRESS_SIZE];
 }BoatPlatONRawtxFields;
 
 //! The only difference between PlatON transaction and Ethereum transaction is

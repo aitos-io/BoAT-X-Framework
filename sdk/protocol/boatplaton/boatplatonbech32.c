@@ -80,7 +80,7 @@ BUINT8 *expandHrp(const BUINT8 *hrp, BUINT8 hrplen, BUINT8 *out)
         return NULL;
     }
 
-    *out = BoatMalloc(hrplen * 2 + 1);
+    out = BoatMalloc(hrplen * 2 + 1);
     if (out == NULL)
     {
         return NULL;
@@ -92,7 +92,6 @@ BUINT8 *expandHrp(const BUINT8 *hrp, BUINT8 hrplen, BUINT8 *out)
         *(out + i) = (BUINT8)((c > 5) & 0x07);
         *(out + i + hrplen + 1) = (BUINT8)(c & 0x1f);
     }
-    out[hrplen] = 0;
     return out;
 }
 
@@ -142,7 +141,7 @@ BUINT8 *Bech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, BUIN
 
 BSINT32 BoatBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUINT8 *hrp, BUINT8 hrplen)
 {
-    if (in == NULL || hrp == NULL)
+    if (in == NULL || hrp == NULL || out == NULL)
     {
         return -1;
     }
@@ -157,6 +156,8 @@ BSINT32 BoatBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUI
     BUINT8 *bech32Chk;
     BUINT32 i;
 
+    printf("The outlen is %d\n", base32OutLen);
+
     base32Data = BoatMalloc(base32OutLen);
     if (base32Data == NULL)
     {
@@ -167,7 +168,7 @@ BSINT32 BoatBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUI
 
     bech32Chk = Bech32Polymod(expandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, base32Data, base32OutLen);
 
-    out = BoatMalloc(hrplen + 1 + base32OutLen + 6 + 1);
+    //out = BoatMalloc(hrplen + 1 + base32OutLen + 6 + 1);
     memcpy(out, hrp, hrplen);
     *(out + hrplen) = '1';
 

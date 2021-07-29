@@ -44,15 +44,19 @@ const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
 
 /**
- * test node url
+ * PlatON test network node url
  */
 const BCHAR *demoUrl = "http://47.241.98.219:6789";
-const BCHAR *hrp = "lax";
+
+/**
+ * PlatON test network human-readable part
+ */
+const BCHAR *hrp = "lat";
 
 /**
  * transfer recipient address
  */
-const BCHAR *demoRecipientAddress = "0x4BeC3cDD520B7985067219F6f596EF7a55Ee5963";
+const BCHAR *demoRecipientAddress = "lat1naseftwdqjfru5hauyg4asa7udrctmnh8mce9x";
 
 BoatPlatONWallet *g_platon_wallet_ptr;
 
@@ -82,7 +86,7 @@ __BOATSTATIC BOAT_RESULT platon_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        UtilityHexToBin( binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
         wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
         wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
     #else  
@@ -91,7 +95,7 @@ __BOATSTATIC BOAT_RESULT platon_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
 
-    wallet_config.chain_id             = 1;
+    wallet_config.chain_id             = 210309;
     wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
@@ -182,12 +186,12 @@ __BOATSTATIC BOAT_RESULT platon_loadPersistWallet(BCHAR *wallet_name)
 BOAT_RESULT platonGetBalance(BoatPlatONWallet *wallet_ptr)
 {
     //BCHAR * balance_wei;
-    BCHAR * cur_balance_wei = NULL;
+    BCHAR * cur_balance_von = NULL;
     BOAT_RESULT result;
     BoatFieldVariable prase_result = {NULL, 0};
 
-    cur_balance_wei = BoatPlatONWalletGetBalance(wallet_ptr, NULL);
-	result          = BoatPlatONPraseRpcResponseResult(cur_balance_wei, "", &prase_result);
+    cur_balance_von = BoatPlatONWalletGetBalance(wallet_ptr, "lat12yww79wry4ef7eyl8xh9g52gsw6dlqh2ha9dj9");
+	result          = BoatPlatONPraseRpcResponseResult(cur_balance_von, "", &prase_result);
 	if (result == BOAT_SUCCESS)
 	{
 		//BoatLog( BOAT_LOG_NORMAL, "BoatPlatONWalletGetBalance returns: %s", prase_result.field_ptr );
@@ -197,7 +201,7 @@ BOAT_RESULT platonGetBalance(BoatPlatONWallet *wallet_ptr)
 		return BOAT_ERROR;
 	}
 
-    //BoatLog(BOAT_LOG_NORMAL, "Balance: %s wei", prase_result.field_ptr);
+    //BoatLog(BOAT_LOG_NORMAL, "Balance: %s von", prase_result.field_ptr);
 
     return BOAT_SUCCESS;
 }
@@ -230,6 +234,9 @@ BOAT_RESULT platonTransfer(BoatPlatONWallet *wallet_ptr)
 int main(int argc, char *argv[])
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
+    BSINT8 ethaddress[30];
+    BSINT8 bechaddress[50];
+    BUINT32 bechaddresslen, i;
 	
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
@@ -255,9 +262,9 @@ int main(int argc, char *argv[])
 	}
     
 	/* step-3: execute balance transfer */
-	result += platonGetBalance(g_platon_wallet_ptr);
-	result += platonTransfer(g_platon_wallet_ptr);
-	result += platonGetBalance(g_platon_wallet_ptr);
+	//result = platonGetBalance(g_platon_wallet_ptr);
+	//result += platonTransfer(g_platon_wallet_ptr);
+	//result += platonGetBalance(g_platon_wallet_ptr);
     if (result != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "CasePlatON Failed: %d.", result);
@@ -266,6 +273,19 @@ int main(int argc, char *argv[])
 	{
         //BoatLog(BOAT_LOG_NORMAL, "CasePlatON Passed.");
     }
+    
+    UtilityHexToBin(ethaddress, BOAT_ETH_ADDRESS_SIZE, "0x4f9c1a1efaa7d81ba1cabf07f2c3a5ac5cf4f818",
+					TRIMBIN_TRIM_NO, BOAT_TRUE);
+
+    bechaddresslen = BoatBech32Encode(ethaddress, BOAT_ETH_ADDRESS_SIZE,
+                                      bechaddress, "atx", 3);
+    printf("%s\n", bechaddress);
+
+    for (i = 0; i < bechaddresslen; i++)
+    {
+        printf("%d",*(bechaddress + i));
+    }
+    printf("\n");
 	
 	/* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();

@@ -66,7 +66,10 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_addre
         BoatLog(BOAT_LOG_CRITICAL, "Fail to get balance from network.");
         return NULL;
     }
-    BoatFree(address_ptr);
+    if (alt_address_str == NULL)
+    {
+        BoatFree(address_ptr);
+    }
 
     return tx_balance_str;
 }
@@ -261,7 +264,7 @@ BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BSINT8 *address_str)
     }
     
     // Set recipient's address
-    memcpy(&tx_ptr->rawtx_fields.recipientbech32, address_str, BOAT_PLATON_ADDRESS_SIZE);
+    memcpy(&tx_ptr->rawtx_fields.recipientbech32, address_str, BOAT_PLATON_BECH32_ADDRESS_SIZE);
 
     return BOAT_SUCCESS;    
 }
