@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
     UtilityHexToBin(ethaddress, BOAT_ETH_ADDRESS_SIZE, "0x4f9c1a1efaa7d81ba1cabf07f2c3a5ac5cf4f818",
 					TRIMBIN_TRIM_NO, BOAT_TRUE);
 
-    bechaddresslen = BoatBech32Encode(ethaddress, BOAT_ETH_ADDRESS_SIZE,
+    bechaddresslen = BoatPlatONBech32Encode(ethaddress, BOAT_ETH_ADDRESS_SIZE,
                                       bechaddress, "atx", 3);
     printf("%s\n", bechaddress);
 

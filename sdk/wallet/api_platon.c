@@ -45,7 +45,7 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_addre
         //***************************************
         //需要将钱包地址转换为bech32格式的字符串
         //address_ptr = wallet_ptr->account_info.address;
-        BoatBech32Encode(alt_address_str, strlen(alt_address_str), address_ptr, "lax", 3);
+        BoatPlatONBech32Encode(alt_address_str, strlen(alt_address_str), address_ptr, "lax", 3);
     }
     else
     {
@@ -94,7 +94,7 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
     memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
 
     // Generate platon's Bech32 address from the Ethereum address
-    BoatBech32Encode(wallet_ptr->account_info.address , strlen(wallet_ptr->account_info.address),
+    BoatPlatONBech32Encode(wallet_ptr->account_info.address , strlen(wallet_ptr->account_info.address),
                      tx_ptr->address, hrp_str, strlen(hrp_str));
 
     // Set synchronous transaction flag

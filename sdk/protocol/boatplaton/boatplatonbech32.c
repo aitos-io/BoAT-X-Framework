@@ -37,7 +37,7 @@ const char *BECH32ALPHABET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
                              -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
                               1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1};*/
 
-BUINT32 convertBits(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, BUINT32 fromBits, BUINT32 toBits)  
+BUINT32 BoatConvertBits(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, BUINT32 fromBits, BUINT32 toBits)  
 {
     BUINT32 acc = 0;
     BUINT32 bits = 0;
@@ -70,7 +70,7 @@ BUINT32 convertBits(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, BUINT32 fromBi
     return outLen;
 }
 
-BUINT8 *expandHrp(const BUINT8 *hrp, BUINT8 hrplen, BUINT8 *out) 
+BUINT8 *BoatExpandHrp(const BUINT8 *hrp, BUINT8 hrplen, BUINT8 *out) 
 {
     BUINT8 i;
     BUINT8 c;
@@ -89,16 +89,16 @@ BUINT8 *expandHrp(const BUINT8 *hrp, BUINT8 hrplen, BUINT8 *out)
     for (i = 0; i < hrplen; i++) 
     {
         c = *(hrp + i) & 0x7f; // Limit to standard 7-bit ASCII
-        *(out + i) = (BUINT8)((c > 5) & 0x07);
+        *(out + i) = (BUINT8)((c >> 5) & 0x07);
         *(out + i + hrplen + 1) = (BUINT8)(c & 0x1f);
     }
     return out;
 }
 
-BUINT8 *Bech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, BUINT32 datalen)
+BUINT8 *BoatBech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, BUINT32 datalen)
 {
     BUINT32 chk = 1;
-    BUINT32 b,i,j;
+    BUINT32 b,i,j,len;
     BUINT8 *out = BoatMalloc(6);
     BUINT8 *p;
 
@@ -109,37 +109,40 @@ BUINT8 *Bech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, BUIN
         if (i == 0) 
         {
             p = hrp;
+            len = hrplen;
         }
         else if (i == 1)
         {
             p = data;
+            len = datalen;
         }
         else if (i == 2)
         {
             p = out;
+            len = 6;
         }
 
-        for (j = 0; j < hrplen; j++) 
+        for (j = 0; j < len; j++) 
         {
-            b = chk >> 25;
-            chk = ((chk & 0x1ffffff) << 5) ^ (*(p + j));
-            if ((b &  1) != 0) chk ^= 0x3b6a57b2;
-            if ((b &  2) != 0) chk ^= 0x26508e6d;
-            if ((b &  4) != 0) chk ^= 0x1ea119fa;
-            if ((b &  8) != 0) chk ^= 0x3d4233dd;
-            if ((b & 16) != 0) chk ^= 0x2a1462b3;
+            b = (chk >> 25) & 0x1f;
+            chk = ((chk & 0x1ffffff) << 5) ^ ((*(p + j)) & 0xFF);
+            if ((b & 0x01) != 0) chk ^= 0x3b6a57b2;
+            if ((b & 0x02) != 0) chk ^= 0x26508e6d;
+            if ((b & 0x04) != 0) chk ^= 0x1ea119fa;
+            if ((b & 0x08) != 0) chk ^= 0x3d4233dd;
+            if ((b & 0x10) != 0) chk ^= 0x2a1462b3;
         }
     }
     
     chk = chk ^ 1;
     for (i = 0; i < 6; i++) 
     {
-         *(out + i) = (BUINT8)((chk >> (5 * (5 - i))) & 31);
+        *(out + i) = (BUINT8)((chk >> (5 * (5 - i))) & 0x1F);
     }
     return out;
 }
 
-BSINT32 BoatBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUINT8 *hrp, BUINT8 hrplen)
+BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUINT8 *hrp, BUINT8 hrplen)
 {
     if (in == NULL || hrp == NULL || out == NULL)
     {
@@ -156,17 +159,15 @@ BSINT32 BoatBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUI
     BUINT8 *bech32Chk;
     BUINT32 i;
 
-    printf("The outlen is %d\n", base32OutLen);
-
     base32Data = BoatMalloc(base32OutLen);
     if (base32Data == NULL)
     {
         return -1;
     }
 
-    convertBits(in, inlen, base32Data, 8, 5);
+    BoatConvertBits(in, inlen, base32Data, 8, 5);
 
-    bech32Chk = Bech32Polymod(expandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, base32Data, base32OutLen);
+    bech32Chk = BoatBech32Polymod(BoatExpandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, base32Data, base32OutLen);
 
     //out = BoatMalloc(hrplen + 1 + base32OutLen + 6 + 1);
     memcpy(out, hrp, hrplen);
