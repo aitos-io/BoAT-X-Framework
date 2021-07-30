@@ -45,6 +45,8 @@ endif()
 
 set(PLATFORM_TARGET "linux-default" CACHE STRING "Select platform using linux-default")
 
+set(SOFT_CRYPTO "CRYPTO_DEFAULT" CACHE STRING "Set crypto type")
+
 if( PLATFORM_TARGET STREQUAL "linux-default")
     message(STATUS "Platform using linux")
 elseif(PLATFORM_TARGET STREQUAL "Fibocom-L610")
@@ -120,3 +122,5 @@ endif()
 if(BUILD_BOAT_DEMO)
 add_subdirectory(demo)
 endif()
+
+add_subdirectory(vendor)

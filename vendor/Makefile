@@ -10,7 +10,7 @@ else
     BUILD_DEP :=
 endif
 
-all: $(BUILD_DEP) 
+all: $(BUILD_DEP)
 
 mbedTLS:
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS all
@@ -18,7 +18,7 @@ mbedTLS:
 crypto_default:
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default all
 
-keccak:	
+keccak:
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/keccak all
 
 storage:
@@ -26,10 +26,10 @@ storage:
 
 platform:
 	make -C $(BOAT_BASE_DIR)/vendor/platform all
-	
+
 clean:
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS clean
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default clean
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/keccak clean
 	make -C $(BOAT_BASE_DIR)/vendor/common/storage clean
-	make -C $(BOAT_BASE_DIR)/vendor/platform clean 
+	make -C $(BOAT_BASE_DIR)/vendor/platform clean
