@@ -45,6 +45,7 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_addre
         //***************************************
         //需要将钱包地址转换为bech32格式的字符串
         //address_ptr = wallet_ptr->account_info.address;
+        address_ptr = BoatMalloc(50);
         BoatPlatONBech32Encode(alt_address_str, strlen(alt_address_str), address_ptr, "lax", 3);
     }
     else
@@ -93,9 +94,9 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
     tx_ptr->wallet_ptr = wallet_ptr;
     memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
 
-    // Generate platon's Bech32 address from the Ethereum address
-    BoatPlatONBech32Encode(wallet_ptr->account_info.address , strlen(wallet_ptr->account_info.address),
-                     tx_ptr->address, hrp_str, strlen(hrp_str));
+    // Generate platon's Bech32 address from the public key
+    BoatPlatONBech32Encode(wallet_ptr->account_info.address , BOAT_PLATON_ADDRESS_SIZE,
+                           tx_ptr->address, hrp_str, strlen(hrp_str));
 
     // Set synchronous transaction flag
     tx_ptr->is_sync_tx = is_sync_tx;
@@ -127,7 +128,6 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
     
     gaslimit.field_len = UtilityHexToBin(gaslimit.field, 32, gaslimit_str, 
 										 TRIMBIN_LEFTTRIM, BOAT_TRUE);
-    //result = BoatEthTxSetGasLimit(tx_ptr, &gaslimit);
     result = BoatPlatONTxSetGasLimit(tx_ptr, &gaslimit);
     if (result != BOAT_SUCCESS)
     {
@@ -135,9 +135,21 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
         return result;
     }
 
-    result = BoatPlatONTxSetRecipient(tx_ptr, recipient_str);
+    BUINT8 recipient[BOAT_PLATON_ADDRESS_SIZE];
+    BUINT32 converted_len;
+    converted_len = UtilityHexToBin(recipient, BOAT_PLATON_ADDRESS_SIZE, recipient_str, 
+									TRIMBIN_TRIM_NO, BOAT_TRUE);
+    if (converted_len == 0)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "recipient Initialize failed.");
+		return BOAT_ERROR_INVALID_ARGUMENT;
+    }
 
-    if( result != BOAT_SUCCESS )
+    result = BoatPlatONTxSetRecipient(tx_ptr, recipient);
+
+    //result = BoatPlatONTxSetRecipient(tx_ptr, recipient_str);
+
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatPlatONTxSetRecipient failed.");
         return result;
@@ -146,7 +158,7 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
     // Initialize value = 0
     result = BoatPlatONTxSetValue(tx_ptr, NULL);
 
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatPlatONTxSetValue failed.");
         return result;
@@ -189,7 +201,7 @@ BOAT_RESULT BoatPlatONTxSetNonce(BoatPlatONTx *tx_ptr, BUINT64 nonce)
 		/* Set nonce from transaction count */
 		tx_ptr->rawtx_fields.nonce.field_len = UtilityHexToBin(tx_ptr->rawtx_fields.nonce.field, 32,  
 															   (BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
-															   TRIMBIN_LEFTTRIM, BOAT_TRUE );
+															   TRIMBIN_LEFTTRIM, BOAT_TRUE);
 	}
 	else
 	{
@@ -216,12 +228,12 @@ BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_p
     // Otherwise use gas price obtained from network
     if (gas_price_ptr != NULL)
     {
-        memcpy(&tx_ptr->rawtx_fields.gasprice,  gas_price_ptr, sizeof(BoatFieldMax32B));
+        memcpy(&tx_ptr->rawtx_fields.gasprice, gas_price_ptr, sizeof(BoatFieldMax32B));
     }
     else
     {
         // Get current gas price from network
-        // Return value of web3_eth_gasPrice is in wei
+        // Return value of platon_gasPrice is in von
         gas_price_from_net_str = web3_gasPrice(tx_ptr->wallet_ptr->web3intf_context_ptr, 
 											   tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                                "platon_gasPrice");
@@ -230,8 +242,8 @@ BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_p
             return BOAT_ERROR_RPC_FAILED;
         }
 
-        result = BoatEthPraseRpcResponseResult(gas_price_from_net_str, "", 
-											   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+        result = BoatPlatONPraseRpcResponseResult(gas_price_from_net_str, "", 
+											      &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result == BOAT_SUCCESS)
         {
             // Set transaction gasPrice with the one got from network
@@ -255,16 +267,17 @@ BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_p
     return result;
 }
 
-BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BSINT8 *address_str)
+BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BUINT8 address[BOAT_PLATON_ADDRESS_SIZE])
 {
-    if( tx_ptr == NULL )
+    if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
     
     // Set recipient's address
-    memcpy(&tx_ptr->rawtx_fields.recipientbech32, address_str, BOAT_PLATON_BECH32_ADDRESS_SIZE);
+    //memcpy(&tx_ptr->rawtx_fields.recipientbech32, address_str, BOAT_PLATON_BECH32_ADDRESS_SIZE);
+    memcpy(&tx_ptr->rawtx_fields.recipient, address, BOAT_ETH_ADDRESS_SIZE);
 
     return BOAT_SUCCESS;    
 }
@@ -362,7 +375,7 @@ BOAT_RESULT BoatPlatONTransfer(BoatPlatONTx *tx_ptr, BCHAR * value_hex_str)
     BoatFieldMax32B value;
     BOAT_RESULT result;
    
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL|| value_hex_str == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL|| value_hex_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
@@ -370,7 +383,7 @@ BOAT_RESULT BoatPlatONTransfer(BoatPlatONTx *tx_ptr, BCHAR * value_hex_str)
     
     // Set nonce
     result = BoatPlatONTxSetNonce(tx_ptr, BOAT_PLATON_NONCE_AUTO);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "nonce set failed.");
 		return result;
@@ -416,8 +429,8 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
 
     BOAT_RESULT result = BOAT_SUCCESS;
 
-    UtilityBinToHex( tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     tx_mined_timeout = BOAT_PLATON_WAIT_PENDING_TX_TIMEOUT;
     param_platon_getTransactionReceipt.method_name_str = "platon_getTransactionReceipt";
     param_platon_getTransactionReceipt.tx_hash_str = tx_hash_str;
@@ -444,24 +457,24 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
             //需要更改
             if (tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr[0] != '\0')
             {
-                if( strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x1") == 0 )
+                if (strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x1") == 0)
                 {
                     BoatLog(BOAT_LOG_NORMAL, "Transaction has got mined.");
 					break;
                 }
                 else
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_ETH_MINE_INTERVAL);
+                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_PLATON_MINE_INTERVAL);
                 }
             }
             //******************************************************
 
-            tx_mined_timeout -= BOAT_ETH_MINE_INTERVAL;
+            tx_mined_timeout -= BOAT_PLATON_MINE_INTERVAL;
         }
         
     }while(tx_mined_timeout > 0);
 
-    if( tx_mined_timeout <= 0)
+    if (tx_mined_timeout <= 0)
     {
         BoatLog(BOAT_LOG_NORMAL, "Wait for pending transaction timeout. This does not mean the transaction fails.");
         result = BOAT_ERROR_TX_PENDING;

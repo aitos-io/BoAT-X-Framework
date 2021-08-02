@@ -31,7 +31,7 @@ api_platon.h is header file for BoAT IoT SDK PlatON's interface.
  */
 
 
-#define BOAT_PLATON_MINE_INTERVAL             3  //!< Mining Interval of the blockchain, in seconds
+#define BOAT_PLATON_MINE_INTERVAL             2  //!< Mining Interval of the blockchain, in seconds
 #define BOAT_PLATON_WAIT_PENDING_TX_TIMEOUT   30 //!< Timeout waiting for a transaction being mined, in seconds
 
 #define BOAT_PLATON_NODE_URL_MAX_LEN          BOAT_ETH_NODE_URL_MAX_LEN
@@ -79,7 +79,7 @@ typedef struct TBoatPlatONTx
 
     // rawtx_fields MUST be the last field
     BoatPlatONRawtxFields rawtx_fields;      //!< RAW transaction fields
-    BUINT8  address[BOAT_PLATON_ADDRESS_SIZE];
+    BUINT8  address[BOAT_PLATON_BECH32_ADDRESS_SIZE];
 }BoatPlatONTx;
 
 #ifdef __cplusplus
@@ -214,7 +214,7 @@ BCHAR *BoatPlatONGetBlockNumber(BoatPlatONTx *tx_ptr);
  * @brief Set Recipient
  * @see BoatEthTxSetRecipient()
  ******************************************************************************/
-BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BSINT8 *address_str);
+BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BUINT8 address[BOAT_PLATON_ADDRESS_SIZE]);
 
 // Ethereum APIs compatible for PlatON
 

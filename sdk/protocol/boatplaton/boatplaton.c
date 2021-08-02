@@ -138,7 +138,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     
     // Encode recipient
     result = RlpInitStringObject(&recipient_rlp_object,
-                                 tx_ptr->rawtx_fields.recipientbech32, strlen(tx_ptr->rawtx_fields.recipientbech32));
+                                 tx_ptr->rawtx_fields.recipient, BOAT_PLATON_ADDRESS_SIZE);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Recipient RLP object initialize failed.");
@@ -443,15 +443,19 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     // which is printed.
     
     // Print transaction recipient to log
-    BoatLog(BOAT_LOG_NORMAL, "Transaction to: %s", tx_ptr->rawtx_fields.recipientbech32);
+    if (0 == UtilityBinToHex(rlp_stream_hex_str, tx_ptr->rawtx_fields.recipient, 20, 
+							 BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE))
+    {
+        strcpy(rlp_stream_hex_str, "NULL");
+    }
 
 	/* print PlatON transaction message */
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Nonce    )", 
 					tx_ptr->rawtx_fields.nonce.field, tx_ptr->rawtx_fields.nonce.field_len);
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Sender   )", 
-					tx_ptr->wallet_ptr->account_info.address, 20);
+					tx_ptr->address, strlen(tx_ptr->address));
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Recipient)", 
-					tx_ptr->rawtx_fields.recipientbech32, strlen(tx_ptr->rawtx_fields.recipientbech32));
+					tx_ptr->rawtx_fields.recipient, 20);
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Value    )", 
 					tx_ptr->rawtx_fields.value.field, tx_ptr->rawtx_fields.value.field_len);
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Data     )", 
