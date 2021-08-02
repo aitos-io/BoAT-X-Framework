@@ -48,31 +48,31 @@ After copying these files, the directory structure should look like:
   BOAT_BASE := ./BoAT-X-Framework
   ```
 
-### 2、Add BoAT-X Framework libraries path
+### 2. Add BoAT-X Framework libraries path
 
   In the top Makefile, add one line under `LDFLAGS += -T prebuilt/components/appstart/flashrun.ld.obj -Wl,-Map=firmware/$(strip $(HWVER))/8910DM_ML302.map` as below:
   ```
   LDFLAGS += $(BOAT_BASE)/lib/libboatwallet.a $(BOAT_BASE)/lib/libboatvendor.a
   ```
 
-### 3、Add search path to the BoAT-X Framework header files
+### 3. Add search path to the BoAT-X Framework header files
 
   In the top Makefile, add one line of code under `INC :=  -I'inc\os' ` as below:
   ```
-  INC +=  -I$(BOAT_BASE)\include -I$(BOAT_BASE)\include\protocolapi
+  INC += -I$(BOAT_BASE)\include -I$(BOAT_BASE)\include\protocolapi
   ```
 
 
 ## Compile BoAT-X Framework Static library
 
-### 1、Compile BoAT-X Framework static library (under Cygwin)
+### 1. Compile BoAT-X Framework static library (under Cygwin)
    
-   #### a、Configure the target platform in directory BoAT-X-Framework\Makefile
+   #### a. Configure the target platform in directory BoAT-X-Framework\Makefile
    ```
    PLATFORM_TARGET ?= ChinaMobile-ML302
    ```
    
-   #### b、Open a Cygwin shell, enter `<ML302 Root>/BoAT-X-Framework` directory and compile BoAT static library
+   #### b. Open a Cygwin shell, enter `<ML302 Root>/BoAT-X-Framework` directory and compile BoAT static library
    ```
    cd <ML302 Root>/BoAT-X-Framework
    make clean
@@ -82,7 +82,7 @@ After copying these files, the directory structure should look like:
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<ML302 Root>\BoAT-X-Framework\lib` directory.
    
 
-### 2、Build demo program，generate .pac file for download
+### 2. Build demo program，generate .pac file for download
 
    Demo code for accessing blockchain through BoAT-X Framework is in `<ML302 Root>\src\boatdemo.c`
    
