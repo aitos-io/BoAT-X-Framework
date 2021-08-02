@@ -8,18 +8,20 @@
 
 ## 二、拷贝文件
 
-1、拷贝 BoAT代码，BoAT-X-Framework 整个文件夹放在ML302平台代码根目录下，即与主Makefile平级。
+约定`<ML302 Root>`是ML302平台SDK的根目录：
 
-2、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302\ML302RootDirCode\src\boatdemo.c到ML302平台代码根目录\src下。
+1、拷贝 BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<ML302 Root>`下，即与主Makefile平级。
 
-3、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302\ML302RootDirCode\src\my_contract.cpp.abi.c到ML302平台代码根目录\src下。
+2、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302\ML302RootDirCode\src\boatdemo.c到`<ML302 Root>\src`下。
 
-4、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302\ML302RootDirCode\src\my_contract.cpp.abi.h到ML302平台代码根目录\src下。
+3、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302\ML302RootDirCode\src\my_contract.cpp.abi.c到`<ML302 Root>\src`下。
+
+4、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302\ML302RootDirCode\src\my_contract.cpp.abi.h到`<ML302 Root>\src`下。
 
 
 拷贝后的目录和文件结构如下：
 ```
-<ML302平台代码根目录>
+<ML302 Root>
 |
 +---BoAT-X-Framework
 +---doc
@@ -40,7 +42,7 @@
 
 ### 1、在主Makefile中定义BoAT-X-Framework路径变量
 
-  打开ML302平台代码根目录下的主Makefile文件
+  打开`<ML302 Root>\Makefile`文件
   
   在BINMAKER := python tools/private/elf2flash.py之后新建一行添加以下内容：
   ```
@@ -49,7 +51,7 @@
 
 ### 2、添加BoAT-X-Framework编译生成的静态库.a文件路径到ML302平台
 
-  打开ML302平台代码根目录下的主Makefile文件
+  打开`<ML302 Root>\Makefile`文件
   
   在LDFLAGS += -T prebuilt/components/appstart/flashrun.ld.obj -Wl,-Map=firmware/$(strip $(HWVER))/8910DM_ML302.map之后新建一行添加以下内容：
   ```
@@ -58,7 +60,7 @@
 
 ### 3、添加BoAT-X-Framework有关头文件路径到ML302 SDK搜索路径中
 
-  打开ML302平台代码根目录下的主Makefile文件
+  打开`<ML302 Root>\Makefile`文件
   
   在INC :=  -I'inc\os' 之后新建一行添加以下内容：
   ```
@@ -70,29 +72,29 @@
 
 ### 1、在Linux环境下编译BoAT-X-Framework静态库.a文件
    
-   #### a、修改BoAT-X-Framework\Makefile中的target
+   #### a、修改`<ML302 Root>\BoAT-X-Framework\Makefile`中的target
    ```
    PLATFORM_TARGET ?= ChinaMobile-ML302
    ```
    
    #### b、打开cmd终端进入BoAT-X-Framework目录编译BoAT静态库
    ```
-   cd BoAT-X-Framework
+   cd <ML302 Root>\BoAT-X-Framework
    make clean
    make all
    ```
    
-   编译成功后，在BoAT-X-Framework\lib下会生成静态库libboatvendor.a、libboatwallet.a。
+   编译成功后，在`<ML302 Root>\BoAT-X-Framework\lib`下会生成静态库libboatvendor.a、libboatwallet.a。
    
 
 ### 2、编译ML302演示demo程序，生成.pac下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在ML302平台代码根目录下的src\boatdemo.c
+   通过BoAT-X-Framework访问区块链的演示代码，在`<ML302 Root>\src\boatdemo.c`
    
-   打开Linux终端进入ML302根目录
+   打开Linux终端进入`<ML302 Root>`
    ```
-   cd ML302代码根目录
+   cd <ML302 Root>
    build.bat CLEAN
    build.bat DNLM
    ```
-   编译成功会在firmware\DNLM下生成ML302_OpenCPU.pac文件	
+   编译成功会在`<ML302 Root>\firmware\DNLM`下生成ML302_OpenCPU.pac文件	
