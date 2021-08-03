@@ -152,7 +152,7 @@ During Host compilation, if gcc and binutils are already installed in the system
 During cross compilation, if the cross compilation environment needs to configure a specific INCLUDE path, you need to add the path to the above file.  
 
 #### BoAT IoT Framework SDK Configuration
--Enable/disable blockchain protocol
+- Enable/disable blockchain protocol
 In the top-level makefile:
 
 ````
