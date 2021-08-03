@@ -1,13 +1,13 @@
 # BoAT-X-Framework for 有方科技N58整合说明
 
 
-## 一 前言
+## 一、前言
 
 按照文档全部移植完整后，boat2.0需要重新make clean,再make all整个BoAT-X-Framework。
 N58平台代码也需要先删除out下的所有文件，再执行编译指令生成可下载.pac文件。
 
 
-## 二 拷贝文件
+## 二、拷贝文件
 
 1、拷贝 boat2.0代码BoAT-X-Framework 整个文件夹放在N58平台代码根目录下，即与主CMakeLists.txt平级。  
 2、拷贝 BoAT-X-Framework\vendor\platform\N58\N58RootDirCode\demo_entry.c到N58平台代码根目录下。  
@@ -32,7 +32,7 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
 \---my_contract.cpp.abi.h  
 
 
-## 三 文件修改
+## 三、文件修改
 
 ### 1、添加BoAT-X-Framework生成的静态库.a文件到N58平台
 
@@ -87,7 +87,7 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
   	CC := $(CURDIR)/../prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-gcc  
   	AR := $(CURDIR)/../prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ar  
 
-## 四 编译程序
+## 四、编译程序
 
 ### 1、编译boat2.0生成静态库.a文件
    a、打开Cygwin终端 //Linux环境下跳过该步骤  
