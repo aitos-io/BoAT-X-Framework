@@ -4,7 +4,7 @@
 ## Introduction
 
 ### Overview
-In this article, we discribe system requirements for BoAT Framework (C language version) on cellular modules. BoAT is an SDK that runs on the module's application processor. For the OpenCPU cellular module, BoAT is linked and called by the application as a library. For non-OpenCPU cellular modules, BoAT's API needs to be extended to AT commands for applications on the upper MCU to call.
+In this article, we discribe system requirements for BoAT Framework (C language version) on cellular modules. BoAT is an SDK that runs on the module's application processor. For the cellular module with an OpenCPU, BoAT is linked and called by the application as a library. For cellular modules without OpenCPU,BoAT APIs will be wrapped into AT commands to works fine in host MCUs.
 
 ### Abbreviated Terms
 |Term   |Explanation                  |
