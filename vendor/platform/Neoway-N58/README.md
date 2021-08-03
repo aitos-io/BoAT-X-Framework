@@ -46,13 +46,13 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
   打开N58平台代码根目录\cmake\CMakeLists.txt文件。  
   在include_directories(XXX) 之后添加以下内容：
   
-  include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
+  	include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
   
 ### 3、添加BoAT-X-Framework lib文件到N58平台
   打开N58平台代码根目录\cmake\CMakeLists.txt文件。  
   找到target_link_libraries(XXX ${libc_file_name}) 字样，在${libc_file_name} 前面添加 ${libbw_file_name} ${libbv_file_name}，如下所示：  
   
-  target_link_libraries(${target} PRIVATE ${libbw_file_name} ${libbv_file_name} ${libc_file_name} ${libm_file_name} ${libgcc_file_name})
+  	target_link_libraries(${target} PRIVATE ${libbw_file_name} ${libbv_file_name} ${libc_file_name} ${libm_file_name} ${libgcc_file_name})
 
 ### 4、添加boat2.0测试Demo、智能合约文件到编译目录
   打开N58平台代码根目录\cmake\CMakeLists.txt文件。  
@@ -69,7 +69,8 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
 ### 5、修改BoAT-X-Framework编译平台为Neoway-N58
   打开 BoAT-X-Framework\Makefile文件。  
   找到 PLATFORM_TARGET ?= XXX 修改其值为 Neoway-N58, 即： 
-  PLATFORM_TARGET ?= Neoway-N58  
+  	
+	PLATFORM_TARGET ?= Neoway-N58  
 
 
 注：以下6、7两条修改，是把BoAT-X-Framework编译环境从Linux改成Windows下的Cygwin。如果是在Linux下编译，可以直接跳过6，7两步。
@@ -77,13 +78,14 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
 ### 6、修改BoAT-X-Framework编译命令为Cygwin命令
   打开 BoAT-X-Framework\Makefile文件。假设Cygwin安装在C:/cygwin64下，则修改为以下值： 
   CYGWIN_BASE := C:/cygwin64 //根据实际Cygwin安装路径修改  
-  BOAT_RM := $(CYGWIN_BASE)/bin/rm -rf  
-  BOAT_MKDIR := $(CYGWIN_BASE)/bin/mkdir  
-  BOAT_FIND := $(CYGWIN_BASE)/bin/find  
+  	
+	BOAT_RM := $(CYGWIN_BASE)/bin/rm -rf  
+  	BOAT_MKDIR := $(CYGWIN_BASE)/bin/mkdir  
+  	BOAT_FIND := $(CYGWIN_BASE)/bin/find  
 
 ### 7、打开 BoAT-X-Framework\vendor\platform\N58\external.env文件，修改CC和AR为以下值：
-  CC := $(CURDIR)/../prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-gcc  
-  AR := $(CURDIR)/../prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ar  
+  	CC := $(CURDIR)/../prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-gcc  
+  	AR := $(CURDIR)/../prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ar  
 
 ## 四 编译程序
 
