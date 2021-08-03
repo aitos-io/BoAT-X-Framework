@@ -36,7 +36,7 @@ After copying these files, the directory structure should look like:
 
 ## File Modification
 
-### 1、Add BoAT-X Framework libraries path
+### 1. Add BoAT-X Framework libraries path
 
 Open `<YanFei Root>\cmake\toolchain-gcc.cmake` 
 Add the following two lines as below:
@@ -56,14 +56,14 @@ Find target_link_libraries(XXX ${libc_file_name}) and add ${libbw_file_name} ${l
   ```
 
 
-### 3、Add the BoAT-X Framework header files
+### 3. Add the BoAT-X Framework header files
 Open `<YanFei Root>\CMakeLists.txt` 
 Find include_directories(xxx), add the following content in the last new line:
   ```
   include_directories(BoAT-X-Frameworkt/include BoAT-X-Frameworkt/include/protocolapi)
   ```
 
-### 4、Add  demo and smart contract files of BoAT-X-Framework
+### 4. Add demo and smart contract files of BoAT-X-Framework
 Open `<YanFei Root>\app\demo\CMakeList.txt` 
 Find add_appimg(${target} xxx) and add ${target_file_path}/my_contract.c at the end, such as:
 ```
@@ -72,14 +72,14 @@ add_appimg(${target} ${flash_ldscript} ${target_file_path}/${target_file}.c ${ta
 
 ## Compile BoAT-X Framework Static library
 
-### 1、Compile BoAT-X Framework static library (under Linux)
+### 1. Compile BoAT-X Framework static library (under Linux)
 
-   #### a、Configure the target platform in directory BoAT-X-Framework\Makefile
+   #### a. Configure the target platform in directory BoAT-X-Framework\Makefile
    ```
    PLATFORM_TARGET ?= YanFei-CUIot-MZ-6
    ```
 
-   #### b、Open a Linux shell, enter `<YanFei Root>/BoAT-X-Framework` directory and compile BoAT static library
+   #### b. Open a Linux shell, enter `<YanFei Root>/BoAT-X-Framework` directory and compile BoAT static library
    ```
    cd <YanFei Root>/BoAT-X-Framework
    make clean
@@ -89,7 +89,7 @@ add_appimg(${target} ${flash_ldscript} ${target_file_path}/${target_file}.c ${ta
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<YanFei Root>\BoAT-X-Framework\lib` directory.
 
 
-### 2、Build demo program，generate .pac file for download
+### 2. Build demo program，generate .pac file for download
 
    Demo code for accessing blockchain through BoAT-X Framework is in `<YanFei Root>\app\demo\src\main.c`
 
