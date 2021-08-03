@@ -114,7 +114,7 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
     else
     {
         // To use the price obtained from network, simply call BoatTxSetGasPrice(NULL)
-        result = BoatPlatONTxSetGasPrice(tx_ptr, &gasprice);
+        result = BoatPlatONTxSetGasPrice(tx_ptr, NULL);
     }
 
     if (result != BOAT_SUCCESS)
@@ -137,8 +137,11 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
 
     BUINT8 recipient[BOAT_PLATON_ADDRESS_SIZE];
     BUINT32 converted_len;
-    converted_len = UtilityHexToBin(recipient, BOAT_PLATON_ADDRESS_SIZE, recipient_str, 
-									TRIMBIN_TRIM_NO, BOAT_TRUE);
+
+    converted_len = BoatPlatONBech32Decode(recipient_str, strlen(recipient_str), recipient);
+
+    //converted_len = UtilityHexToBin(recipient, BOAT_PLATON_ADDRESS_SIZE, recipient_str, 
+	//								TRIMBIN_TRIM_NO, BOAT_TRUE);
     if (converted_len == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "recipient Initialize failed.");

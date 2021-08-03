@@ -28,14 +28,14 @@ boatbech32.c contains utility functions for boatwallet.
 
 const char *BECH32ALPHABET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
-static BSINT8 CHARSET_REV = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                             15, -1, 10, 17, 21, 20, 26, 30,  7,  5, -1, -1, -1, -1, -1, -1,
-                             -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
-                              1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1,
-                             -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
-                              1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1};
+static BSINT8 CHARSET_REV[] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                               -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                               -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                               15, -1, 10, 17, 21, 20, 26, 30,  7,  5, -1, -1, -1, -1, -1, -1,
+                               -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
+                                1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1,
+                               -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
+                                1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1};
 
 BUINT32 BoatConvertBits(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, BUINT32 fromBits, BUINT32 toBits)  
 {
@@ -80,7 +80,6 @@ BUINT8 *BoatExpandHrp(const BUINT8 *hrp, BUINT8 hrplen, BUINT8 *out)
         return NULL;
     }
 
-    out = BoatMalloc(hrplen * 2 + 1);
     if (out == NULL)
     {
         return NULL;
@@ -135,6 +134,7 @@ BUINT8 *BoatBech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, 
     }
     
     chk = chk ^ 1;
+
     for (i = 0; i < 6; i++) 
     {
         *(out + i) = (BUINT8)((chk >> (5 * (5 - i))) & 0x1F);
@@ -167,6 +167,8 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, con
 
     BoatConvertBits(in, inlen, base32Data, 8, 5);
 
+    expandHRPData = BoatMalloc(hrplen * 2 + 1);
+
     bech32Chk = BoatBech32Polymod(BoatExpandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, base32Data, base32OutLen);
 
     //out = BoatMalloc(hrplen + 1 + base32OutLen + 6 + 1);
@@ -193,9 +195,9 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, con
 BSINT32 BoatPlatONBech32Decode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out)
 {
     BSINT32 separatorOffset = 0;
-    BSINT32 i, j;
+    BSINT32 i;
     BSINT32 hrplen, datalen;
-    BUINT8 *hrp, *data, *chksum, *transData *expandHRPData;
+    BUINT8 *hrp, *data, *chksum, *transData, *expandHRPData;
     if (in == NULL || out == NULL)
     {
         return -1;
@@ -222,44 +224,38 @@ BSINT32 BoatPlatONBech32Decode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out)
         return -1;
     }
 
-    data = in + separatorOffset + 1;
+    //data = in + separatorOffset + 1;
     datalen = inlen - hrplen - 1 - 6;
     if (datalen <= 0)
     {
         return -1;
     }
+    data = BoatMalloc(datalen);
+    if (data == NULL)
+    {
+        return -1;
+    }
+    for (i = 0; i < datalen; i++)
+    {
+        *(data + i) = *(CHARSET_REV + *(in + separatorOffset + 1 + i));
+    }
 
+    expandHRPData = BoatMalloc(hrplen * 2 + 1);
     chksum = BoatBech32Polymod(BoatExpandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, data, datalen);
     BoatFree(expandHRPData);
 
     for (i = 0; i < 6; i++)
     {
-        if (*(in + hrplen + 1 + datalen + i) != *(chk + i))
+        if (*(in + hrplen + 1 + datalen + i) != *(BECH32ALPHABET + *(chksum + i)))
         {
+            BoatLog(BOAT_LOG_NORMAL, "PlatON address checksum is incorrect.");
             BoatFree(chksum);
             return -1;
         }
     }
     BoatFree(chksum);
 
-    transData = BoatMalloc(datalen);
-
-    if (transData == NULL)
-    {
-        return -1;
-    }
-
-    for (i = 0; i < datalen; i++)
-    {
-        if (CHARSET_REV[*(data + i)] == -1)
-        {
-            BoatFree(transData);
-            return -1;
-        }
-        *(transData + i) = CHARSET_REV[*(data + i)];
-    }
-
-    return BoatConvertBits(transData, datalen, out, 5, 8);
+    return BoatConvertBits(data, datalen, out, 5, 8);
 }
 
 #endif /* end of PROTOCOL_USE_PLATON */

@@ -150,6 +150,8 @@ BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr);
 BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUINT8 *hrp, BUINT8 hrplen);
 /*! @}*/
 
+BSINT32 BoatPlatONBech32Decode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out);
+
 #ifdef __cplusplus
 }
 #endif /* end of __cplusplus */
