@@ -17,6 +17,7 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
 
 拷贝后的目录和文件结构如下：
 
+```
 <N58平台代码根目录>
 |  
 +---BoAT-X-Framework  
@@ -30,7 +31,7 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
 \---CMakeLists.txt  
 \---my_contract.cpp.abi.c  
 \---my_contract.cpp.abi.h  
-
+```
 
 ## 三、文件修改
 
@@ -57,7 +58,8 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
 ### 4、添加boat2.0测试Demo、智能合约文件到编译目录
   打开N58平台代码根目录\cmake\CMakeLists.txt文件。  
   找到add_appimg(${target} xxx ) 字样，在小括号内加入demo_entry.c my_contract.cpp.abi.c，如下所示：  
-  add_appimg(${target} ${file_ldscript} nwy_drv_lcd_st7735.c demo_entry.c my_contract.cpp.abi.c) 
+  	
+	add_appimg(${target} ${file_ldscript} nwy_drv_lcd_st7735.c demo_entry.c my_contract.cpp.abi.c) 
 
   说明：  
   4.1、demo_entry.c 包括main入口、网络初始化、调用合约上链等操作。  
@@ -77,8 +79,8 @@ N58平台代码也需要先删除out下的所有文件，再执行编译指令�
 
 ### 6、修改BoAT-X-Framework编译命令为Cygwin命令
   打开 BoAT-X-Framework\Makefile文件。假设Cygwin安装在C:/cygwin64下，则修改为以下值： 
-  CYGWIN_BASE := C:/cygwin64 //根据实际Cygwin安装路径修改  
   	
+	CYGWIN_BASE := C:/cygwin64 //根据实际Cygwin安装路径修改  
 	BOAT_RM := $(CYGWIN_BASE)/bin/rm -rf  
   	BOAT_MKDIR := $(CYGWIN_BASE)/bin/mkdir  
   	BOAT_FIND := $(CYGWIN_BASE)/bin/find  
