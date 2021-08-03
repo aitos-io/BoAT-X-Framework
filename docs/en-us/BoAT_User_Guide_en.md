@@ -102,7 +102,7 @@ The tool component provides a set of  Python tools, which are used to generate C
 
 
 
-Note: The `build` and `lib` directories are generated during compilation. After the compilation is complete, only the `include`, `lib` in the first level directory, and the header file of `boatconfig.h` (located in the `vendor/platform/include` path) automatically generated after compilation is required by the application.
+*Note: The `build` and `lib` directories are generated during compilation. After the compilation is complete, only the `include`, `lib` in the first level directory, and the header file of `boatconfig.h` (located in the `vendor/platform/include` path) automatically generated after compilation is required by the application.*
 
 ## BoAT IoT Framework SDK Compilation
 
@@ -191,7 +191,7 @@ Before making the call, you first need to compile the contract, and copy the ABI
 | \<SDKRoot\>/demo/demo_platone/demo_contract\Solidity   | Copy PlatONE (Solidity) ABI JSON file to this directory          |
 | \<SDKRoot\>/demo/demo_platone/demo_contract\WASM   | Copy PlatONE (WASM) ABI JSON file to this directory          |
 
-*Note 1: ABI's JSON file must have ".json" as the file name suffix.*  
+*Note: ABI's JSON file must have ".json" as the file name suffix.*  
 
 During the demo compilation process, the automatic generation tool will generate the corresponding C interface calling code according to the contract ABI JSON file. If the automatic generation of C interface fails during compilation, you need to delete the unsupported ABI JSON file (or delete the unsupported interface) from the corresponding directory of \<SDKRoot\>/contract, write the C code manually, and assemble the ABI interface. For details, please refer to the [Transfer Call](#Transfer-Call) chapter.
 ### Host Compilation
@@ -787,7 +787,7 @@ When BoatEthGetTransactionReceipt (hash) return value is BOAT_SUCCESS, shows the
 
 Contract functions that do not change the state of the blockchain, only need the blockchain node to read the existing information in its database, without transactions and consensus. So the call to this type of function is a synchronous call. The return value is the return value in the form of the contract function. The readListLength and readListByIndex functions of the StoreRead contract are such contract functions.
 
-Note: This code can only be pseudocode, in order to facilitate understanding, the return value needs to be converted accordingly. For details, see Demo_ethereum_Storeread.c.
+*Note: This code can only be pseudocode, in order to facilitate understanding, the return value needs to be converted accordingly. For details, see Demo_ethereum_Storeread.c.*
 
 #### Transaction Initialization
 To call the automatically generated contract interface, first initialize a transaction object, and then call the generated contract interface.  
