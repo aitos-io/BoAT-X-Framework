@@ -11,5 +11,5 @@ add_executable(demo_fabric_abac ${FABRIC_DEMO_SRC})
 target_compile_options(demo_fabric_abac PRIVATE -DUSE_ONETIME_WALLET)
 target_link_libraries(demo_fabric_abac
                         ${PROJECT_SOURCE_DIR}/lib/libboatwallet.a
-                        ${PROJECT_SOURCE_DIR}/lib/libboatvendor.a
+                        boatvendor
                         curl)

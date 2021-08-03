@@ -5,6 +5,11 @@ cmake_minimum_required(VERSION 3.2...3.16 FATAL_ERROR)
 
 project(CURL C)
 
+
+string(REGEX MATCH "GNU" CMAKE_COMPILER_IS_GNU "${CMAKE_C_COMPILER_ID}")
+
+
+
 option(BOAT_PROTOCOL_USE_ETHEREUM "Enable compile the ethereum blockchain protocol" OFF)
 option(BOAT_PROTOCOL_USE_PLATONE "Enable compile the platone blockchain protocol" OFF)
 option(BOAT_PROTOCOL_USE_FISCOBCOS "Enable compile the fiscobcos blockchain protocol" OFF)
@@ -117,6 +122,18 @@ else()
     message(FATAL_ERROR "not fund python3, please install python3")
 endif()
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Os -Wall")
+
+if(CMAKE_COMPILER_IS_GNU)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
+endif()
+
+
+
+include_directories(${PROJECT_SOURCE_DIR}/vendor/platform/${PLATFORM_TARGET}/src/log)
+include_directories(${PROJECT_SOURCE_DIR}/sdk/protocol/common/http2intf)
+include_directories(${PROJECT_SOURCE_DIR}/sdk/protocol/common/web3intf)
+include_directories(${PROJECT_SOURCE_DIR}/sdk/third-party/nghttp2/include)
 
 
 if(BUILD_BOAT_DEMO)
@@ -124,3 +141,4 @@ add_subdirectory(demo)
 endif()
 
 add_subdirectory(vendor)
+#add_subdirectory(sdk)
