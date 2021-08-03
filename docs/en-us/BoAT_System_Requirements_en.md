@@ -44,7 +44,7 @@ To enable HyperLedger Fabric capability, the storage requirements of the C-langu
 
 The above does not include the system libraries that the BoAT Framework (C language version) depends on. The exact values may vary with different blockchain protocols.
 
-## Part 2 Computing Performance Requirements
+## Part 2 Process Capacity Requirements
 
 For supporting Ethereum, the BoAT Framework (C language version)  takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, on an ARM Cortex M4 running at about 100MHz . The exact time can vary with different blockchain protocols.
 
