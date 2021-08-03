@@ -157,7 +157,7 @@ BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 ```
-根据需要，将相应变量的值改为`1`或`0`以使能或禁能相应的区块链协议。或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁能相应的区块链协议。
+根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁能相应的区块链协议。
 - 日志打印级别调整  
 根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
 
