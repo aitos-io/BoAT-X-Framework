@@ -12,7 +12,7 @@ Assuming `<YanFei Root>` to be the root directory of YanFei OpenCPU SDK:
 
 1. Copy the entire BoAT-X-Framework directory into `<YanFei Root>`, on the same level where YanFei SDK's top CMakeLists.txt locates.
 
-2. Copy `<YanFei Root>\BoAT-X-Framework\vendor\platform\YanFei-CUIot-MZ-6\YanfeiRootDirCode\app\demo\src` into `<YanFei Root>\app\demo\src\`.
+2. Copy `BoAT-X-Framework/vendor/platform/YanFei-CUIot-MZ-6/YanfeiRootDirCode/app/demo/src` into `<YanFei Root>/app/demo/src/`.
 
 
 After copying these files, the directory structure should look like:
@@ -38,7 +38,7 @@ After copying these files, the directory structure should look like:
 
 ### 1. Add BoAT-X Framework libraries path
 
-Open `<YanFei Root>\cmake\toolchain-gcc.cmake` 
+Open `<YanFei Root>/cmake/toolchain-gcc.cmake` 
 Add the following two lines as below:
 ```
 set(libbw_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Frameworkt/lib/libboatwallet.a)
@@ -48,7 +48,7 @@ set(libbv_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Frameworkt/lib/libboatven
 
 ### 2. Add the link to the BoAT-X-Framework libs
 
-Open `<YanFei Root>\app\demo\CMakeList.txt` 
+Open `<YanFei Root>/app/demo/CMakeList.txt` 
 Find target_link_libraries(XXX ${libc_file_name}) and add ${libbw_file_name} ${libbv_file_name} before ${libc_file_name}, such as:
 
   ```
@@ -57,14 +57,14 @@ Find target_link_libraries(XXX ${libc_file_name}) and add ${libbw_file_name} ${l
 
 
 ### 3. Add the BoAT-X Framework header files
-Open `<YanFei Root>\CMakeLists.txt` 
+Open `<YanFei Root>/CMakeLists.txt` 
 Find include_directories(xxx), add the following content in the last new line:
   ```
   include_directories(BoAT-X-Frameworkt/include BoAT-X-Frameworkt/include/protocolapi)
   ```
 
 ### 4. Add demo and smart contract files of BoAT-X-Framework
-Open `<YanFei Root>\app\demo\CMakeList.txt` 
+Open `<YanFei Root>/app/demo/CMakeList.txt` 
 Find add_appimg(${target} xxx) and add ${target_file_path}/my_contract.c at the end, such as:
 ```
 add_appimg(${target} ${flash_ldscript} ${target_file_path}/${target_file}.c ${target_file_path}/my_contract.c ${OEM})
@@ -74,7 +74,7 @@ add_appimg(${target} ${flash_ldscript} ${target_file_path}/${target_file}.c ${ta
 
 ### 1. Compile BoAT-X Framework static library (under Linux)
 
-   #### a. Configure the target platform in directory BoAT-X-Framework\Makefile
+   #### a. Configure the target platform in directory BoAT-X-Framework/Makefile
    ```
    PLATFORM_TARGET ?= YanFei-CUIot-MZ-6
    ```
@@ -86,12 +86,12 @@ add_appimg(${target} ${flash_ldscript} ${target_file_path}/${target_file}.c ${ta
    make all
    ```
 
-   After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<YanFei Root>\BoAT-X-Framework\lib` directory.
+   After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<YanFei Root>/BoAT-X-Framework/lib` directory.
 
 
 ### 2. Build demo program，generate .pac file for download
 
-   Demo code for accessing blockchain through BoAT-X Framework is in `<YanFei Root>\app\demo\src\main.c`
+   Demo code for accessing blockchain through BoAT-X Framework is in `<YanFei Root>/app/demo/src/main.c`
 
    Open a Linux shell and build the demo:
    ```
@@ -105,5 +105,5 @@ add_appimg(${target} ${flash_ldscript} ${target_file_path}/${target_file}.c ${ta
    ninja
    ```
 
-   The download image `<YanFei Root>\out\appimage_debug\hex\main_flash.pac` will be will be generated if building is successful.
+   The download image `<YanFei Root>/out/appimage_debug/hex/main_flash.pac` will be will be generated if building is successful.
 
