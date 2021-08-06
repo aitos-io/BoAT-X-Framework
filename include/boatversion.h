@@ -36,9 +36,9 @@
  *    Major version | Minor version | Patch version
  */
 #define BOAT_VERSION_STRING         "2.0.0"
-#define BOAT_VERSION_NUMBER         ( (BOAT_VERSION_MAJOR << 24) | \
-                                      (BOAT_VERSION_MINOR << 16) | \
-                                      (BOAT_VERSION_PATCH <<  8) )
+#define BOAT_VERSION_NUMBER         ((BOAT_VERSION_MAJOR << 24) | \
+                                     (BOAT_VERSION_MINOR << 16) | \
+                                     (BOAT_VERSION_PATCH <<  8))
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,7 +50,7 @@ extern "C" {
  * @return   
  *    The constructed version number in the format MMNNPP00 (Major, Minor, Patch).       
  ******************************************************************************/
-BUINT32 BoatIotSdkVersion( void );
+BUINT32 BoatIotSdkVersion(void);
 
 
 /*!****************************************************************************
@@ -59,7 +59,7 @@ BUINT32 BoatIotSdkVersion( void );
  * @return   
  *   The constructed version string.
  ******************************************************************************/
-BCHAR * BoatIotSdkVersionString( void );
+BCHAR *BoatIotSdkVersionString(void);
 
 /*! @}*/
 

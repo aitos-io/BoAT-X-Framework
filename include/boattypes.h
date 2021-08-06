@@ -57,6 +57,7 @@ typedef enum
     BOAT_PROTOCOL_UNKNOWN = 0,     //!< Placeholder for unknown protocol
     BOAT_PROTOCOL_ETHEREUM,        //!< Ethereum
     BOAT_PROTOCOL_HLFABRIC,        //!< HyperLedger Fabric
+    BOAT_PROTOCOL_PLATON,          //!< PlatON
     BOAT_PROTOCOL_PLATONE,         //!< PlatONE Enterprise consortium chain
 	BOAT_PROTOCOL_FISCOBCOS        //!< FISCOBCOS Enterprise consortium chain
 }BoatProtocolType;

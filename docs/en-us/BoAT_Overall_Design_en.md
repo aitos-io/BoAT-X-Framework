@@ -327,43 +327,43 @@ Looking through the RPC-related documents of Ethereum, you can know that Ethereu
   1. web3 message ID increment
   2. Package the request message of 
   3. "Get the content stored in the specified location of the blockchain"
-  4. Call the RPC method "web3_eth_getStorageAt" to send the request message to the blockchain
+  4. Call the RPC method "web3_getStorageAt" to send the request message to the blockchain
   5. Parse the received block chain response message and return the analysis result
 + Get the number of account transactions  
   The content implemented by this interface includes:
   1. web3 message ID increment
   2. Package the request message of "Get account transactions"
-  3. Call the RPC method "web3_eth_getTransactionCount" to send the request message to the blockchain
+  3. Call the RPC method "web3_getTransactionCount" to send the request message to the blockchain
   4. Parse the received blockchain response message and return the analysis result
 + Get the gasPrice of the blockchain  
   The content implemented by this interface includes:
   1. web3 message ID increment
   2. Package the request message of "Get the gasPrice of the blockchain"
-  3. Call the RPC method "web3_eth_gasPrice" to send the request message to the blockchain
+  3. Call the RPC method "web3_gasPrice" to send the request message to the blockchain
   4. Parse the received blockchain response message and return the analysis result
 + Get account balance  
   The content implemented by this interface includes:
   1. web3 message ID increment
   2. Package the request message of "Get account balance"
-  3. Call the RPC method "web3_eth_getBalance" to send the request message to the blockchain
+  3. Call the RPC method "web3_getBalance" to send the request message to the blockchain
   4. Parse the received blockchain response message and return the analysis result
 + Get transaction receipt  
   The content implemented by this interface includes:
   1. web3 message ID increment
   2. Package the request message of "get transaction receipt"
-  3. Call the RPC method " web3_eth_getTransactionReceiptStatus " to send the request message to the blockchain
+  3. Call the RPC method "web3_getTransactionReceiptStatus" to send the request message to the blockchain
   4. Parse the received blockchain response message and return the analysis result
 + Blockchain stateless call  
   The content implemented by this interface includes:
   1. web3 message ID increment
   2. Package the request message of "Blockchain stateless call"
-  3. Call the RPC method "web3_eth_call" to send the request message to the blockchain
+  3. Call the RPC method "web3_call" to send the request message to the blockchain
   4. Parse the received blockchain response message and return the analysis result
 + Send raw transaction  
   The content implemented by this interface includes:
   1. web3 message ID increment 
   2. Package the request message of "Send raw transaction"
-  3. Call the RPC method " web3_eth_sendRawTransaction " to send the request message to the blockchain
+  3. Call the RPC method "web3_sendRawTransaction" to send the request message to the blockchain
   4. Parse the received blockchain response message and return the analysis result
 
 #### Protocol Layer Implementation of PlatONE
@@ -506,11 +506,11 @@ For the generated C language contract interface, the corresponding relationship 
     <tr>
         <td colspan="2" rowspan="2">Constant</td>
         <td>True</td>
-        <td>The function accesses the blockchain through the RPC method "web3_eth_call"</td>
+        <td>The function accesses the blockchain through the RPC method "web3_call"</td>
     </tr>
     <tr>
         <td>False</td>
-        <td>The function accesses the blockchain through the RPC method " web3_eth_sendRawTransaction "</td>
+        <td>The function accesses the blockchain through the RPC method "web3_sendRawTransaction"</td>
     </tr>
 </table>
 

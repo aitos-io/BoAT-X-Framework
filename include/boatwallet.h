@@ -214,8 +214,8 @@ void BoatIotSdkDeInit(void);
  *	
  * @see BoatWalletUnload() BoatWalletDelete()
  ******************************************************************************/
-BSINT32 BoatWalletCreate( BoatProtocolType protocol_type, const BCHAR *wallet_name_str, 
-						  const void * wallet_config_ptr, BUINT32 wallet_config_size );
+BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_name_str, 
+						 const void *wallet_config_ptr, BUINT32 wallet_config_size);
 
 
 /*!****************************************************************************
@@ -254,7 +254,7 @@ void BoatWalletUnload(BSINT32 wallet_index);
  *
  * @see BoatWalletCreate() BoatWalletUnload()
  ******************************************************************************/
-void BoatWalletDelete(BCHAR * wallet_name_str);
+void BoatWalletDelete(BCHAR *wallet_name_str);
 
 
 /*!****************************************************************************
@@ -270,7 +270,7 @@ void BoatWalletDelete(BCHAR * wallet_name_str);
  *   This function returns a pointer to the wallet context. 
  *   \n Otherwise returns a \c NULL if the indexed wallet is not exist.
  ******************************************************************************/
-void * BoatGetWalletByIndex(BSINT32 wallet_index);
+void *BoatGetWalletByIndex(BSINT32 wallet_index);
 
 /*! @}*/
 

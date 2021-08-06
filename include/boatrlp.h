@@ -214,7 +214,7 @@ BSINT32 RlpEncoderReplaceObjectInList(RlpObject *to_list_object_ptr, BSINT32 rep
  *   index in the parent if successful.
  *   \n It returns NULL if encode failed.
  ******************************************************************************/
-RlpObject * RlpEncoderGetListDescriptor(RlpObject *rlp_object_ptr, BUINT32 descriptor_index);
+RlpObject *RlpEncoderGetListDescriptor(RlpObject *rlp_object_ptr, BUINT32 descriptor_index);
 
 
 /*!****************************************************************************
