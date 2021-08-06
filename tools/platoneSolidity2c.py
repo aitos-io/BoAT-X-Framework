@@ -739,7 +739,7 @@ class CFunctionGen():
 
             
             if self.is_NonFixedSizeFixedArray_type(input['type']) == True:
-                input_str += 'BoatFieldVariable * ' + inputName_str
+                input_str += 'BoatFieldVariable *' + inputName_str
             elif self.is_FixedSizeFixedArray_type(input['type']) == True:
                 input_str += type_mapping[inputType] + ' ' + inputName_str + '[' + str(self.get_FixedArray_length(input['type'])) + ']'
             else:
@@ -755,8 +755,8 @@ class CFunctionGen():
         input_str += ')'
 
         # Generate function prototype
-        self.c_file_content += retval_str + ' ' + func_name_str + input_str + '\n'
-        self.h_file_content += retval_str + ' ' + func_name_str + input_str + ';\n'
+        self.c_file_content += retval_str + func_name_str + input_str + '\n'
+        self.h_file_content += retval_str + func_name_str + input_str + ';\n'
 
 
     def generate_func_body(self, abi_item):
@@ -770,7 +770,7 @@ class CFunctionGen():
         else:
             func_body_str += '    static BCHAR tx_hash_str[67] = \"\";\n'
 
-        func_body_str += '    BoatFieldVariable data_field;\n'
+        func_body_str += '    BoatFieldVariable data_field = {NULL, 0};\n'
         func_body_str += '    BCHAR *function_prototye_str;\n'
         func_body_str += '    BUINT8 field_bytes32[32];\n'
         func_body_str += '    BUINT8 fixedsize_bytes32[32];\n'
@@ -802,14 +802,13 @@ class CFunctionGen():
                     inputs_param_body_str_tmp  += '|| (' + inputParamName_str + ' == NULL)'
                 i = i + 1
             if len(inputs_param_body_str_tmp) == 0:
-                func_body_str += '    if( tx_ptr == NULL )\n'
+                func_body_str += '    if (tx_ptr == NULL)\n'
             else:
-                func_body_str += '    if( (tx_ptr == NULL) ' + inputs_param_body_str_tmp +' )\n'
+                func_body_str += '    if ((tx_ptr == NULL) ' + inputs_param_body_str_tmp +')\n'
         else:
-            func_body_str += '    if( tx_ptr == NULL )\n'
+            func_body_str += '    if (tx_ptr == NULL)\n'
 
         func_body_str     += '    {\n'
-        func_body_str     += '        BoatLog(BOAT_LOG_CRITICAL, \"An NULL input parameter be detected.\");\n'
         func_body_str     += '        return NULL;\n'
         func_body_str     += '    }\n\n'
 
@@ -827,7 +826,11 @@ class CFunctionGen():
         func_body_str += self.generate_nonFixedArray_length(abi_item)
         
         func_body_str += '    data_field.field_ptr = BoatMalloc(data_field.field_len);\n'
-        func_body_str += '    if(data_field.field_ptr == NULL) boat_throw(BOAT_ERROR, cleanup);\n'
+        func_body_str += '    if (data_field.field_ptr == NULL)\n'
+        func_body_str += '    {\n'
+        func_body_str += '        boat_throw(BOAT_ERROR, cleanup);\n'
+        func_body_str += '    }\n'
+         
         func_body_str += '    data_offset_ptr = data_field.field_ptr;\n\n'
 
 
@@ -988,9 +991,13 @@ class CFunctionGen():
                 func_body_str += '    {\n'
                 func_body_str += '        memcpy(fixedsize_bytes32, ' + inputName_str + '_ptr, ' + param_size_str + ');\n'
                 func_body_str += '        if (*' + inputName_str + '_ptr >= 0)\n'
+                func_body_str += '        {\n'
                 func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
+                func_body_str += '        }\n'
                 func_body_str += '        else\n'
+                func_body_str += '        {\n'
                 func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
+                func_body_str += '        }\n'
                 func_body_str += self.add_FixedSize_String(inputType, '','fixedsize_bytes32',param_size_str, 2)
                 func_body_str += '        ' + inputName_str + '_ptr++;\n'
                 func_body_str += '    }\n\n'
@@ -1010,8 +1017,10 @@ class CFunctionGen():
         func_body_str += '''
     boat_catch(cleanup)
     {
-        BoatLog(BOAT_LOG_VERBOSE, "Exception: %d", boat_exception);
-        if(data_field.field_ptr != NULL) BoatFree(data_field.field_ptr);
+        if (data_field.field_ptr != NULL)
+        {
+            BoatFree(data_field.field_ptr);
+        }
         return(NULL);
     }
         '''

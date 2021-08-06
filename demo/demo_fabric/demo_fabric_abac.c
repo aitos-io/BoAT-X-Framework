@@ -118,11 +118,11 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	//set rootCA info
 	wallet_config.rootCaNumber = 3;
 	wallet_config.rootCaContent[0].length  = strlen(fabric_ca1_democert) + 1;
-	memcpy(wallet_config.rootCaContent[0].content , fabric_ca1_democert,wallet_config.rootCaContent[0].length );
+	memcpy(wallet_config.rootCaContent[0].content , fabric_ca1_democert,wallet_config.rootCaContent[0].length);
 	wallet_config.rootCaContent[1].length  = strlen(fabric_ca2_democert) + 1;
-	memcpy(wallet_config.rootCaContent[1].content , fabric_ca2_democert,wallet_config.rootCaContent[1].length );
+	memcpy(wallet_config.rootCaContent[1].content , fabric_ca2_democert,wallet_config.rootCaContent[1].length);
 	wallet_config.rootCaContent[2].length  = strlen(fabric_ca3_democert) + 1;
-	memcpy(wallet_config.rootCaContent[2].content , fabric_ca3_democert,wallet_config.rootCaContent[2].length );
+	memcpy(wallet_config.rootCaContent[2].content , fabric_ca3_democert,wallet_config.rootCaContent[2].length);
 
 	//set endorser info
 	wallet_config.endorserNumber = 2;
@@ -137,21 +137,21 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	memcpy(wallet_config.orderer[0].hostName, fabric_demo_order1_hostName, strlen(fabric_demo_order1_hostName) + 1);
 
 	/* create fabric wallet */
-#if defined( USE_ONETIME_WALLET )
-	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig) );
-#elif defined( USE_CREATE_PERSIST_WALLET )
-	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig) );
-#elif defined( USE_LOAD_PERSIST_WALLET )
-	index = BoatWalletCreate( BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", NULL, sizeof(BoatHlfabricWalletConfig) );
+#if defined(USE_ONETIME_WALLET)
+	index = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+#elif defined(USE_CREATE_PERSIST_WALLET)
+	index = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+#elif defined(USE_LOAD_PERSIST_WALLET)
+	index = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", NULL, sizeof(BoatHlfabricWalletConfig));
 #else
 	return BOAT_ERROR;
 #endif
-	if(index == BOAT_ERROR)
+	if (index == BOAT_ERROR)
 	{
-		//BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );
+		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
 		return BOAT_ERROR;
 	}
-	g_fabric_wallet_ptr = BoatGetWalletByIndex( index );
+	g_fabric_wallet_ptr = BoatGetWalletByIndex(index);
 	
 	return BOAT_SUCCESS;
 }
@@ -166,17 +166,17 @@ int main(int argc, char *argv[])
 	
 	/* step-2: prepare wallet */
 	result = fabricWalletPrepare();
-	if( result != BOAT_SUCCESS )
+	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );
+		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
 		return -1;
 	}
 
 	/* step-3: fabric transaction structure initialization */
-	result = BoatHlfabricTxInit( &tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP" );
-	if( result != BOAT_SUCCESS )
+	result = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
+	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed." );
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed.");
 		return -1;
 	}
 	
@@ -184,39 +184,51 @@ int main(int argc, char *argv[])
 #if defined(__unix__) || defined(__unix) || defined(unix)
 	struct timespec txTimestamp;
 	clock_gettime(CLOCK_REALTIME, &txTimestamp);
-	result = BoatHlfabricTxSetTimestamp( &tx_ptr, txTimestamp.tv_sec, txTimestamp.tv_nsec );
+	result = BoatHlfabricTxSetTimestamp( &tx_ptr, txTimestamp.tv_sec, txTimestamp.tv_nsec);
 #else
 	long int timesec = 0;
 	time(&timesec);
-	result = BoatHlfabricTxSetTimestamp( &tx_ptr, timesec, 0 );
+	result = BoatHlfabricTxSetTimestamp(&tx_ptr, timesec, 0);
 #endif
-	if( result != BOAT_SUCCESS )
+	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed." );
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed.");
 		return -1;
 	}
 	
 	/* step-5: set transaction 'invoke' command */
-	result += BoatHlfabricTxSetArgs( &tx_ptr, "invoke", "a", "b", "10", NULL );
-	result += BoatHlfabricTxSubmit( &tx_ptr );
-	if( result != BOAT_SUCCESS )
+	result = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
+	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(invoke) failed." );
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
+		return -1;
+	}
+
+	result = BoatHlfabricTxSubmit(&tx_ptr);
+	if (result != BOAT_SUCCESS)
+	{
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit() failed.");
 		return -1;
 	}
 	
 	/* step-6: wait seconds and 'query' the tansaction */
 	BoatSleep(3);
-	result += BoatHlfabricTxSetArgs( &tx_ptr, "query", "a", NULL );
-	result += BoatHlfabricTxEvaluate( &tx_ptr );
-	if( result != BOAT_SUCCESS )
+	result = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
+	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(query) failed." );
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
+		return -1;
+	}
+
+	result = BoatHlfabricTxEvaluate(&tx_ptr);
+	if (result != BOAT_SUCCESS)
+	{
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxEvaluate() failed.");
 		return -1;
 	}
 	
 	/* step-7: fabric transaction structure Deinitialization */
-	BoatHlfabricTxDeInit( &tx_ptr );
+	BoatHlfabricTxDeInit(&tx_ptr);
 	
 	/* step-8: Boat SDK Deinitialization */
     BoatIotSdkDeInit();

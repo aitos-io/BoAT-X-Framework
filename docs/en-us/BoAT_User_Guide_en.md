@@ -18,7 +18,7 @@ The intended readers of this article are customers who integrate the BoAT IoT Fr
 |RPC|Remote Procedure Call|
 |RTOS|Real Time Operating System|
 |SDK|Software Development Kit|
-|WASM|Web Assembly|
+|WASM|WebAssembly|
 
 
 
@@ -67,12 +67,17 @@ Smart contract call (manual construction)
  ![BoAT Architecture](/images/BoAT_User_Guide_en-F2-2-BoAT_architecture.png)
  Figure 2-2 BoAT Architecture
 
-The Wallet API is an interface that the SDK provides to the IoT Application to call, including the SDK public interface and wallet and transaction interfaces for different blockchain protocols.  
-The blockchain client interface protocol mainly implements transaction interface protocols for different blockchains, and interacts with blockchain nodes through the RPC interface.  
-The remote procedure call(RPC) interface implements a warpper for different communication protocols. This component needs to be ported according to the specific communication method supported by the IoT device.  
-Public components implement common functions such as RLP encoding, JSON codec, string processing, etc.  
-Hardware dependent components are ported components involving different hardware, such as cryptography accelerators, secure storage, random numbers, etc. This component needs to be ported according to specific hardware. SDK also provides a set of default Hardware dependent components witch implementations by software.  
-The tool component provides a set of  Python tools, which are used to generate C language contract call interface of smart contract ABI interface based on Solidity or WASM C++.  
+* The *Wallet API* is an interface that the SDK provides to the IoT Application to call, including the SDK public interface and wallet and transaction interfaces for different blockchain protocols.  
+
+* The *Blockchain Client Interface Protocol* mainly implements transaction interface protocols for different blockchains, and interacts with blockchain nodes through the RPC interface.  
+
+* The *Remote Procedure Call(RPC) interface* implements a warpper for different communication protocols. This component needs to be ported according to the specific communication method supported by the IoT device.  
+
+* *Public Components* implement common functions such as RLP encoding, JSON codec, string processing, etc.  
+
+* *Hardware Dependent Components* are ported components involving different hardware, such as cryptography accelerators, secure storage, random numbers, etc. This component needs to be ported according to specific hardware. SDK also provides a set of default Hardware dependent components witch implementations by software.  
+
+* The *Tool Component* provides a set of  Python tools, which are used to generate C language contract call interface of smart contract ABI interface based on Solidity or WASM C++. 
 
 
 
@@ -102,7 +107,7 @@ The tool component provides a set of  Python tools, which are used to generate C
 
 
 
-Note: The `build` and `lib` directories are generated during compilation. After the compilation is complete, only the `include`, `lib` in the first level directory, and the header file of `boatconfig.h` (located in the `vendor/platform/include` path) automatically generated after compilation is required by the application
+*Note: The `build` and `lib` directories are generated during compilation. After the compilation is complete, only the `include`, `lib` in the first level directory, and the header file of `boatconfig.h` (located in the `vendor/platform/include` path) automatically generated after compilation is required by the application.*
 
 ## BoAT IoT Framework SDK Compilation
 
@@ -152,7 +157,7 @@ During Host compilation, if gcc and binutils are already installed in the system
 During cross compilation, if the cross compilation environment needs to configure a specific INCLUDE path, you need to add the path to the above file.  
 
 #### BoAT IoT Framework SDK Configuration
--Enable/disable blockchain protocol
+- Enable/disable blockchain protocol
 In the top-level makefile:
 
 ````
@@ -162,8 +167,8 @@ BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 ````
 
-As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or while compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.
--Log printing level adjustment
+As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or while compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.  
+- Log printing level adjustment
 If necessary, adjust the value of `BOAT_LOG_LEVEL` in the path \<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h to adjust the printer type of the log.
 
 ### Automatic generation of contract C interface code
@@ -191,7 +196,7 @@ Before making the call, you first need to compile the contract, and copy the ABI
 | \<SDKRoot\>/demo/demo_platone/demo_contract\Solidity   | Copy PlatONE (Solidity) ABI JSON file to this directory          |
 | \<SDKRoot\>/demo/demo_platone/demo_contract\WASM   | Copy PlatONE (WASM) ABI JSON file to this directory          |
 
-*Note 1: ABI's JSON file must have ".json" as the file name suffix.*  
+*Note: ABI's JSON file must have ".json" as the file name suffix.*  
 
 During the demo compilation process, the automatic generation tool will generate the corresponding C interface calling code according to the contract ABI JSON file. If the automatic generation of C interface fails during compilation, you need to delete the unsupported ABI JSON file (or delete the unsupported interface) from the corresponding directory of \<SDKRoot\>/contract, write the C code manually, and assemble the ABI interface. For details, please refer to the [Transfer Call](#Transfer-Call) chapter.
 ### Host Compilation
@@ -263,7 +268,7 @@ Some OpenCPU modules have integrated a supporting cross-compiler environment in 
 If the module development environment uses GNU make as the compilation project (makefiles in the source code directories at all levels), you can adjust the compilation configuration for the BoAT IoT Framework SDK and incorporate it into the integrated module development environment for compilation.  
 
 Usually, the example of the customer code is provided in the module development environment, and the compilation configuration of the example code of the customer is included in the compilation system.First copy the \<SDKRoot\> directory (boatiotsdk is the directory name in the following example) to the source code in the module development environment, and then modify the Makefile in example directory, to add a target to compile BoAT IoT Framework SDK.  
-E.g:  
+E.g. :  
 Assuming that in the original compilation environment, the Makefile of the example in customer source code is as follows:  
 
 ````
@@ -388,24 +393,24 @@ The Demo C code that calls the smart contract is placed in:
 | \<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     | PLATONE demo use case           |
 | \<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c | FISCO-BCOS demo use case        |
 
-Before compiling the Demo, you need to modify the following parts of the Demo C code:
--For ETHEREUM, FISCO-BCOS, PLATONE:
-	1. 			Search for `demoUrl` and fill in the node URL (including port) as the IP address and RPC port of the actual deployed node or simulator
-	2. 			If the demo needs to use the native private key, search for `native_demoKey` and set the client private key as:
-					-For ETHEREUM, set it to the private key of any account generated by ganache
-					-For PlatONE, there is no need to modify the private key in the Demo
-					-For FISCO-BCOS, set it to the native format private key corresponding to the private key under <FISCO-BCOS_ROOT>/console/accounts
-	3. 			If the demo needs to use the native private key, search for `pkcs_demoKey` and set the client private key as:
-					-For Ethereum, set the PKCS format private key corresponding to the private key of any account generated by Ganache
-					-For PlatONE, there is no need to modify the private key in the Demo
-					-For FISCO-BCOS, set it to the private key under <FISCO-BCOS_ROOT>/console/accounts
-	4. 			Search for `demoRecipientAddress` and modify it to the deployment address of the Demo contract.
--For FABRIC:
-	1. 			Search for `fabric_client_demokey` and set the private key used by the client
-	2. 			Search for `fabric_client_democert` and set the certificate corresponding to the client private key
-	3. 			If TLS is enabled for the demo, search for `fabric_ca1_democert`, `fabric_ca2_democert`, `fabric_ca3_democert`, and set the CA certificate chain
-	4. 			Search for `fabric_demo_endorser1_url`, `fabric_demo_endorser2_url`, `fabric_demo_order1_url`, and set the url address of the endorsement node and sorting node
-	5. 			If TLS is enabled in the demo, search for `fabric_demo_endorser1_hostName`, `fabric_demo_endorser2_hostName`, `fabric_demo_order1_hostName` and set the host name of the node
+Before compiling the Demo, you need to modify the following parts of the Demo C code:  
+- For ETHEREUM, FISCO-BCOS, PLATONE:  
+	1. Search for `demoUrl` and fill in the node URL (including port) as the IP address and RPC port of the actual deployed node or simulator  
+	2. If the demo needs to use the native private key, search for `native_demoKey` and set the client private key as:  
+		- For ETHEREUM, set it to the private key of any account generated by ganache  
+		- For PlatONE, there is no need to modify the private key in the Demo  
+		- For FISCO-BCOS, set it to the native format private key corresponding to the private key under <FISCO-BCOS_ROOT>/console/accounts  
+	3. If the demo needs to use the native private key, search for `pkcs_demoKey` and set the client private key as:  
+		- For Ethereum, set the PKCS format private key corresponding to the private key of any account generated by Ganache  
+		- For PlatONE, there is no need to modify the private key in the Demo  
+		- For FISCO-BCOS, set it to the private key under <FISCO-BCOS_ROOT>/console/accounts  
+	4. Search for `demoRecipientAddress` and modify it to the deployment address of the Demo contract.  
+- For FABRIC:  
+	1. Search for `fabric_client_demokey` and set the private key used by the client  
+	2. Search for `fabric_client_democert` and set the certificate corresponding to the client private key  
+	3. If TLS is enabled for the demo, search for `fabric_ca1_democert`, `fabric_ca2_democert`, `fabric_ca3_democert`, and set the CA certificate chain  
+	4. Search for `fabric_demo_endorser1_url`, `fabric_demo_endorser2_url`, `fabric_demo_order1_url`, and set the url address of the endorsement node and sorting node  
+	5. If TLS is enabled in the demo, search for `fabric_demo_endorser1_hostName`, `fabric_demo_endorser2_hostName`, `fabric_demo_order1_hostName` and set the host name of the node  
 
 #### Compile Demo
 Execute the following commands in the \<SDKRoot\> directory to compile the SDK call Demo:  
@@ -653,7 +658,8 @@ For contracts written by Solidity, the tool supports the following parameter typ
   - bytes32
   - bytes
   - string
-  - bytes[]
+  - T[N] : N > 0, N is an integer, T is Any of the above types.
+  - T[]  : T is Any of the above types except T[N].
 
 For WASM contracts written in C++, the tool supports the following parameter types:
   - string
@@ -674,7 +680,7 @@ The successfully generated contract call interface is the following C function:
 
 `BCHAR *<Contract ABI JSON file name >_< Contract function name>(<Wallet type> *tx_ptr, …);`
 
-E.g:
+E.g. :
 
 `BCHAR *StoreRead_saveList(BoatEthTx *tx_ptr, Bbytes32 newEvent);`
 
@@ -700,13 +706,17 @@ For example, take the following Ethereum Solidity contract as an example:
         function readListLength() public view returns (uint32 length_) {
             length_ = uint32(eventList.length);
         }
+    function readListByIndex(uint32 index) public view returns (bytes32 event_) {
+        if (eventList.length > index) {
+            event_ = eventList[index];
+        }
     }
 
 
-After the contract is compiled, the ABI corresponding to the two functions are described as follows:
+After the contract is compiled, the ABI corresponding to the three functions are described as follows:
 
 ````
- "abi": [
+"abi": [
     {
       "constant": false,
       "inputs": [
@@ -719,7 +729,8 @@ After the contract is compiled, the ABI corresponding to the two functions are d
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xe648ba32"
     },
     {
       "constant": true,
@@ -733,19 +744,55 @@ After the contract is compiled, the ABI corresponding to the two functions are d
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    }
+      "type": "function",
+      "signature": "0xd0a80818"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "index",
+          "type": "uint32"
+        }
+      ],
+      "name": "readListByIndex",
+      "outputs": [
+        {
+          "name": "event_",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xaa1a7122"
+    },
 ]
 ````
 
-In the above contract, eventList is a member variable of the contract. saveList() will change the value of eventList, which is a contract function that changes the state of the blockchain; readListLength() has a view modifier and only reads the attributes of eventList without changing its value. It is a contract function that does not change the state of the blockchain .
+In the above contract, eventList is a member variable of the contract. saveList() will change the value of eventList, which is a contract function that changes the state of the blockchain; readListLength() and readListByIndex() fuction have a view modifier and only reads the value of eventList. It is a contract function that does not change the state of the blockchain.  
 
 In particular, there are significant differences in the principles of invoking between smart contract functions that update the ledger and those who don’t, even though the two types of functions are quite similar in prototype. The same is true for the interface functions in C language generated through the conversion tool.
 
-Any change to the state of the blockchain needs to be implemented through blockchain transactions and reach a consensus across the entire network. The contract function that changes the state of the blockchain is called asynchronously. When called, it only initiates the blockchain transaction, and the contract will not be executed before the blockchain network packs the transaction into blocks. Therefore, when the contract function that changes the state of the blockchain is called, the return value is only the hash value used to identify the transaction, not the return value in the form of the contract function. When designing a smart contract, the public interface function that changes the state of the blockchain, the information it tries to return should be stored in the contract member variable, and the receipt of the transaction is queried through BoatEthGetTransactionReceipt(). After success, use another Obtained in the form of a read function.
+Any change to the state of the blockchain needs to be implemented through blockchain transaction and reach a consensus across the entire network. The contract function that changes the state of the blockchain is called asynchronously. When called, it merely initiates the blockchain transaction, and the contract is not executed until the blockchain network packages the transaction into a block. Take StoreRead demo as an example. The related calling code is as follows:  
+```
+  BCHAR *result_str;
+  result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
+```
+The return value result_str obtained from the StoreRead_saveList function is only the hash value used to identify the transaction, not the return value of the StoreRead contract saveList function. Therefore, when designing a smart contract, the public interface function that changes the state of the blockchain, the information it tries to return should be stored in the contract member variable. To get the value of the changed blockchain, refer to the following code, where the "hash" is the hash of the transaction obtained in the previous step.  
+```
+  BUINT32 list_len;
+  if (BOAT_SUCCESS == BoatEthGetTransactionReceipt(hash))
+  {
+    list_len = StoreRead_readListLength(&tx_ctx);
+    result_str = StoreRead_readListByIndex(&tx_ctx, list_len - 1);
+  }
+```
+When BoatEthGetTransactionReceipt (hash) return value is BOAT_SUCCESS, shows the state of the corresponding change block chain contract function call has been mined. Assume that the contract will only be changed by the user, and then get the length list_len of the eventList array from StoreRead_readListLength().The value "HelloWorld" is uploaded by StoreRead_saveList() through a call to StoreRead_readListByIndex().  
 
+Contract functions that do not change the state of the blockchain, only need the blockchain node to read the existing information in its database, without transactions and consensus. So the call to this type of function is a synchronous call. The return value is the return value in the form of the contract function. The readListLength and readListByIndex functions of the StoreRead contract are such contract functions.
 
-Contract functions that do not change the state of the blockchain, only need the blockchain node to read the existing information in its database, without transactions and consensus, so the call to this type of function is a synchronous call. The return value is the return value in the form of the contract function.
+*Note: This code can only be pseudocode, in order to facilitate understanding, the return value needs to be converted accordingly. For details, see Demo_ethereum_Storeread.c.*
 
 #### Transaction Initialization
 To call the automatically generated contract interface, first initialize a transaction object, and then call the generated contract interface.  
@@ -777,13 +824,12 @@ Parameters:
 This function returns `BOAT_SUCCESS` if initialization is successful.
 Otherwise it returns one of the error codes.
 
-E.g:
+E.g. :
 
 ````
 BoatEthTx tx_ctx;
 BOAT_RESULT result;
-result = BoatEthTxInit(
-                       wallet_ptr,
+result = BoatEthTxInit(wallet_ptr,
                        &tx_ctx,
                        BOAT_TRUE,
                        NULL,
@@ -794,107 +840,132 @@ result = BoatEthTxInit(
 #### Call Contract Interface
 After completing the transaction initialization, you can call the automatically generated contract interface:
 
-E.g:
+E.g. :
 
 ```
 BCHAR *result_str;
 result_str = StoreRead_saveList(&tx_ctx, (BUINT8 *)"HelloWorld");
 ```
 ### Manually Construct Contract Calls
-If the automatic generation tool cannot generate the C call interface, you need to manually construct the transaction message.
+If the automatic generation tool cannot generate the C call interface, you need to manually construct the transaction message. In addition, because the Fabric invocation itself is so convenient that there is no need to use automatically generate interface tools, all contracts need to be invoked manually.
 
 The manual construction of transactions needs to follow the ABI interface of the specific blockchain protocol.
 
 **Example 1: Ethereum transaction structure**
--**Step 1** Call BoatEthTxInit() to initialize the transaction
--**Step 2** Set transaction parameters
--Set transaction parameter nonce:
+- **Step 1** Call BoatEthTxInit() to initialize the transaction
+- **Step 2** Set transaction parameters
+  -Set transaction parameter nonce:
 
-```
-BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce);
-```
+  ```
+  BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce);
+  ```
 
-Nonce is usually set to BOAT_ETH_NONCE_AUTO, and the nonce value is obtained from the network.
+  Nonce is usually set to BOAT_ETH_NONCE_AUTO, and the nonce value is obtained from the network.
 
--If necessary, set the "value" parameter of the transaction(in the initialized transaction object, value defaults to 0):
+  -If necessary, set the "value" parameter of the transaction(in the initialized transaction object, value defaults to 0):
 
-```
-BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
-```
--**Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
-```
-BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
-```
-Among them, the format of data_ptr follows the Ethereum ABI, including the first 4 bytes of the Keccak-256 hash of the contract function prototype as the Function Selector, and then the parameters are arranged in sequence:
-<https://solidity.readthedocs.io/en/develop/abi-spec.html>
+  ```
+  BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
+  ```
+- **Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
+  ```
+  BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
+  ```
+  Among them, the format of data_ptr follows the Ethereum ABI, including the first 4 bytes of the Keccak-256 hash of the contract function prototype as the Function Selector, and then the parameters are arranged in sequence:
+  <https://solidity.readthedocs.io/en/develop/abi-spec.html>
 
--**Step 4** Send transaction
--For contract calls that change the state of the blockchain, the following contract functions are called:
-```
-BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
-```
+- **Step 4** Send transaction
+  - For contract calls that change the state of the blockchain, the following contract functions are called:
+  ```
+  BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
+  ```
 
--For contract calls that do not change the state of the blockchain, call the State-less contract function
-```
-BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr,
-                                BCHAR *func_proto_str,
-                                BUINT8 *func_param_ptr,
-                                BUINT32 func_param_len);
-```
-Among them, the format of func_param_ptr follows the same rules as Step 3.
+  - For contract calls that do not change the state of the blockchain, call the State-less contract function
+  ```
+  BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr,
+                                  BCHAR *func_proto_str,
+                                  BUINT8 *func_param_ptr,
+                                  BUINT32 func_param_len);
+  ```
+  Among them, the format of func_param_ptr follows the same rules as Step 3.
 
 **Example 2: PlatONE transaction structure
--**Step 1** Call BoatPlatONETxInit() to initialize the transaction, and the transaction type field is set according to the actual transaction type.
+- **Step 1** Call BoatPlatONETxInit() to initialize the transaction, and the transaction type field is set according to the actual transaction type.
 
--**Step 2** Set transaction parameter:
-```
-BOAT_RESULT BoatPlatoneTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce); 
-```
-The nonce is usually set to BOAT_PLATONE_NONCE_AUTO, and the nonce value is obtained from the network.
+- **Step 2** Set transaction parameter:
+  ```
+  BOAT_RESULT BoatPlatoneTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce); 
+  ```
+  The nonce is usually set to BOAT_PLATONE_NONCE_AUTO, and the nonce value is obtained from the network.
 
--If necessary, set the "value" parameter of the transaction (in the initialized transaction object, value defaults to 0):
-```
-BOAT_RESULT BoatPlatoneTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
-```
--**Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
-```
-BOAT_RESULT BoatPlatoneTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
-```
-Among them, data_ptr is coded according to RLP and is sequentially compiled into the following fields:
-```
-{
-  TransactionType (Fixed unsigned 64bit, BigEndian),
-  FunctionName,
-  FunctionArgument1,
-  FunctionArgument2,
-…
-}
-```
-RLP encoding is as follows:
-- a) Call RlpInitListObject() to initialize the top-level LIST object
-- b) Call RlpInitStringObject() to initialize the first encoding field object
-- c) Call RlpEncoderAppendObjectToList() to add the first encoding field object to the top-level LIST object
-- d) Repeat b and c until all code objects are added to the top LIST object
-- e) Call RlpEncode() to perform RLP encoding on the top-level LIST object and its subobjects
-- f) Call RlpGetEncodedStream() to get the encoded stream
-- g) After completing the contract call, call RlpRecursiveDeleteObject() to destroy the top-level LIST object and all its child objects
+  - If necessary, set the "value" parameter of the transaction (in the initialized transaction object, value defaults to 0):
+  ```
+  BOAT_RESULT BoatPlatoneTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
+  ```
+- **Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
+  ```
+  BOAT_RESULT BoatPlatoneTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
+  ```
+  Among them, data_ptr is coded according to RLP and is sequentially compiled into the following fields:
+  ```
+  {
+    TransactionType (Fixed unsigned 64bit, BigEndian),
+    FunctionName,
+    FunctionArgument1,
+    FunctionArgument2,
+  …
+  }
+  ```
+  RLP encoding is as follows:
+  - a) Call RlpInitListObject() to initialize the top-level LIST object
+  - b) Call RlpInitStringObject() to initialize the first encoding field object
+  - c) Call RlpEncoderAppendObjectToList() to add the first encoding field object to the top-level LIST object
+  - d) Repeat b and c until all code objects are added to the top LIST object
+  - e) Call RlpEncode() to perform RLP encoding on the top-level LIST object and its subobjects
+  - f) Call RlpGetEncodedStream() to get the encoded stream
+  - g) After completing the contract call, call RlpRecursiveDeleteObject() to destroy the top-level LIST object and all its child objects
 
--**Step 4** Send transaction
--For contract calls that change the state of the blockchain, the following contract functions are called:
-```
-BOAT_RESULT BoatPlatoneTxSend(BoatEthTx *tx_ptr);
-```
+- **Step 4** Send transaction
+  - For contract calls that change the state of the blockchain, the following contract functions are called:
+  ```
+  BOAT_RESULT BoatPlatoneTxSend(BoatEthTx *tx_ptr);
+  ```
 
--For contract calls that do not change the state of the blockchain, call the State-less contract function
-```
-BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr,
-                                    BUINT8 *rlp_param_ptr,
-                                    BUINT32 rlp_param_len)
-```
-Among them, the format of rlp_param_ptr follows the same rules as Step 3.
+  - For contract calls that do not change the state of the blockchain, call the State-less contract function
+  ```
+  BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr,
+                                      BUINT8 *rlp_param_ptr,
+                                      BUINT32 rlp_param_len)
+  ```
+  Among them, the format of rlp_param_ptr follows the same rules as Step 3.
 
 
-For the specific calling method, please refer to the automatically generated code of the Demo attached to the SDK, which is located under \<SDKRoot\>/contract/generated.
+  For the specific calling method, please refer to the automatically generated code of the Demo attached to the SDK, which is located under \<SDKRoot\>/contract/generated.
+
+**Example 3: Hyperledger Fabric transaction structure**  
+- **Step 1** Call BoatHlfabricTxInit() to initialize the transaction, The parameters are set based on actual usage.  
+  
+- **Step 2** Call BoatHlfabricTxSetTimestamp() to set timestamp, The real-time is obtained based on hardware functions.
+
+- **Step 3** Set trasaction parameters.  
+  Examples of using demo_fabric_abac.c code:  
+  ```
+  result = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
+  ```  
+  All function call of Fabric's input data are string. In the above code, "invoke" is the function name in the ABAC chain code. "a", "b", and "10" are the corresponding three inputs to the function. Regardless of the type of the corresponding variable in the chain code, the shape of string is used as the input.This is why there is no need to use automatically generate the contract interface tool.  
+
+- **Step 4** Send the transaction.  
+  - For contract calls that change the state of the blockchain, call the BoatHlfabricTxSubmit function：
+    ```
+    BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr);
+    ```
+
+  - For contract calls that do not change the state of the blockchain, call the BoatHlfabricTxEvaluate contract function：
+    ```
+    BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr);
+    ```
+  When the return result is BOAT_SUCCESS, the call succeeds。
+
 
 ## Suggestions for Porting SDK to RTOS
 If the SDK is ported to RTOS, the following points should generally be followed:
@@ -907,7 +978,7 @@ For modules using RTOS, you should add a call package to the module's http/https
 
 ###### 2. Remove Dependence on The File System
 
-The SDK uses files as a persistent storage method for the wallet. If the RTOS does not support the file system, you should modify the file operation related `BoatGetFileSize`, `BoatWriteFile`, `BoatReadFile`, `BoatRemoveFile` in \<SDKRoot\>/vendor/platform/\<platform_name\>/port_xx/boatplatform_internal.c Four functions, modify the read/write file to the persistence method supported by the system.
+The SDK uses files as a persistent storage method for the wallet. If the RTOS does not support the file system, you should modify the file operation related to  `BoatGetFileSize` , `BoatWriteFile` , `BoatReadFile` , `BoatRemoveFile` ,from \<SDKRoot\>/vendor/platform/\<platform_name\>/port_xx/boatplatform_internal.c, modify the read/write file to the persistence method supported by the system.
 
 ###### 3. Memory Trimming
 

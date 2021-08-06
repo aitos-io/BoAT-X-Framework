@@ -14,107 +14,114 @@
  * limitations under the License.
  *****************************************************************************/
 
-/*!@brief BoAT IoT SDK interface header file for FISCOBCOS
+/*!@brief BoAT IoT SDK interface header file for PlatON
 
 @file
-api_fiscobcos.h is header file for BoAT IoT SDK FISCOBCOS's interface.
+api_platon.h is header file for BoAT IoT SDK PlatON's interface.
 */
 
-#ifndef __API_FISCOBCOS_H__
-#define __API_FISCOBCOS_H__
+#ifndef __API_PLATON_H__
+#define __API_PLATON_H__
 
 #include "boatiotsdk.h"
 #include "api_ethereum.h"
 
-/*! @defgroup fiscobcos-api boat fiscobcos-API
+/*! @defgroup PlatON-api boat PlatON-API
  * @{
  */
 
 
-#define BOAT_FISCOBCOS_MINE_INTERVAL             3  //!< Mining Interval of the blockchain, in seconds
-#define BOAT_FISCOBCOS_WAIT_PENDING_TX_TIMEOUT   30 //!< Timeout waiting for a transaction being mined, in seconds
+#define BOAT_PLATON_MINE_INTERVAL             2  //!< Mining Interval of the blockchain, in seconds
+#define BOAT_PLATON_WAIT_PENDING_TX_TIMEOUT   30 //!< Timeout waiting for a transaction being mined, in seconds
 
-#define BOAT_FISCOBCOS_NODE_URL_MAX_LEN          BOAT_ETH_NODE_URL_MAX_LEN
-#define BOAT_FISCOBCOS_NONCE_AUTO                BOAT_ETH_NONCE_AUTO
-#define BOAT_FISCOBCOS_ADDRESS_SIZE              BOAT_ETH_ADDRESS_SIZE
+#define BOAT_PLATON_NODE_URL_MAX_LEN          BOAT_ETH_NODE_URL_MAX_LEN
+#define BOAT_PLATON_NONCE_AUTO                BOAT_ETH_NONCE_AUTO
+#define BOAT_PLATON_ADDRESS_SIZE              BOAT_ETH_ADDRESS_SIZE
+#define BOAT_PLATON_BECH32_ADDRESS_SIZE       45
 
-typedef BoatEthAccountInfo  BoatFiscobcosAccountInfo;
-typedef BoatEthNetworkInfo  BoatFiscobcosNetworkInfo;
-typedef BoatEthWallet       BoatFiscobcosWallet;
-typedef BoatEthWalletConfig BoatFiscobcosWalletConfig;
-typedef BoatEthTxFieldSig   BoatFiscobcosTxFieldSig;
+typedef BoatEthAccountInfo  BoatPlatONAccountInfo;
+typedef BoatEthNetworkInfo  BoatPlatONNetworkInfo;
+typedef BoatEthWallet       BoatPlatONWallet;
+typedef BoatEthWalletConfig BoatPlatONWalletConfig;
+typedef BoatEthTxFieldSig   BoatPlatONTxFieldSig;
 
-//!@brief RAW FISCO BOCS transaction fields
-
-//! The difference from Ethereum is appending blocklimit, chainid and groupid field
-//! at the end of the struct. Thus a BoatFiscobcosRawtxFields pointer can be transfered 
-//! to any function that accepts a BoatEthRawtxFields argument. It behaves as a C 
-//! implementation of class inheritance, i.e. a pointer of an inherited class could 
-//! be assigned to a pointer of a base class.
-typedef struct TBoatFiscobcosRawtxFields
+//! The only difference from Ethereum is appending a txtype field at the end of the
+//! struct. Thus a BoatPlatONRawtxFields pointer can be transfered to any function
+//! that accepts a BoatEthRawtxFields argument. It behaves as a C implementation of
+//! class inheritance, i.e. a pointer of an inherited class could be assigned to a
+//! pointer of a base class.
+typedef struct TBoatPlatONRawtxFields
 {
     // Following fields are inherited from Ethereum.
     // DO NOT modify these fields unless all of Ethereum and all other protocols
     // inherited from Ethereum are modified synchronously.
-    BoatFieldMax32B nonce;        //!< nonce, uint256 in bigendian
+    BoatFieldMax32B nonce;        //!< nonce, uint256 in bigendian, equal to the transaction count of the sender's account address
     BoatFieldMax32B gasprice;     //!< gasprice in wei, uint256 in bigendian
     BoatFieldMax32B gaslimit;     //!< gaslimit, uint256 in bigendian
-    BUINT8 recipient[BOAT_FISCOBCOS_ADDRESS_SIZE]; //!< recipient's address, 160 bits
+    BUINT8 recipient[BOAT_ETH_ADDRESS_SIZE]; //!< recipient's address, 160 bits
     BoatFieldMax32B value;        //!< value to transfer, uint256 in bigendian
     BoatFieldVariable data;       //!< data to transfer, unformatted stream
     BoatFieldMax4B v;             //!< chain id or recovery identifier, @see RawtxPerform()
     BoatEthTxFieldSig sig;        //!< ECDSA signature, including r and s parts
     
-    // FISCOBCOS specific fields are appended here.
-    BoatFieldMax32B blocklimit;   //!< transaction life cycle
-	BoatFieldMax32B chainid;      //!< record the chain/business information to which the transaction belongs
-	BoatFieldMax32B groupid;      //!< group to which this transaction belongs
-	BoatFieldVariable extraData;  //!< reserved segment
-}BoatFiscobcosRawtxFields;
+    // PlatON specific fields are appended here.
+    BUINT8 recipientbech32[BOAT_PLATON_BECH32_ADDRESS_SIZE];
+}BoatPlatONRawtxFields;
 
-//!@brief FISCOBCOS Transaction
-
-//! The only difference between FISCO BCOS transaction and Ethereum transaction is
-//! BoatFiscobcosRawtxFields has more fields than BoatEthRawtxFields. To allow
-//! FISCO BCOS to re-use Ethereum APIs that take BoatEthTx as function arguments,
-//! <rawtx_fields> MUST be the last field.
-typedef struct TBoatFiscobcosTx
+//! The only difference between PlatON transaction and Ethereum transaction is
+//! the address format is different. To allow PlatON to re-use Ethereum APIs that 
+//! take BoatEthTx as function arguments, the <address> MUST be the last field.
+typedef struct TBoatPlatONTx
 {
-    BoatFiscobcosWallet *wallet_ptr; //!< Wallet pointer the transaction is combined with
-									 //!< @note: in fiscobcos, the member chain_id and eip155_compatibility is UNUSED,
-									 //!< fiscobcos is NOT compliance with EIP155.
-    BoatFieldMax32B tx_hash;         //!< Transaction hash returned from network
-    BBOOL is_sync_tx;                //!< True to perform a synchronous transaction (wait for getting mined), False for asynchronous transaction
+    BoatPlatONWallet *wallet_ptr; //!< Wallet pointer the transaction is combined with
+    BoatFieldMax32B tx_hash;       //!< Transaction hash returned from network
+    BBOOL is_sync_tx;              //!< True to perform a synchronous transaction (wait for getting mined), False for asynchronous transaction
 
     // rawtx_fields MUST be the last field
-    BoatFiscobcosRawtxFields rawtx_fields; //!< RAW transaction fields
-}BoatFiscobcosTx;
-
+    BoatPlatONRawtxFields rawtx_fields;      //!< RAW transaction fields
+    BUINT8  address[BOAT_PLATON_BECH32_ADDRESS_SIZE];
+}BoatPlatONTx;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*!****************************************************************************
+ * @brief Get Balance of the wallet account
+ *
+ * @details  
+ *   todo
+ * 
+ * @param[in] wallet_ptr
+ *   Wallet context pointer.
+ *
+ * @param[in] alt_address_str
+ *   todo
+ *   
+ * @return
+ *   todo
+ ******************************************************************************/
+BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_address_ptr);
 
 
 /*!****************************************************************************
  * @brief Initialize a transaction
  * @see BoatEthTxInit()
  ******************************************************************************/
-BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
-								BoatFiscobcosTx *tx_ptr,
-								BBOOL is_sync_tx,
-								BCHAR *gasprice_str,
-								BCHAR *gaslimit_str,
-								BCHAR *recipient_str,
-								BCHAR *chainid_str,
-								BCHAR *groupid_str );
+BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
+                             BoatPlatONTx *tx_ptr,
+                             const BBOOL is_sync_tx,
+                             const BCHAR *gasprice_str,
+                             const BCHAR *gaslimit_str,
+                             const BCHAR *recipient_str,
+                             const BCHAR *hrp_str);
 
 
 /*!****************************************************************************
  * @brief Set Nonce
  * @see BoatEthTxSetNonce()
  ******************************************************************************/
-BOAT_RESULT BoatFiscobcosTxSetNonce(BoatFiscobcosTx *tx_ptr, BUINT64 nonce);
+BOAT_RESULT BoatPlatONTxSetNonce(BoatPlatONTx *tx_ptr, BUINT64 nonce);
 
 
 /*!****************************************************************************
@@ -135,7 +142,7 @@ BOAT_RESULT BoatFiscobcosTxSetNonce(BoatFiscobcosTx *tx_ptr, BUINT64 nonce);
  *   \n If the transaction is a contract function call, the caller cannot get its
  *   return value because the transaction is asynchronously executed. It's a
  *   good practice to save the return value in a state variable and use
- *   BoatFiscobcosCallContractFunc() to call a "read" contract function that could read
+ *   BoatPlatONCallContractFunc() to call a "read" contract function that could read
  *   and return the state variable.
  *
  * @note
@@ -143,7 +150,7 @@ BOAT_RESULT BoatFiscobcosTxSetNonce(BoatFiscobcosTx *tx_ptr, BUINT64 nonce);
  *   be called in a transaction way. "state" is the "global variable" used in a
  *   contract.
  *   \n Any contract function that doesn't change the state of the contract can
- *   be called either in a transaction way or by BoatFiscobcosCallContractFunc(), which
+ *   be called either in a transaction way or by BoatPlatONCallContractFunc(), which
  *   invokes the eth_call RPC method. However the former will consume gas and
  *   latter doesn't consume gas.
  *
@@ -156,45 +163,76 @@ BOAT_RESULT BoatFiscobcosTxSetNonce(BoatFiscobcosTx *tx_ptr, BUINT64 nonce);
  *
  * @see BoatEthTxSend()
  ******************************************************************************/
-BOAT_RESULT BoatFiscobcosTxSend(BoatFiscobcosTx *tx_ptr);
+BOAT_RESULT BoatPlatONTxSend(BoatPlatONTx *tx_ptr);
 
+/*!****************************************************************************
+ * @brief Transfer PlatON value to spceified recipient
+ *
+ * @details
+ *   This function transfer PlatON value from the wallet's owner account to the
+ *   specified recipient account.
+ *   \n Before calling this function, all necessary wallet fields such as private key,
+ *   node URL and etc. must be set correctly.
+ *
+ * @param[in] tx_ptr
+ *   Transaction pointer.
+ *
+ * @param[in] value_hex_str
+ *   A string representing the value (Unit: wei) to transfer, in HEX format like
+ *   "0x89AB3C".\n
+ *   Note that decimal value is not accepted. If a decimal value such as "1234"
+ *   is specified, it's treated as "0x1234".
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if transfer is successful.\n
+ *   Otherwise it returns one of the error codes.
+ ******************************************************************************/
+BOAT_RESULT BoatPlatONTransfer(BoatPlatONTx *tx_ptr, BCHAR *value_hex_str);
 
 /*!****************************************************************************
  * @brief Call a state-less contract function
  * @see BoatEthCallContractFunc()
  ******************************************************************************/
-BCHAR *BoatFiscobcosCallContractFunc(BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_str, 
-									 BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
+BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr, 
+                                  BCHAR *func_proto_str, 
+								  BUINT8 *rlp_param_ptr, 
+                                  BUINT32 rlp_param_len);
 
 
 /*!****************************************************************************
  * @brief Wait for a transaction being mined.
 * @see BoatEthGetTransactionReceipt()
  ******************************************************************************/
-BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr);
+BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief query current group block number.
  ******************************************************************************/
-BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr);
-
-// Ethereum APIs compatible for FISCOBCOS
+BCHAR *BoatPlatONGetBlockNumber(BoatPlatONTx *tx_ptr);
 
 /*!****************************************************************************
- * @brief Initialize Boat FISCOBCOS Wallet
+ * @brief Set Recipient
+ * @see BoatEthTxSetRecipient()
+ ******************************************************************************/
+BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BUINT8 address[BOAT_PLATON_ADDRESS_SIZE]);
+
+// Ethereum APIs compatible for PlatON
+
+/*!****************************************************************************
+ * @brief Initialize Boat PlatON Wallet
  * @see BoatEthWalletInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BoatFiscobcosWallet *BoatFiscobcosWalletInit(const BoatFiscobcosWalletConfig *config_ptr, BUINT32 config_size)
+__BOATSTATIC __BOATINLINE BoatPlatONWallet *BoatPlatONWalletInit(const BoatPlatONWalletConfig *config_ptr, BUINT32 config_size)
 {
     return BoatEthWalletInit((const BoatEthWalletConfig *)config_ptr, config_size);
 }
 
 
 /*!****************************************************************************
- * @brief De-initialize Boat FISCOBCOS Wallet
+ * @brief De-initialize Boat PlatON Wallet
  * @see BoatEthWalletDeInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE void BoatFiscobcosWalletDeInit(BoatFiscobcosWallet *wallet_ptr)
+__BOATSTATIC __BOATINLINE void BoatPlatONWalletDeInit(BoatPlatONWallet *wallet_ptr)
 {
     return BoatEthWalletDeInit((BoatEthWallet *)wallet_ptr);
 }
@@ -204,7 +242,7 @@ __BOATSTATIC __BOATINLINE void BoatFiscobcosWalletDeInit(BoatFiscobcosWallet *wa
  * @brief Set Node Url
  * @see BoatEthWalletSetNodeUrl()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosWalletSetNodeUrl(BoatFiscobcosWallet *wallet_ptr, const BCHAR *node_url_ptr)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONWalletSetNodeUrl(BoatPlatONWallet *wallet_ptr, const BCHAR *node_url_ptr)
 {
     return BoatEthWalletSetNodeUrl((BoatEthWallet *)wallet_ptr, node_url_ptr);
 }
@@ -214,7 +252,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosWalletSetNodeUrl(BoatFiscobco
  * @brief Set ChainId
  * @see BoatEthWalletSetChainId()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosWalletSetChainId(BoatFiscobcosWallet *wallet_ptr, BUINT32 chain_id)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONWalletSetChainId(BoatPlatONWallet *wallet_ptr, BUINT32 chain_id)
 {
     return BoatEthWalletSetChainId((BoatEthWallet *)wallet_ptr,chain_id);
 }
@@ -224,26 +262,16 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosWalletSetChainId(BoatFiscobco
  * @brief Set GasPrice
  * @see BoatEthTxSetGasPrice()
  ******************************************************************************/
-BOAT_RESULT BoatFiscobcosTxSetGasPrice(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B *gas_price_ptr);
+BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_price_ptr);
 
 
 /*!****************************************************************************
  * @brief Set GasLimit
  * @see BoatEthTxSetGasLimit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetGasLimit(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B *gas_limit_ptr)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONTxSetGasLimit(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_limit_ptr)
 {
     return BoatEthTxSetGasLimit((BoatEthTx *)tx_ptr, gas_limit_ptr);
-}
-
-
-/*!****************************************************************************
- * @brief Set Recipient
- * @see BoatEthTxSetRecipient()
- ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetRecipient(BoatFiscobcosTx *tx_ptr, BUINT8 address[BOAT_FISCOBCOS_ADDRESS_SIZE])
-{
-    return BoatEthTxSetRecipient((BoatEthTx *)tx_ptr, address);
 }
 
 
@@ -251,7 +279,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetRecipient(BoatFiscobcosT
  * @brief Set Value
  * @see BoatEthTxSetValue()
  *******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetValue(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B *value_ptr)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONTxSetValue(BoatPlatONTx *tx_ptr, BoatFieldMax32B *value_ptr)
 {
     return BoatEthTxSetValue((BoatEthTx *)tx_ptr, value_ptr);
 }
@@ -261,7 +289,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetValue(BoatFiscobcosTx *t
  * @brief Set Data
  * @see BoatEthTxSetData()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx_ptr, BoatFieldVariable *data_ptr)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONTxSetData(BoatPlatONTx *tx_ptr, BoatFieldVariable *data_ptr)
 {
     return BoatEthTxSetData((BoatEthTx *)tx_ptr, data_ptr);
 }
@@ -271,11 +299,20 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx
  * @brief Prase RPC method RESPONSE.
  * @see BoatEthPraseRpcResponseResult()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
-                                                                          const BCHAR *child_name, 
-                                                                          BoatFieldVariable *result_out)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
+                                                                       const BCHAR *child_name, 
+                                                                       BoatFieldVariable *result_out)
 {
     return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);
+}
+
+/*!****************************************************************************
+ * @brief Set EIP155
+ * @see BoatEthWalletSetEIP155Comp()
+ ******************************************************************************/
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONWalletSetEIP155Comp(BoatPlatONWallet *wallet_ptr, BBOOL eip155_compatibility)
+{
+    return BoatEthWalletSetEIP155Comp((BoatEthWallet *)wallet_ptr,eip155_compatibility);
 }
 
 

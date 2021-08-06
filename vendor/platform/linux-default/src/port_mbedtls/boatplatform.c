@@ -53,18 +53,18 @@
 //#include <sys/time.h>
 
 
-BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 inputLen, 
+BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 inputLen,
 				       BUINT8* hashed, BUINT8* hashedLen, void* rsvd )
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-	
+
 	/* input param check */
 	if( ( hashed == NULL ) )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'hashed' can't be NULL." );
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-	
+
 	if( type == BOAT_HASH_KECCAK256 )
 	{
 		keccak_256( input, inputLen, hashed );
@@ -94,6 +94,12 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
 void *BoatMalloc(size_t size)
 {
     return(malloc(size));
+}
+
+
+void *BoatCalloc(size_t nmemb, size_t size)
+{
+    return calloc(nmemb, size);
 }
 
 

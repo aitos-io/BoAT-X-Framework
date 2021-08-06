@@ -30,24 +30,25 @@
 
 
 ## BoAT SDK在整个区块链网络中的位置
-BoAT SDK作为连接物联网设备和区块链的中间件，其在整个交互网络中的位置如图3-1所示。<br>
-![BoAT position](./images/BoAT_Overall_Design_cn-F3-1-Boat_Position.png)  <br>
-图 3-1 BoAT在区块链交互网络中的位置<br>
+BoAT SDK作为连接物联网设备和区块链的中间件，其在整个交互网络中的位置如图3-1所示。  
+![BoAT position](./images/BoAT_Overall_Design_cn-F3-1-Boat_Position.png)  
+图 3-1 BoAT在区块链交互网络中的位置  
 
 
 
 ## BoAT的实现框架
-BoAT遵循层次化设计，分为接口层，协议层，RPC层，硬件依赖层，通用工具和实用程序实现。其中：
-+ 接口层提供的接口供用户调用来访问相应的区块链。
-+ 协议层向接口层提供服务。
-+ RPC层向协议层提供服务。
-+ 硬件依赖层为接口层的钱包提供加密、签名、存储等服务等。
-+ 通用工具层用于智能合约的C语言接口生成和为其余各层提供数据编码、格式转换等服务。
-+ 实用程序向各层提供如数据格式转换、报文编解码等服务。
+BoAT遵循层次化设计，由接口层，协议层，RPC层，供应商依赖层，通用工具和实用程序实现组成。各层具体功能如下：
++ 接口层： 提供用户调用相应区块链的接口。
++ 协议层： 主要实现各区块链协议部分。
++ RPC层： 向协议层提供服务。
++ 供应商依赖层： 为接口层的钱包提供密码学算法、签名、存储等服务等。
++ 通用工具层： 用于智能合约的C语言接口生成和为其余各层提供数据编码、格式转换等服务。
++ 实用程序： 向各层提供如数据格式转换、报文编解码等服务。  
+  
+BoAT的整体框架如图4-1所示。  
+![BoAT整体框图](./images/BoAT_Overall_Design_cn-F4-1-BoAT_Overall_Framework.png)
+图 4-1 BoAT整体框图  
 
-BoAT的整体框架如图4-1所示。<br>
-![BoAT总体框图](./images/BoAT_Overall_Design_cn-F4-1-BoAT_Overall_Framework_Diagram.png)<br>
-图 4-1 BoAT总体框图<br>
 
 ### 接口层
 #### 概述
@@ -58,7 +59,7 @@ BoAT的整体框架如图4-1所示。<br>
 + 交易接口
    * 每个区块链都提供一套交易接口，其功能类似，具体实现有所不同。
 
-接口层的钱包接口由硬件依赖层提供支持，有关硬件依赖层的描述请参见[硬件依赖层](#硬件依赖层)。
+接口层的钱包接口由供应商依赖层提供支持，有关供应商依赖层的描述请参见[供应商依赖层](#供应商依赖层)。
 接口层的交易接口由协议层提供支持，有关协议层的描述请参见[协议层](#协议层)。
 #### 钱包接口
 ##### 钱包的数据结构和功能实现清单
@@ -87,9 +88,9 @@ BoAT SDK运行在蜂窝模组的应用处理器上，其运行环境的资源是
 ###### SDK初始化/反初始化
 + SDK初始化：  
 在使用BoAT SDK之前应做SDK初始化，该接口执行的内容包括：
-   1. 钱包列表初始化
+   1. 钱包列表初始化  
 钱包列表是一个包含了固定数量钱包和钱包相关使用信息的数据结构，钱包相关使用信息包括钱包使用标识、钱包名称、钱包所属区块链等。钱包列表是一个全局资源，钱包列表的初始化即将数据结构中的各成员执行一次赋初值，如将使用标识初始化为未使用，钱包初始化为空指针等。  
-   2. 其他全局资源初始化
+   2. 其他全局资源初始化  
 SDK使用的一些三方库如果在调用前需做一次初始化，则应放在此处执行初始化，如RPC层使用的三方库cURL
 + SDK反初始化：  
 在使用BoAT SDK结束后应做SDK反初始化释放资源，该接口执行的内容包括：  
@@ -104,7 +105,7 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
   2. 根据具体入参决定是创建新钱包还是读取已创建的钱包  
   3. 根据具体入参决定是创建一次性钱包还是创建持久化钱包  
   4. 根据具体入参执行某一个区块链的钱包初始化，如执行Ethereum的钱包初始化，或者执行PlatONE的钱包初始化
-+ 钱包删除：	
++ 钱包删除：  
 该接口从非易失性存储器中删除一个持久化钱包。注意：该接口并不从RAM中卸载钱包。持久钱包被删除后，它就变成了一次性钱包。该接口执行的内容包括：  
   1. 从非易失性存储器上删除指定的钱包文件
 + 钱包卸载：    
@@ -153,10 +154,10 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
  
 
 ##### Ethereum交易接口功能实现简述
-+ 钱包初始化：
++ 钱包初始化：  
   该接口执行的内容包括：
   1. 设置区块链合约地址
-  2. 设置交易的EIP-155兼容性
+  2. 设置交易是否指定链ID
   3. 设置链ID
 + 钱包反初始化：  
   该接口执行的内容包括：
@@ -202,9 +203,9 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
   1. 设置交易类型字段  
 
 
-由前所述可以看出，PlatONE和Ethereum的差异非常的小，在设计PlatONE的数据结构及代码实现时，应考虑数据结构的继承及代码实现的复用，这样既减少代码量，也便于维护。比如在交易结构上的组成上，PlatONE的交易结构比Ethereum的交易结构多了一个交易类型字段，因此，在数据结构的设计中，一种可能的设计思路如图4-2所示： <br>
-![数据结构的一种可能的设计思路](./images/BoAT_Overall_Design_cn-F4-2-Data_Structure.png)  <br>
-图 4-2 数据结构的一种可能的设计思路  <br>
+由前所述可以看出，PlatONE和Ethereum的差异非常的小，在设计PlatONE的数据结构及代码实现时，应考虑数据结构的继承及代码实现的复用，这样既减少代码量，也便于维护。比如在交易结构上的组成上，PlatONE的交易结构比Ethereum的交易结构多了一个交易类型字段，因此，在数据结构的设计中，一种可能的设计思路如图4-2所示：  
+![数据结构的一种可能的设计思路](./images/BoAT_Overall_Design_cn-F4-2-Data_Structure.png)
+图 4-2 数据结构的一种可能的设计思路  
 图4-2描述了PlatONE的一种可能的数据结构设计思路，请注意，PlatONE的交易类型字段应放置在数据结构的最末位置，不能破坏复用的Ethereum的数据结构的完整性。如果破坏了Ethereum的数据结构的完整性，将导致Ethereum中与该数据结构相关的实现方法不可复用。
 
 ##### FISCO BCOS交易接口功能实现简述
@@ -264,19 +265,20 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 
 ##### raw transaction接口简述
 + raw transaction异步发送  
-该接口实现了raw transaction的数据编码，如各字段RLP编码、哈希计算、签名等，并在协议层内部调用web3接口发送到区块链，不等待交易执行成功直接返回。数据编码分为不兼容EIP-155规范和兼容EIP-155规范两部分。该接口执行的内容包括：
-   - 如果数据编码不兼容EIP-155规范：  
+该接口实现了raw transaction的数据编码，如各字段RLP编码、哈希计算、签名等，并在协议层内部调用web3接口发送到区块链，不等待交易执行成功直接返回。数据编码分为指定链ID和不指定链ID两种。具体细节参照EIP-155 <https://eips.ethereum.org/EIPS/eip-155>。  
+该接口执行的内容包括：
+   - 如果数据编码采用不指定链ID方式：  
   1. 对交易的nonce、gasPrice、gasLimit、recipient、value、data等六个字段执行RLP编码
-  2. 计算前一步骤中RPL编码的keccak-256哈希值
+  2. 计算前一步骤中RLP编码的keccak-256哈希值
   3. 对前一步骤的哈希值签名，得到奇偶标识parity、r、s三个值
   4. 对交易的nonce、gasPrice、gasLimit、recipient、value、data、v、r、s等九个字段执行RLP编码，其中v = parity + 27，parity、r、s已在前一步骤中给出
   5. 调用web3接口“发送rawtransaction”发送到区块链
-   - 如果数据编码兼容EIP-155规范：
+   - 如果数据编码采用指定链ID方式：
   1. 对交易的nonce、gasPrice、gasLimit、recipient、value、data、v、r、s等九个字段执行RLP编码，其中v = chainID，r = 0， s = 0
-  2. 同“不兼容EIP-155规范”的步骤2
-  3. 同“不兼容EIP-155规范”的步骤3
+  2. 同“不指定链ID方式”的步骤2
+  3. 同“不指定链ID方式”的步骤3
   4. 对交易的nonce、gasPrice、gasLimit、recipient、value、data、v、r、s等九个字段执行RLP编码，其中v = Chain ID * 2 + parity + 35，parity、r、s已在前一步骤中给出
-  5. 同“不兼容EIP-155规范”的步骤5
+  5. 同“不指定链ID方式”的步骤5
 + raw transaction同步发送  
 该接口执行“rawtransaction异步发送”并等待交易成功或超时后返回。该接口执行的内容包括:
   1. 执行raw transaction异步发送
@@ -311,43 +313,43 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“获取区块链指定位置存储内容”的json串报文
-  3. 调用RPC方法“web3_eth_getStorageAt”将请求报文发送给区块链
+  3. 调用RPC方法“web3_getStorageAt”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 获取账户交易次数  
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“获取账户交易次数”的json串报文
-  3. 调用RPC方法“web3_eth_getTransactionCount”将请求报文发送给区块链
+  3. 调用RPC方法“web3_getTransactionCount”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 获取区块链的gasPrice  
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“获取区块链的gasPrice”的json串报文
-  3. 调用RPC方法“web3_eth_gasPrice”将请求报文发送给区块链
+  3. 调用RPC方法“web3_gasPrice”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 获取账户余额  
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“获取账户余额”的json串报文
-  3. 调用RPC方法“web3_eth_getBalance”将请求报文发送给区块链
+  3. 调用RPC方法“web3_getBalance”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 获取交易回执  
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“获取交易回执”的json串报文
-  3. 调用RPC方法“web3_eth_getTransactionReceiptStatus”将请求报文发送给区块链
+  3. 调用RPC方法“web3_getTransactionReceiptStatus”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 区块链无状态调用  
   该接口执行的内容包括：
   1. web3消息ID自增
   2. 组织用于向区块链发起请求的“区块链无状态调用”的json串报文
-  3. 调用RPC方法“web3_eth_call”将请求报文发送给区块链
+  3. 调用RPC方法“web3_call”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 + 发送raw transaction  
   该接口执行的内容包括：
   1. web3消息ID自增 
   2. 组织用于向区块链发起请求的“发送raw transaction”的json串报文
-  3. 调用RPC方法“web3_eth_sendRawTransaction”将请求报文发送给区块链
+  3. 调用RPC方法“web3_sendRawTransaction”将请求报文发送给区块链
   4. 对接收到的区块链响应报文解析并返回解析结果
 
 #### PlatONE的协议层实现
@@ -357,14 +359,14 @@ PlatONE的协议层实现与Ethereum的协议层几乎一样，其唯一的区�
 
 #### Fabric的协议层实现
 ##### Fabric协议概述
-Fabric协议层主要包含提案协议和交易协议，查询的协议与提案协议相同。提案协议与交易协议分别如图4-3，图4-4所示<br>
-![Fabric提案报文结构](./images/BoAT_Overall_Design_cn-F4-3-Fabric-Proposal.png)<br>
-图 4-3 Fabric提案报文结构<br>
-![Fabric交易报文结构](./images/BoAT_Overall_Design_cn-F4-4-Fabric-Transaction.png)<br>
-图 4-4 Fabric交易报文结构<br>
+Fabric协议层主要包含提案协议和交易协议，查询的协议与提案协议相同。提案协议与交易协议分别如图4-3，图4-4所示  
+![Fabric提案报文结构](./images/BoAT_Overall_Design_cn-F4-3-Fabric-Proposal.png)  
+图 4-3 Fabric提案报文结构  
+![Fabric交易报文结构](./images/BoAT_Overall_Design_cn-F4-4-Fabric-Transaction.png)  
+图 4-4 Fabric交易报文结构  
 
-Fabric客户端发起一笔的交易的时候，会首先向背书节点发送提案，背书节点对提案签名后返回签名数据，然后Fabric客户端连同背书节点的签名数据和交易参数按交易报文的格式组织好后发送给排序节点，排序节点校验通过后写更新链的状态。详细的交易流程如图4-5所示，该图是是从《hyperledger-fabricdocs master》文档中摘取的。关于Fabric更多的介绍，可以参考Fabric文档< https://hyperledger-fabric.readthedocs.io/en/release-1.4/><br>
-![ Fabric交易流程](./images/BoAT_Overall_Design_cn-F4-5-Fabric-Transaction-Flow.png)<br>
+Fabric客户端发起一笔的交易的时候，会首先向背书节点发送提案，背书节点对提案签名后返回签名数据，然后Fabric客户端连同背书节点的签名数据和交易参数按交易报文的格式组织好后发送给排序节点，排序节点校验通过后更新链的状态。详细的交易流程如图4-5所示，该图是从《hyperledger-fabricdocs master》文档中摘取的。关于Fabric更多的介绍，可以参考Fabric文档 <https://hyperledger-fabric.readthedocs.io/en/release-1.4/>  
+![ Fabric交易流程](./images/BoAT_Overall_Design_cn-F4-5-Fabric-Transaction-Flow.png)  
 图 4-5 Fabric交易流程
 #####	Fabric协议接口实现
 在Fabric报文中，协议中的各字段通过protobuf实现序列化，然后通过HTTP2协议发送出去。由前序章节可知，提案报文和交易报文有一些重复和相似的地方，可以把这些重复的部分拆分为一个子模块，以便于重用。一种可能的拆分方式列出如下：
@@ -397,12 +399,12 @@ cURL是一个利用URL语法在命令行下工作的文件传输工具，支持F
 
 
 
-### 硬件依赖层
+### 供应商依赖层
 #### 概述
-BoAT SDK会运行在不同的硬件平台上，为更好的利用硬件资源，BoAT SDK提供了硬件依赖层。硬件依赖层为接口层的钱包提供服务，提供如随机数发生器、安全存储、加密签名等服务。由于不同的硬件平台提供的资源可能各不相同，如有的硬件提供了随机数发生器的硬件实现，有的硬件平台不仅提供随机数发生器的硬件实现，还提供TE环境，有了硬件依赖层，BoAT SDK就可以更好的利用这些硬件资源。
+BoAT SDK会运行在不同的硬件平台上，由于各个供应商提供的多种硬件平台功能多种多样，比如有的硬件平台提供了随机数发生器的硬件实现，而有的硬件平台不仅提供随机数发生器的硬件实现，还提供TEE环境。为了更好的利用平台的资源，同时为了将软件上的变化隔离开来，BoAT SDK设计了供应商依赖层。供应商依赖层为接口层的钱包提供诸如随机数发生器、安全存储、加密签名等服务。在硬件平台能提供相应的实现时，供应商依赖层会通过供应商预留的接口调用相应的硬件功能。在硬件平台不提供相应服务时，通过纯软件实现相应功能。
 
-#### 硬件依赖层的软件实现
-BoAT SDK应提供一种硬件依赖的全软件实现，以使BoAT在硬件无法提供所需的完整服务时，仍然可以完整运行。硬件依赖的软件实现应以覆盖必要的硬件服务为标准，至少提供以下功能实现：
+#### 供应商依赖层的纯软件实现
+供应商依赖层应提供一种所需要的各种服务的纯软件实现。从而使得BoAT SDK在硬件无法提供所需的相应服务时，仍然可以完整运行。供应商依赖层应以覆盖必要的硬件服务为标准，至少提供以下功能的纯软件实现：
 + 随机数生成器
 + 签名(如Ethereum使用的ECDSA)
 + 安全存储(如以加密的方式保存私钥)
@@ -486,11 +488,11 @@ BoAT的设计应考虑TEE环境的支持。对于有TEE环境的硬件，BoAT应
     <tr>
         <td colspan="2" rowspan="2">Constant</td>
         <td>True</td>
-        <td>函数通过RPC方法“web3_eth_call”访问区块链</td>
+        <td>函数通过RPC方法“web3_call”访问区块链</td>
     </tr>
     <tr>
         <td>False</td>
-        <td>函数通过RPC方法“web3_eth_sendRawTransaction”访问区块链 </td>
+        <td>函数通过RPC方法“web3_sendRawTransaction”访问区块链 </td>
     </tr>
 </table>
 
@@ -521,9 +523,9 @@ BoAT的设计应考虑TEE环境的支持。对于有TEE环境的硬件，BoAT应
 #### RLP编码
 ##### RLP的结构
 RLP编码用于两个地方，一个是协议层组织交易报文会用到RLP编码，另一个是生成的C语言合约接口代码里可能会用到RLP编码。  
-RLP编码的定义里只处理两类数据：一类是字符串，一类是列表。字符串指的是一串二进制数据，如字节数组；列表是一个嵌套递归的结构，里面可以包含字符串和列表，其结构形式如图4- 6所示： <br>
-![RLP列表的结构](./images/BoAT_Overall_Design_cn-F4-6-Structure_Of_RLP.png) <br>
-图 4-6 RLP列表的结构<br>
+RLP编码的定义里只处理两类数据：一类是字符串，一类是列表。字符串指的是一串二进制数据，如字节数组；列表是一个嵌套递归的结构，里面可以包含字符串和列表，其结构形式如图4- 6所示：  
+![RLP列表的结构](./images/BoAT_Overall_Design_cn-F4-6-Structure_Of_RLP.png)  
+图 4-6 RLP列表的结构  
 
 ##### RLP编码规则
 RLP的编码规则描述如下：   
@@ -536,9 +538,9 @@ RLP的编码规则描述如下：
 
 
 ##### RLP编码实现
-RLP编码实现可以有多种不同的方式。由前述章节可知，RLP编码的一种可能的数据结构组成描述如图4-7所示：<br>  
-![RLP编码的一种可能的数据结构](./images/BoAT_Overall_Design_cn-F4-7-Data_Structure_Of_RLP.png)  <br>
-图 4-7 RLP编码的一种可能的数据结构<br>
+RLP编码实现可以有多种不同的方式。由前述章节可知，RLP编码的一种可能的数据结构组成描述如图4-7所示：
+![RLP编码的一种可能的数据结构](./images/BoAT_Overall_Design_cn-F4-7-Data_Structure_Of_RLP.png)  
+图 4-7 RLP编码的一种可能的数据结构  
 
 图中定义了四种类型，来表达RLP列表的嵌套递归结构，假如有一个名为List的列表对象，其包含了三个字符串对象分别为stringA，stringB，stringC，则对列表对象List执行RLP编码的一种可能的流程描述如下：
 1. 初始化列表对象List
@@ -566,9 +568,9 @@ cJSON是C语言编写的一个轻量级的JSON编解码器，遵循ANSI-C标准�
 
 ## 使用BoAT创建一笔区块链交易的流程
 ### 使用BoAT创建一笔Ethereum交易的流程
-一个典型的使用BoAT创建一笔Ethereum交易的流程如图5-1所示：  <br>
-![使用BoAT创建一笔交易的流程](./images/BoAT_Overall_Design_cn-F5-1-Create_Ttransaction.png)  <br>
-图 5-1 使用BoAT创建一笔交易的流程<br>
+一个典型的使用BoAT创建一笔Ethereum交易的流程如图5-1所示：  
+![使用BoAT创建一笔交易的流程](./images/BoAT_Overall_Design_cn-F5-1-Create_Ttransaction.png)  
+图 5-1 使用BoAT创建一笔交易的流程  
 
 其中：
 + BoAT SDK初始化：  
@@ -589,7 +591,7 @@ cJSON是C语言编写的一个轻量级的JSON编解码器，遵循ANSI-C标准�
 
 
 ## 参考文档
-[1]. cJSON<https://github.com/DaveGamble/cJSON#welcome-to-cjson>  
-[2]. cURL<https://curl.haxx.se/libcurl/>  
-[3]. RLP wiki<https://eth.wiki/en/fundamentals/rlp>  
+[1]. cJSON <https://github.com/DaveGamble/cJSON#welcome-to-cjson>  
+[2]. cURL <https://curl.haxx.se/libcurl/>  
+[3]. RLP wiki <https://eth.wiki/en/fundamentals/rlp>  
 

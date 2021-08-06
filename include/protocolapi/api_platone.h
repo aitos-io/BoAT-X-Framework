@@ -140,12 +140,12 @@ extern "C" {
  * @see BoatEthTxInit()
  ******************************************************************************/
 BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
-												BoatPlatoneTx *tx_ptr,
-												BBOOL is_sync_tx,
-												BCHAR * gasprice_str,
-												BCHAR * gaslimit_str,
-												BCHAR * recipient_str,
-												BoatPlatoneTxtype txtype);
+							  BoatPlatoneTx *tx_ptr,
+							  BBOOL is_sync_tx,
+							  BCHAR *gasprice_str,
+							  BCHAR *gaslimit_str,
+							  BCHAR *recipient_str,
+							  BoatPlatoneTxtype txtype);
 
 
 /*!****************************************************************************
@@ -202,7 +202,7 @@ BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txty
  *
  * @see BoatPlatoneTxSend()
  ******************************************************************************/
-BCHAR * BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
+BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
 
 
 /*!****************************************************************************
@@ -278,9 +278,9 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str);
  * @brief Initialize Boat PlatONE Wallet
  * @see BoatEthWalletInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BoatPlatoneWallet * BoatPlatoneWalletInit(const BoatPlatoneWalletConfig *config_ptr, BUINT32 config_size)
+__BOATSTATIC __BOATINLINE BoatPlatoneWallet *BoatPlatoneWalletInit(const BoatPlatoneWalletConfig *config_ptr, BUINT32 config_size)
 {
-    return BoatEthWalletInit((const BoatEthWalletConfig *) config_ptr, config_size);
+    return BoatEthWalletInit((const BoatEthWalletConfig *)config_ptr, config_size);
 }
 
 
@@ -290,7 +290,7 @@ __BOATSTATIC __BOATINLINE BoatPlatoneWallet * BoatPlatoneWalletInit(const BoatPl
  ******************************************************************************/
 __BOATSTATIC __BOATINLINE void BoatPlatoneWalletDeInit(BoatPlatoneWallet *wallet_ptr)
 {
-    BoatEthWalletDeInit((BoatEthWallet *) wallet_ptr);
+    BoatEthWalletDeInit((BoatEthWallet *)wallet_ptr);
 }
 
 
@@ -328,7 +328,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneWalletSetChainId(BoatPlatoneWal
  * @brief Get Balance
  * @see BoatEthWalletGetBalance()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BCHAR * BoatPlatoneWalletGetBalance(BoatPlatoneWallet *wallet_ptr, BCHAR *alt_address_str)
+__BOATSTATIC __BOATINLINE BCHAR *BoatPlatoneWalletGetBalance(BoatPlatoneWallet *wallet_ptr, BCHAR *alt_address_str)
 {
     return BoatEthWalletGetBalance((BoatEthWallet *)wallet_ptr, alt_address_str);
 }
@@ -400,15 +400,15 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetData(BoatPlatoneTx *tx_ptr
  ******************************************************************************/
 __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneGetTransactionReceipt(BoatPlatoneTx *tx_ptr)
 {
-    return BoatEthGetTransactionReceipt((BoatEthTx *) tx_ptr);
+    return BoatEthGetTransactionReceipt((BoatEthTx *)tx_ptr);
 }
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.
  * @see BoatEthPraseRpcResponseResult()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR * json_string, 
-                                                                        const BCHAR * child_name, 
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR *json_string, 
+                                                                        const BCHAR *child_name, 
                                                                         BoatFieldVariable *result_out)
 {
     return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);

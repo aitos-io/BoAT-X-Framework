@@ -199,7 +199,7 @@ extern "C" {
  *		
  * @see BoatEthWalletDeInit() BoatWalletCreate()
  ******************************************************************************/
-BoatEthWallet * BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 config_size);
+BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 config_size);
 
 
 /*!****************************************************************************
@@ -337,9 +337,9 @@ BCHAR * BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_pt
     This function returns BOAT_SUCCESS if prase successed. Otherwise
     it returns an error code.
 *******************************************************************************/
-BOAT_RESULT BoatEthPraseRpcResponseResult( const BCHAR * json_string, 
-										   const BCHAR * child_name, 
-										   BoatFieldVariable *result_out );
+BOAT_RESULT BoatEthPraseRpcResponseResult(const BCHAR *json_string, 
+										  const BCHAR *child_name, 
+										  BoatFieldVariable *result_out);
 
                                            
 /*!****************************************************************************
@@ -385,8 +385,8 @@ BOAT_RESULT BoatEthPraseRpcResponseResult( const BCHAR * json_string,
 BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
                           BoatEthTx *tx_ptr,
                           BBOOL is_sync_tx,
-                          BCHAR * gasprice_str,
-                          BCHAR * gaslimit_str,
+                          BCHAR *gasprice_str,
+                          BCHAR *gaslimit_str,
                           BCHAR *recipient_str);
 
 
@@ -598,10 +598,10 @@ BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
  *
  * @see BoatEthTxSend()
  ******************************************************************************/
-BCHAR * BoatEthCallContractFunc( BoatEthTx *tx_ptr,
-								 BCHAR *func_proto_str,
-								 BUINT8 *func_param_ptr,
-								 BUINT32 func_param_len );
+BCHAR * BoatEthCallContractFunc(BoatEthTx *tx_ptr,
+								BCHAR *func_proto_str,
+								BUINT8 *func_param_ptr,
+								BUINT32 func_param_len);
 
 
 /*!****************************************************************************
@@ -626,7 +626,7 @@ BCHAR * BoatEthCallContractFunc( BoatEthTx *tx_ptr,
  *   This function returns BOAT_SUCCESS if transfer is successful.\n
  *   Otherwise it returns one of the error codes.      
  ******************************************************************************/
-BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR * value_hex_str);
+BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str);
 
 
 /*!****************************************************************************
