@@ -33,12 +33,12 @@ FISCO-BCOS
 Hyperledger Fabric
 
 **支持的Target操作系统：**  
-linux  
+Linux  
 RTOS
 
 
 **支持的Build操作系统：**  
-linux/cygwin  
+Linux/Cygwin  
 
 **主要特性：**  
 区块链账号（钱包）参数配置  
@@ -72,7 +72,7 @@ Wallet API是SDK提供给物联网应用调用的接口，具体包括SDK公共�
 区块链客户端接口协议主要实现针对不同区块链的交易接口协议，并通过RPC接口与区块链节点进行交互。
 远程过程调用（RPC）接口实现针对不同通信承载的接口方式。该组件需要根据IoT设备支持的具体通信方式进行移植。
 公共组件实现RLP编码、JSON编解码、字符串处理等公共功能。
-硬件依赖组件为涉及不同硬件的移植组件，例如密码学加速器、安全存储、随机数等。该组件需要根据具体硬件进行移植。SDK亦提供一套全软件的默认实现。
+硬件依赖组件为涉及不同硬件的移植组件，例如密码学加速器、安全存储、随机数等，需要根据具体硬件进行移植。SDK亦提供一套全软件的默认实现。
 工具组件提供了根据Solidity或者WASM C++的智能合约ABI接口，生成C语言合约调用接口的Python工具。
 
 
@@ -98,7 +98,7 @@ Wallet API是SDK提供给物联网应用调用的接口，具体包括SDK公共�
 +---tests           | Test cases
 +---tools           | Tools for generating C interface from contract ABI
 ```
-注：`build`和`lib`目录在编译中生成。编译完成后，只有一级目录的`include`、`lib`，以及编译后自动生成的`boatconfig.h`(位于`vendor/platform/include`路径)头文件是应用需要的。  
+***注：`build`和`lib`目录在编译中生成。编译完成后，只有一级目录的`include`、`lib`，以及编译后自动生成的`boatconfig.h`(位于`vendor/platform/include`路径)头文件是应用需要的。***  
 
 ## BoAT IoT Framework SDK编译
 ### 软件依赖
@@ -115,7 +115,7 @@ BoAT IoT Framework SDK依赖于以下软件:
 |curl          |libcurl及其开发文件(7.55.1 is tested)     |Required on linux default |Required on linux default |
 
 
-在编译SDK和使用之前，需要确保这些软件已经安装。在Ubuntu下，可以使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
+在编译和使用SDK之前，需要确保这些软件已经安装。在Ubuntu下，可以使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
 
 在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](####以Windows为编译环境)章节对编译文件进行调整。
 
@@ -138,18 +138,18 @@ C:\Documents and Settings\developer\project\boatiotsdk
  
 
 如果无法避免在路径中出现上述不适字符，请使用以下方法规避：  
-对于linux：在一个没有不适字符的路径中，建立一个指向SDK目录的符号链接：ln -s \<SDKRoot\> boatiotsdk，在该符号链接的路径下进行编译。  
+对于Linux：在一个没有不适字符的路径中，建立一个指向SDK目录的符号链接：ln -s \<SDKRoot\> boatiotsdk，在该符号链接的路径下进行编译。  
 对于Windows：使用SUBST Z: \<SDKRoot\>命令虚拟一个盘符Z:（也可以是其他未使用的盘符），在Z:盘下进行编译。  
 
 
 #### 引用的外部环境变量
 根据需要，修改SDK以下文件中的环境变量：  
-\<SDKRoot\>/vendor/platform/\<platform_name\>/external.env：配置外部编译环境依赖、或硬件相关的头文件搜索路径。
+\<SDKRoot\>/vendor/platform/\<platform_name\>/external.env：配置外部编译环境依赖、硬件相关的头文件搜索路径。
 在Host编译时，如果gcc和binutils已经安装在系统中，通常不需要修改这些环境变量配置。  
 在交叉编译时，如果交叉编译环境需要配置特定的INCLUDE路径，需要在上述文件中添加路径。    
 
 #### BoAT IoT Framework SDK配置
-- 使能/禁能区块链协议
+- 使能/禁能区块链协议  
 顶层makefile中：
 ```
 BOAT_PROTOCOL_USE_ETHEREUM  ?= 1
@@ -157,8 +157,8 @@ BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 ```
-根据需要，将相应变量的值改为`1`或`0`以使能或禁能相应的区块链协议。或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁能相应的区块链协议。
-- 日志打印级别调整
+根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁能相应的区块链协议。
+- 日志打印级别调整  
 根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
 
 ### 合约C接口代码自动生成
@@ -186,7 +186,7 @@ SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，�
 |\<SDKRoot\>/demo/demo_platone/demo_contract/Solidity|将PlatONE（Solidity）的ABI JSON文件拷贝至该目录下 |
 |\<SDKRoot\>/demo/demo_platone/demo_contract/WSAM|将PlatONE（WASM）的ABI JSON文件拷贝至该目录下 |
 
-*注1：ABI的JSON文件必须以“.json”为文件名后缀。
+***注：ABI的JSON文件必须以“.json”为文件名后缀。***
 
 在编译Demo过程中，自动生成工具将根据合约ABI JSON文件，生成相应的C接口调用代码。如果编译中自动生成C接口失败，则需要从<SDKRoot>/contract的相应目录中，删除无法支持的ABI JSON文件（或者删除其中无法支持的接口），手工编写C代码，进行ABI接口组装，详见 [转账调用](###转账调用) 章节。  
 
@@ -196,8 +196,8 @@ Host编译指编译环境与目标环境一致，例如，在x86上编译x86程�
 2. 目标软件本身运行于基于x86/x86-64处理器的设备上，例如某些边缘网关。
 
 
-#### 以linux为编译环境
-基于linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。
+#### 以Linux为编译环境
+基于Linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。
 
 编译遵照如下步骤:
 1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中  
@@ -210,15 +210,15 @@ $make boatlibs
 #### 以Cygwin为编译环境
 在Windows上，SDK不支持在Cygwin以外的环境进行编译，也不支持使用gcc以外的编译器进行编译。
 
-编译步骤与在linux下相同。
+编译步骤与在Linux下相同。
 
 
 ### 交叉编译
 交叉编译中，一般需要根据具体编译环境，对编译配置文件等进行配置。
 
-#### 以linux为编译环境
+#### 以Linux为编译环境
 ##### 独立的交叉编译环境
-独立的编译环境是指arm-oe-linux-gnueabi-gcc（或类似交叉编译器）已经安装在linux系统中，可以独立调用。
+独立的编译环境是指arm-oe-linux-gnueabi-gcc（或类似交叉编译器）已经安装在Linux系统中，可以独立调用。
 
 SDK要求系统中至少应该设置以下环境变量，使之指向交叉编译环境：
   
@@ -229,7 +229,7 @@ SDK要求系统中至少应该设置以下环境变量，使之指向交叉编�
 |AR         |指向交叉编译器ar可执行文件 |
 
 
-当环境中没有定义CC和AR环境变量时，GNU make会默认CC=cc，AR=ar。通常，linux系统中会安装host的gcc及bintuils编译环境，因此，未定义上述环境变量时，将会执行host编译。
+当环境中没有定义CC和AR环境变量时，GNU make会默认CC=cc，AR=ar。通常，Linux系统中会安装host的gcc及bintuils编译环境，因此，未定义上述环境变量时，将会执行host编译。
 
 在配置交叉编译环境时，通常需要执行特定shell脚本，对上述环境变量进行设置，使之指向交叉编译环境。对于bash shell，通常会执行类似如下的命令：
 ```
@@ -252,11 +252,11 @@ ${CC} -v
 
 ${AR} -v
 
-以上配置完成后，遵照[以linux为编译环境](####以linux为编译环境)章节的步骤进行编译。
+以上配置完成后，遵照[以Linux为编译环境](####以Linux为编译环境)章节的步骤进行编译。
 
 
 ##### 与模组开发环境整合的交叉编译环境
-有些OpenCPU模组在其所提供的开发环境中，已经整合了配套的交叉编译环境，使得客户无需另行在linux系统中安装交叉编译器。这尤其便于在一台host电脑上，开发多个不同型号模组上的应用软件，而无需反复切换交叉编译环境。
+有些OpenCPU模组在其所提供的开发环境中，已经整合了配套的交叉编译环境，使得客户无需另行在Linux系统中安装交叉编译器。这尤其便于在一台host电脑上，开发多个不同型号模组上的应用软件，而无需反复切换交叉编译环境。
 
 
 ###### 模组开发环境以GNU make为编译工程
@@ -293,7 +293,7 @@ boatiotsdkclean:
 其中，boatiotsdk为SDK所在目录，make后的-C参数指定进入boatiotsdk目录后按Makefile执行编译。
 
 
-*注：Makefile中，target下的命令，必须一个Tab（ASCII码0x09）开头，而不能以空格开头。*
+***注：Makefile中，target下的命令，必须一个Tab（ASCII码0x09）开头，而不能以空格开头。***
 
 以上步骤仅仅是用于执行对SDK库的编译。SDK库编译完成后，还需将编译生成的lib库整合入模组开发环境。详见[头文件和库](###头文件和库)章节。
 
@@ -325,7 +325,7 @@ set PATH=%PATH%;\<Path_to_Cygwin\>\bin
 其中<Path_to_Cygwin>是Cygwin安装目录的绝对路径，如：C:\Cygwin64  
   
 
-<font color=grey>注：上述命令可以编写在一个bat批处理文件中，或者直接加入Windows系统环境变量中，方便调用。注意，如果直接加入Windows系统环境变量，不得将Cygwin置于%SystemRoot%\System32路径之前，否则在其他场景中调用Windows的FIND命令时，将错误地调用Cygwin的find版本，这将影响其他场景中使用Windows自带命令。</font>
+***注：上述命令可以编写在一个bat批处理文件中，或者直接加入Windows系统环境变量中，方便调用。如果直接加入Windows系统环境变量，不得将Cygwin置于%SystemRoot%\System32路径之前，否则在其他场景中调用Windows的FIND命令时，将错误地调用Cygwin的find版本，这将影响其他场景中使用Windows自带命令。***
 
 然后，修改`<SDKRoot>/vendor/platform/<platform_name>/external.env`，为依赖工具加上路径:
 ```
@@ -420,7 +420,7 @@ $make demo
 该问题一般是因为Makefile中的target下的命令不是以Tab（ASCII码0x09）开头引起。注意按Tab键时，文本编辑器可能将Tab字符替换为若干空格。应将文本编辑器设置为不要用空格替代Tab。
 
 2. 编译中提示“curl/curl.h”找不到  
-该问题是因为系统中未安装curl及其开发文件引起。对于在linux发行版上做Host编译而言，注意只安装curl包不够，还需要安装其开发文件包。开发文件包在不同的linux发行版中有不同的名称，通常会命名为类似curl-devel，或者libcurl。具体请参照所使用的linux发行版的软件包管理工具。    
+该问题是因为系统中未安装curl及其开发文件引起。对于在Linux发行版上做Host编译而言，注意只安装curl包不够，还需要安装其开发文件包。开发文件包在不同的Linux发行版中有不同的名称，通常会命名为类似curl-devel，或者libcurl。具体请参照所使用的Linux发行版的软件包管理工具。    
   
   
 如果curl采用源码编译，且未安装到系统目录，则应在external.env中指定其搜索路径，并在链接时指定curl库所在路径。  
@@ -435,7 +435,7 @@ $make demo
 可以使用如下命令查看库文件是ARM版本还是x86版本，以及位宽：  
 $file \<lib或obj文件名\>
 
-1. 编译中提示可执行文件找不到，或者参数错误  
+4. 编译中提示可执行文件找不到，或者参数错误  
 常见提示:  
 'make'不是内部或外部命令，也不是可运行的程序或批处理文件。  
 mkdir… 命令语法不正确。  
@@ -643,7 +643,8 @@ Otherwise it returns one of the error codes.
   - bytes32
   - bytes
   - string
-  - bytes[]
+  - T[N] : N > 0, N是整数, T是上面已支持的任意类型.
+  - T[]  : T是上面已支持的任意类型，除了T[N].
 
 对于C++编写的WASM合约，工具支持以下参数类型:
   - string
@@ -672,7 +673,7 @@ BCHAR * StoreRead_saveList(BoatEthTx *tx_ptr, Bbytes32 newEvent);
 
 如果调用成功，调用接口的返回值是一个JSON格式的字符串。
 
-*注：该字符串的内存在SDK内部分配，应用程序必须将该字符串复制到应用分配的内存中再做后续使用，不得修改返回的字符串的内容，或将该字符串的指针保存使用。*
+***注：该字符串的内存在SDK内部分配，应用程序必须将该字符串复制到应用分配的内存中再做后续使用，不得修改返回的字符串的内容，或将该字符串的指针保存使用。***
 
 改变区块链状态的合约函数，是指任何会改变区块链账本中的持久化存储信息的函数。例如，会对合约中的成员变量进行写入修改的函数，都是改变区块链状态的合约函数。如果一个合约函数只修改函数内的局部变量，而不会修改合约成员变量，那么该合约函数是不改变区块链状态的合约函数。
 
@@ -691,9 +692,15 @@ contract StoreRead {
     function readListLength() public view returns (uint32 length_) {
         length_ = uint32(eventList.length);
     }
+
+    function readListByIndex(uint32 index) public view returns (bytes32 event_) {
+        if (eventList.length > index) {
+            event_ = eventList[index];
+        }
+    }
 }
 ```
-合约编译后，两个函数对应的ABI描述如下:
+合约编译后，三个函数对应的ABI描述如下:
 ```
 "abi": [
     {
@@ -708,7 +715,8 @@ contract StoreRead {
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xe648ba32"
     },
     {
       "constant": true,
@@ -722,17 +730,56 @@ contract StoreRead {
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    }
+      "type": "function",
+      "signature": "0xd0a80818"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "index",
+          "type": "uint32"
+        }
+      ],
+      "name": "readListByIndex",
+      "outputs": [
+        {
+          "name": "event_",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xaa1a7122"
+    },
 ]
 ```
-上述合约中，eventList是合约的成员变量。saveList()会改变eventList的值，是改变区块链状态的合约函数；readListLength()有view修饰符，只读取eventList的属性，不改变它的值，是不改变区块链状态的合约函数。
+上述合约中，eventList是合约的成员变量。saveList()会改变eventList的值，是改变区块链状态的合约函数；readListLength()和readListByIndex()函数有view修饰符，只读取eventList的值，是不改变区块链状态的合约函数。
 
 特别注意，尽管改变区块链状态和不改变区块链状态的合约函数在原型上非常相似，但两者的调用原理有很大差别。通过该工具生成的C接口函数也是同样情况。
 
-对区块链状态的任何改变，都需要通过区块链交易实施并在全网达成共识。改变区块链状态的合约函数是异步调用，在调用时，只是发起该次区块链交易，而在区块链网络将该交易打包出块前，该合约不会被执行。因此，调用改变区块链状态的合约函数时，其返回值仅仅是用于标识该次交易的哈希值，而不是该合约函数形式上的返回值。在设计智能合约时，改变区块链状态的对外（public）接口函数，其试图返回的信息，应当保存在合约成员变量中，通过BoatEthGetTransactionReceipt()查询该次交易的回执，成功后，用另一个读函数的形式获取。
 
-不改变区块链状态的合约函数，只需区块链节点读取其数据库内的已有信息，无需交易和共识，因此对该类函数的调用是同步调用，其返回值是合约函数形式上的返回值。
+对区块链状态的任何改变，都需要通过区块链交易实施并在全网达成共识。改变区块链状态的合约函数是异步调用，在调用时，只是发起该次区块链交易，而在区块链网络将该交易打包出块前，该合约不会被执行。拿StoreRead的demo举例，相关调用代码如下所示：    
+```
+  BCHAR *result_str;
+  result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
+```
+通过StoreRead_saveList函数获得的返回值result_str仅仅是用于标识该次交易的哈希值，而不是该StoreRead合约saveList函数的返回值。所以，在设计智能合约时，改变区块链状态的对外（public）接口函数，其试图返回的信息，应当保存在合约成员变量中。如果想获得经过更改后区块链的值，参考以下代码，其中hash为上一步中获得的交易的哈希值。
+```
+    BUINT32 list_len;
+    if (BOAT_SUCCESS == BoatEthGetTransactionReceipt(hash))
+    {
+        list_len = StoreRead_readListLength(&tx_ctx);
+        result_str = StoreRead_readListByIndex(&tx_ctx, list_len - 1);
+    }
+```
+当BoatEthGetTransactionReceipt(hash)的返回值为BOAT_SUCCESS时，说明相应的改变区块链状态的合约函数调用已被成功上链。假设该合约只会由用户一人改变状态，然后通过StoreRead_readListLength()获得eventList数组的长度list_len，再通过StoreRead_readListByIndex()函数的调用获得StoreRead_saveList()上传上去的值"HelloWorld"。
+而不改变区块链状态的合约函数，只需区块链节点读取其数据库内的已有信息，无需交易和共识。因此对该类函数的调用是同步调用，其返回值是就是相应合约函数的返回值。StoreRead合约的readListLength和readListByIndex两个函数就是此类合约函数。
+
+***注：该处代码只能算伪代码，为了方便理解，进行了一定的简化。实际使用过程中，还需要对返回值进行相应的转换，具体细节可以参考demo_ethereum_storeread.c。***
+
+
 
 #### 交易初始化
 调用自动生成的合约接口，首先应初始化一个交易对象，然后调用生成的合约接口。
@@ -743,8 +790,8 @@ contract StoreRead {
 BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
                           BoatEthTx *tx_ptr,
                           BBOOL is_sync_tx,
-                          BCHAR * gasprice_str,
-                          BCHAR * gaslimit_str,
+                          BCHAR *gasprice_str,
+                          BCHAR *gaslimit_str,
                           BCHAR *recipient_str)
 ```						 
 参数:
@@ -784,7 +831,7 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ```
 
 ### 手动构造合约调用
-如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。
+如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。另外，因为Fabric的调用本身就非常便捷，不需要自动生成合约调用接口的工具，所以需要手动调用合约。
 
 手工构造交易需要遵循具体区块链协议的ABI接口。
 
@@ -875,10 +922,31 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
     其中，rlp_param_ptr的格式遵循与步骤3相同的规则。
     具体调用方法，可参照SDK所附的Demo的自动生成代码，这些代码位于\<SDKRoot\>/contract/generated下。
 
+**例3：Hyperledger Fabric交易构造**
+- **步骤1** 调用BoatHlfabricTxInit()进行交易初始化，其中参数根据实际使用进行设置。
+- **步骤2** 调用BoatHlfabricTxSetTimestamp()设置时间戳，实时时间通过硬件相应功能获取。
+- **步骤3** 设置交易参数。  
+    使用demo_fabric_abac.c中的代码举例：  
+    ```
+    result = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
+    ```  
+    Fabric所有的函数调用输入数据均为string类型。拿上述代码来说，"invoke"是abac链码中的函数名。"a","b","10"均为该函数的相应的三个输入，不论链码中的相应变量是什么类型，均以string的形视作为输入。这也是不需要自动生成合约调用接口工具的原因。  
+- **步骤4** 发送交易。
+  - 对于改变区块链状态的合约调用，调用BoatHlfabricTxSubmit函数：
+    ```
+    BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr);
+    ```
+
+  - 对于不改变区块链状态的合约调用，调用BoatHlfabricTxEvaluate合约函数：
+    ```
+    BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr);
+    ```
+  当返回的结果为BOAT_SUCCESS时，说明调用成功。
+
 ## SDK往RTOS移植的建议
 若将SDK移植到RTOS上，一般应遵循以下几点:
 1. 解除对curl的依赖
-    curl是一个linux下的通信协议库，在SDK中用于支持http/https通信。区块链节点通常采用http/https协议进行通信。
+    curl是一个Linux下的通信协议库，在SDK中用于支持http/https通信。区块链节点通常采用http/https协议进行通信。
 
     对于采用RTOS的模组，应当在\<SDKRoot\>/vendor/platform/\<platform_name\>/src/rpc中增加对模组的http/https的接口的调用封装，并修改\<SDKRoot\>/vendor/platform/\<platform_name\>/scripts/gen.py，关闭RPC_USE_LIBCURL并设置新增的RPC USE OPTION
 

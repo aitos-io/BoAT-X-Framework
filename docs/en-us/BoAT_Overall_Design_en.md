@@ -29,23 +29,24 @@ As a middleware fusing Blockchain and IoT technologies, It should be easily and 
 
 
 ## The Position of BoAT SDK in The Entire Blockchain Network
-As a middleware connecting IoT devices and blockchain, BoAT SDK's position in the entire interactive network is shown in Figure 3-1.<br>
-![BoAT position](./images/BoAT_Overall_Design_en-F3-1-Boat_Position.png) <br>
-Figure 3-1 The position of BoAT in the blockchain interactive network<br>
+As a middleware connecting IoT devices and blockchain, BoAT SDK's position in the entire interactive network is shown in Figure 3-1.  
+![BoAT position](./images/BoAT_Overall_Design_en-F3-1-Boat_Position.png)  
+Figure 3-1 The position of BoAT in the blockchain interactive network  
 
 
 
 ## BoAT Implementation Framework 
-BoAT follows a hierarchical design, which is divided into interface layer, protocol layer, RPC layer, hardware dependency layer, general tools and utility programs. among them:   
-+ The interface provided by the interface layer is for users to access the corresponding blockchain. 
-+ The protocol layer provides blockchain adpatation services to the interface layer.  
-+ The RPC layer provides remote process call services to the protocol layer.  
-+ The hardware dependency layer provides encryption, signature, storage and other services for the wallet at the interface layer.  
-+ The general tool layer is used to generate the C language interface of the smart contract and provide services such as data encoding and format conversion for the remaining layers.  
-+ The utility program provides services such as data format conversion, message encoding and decoding to each layer.  
-The overall framework of BoAT is shown in Figure 4-1.<br>
-![BoAT overall framework diagram](./images/BoAT_Overall_Design_en-F4-1-BoAT_Overall_Framework_Diagram.png) <br> 
-Figure 4-1 BoAT overall framework diagram<br>
+Boat follows a hierarchical design consisting of Interface Layer, Protocol Layer, RPC Layer, Vendor Layer, Tool and Utility. The specific functions of each layer are as follows:   
++ Interface Layer: Provide an interface for users to invoke the corresponding blockchain. 
++ Protocol Layer: The main implementation of each block chain protocol.  
++ RPC Layer: Provide services to the protocol layer.  
++ Vendor Layer: Provide cryptographic algorithms, signature, storage and other services for the interface layer wallet.  
++ Tool: The general tool layer is used to generate the C language interface of the smart contract and provide services such as data encoding and format conversion for the remaining layers.
++ Utility: The utility program provides services such as data format conversion, message encoding and decoding to each layer.
+
+The overall framework of BoAT is shown in Figure 4-1.  
+![BoAT Overall Framework](./images/BoAT_Overall_Design_en-F4-1-BoAT_Overall_Framework.png)   
+Figure 4-1 BoAT Overall Framework  
 
 ### Interface Layer
 
@@ -64,7 +65,7 @@ The transaction interface of the interface layer is supported by the protocol la
 ##### The Data Structure and Function Implementation List of The Wallet
 The wallet is a container. In addition to storing the information necessary to access the blockchain, the container also contains a key management system, which corresponds to the data structure and implementation method of the wallet.
 
-The BoAT SDK runs on the application processor of the cellular module, and the resources of its operating environment are limited. For example, some cellular modules may not provide non-volatile memory access interfaces; on the other hand, from the user's point of view, some users may just want to create a temporary wallet for testing, but don't want to store it for a long time. In view of this, in the design of BoAT SDK, wallets are divided into two categories: persistent wallets and one-time wallets. Persistent wallets are stored in the non-volatile memory of the operating environment and will not be lost when power is off; one-time wallets are stored in the RAM of the operating environment and will be lost when power is off.  
+When the BoAT SDK runs on the application processor of the cellular module, which can only provide resource-constrained operating environment. For example, some cellular modules may not provide non-volatile memory access interfaces; on the other hand, from the user's point of view, some users may just want to create a temporary wallet for testing, but don't want to store it for a long time. In view of this, in the design of BoAT SDK, wallets are divided into two categories: persistent wallets and one-time wallets. Persistent wallets are stored in the non-volatile memory of the operating environment and will not be lost when power is off; one-time wallets are stored in the RAM of the operating environment and will be lost when power is off.  
   
 In the data structure of the wallet, It should contain at least the following elements:  
   + Account private key
@@ -167,7 +168,7 @@ The transaction should provide the following functions:
 + Wallet initialization:
   The content implemented by this interface includes:
   1. Set the blockchain contract address
-  2. Set EIP-155 compatibility for transactions
+  2. Set whether the transaction specifies a chain ID
   3. Set chain ID
 + Wallet de-initialization:
   The content implemented by this interface includes:
@@ -212,9 +213,9 @@ In addition to the initialization steps described by Ethereum, PlatONE also:
   1. Set transaction type field  
 
 
-It can be seen from the foregoing that the difference between PlatONE and Ethereum is very small. When designing the data structure and code implementation of PlatONE, the inheritance of the data structure and the reuse of code implementation should be considered, which not only reduces the amount of code, but also facilitates maintenance. For example, the composition of the transaction structure. The transaction structure of PlatONE has one more transaction type field than the transaction structure of Ethereum. Therefore, in the design of the data structure, a possible design idea is shown in Figure 4-2.  <br>
-![A possible design idea of data structure](./images/BoAT_Overall_Design_en-F4-2-Data_Structure.png)  <br>
-Figure 4-2 A possible design idea of data structure  <br>
+It can be seen from the foregoing that the difference between PlatONE and Ethereum is very small. When designing the data structure and code implementation of PlatONE, the inheritance of the data structure and the reuse of code implementation should be considered, which not only reduces the amount of code, but also facilitates maintenance. For example, the composition of the transaction structure. The transaction structure of PlatONE has one more transaction type field than the transaction structure of Ethereum. Therefore, in the design of the data structure, a possible design idea is shown in Figure 4-2.  
+![A possible design idea of data structure](./images/BoAT_Overall_Design_en-F4-2-Data_Structure.png)  
+Figure 4-2 A possible design idea of data structure  
 Figure 4-2 describes a possible data structure design idea of PlatONE. Please note that the transaction type field of PlatONE should be placed at the end of the data structure, and the integrity of the data structure of the multiplexed Ethereum should not be destroyed. If the integrity of the data structure of Ethereum is destroyed, the implementation methods related to the data structure in Ethereum will not be reused.
 
 ##### Brief Description of PlatONE Transaction Interface Function Implementation
@@ -261,7 +262,7 @@ Compared with Ethereum, the differences are listed below:
 ### Protocol Layer
 #### Overview
 The protocol layer is located in the second layer of the BoAT SDK, which mainly implements the protocol part of each blockchain. For Ethereum series blockchains, their protocols are very similar, such as Ethereum and PlatONE.   
-The protocol layer is supported by the RPC layer. Please refer to [Protocol layer](#Protocol-layer).  
+The protocol layer is supported by the RPC layer. Please refer to [RPC Layer](#RPC-Layer).  
 
 #### Ethereum's Protocol Layer Implementation
 ##### Raw Transaction Interface
@@ -274,21 +275,22 @@ In addition, raw transaction can also choose to provide the following interfaces
 ##### Brief Description of Raw Transaction Interface
 
 + raw transaction sent asynchronously  
-This interface implements the data encoding of raw transaction, such as RLP encoding of each field, hash calculation, signature, etc., and calls the web3 interface within the protocol layer to send it to the blockchain, and returns directly without waiting for the transaction be confirmed. Data encoding is divided into two parts: incompatible with EIP-155 specification and compatible with EIP-155 specification. The content implemented by this interface includes:
+This interface implements the data encoding of raw transaction, such as RLP encoding of each field, hash calculation, signature, etc., and calls the web3 interface within the protocol layer to send it to the blockchain, and returns directly without waiting for the transaction be confirmed. There are two types of data encoding: specifying the chain ID and not specifying the chain ID. Refer to EIP-155 for details <https://eips.ethereum.org/EIPS/eip-155>.  
+The content implemented by this interface includes:
 
-   - If the data encoding is incompatible with EIP-155 specification:
+   - If the data encoding is not specifying the chain ID:
   1. Perform RLP encoding on the six fields of nonce, gasPrice, gasLimit, recipient, value, and data of the transaction
-  2. Calculate the keccak-256 hash value of the RPL encoding in the previous step
+  2. Calculate the keccak-256 hash value of the RLP encoding in the previous step
   3. Sign the hash value of the previous step, and get the three values of parity, r, and s
   4. Perform RLP encoding on the nine fields of transaction nonce, gasPrice, gasLimit, recipient, value, data, v, r, s, where v = parity + 27, parity, r, s have been given in the previous step
   5. Call the web3 interface "send rawtransaction" to send to the blockchain
 
-   - If the data encoding is compatible with EIP-155 specification:
+   - If the data encoding is specifying the chain ID:
   1. Perform RLP encoding on the nine fields of transaction nonce, gasPrice, gasLimit, recipient, value, data, v, r, s, where v = chainID, r = 0, s = 0
-  2. Same as step 2 of "Incompatible with EIP-155 specification"
-  3. Same as step 3 of "Incompatible with EIP-155 specification"
+  2. Same as step 2 of "not specifying the chain ID"
+  3. Same as step 3 of "not specifying the chain ID"
   4. Perform RLP encoding on the nine fields of the transaction, including nonce, gasPrice, gasLimit, recipient, value, data, v, r, s, where v = Chain ID * 2 + parity + 35, and parity, r, s have been given in the previous step
-  5. Same as step 5 of "Incompatible with EIP-155 specification"
+  5. Same as step 5 of "not specifying the chain ID"
 
 + raw transaction sent synchronously  
 This interface executes "raw transaction asynchronous sending" and waits for the transaction to be confirmed after success or timeout. The content implemented by this interface includes:
@@ -372,15 +374,15 @@ The implementation of PlatONE's protocol layer is almost the same as that of Eth
 
 #### Protocol Layer Implementation of Fabric
 ##### Brief Description of Fabric Protocol Layer
-The Fabric protocol layer mainly contains proposal protocol and transaction protocol, and the query protocol is the same as the proposal protocol. Proposal agreement and transaction agreement are respectively as follows Figure 4-3,Figure 4-4:<br>
-![ Fabric proposal protocol struct](./images/BoAT_Overall_Design_en-F4-3-Fabric-Proposal.png)<br>
-Figure 4-3 Fabric proposal protocol struct<br>
-![ Fabric transaction protocol struct](./images/BoAT_Overall_Design_en-F4-4-Fabric-Transaction.png)<br>
-Figure 4-4 Fabric transaction protocol struct<br>
+The Fabric protocol layer mainly contains proposal protocol and transaction protocol, and the query protocol is the same as the proposal protocol. Proposal agreement and transaction agreement are respectively as follows Figure 4-3,Figure 4-4:  
+![ Fabric proposal protocol struct](./images/BoAT_Overall_Design_en-F4-3-Fabric-Proposal.png)  
+Figure 4-3 Fabric proposal protocol struct  
+![ Fabric transaction protocol struct](./images/BoAT_Overall_Design_en-F4-4-Fabric-Transaction.png)  
+Figure 4-4 Fabric transaction protocol struct  
 
-When Fabric client launches a deal,will first send proposal to endorse node, get the data of proposal signature returned after endorse node signatures. then the Fabric client puts the data endorse signature together with transaction parameters according to the transaction message format and sends to order nodes. After order node check through, it will updating the state of the chain. The detailed transaction process is shown in Figure 4-5,This figure is taken from the <Hyperledger-FabricDocs Master> document. For more information on Fabric, refer to the Fabric documentation: <https://hyperledger-fabric.readthedocs.io/en/release-1.4/>.<br>
-![ Fabric transaction flow](./images/BoAT_Overall_Design_en-F4-5-Fabric-Transaction-Flow.png)<br>
-Figure 4-5 Fabric transaction flow<br>
+When Fabric client launches a deal,will first send proposal to endorse node, get the data of proposal signature returned after endorse node signatures. then the Fabric client puts the data endorse signature together with transaction parameters according to the transaction message format and sends to order nodes. After order node check through, it will updating the state of the chain. The detailed transaction process is shown in Figure 4-5,This figure is taken from the <Hyperledger-FabricDocs Master> document. For more information on Fabric, refer to the Fabric documentation: <https://hyperledger-fabric.readthedocs.io/en/release-1.4/>.  
+![ Fabric transaction flow](./images/BoAT_Overall_Design_en-F4-5-Fabric-Transaction-Flow.png)  
+Figure 4-5 Fabric transaction flow  
 #####	Fabric protocol interface implementation
 In the Fabric message, the fields in the protocol are serialized through ProtoBuf and then sent out through the HTTP2 protocol. As can be seen from the preface section, there are some duplicates and similarities between the proposal and transaction messages, and these duplicates can be split into a submodule for easier reuse. One possible split is listed as follows:
 -	channelHeader packaging
@@ -413,12 +415,12 @@ cURL is a file transfer tool that uses URL syntax to work under the command line
 
 
 
-### Hardware Dependency Layer
+### Vendor Layer
 #### Overview
-BoAT SDK will run on different hardware platforms. In order to make better use of hardware resources, BoAT SDK provides a hardware dependency layer. The hardware dependency layer provides services for the wallet at the interface layer, providing services such as random number generators, secure storage, encryption and signature. Since the resources provided by different hardware platforms may be different, for example, some hardware provides the hardware implementation of the random number generator, some hardware platforms not only provide the hardware implementation of the random number generator, but also provide the TEE environment, which has hardware dependence Layer, BoAT SDK can make better use of these hardware resources.
+The Boat SDK will run on different hardware platforms, because the various hardware platforms provided by various vendors have various functions. For example, some hardware platforms provide hardware implementation of random number generator, while some hardware platforms provide not only hardware implementation of random number generator, but also TEE environment. In order to leverage the platform's resources and to isolate changes in the software, the Boat SDK designed a vendor layer. The vendor layer provides services such as random number generator, secure storage, encrypted signature and so on to the wallet in the interface layer. When the hardware platform can provide the corresponding implementation, the vendor layer will call the corresponding hardware function through the interface reserved by the vendor. When the hardware platform does not provide some services, the corresponding functions are realized by pure software.
 
 #### Software Implementation of The Hardware Dependent Layer
-BoAT SDK should provide a hardware-dependent full software implementation, so that BoAT can still run completely when the hardware cannot provide the required complete services. Hardware-dependent software implementation should be based on covering the necessary hardware services as a standard, and at least provide the following functional implementations:
+The vendor layer should provide a pure software implementation of the required services. This allows the Boat SDK to function properly even when the hardware does not provide the required services. The vendor layer should cover the necessary hardware services as a standard, providing at least a software-only implementation of the following functions:
 + Random number generator
 + Signature (such as ECDSA used by Ethereum)
 + Secure storage (such as storing private keys in an encrypted manner)
@@ -541,9 +543,9 @@ In addition, in order to adapt the SDK to more environments, you can also encaps
 
 ##### Structure of RLP
 RLP encoding is used in two places. One is that the protocol layer organizes transaction messages to use RLP encoding, and the other is that RLP encoding may be used in the generated C language contract interface code.  
-The definition of RLP encoding only handles two types of data: one is a string and the other is a list. String refer to a string of binary data, such as a byte array; List is a nested recursive structure, which can contain strings and lists, and its structure is shown in Figure 4-6:<br>
-![The structure of the RLP list](./images/BoAT_Overall_Design_en-F4-6-Structure_Of_RLP.png)  <br>
-Figure 4-6 The structure of the RLP list<br>
+The definition of RLP encoding only handles two types of data: one is a string and the other is a list. String refer to a string of binary data, such as a byte array; List is a nested recursive structure, which can contain strings and lists, and its structure is shown in Figure 4-6:  
+![The structure of the RLP list](./images/BoAT_Overall_Design_en-F4-6-Structure_Of_RLP.png)  
+Figure 4-6 The structure of the RLP list  
 
 ##### RLP Encoding Rules
 The encoding rules of RLP are described as follows:
@@ -556,9 +558,9 @@ For a more detailed description of RLP encoding rules, please refer to the refer
 
 
 ##### RLP Encoding Implementation
-RLP encoding can be implemented in many different ways. As can be seen from the foregoing chapters, a possible data structure composition description of RLP encoding is shown in Figure 4-7:<br>
-![A possible data structure of RLP encoding](./images/BoAT_Overall_Design_en-F4-7-Data_Structure_Of_RLP.png) <br> 
-Figure 4-7 A possible data structure of RLP encoding<br>
+RLP encoding can be implemented in many different ways. As can be seen from the foregoing chapters, a possible data structure composition description of RLP encoding is shown in Figure 4-7:  
+![A possible data structure of RLP encoding](./images/BoAT_Overall_Design_en-F4-7-Data_Structure_Of_RLP.png)   
+Figure 4-7 A possible data structure of RLP encoding  
 
 The figure defines four types to express the nested recursive structure of the RLP list. If there is a list object named List, it contains three string objects: stringA, stringB, stringC,Then a possible process of performing RLP encoding on the list object List is described as follows:
 1. Initialize the list object List
@@ -587,9 +589,9 @@ cJSON is a lightweight JSON codec written in C language. It follows the ANSI-C s
 ## The Process of Creating A Blockchain Transaction Using BoAT
 
 ### The Process of Creating An Ethereum Transaction Using BoAT
-A typical process of using BoAT to create an Ethereum transaction is shown in Figure 5-1:  <br>
-![The process of creating a transaction using BoAT](./images/BoAT_Overall_Design_en-F5-1-Create_Ttransaction.png)  <br>
-Figure 5-1 The process of creating a transaction using BoAT<br>
+A typical process of using BoAT to create an Ethereum transaction is shown in Figure 5-1:  
+![The process of creating a transaction using BoAT](./images/BoAT_Overall_Design_en-F5-1-Create_Ttransaction.png)  
+Figure 5-1 The process of creating a transaction using BoAT  
 
 among them:
 + BoAT SDK initialization:
