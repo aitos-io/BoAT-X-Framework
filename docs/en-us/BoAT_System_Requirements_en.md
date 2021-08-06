@@ -46,7 +46,7 @@ The above does not include the system libraries that the BoAT Framework (C langu
 
 ## Part 2 Process Capacity Requirements
 
-For supporting Ethereum, the BoAT Framework (C language version)  takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, on an ARM Cortex M4 running at about 100MHz . The exact time can vary with different blockchain protocols.
+In Ethereum blockchain, the BoAT Framework (C language version) takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, running on an ARM Cortex M4 at around 100MHz. The exact time can vary with different blockchain protocols.
 
 The exact computing performance requirements depend on the power consumption and latency requirements of the application calling (porting in) the BoAT Framework SDK. BoAT itself has no special requirements.
 
@@ -54,7 +54,7 @@ The exact computing performance requirements depend on the power consumption and
 
 There really are no special requirements for the operating system. Generally BoAT Framework (C language version) can be ported over most operating systems (e.g. Linux, various RTOS), as long as the following capabilities (below) are supported: 
 
-1. Support dynamic memory allocation / free. 
+1. Support dynamic memory allocation / release. 
 2. Support mutual exclusion (mutex) protection mechanism.
 3. Supports thread suspension for a specified duration (optional). BoAT cannot support "timeout" or "polling" functions without support of "thread suspension" function, while other funtioncs have no such dependency. 
 4. From the candidate random number generators list, select to support at least one type in the order of priority: <br>
