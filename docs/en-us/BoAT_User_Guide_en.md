@@ -18,7 +18,7 @@ The intended readers of this article are customers who integrate the BoAT IoT Fr
 |RPC|Remote Procedure Call|
 |RTOS|Real Time Operating System|
 |SDK|Software Development Kit|
-|WASM|Web Assembly|
+|WASM|WebAssembly|
 
 
 
