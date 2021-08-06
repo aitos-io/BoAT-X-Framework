@@ -862,7 +862,7 @@ The manual construction of transactions needs to follow the ABI interface of the
   ```
   BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
   ```
-  - **Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
+- **Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
   ```
   BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
   ```
@@ -897,7 +897,7 @@ The manual construction of transactions needs to follow the ABI interface of the
   ```
   BOAT_RESULT BoatPlatoneTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr);
   ```
-  - **Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
+- **Step 3** For contract calls (transactions) that change the state of the blockchain, set the "data" parameter of the transaction:
   ```
   BOAT_RESULT BoatPlatoneTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
   ```
