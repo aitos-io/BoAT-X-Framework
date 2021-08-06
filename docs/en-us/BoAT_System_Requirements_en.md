@@ -56,8 +56,8 @@ There really are no special requirements for the operating system. Generally BoA
 
 1. Support dynamic memory allocation / free. 
 2. Support mutual exclusion (mutex) protection mechanism.
-3. Supports thread suspension for a specified duration (optional). If not, BoAT does not support timeout or polling functions, and other functions are not affected. 
-4. According to priority from high to low, at least one of the following random number generators is supported: <br>
+3. Supports thread suspension for a specified duration (optional). BoAT cannot support "timeout" or "polling" functions without support of "thread suspension" function, while other funtioncs have no such dependency. 
+4. From the candidate random number generators list, select to support at least one type in the order of priority: <br>
    (1) TRNG, true random number generator (requires hardware support) <br>
    (2) CSPRNG, a cryptographically secure pseudo-random number generator. For Linux, this capability can be provided by the OpenSSL library <br>
    (3) PRNG, a (non-cryptographically secure) pseudo-random number generator <br>
@@ -83,7 +83,7 @@ If the device can only connect to the IoT platform of a specific operator or ser
 
 ### TEE
 
-If the application processor of the cellular module supports the TEE (Trusted Execution Environment), the TEE can be used to protect sensitive data and processes such as keys, signatures and encryption. The TEE should support at least the following capabilities:
+If the application processor of the cellular module supports the TEE (Trusted Execution Environment), the TEE can be used to protect sensitive data such as keys, signatures as well as sensitive processes like encryption. The TEE should support at least the following capabilities:
 
 1. Allowing customers to develop a TA (Trusted Application) . For example, some necessary keys are offered.
 2. Supporting Secure Boot, fuse, etc.
