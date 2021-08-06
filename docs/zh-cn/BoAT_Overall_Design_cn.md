@@ -46,8 +46,9 @@ BoAT遵循层次化设计，由接口层，协议层，RPC层，供应商层，�
 + 实用程序： 向各层提供如数据格式转换、报文编解码等服务。  
   
 BoAT的整体框架如图4-1所示。  
-![BoAT整体框图](./images/BoAT_Overall_Design_cn-F4-1-BoAT_Overall_Framework.png)  
+![BoAT整体框图](./images/BoAT_Overall_Design_cn-F4-1-BoAT_Overall_Framework_Diagram.png)
 图 4-1 BoAT整体框图  
+
 
 ### 接口层
 #### 概述
@@ -87,9 +88,9 @@ BoAT SDK运行在蜂窝模组的应用处理器上，其运行环境的资源是
 ###### SDK初始化/反初始化
 + SDK初始化：  
 在使用BoAT SDK之前应做SDK初始化，该接口执行的内容包括：
-   1. 钱包列表初始化
+   1. 钱包列表初始化  
 钱包列表是一个包含了固定数量钱包和钱包相关使用信息的数据结构，钱包相关使用信息包括钱包使用标识、钱包名称、钱包所属区块链等。钱包列表是一个全局资源，钱包列表的初始化即将数据结构中的各成员执行一次赋初值，如将使用标识初始化为未使用，钱包初始化为空指针等。  
-   2. 其他全局资源初始化
+   2. 其他全局资源初始化  
 SDK使用的一些三方库如果在调用前需做一次初始化，则应放在此处执行初始化，如RPC层使用的三方库cURL
 + SDK反初始化：  
 在使用BoAT SDK结束后应做SDK反初始化释放资源，该接口执行的内容包括：  
@@ -104,7 +105,7 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
   2. 根据具体入参决定是创建新钱包还是读取已创建的钱包  
   3. 根据具体入参决定是创建一次性钱包还是创建持久化钱包  
   4. 根据具体入参执行某一个区块链的钱包初始化，如执行Ethereum的钱包初始化，或者执行PlatONE的钱包初始化
-+ 钱包删除：	
++ 钱包删除：  
 该接口从非易失性存储器中删除一个持久化钱包。注意：该接口并不从RAM中卸载钱包。持久钱包被删除后，它就变成了一次性钱包。该接口执行的内容包括：  
   1. 从非易失性存储器上删除指定的钱包文件
 + 钱包卸载：    
@@ -153,10 +154,10 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
  
 
 ##### Ethereum交易接口功能实现简述
-+ 钱包初始化：
++ 钱包初始化：  
   该接口执行的内容包括：
   1. 设置区块链合约地址
-  2. 设置交易的EIP-155兼容性
+  2. 设置交易是否指定链ID
   3. 设置链ID
 + 钱包反初始化：  
   该接口执行的内容包括：
@@ -203,7 +204,7 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 
 
 由前所述可以看出，PlatONE和Ethereum的差异非常的小，在设计PlatONE的数据结构及代码实现时，应考虑数据结构的继承及代码实现的复用，这样既减少代码量，也便于维护。比如在交易结构上的组成上，PlatONE的交易结构比Ethereum的交易结构多了一个交易类型字段，因此，在数据结构的设计中，一种可能的设计思路如图4-2所示：  
-![数据结构的一种可能的设计思路](./images/BoAT_Overall_Design_cn-F4-2-Data_Structure.png)   
+![数据结构的一种可能的设计思路](./images/BoAT_Overall_Design_cn-F4-2-Data_Structure.png)
 图 4-2 数据结构的一种可能的设计思路  
 图4-2描述了PlatONE的一种可能的数据结构设计思路，请注意，PlatONE的交易类型字段应放置在数据结构的最末位置，不能破坏复用的Ethereum的数据结构的完整性。如果破坏了Ethereum的数据结构的完整性，将导致Ethereum中与该数据结构相关的实现方法不可复用。
 
@@ -264,19 +265,20 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 
 ##### raw transaction接口简述
 + raw transaction异步发送  
-该接口实现了raw transaction的数据编码，如各字段RLP编码、哈希计算、签名等，并在协议层内部调用web3接口发送到区块链，不等待交易执行成功直接返回。数据编码分为不兼容EIP-155规范和兼容EIP-155规范两部分。该接口执行的内容包括：
-   - 如果数据编码不兼容EIP-155规范：  
+该接口实现了raw transaction的数据编码，如各字段RLP编码、哈希计算、签名等，并在协议层内部调用web3接口发送到区块链，不等待交易执行成功直接返回。数据编码分为指定链ID和不指定链ID两种。具体细节参照EIP-155 <https://eips.ethereum.org/EIPS/eip-155>。  
+该接口执行的内容包括：
+   - 如果数据编码采用不指定链ID方式：  
   1. 对交易的nonce、gasPrice、gasLimit、recipient、value、data等六个字段执行RLP编码
-  2. 计算前一步骤中RPL编码的keccak-256哈希值
+  2. 计算前一步骤中RLP编码的keccak-256哈希值
   3. 对前一步骤的哈希值签名，得到奇偶标识parity、r、s三个值
   4. 对交易的nonce、gasPrice、gasLimit、recipient、value、data、v、r、s等九个字段执行RLP编码，其中v = parity + 27，parity、r、s已在前一步骤中给出
   5. 调用web3接口“发送rawtransaction”发送到区块链
-   - 如果数据编码兼容EIP-155规范：
+   - 如果数据编码采用指定链ID方式：
   1. 对交易的nonce、gasPrice、gasLimit、recipient、value、data、v、r、s等九个字段执行RLP编码，其中v = chainID，r = 0， s = 0
-  2. 同“不兼容EIP-155规范”的步骤2
-  3. 同“不兼容EIP-155规范”的步骤3
+  2. 同“不指定链ID方式”的步骤2
+  3. 同“不指定链ID方式”的步骤3
   4. 对交易的nonce、gasPrice、gasLimit、recipient、value、data、v、r、s等九个字段执行RLP编码，其中v = Chain ID * 2 + parity + 35，parity、r、s已在前一步骤中给出
-  5. 同“不兼容EIP-155规范”的步骤5
+  5. 同“不指定链ID方式”的步骤5
 + raw transaction同步发送  
 该接口执行“rawtransaction异步发送”并等待交易成功或超时后返回。该接口执行的内容包括:
   1. 执行raw transaction异步发送
@@ -363,7 +365,7 @@ Fabric协议层主要包含提案协议和交易协议，查询的协议与提�
 ![Fabric交易报文结构](./images/BoAT_Overall_Design_cn-F4-4-Fabric-Transaction.png)  
 图 4-4 Fabric交易报文结构  
 
-Fabric客户端发起一笔的交易的时候，会首先向背书节点发送提案，背书节点对提案签名后返回签名数据，然后Fabric客户端连同背书节点的签名数据和交易参数按交易报文的格式组织好后发送给排序节点，排序节点校验通过后写更新链的状态。详细的交易流程如图4-5所示，该图是是从《hyperledger-fabricdocs master》文档中摘取的。关于Fabric更多的介绍，可以参考Fabric文档< https://hyperledger-fabric.readthedocs.io/en/release-1.4/>  
+Fabric客户端发起一笔的交易的时候，会首先向背书节点发送提案，背书节点对提案签名后返回签名数据，然后Fabric客户端连同背书节点的签名数据和交易参数按交易报文的格式组织好后发送给排序节点，排序节点校验通过后更新链的状态。详细的交易流程如图4-5所示，该图是从《hyperledger-fabricdocs master》文档中摘取的。关于Fabric更多的介绍，可以参考Fabric文档 <https://hyperledger-fabric.readthedocs.io/en/release-1.4/>  
 ![ Fabric交易流程](./images/BoAT_Overall_Design_cn-F4-5-Fabric-Transaction-Flow.png)  
 图 4-5 Fabric交易流程
 #####	Fabric协议接口实现
@@ -536,7 +538,7 @@ RLP的编码规则描述如下：
 
 
 ##### RLP编码实现
-RLP编码实现可以有多种不同的方式。由前述章节可知，RLP编码的一种可能的数据结构组成描述如图4-7所示：   
+RLP编码实现可以有多种不同的方式。由前述章节可知，RLP编码的一种可能的数据结构组成描述如图4-7所示：
 ![RLP编码的一种可能的数据结构](./images/BoAT_Overall_Design_cn-F4-7-Data_Structure_Of_RLP.png)  
 图 4-7 RLP编码的一种可能的数据结构  
 
@@ -589,7 +591,7 @@ cJSON是C语言编写的一个轻量级的JSON编解码器，遵循ANSI-C标准�
 
 
 ## 参考文档
-[1]. cJSON<https://github.com/DaveGamble/cJSON#welcome-to-cjson>  
-[2]. cURL<https://curl.haxx.se/libcurl/>  
-[3]. RLP wiki<https://eth.wiki/en/fundamentals/rlp>  
+[1]. cJSON <https://github.com/DaveGamble/cJSON#welcome-to-cjson>  
+[2]. cURL <https://curl.haxx.se/libcurl/>  
+[3]. RLP wiki <https://eth.wiki/en/fundamentals/rlp>  
 
