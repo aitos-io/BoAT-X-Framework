@@ -182,7 +182,7 @@ boatlibs: createdir boatwalletlib vendorlib
 
 createdir:
 	@echo generate header file boatconfig.h...
-	$(shell python ./vendor/platform/$(PLATFORM_TARGET)/scripts/gen.py $(PLATFORM_TARGET) $(SCRIPTS_PARAM) )
+	python ./vendor/platform/$(PLATFORM_TARGET)/scripts/gen.py $(PLATFORM_TARGET) $(SCRIPTS_PARAM)
 	@echo generate done.
 
 	$(BOAT_MKDIR) -p $(BOAT_LIB_DIR)
