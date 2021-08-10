@@ -36,11 +36,11 @@ Figure 3-1 The position of BoAT in the blockchain interactive network
 
 
 ## BoAT Implementation Framework 
-Boat follows a hierarchical design consisting of Interface Layer, Protocol Layer, RPC Layer, Vendor Layer, Tool and Utility. The specific functions of each layer are as follows:   
+Boat follows a hierarchical design consisting of Interface Layer, Protocol Layer, RPC Layer, Vendor Dependency Layer, Tool and Utility. The specific functions of each layer are as follows:   
 + Interface Layer: Provide an interface for users to invoke the corresponding blockchain. 
 + Protocol Layer: The main implementation of each block chain protocol.  
 + RPC Layer: Provide services to the protocol layer.  
-+ Vendor Layer: Provide cryptographic algorithms, signature, storage and other services for the interface layer wallet.  
++ Vendor Dependency Layer: Provide cryptographic algorithms, signature, storage and other services for the interface layer wallet.  
 + Tool: The general tool layer is used to generate the C language interface of the smart contract and provide services such as data encoding and format conversion for the remaining layers.
 + Utility: The utility program provides services such as data format conversion, message encoding and decoding to each layer.
 
@@ -57,7 +57,7 @@ The interface layer is located at the top layer of BoAT and provides users with 
 + Transaction interface
    * Each blockchain provides a set of transaction interfaces with similar functions but different implementations.  
 
-The wallet interface of the interface layer is supported by the hardware dependent layer. For the description of the hardware dependent layer, please refer to [Hardware dependency layer](#Hardware-dependency-layer).  
+The wallet interface of the interface layer is supported by the vendor dependency layer. For the description of the vendor dependency layer, please refer to [Vendor Dependency Layer](#vendor-dependency-layer).  
 The transaction interface of the interface layer is supported by the protocol layer. For a description of the protocol layer, please refer to [Protocol layer](#Protocol-layer).  
 
 #### Wallet Interface
@@ -415,12 +415,12 @@ cURL is a file transfer tool that uses URL syntax to work under the command line
 
 
 
-### Vendor Layer
+### Vendor Dependency Layer
 #### Overview
-The Boat SDK will run on different hardware platforms, because the various hardware platforms provided by various vendors have various functions. For example, some hardware platforms provide hardware implementation of random number generator, while some hardware platforms provide not only hardware implementation of random number generator, but also TEE environment. In order to leverage the platform's resources and to isolate changes in the software, the Boat SDK designed a vendor layer. The vendor layer provides services such as random number generator, secure storage, encrypted signature and so on to the wallet in the interface layer. When the hardware platform can provide the corresponding implementation, the vendor layer will call the corresponding hardware function through the interface reserved by the vendor. When the hardware platform does not provide some services, the corresponding functions are realized by pure software.
+The Boat SDK will run on different hardware platforms, because the various hardware platforms provided by various vendors have various functions. For example, some hardware platforms provide hardware implementation of random number generator, while some hardware platforms provide not only hardware implementation of random number generator, but also TEE environment. In order to leverage the platform's resources and to isolate changes in the software, the Boat SDK designed a vendor dependencylayer. The vendor dependency layer provides services such as random number generator, secure storage, encrypted signature and so on to the wallet in the interface layer. When the hardware platform can provide the corresponding implementation, the vendor dependency layer will call the corresponding hardware function through the interface reserved by the vendor. When the hardware platform does not provide some services, the corresponding functions are realized by pure software.
 
-#### Software Implementation of The Hardware Dependent Layer
-The vendor layer should provide a pure software implementation of the required services. This allows the Boat SDK to function properly even when the hardware does not provide the required services. The vendor layer should cover the necessary hardware services as a standard, providing at least a software-only implementation of the following functions:
+#### Software Implementation of The Vendor Dependency Layer
+The vendor dependency layer should provide a pure software implementation of the required services. This allows the Boat SDK to function properly even when the hardware does not provide the required services. The vendor dependency layer should cover the necessary hardware services as a standard, providing at least a software-only implementation of the following functions:
 + Random number generator
 + Signature (such as ECDSA used by Ethereum)
 + Secure storage (such as storing private keys in an encrypted manner)
