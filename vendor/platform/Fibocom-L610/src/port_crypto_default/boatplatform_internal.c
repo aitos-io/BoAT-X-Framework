@@ -640,7 +640,7 @@ BOAT_RESULT BoatAesEncrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input
 	BOAT_RESULT result = BOAT_SUCCESS;
 
 	/* aes init */
-	result += aes_encrypt_key128 key, &ctxe);
+	result += aes_encrypt_key128(key, &ctxe);
 
 	/* use saltArrayTmp because function aes_cbc_encrypt(...) will modify this field */
 	memcpy(saltArrayTmp, iv, 16);

@@ -72,7 +72,7 @@ BOAT_RESULT RpcRequestSync(void *rpc_context_ptr,
                            BUINT8 *request_ptr,
                            BUINT32 request_len,
                            BOAT_OUT BUINT8 **response_pptr,
-                           OAT_OUT BUINT32 *response_len_ptr )
+                           BOAT_OUT BUINT32 *response_len_ptr )
 {
     BOAT_RESULT result = BOAT_ERROR;
     
