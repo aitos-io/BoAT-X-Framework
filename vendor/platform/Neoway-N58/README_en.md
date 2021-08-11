@@ -71,7 +71,7 @@ After copying these files, the directory structure should look like:
 
       add_appimg(${target} ${file_ldscript} nwy_drv_lcd_st7735.c demo_entry.c my_contract.cpp.abi.c) 
 
-Explain:  
+Note:  
 #### 4.1 demo_entry.c includes main entry, network initialization, and calling the contract chain.  
    If it conflicts with the current application entry, comment out appimg_Enter () and appimg_exit() in demo_entry.c, and just call boat_demo_entry().  
    If it is only used to run through the demo, you can delete the current application entry file and only keep boat_entry.c.  
