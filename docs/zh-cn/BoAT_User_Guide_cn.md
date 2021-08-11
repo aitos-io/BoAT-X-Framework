@@ -413,7 +413,7 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 ```
 $make demo
 ```
-生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下,< protocol>可以为`ethereum` `fisco-bcos` `platone` `fabric`.
+生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下，< protocol>可以为`ethereum` `fisco-bcos` `platone` `fabric`。
 
 
 
