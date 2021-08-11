@@ -242,7 +242,8 @@ $source cross_compiler_config.sh
 ```  
 $. cross_compiler_config.sh  
 ```
-如上示例中的`cross_compiler_config.sh`并非本SDK中的脚本，而是交叉编译环境中的配置脚本，其具体名称和位置请参考交叉编译环境相关的说明。  
+如上示例中的`cross_compiler_config.sh`并非本SDK中的脚本，而是交叉编译环境中的配置脚本，其具体名称和位置请参考交叉编译环境相关的说明。 
+	
 示例中的`source`或`.`是必需的，这使得该脚本在当前shell的上下文中执行，因而该脚本中对环境变量的修改仅能在当前shell中生效。
 
 
