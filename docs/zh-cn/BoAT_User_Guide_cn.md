@@ -321,7 +321,9 @@ SDK编译工程依赖于一些Cygwin工具，需要安装的工具如下:
 安装Cygwin之后，需要配置其路径。由于SDK编译所依赖的部分Cygwin工具与Windows自带工具同名，因此必须确保编译中引用的相关工具指向Cygwin的版本。
 
 首先，在执行编译的cmd shell中，执行如下命令增加Cygwin的搜索路径：  
+```
 set PATH=%PATH%;\<Path_to_Cygwin\>\bin  
+```
 其中<Path_to_Cygwin>是Cygwin安装目录的绝对路径，如：C:\Cygwin64  
   
 
