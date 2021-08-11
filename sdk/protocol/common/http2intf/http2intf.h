@@ -60,7 +60,7 @@ typedef struct Thttp2IntfContext{
 	
 	BSINT32             sockfd;       //!< network connection file desc
 
-	bool                isProposal;   //!< this field will determine http2 head content 
+	BUINT8                type;   //!< this field will determine http2 head content 
 	void*               parseDataPtr; //!< the http2 parsed data structure
 }http2IntfContext;
 

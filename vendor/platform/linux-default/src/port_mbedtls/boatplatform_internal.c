@@ -658,13 +658,19 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
 
 	mbedtls_ssl_conf_rng(tlsContext_ptr->ssl_cfg, mbedtls_ctr_drbg_random, &ctr_drbg);
 
-	for(int i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++)
-	{
-		if( ((caChain + i) != NULL ) && ((caChain + i)->field_ptr != NULL ) ) 
-		{
-			result += mbedtls_x509_crt_parse(tlsContext_ptr->ssl_crt, (caChain + i)->field_ptr, (caChain + i)->field_len);
-		}
-	}
+	// for(int i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++)
+	// {
+	// 	if( ((caChain + i) != NULL ) && ((caChain + i)->field_ptr != NULL ) ) 
+	// 	{
+	// 		result += mbedtls_x509_crt_parse(tlsContext_ptr->ssl_crt, (caChain + i)->field_ptr, (caChain + i)->field_len);
+	// 	}
+	// }
+
+	// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "tlsCAchain  :",
+	// 	caChain[0].field_ptr,
+	// 	caChain[0].field_len);
+
+	result += mbedtls_x509_crt_parse(tlsContext_ptr->ssl_crt, caChain[0].field_ptr, caChain[0].field_len);
 	if( result != BOAT_SUCCESS )
     {
         BoatLog( BOAT_LOG_CRITICAL, "Failed to execute x509_crt_parse: -%x\n", -result );

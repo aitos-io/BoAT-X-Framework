@@ -35,7 +35,11 @@
 #include "peer/transaction.pb-c.h"
 #include "peer/proposal_response.pb-c.h"
 #include "orderer/cluster.pb-c.h"
+#include "discovery/protocol.pb-c.h"
 
+BUINT32 http2Reslen = 0;
+BUINT32 http2Reallen = 0;
+BUINT8 *http2ResData;
 
 //! xx
 #define MAKE_NV(K, V)  {(BUINT8*)K, (BUINT8*)V, strlen((BCHAR*)K), strlen((BCHAR*)V), NGHTTP2_NV_FLAG_NONE}
@@ -145,12 +149,37 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
 {
 	http2IntfContext         *http2Context     = (http2IntfContext*)user_data;
 	Protos__ProposalResponse *proposalResponse = NULL;
-	Orderer__SubmitResponse  *submitResponse   = NULL;
-	BoatHlfabricEndorserResponse *parsePtr     = NULL;
+	Orderer__SubmitResponse *submitResponse = NULL;
+	BoatHlfabricEndorserResponse *parsePtr = NULL;
+	BUINT32 offset = 0;
+	BoatLog(BOAT_LOG_NORMAL, "[http2]endorser http2Context->type = %d ",http2Context->type);
+	if (http2Context->type == HLFABRIC_TYPE_DISCOVER)
+	{
 
-	parsePtr = (BoatHlfabricEndorserResponse*)http2Context->parseDataPtr;
-	
-	if( http2Context->isProposal )
+		offset = http2Reslen;
+		if (http2Reslen == 0)
+		{
+			http2Reallen = (data[3] << 8) + data[4] + 5;
+		}
+		if(http2ResData == NULL){
+			http2ResData = BoatMalloc(http2Reallen);
+		}
+		memcpy(http2ResData + offset, data, len);
+		http2Reslen += len;
+
+				// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "on_data_chunk_recv_callback result",
+				// 			 http2ResData,
+				// 			 http2Reslen);
+
+		if (http2Reslen < http2Reallen)
+		{
+			return 0;
+		}
+
+	}
+	parsePtr = (BoatHlfabricEndorserResponse *)http2Context->parseDataPtr;
+
+	if (http2Context->type == HLFABRIC_TYPE_PROPOSAL)
 	{ /* endorser response process */
 		proposalResponse =  protos__proposal_response__unpack(NULL, len - 5, data + 5);
 		if( (proposalResponse != NULL) && (proposalResponse->endorsement != NULL) )
@@ -171,7 +200,7 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
 			BoatLog(BOAT_LOG_CRITICAL, "[http2]endorser respond unpacked failed, maybe a invalid endorser.");
 		}
 	}
-	else
+	else if (http2Context->type == HLFABRIC_TYPE_TRANSACTION)
 	{ /* orderer response process */
 		submitResponse = orderer__submit_response__unpack(NULL, len - 5, data + 5);
 		if( submitResponse != NULL )
@@ -186,7 +215,15 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
 			BoatLog(BOAT_LOG_CRITICAL, "[http2]orderer respond unpacked failed.");
 		}
 	}
-	
+	else
+	{
+
+		parsePtr->response[parsePtr->responseCount].payload.field_ptr = http2ResData;
+		parsePtr->response[parsePtr->responseCount].payload.field_len = http2Reslen;
+		parsePtr->responseCount++;	
+							 
+	}
+
 	return 0;
 }
 
@@ -263,12 +300,12 @@ http2IntfContext* http2Init(void)
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, http2Init_exception);
 	}
 #endif
-	http2Context->sendBuf.field_len   = 0;
-	http2Context->sendBuf.field_ptr   = NULL;
-	http2Context->sockfd              = 0;
-	http2Context->isProposal          = true;
-	http2Context->parseDataPtr        = NULL;
-		
+	http2Context->sendBuf.field_len = 0;
+	http2Context->sendBuf.field_ptr = NULL;
+	http2Context->sockfd = 0;
+	http2Context->type = HLFABRIC_TYPE_PROPOSAL;
+	http2Context->parseDataPtr = NULL;
+
 	/* http2Context->nodeUrl initial */
 	//DO NOTHING
 
@@ -319,9 +356,23 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	boat_try_declare;
-	
-	pathTmp          = (context->isProposal) ? "/protos.Endorser/ProcessProposal" : \
-					                           "/orderer.AtomicBroadcast/Broadcast";
+
+	// pathTmp          = (context->isProposal) ? "/protos.Endorser/ProcessProposal" : \
+	// 				                           "/orderer.AtomicBroadcast/Broadcast";
+	// pathTmp = "/discovery.Discovery/Discover";
+	if (context->type == HLFABRIC_TYPE_PROPOSAL)
+	{
+		pathTmp = "/protos.Endorser/ProcessProposal";
+	}
+	else if (context->type == HLFABRIC_TYPE_TRANSACTION)
+	{
+		pathTmp = "/orderer.AtomicBroadcast/Broadcast";
+	}
+	else
+	{
+		pathTmp = "/discovery.Discovery/Discover";
+	}
+
 	nghttp2_nv nva[] = { MAKE_NV(":method", "POST"),
 						 MAKE_NV(":scheme", "http"),
 						 MAKE_NV(":path", pathTmp),
@@ -329,7 +380,12 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 						 MAKE_NV("content-type", "application/grpc"),
 						 MAKE_NV("user-agent", "grpc-go/1.15.0"),
                          MAKE_NV("te", "trailers") };
-	
+
+	http2Reslen = 0;
+	if (http2ResData != NULL)
+	{
+		// BoatFree(http2ResData);
+	}
 	/* connection establishment */
 	context->sockfd = BoatConnect(context->nodeUrl, NULL);	
 	if(context->sockfd < 0)

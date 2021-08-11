@@ -18,6 +18,9 @@ ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS), 1)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)
 	SOURCES += api_hlfabric.c
+ifeq ($(BOAT_DISCOVERY_PEER_QUERY),1)  
+	SOURCES += api_hlfabric_discover.c
+endif	
 endif
 
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/wallet

@@ -90,6 +90,19 @@ typedef struct TBoatPlatoneTx
     BoatPlatoneRawtxFields rawtx_fields;      //!< RAW transaction fields
 }BoatPlatoneTx;
 
+typedef struct T_wbe3_nodeInfo
+{
+    char * IP;
+    BUINT32 rpcPort;
+    
+}wbe3_nodeInfo;
+
+typedef struct T_nodesResult
+{
+    BUINT8 num;
+    wbe3_nodeInfo *nodeInfo;
+}nodesResult;
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -413,6 +426,9 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BC
 {
     return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);
 }
+
+
+BCHAR * my_contract_cpp_abi_getNodeManagerAddr(BoatPlatoneTx *tx_ptr,nodesResult *result_out);
 
 /*! @}*/
 

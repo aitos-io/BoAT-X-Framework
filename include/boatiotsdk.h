@@ -47,6 +47,9 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 
 #if PROTOCOL_USE_HLFABRIC == 1
 #include "protocolapi/api_hlfabric.h"
+#if DISCOVERY_PEER_QUERY == 1
+#include "protocolapi/api_hlfabric_discover.h"
+#endif
 #endif
 
 #if PROTOCOL_USE_PLATONE == 1

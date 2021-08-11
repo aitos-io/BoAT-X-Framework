@@ -126,6 +126,8 @@ typedef struct TParam_fiscobcos_getBlockNumber
 }Param_fiscobcos_getBlockNumber;
 
 
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -615,6 +617,8 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
 BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
 									 BCHAR *node_url_str,
 									 const Param_fiscobcos_getBlockNumber *param_ptr);
+
+int supports_full_hd(const char * const monitor,nodesResult *result_out);
 
 /*! @}*/
 
