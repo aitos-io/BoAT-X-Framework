@@ -78,7 +78,7 @@
 注：以下6、7两条修改，是把BoAT-X-Framework编译环境从Linux改成Windows下的Cygwin。如果是在Linux下编译，可以直接跳过6，7两步。
 
 ### 6、修改BoAT-X-Framework编译命令为Cygwin命令
-  打开N58平台代码根目录/BoAT-X-Framework/Makefile文件。假设Cygwin安装在C:/cygwin64下，则修改为以下值： 
+  打开N58平台代码根目录/BoAT-X-Framework/vendor/platform/Neoway-N58/external.env文件。假设Cygwin安装在C:/cygwin64下，则修改为以下值： 
   	
     CYGWIN_BASE := C:/cygwin64 //根据实际Cygwin安装路径修改  
     BOAT_RM := $(CYGWIN_BASE)/bin/rm -rf  
