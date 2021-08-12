@@ -141,4 +141,4 @@ add_subdirectory(demo)
 endif()
 
 add_subdirectory(vendor)
-#add_subdirectory(sdk)
+add_subdirectory(sdk)

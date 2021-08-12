@@ -24,7 +24,7 @@ target_include_directories(${MODULE_NAME}
     PRIVATE
     ${PROJECT_SOURCE_DIR}/sdk/include
     PUBLIC
-    $<BUILD_INTERFACE:${KECCAK_FOLDER}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/common/storage>
 )
 
 
