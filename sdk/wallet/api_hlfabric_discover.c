@@ -37,10 +37,10 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "peer/proposal_response.pb-c.h"
 #include "discovery/protocol.pb-c.h"
 
-BUINT16 getURL(BUINT8 *data, BUINT16 datalen, BUINT16 *outOffset)
+BUINT32 getURL(BUINT8 *data, BUINT32 datalen, BUINT32 *outOffset)
 {
-	BUINT16 len = 0;
-	BUINT16 offset = 0;
+	BUINT32 len = 0;
+	BUINT32 offset = 0;
 	if (((data[offset] & 0x07) == 0) && ((data[offset + 1] & 0x80) == 0))
 	{
 		offset += 2;
@@ -265,14 +265,14 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadDataPacked(BoatHlfabricTx *tx_pt
 														   BoatFieldVariable *output_ptr)
 {
 
-	ProtobufCBinaryData argsTmp[BOAT_HLFABRIC_ARGS_MAX_NUM];
+	// ProtobufCBinaryData argsTmp[BOAT_HLFABRIC_ARGS_MAX_NUM];
 	BUINT8 *chaincodeInvocationSpecBuffer = NULL;
 	BUINT16 packedLength;
 	Protos__ChaincodeInput message = PROTOS__CHAINCODE_INPUT__INIT;
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT16 resLen = 0, len = 0;
 	BUINT16 offset = 0;
-	boat_try_declare;
+	// boat_try_declare;
 
 	len = strlen(tx_ptr->var.chaincodeId.name);
 	chaincodeInvocationSpecBuffer = BoatMalloc(len + 6);
@@ -288,7 +288,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadDataPacked(BoatHlfabricTx *tx_pt
 	message.n_args = 1;
 	message.args = BoatMalloc((message.n_args) * sizeof(ProtobufCBinaryData));
 
-	message.args[0].data = tx_ptr->var.channelId;
+	message.args[0].data = (BUINT8*)tx_ptr->var.channelId;
 	message.args[0].len = strlen(tx_ptr->var.channelId);
 
 	packedLength = protos__chaincode_input__get_packed_size(&message);
@@ -357,12 +357,12 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadDataPacked(BoatHlfabricTx *tx_pt
 	}
 	output_ptr->field_len = resLen;
 
-	/* boat catch handle */
-	boat_catch(hlfabricProposalPayloadDataPacked_exception)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-		result = boat_exception;
-	}
+	// /* boat catch handle */
+	// boat_catch(hlfabricProposalPayloadDataPacked_exception)
+	// {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+	// 	result = boat_exception;
+	// }
 
 	/* free malloc */
 	BoatFree(chaincodeInvocationSpecBuffer);
@@ -412,7 +412,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
 	Common__Header header = COMMON__HEADER__INIT;
 	Common__Payload payload = COMMON__PAYLOAD__INIT;
 	BoatFieldVariable signatureHeaderPacked = {NULL, 0};
-	BoatFieldVariable channelHeaderPacked = {NULL, 0};
+	// BoatFieldVariable channelHeaderPacked = {NULL, 0};
 	BoatFieldVariable payloadDataPacked = {NULL, 0};
 	BUINT8 txIdBin[32];
 	BUINT32 packedLength;
@@ -522,7 +522,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
  ******************************************************************************/
 BOAT_RESULT hlfabricProposalDiscoverTransactionPacked(BoatHlfabricTx *tx_ptr)
 {
-	Common__Envelope envelope = COMMON__ENVELOPE__INIT;
+	// Common__Envelope envelope = COMMON__ENVELOPE__INIT;
 	BoatFieldVariable payloadPacked = {NULL, 0};
 	BoatSignatureResult signatureResult;
 	Discovery__SignedRequest message = DISCOVERY__SIGNED_REQUEST__INIT;
@@ -698,18 +698,18 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoverExec(BoatHlfabricTx *tx_ptr,
 
 BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabricNodesCfg endorserInfo_ptr)
 {
-	BoatHlfabricNodeInfo urlTmp[2] = {{NULL, NULL}, {NULL, NULL}};
+	// BoatHlfabricNodeInfo urlTmp[2] = {{NULL, NULL}, {NULL, NULL}};
 	BOAT_RESULT result = BOAT_SUCCESS;
 	Discovery__Response *discoveryResponse = NULL;
 	Msp__SerializedIdentity *msp_serializedIdentity = NULL;
-	Protos__ProposalResponsePayload *ResponsePayload = NULL;
+	// Protos__ProposalResponsePayload *ResponsePayload = NULL;
 	DiscoverRes discoverResult;
 	BUINT32 http2Reslen = 0, len = 0, offset = 0;
 	BUINT8 *http2ResData;
 	BCHAR *port;
 	BCHAR *IP = "192.168.132.190";
 	// BCHAR *IP2 = "192.168.132.190:";
-	boat_try_declare;
+	// boat_try_declare;
 
 	if (tx_ptr == NULL)
 	{
@@ -735,9 +735,9 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 		BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack failed, maybe a invalid endorser.");
 		return 0;
 	}
-	BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack OK, discoveryResponse n_result= %d", discoveryResponse->n_results);
-	BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack OK, discoveryResponse n_content= %d", discoveryResponse->results[0]->cc_query_res->n_content);
-	BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack OK, discoveryResponse n_msps= %d", discoveryResponse->results[0]->config_result->n_msps);
+	// BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack OK, discoveryResponse n_result= %d", discoveryResponse->n_results);
+	// BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack OK, discoveryResponse n_content= %d", discoveryResponse->results[0]->cc_query_res->n_content);
+	// BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack OK, discoveryResponse n_msps= %d", discoveryResponse->results[0]->config_result->n_msps);
 	Discovery__ConfigResult *mconfig_result;
 	mconfig_result = discoveryResponse->results[0]->config_result;
 	BUINT8 num = mconfig_result->n_msps;
@@ -976,12 +976,12 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	tx_ptr->endorserResponse.responseCount = 0;
 	DiscoverResFree(discoverResult);
 
-	/* boat catch handle */
-	boat_catch(BoatHlfabricTxSubmit_exception)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-		result = boat_exception;
-	}
+	// /* boat catch handle */
+	// boat_catch(BoatHlfabricTxSubmit_exception)
+	// {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+	// 	result = boat_exception;
+	// }
 	if (http2ResData != NULL)
 	{
 		BoatFree(http2ResData);

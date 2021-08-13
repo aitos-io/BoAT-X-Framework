@@ -170,7 +170,6 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	
 	(void)rsvd;
-	result = result;
 	
 	if( (fileName == NULL) || (writeBuf == NULL) )
 	{
@@ -206,7 +205,7 @@ BOAT_RESULT  BoatReadFile( const BCHAR *fileName,
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	
 	(void)rsvd;
-	result = result;
+
 	
 	if( (fileName == NULL) || (readBuf == NULL) )
 	{

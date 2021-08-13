@@ -59,7 +59,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
 	BOAT_RESULT result = BOAT_SUCCESS;
 
 	/* input param check */
-	if( ( hashed == NULL ) )
+	if(  hashed == NULL  )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'hashed' can't be NULL." );
 		return BOAT_ERROR_INVALID_ARGUMENT;
