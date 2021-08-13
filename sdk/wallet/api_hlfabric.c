@@ -405,7 +405,7 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo( BoatHlfabricWallet *wallet_ptr,
 BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 											 const BoatHlfabricNodesCfg endorserInfo_ptr)
 {
-	BUINT32 stringLen;
+
 	BUINT16 i = 0, j = 0, k = 0;
 
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -415,17 +415,20 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 	if (wallet_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		// return BOAT_ERROR_INVALID_ARGUMENT;
+		boat_throw( BOAT_ERROR_INVALID_ARGUMENT, BoatHlfabricWalletSetNetworkInfo_exception );
 	}
 	if (endorserInfo_ptr.endorserLayoutNum == 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter endorserNumber out of limit.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		// return BOAT_ERROR_INVALID_ARGUMENT;
+		boat_throw( BOAT_ERROR_INVALID_ARGUMENT, BoatHlfabricWalletSetNetworkInfo_exception );
 	}
 	if (endorserInfo_ptr.orderCfg.endorserNumber == 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter ordererNumber out of limit.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		// return BOAT_ERROR_INVALID_ARGUMENT;
+		boat_throw( BOAT_ERROR_INVALID_ARGUMENT, BoatHlfabricWalletSetNetworkInfo_exception );
 	}
 
 	/* initialization */
@@ -1026,9 +1029,9 @@ BOAT_RESULT BoatHlfabricTxSetArgs( BoatHlfabricTx *tx_ptr,
 
 BOAT_RESULT BoatHlfabricTxEvaluate( BoatHlfabricTx *tx_ptr )
 {
-	BoatHlfabricNodeInfo urlTmp[2]    = {{NULL,NULL}, {NULL,NULL}};
+	// BoatHlfabricNodeInfo urlTmp[2]    = {{NULL,NULL}, {NULL,NULL}};
 	BOAT_RESULT result  = BOAT_SUCCESS;
-    boat_try_declare;
+    // boat_try_declare;
 	
 	if( tx_ptr == NULL )
 	{
@@ -1062,12 +1065,12 @@ BOAT_RESULT BoatHlfabricTxEvaluate( BoatHlfabricTx *tx_ptr )
 	}
 	tx_ptr->endorserResponse.responseCount = 0;
 	
-	/* boat catch handle */
-	boat_catch(BoatHlfabricTxEvaluate_exception)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-	 	result = boat_exception;
-	}
+	// /* boat catch handle */
+	// boat_catch(BoatHlfabricTxEvaluate_exception)
+	// {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+	//  	result = boat_exception;
+	// }
 
 	return result;
 }
@@ -1075,9 +1078,9 @@ BOAT_RESULT BoatHlfabricTxEvaluate( BoatHlfabricTx *tx_ptr )
 
 BOAT_RESULT BoatHlfabricTxSubmit( BoatHlfabricTx *tx_ptr )
 {
-	BoatHlfabricNodeInfo urlTmp[2]    = {{NULL,NULL}, {NULL,NULL}};
+	// BoatHlfabricNodeInfo urlTmp[2]    = {{NULL,NULL}, {NULL,NULL}};
 	BOAT_RESULT result  = BOAT_SUCCESS;
-    boat_try_declare;
+    // boat_try_declare;
 	
 	if( tx_ptr == NULL )
 	{
@@ -1122,11 +1125,11 @@ BOAT_RESULT BoatHlfabricTxSubmit( BoatHlfabricTx *tx_ptr )
 	tx_ptr->endorserResponse.responseCount = 0;
 	
 	/* boat catch handle */
-	boat_catch(BoatHlfabricTxSubmit_exception)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-	 	result = boat_exception;
-	}
+	// boat_catch(BoatHlfabricTxSubmit_exception)
+	// {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+	//  	result = boat_exception;
+	// }
 
 	return result;
 }

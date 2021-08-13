@@ -206,9 +206,9 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
 	// return_value_ptr = rpc_response_str;
 
     web3_parse_json_result(rpc_response_str, "result", &prase_result);
-    nodeManagerAddr = BoatMalloc(strlen(prase_result.field_ptr)/2);
-    memset(nodeManagerAddr,0x00,strlen(prase_result.field_ptr)/2);
-    hex2array(prase_result.field_ptr+2,strlen(prase_result.field_ptr)-2,nodeManagerAddr);
+    nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr))/2);
+    memset(nodeManagerAddr,0x00,strlen((BCHAR*)(prase_result.field_ptr))/2);
+    hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
  // Construct the REQUEST
 	do{
 		malloc_size_expand_flag = false;
@@ -266,9 +266,9 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
 
     web3_parse_json_result(rpc_response_str, "data", &prase_result);
 
-    nodeManagerAddr = BoatMalloc(strlen(prase_result.field_ptr)/2);
-    memset(nodeManagerAddr,0x00,strlen(prase_result.field_ptr)/2);
-    hex2array(prase_result.field_ptr+2,strlen(prase_result.field_ptr)-2,nodeManagerAddr);
+    nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr))/2);
+    memset(nodeManagerAddr,0x00,strlen((BCHAR*)(prase_result.field_ptr))/2);
+    hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
  // Construct the REQUEST
     
     // web3_parse_fatherNamejson_result(nodeManagerAddr,"data", "externalIP", &prase_result);
