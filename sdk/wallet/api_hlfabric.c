@@ -667,7 +667,7 @@ BoatHlfabricWallet *BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
 {
 	BoatHlfabricWallet *wallet_ptr = NULL;
 	BOAT_RESULT result = BOAT_SUCCESS;
-	BUINT16 i = 0, j = 0;
+	BUINT16 i ;
 
 	if( ( config_ptr == NULL ) || ( config_size == 0 ) )
 	{
@@ -744,7 +744,7 @@ BoatHlfabricWallet *BoatHlfabricWalletInit( const BoatHlfabricWalletConfig *conf
 
 void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr )
 {
-	BUINT16 i = 0, j = 0, k = 0;
+	BUINT16 i , j, k ;
 
     if( NULL == wallet_ptr )
     {
@@ -918,7 +918,7 @@ BOAT_RESULT BoatHlfabricTxInit( BoatHlfabricTx *tx_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
 	 	result = boat_exception;
 		/* free malloc param Deinit */
-		for(int i = 0; i < sizeof(paramDstList)/sizeof(paramDstList[0]); i++)
+		for( i = 0; i < sizeof(paramDstList)/sizeof(paramDstList[0]); i++)
 		{
 			BoatFree(paramDstList[i]);
 		}
@@ -1095,11 +1095,18 @@ BOAT_RESULT BoatHlfabricTxSubmit( BoatHlfabricTx *tx_ptr )
 	/* invoke-step1: submit proposal to endorer */
 	tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
 	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, BOAT_FALSE);
+	if(result != BOAT_SUCCESS)
+	{
+		return BOAT_ERROR;
+	}
 
 	/* invoke-step2: submit transaction to orderer */
 	tx_ptr->var.type = HLFABRIC_TYPE_TRANSACTION;
 	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, BOAT_FALSE);
-
+	if(result != BOAT_SUCCESS)
+	{
+		return BOAT_ERROR;
+	}
 	/* free the unpacked response data */
 	for( int i = 0; i < tx_ptr->endorserResponse.responseCount; i++ )
 	{
