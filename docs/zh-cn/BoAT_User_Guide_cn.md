@@ -28,13 +28,14 @@ BoAT IoT Framework是面向蜂窝模组的C语言区块链应用框架客户端�
 
 **已支持的区块链:**  
 以太坊  
+PlatON  
 PlatONE  
 FISCO-BCOS  
-Hyperledger Fabric
+Hyperledger Fabric  
 
 **支持的Target操作系统：**  
 Linux  
-RTOS
+RTOS  
 
 
 **支持的Build操作系统：**  
@@ -46,7 +47,7 @@ Linux/Cygwin
 区块链账号的创建/加载/卸载  
 转账交易  
 智能合约调用（自动生成C调用接口）  
-智能合约调用（手工构造）    
+智能合约调用（手工构造）  
 
 
 ### 系统中的位置
@@ -153,11 +154,13 @@ C:\Documents and Settings\developer\project\boatiotsdk
 顶层makefile中：
 ```
 BOAT_PROTOCOL_USE_ETHEREUM  ?= 1
+BOAT_PROTOCOL_USE_PLATON    ?= 1
 BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 ```
-根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁能相应的区块链协议。
+根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁用相应的区块链协议。  
+***注：由于PlatON，PlatONE和FISCOBCOS三个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能***  
 - 日志打印级别调整  
 根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
 
@@ -356,7 +359,7 @@ f)	在“编辑环境变量”页中点击“新建”，新增Cygwin的安装�
 
 ### 编译和运行Demo
 #### 准备
-SDK提供基于以太坊、PlatONE、FISCO-BCOS和fabric的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
+SDK提供基于以太坊、PlatON、PlatONE、FISCO-BCOS和fabric的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
 
 Demo所使用的智能合约及其ABI JSON文件放置在：  
 
@@ -372,6 +375,9 @@ ganache及truffle工具可以访问该网站：https://truffleframework.com
 ganache有命令行界面的ganache-cli版本，以及图形界面的Ganache版本。命令行界面的ganache-cli和图形界面的Ganache 1.x版本不会存盘，如果ganache-cli或Ganache   1.x的进程被终止，部署的合约会丢失，下次启动需要使用命令truffle migrate --reset重新部署合约，重新部署的合约地址可能会变化。图形界面的Ganache   2.x版本可以建Workspace保存状态，关闭下次重新打开该Workspace后，部署过的合约仍然在无需重新部署。  
 除了使用ganache模拟器，还可以使用Ropsten等以太坊测试网络（需要申请免费的测试token）。  
 
+在运行PlatON的Demo之前，需要安装PlatON节点。  
+PlatON源码及工具可以访问该网站：https://platon.network/
+
 在运行PlatONE的Demo之前，需要安装PlatONE节点，以及智能合约编译和部署工具。  
 PlatONE源码及工具可以访问该网站：https://platone.wxblockchain.com
 
@@ -386,14 +392,16 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 | :----------------------------------| :------------|
 |\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c|以太坊合约演示用例  |
 |\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c|以太坊转账演示用例  |
+|\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c|PLATON转账演示用例  |
 |\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c|PLATONE合约演示用例  |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c|FISCO-BCOS合约演示用例  |
 
 编译Demo之前，需要修改Demo的C代码中以下部分：
-- 对于ETHEREUM、FISCO-BCOS、PLATONE:
+- 对于ETHEREUM、PLATON、FISCO-BCOS、PLATONE:
   1.	搜索`demoUrl`，将节点URL（含端口）填写为实际部署的节点或模拟器的IP地址和RPC端口
   2.	如果demo需使用原生私钥, 则搜索`native_demoKey`，并将客户端私钥设置为：  
         -	对于ETHEREUM，设置为ganache生成的任意一个账户的私钥  
+        - 对于PlatON，无需修改Demo中的私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥对应的原生格式私钥
   3.	如果demo需使用原生私钥, 则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
@@ -413,7 +421,7 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 ```
 $make demo
 ```
-生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下，< protocol>可以为`ethereum` `fisco-bcos` `platone` `fabric`。
+生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下，< protocol>可以为`ethereum` `platon` `fisco-bcos` `platone` `fabric`。
 
 
 
@@ -577,7 +585,7 @@ void BoatWalletDelete(BCHAR * wallet_name_str);
 以以太坊为例:
 ```
 BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr,
-                            BCHAR * value_hex_str);
+                            BCHAR *value_hex_str);
 ```
 
 参数:
