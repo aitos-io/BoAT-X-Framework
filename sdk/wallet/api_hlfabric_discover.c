@@ -240,6 +240,27 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverSignatureHeaderPacked(const BoatHlfabri
 	return result;
 }
 
+/*!****************************************************************************
+ * @brief peer discover payload data packed
+ * 
+ * @details
+ *   proposal payload is consist of query content field. query content field is 
+ *   made up configuration information to be queried,  e.g. 
+ *   "DISCOVERY__QUERY__QUERY_CC_QUERY ","DISCOVERY__QUERY__QUERY_CONFIG_QUERY"
+ *
+ * @param tx_ptr 
+ *   fabric transaction structure pointer
+ *
+ * @param[out] output_ptr 
+*   A structure pointer to store nodes info, e.g. "hostname","port","TLScert".
+ *   In internal of this function, the memory of store serialize data has been alloced,
+ *   caller SHOULD NOT alloc memory for this pointer again.
+ *
+ * @return 
+ *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
+ ******************************************************************************/
+
+
 __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadDataPacked(BoatHlfabricTx *tx_ptr,
 														   BoatFieldVariable *output_ptr)
 {
@@ -361,6 +382,30 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadDataPacked(BoatHlfabricTx *tx_pt
 	return result;
 }
 
+/*!****************************************************************************
+ * @brief peer discover payload packed
+ * 
+ * @details
+ *   proposal payload is consist of  chaincode id field and 
+ *    query content field.
+ *   \n Language type indicate chaincode coding language, e.g. the chaincode is 
+ *   coding by go, or java, or other support languages. chaincode id is made up
+ *   path, name, and version. query content field is made up configuration 
+ *   information to be queried,  e.g. "DISCOVERY__QUERY__QUERY_CC_QUERY "
+ *   ,"DISCOVERY__QUERY__QUERY_CONFIG_QUERY"
+ *
+ * @param tx_ptr 
+ *   fabric transaction structure pointer
+ *
+ * @param[out] output_ptr 
+*   A structure pointer to store nodes info, e.g. "hostname","port","TLScert".
+ *   In internal of this function, the memory of store serialize data has been alloced,
+ *   caller SHOULD NOT alloc memory for this pointer again.
+ *
+ * @return 
+ *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
+ ******************************************************************************/
+
 __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
 													   BoatFieldVariable *output_ptr)
 {
@@ -450,7 +495,31 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
 
 	return result;
 }
-
+/*!****************************************************************************
+ * @brief  peer discover transaction payload data packed
+ *
+ * @details
+ *   The composition of transaction is shown as follow:
+   @verbatim
+   
+                                   /signatureHeader             
+   transaction -->transactionAction 
+                                   \                       /chaincodeProposalPayload
+                                    \chaincodeActionPayload
+  								                           \chaincodeQueryAction
+ * @endverbatim
+ *
+ * @param tx_ptr 
+ *   fabric transaction structure pointer
+ *
+ * @param[out] output_ptr 
+ *   A structure pointer to store nodes info, e.g. "hostname","port","TLScert".
+ *   In internal of this function, the memory of store serialize data has been alloced,
+ *   caller SHOULD NOT alloc memory for this pointer again.
+ *
+ * @return 
+ *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
+ ******************************************************************************/
 BOAT_RESULT hlfabricProposalDiscoverTransactionPacked(BoatHlfabricTx *tx_ptr)
 {
 	Common__Envelope envelope = COMMON__ENVELOPE__INIT;
