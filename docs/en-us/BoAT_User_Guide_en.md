@@ -116,13 +116,13 @@ BoAT IoT Framework SDK depends on the following software:
 
 | Dependent software | requirements                                         | Build environment         | Target environment        |
 | :----------------- | :--------------------------------------------------- | :------------------------ | :------------------------ |
-| Host OS            | linux，Or Cygwin on Windows                          | Required                  |                           |
-| Target OS          | linux                                                |                           | Required                  |
+| Host OS            | Linux，Or Cygwin on Windows                          | Required                  |                           |
+| Target OS          | Linux                                                |                           | Required                  |
 | Compiler           | gcc，Need to support c99 (9.3.0 is tested)           | Required                  |                           |
 | Cross-compiler     | arm-oe-linux-gnueabi-gcc 4.9.2 is tested             | Required                  |                           |
 | Make               | GNU Make (4.3 is tested)                             | Required                  |                           |
 | Python             | Python 3.8.3 (Python 2.7 is also compatible)         | Required                  |                           |
-| curl               | libcurl and its development files (7.55.1 is tested) | Required on linux default | Required on linux default |
+| curl               | libcurl and its development files (7.55.1 is tested) | Required on Linux default | Required on Linux default |
 
 Before compiling the SDK and using it, you need to make sure that these software have been installed. On Ubuntu, can use the apt install command to install the corresponding package. Under Cygwin, use the Setup program that comes with Cygwin to install.
 
@@ -145,7 +145,7 @@ The following paths are not suitable:
 C:\Documents and Settings\developer\project\boatiotsdk  
 
 If you can't avoid the unsuitable characters above in the path, please use the following methods to avoid:  
-For linux: In a path without unsuitable characters, create a symbolic link to the SDK directory: ln -s \<SDKRoot\> boatiotsdk, and compile under the path of the symbolic link.  
+For Linux: In a path without unsuitable characters, create a symbolic link to the SDK directory: ln -s \<SDKRoot\> boatiotsdk, and compile under the path of the symbolic link.  
 For Windows: use the SUBST Z: \<SDKRoot\> command to create a virtual drive letter Z: (or other unused drive letter), and compile under the Z: drive.
 
 
@@ -218,7 +218,7 @@ After the compilation is complete, the generated library file is in ./lib. The a
 #### Use Cygwin as The Compilation Environment
 On Windows, the SDK does not support compilation in environments other than Cygwin, nor does it support compilation with compilers other than gcc.
 
-The compilation steps are the same as under linux.
+The compilation steps are the same as under Linux.
 
 ### Cross-Compilation
 In cross-compilation, it is generally necessary to configure the compilation configuration file according to the specific compilation environment.
@@ -355,7 +355,7 @@ f)	On the "Edit Environment Variables" page, click "New", add the bin path under
 ###### Other adjustments
 When cross-compiling outside of Cygwin, in addition to the previous section, the following adjustments are required:
 
-1.	Try make, if it prompts that the path is wrong, change the corresponding path separator in the Makefile from "/" to "\\". Don't change all "/" to "\\" at the beginning, because the Windows version of some tools derived from linux can recognize "/" as a path separator.
+1.	Try make, if it prompts that the path is wrong, change the corresponding path separator in the Makefile from "/" to "\\". Don't change all "/" to "\\" at the beginning, because the Windows version of some tools derived from Linux can recognize "/" as a path separator.
 2.	Configure the environment variables described in section [Independent Cross-Compilation Environment](#Independent-Cross-Compilation-Environment) to point to the correct cross-compilation environment. In these environment variables, the path should be separated by "\\".
 
 ### Compile and Run Demo
@@ -425,7 +425,7 @@ The generated Demo programs are located under the path \<SDKRoot\>/build/demo/de
 This problem is generally caused by the command under target in the Makefile that does not start with Tab (ASCII code 0x09). Note that when you press the Tab key, the text editor may replace the Tab character with a number of spaces. The text editor should be set not to replace Tab with spaces.
 
 2. The prompt "curl/curl.h" cannot be found during compilation  
-This problem is caused by the fact that curl and its development files are not installed in the system. For Host compilation on a Linux distribution, please note that only installing the curl package is not enough, you also need to install its development file package. The development file package has different names in different linux distributions, usually named similar to curl-devel, or libcurl. For details, please refer to the package management tool of the Linux distribution you are using.    
+This problem is caused by the fact that curl and its development files are not installed in the system. For Host compilation on a Linux distribution, please note that only installing the curl package is not enough, you also need to install its development file package. The development file package has different names in different Linux distributions, usually named similar to curl-devel, or libcurl. For details, please refer to the package management tool of the Linux distribution you are using.    
 
 
 If curl is compiled with source code and is not installed in the system directory, you should specify its search path in external.env, and specify the path where the curl library is located when linking.  
@@ -971,7 +971,7 @@ The manual construction of transactions needs to follow the ABI interface of the
 If the SDK is ported to RTOS, the following points should generally be followed:
 ###### 1. Remove The Dependency On Curl
 
-curl is a communication protocol library under linux, used in the SDK to support http/https communication. Blockchain nodes usually use the http/https protocol to communicate.
+curl is a communication protocol library under Linux, used in the SDK to support http/https communication. Blockchain nodes usually use the http/https protocol to communicate.
 
 For modules using RTOS, you should add a call package to the module's http/https interface in\<SDKRoot\>/vendor/platform/\<platform_name\>/src/rpc, and modify \<SDKRoot\>/vendor/platform/\<platform_name\>/scripts/gen.py, close RPC_USE_LIBCURL and set the new RPC USE OPTION.
 
