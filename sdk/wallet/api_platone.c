@@ -342,7 +342,7 @@ BCHAR *BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr
 
 }
 
-BCHAR *BoatPlatoneCallContractGetNodesManagerAddrFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
+BCHAR *BoatPlatoneCallContractGetNodesInfoFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
 									 BUINT32 rlp_param_len ,
                                      nodesResult *result_out)
 {
@@ -395,7 +395,7 @@ BCHAR *BoatPlatoneCallContractGetNodesManagerAddrFunc( BoatPlatoneTx *tx_ptr, BU
 }
 
 
-BCHAR * my_contract_cpp_abi_getNodeManagerAddr(BoatPlatoneTx *tx_ptr,nodesResult *result_out)
+BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out)
 {
     BCHAR *call_result_str = NULL;
     RlpEncodedStreamObject * rlp_stream_ptr;
@@ -424,9 +424,9 @@ BCHAR * my_contract_cpp_abi_getNodeManagerAddr(BoatPlatoneTx *tx_ptr,nodesResult
 
     rlp_stream_ptr = RlpGetEncodedStream(&rlp_object_list);
 
-    call_result_str = BoatPlatoneCallContractGetNodesManagerAddrFunc(tx_ptr, rlp_stream_ptr->stream_ptr, rlp_stream_ptr->stream_len,result_out);
+    call_result_str = BoatPlatoneCallContractGetNodesInfoFunc(tx_ptr, rlp_stream_ptr->stream_ptr, rlp_stream_ptr->stream_len,result_out);
 
-    BoatLog(BOAT_LOG_CRITICAL, " BoatPlatoneCallContractGetNodesManagerAddrFunc ok.");
+    BoatLog(BOAT_LOG_CRITICAL, " BoatPlatoneCallContractGetNodesInfoFunc ok.");
     boat_catch(cleanup)
     {
         RlpRecursiveDeleteObject(&rlp_object_list);

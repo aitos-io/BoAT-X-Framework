@@ -427,8 +427,11 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BC
     return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);
 }
 
-
-BCHAR * my_contract_cpp_abi_getNodeManagerAddr(BoatPlatoneTx *tx_ptr,nodesResult *result_out);
+/*!****************************************************************************
+ * @brief Get Nodes Info e.g. IP/Port.
+ * @see BoatPlatoneGetNodesInfo()
+ ******************************************************************************/
+BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out);
 
 /*! @}*/
 

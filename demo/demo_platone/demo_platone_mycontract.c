@@ -198,7 +198,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
         //BoatLog(BOAT_LOG_NORMAL, "BoatPlatoneTxInit fails.");
         return BOAT_ERROR;
     }
-    result_str = my_contract_cpp_abi_getNodeManagerAddr(&tx_ctx,&result_out);
+    result_str = BoatPlatoneGetNodesInfo(&tx_ctx,&result_out);
     for (size_t i = 0; i < result_out.num; i++)
     {
         /* code */
