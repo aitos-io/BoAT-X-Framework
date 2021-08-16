@@ -773,6 +773,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 			}
 		}
 	}
+	1111
 	Discovery__ConfigResult *config_result = discoveryResponse->results[1]->config_result;
 	discoverResult.discoverConfig.discoverMsps.num = config_result->n_msps;
 	discoverResult.discoverConfig.discoverMsps.discoverMspInfo = BoatMalloc(config_result->n_msps * sizeof(mspsInfo));
