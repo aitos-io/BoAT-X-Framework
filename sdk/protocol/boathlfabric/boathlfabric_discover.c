@@ -503,6 +503,7 @@ BOAT_RESULT hlfabricProposalDiscoverTransactionPacked(BoatHlfabricTx *tx_ptr)
 	BUINT8 hash[32];
 	BUINT32 packedLength;
 	BUINT8 *packedData = NULL;
+	int i;
 
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
@@ -559,7 +560,7 @@ BOAT_RESULT hlfabricProposalDiscoverTransactionPacked(BoatHlfabricTx *tx_ptr)
 	/* step-7: packed data assignment */
 	/* ---grpcHeader compute */
 	grpcHeader[0] = 0x00; //uncompressed
-	for (int i = 0; i < 4; i++)
+	for ( i = 0; i < 4; i++)
 	{
 		grpcHeader[i + 1] = (packedLength >> (32 - 8 * (i + 1))) & 0xFF;
 	}
@@ -681,6 +682,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	BUINT8 *http2ResData;
 	BCHAR *port;
 	BCHAR *IP = "192.168.132.190";
+	int i,j,k,l,m;
 	// BCHAR *IP2 = "192.168.132.190:";
 	// boat_try_declare;
 
@@ -717,19 +719,19 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	cc_query_res = discoveryResponse->results[0]->cc_query_res;
 	num = cc_query_res->n_content;
 	BUINT8 n_layouts, n_quantities_by_group;
-	for (int i = 0; i < num; i++)
+	for ( i = 0; i < num; i++)
 	{
 
 		// BoatLog(BOAT_LOG_CRITICAL, "[http2] discover endorsers_by_groups key  : %s ",cc_query_res->content[i]->endorsers_by_groups[0]->key);
 		n_layouts = cc_query_res->content[i]->n_layouts;
 		discoverResult.cc_res.num = n_layouts;
 		discoverResult.cc_res.layouts = BoatMalloc(n_layouts * sizeof(layoutInfo));
-		for (int j = 0; j < n_layouts; j++)
+		for ( j = 0; j < n_layouts; j++)
 		{
 			n_quantities_by_group = cc_query_res->content[i]->layouts[j]->n_quantities_by_group;
 			discoverResult.cc_res.layouts[j].num = n_quantities_by_group;
 			discoverResult.cc_res.layouts[j].groups = BoatMalloc(n_quantities_by_group * sizeof(groupInfo));
-			for (int k = 0; k < n_quantities_by_group; k++)
+			for ( k = 0; k < n_quantities_by_group; k++)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "[http2] discover layout key  : %s ", cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key);
 				BoatLog(BOAT_LOG_CRITICAL, "[http2] discover layout value: %x ", cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->value);
@@ -742,12 +744,12 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 
 		BUINT8 n_endorsers = cc_query_res->content[i]->n_endorsers_by_groups;
 
-		for (int j = 0; j < n_endorsers; j++)
+		for ( j = 0; j < n_endorsers; j++)
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "endorsers_by_groups[%d] key : %s ", j, cc_query_res->content[i]->endorsers_by_groups[j]->key);
-			for (int m = 0; m < discoverResult.cc_res.num; m++)
+			for ( m = 0; m < discoverResult.cc_res.num; m++)
 			{
-				for (int k = 0; k < discoverResult.cc_res.layouts[m].num; k++)
+				for ( k = 0; k < discoverResult.cc_res.layouts[m].num; k++)
 				{
 
 					if (strlen(cc_query_res->content[i]->endorsers_by_groups[j]->key) == strlen(discoverResult.cc_res.layouts[m].groups[k].key) &&
@@ -757,7 +759,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 						BUINT8 n_peers = discoverResult.cc_res.layouts[m].groups[k].numEndorsers;
 
 						discoverResult.cc_res.layouts[m].groups[k].endorsers = BoatMalloc(n_peers * sizeof(Endorsers));
-						for (int l = 0; l < n_peers; l++)
+						for ( l = 0; l < n_peers; l++)
 						{
 							msp_serializedIdentity = msp__serialized_identity__unpack(NULL, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->identity.len, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->identity.data);
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID = BoatMalloc(strlen(msp_serializedIdentity->mspid));
@@ -773,11 +775,10 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 			}
 		}
 	}
-	1111
 	Discovery__ConfigResult *config_result = discoveryResponse->results[1]->config_result;
 	discoverResult.discoverConfig.discoverMsps.num = config_result->n_msps;
 	discoverResult.discoverConfig.discoverMsps.discoverMspInfo = BoatMalloc(config_result->n_msps * sizeof(mspsInfo));
-	for (int i = 0; i < config_result->n_msps; i++)
+	for ( i = 0; i < config_result->n_msps; i++)
 	{
 		discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name = BoatMalloc(strlen(config_result->msps[i]->key));
 		memcpy(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name, config_result->msps[i]->key, strlen(config_result->msps[i]->key));
@@ -789,17 +790,17 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 		}
 	}
 	discoverResult.discoverConfig.discoverOrders.num = 0;
-	int k = 0;
-	for (int i = 0; i < config_result->n_orderers; i++)
+	 k = 0;
+	for ( i = 0; i < config_result->n_orderers; i++)
 	{
 		/* code */
 		discoverResult.discoverConfig.discoverOrders.num += config_result->orderers[i]->value->n_endpoint;
 	}
 	discoverResult.discoverConfig.discoverOrders.discoverOrderinfo = BoatMalloc(discoverResult.discoverConfig.discoverOrders.num * sizeof(orderInfo));
-	for (int i = 0; i < config_result->n_orderers; i++)
+	for ( i = 0; i < config_result->n_orderers; i++)
 	{
 		/* code */
-		for (int j = 0; j < config_result->orderers[i]->value->n_endpoint; j++)
+		for ( j = 0; j < config_result->orderers[i]->value->n_endpoint; j++)
 		{
 			/* code */
 			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host = BoatMalloc(strlen(config_result->orderers[i]->value->endpoint[j]->host));
@@ -811,11 +812,11 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 		}
 	}
 
-	for (int i = 0; i < tx_ptr->wallet_ptr->network_info.endorserLayoutNum; i++)
+	for ( i = 0; i < tx_ptr->wallet_ptr->network_info.endorserLayoutNum; i++)
 	{
-		for (int j = 0; j < tx_ptr->wallet_ptr->network_info.layoutCfg[i].endorserGroupNum; j++)
+		for ( j = 0; j < tx_ptr->wallet_ptr->network_info.layoutCfg[i].endorserGroupNum; j++)
 		{
-			for (int k = 0; k < tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorserNumber; k++)
+			for ( k = 0; k < tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorserNumber; k++)
 			{
 				if (tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName != NULL)
 				{
@@ -830,17 +831,17 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	}
 	tx_ptr->wallet_ptr->network_info.endorserLayoutNum = discoverResult.cc_res.num;
 	tx_ptr->wallet_ptr->network_info.layoutCfg = BoatMalloc(tx_ptr->wallet_ptr->network_info.endorserLayoutNum * sizeof(BoatHlfabricNodeLayoutCfg));
-	for (int i = 0; i < discoverResult.cc_res.num; i++)
+	for ( i = 0; i < discoverResult.cc_res.num; i++)
 	{
 
 		tx_ptr->wallet_ptr->network_info.layoutCfg[i].endorserGroupNum = discoverResult.cc_res.layouts[i].num;
 		tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg = BoatMalloc(discoverResult.cc_res.layouts[i].num * sizeof(BoatHlfabricNodeGroupCfg));
-		for (int j = 0; j < discoverResult.cc_res.layouts[i].num; j++)
+		for ( j = 0; j < discoverResult.cc_res.layouts[i].num; j++)
 		{
 			tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorserNumber = discoverResult.cc_res.layouts[i].groups[j].numEndorsers;
 			tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser = BoatMalloc(discoverResult.cc_res.layouts[i].groups[j].numEndorsers * sizeof(BoatHlfabricNodeInfoCfg));
 			tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].quantities = discoverResult.cc_res.layouts[i].groups[j].value;
-			for (int k = 0; k < discoverResult.cc_res.layouts[i].groups[j].numEndorsers; k++)
+			for ( k = 0; k < discoverResult.cc_res.layouts[i].groups[j].numEndorsers; k++)
 			{
 				port = strchr(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, ':');
 				len = strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint) - strlen(port);
@@ -853,7 +854,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl + strlen(IP), port, strlen(port));
 				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
 
-				for (int l = 0; l < discoverResult.discoverConfig.discoverMsps.num; l++)
+				for ( l = 0; l < discoverResult.discoverConfig.discoverMsps.num; l++)
 				{
 					if (strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].MSPID) == strlen(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[l].name) && memcmp(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].MSPID, discoverResult.discoverConfig.discoverMsps.discoverMspInfo[l].name, strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].MSPID)) == 0)
 					{
@@ -866,7 +867,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	}
 	tx_ptr->wallet_ptr->network_info.orderCfg.endorserNumber = discoverResult.discoverConfig.discoverOrders.num;
 	tx_ptr->wallet_ptr->network_info.orderCfg.endorser = BoatMalloc(discoverResult.discoverConfig.discoverOrders.num * sizeof(BoatHlfabricNodeInfoCfg));
-	for (int i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
+	for ( i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
 	{
 		len = sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port) + strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host) + 1;
 		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(len);
@@ -878,7 +879,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl[offset++] = ':';
 		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port, sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port));
 
-		for (int l = 0; l < discoverResult.discoverConfig.discoverMsps.num; l++)
+		for ( l = 0; l < discoverResult.discoverConfig.discoverMsps.num; l++)
 		{
 			if (strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].name) == strlen(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[l].name) && memcmp(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].name, discoverResult.discoverConfig.discoverMsps.discoverMspInfo[l].name, strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].name)) == 0)
 			{
@@ -900,10 +901,10 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 
 void DiscoverResFree(DiscoverRes discoverResult)
 {
-
-	for (int i = 0; i < discoverResult.cc_res.num; i++)
+	int i,j;
+	for ( i = 0; i < discoverResult.cc_res.num; i++)
 	{
-		for (int j = 0; j < discoverResult.cc_res.layouts[i].num; j++)
+		for ( j = 0; j < discoverResult.cc_res.layouts[i].num; j++)
 		{
 			if (discoverResult.cc_res.layouts[i].groups[j].key != NULL)
 			{
@@ -911,7 +912,7 @@ void DiscoverResFree(DiscoverRes discoverResult)
 			}
 		}
 	}
-	for (int i = 0; i < discoverResult.discoverConfig.discoverMsps.num; i++)
+	for ( i = 0; i < discoverResult.discoverConfig.discoverMsps.num; i++)
 	{
 		if (discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name != NULL)
 		{
@@ -923,7 +924,7 @@ void DiscoverResFree(DiscoverRes discoverResult)
 		}
 	}
 
-	for (int i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
+	for ( i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
 	{
 		if (discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host != NULL)
 		{
