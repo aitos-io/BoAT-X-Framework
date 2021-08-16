@@ -118,7 +118,7 @@ BoAT IoT Framework SDK depends on the following software:
 | Host OS            | Linux，Or Cygwin on Windows                          | Required                  |                           |
 | Target OS          | Linux                                                |                           | Required                  |
 | Compiler           | gcc，Need to support c99 (9.3.0 is tested)           | Required                  |                           |
-| Cross-compiler     | arm-oe-linux-gnueabi-gcc 4.9.2 is tested             | Required                  |                           |
+| Cross-compiler     | arm-oe-linux-gnueabi-gcc (4.9.2 is tested)           | Required                  |                           |
 | Make               | GNU Make (4.3 is tested)                             | Required                  |                           |
 | Python             | Python 3.8.3 (Python 2.7 is also compatible)         | Required                  |                           |
 | curl               | libcurl and its development files (7.55.1 is tested) | Required on Linux default | Required on Linux default |
