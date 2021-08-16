@@ -223,8 +223,19 @@ PlatON和Ethereum相比，差异主要集中在如下三点:
 图4-3描述了PlatONE的一种可能的数据结构设计思路，请注意，PlatONE的交易类型字段应放置在数据结构的最末位置，不能破坏复用的Ethereum的数据结构的完整性。如果破坏了Ethereum的数据结构的完整性，将导致Ethereum中与该数据结构相关的实现方法不可复用。
 
 ##### FISCO BCOS交易接口功能实现简述
-和Ethereum相比，其有差异的地方列出如下：
-@todo
+和Ethereum相比，有差异的地方可以参考FISCO BCOS官方文档 https://fisco-bcos-documentation.readthedocs.io/zh_CN/latest/docs/design/protocol_description.html 。  
+
+在设计FISCO BCOS的数据结构及代码实现时，应考虑数据结构的继承及代码实现的复用，这样既减少代码量，也便于维护。在交易结构体中中新增了以下四个字段：  
+  1. blockLimit交易生命周期  
+  2. chainId链信息  
+  3. groupId群组ID  
+  4. extraData预留字段  
+因此，在数据结构的设计中，一种可能的设计思路如图4-4所示：  
+![FISCO BCOS数据结构的一种可能的设计思路](./images/BoAT_Overall_Design_cn-F4-4-FISCOBCOS_Data_Structure.png)  
+图 4-4 FISCO BCOS数据结构的一种可能的设计思路  
+图4-4描述了FISCO BCOS的一种可能的数据结构设计思路，请注意，FISCO BCOS的交易类型字段应放置在数据结构的最末位置，不能破坏复用的Ethereum的数据结构的完整性。如果破坏了Ethereum的数据结构的完整性，将导致Ethereum中与该数据结构相关的实现方法不可复用。
+
+***注：由于FISCO BCOS在交易中增加了新的字段，所以进行RLP编码时和Ethereum并不一样，具体参考本章提供链接的RC2部分。***  
 
 ##### Fabric交易接口功能实现简述
 -	钱包初始化
@@ -266,7 +277,7 @@ PlatON和Ethereum相比，差异主要集中在如下三点:
 
 ### 协议层
 #### 概述
-协议层位于BoAT SDK的第二层，主要实现各个区块链的协议部分。对于Ethereum系的区块链，其协议比较相似，如Ethereum、PlatONE和FISCO BCOS。  
+协议层位于BoAT SDK的第二层，主要实现各个区块链的协议部分。对于Ethereum系的区块链，其协议比较相似，如Ethereum、PlatON、PlatONE和FISCO BCOS。  
 协议层由RPC层提供支持。RPC层描述请参考 [RPC层](#RPC层).  
 
 #### Ethereum的协议层实现
@@ -370,21 +381,22 @@ PlatON和Ethereum相比，差异主要集中在如下三点:
 PlatON的协议层实现与Ethereum的协议层完全一样，只是PlatON仅支持数据编码采用指定链ID方式。  
 
 #### PlatONE的协议层实现
-PlatONE的协议层实现与Ethereum的协议层几乎一样，其唯一的区别是：raw transaction的data字段的填充和raw transaction的RLP编码过程中，多了交易类型的编码。因为data字段的填充和对raw transaction的RLP编码，是由使用BoAT SDK的用户在调用BoAT SDK相关的API之前实现的，因此PlatONE的协议层可以复用Ethereum的协议层。
+PlatONE的协议层实现与Ethereum的协议层几乎一样，其唯一的区别是：raw transaction的data字段的填充和raw transaction的RLP编码过程中，多了交易类型的编码。因为data字段的填充和对raw transaction的RLP编码，是由使用BoAT SDK的用户在调用BoAT SDK相关的API之前实现的，因此PlatONE的协议层可以复用Ethereum的协议层。  
+
 #### FISCO BCOS的协议层实现
-@todo
+FISCO BCOS的协议层实现与Ethereum的协议层几乎一样，其唯一的区别是：raw transaction的RLP编码过程中，多了四个字段的编码。因为对raw transaction的RLP编码，是由使用BoAT SDK的用户在调用BoAT SDK相关的API之前实现的，因此FISCO BCOS的协议层可以复用Ethereum的协议层。
 
 #### Fabric的协议层实现
 ##### Fabric协议概述
-Fabric协议层主要包含提案协议和交易协议，查询的协议与提案协议相同。提案协议与交易协议分别如图4-4，图4-5所示  
-![Fabric提案报文结构](./images/BoAT_Overall_Design_cn-F4-4-Fabric-Proposal.png)  
-图 4-4 Fabric提案报文结构  
-![Fabric交易报文结构](./images/BoAT_Overall_Design_cn-F4-5-Fabric-Transaction.png)  
-图 4-5 Fabric交易报文结构  
+Fabric协议层主要包含提案协议和交易协议，查询的协议与提案协议相同。提案协议与交易协议分别如图4-5，图4-6所示  
+![Fabric提案报文结构](./images/BoAT_Overall_Design_cn-F4-5-Fabric-Proposal.png)  
+图 4-5 Fabric提案报文结构  
+![Fabric交易报文结构](./images/BoAT_Overall_Design_cn-F4-6-Fabric-Transaction.png)  
+图 4-6 Fabric交易报文结构  
 
-Fabric客户端发起一笔的交易的时候，会首先向背书节点发送提案，背书节点对提案签名后返回签名数据，然后Fabric客户端连同背书节点的签名数据和交易参数按交易报文的格式组织好后发送给排序节点，排序节点校验通过后更新链的状态。详细的交易流程如图4-6所示，该图是从《hyperledger-fabricdocs master》文档中摘取的。关于Fabric更多的介绍，可以参考Fabric文档 <https://hyperledger-fabric.readthedocs.io/en/release-1.4/>  
-![ Fabric交易流程](./images/BoAT_Overall_Design_cn-F4-6-Fabric-Transaction-Flow.png)  
-图 4-6 Fabric交易流程
+Fabric客户端发起一笔的交易的时候，会首先向背书节点发送提案，背书节点对提案签名后返回签名数据，然后Fabric客户端连同背书节点的签名数据和交易参数按交易报文的格式组织好后发送给排序节点，排序节点校验通过后更新链的状态。详细的交易流程如图4-7所示，该图是从《hyperledger-fabricdocs master》文档中摘取的。关于Fabric更多的介绍，可以参考Fabric文档 <https://hyperledger-fabric.readthedocs.io/en/release-1.4/>  
+![ Fabric交易流程](./images/BoAT_Overall_Design_cn-F4-7-Fabric-Transaction-Flow.png)  
+图 4-7 Fabric交易流程
 #####	Fabric协议接口实现
 在Fabric报文中，协议中的各字段通过protobuf实现序列化，然后通过HTTP2协议发送出去。由前序章节可知，提案报文和交易报文有一些重复和相似的地方，可以把这些重复的部分拆分为一个子模块，以便于重用。一种可能的拆分方式列出如下：
 -	channelHeader打包
@@ -517,6 +529,8 @@ BoAT的设计应考虑TEE环境的支持。对于有TEE环境的硬件，BoAT应
 ##### 生成PlatONE智能合约C语言接口的工具
 常用的PlatONE智能合约的开发语言是C++，同Ethereum一样，PlatONE的智能合约经过编译后也会生成一个描述合约接口的JSON文件。其JSON字段和Ethereum的JSON字段相同，C语言接口和JSON字段的对应关系也与Ethereum一致。
 
+##### 生成FISCO BCOS智能合约C语言接口的工具
+常用的FISCO BCOS智能合约的开发语言是solidity，具体可以参考[生成Ethereum智能合约C语言接口的工具](#生成Ethereum智能合约C语言接口的工具)。
 
 ### 实用程序
 #### 概述
@@ -541,9 +555,9 @@ BoAT的设计应考虑TEE环境的支持。对于有TEE环境的硬件，BoAT应
 #### RLP编码
 ##### RLP的结构
 RLP编码用于两个地方，一个是协议层组织交易报文会用到RLP编码，另一个是生成的C语言合约接口代码里可能会用到RLP编码。  
-RLP编码的定义里只处理两类数据：一类是字符串，一类是列表。字符串指的是一串二进制数据，如字节数组；列表是一个嵌套递归的结构，里面可以包含字符串和列表，其结构形式如图4-7所示：  
-![RLP列表的结构](./images/BoAT_Overall_Design_cn-F4-7-Structure_Of_RLP.png)  
-图 4-7 RLP列表的结构  
+RLP编码的定义里只处理两类数据：一类是字符串，一类是列表。字符串指的是一串二进制数据，如字节数组；列表是一个嵌套递归的结构，里面可以包含字符串和列表，其结构形式如图4-8所示：  
+![RLP列表的结构](./images/BoAT_Overall_Design_cn-F4-8-Structure_Of_RLP.png)  
+图 4-8 RLP列表的结构  
 
 ##### RLP编码规则
 RLP的编码规则描述如下：   
@@ -556,9 +570,9 @@ RLP的编码规则描述如下：
 
 
 ##### RLP编码实现
-RLP编码实现可以有多种不同的方式。由前述章节可知，RLP编码的一种可能的数据结构组成描述如图4-8所示：
-![RLP编码的一种可能的数据结构](./images/BoAT_Overall_Design_cn-F4-8-Data_Structure_Of_RLP.png)  
-图 4-8 RLP编码的一种可能的数据结构  
+RLP编码实现可以有多种不同的方式。由前述章节可知，RLP编码的一种可能的数据结构组成描述如图4-9所示：
+![RLP编码的一种可能的数据结构](./images/BoAT_Overall_Design_cn-F4-9-Data_Structure_Of_RLP.png)  
+图 4-9 RLP编码的一种可能的数据结构  
 
 图中定义了四种类型，来表达RLP列表的嵌套递归结构，假如有一个名为List的列表对象，其包含了三个字符串对象分别为stringA，stringB，stringC，则对列表对象List执行RLP编码的一种可能的流程描述如下：
 1. 初始化列表对象List
@@ -609,6 +623,9 @@ cJSON是C语言编写的一个轻量级的JSON编解码器，遵循ANSI-C标准�
 
 ### 使用BoAT创建一笔PlatONE交易的流程
 创建一笔PlatONE交易的流程和Ethereum类似。PlatONE在发送交易前除了要设置Nonce字段和Data字段，还需要设置交易类型字段，其余部分流程与Ethereum一致，相关描述请参考[使用BoAT创建一笔Ethereum交易的流程](#使用BoAT创建一笔Ethereum交易的流程)。 
+
+### 使用BoAT创建一笔FISCO BCOS交易的流程
+创建一笔FISCO BCOS交易的流程和Ethereum类似。FISCO BCOS在发送交易前还需要设置交易生命周期字段、链信息/业务信息字段、群组字段和预留字段，其余部分流程与Ethereum一致，相关描述请参考[使用BoAT创建一笔Ethereum交易的流程](#使用BoAT创建一笔Ethereum交易的流程)。 
 
 
 ## 参考文档
