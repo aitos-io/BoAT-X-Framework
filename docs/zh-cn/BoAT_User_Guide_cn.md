@@ -105,15 +105,15 @@ Wallet API是SDK提供给物联网应用调用的接口，具体包括SDK公共�
 ### 软件依赖
 BoAT IoT Framework SDK依赖于以下软件:
 
-|依赖软件       |要求                                    |Build环境|Target环境|
-| :------------| :------------------------------------  | :----- | :-----  |
-|Host OS       |Linux，或者Windows上的Cygwin             |Required |         |
-|Target OS     |Linux                                   |        |Required |
-|Compiler      |gcc，需要支持c99 (9.3.0 is tested)       |Required |        |
-|Cross-compiler|arm-oe-linux-gnueabi-gcc 4.9.2 is tested|Required |        |
-|Make          |GNU Make (4.3 is tested)                |Required |        |
-|Python        |Python 2.7 (Python 3 is also compatible)|Required |        |
-|curl          |libcurl及其开发文件(7.55.1 is tested)     |Required on Linux default |Required on Linux default |
+|依赖软件       |要求                                      |Build环境|Target环境|
+| :------------| :------------------------------------    | :-----  | :-----  |
+|Host OS       |Linux，或者Windows上的Cygwin               |Required |         |
+|Target OS     |Linux                                     |         |Required |
+|Compiler      |gcc，需要支持c99 (9.3.0 is tested)         |Required |         |
+|Cross-compiler|arm-oe-linux-gnueabi-gcc (4.9.2 is tested)|Required |         |
+|Make          |GNU Make (4.3 is tested)                  |Required |         |
+|Python        |Python 2.7 (Python 3 is also compatible)  |Required |         |
+|curl          |libcurl及其开发文件(7.55.1 is tested)      |Required on Linux default |Required on Linux default |
 
 
 在编译和使用SDK之前，需要确保这些软件已经安装。在Ubuntu下，可以使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
