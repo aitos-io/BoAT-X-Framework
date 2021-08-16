@@ -24,7 +24,7 @@ endif()
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
 
 
-target_link_libraries(${SUB_MODULE_NAME}  boatvendor cjson-obj  protocol_obj)
+target_link_libraries(${SUB_MODULE_NAME}  boatvendor cjson-obj  protocol_obj protos-obj)
 
 target_include_directories(${SUB_MODULE_NAME}
     PRIVATE

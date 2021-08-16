@@ -50,7 +50,7 @@ endif()
 
 set(PLATFORM_TARGET "linux-default" CACHE STRING "Select platform using linux-default")
 
-set(SOFT_CRYPTO "CRYPTO_DEFAULT" CACHE STRING "Set crypto type")
+set(SOFT_CRYPTO "CRYPTO_MBEDTLS" CACHE STRING "Set crypto type")
 
 if( PLATFORM_TARGET STREQUAL "linux-default")
     message(STATUS "Platform using linux")
@@ -126,10 +126,11 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Os -Wall")
 
 if(CMAKE_COMPILER_IS_GNU)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-gc-sections")
 endif()
 
 
-
+include_directories(${PROJECT_SOURCE_DIR}/sdk/include)
 include_directories(${PROJECT_SOURCE_DIR}/vendor/platform/${PLATFORM_TARGET}/src/log)
 include_directories(${PROJECT_SOURCE_DIR}/sdk/protocol/common/http2intf)
 include_directories(${PROJECT_SOURCE_DIR}/sdk/protocol/common/web3intf)

@@ -31,3 +31,18 @@ set(FILE_SRC    ${COMMON_SRC_FILE}
                 ${LIFTCYCLE_SRC_FILE}
                 ${TOKEN_SRC_FILE}
                 ${TRANSIENTSTORE_SRC_FILE})
+
+add_library(protos-obj  OBJECT  ${FILE_SRC})
+
+target_link_libraries(protos-obj  protobuf-obj)
+
+add_dependencies(protos-obj protobuf-obj)
+
+
+
+target_include_directories(protos-obj
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/
+    PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+)

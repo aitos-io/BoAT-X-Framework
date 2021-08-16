@@ -1,5 +1,5 @@
 
-# add_subdirectory(common)
+add_subdirectory(common)
 
 if(BOAT_PROTOCOL_USE_ETHEREUM)
 add_subdirectory(boatethereum)
