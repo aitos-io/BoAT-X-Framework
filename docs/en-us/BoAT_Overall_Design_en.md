@@ -231,9 +231,20 @@ It can be seen from the foregoing that the difference between PlatONE and Ethere
 Figure 4-3 A possible design idea of data structure  
 Figure 4-3 describes a possible data structure design idea of PlatONE. Please note that the transaction type field of PlatONE should be placed at the end of the data structure, and the integrity of the data structure of the multiplexed Ethereum should not be destroyed. If the integrity of the data structure of Ethereum is destroyed, the implementation methods related to the data structure in Ethereum will not be reused.
 
-##### Brief Description of PlatONE Transaction Interface Function Implementation
-Compared with Ethereum, the differences are listed below:
-@todo
+##### Brief Description of FISCO BCOS Transaction Interface Function Implementation
+Compared with Ethereum, the differences please refer to FISCO BCOS official documentation https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/design/protocol_description.html.  
+
+When designing the data structure and code implementation of FISCO BCOS, the inheritance of data structure and the reuse of code implementation should be considered, so as to reduce the amount of code and facilitate maintenance. The following four fields have been added to the transaction structure:  
+  1. blockLimit
+  2. chainId
+  3. groupId
+  4. extraData
+Therefore, in the design of the data structure, a possible design idea is shown in Figure 4-4.  
+![A possible design idea of FISCO BCOS data structure](./images/BoAT_Overall_Design_en-F4-4-FISCOBCOS_Data_Structure.png)  
+Figure 4-4 A possible design idea of data structure  
+Figure 4-4 describes a possible data structure design idea of FISCO BCOS. Please note that the transaction type field of FISCO BCOS should be placed at the end of the data structure, and the integrity of the data structure of the multiplexed Ethereum should not be destroyed. If the integrity of the data structure of Ethereum is destroyed, the implementation methods related to the data structure in Ethereum will not be reused.  
+
+***Note: Since FISCO BCOS adds new fields to transactions, RLP coding is different from Ethereum. See the RC2 section linked in this chapter for details.***
 
 ##### Brief Description of Fabric Transaction Interface Function Implementation
 + Wallet initialization:
@@ -274,7 +285,7 @@ Compared with Ethereum, the differences are listed below:
 
 ### Protocol Layer
 #### Overview
-The protocol layer is located in the second layer of the BoAT SDK, which mainly implements the protocol part of each blockchain. For Ethereum series blockchains, their protocols are very similar, such as Ethereum and PlatONE.   
+The protocol layer is located in the second layer of the BoAT SDK, which mainly implements the protocol part of each blockchain. For Ethereum series blockchains, their protocols are very similar, such as Ethereum, PlatON, PlatONE and FISCO BCOS.   
 The protocol layer is supported by the RPC layer. Please refer to [RPC Layer](#rpc-layer).  
 
 #### Ethereum's Protocol Layer Implementation
@@ -386,19 +397,19 @@ The protocol implementation of PlatON is exactly the same as that of Ethereum ex
 The implementation of PlatONE's protocol layer is almost the same as that of Ethereum. The only difference is that the data field of raw transaction is filled with one more transaction type encoding, and has one more transaction type field in the RLP process of raw transaction. Because the data field is filled by users who use BoAT SDK before calling BoAT SDK-related APIs, the protocol layer of PlatONE can reuse the protocol layer of Ethereum.
 
 #### Protocol Layer Implementation of FISCO BCOS
-@todo
+The protocol layer implementation of FISCO BCOS is almost the same as that of Ethereum. The only difference is that there are four more fields encoded in the RLP encoding process of raw Transaction. Because the RLP coding for the raw transaction is implemented by the user using the BoAT SDK before calling the BoAT SDK related APIs, the FISCO BCOS protocol layer can reuse Ethereum's protocol layer.  
 
 #### Protocol Layer Implementation of Fabric
 ##### Brief Description of Fabric Protocol Layer
-The Fabric protocol layer mainly contains proposal protocol and transaction protocol, and the query protocol is the same as the proposal protocol. Proposal agreement and transaction agreement are respectively as follows Figure 4-4,Figure 4-5:  
-![ Fabric proposal protocol struct](./images/BoAT_Overall_Design_en-F4-4-Fabric-Proposal.png)  
-Figure 4-4 Fabric proposal protocol struct  
-![ Fabric transaction protocol struct](./images/BoAT_Overall_Design_en-F4-5-Fabric-Transaction.png)  
-Figure 4-5 Fabric transaction protocol struct  
+The Fabric protocol layer mainly contains proposal protocol and transaction protocol, and the query protocol is the same as the proposal protocol. Proposal agreement and transaction agreement are respectively as follows Figure 4-5,Figure 4-6:  
+![ Fabric proposal protocol struct](./images/BoAT_Overall_Design_en-F4-5-Fabric-Proposal.png)  
+Figure 4-5 Fabric proposal protocol struct  
+![ Fabric transaction protocol struct](./images/BoAT_Overall_Design_en-F4-6-Fabric-Transaction.png)  
+Figure 4-6 Fabric transaction protocol struct  
 
 When Fabric client launches a deal,will first send proposal to endorse node, get the data of proposal signature returned after endorse node signatures. then the Fabric client puts the data endorse signature together with transaction parameters according to the transaction message format and sends to order nodes. After order node check through, it will updating the state of the chain. The detailed transaction process is shown in Figure 4-6,This figure is taken from the <Hyperledger-FabricDocs Master> document. For more information on Fabric, refer to the Fabric documentation: <https://hyperledger-fabric.readthedocs.io/en/release-1.4/>.  
-![ Fabric transaction flow](./images/BoAT_Overall_Design_en-F4-5-Fabric-Transaction-Flow.png)  
-Figure 4-6 Fabric transaction flow  
+![ Fabric transaction flow](./images/BoAT_Overall_Design_en-F4-7-Fabric-Transaction-Flow.png)  
+Figure 4-7 Fabric transaction flow  
 #####	Fabric protocol interface implementation
 In the Fabric message, the fields in the protocol are serialized through ProtoBuf and then sent out through the HTTP2 protocol. As can be seen from the preface section, there are some duplicates and similarities between the proposal and transaction messages, and these duplicates can be split into a submodule for easier reuse. One possible split is listed as follows:
 -	channelHeader packaging
@@ -534,6 +545,9 @@ For the generated C language contract interface, the corresponding relationship 
 ##### Tool for Generating C Language Interface of PlatONE Smart Contract
 The commonly used PlatONE smart contract development language is C++. Like Ethereum, the PlatONE smart contract will also generate a JSON file describing the contract interface after being compiled. Its JSON field is the same as Ethereum's JSON field, and the correspondence between C language interface and JSON field is also consistent with Ethereum.
 
+##### Tool for Generating C Language Interface of FISCO BCOS Smart Contract
+The common development language for FISCO BCOS smart contracts is Solidity. For details, please refer to [Tool for Generating C Language Interface of Ethereum Smart Contract](#tool-for-generating-c-language-interface-of-ethereum-smart-contract).  
+
 
 ### Application
 
@@ -560,9 +574,9 @@ In addition, in order to adapt the SDK to more environments, you can also encaps
 
 ##### Structure of RLP
 RLP encoding is used in two places. One is that the protocol layer organizes transaction messages to use RLP encoding, and the other is that RLP encoding may be used in the generated C language contract interface code.  
-The definition of RLP encoding only handles two types of data: one is a string and the other is a list. String refer to a string of binary data, such as a byte array; List is a nested recursive structure, which can contain strings and lists, and its structure is shown in Figure 4-7:  
-![The structure of the RLP list](./images/BoAT_Overall_Design_en-F4-7-Structure_Of_RLP.png)  
-Figure 4-7 The structure of the RLP list  
+The definition of RLP encoding only handles two types of data: one is a string and the other is a list. String refer to a string of binary data, such as a byte array; List is a nested recursive structure, which can contain strings and lists, and its structure is shown in Figure 4-8:  
+![The structure of the RLP list](./images/BoAT_Overall_Design_en-F4-8-Structure_Of_RLP.png)  
+Figure 4-8 The structure of the RLP list  
 
 ##### RLP Encoding Rules
 The encoding rules of RLP are described as follows:
@@ -575,9 +589,9 @@ For a more detailed description of RLP encoding rules, please refer to the refer
 
 
 ##### RLP Encoding Implementation
-RLP encoding can be implemented in many different ways. As can be seen from the foregoing chapters, a possible data structure composition description of RLP encoding is shown in Figure 4-8:  
-![A possible data structure of RLP encoding](./images/BoAT_Overall_Design_en-F4-8-Data_Structure_Of_RLP.png)   
-Figure 4-8 A possible data structure of RLP encoding  
+RLP encoding can be implemented in many different ways. As can be seen from the foregoing chapters, a possible data structure composition description of RLP encoding is shown in Figure 4-9:  
+![A possible data structure of RLP encoding](./images/BoAT_Overall_Design_en-F4-9-Data_Structure_Of_RLP.png)   
+Figure 4-9 A possible data structure of RLP encoding  
 
 The figure defines four types to express the nested recursive structure of the RLP list. If there is a list object named List, it contains three string objects: stringA, stringB, stringC,Then a possible process of performing RLP encoding on the list object List is described as follows:
 1. Initialize the list object List
@@ -624,12 +638,14 @@ Please refer to the description of "send transaction" in [Ethereum transaction i
 + BoAT SDK de-initialization:  
 Please refer to the description of "BoAT SDK de-initialization" in [SDK Initialization/Deinitialization](#sdk-initialization-de-initialization)
 
-### The Process of Creating An PlatON Transaction Using BoAT  
+### The Process of Creating A PlatON Transaction Using BoAT  
 The process for creating a PlatON transaction is the same as for Ethereum. For details, see [Process of creating an Ethereum transaction using BoAT](#the-process-of-creating-an-ethereum-transaction-using-boat).  
 
-### The Process of Creating An PlatONE Transaction Using BoAT
-The process of creating a PlatONE transaction is similar to Ethereum. In addition to setting the Nonce field and the Data field, PlatONE also needs to set the transaction type field before sending the transaction. The rest of the process is consistent with Ethereum. For related description, please refer to [Process of creating an Ethereum transaction using BoAT](#the-process-of-creating-an-ethereum-transaction-using-boat)
+### The Process of Creating A PlatONE Transaction Using BoAT
+The process of creating a PlatONE transaction is similar to Ethereum. In addition to setting the Nonce field and the Data field, PlatONE also needs to set the transaction type field before sending the transaction. The rest of the process is consistent with Ethereum. For related description, please refer to [Process of creating an Ethereum transaction using BoAT](#the-process-of-creating-an-ethereum-transaction-using-boat).  
 
+### The Process of Creating A FISCO BCOS Transaction Using BoAT  
+The process for creating a FISCO BCOS transaction is similar to Ethereum. FISCO BCOS also needs to set the transaction blockLimit field, chainId field, groupId field and extraData field before sending a transaction. The rest of the process is the same as Ethereum. For details, please refer to [Process of creating an Ethereum transaction using BoAT](#the-process-of-creating-an-ethereum-transaction-using-boat).  
 
 ## Reference
 [1]. cJSON <https://github.com/DaveGamble/cJSON#welcome-to-cjson>  

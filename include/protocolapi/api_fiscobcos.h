@@ -107,7 +107,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 								BCHAR *gaslimit_str,
 								BCHAR *recipient_str,
 								BCHAR *chainid_str,
-								BCHAR *groupid_str );
+								BCHAR *groupid_str);
 
 
 /*!****************************************************************************
