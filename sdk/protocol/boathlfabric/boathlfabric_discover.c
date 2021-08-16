@@ -357,12 +357,6 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadDataPacked(BoatHlfabricTx *tx_pt
 	}
 	output_ptr->field_len = resLen;
 
-	// /* boat catch handle */
-	// boat_catch(hlfabricProposalPayloadDataPacked_exception)
-	// {
-	// 	BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-	// 	result = boat_exception;
-	// }
 
 	/* free malloc */
 	BoatFree(chaincodeInvocationSpecBuffer);
@@ -437,16 +431,6 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
 						 signatureHeaderPacked.field_ptr,
 						 signatureHeaderPacked.field_len);
 
-	/* ------>channel header */
-	// header.has_channel_header = true;
-	// result = hlfabricChannelHeaderPacked(tx_ptr, txIdBin, &channelHeaderPacked);
-	// header.channel_header.len  = channelHeaderPacked.field_len;
-	// header.channel_header.data = channelHeaderPacked.field_ptr;
-	// if( result != BOAT_SUCCESS )
-	// {
-	//     BoatLog(BOAT_LOG_CRITICAL, "Fail to exec hlfabricChannelHeaderPacked.");
-	//     boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricPayloadPacked_exception);
-	// }
 
 	/* payload.data */
 	payload.has_data = true;
@@ -454,9 +438,6 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
 	payload.data.len = payloadDataPacked.field_len;
 	payload.data.data = payloadDataPacked.field_ptr;
 
-	// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "payloadDataPacked result",
-	// 					 payloadDataPacked.field_ptr,
-	// 					 payloadDataPacked.field_len);
 
 	if (result != BOAT_SUCCESS)
 	{
@@ -467,19 +448,11 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
 	/* pack the payload */
 	packedLength = signatureHeaderPacked.field_len + payloadDataPacked.field_len;
 
-	// packedLength = common__payload__get_packed_size( &payload );
 	output_ptr->field_len = packedLength;
 	output_ptr->field_ptr = BoatMalloc(packedLength);
-	// common__payload__pack( &payload, output_ptr->field_ptr );
-	// output_ptr->field_ptr[0] = 0x12;
-	// output_ptr->field_ptr[1] = (packedLength & 0xFF) | 0x80;
-	// output_ptr->field_ptr[2] = (packedLength >> 7) & 0xFF;
 	memcpy(output_ptr->field_ptr, signatureHeaderPacked.field_ptr, signatureHeaderPacked.field_len);
 	memcpy(output_ptr->field_ptr + signatureHeaderPacked.field_len, payloadDataPacked.field_ptr, payloadDataPacked.field_len);
 
-	// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "common__payload__pack result",
-	// 					 output_ptr->field_ptr,
-	// 					 output_ptr->field_len);
 
 	/* boat catch handle */
 	boat_catch(hlfabricPayloadPacked_exception)
@@ -735,54 +708,11 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 		BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack failed, maybe a invalid endorser.");
 		return 0;
 	}
-	// BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack OK, discoveryResponse n_result= %d", discoveryResponse->n_results);
-	// BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack OK, discoveryResponse n_content= %d", discoveryResponse->results[0]->cc_query_res->n_content);
-	// BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack OK, discoveryResponse n_msps= %d", discoveryResponse->results[0]->config_result->n_msps);
 	Discovery__ConfigResult *mconfig_result;
 	mconfig_result = discoveryResponse->results[0]->config_result;
 	BUINT8 num = mconfig_result->n_msps;
 	// discoverResult->Peership.orgNum = num;
 
-	// Discovery__PeerMembershipResult *mmembers = discoveryResponse->results[0]->members;
-	// num = mmembers->n_peers_by_org;
-	// BUINT8 peerNum = 0;
-	// ProtobufCBinaryData mpayload;
-	// BUINT8 *temp;
-	// discoverResult->Peership.orgs = BoatMalloc(num * sizeof(OrgInfo));
-	// for (int i = 0; i < num; i++)
-	// {
-	// 	/* code */
-	// 	peerNum = mmembers->peers_by_org[i]->value->n_peers;
-	// 	discoverResult->Peership.orgs[i].peerNum = peerNum;
-	// 	// BoatLog(BOAT_LOG_CRITICAL, " discover node[%d]  [ %s ] have %d peers", i,mmembers->peers_by_org[i]->key,peerNum);
-	// 	discoverResult->Peership.orgs[i].orgName = BoatMalloc(strlen(mmembers->peers_by_org[i]->key));
-	// 	memcpy(discoverResult->Peership.orgs[i].orgName, mmembers->peers_by_org[i]->key, strlen(mmembers->peers_by_org[i]->key));
-	// 	discoverResult->Peership.orgs[i].peers = BoatMalloc(peerNum * sizeof(PeerInfo));
-	// 	// BoatLog(BOAT_LOG_CRITICAL, " discoverResult->Peership.orgs[%d].orgName : %s", i,discoverResult->Peership.orgs[i].orgName);
-	// 	for (int j = 0; j < peerNum; j++)
-	// 	{
-	// 		/* code */
-	// 		mpayload = mmembers->peers_by_org[i]->value->peers[j]->membership_info->payload;
-	// 		len = getURL(mpayload.data, mpayload.len, &offset);
-	// 		temp = mpayload.data + offset;
-	// 		discoverResult->Peership.orgs[i].peers[j].url = BoatMalloc(len);
-	// 		memcpy(discoverResult->Peership.orgs[i].peers[j].url, temp, len);
-	// 		// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "peer url",
-	// 		// 	 temp,
-	// 		// 	 len);
-
-	// 		temp = mmembers->peers_by_org[i]->value->peers[j]->identity.data;
-	// 		len = mmembers->peers_by_org[i]->value->peers[j]->identity.len;
-	// 		offset = 1;
-	// 		len = temp[offset++];
-	// 		offset += len;
-	// 		offset++;
-	// 		len = (temp[offset] & 0x7F) | ((temp[offset + 1] << 7) & 0x7FFF);
-	// 		offset += 2;
-	// 		discoverResult->Peership.orgs[i].peers[j].cert = BoatMalloc(len);
-	// 		memcpy(discoverResult->Peership.orgs[i].peers[j].cert, temp + offset, len);
-	// 	}
-	// }
 	Discovery__ChaincodeQueryResult *cc_query_res;
 	cc_query_res = discoveryResponse->results[0]->cc_query_res;
 	num = cc_query_res->n_content;
@@ -829,21 +759,10 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 						discoverResult.cc_res.layouts[m].groups[k].endorsers = BoatMalloc(n_peers * sizeof(Endorsers));
 						for (int l = 0; l < n_peers; l++)
 						{
-							// discoverResult->cc_res.layouts[0].groups[k].endorsers[l].MSPID = cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[j]->membership_info->payload.
-							// BoatLog(BOAT_LOG_CRITICAL, "endorsers_by_groups[%d] value->peers[%d] name : %s ",j,l,cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data);
-
 							msp_serializedIdentity = msp__serialized_identity__unpack(NULL, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->identity.len, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->identity.data);
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID = BoatMalloc(strlen(msp_serializedIdentity->mspid));
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID, msp_serializedIdentity->mspid, strlen(msp_serializedIdentity->mspid));
-							BoatLog(BOAT_LOG_CRITICAL, " endorsers[%d].MSPID  : %s ", l, discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID);
-							// ResponsePayload = protos__proposal_response_payload__unpack(NULL,cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.len,cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data);
-							// BoatLog(BOAT_LOG_CRITICAL,"has hash %d",ResponsePayload->has_extension);
-							// for (size_t m = 0; m < cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.len; m++)
-							// {
-							// 	/* code */
-							// 	printf("%02x",cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data[m]);
-							// }
-							// printf("\n");
+							// BoatLog(BOAT_LOG_CRITICAL, " endorsers[%d].MSPID  : %s ", l, discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID);
 							len = getURL(cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.len, &offset);
 
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint = BoatMalloc(len);
@@ -879,13 +798,10 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	discoverResult.discoverConfig.discoverOrders.discoverOrderinfo = BoatMalloc(discoverResult.discoverConfig.discoverOrders.num * sizeof(orderInfo));
 	for (int i = 0; i < config_result->n_orderers; i++)
 	{
-		// BoatLog(BOAT_LOG_CRITICAL, " config_result    key : %s ", config_result->orderers[i]->key);
 		/* code */
 		for (int j = 0; j < config_result->orderers[i]->value->n_endpoint; j++)
 		{
 			/* code */
-			// BoatLog(BOAT_LOG_CRITICAL, " config_result    host : %s ", config_result->orderers[i]->value->endpoint[j]->host);
-			// BoatLog(BOAT_LOG_CRITICAL, " config_result    port : %d ", config_result->orderers[i]->value->endpoint[j]->port);
 			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host = BoatMalloc(strlen(config_result->orderers[i]->value->endpoint[j]->host));
 			memcpy(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host, config_result->orderers[i]->value->endpoint[j]->host, strlen(config_result->orderers[i]->value->endpoint[j]->host));
 			// discoverResult->discoverConfig.discoverOrders.discoverOrderinfo[k].port = config_result->orderers[i]->value->endpoint[j]->port;
@@ -977,16 +893,10 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	DiscoverResFree(discoverResult);
 
 	// /* boat catch handle */
-	// boat_catch(BoatHlfabricTxSubmit_exception)
-	// {
-	// 	BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-	// 	result = boat_exception;
-	// }
 	if (http2ResData != NULL)
 	{
 		BoatFree(http2ResData);
 	}
-	BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricDiscoverSubmit end result : %d", result);
 	return result;
 }
 
