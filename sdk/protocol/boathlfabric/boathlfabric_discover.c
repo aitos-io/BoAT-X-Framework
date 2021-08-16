@@ -780,7 +780,6 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	{
 		discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name = BoatMalloc(strlen(config_result->msps[i]->key));
 		memcpy(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name, config_result->msps[i]->key, strlen(config_result->msps[i]->key));
-		BoatLog(BOAT_LOG_CRITICAL, " discoverMspInfo[%d].name   : %s ", i, discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name);
 		if (config_result->msps[i]->value->n_tls_root_certs > 0)
 		{
 			discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCertLen = config_result->msps[i]->value->tls_root_certs[0].len;
@@ -811,8 +810,6 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 		}
 	}
 
-	// tx_ptr->endorserResponse.response[0].responseType = HLFABRIC_TYPE_PROPOSAL;
-	// protos__proposal_response__free_unpacked(tx_ptr->endorserResponse.response[0].contentPtr, NULL);
 	for (int i = 0; i < tx_ptr->wallet_ptr->network_info.endorserLayoutNum; i++)
 	{
 		for (int j = 0; j < tx_ptr->wallet_ptr->network_info.layoutCfg[i].endorserGroupNum; j++)
