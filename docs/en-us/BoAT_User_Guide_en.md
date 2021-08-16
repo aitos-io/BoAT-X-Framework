@@ -26,17 +26,15 @@ The intended readers of this article are customers who integrate the BoAT IoT Fr
 BoAT IoT Framework is a C language blockchain client framework software for cellular modules, which is easy to be ported to various modules and helps IoT applications based on cellular modules connect to the blockchain and access on-chain services. The functions provided by the BoAT IoT Framework SDK to IoT applications include initiating on-chain transactions, automatic generation of smart contract C interface code, calling smart contracts, and managing blockchain keys.
 
 **Supported blockchain:**  
-Ethereum  
-PlatON  
-PlatONE
-FISCO-BCOS
-Hyperledger Fabric  
-
+Ethereum<br>
+PlatON<br>
+PlatONE<br>
+FISCO-BCOS<br>
+Hyperledger Fabric<br>
 
 **Supported Target Operating System:**  
-Linux 
-RTOS  
-
+Linux<br>
+RTOS<br>
 
 **Supported Build Operating System:**  
 Linux/Cygwin  
