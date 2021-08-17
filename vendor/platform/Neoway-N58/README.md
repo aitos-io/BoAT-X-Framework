@@ -65,7 +65,7 @@
 #### 4.1、demo_entry.c 包括main入口、网络初始化和调用合约上链等操作。  
   如果和目前应用入口冲突，可注释掉demo_entry.c 中的 appimg_enter()和appimg_exit()，只调用boat_demo_entry()。  
   如果只是用来跑通本demo，可删除当前应用入口文件，只保留boat_entry.c。  
-#### 4.2、my_contract.cpp.abi.c my_contract.cpp.abi.h 是boat2.0 make all后自动生成的合约。  
+#### 4.2、my_contract.cpp.abi.c my_contract.cpp.abi.h 是boat2.0 make demo后自动生成的合约。  
   智能合约的生成，详细信息，可参考 BoAT-X-Framework/README.md  
 	
 ### 5、修改BoAT-X-Framework编译平台为Neoway-N58
