@@ -127,6 +127,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Os -Wall")
 if(CMAKE_COMPILER_IS_GNU)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-gc-sections")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-builtin-macro-redefined -U__FILE__ -D__FILE__='\"$(subst $(dir $<),,$<)\"'")
+
 endif()
 
 
