@@ -41,7 +41,7 @@ Boat follows a hierarchical design consisting of Interface Layer, Protocol Layer
 + Protocol Layer: The main implementation of each block chain protocol.  
 + RPC Layer: Provide services to the protocol layer.  
 + Vendor Dependency Layer: Provide cryptographic algorithms, signature, storage and other services for the interface layer wallet.  
-+ Tool: The general tool layer is used to generate the C language interface of the smart contract and provide services such as data encoding and format conversion for the remaining layers.
++ Tool: The general tool is used to generate the C language interface of the smart contract.
 + Utility: The utility program provides services such as data format conversion, message encoding and decoding to each layer.
 
 The overall framework of BoAT is shown in Figure 4-1.  
