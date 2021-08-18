@@ -526,10 +526,10 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type,
 
 |参数名称               |参数描述                                                          |
 |:---------------------|:-----------------------------------------------------------------|
-|**protocol_type**     |The blockchain protocol. See boattypes.h for supported protocol.  |
-|**wallet_name_str**   |A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded.|
-|**wallet_config_ptr** |Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>.                                                                |
-|**wallet_config_size**|Size (in byte) of configuration specified by \<wallet_config_ptr\>.|
+|protocol_type         |The blockchain protocol. See boattypes.h for supported protocol.  |
+|wallet_name_str       |A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded.|
+|wallet_config_ptr     |Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>.|
+|wallet_config_size    |Size (in byte) of configuration specified by \<wallet_config_ptr\>.|
 
 **返回值:**  
 This function returns the non-negative index of the loaded wallet.
@@ -560,9 +560,9 @@ void BoatWalletUnload(BSINT32 wallet_index);
 ```
 参数:
 
-|参数名称        |参数描述                    |
-|:---------------|:--------------------------|
-|**wallet_index**|The wallet index to unload.|
+|参数名称        |参数描述                   |
+|:--------------|:--------------------------|
+|wallet_index   |The wallet index to unload.|
 
 
 #### 删除钱包
@@ -572,9 +572,9 @@ void BoatWalletDelete(BCHAR * wallet_name_str);
 ```
 参数:
 
-|参数名称           |参数描述                       |
+|参数名称            |参数描述                      |
 |:------------------|:-----------------------------|
-|**wallet_name_str**|The wallet name to delete.    |
+|wallet_name_str    |The wallet name to delete.    |
 
 ### 密钥生成
 创建钱包时需要配置的密钥，可以由外部输入，也可以由SDK生成， 通过设置`prikeyCtx_config.prikey_genMode`为相应的值实现。
@@ -592,8 +592,8 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr,
 
 |参数名称          |参数描述                                                                |
 |:----------------|:-----------------------------------------------------------------------|
-|**tx_ptr**       |Transaction pointer.                                                    |
-|**value_hex_str**|A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234".|
+|tx_ptr           |Transaction pointer.                                                    |
+|value_hex_str    |A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234".|
 
 **返回值:**  
 This function returns BOAT_SUCCESS if transfer is successful.
@@ -808,12 +808,12 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
 
 |参数名称          |参数描述                                                                                        |
 |:----------------|:-----------------------------------------------------------------------------------------------|
-|**wallet_ptr**   |The wallet pointer that this transaction is combined with.                                      |
-|**tx_ptr**       |Pointer a transaction object.                                                                   |
-|**is_sync_tx**   |For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored.|
-|**gasprice**     |A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed.                                                                                                |
-|**gaslimit**     |A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed.                                          |
-|**recipient_str**|A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed. |
+|wallet_ptr       |The wallet pointer that this transaction is combined with.                                      |
+|tx_ptr           |Pointer a transaction object.                                                                   |
+|is_sync_tx       |For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored.|
+|gasprice         |A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed.|
+|gaslimit         |A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed.|
+|recipient_str    |A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed.|
 
 **返回值:**  
 This function returns BOAT_SUCCESS if initialization is successful.
