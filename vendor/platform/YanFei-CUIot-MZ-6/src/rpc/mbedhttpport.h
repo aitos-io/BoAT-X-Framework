@@ -58,15 +58,15 @@ extern "C" {
 
 MbedHttpPortContext * MbedHttpPortInit(void);
 
-void MbedHttpPortDeinit(MbedHttpPortContext * mbedhttpport_context_ptr);
+void MbedHttpPortDeinit(MbedHttpPortContext *mbedhttpport_context_ptr);
 
-BOAT_RESULT MbedHttpPortSetOpt(MbedHttpPortContext * mbedhttpport_context_ptr, BCHAR *remote_url_str);
+BOAT_RESULT MbedHttpPortSetOpt(MbedHttpPortContext *mbedhttpport_context_ptr, BCHAR *remote_url_str);
 
-BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext * mbedhttpport_context_ptr,
-                               const BCHAR *request_str,
-                               BUINT32 request_len,
-                               BOAT_OUT BCHAR **response_str_ptr,
-                               BOAT_OUT BUINT32 *response_len_ptr);
+BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_ptr,
+                                    const BCHAR *request_str,
+                                    BUINT32 request_len,
+                                    BOAT_OUT BCHAR **response_str_ptr,
+                                    BOAT_OUT BUINT32 *response_len_ptr);
 
 
 #ifdef __cplusplus
