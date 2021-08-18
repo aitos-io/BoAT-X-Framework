@@ -64,7 +64,7 @@ uint32_t random32(void)
 }
 
 
-BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
+BOAT_RESULT BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
 {	
 	BOAT_RESULT result = BOAT_SUCCESS;
 
