@@ -197,6 +197,9 @@ vendorlib:
 demo: boatlibs
 	make -C $(BOAT_BASE_DIR)/demo all
 
+rulecheck: 
+	cppcheck  --enable=all -i$(BOAT_BASE_DIR)/sdk/third-party/ -i$(BOAT_BASE_DIR)/vendor/common/crypto/  -i$(BOAT_BASE_DIR)/sdk/protocol/boathlfabric/protos  --force $(BOAT_BASE_DIR) 
+
 tests: boatlibs
 	make -C $(BOAT_BASE_DIR)/tests all
 
