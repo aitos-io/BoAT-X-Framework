@@ -85,35 +85,6 @@ struct timeval {
 };
 #endif /* LWIP_TIMEVAL_PRIVATE */
 
-static int binder(char localip[24], int connfd){
-
-	//devide ip
-	int ip[4]={0};
-    int ip_bit = 0, j = 0;
-    for(int c = 0; c < 24; ++c){
-        ip_bit = ((ip_bit*10)+(localip[c]-'0'));
-        if(ip[c]=='.'){
-            ip[j++] = ip_bit;
-            MG_osiTracePrintf(LOG_TAG, "ip out : %d", ip_bit);
-            ip_bit = 0;
-        }
-    }
-
-	//local ip and port
-	ip4_addr_t nIpAddr;
-	nIpAddr.addr = PP_HTONL(LWIP_MAKEU32(ip[0],ip[1],ip[2],ip[3]));
-	struct sockaddr_in  localAddr;
-	struct sockaddr_in *to4 = &localAddr;
-	to4->sin_len = sizeof(struct sockaddr_in);
-	to4->sin_family = AF_INET;
-	to4->sin_port = lwip_htons(9700);
-	inet_addr_from_ip4addr(&to4->sin_addr, &nIpAddr);
-
-
-	return MG_CFW_TcpipSocketBind(connfd, (const struct sockaddr *)&localAddr, sizeof(localAddr));
-
-}
-
 int httpclient_conn(httpclient_t *client, char *host)
 {
     struct sockaddr_in hints, *addr_list, *cur;
