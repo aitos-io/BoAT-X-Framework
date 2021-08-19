@@ -89,6 +89,30 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 						  const BUINT8 *digest, BUINT32 digestLen, 
 						  BoatSignatureResult *signatureResult, void *rsvd);
 
+/*!****************************************************************************
+ * @brief 
+ *   open a file 
+ *
+ * @details
+ *   This function both supports file system and no file system operations.
+ *   \n For file-system operations, parameter 'fileName' is the file name to 
+ *    be operationed; 
+ *   \n For no-file-system operations, parameter 'fileName' will be ignored,
+ *   re-writer should give a physical address that to be accessed at internal
+ *   of this function.
+ *   \n Default, only with-file-system operation be implemented, other situation
+ *   be implemented by user.
+ *
+ * @param fileName 
+ *   File name of want to open
+ *
+ * @param rsvd
+ *   Reserved for futrue. 
+ *
+ * @return  
+ *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code.
+ ******************************************************************************/
+BOAT_RESULT BoatOpenFile(const BCHAR *fileName, void *rsvd);
 
 /*!****************************************************************************
  * @brief 
