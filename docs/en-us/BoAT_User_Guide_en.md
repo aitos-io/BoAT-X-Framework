@@ -212,8 +212,9 @@ Follow the steps below to compile:
 1. Store the SDK source code in a path that meets the requirements of [SDK source code path](#SDK-Source-Code-Path)
 2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/demo/demo_\<protocol\>/demo_contract (see section 3.3)
 3. In the \<SDKRoot\> directory, execute the following command:  
+````
 $make boatlibs
-
+````
 After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See [Header Files and Libraries](#Header-Files-and-Libraries)chapter.
 
 #### Use Cygwin as The Compilation Environment
@@ -254,12 +255,14 @@ The `cross_compiler_config.sh` in the above example is not a script in this SDK,
 The `source` or `.` in the example is necessary, which makes the script execute in the context of the current shell, so the modification of environment variables in this script can only take effect in the current shell.
 
 You can execute the following command to view the environment variable settings in the current shell:  
+````
 $export
-
+````
 If the environment variables CC and AR have been set, you can execute the following command to view the current version of CC and AR to confirm whether the desired cross-compilation environment has been pointed to:  
+````
 ${CC} -v  
 ${AR} -v  
-
+````
 After the above configuration is completed, follow the steps in the chapter [Using Linux as the Compiling Environment](#Using-Linux-as-The-Compiling-Environment) chapter to compile.
 
 ##### A Cross-Compilation Environment Integrated with The Module Development Environment
@@ -419,9 +422,9 @@ Before compiling the Demo, you need to modify the following parts of the Demo C 
 
 #### Compile Demo
 Execute the following commands in the \<SDKRoot\> directory to compile the SDK call Demo:  
-
+````
 $make demo
-
+````
 The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `platon` `fisco-bcos` `platone` `fabric`.
 
 
