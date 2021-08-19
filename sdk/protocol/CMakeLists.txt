@@ -1,4 +1,3 @@
-
 add_subdirectory(common)
 
 if(BOAT_PROTOCOL_USE_ETHEREUM)
@@ -21,7 +20,6 @@ add_subdirectory(boathlfabric)
 set(PROTOS  ${PROTOS} $<TARGET_OBJECTS:boathlfabric-obj>)
 endif()
 
-message(STATUS      ${PROTOS})
 
 add_library(protocol_obj    OBJECT  ${PROTOS})
 

@@ -2,24 +2,18 @@
 
 cmake_minimum_required(VERSION 3.2...3.16 FATAL_ERROR)
 
-
-project(CURL C)
-
+project(BOAT C)
 
 string(REGEX MATCH "GNU" CMAKE_COMPILER_IS_GNU "${CMAKE_C_COMPILER_ID}")
-
-
 
 option(BOAT_PROTOCOL_USE_ETHEREUM "Enable compile the ethereum blockchain protocol" OFF)
 option(BOAT_PROTOCOL_USE_PLATONE "Enable compile the platone blockchain protocol" OFF)
 option(BOAT_PROTOCOL_USE_FISCOBCOS "Enable compile the fiscobcos blockchain protocol" OFF)
 option(BOAT_PROTOCOL_USE_HLFABRIC "Enable compile the hlfabric blockchain protocol" ON)
 
-
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(BUILD_BOAT_TEST "Build boat test application" OFF)
 option(BUILD_BOAT_DEMO "Build boat demo application" ON)
-
 
 if(NOT (BOAT_PROTOCOL_USE_ETHEREUM OR BOAT_PROTOCOL_USE_PLATONE OR BOAT_PROTOCOL_USE_FISCOBCOS OR BOAT_PROTOCOL_USE_HLFABRIC))
     message(FATAL_ERROR "Select at least one chain")
@@ -30,7 +24,6 @@ if(BOAT_PROTOCOL_USE_FISCOBCOS AND NOT BOAT_PROTOCOL_USE_ETHEREUM)
     message(STATUS "set BOAT_PROTOCOL_USE_ETHEREUM ON")
     set(BOAT_PROTOCOL_USE_ETHEREUM ON)
 endif()
-
 
 if(BOAT_PROTOCOL_USE_PLATONE AND NOT BOAT_PROTOCOL_USE_ETHEREUM)
     message(WARNING "FISCOBCOS depends on ETHEREUM, BOAT_PROTOCOL_USE_PLATONE is ON, but BOAT_PROTOCOL_USE_ETHEREUM is OFF")
@@ -50,7 +43,7 @@ endif()
 
 set(PLATFORM_TARGET "linux-default" CACHE STRING "Select platform using linux-default")
 
-set(SOFT_CRYPTO "CRYPTO_MBEDTLS" CACHE STRING "Set crypto type")
+set(SOFT_CRYPTO "CRYPTO_DEFAULT" CACHE STRING "Set crypto type")
 
 if( PLATFORM_TARGET STREQUAL "linux-default")
     message(STATUS "Platform using linux")
@@ -69,7 +62,6 @@ elseif(PLATFORM_TARGET STREQUAL "ChinaMobile-ML302")
 else()
     message(FATAL_ERROR "Platform using ${PLATFORM_TARGET}, but not support")
 endif()
-
 
 # check python3 is installed
 if(NOT CMAKE_VERSION VERSION_LESS 3.15.0)
@@ -128,9 +120,7 @@ if(CMAKE_COMPILER_IS_GNU)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-gc-sections")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-builtin-macro-redefined -U__FILE__ -D__FILE__='\"$(subst $(dir $<),,$<)\"'")
-
 endif()
-
 
 include_directories(${PROJECT_SOURCE_DIR}/sdk/include)
 include_directories(${PROJECT_SOURCE_DIR}/vendor/platform/${PLATFORM_TARGET}/src/log)
