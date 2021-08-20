@@ -34,6 +34,8 @@
 
 #include "flash_block_device.h"
 #include "drv_spi_flash.h"
+#include "sffs.h"
+#include "sffs_vfs.h"
 
 /* net releated include */
 #if (PROTOCOL_USE_HLFABRIC == 1)
@@ -138,25 +140,35 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 /******************************************************************************
                               BOAT FILE OPERATION WARPPER
 *******************************************************************************/
+sffsFs_t *boat_internal_fs = NULL;
 
-
-BOAT_RESULT BoatOpenFile(const BCHAR *fileName)
+BOAT_RESULT BoatInitFS(const BCHAR *fileName)
 {	
 	//DRV_NAME_SPI_FLASH
 	drvSpiFlash_t *flash = drvSpiFlashOpen(HAL_FLASH_DEVICE_NAME(CONFIG_FS_SYS_FLASH_ADDRESS));
 	blockDevice_t *bdev = flashBlockDeviceCreateV2(flash, 0, CONFIG_FS_SYS_FLASH_SIZE, CONFIG_FS_SYS_FLASH_ADDRESS, 16, false);
-	sffsFs_t *fs = sffsMount(bdev, cache_count, read_only);
+	boat_internal_fs = sffsMount(bdev, cache_count, false);
 }
 
 BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 {
 #if BOAT_USE_UNISOC_FILESYSTEM == 1
 	BSINT32 file_fd = -1;
+	struct stat file_st;
 #else
 	FILE *file_ptr;
 #endif
 	
 	(void)rsvd;
+
+	if (boat_internal_fs == NULL)
+	{
+		if (BoatInitFS(fileName) != BOAT_RESULT)
+		{
+			//BoatLog(BOAT_LOG_CRITICAL, "need to use BoatOpenFile first.");
+			return BOAT_ERROR_INVALID_ARGUMENT;
+		}
+	}
 	
 	if ((fileName == NULL) || (size == NULL))
 	{
@@ -164,7 +176,23 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 #if BOAT_USE_UNISOC_FILESYSTEM == 1
-	*size = fibo_file_getSize(fileName);
+	int fd = sffsOpen(boat_internal_fs, fileName, O_ACCMODE);
+
+	if (fd == ENOENT || fd == EROFS || fd == ENOSPC || fd == ENAMETOOLONG || fd == ENOMEM)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
+		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+	}
+
+	if (sffsFstat(boat_internal_fs, fd, &file_st) == 0)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
+		sffsClose(boat_internal_fs, fileName);
+		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+	}
+	
+	*size = file_st.st_size;
+	sffsClose(fs, fileName);
 #else
 	file_ptr = fopen(fileName, "rb");
 	if (file_ptr == NULL)
@@ -195,6 +223,15 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 	
 	(void)rsvd;
 	result = result;
+
+	if (boat_internal_fs == NULL)
+	{
+		if (BoatInitFS(fileName) != BOAT_RESULT)
+		{
+			//BoatLog(BOAT_LOG_CRITICAL, "need to use BoatOpenFile first.");
+			return BOAT_ERROR_INVALID_ARGUMENT;
+		}
+	}
 	
 	if ((fileName == NULL) || (writeBuf == NULL))
 	{
@@ -204,17 +241,7 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 
 	/* write to file-system */
 #if BOAT_USE_UNISOC_FILESYSTEM == 1
-	file_fd = fibo_file_open(fileName, FS_O_WRONLY | FS_O_CREAT);
-	if (file_fd >= 0)
-	{
-		count = fibo_file_write(file_fd, (const void *)writeBuf, writeLen);
-		fibo_file_close(file_fd);
-	}
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to create file: %s.", fileName);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
-	}
+	count = sffsSfileWrite(boat_internal_fs, fileName, writeBuf, writeLen);
 #else
 	file_ptr = fopen(fileName, "wb");
 	if (file_ptr == NULL)
@@ -250,6 +277,15 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 	
 	(void)rsvd;
 	result = result;
+
+	if (boat_internal_fs == NULL)
+	{
+		if (BoatInitFS(fileName) != BOAT_RESULT)
+		{
+			//BoatLog(BOAT_LOG_CRITICAL, "need to use BoatOpenFile first.");
+			return BOAT_ERROR_INVALID_ARGUMENT;
+		}
+	}
 	
 	if ((fileName == NULL) || (readBuf == NULL))
 	{
@@ -259,12 +295,12 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 
 	/* read from file-system */
 #if BOAT_USE_UNISOC_FILESYSTEM == 1
-	file_fd = fibo_file_open(fileName, FS_O_RDONLY);
+	int fd = sffsOpen(boat_internal_fs, fileName, O_ACCMODE);
 
-	if (file_fd >= 0)
+	if (fd >= 0)
 	{
-		count = fibo_file_read(file_fd, readBuf, readLen);
-		fibo_file_close(file_fd);
+		count = sffsRead(boat_internal_fs, fd, readBuf, readLen);
+		sffsClose(boat_internal_fs, fileName);
 	}
 	else
 	{
@@ -285,7 +321,7 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 
 	if (count != readLen)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName );
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName);
 		return BOAT_ERROR;
 	}
 	
@@ -296,6 +332,15 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 {
 	(void)rsvd;
+
+	if (boat_internal_fs == NULL)
+	{
+		if (BoatInitFS(fileName) != BOAT_RESULT)
+		{
+			//BoatLog(BOAT_LOG_CRITICAL, "need to use BoatOpenFile first.");
+			return BOAT_ERROR_INVALID_ARGUMENT;
+		}
+	}
 		
 	if (fileName == NULL)
 	{
@@ -303,7 +348,7 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 #if BOAT_USE_UNISOC_FILESYSTEM == 1
-	if (0 != fibo_file_delete(fileName))
+	if (0 != sffsUnlink(boat_internal_fs, fileName))
 #else
 	if (0 != remove(fileName))
 #endif
