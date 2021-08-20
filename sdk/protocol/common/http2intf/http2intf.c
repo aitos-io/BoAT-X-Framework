@@ -37,9 +37,9 @@
 #include "orderer/cluster.pb-c.h"
 #include "discovery/protocol.pb-c.h"
 
-BUINT32 http2Reslen = 0;
-BUINT32 http2Reallen = 0;
-BUINT8 *http2ResData;
+// BUINT32 http2Reslen = 0;
+// BUINT32 http2Reallen = 0;
+// BUINT8 *http2ResData;
 
 //! xx
 #define MAKE_NV(K, V)  {(BUINT8*)K, (BUINT8*)V, strlen((BCHAR*)K), strlen((BCHAR*)V), NGHTTP2_NV_FLAG_NONE}
@@ -108,14 +108,16 @@ __BOATSTATIC ssize_t recv_callback(nghttp2_session *session, uint8_t *buf,
 __BOATSTATIC int on_frame_recv_callback(nghttp2_session *session,
 										const nghttp2_frame *frame, void *user_data)
 {
+	
     switch (frame->hd.type) 
 	{
         case NGHTTP2_HEADERS:
-			BoatLog(BOAT_LOG_VERBOSE, "[http2] NGHTTP2_HEADERS received.");
+		
+			BoatLog(BOAT_LOG_VERBOSE, "[http2] NGHTTP2_HEADERS received. ");
             break;
         case NGHTTP2_DATA:
             BoatLog(BOAT_LOG_VERBOSE, "[http2] NGHTTP2_DATA received.");
-            break;
+			break;
         case NGHTTP2_SETTINGS:
 			BoatLog(BOAT_LOG_VERBOSE, "[http2] NGHTTP2_SETTINGS received.");
             break;
@@ -148,82 +150,27 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
 											 size_t len, void *user_data)
 {
 	http2IntfContext         *http2Context     = (http2IntfContext*)user_data;
-	Protos__ProposalResponse *proposalResponse = NULL;
-	Orderer__SubmitResponse *submitResponse = NULL;
+	// Protos__ProposalResponse *proposalResponse = NULL;
+	// Orderer__SubmitResponse *submitResponse = NULL;
 	BoatHlfabricEndorserResponse *parsePtr = NULL;
-	BUINT32 offset = 0;
-	BoatLog(BOAT_LOG_NORMAL, "[http2]endorser http2Context->type = %d ",http2Context->type);
-	if (http2Context->type == HLFABRIC_TYPE_DISCOVER)
-	{
-
-		offset = http2Reslen;
-		if (http2Reslen == 0)
-		{
-			http2Reallen = (data[3] << 8) + data[4] + 5;
-		}
-		if(http2ResData == NULL){
-			http2ResData = BoatMalloc(http2Reallen);
-		}
-		memcpy(http2ResData + offset, data, len);
-		http2Reslen += len;
-
-				// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "on_data_chunk_recv_callback result",
-				// 			 http2ResData,
-				// 			 http2Reslen);
-
-		if (http2Reslen < http2Reallen)
-		{
-			return 0;
-		}
-
-	}
+	uint8_t *temp = NULL;
 	parsePtr = (BoatHlfabricEndorserResponse *)http2Context->parseDataPtr;
+	BoatLog(BOAT_LOG_NORMAL, "[http2]endorser http2Context->type = %d ,, len = %d ",http2Context->type,len);
 
-	if (http2Context->type == HLFABRIC_TYPE_PROPOSAL)
-	{ /* endorser response process */
-		proposalResponse =  protos__proposal_response__unpack(NULL, len - 5, data + 5);
-		if( (proposalResponse != NULL) && (proposalResponse->endorsement != NULL) )
-		{
-			BoatLog(BOAT_LOG_NORMAL, "[http2]endorser respond received.");
-			parsePtr->response[parsePtr->responseCount].contentPtr          = proposalResponse;
-			parsePtr->response[parsePtr->responseCount].responseType        = HLFABRIC_TYPE_PROPOSAL;
-			parsePtr->response[parsePtr->responseCount].payload.field_ptr   = proposalResponse->payload.data;
-			parsePtr->response[parsePtr->responseCount].payload.field_len   = proposalResponse->payload.len;
-			parsePtr->response[parsePtr->responseCount].endorser.field_ptr  = proposalResponse->endorsement->endorser.data;
-			parsePtr->response[parsePtr->responseCount].endorser.field_len  = proposalResponse->endorsement->endorser.len;
-			parsePtr->response[parsePtr->responseCount].signature.field_ptr = proposalResponse->endorsement->signature.data;
-			parsePtr->response[parsePtr->responseCount].signature.field_len = proposalResponse->endorsement->signature.len;
-			parsePtr->responseCount++;
-		}
-		else
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "[http2]endorser respond unpacked failed, maybe a invalid endorser.");
-		}
-	}
-	else if (http2Context->type == HLFABRIC_TYPE_TRANSACTION)
-	{ /* orderer response process */
-		submitResponse = orderer__submit_response__unpack(NULL, len - 5, data + 5);
-		if( submitResponse != NULL )
-		{
-			BoatLog(BOAT_LOG_NORMAL, "[http2]orderer respond received.%d", submitResponse->status);
-			parsePtr->response[parsePtr->responseCount].contentPtr          = submitResponse;
-			parsePtr->response[parsePtr->responseCount].responseType        = HLFABRIC_TYPE_TRANSACTION;
-			parsePtr->responseCount++;
-		}
-		else
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "[http2]orderer respond unpacked failed.");
-		}
-	}
-	else
+	if(parsePtr->httpResLen != 0)
 	{
-
-		parsePtr->response[parsePtr->responseCount].payload.field_ptr = http2ResData;
-		parsePtr->response[parsePtr->responseCount].payload.field_len = http2Reslen;
-		parsePtr->responseCount++;	
-							 
+		temp = BoatMalloc(parsePtr->httpResLen);
+		memcpy(temp,parsePtr->http2Res,parsePtr->httpResLen);
+		BoatFree(parsePtr->http2Res);
 	}
-
+	parsePtr->http2Res = BoatMalloc(parsePtr->httpResLen + len);
+	if(parsePtr->httpResLen != 0)
+	{
+		memcpy(parsePtr->http2Res,temp,parsePtr->httpResLen);
+		BoatFree(temp);
+	}
+	memcpy(parsePtr->http2Res + parsePtr->httpResLen,data,len);
+	parsePtr->httpResLen += len ;
 	return 0;
 }
 
@@ -264,7 +211,6 @@ __BOATSTATIC int on_stream_close_callback(nghttp2_session *session, int32_t stre
 		                                  uint32_t error_code, void *user_data)
 {
 	http2IntfContext *http2Context = (http2IntfContext*)user_data;
-	
 	nghttp2_session_terminate_session(session, 0);
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	BoatClose(http2Context->sockfd, http2Context->tlsContext, NULL);
@@ -353,7 +299,7 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	nghttp2_data_provider     data_prd;
 	nghttp2_session_callbacks *callbacks;
 	char                      *pathTmp = NULL;
-	
+	BoatHlfabricEndorserResponse *parsePtr = NULL;
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	boat_try_declare;
 
@@ -381,11 +327,15 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 						 MAKE_NV("user-agent", "grpc-go/1.15.0"),
                          MAKE_NV("te", "trailers") };
 
-	http2Reslen = 0;
-	if (http2ResData != NULL)
+
+	BUINT32 offset = 0;
+	parsePtr = (BoatHlfabricEndorserResponse *)context->parseDataPtr;
+	if(parsePtr->httpResLen != 0)
 	{
-		// BoatFree(http2ResData);
+		BoatFree(parsePtr->http2Res);
+		parsePtr->http2Res = NULL;
 	}
+	parsePtr->httpResLen = 0 ;
 	/* connection establishment */
 	context->sockfd = BoatConnect(context->nodeUrl, NULL);	
 	if(context->sockfd < 0)

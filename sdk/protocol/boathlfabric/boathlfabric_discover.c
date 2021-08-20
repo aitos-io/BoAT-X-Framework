@@ -652,6 +652,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoverExec(BoatHlfabricTx *tx_ptr,
 				tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
 				tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
 				result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
+
 				if (result > 0)
 				{
 					result = BOAT_SUCCESS;
@@ -678,8 +679,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	Msp__SerializedIdentity *msp_serializedIdentity = NULL;
 	// Protos__ProposalResponsePayload *ResponsePayload = NULL;
 	DiscoverRes discoverResult;
-	BUINT32 http2Reslen = 0, len = 0, offset = 0;
-	BUINT8 *http2ResData;
+	BUINT32 len = 0, offset = 0;
 	BCHAR *port;
 	BCHAR *IP = "192.168.132.190";
 	int i,j,k,l,m;
@@ -699,12 +699,12 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	result = BoatHlfabricDiscoverExec(tx_ptr, endorserInfo_ptr);
 
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invoke result",
-						 tx_ptr->endorserResponse.response[0].payload.field_ptr,
-						 tx_ptr->endorserResponse.response[0].payload.field_len);
-	http2ResData = tx_ptr->endorserResponse.response[0].payload.field_ptr;
-	http2Reslen = tx_ptr->endorserResponse.response[0].payload.field_len;
+						 tx_ptr->endorserResponse.http2Res,
+						 tx_ptr->endorserResponse.httpResLen);
+	// http2ResData = tx_ptr->endorserResponse.response[0].payload.field_ptr;
+	// http2Reslen = tx_ptr->endorserResponse.response[0].payload.field_len;
 
-	discoveryResponse = discovery__response__unpack(NULL, http2Reslen - 5, http2ResData + 5);
+	discoveryResponse = discovery__response__unpack(NULL, tx_ptr->endorserResponse.httpResLen - 5, tx_ptr->endorserResponse.http2Res + 5);
 	if (discoveryResponse == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack failed, maybe a invalid endorser.");
@@ -892,10 +892,11 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	DiscoverResFree(discoverResult);
 
 	// /* boat catch handle */
-	if (http2ResData != NULL)
+	if (tx_ptr->endorserResponse.http2Res != NULL)
 	{
-		BoatFree(http2ResData);
+		BoatFree(tx_ptr->endorserResponse.http2Res);
 	}
+	tx_ptr->endorserResponse.httpResLen =0;
 	return result;
 }
 

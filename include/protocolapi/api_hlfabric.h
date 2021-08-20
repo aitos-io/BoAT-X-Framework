@@ -207,6 +207,8 @@ typedef struct TBoatHlfabricProposalResponseArray
 {
 	BUINT16                            responseCount;
 	BoatHlfabricSingleEndorserResponse response[BOAT_HLFABRIC_ENDORSER_MAX_NUM];
+	BUINT32								httpResLen;
+	BUINT8 								*http2Res;
 }BoatHlfabricEndorserResponse;
 
 
