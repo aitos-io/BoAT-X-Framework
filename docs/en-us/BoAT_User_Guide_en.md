@@ -7,18 +7,19 @@ This article introduces the functions and usage of BoAT IoT Framework SDK 2.x.
 The intended readers of this article are customers who integrate the BoAT IoT Framework SDK.
 
 ### Abbreviated Terms
-|ABI|Application Binary Interface|
-| :-----| :-----|
-|API|Application Programming Interface|
-|BoAT|Blockchain of AI Things|
-|IoT|Internet of Things|
-|JSON|JavaScript Object Notation|
-|OS|Operating System|
-|RLP|Recursive Length Prefix (Encoding/Decoding)|
-|RPC|Remote Procedure Call|
-|RTOS|Real Time Operating System|
-|SDK|Software Development Kit|
-|WASM|WebAssembly|
+|Term |Explanation                                |
+|:--- |:----------------------------------------- |
+|ABI  |Application Binary Interface               |
+|API  |Application Programming Interface          |
+|BoAT |Blockchain of AI Things                    |
+|IoT  |Internet of Things                         |
+|JSON |JavaScript Object Notation                 |
+|OS   |Operating System                           |
+|RLP  |Recursive Length Prefix (Encoding/Decoding)|
+|RPC  |Remote Procedure Call                      |
+|RTOS |Real Time Operating System                 |
+|SDK  |Software Development Kit                   |
+|WASM |WebAssembly                                |
 
 
 
