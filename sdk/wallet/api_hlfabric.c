@@ -112,7 +112,16 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 					tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
 
 					parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
+
+									// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest  :",
+									//  tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
+									//  tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
+
 					result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
+					if(result < BOAT_SUCCESS)
+					{
+						continue;
+					}
 					proposalResponse = protos__proposal_response__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
 					if(parsePtr->httpResLen != 0)
 					{
@@ -189,7 +198,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 
 			tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
 
-			// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest send :",
+			// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest 111 send :",
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
 			parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
