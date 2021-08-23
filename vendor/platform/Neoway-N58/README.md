@@ -62,11 +62,11 @@
 	add_appimg(${target} ${file_ldscript} nwy_drv_lcd_st7735.c demo_entry.c my_contract.cpp.abi.c)  
 
   说明：  
-  4.1、demo_entry.c 包括main入口、网络初始化和调用合约上链等操作。  
-      如果和目前应用入口冲突，可注释掉demo_entry.c 中的 appimg_enter()和appimg_exit()，只调用boat_demo_entry()。  
-      如果只是用来跑通本demo，可删除当前应用入口文件，只保留boat_entry.c。  
-  4.2、my_contract.cpp.abi.c my_contract.cpp.abi.h 是boat2.0 make all后自动生成的合约。  
-     智能合约的生成，详细信息，可参考 BoAT-X-Framework/README.md  
+#### 4.1、demo_entry.c 包括main入口、网络初始化和调用合约上链等操作。  
+  如果和目前应用入口冲突，可注释掉demo_entry.c 中的 appimg_enter()和appimg_exit()，只调用boat_demo_entry()。  
+  如果只是用来跑通本demo，可删除当前应用入口文件，只保留boat_entry.c。  
+#### 4.2、my_contract.cpp.abi.c my_contract.cpp.abi.h 是boat2.0 make demo后自动生成的合约。  
+  智能合约的生成，详细信息，可参考 BoAT-X-Framework/README.md  
 	
 ### 5、修改BoAT-X-Framework编译平台为Neoway-N58
   打开N58平台代码根目录/BoAT-X-Framework/Makefile文件。  
@@ -78,7 +78,7 @@
 注：以下6、7两条修改，是把BoAT-X-Framework编译环境从Linux改成Windows下的Cygwin。如果是在Linux下编译，可以直接跳过6，7两步。
 
 ### 6、修改BoAT-X-Framework编译命令为Cygwin命令
-  打开N58平台代码根目录/BoAT-X-Framework/Makefile文件。假设Cygwin安装在C:/cygwin64下，则修改为以下值： 
+  打开N58平台代码根目录/BoAT-X-Framework/vendor/platform/Neoway-N58/external.env文件。假设Cygwin安装在C:/cygwin64下，则修改为以下值： 
   	
     CYGWIN_BASE := C:/cygwin64 //根据实际Cygwin安装路径修改  
     BOAT_RM := $(CYGWIN_BASE)/bin/rm -rf  

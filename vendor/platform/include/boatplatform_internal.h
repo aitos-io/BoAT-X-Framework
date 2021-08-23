@@ -57,7 +57,7 @@ extern "C" {
  * @return 
  *   Return \c BOAT_SUCCESS if generate success; otherwise return a negative error code.
  ******************************************************************************/
-BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
+BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd);
 
 
 /*!****************************************************************************
@@ -85,9 +85,9 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd);
  * @return 
  *   Return \c BOAT_SUCCESS if generate success; otherwise return a negative error code.
  ******************************************************************************/
-BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
-						   const BUINT8* digest, BUINT32 digestLen, 
-						   BoatSignatureResult* signatureResult, void* rsvd );
+BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
+						  const BUINT8 *digest, BUINT32 digestLen, 
+						  BoatSignatureResult *signatureResult, void *rsvd);
 
 
 /*!****************************************************************************
@@ -116,7 +116,7 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
  * @return 
  *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code.
  ******************************************************************************/
-BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd );
+BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd);
 
 
 /*!****************************************************************************
@@ -150,8 +150,8 @@ BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
  *
  * @see BoatReadFile
  ******************************************************************************/
-BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
-						    BUINT8* writeBuf, BUINT32 writeLen, void* rsvd );
+BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
+						  BUINT8 *writeBuf, BUINT32 writeLen, void *rsvd);
 
 
 /*!****************************************************************************
@@ -189,8 +189,8 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
  *
  * @see BoatWriteFile
  ******************************************************************************/
-BOAT_RESULT  BoatReadFile( const BCHAR *fileName,
-						   BUINT8* readBuf, BUINT32 readLen, void* rsvd );
+BOAT_RESULT BoatReadFile(const BCHAR *fileName,
+						 BUINT8 *readBuf, BUINT32 readLen, void *rsvd);
 
 
 /*!****************************************************************************
@@ -216,7 +216,7 @@ BOAT_RESULT  BoatReadFile( const BCHAR *fileName,
  * @return  
  *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code.
  ******************************************************************************/
-BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd );
+BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd);
 
 
 /*!****************************************************************************
@@ -235,7 +235,7 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd );
  * @return  
  *   Return a socket descriptor if commect success; otherwise return -1.
  ******************************************************************************/
-BSINT32 BoatConnect(const BCHAR *address, void* rsvd);
+BSINT32 BoatConnect(const BCHAR *address, void *rsvd);
 
 
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
@@ -263,8 +263,8 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd);
  * @return 
  *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code
  ******************************************************************************/
-BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain,
-						 BSINT32 socketfd, void* tlsContext, void* rsvd );
+BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
+						BSINT32 socketfd, void *tlsContext, void *rsvd);
 #endif
 
 
@@ -290,7 +290,7 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
  * @return  
  *   Return send length.
  ******************************************************************************/
-BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, void* rsvd);
+BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, void *rsvd);
 
 
 /*!****************************************************************************
@@ -315,7 +315,7 @@ BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, 
  *@return  
   *   Return received length.
  ******************************************************************************/
-BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* rsvd);
+BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd);
 
 
 /*!****************************************************************************
@@ -331,15 +331,15 @@ BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* 
  * @param rsvd 
  *   Reserved for futrue. 
  ******************************************************************************/
-void    BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd);
+void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd);
 
 
-BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx );
-BOAT_RESULT  BoatPort_keyQuery( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx );
-BOAT_RESULT  BoatPort_keyDelete( BoatWalletPriKeyCtx* pkCtx );
+BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx);
+BOAT_RESULT BoatPort_keyQuery(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx);
+BOAT_RESULT BoatPort_keyDelete(BoatWalletPriKeyCtx *pkCtx );
 
-BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
-BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], const BUINT8 * key, const BUINT8 * input, size_t length, BUINT8 * output);
+BOAT_RESULT BoatAesEncrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output);
+BOAT_RESULT BoatAesDecrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output);
 
 /*! @}*/
 

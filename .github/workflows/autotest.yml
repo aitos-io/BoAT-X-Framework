@@ -20,7 +20,14 @@ jobs:
 
     - name: prepare libcheck
       run:  sudo apt-get install check
-      shell: bash    
+      shell: bash  
+      
+    - name: prepare rulecheck
+      run:  sudo apt-get install cppcheck
+      shell: bash  
+    
+    - name: make rulecheck
+      run:  make rulecheck  
       
     - name: make tests
       run:  make tests

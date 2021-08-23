@@ -36,37 +36,37 @@
 
 
 
-BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 inputLen, 
-				       BUINT8* hashed, BUINT8* hashedLen, void* rsvd )
+BOAT_RESULT  BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 inputLen, 
+				      BUINT8 *hashed, BUINT8 *hashedLen, void *rsvd )
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
 	/* input param check */
-	if( ( hashed == NULL ) )
+	if (( hashed == NULL))
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'hashed' can't be NULL." );
+		BoatLog(BOAT_LOG_CRITICAL, "param which 'hashed' can't be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
-	if( type == BOAT_HASH_KECCAK256 )
+	if (type == BOAT_HASH_KECCAK256)
 	{
-		keccak_256( input, inputLen, hashed );
-		if( hashedLen != NULL )
+		keccak_256(input, inputLen, hashed);
+		if (hashedLen != NULL)
 		{
 			*hashedLen = 32;
 		}
 	}
-	else if( type == BOAT_HASH_SHA256 )
+	else if (type == BOAT_HASH_SHA256)
 	{
-		sha3_256( input, inputLen, hashed );
-		if( hashedLen != NULL )
+		sha3_256(input, inputLen, hashed);
+		if (hashedLen != NULL)
 		{
 			*hashedLen = 32;
 		}
 	}
 	else
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "unknown boat hash algorithm type." );
+		BoatLog(BOAT_LOG_CRITICAL, "unknown boat hash algorithm type.");
 		result = BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
@@ -88,5 +88,5 @@ void BoatFree(void *mem_ptr)
 
 void BoatSleep(BUINT32 second)
 {
-    fibo_taskSleep(1000*second);
+    fibo_taskSleep(1000 * second);
 }

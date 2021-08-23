@@ -179,9 +179,9 @@ extern "C" {
  *   @verbatim
      BoatEthWalletConfig eth_config = {...};
      BSINT32 wallet_index;
-     wallet_index = BoatWalletCreate( BOAT_PROTOCOL_ETHEREUM,
-                                      &eth_config,
-                                      sizeof(BoatEthWalletConfig)
+     wallet_index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM,
+                                     &eth_config,
+                                     sizeof(BoatEthWalletConfig)
                                     );
      @endverbatim
  *   \n BoatEthWalletInit() MUST be called before any use of Boat Ethereum Wallet.

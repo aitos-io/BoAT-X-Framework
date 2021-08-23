@@ -28,13 +28,14 @@ BoAT IoT Framework是面向蜂窝模组的C语言区块链应用框架客户端�
 
 **已支持的区块链:**  
 以太坊  
+PlatON  
 PlatONE  
 FISCO-BCOS  
-Hyperledger Fabric
+Hyperledger Fabric  
 
 **支持的Target操作系统：**  
 Linux  
-RTOS
+RTOS  
 
 
 **支持的Build操作系统：**  
@@ -46,7 +47,7 @@ Linux/Cygwin
 区块链账号的创建/加载/卸载  
 转账交易  
 智能合约调用（自动生成C调用接口）  
-智能合约调用（手工构造）    
+智能合约调用（手工构造）  
 
 
 ### 系统中的位置
@@ -104,15 +105,15 @@ Wallet API是SDK提供给物联网应用调用的接口，具体包括SDK公共�
 ### 软件依赖
 BoAT IoT Framework SDK依赖于以下软件:
 
-|依赖软件       |要求                                    |Build环境|Target环境|
-| :------------| :------------------------------------  | :----- | :-----  |
-|Host OS       |linux，或者Windows上的Cygwin             |Required |         |
-|Target OS     |linux                                   |        |Required |
-|Compiler      |gcc，需要支持c99 (9.3.0 is tested)       |Required |        |
-|Cross-compiler|arm-oe-linux-gnueabi-gcc 4.9.2 is tested|Required |        |
-|Make          |GNU Make (4.3 is tested)                |Required |        |
-|Python        |Python 2.7 (Python 3 is also compatible)|Required |        |
-|curl          |libcurl及其开发文件(7.55.1 is tested)     |Required on linux default |Required on linux default |
+|依赖软件       |要求                                      |Build环境|Target环境|
+| :------------| :------------------------------------    | :-----  | :-----  |
+|Host OS       |Linux，或者Windows上的Cygwin               |Required |         |
+|Target OS     |Linux                                     |         |Required |
+|Compiler      |gcc，需要支持c99 (9.3.0 is tested)         |Required |         |
+|Cross-compiler|arm-oe-linux-gnueabi-gcc (4.9.2 is tested)|Required |         |
+|Make          |GNU Make (4.3 is tested)                  |Required |         |
+|Python        |Python 2.7 (Python 3 is also compatible)  |Required |         |
+|curl          |libcurl及其开发文件(7.55.1 is tested)      |Required on Linux default |Required on Linux default |
 
 
 在编译和使用SDK之前，需要确保这些软件已经安装。在Ubuntu下，可以使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
@@ -153,11 +154,13 @@ C:\Documents and Settings\developer\project\boatiotsdk
 顶层makefile中：
 ```
 BOAT_PROTOCOL_USE_ETHEREUM  ?= 1
+BOAT_PROTOCOL_USE_PLATON    ?= 1
 BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 ```
-根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁能相应的区块链协议。
+根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁用相应的区块链协议。  
+***注：由于PlatON，PlatONE和FISCO BCOS三个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能***  
 - 日志打印级别调整  
 根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
 
@@ -203,8 +206,9 @@ Host编译指编译环境与目标环境一致，例如，在x86上编译x86程�
 1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中  
 2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见[合约C接口代码自动生成](###合约C接口代码自动生成)章节）  
 3. 在\<SDKRoot\>目录下，执行以下命令:  
+```
 $make boatlibs
-
+```
 编译完成后，生成的库文件在./lib中。应用应当包含./include下的头文件，并链接./lib下的库，实现访问区块链的功能。参见[头文件和库](###头文件和库)章节。
 
 #### 以Cygwin为编译环境
@@ -244,13 +248,15 @@ $. cross_compiler_config.sh
 
 
 可以执行以下命令查看当前shell中的环境变量设置：  
+```
 $export
-
+```
 
 若环境变量CC和AR已设置，可以执行以下命令查看当前CC和AR的版本，以便确认是否已经指向了期望的交叉编译环境:  
+```
 ${CC} -v  
-
 ${AR} -v
+```
 
 以上配置完成后，遵照[以Linux为编译环境](####以Linux为编译环境)章节的步骤进行编译。
 
@@ -321,7 +327,9 @@ SDK编译工程依赖于一些Cygwin工具，需要安装的工具如下:
 安装Cygwin之后，需要配置其路径。由于SDK编译所依赖的部分Cygwin工具与Windows自带工具同名，因此必须确保编译中引用的相关工具指向Cygwin的版本。
 
 首先，在执行编译的cmd shell中，执行如下命令增加Cygwin的搜索路径：  
+```
 set PATH=%PATH%;\<Path_to_Cygwin\>\bin  
+```
 其中<Path_to_Cygwin>是Cygwin安装目录的绝对路径，如：C:\Cygwin64  
   
 
@@ -349,12 +357,12 @@ f)	在“编辑环境变量”页中点击“新建”，新增Cygwin的安装�
 ###### 其他调整
 在Cygwin以外进行交叉编译时，除上节所述外，还需要进行下列调整：
 
-1. 尝试make，如果提示路径错误，则将Makefile中相应的路径分隔符，从“/”修改为“\\”。不要一开始就把所有的“/”都改为“\\”，因为部分源自linux的工具的Windows版本，可以识别“/”作为路径分隔符。
+1. 尝试make，如果提示路径错误，则将Makefile中相应的路径分隔符，从“/”修改为“\\”。不要一开始就把所有的“/”都改为“\\”，因为部分源自Linux的工具的Windows版本，可以识别“/”作为路径分隔符。
 2. 配置[独立的交叉编译环境](#####独立的交叉编译环境)章节所述环境变量，使之指向正确的交叉编译环境。在这些环境变量中，路径应以“\\”为分隔符
 
 ### 编译和运行Demo
 #### 准备
-SDK提供基于以太坊、PlatONE、FISCO-BCOS和fabric的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
+SDK提供基于以太坊、PlatON、PlatONE、FISCO-BCOS和fabric的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
 
 Demo所使用的智能合约及其ABI JSON文件放置在：  
 
@@ -370,6 +378,9 @@ ganache及truffle工具可以访问该网站：https://truffleframework.com
 ganache有命令行界面的ganache-cli版本，以及图形界面的Ganache版本。命令行界面的ganache-cli和图形界面的Ganache 1.x版本不会存盘，如果ganache-cli或Ganache   1.x的进程被终止，部署的合约会丢失，下次启动需要使用命令truffle migrate --reset重新部署合约，重新部署的合约地址可能会变化。图形界面的Ganache   2.x版本可以建Workspace保存状态，关闭下次重新打开该Workspace后，部署过的合约仍然在无需重新部署。  
 除了使用ganache模拟器，还可以使用Ropsten等以太坊测试网络（需要申请免费的测试token）。  
 
+在运行PlatON的Demo之前，需要安装PlatON节点。  
+PlatON源码及工具可以访问该网站：https://platon.network/
+
 在运行PlatONE的Demo之前，需要安装PlatONE节点，以及智能合约编译和部署工具。  
 PlatONE源码及工具可以访问该网站：https://platone.wxblockchain.com
 
@@ -384,14 +395,16 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 | :----------------------------------| :------------|
 |\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c|以太坊合约演示用例  |
 |\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c|以太坊转账演示用例  |
+|\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c|PLATON转账演示用例  |
 |\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c|PLATONE合约演示用例  |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c|FISCO-BCOS合约演示用例  |
 
 编译Demo之前，需要修改Demo的C代码中以下部分：
-- 对于ETHEREUM、FISCO-BCOS、PLATONE:
+- 对于ETHEREUM、PLATON、FISCO-BCOS、PLATONE:
   1.	搜索`demoUrl`，将节点URL（含端口）填写为实际部署的节点或模拟器的IP地址和RPC端口
   2.	如果demo需使用原生私钥, 则搜索`native_demoKey`，并将客户端私钥设置为：  
         -	对于ETHEREUM，设置为ganache生成的任意一个账户的私钥  
+        - 对于PlatON，无需修改Demo中的私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥对应的原生格式私钥
   3.	如果demo需使用原生私钥, 则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
@@ -411,7 +424,7 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 ```
 $make demo
 ```
-生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下,< protocol>可以为`ethereum` `fisco-bcos` `platone` `fabric`.
+生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下，< protocol>可以为`ethereum` `platon` `fisco-bcos` `platone` `fabric`。
 
 
 
@@ -433,8 +446,9 @@ $make demo
   
   
 可以使用如下命令查看库文件是ARM版本还是x86版本，以及位宽：  
+```
 $file \<lib或obj文件名\>
-
+```
 4. 编译中提示可执行文件找不到，或者参数错误  
 常见提示:  
 'make'不是内部或外部命令，也不是可运行的程序或批处理文件。  
@@ -509,17 +523,17 @@ SDK支持两类钱包：一次性钱包和持久性钱包。
 ```
 BSINT32 BoatWalletCreate(BoatProtocolType protocol_type,
                          const BCHAR *wallet_name_str,
-                         const void * wallet_config_ptr,
+                         const void *wallet_config_ptr,
                          BUINT32 wallet_config_size);
 ```
 参数:
 
 |参数名称               |参数描述                                                          |
 |:---------------------|:-----------------------------------------------------------------|
-|**protocol_type**     |The blockchain protocol. See boattypes.h for supported protocol.  |
-|**wallet_name_str**   |A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded.|
-|**wallet_config_ptr** |Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>.                                                                |
-|**wallet_config_size**|Size (in byte) of configuration specified by \<wallet_config_ptr\>.|
+|protocol_type         |The blockchain protocol. See boattypes.h for supported protocol.  |
+|wallet_name_str       |A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded.|
+|wallet_config_ptr     |Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>.|
+|wallet_config_size    |Size (in byte) of configuration specified by \<wallet_config_ptr\>.|
 
 **返回值:**  
 This function returns the non-negative index of the loaded wallet.
@@ -550,9 +564,9 @@ void BoatWalletUnload(BSINT32 wallet_index);
 ```
 参数:
 
-|参数名称        |参数描述                    |
-|:---------------|:--------------------------|
-|**wallet_index**|The wallet index to unload.|
+|参数名称        |参数描述                   |
+|:--------------|:--------------------------|
+|wallet_index   |The wallet index to unload.|
 
 
 #### 删除钱包
@@ -562,9 +576,9 @@ void BoatWalletDelete(BCHAR * wallet_name_str);
 ```
 参数:
 
-|参数名称           |参数描述                       |
+|参数名称            |参数描述                      |
 |:------------------|:-----------------------------|
-|**wallet_name_str**|The wallet name to delete.    |
+|wallet_name_str    |The wallet name to delete.    |
 
 ### 密钥生成
 创建钱包时需要配置的密钥，可以由外部输入，也可以由SDK生成， 通过设置`prikeyCtx_config.prikey_genMode`为相应的值实现。
@@ -575,15 +589,15 @@ void BoatWalletDelete(BCHAR * wallet_name_str);
 以以太坊为例:
 ```
 BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr,
-                            BCHAR * value_hex_str);
+                            BCHAR *value_hex_str);
 ```
 
 参数:
 
 |参数名称          |参数描述                                                                |
 |:----------------|:-----------------------------------------------------------------------|
-|**tx_ptr**       |Transaction pointer.                                                    |
-|**value_hex_str**|A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234".|
+|tx_ptr           |Transaction pointer.                                                    |
+|value_hex_str    |A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234".|
 
 **返回值:**  
 This function returns BOAT_SUCCESS if transfer is successful.
@@ -798,12 +812,12 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
 
 |参数名称          |参数描述                                                                                        |
 |:----------------|:-----------------------------------------------------------------------------------------------|
-|**wallet_ptr**   |The wallet pointer that this transaction is combined with.                                      |
-|**tx_ptr**       |Pointer a transaction object.                                                                   |
-|**is_sync_tx**   |For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored.|
-|**gasprice**     |A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed.                                                                                                |
-|**gaslimit**     |A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed.                                          |
-|**recipient_str**|A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed. |
+|wallet_ptr       |The wallet pointer that this transaction is combined with.                                      |
+|tx_ptr           |Pointer a transaction object.                                                                   |
+|is_sync_tx       |For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored.|
+|gasprice         |A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed.|
+|gaslimit         |A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed.|
+|recipient_str    |A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed.|
 
 **返回值:**  
 This function returns BOAT_SUCCESS if initialization is successful.

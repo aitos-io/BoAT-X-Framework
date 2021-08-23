@@ -182,7 +182,7 @@ boatlibs: createdir boatwalletlib vendorlib
 
 createdir:
 	@echo generate header file boatconfig.h...
-	$(shell python ./vendor/platform/$(PLATFORM_TARGET)/scripts/gen.py $(PLATFORM_TARGET) $(SCRIPTS_PARAM) )
+	python ./vendor/platform/$(PLATFORM_TARGET)/scripts/gen.py $(PLATFORM_TARGET) $(SCRIPTS_PARAM)
 	@echo generate done.
 
 	$(BOAT_MKDIR) -p $(BOAT_LIB_DIR)
@@ -196,6 +196,9 @@ vendorlib:
 
 demo: boatlibs
 	make -C $(BOAT_BASE_DIR)/demo all
+
+rulecheck: 
+	cppcheck  --enable=all -i$(BOAT_BASE_DIR)/sdk/third-party/ -i$(BOAT_BASE_DIR)/vendor/common/crypto/  -i$(BOAT_BASE_DIR)/sdk/protocol/boathlfabric/protos  --force $(BOAT_BASE_DIR) 
 
 tests: boatlibs
 	make -C $(BOAT_BASE_DIR)/tests all

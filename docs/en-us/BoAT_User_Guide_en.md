@@ -7,18 +7,19 @@ This article introduces the functions and usage of BoAT IoT Framework SDK 2.x.
 The intended readers of this article are customers who integrate the BoAT IoT Framework SDK.
 
 ### Abbreviated Terms
-|ABI|Application Binary Interface|
-| :-----| :-----|
-|API|Application Programming Interface|
-|BoAT|Blockchain of AI Things|
-|IoT|Internet of Things|
-|JSON|JavaScript Object Notation|
-|OS|Operating System|
-|RLP|Recursive Length Prefix (Encoding/Decoding)|
-|RPC|Remote Procedure Call|
-|RTOS|Real Time Operating System|
-|SDK|Software Development Kit|
-|WASM|WebAssembly|
+|Term |Explanation                                |
+|:--- |:----------------------------------------- |
+|ABI  |Application Binary Interface               |
+|API  |Application Programming Interface          |
+|BoAT |Blockchain of AI Things                    |
+|IoT  |Internet of Things                         |
+|JSON |JavaScript Object Notation                 |
+|OS   |Operating System                           |
+|RLP  |Recursive Length Prefix (Encoding/Decoding)|
+|RPC  |Remote Procedure Call                      |
+|RTOS |Real Time Operating System                 |
+|SDK  |Software Development Kit                   |
+|WASM |WebAssembly                                |
 
 
 
@@ -26,16 +27,15 @@ The intended readers of this article are customers who integrate the BoAT IoT Fr
 BoAT IoT Framework is a C language blockchain client framework software for cellular modules, which is easy to be ported to various modules and helps IoT applications based on cellular modules connect to the blockchain and access on-chain services. The functions provided by the BoAT IoT Framework SDK to IoT applications include initiating on-chain transactions, automatic generation of smart contract C interface code, calling smart contracts, and managing blockchain keys.
 
 **Supported blockchain:**  
-Ethereum  
-PlatONE
-FISCO-BCOS
-Hyperledger Fabric 
-
+Ethereum<br>
+PlatON<br>
+PlatONE<br>
+FISCO-BCOS<br>
+Hyperledger Fabric<br>
 
 **Supported Target Operating System:**  
-Linux 
-RTOS
-
+Linux<br>
+RTOS<br>
 
 **Supported Build Operating System:**  
 Linux/Cygwin  
@@ -116,13 +116,13 @@ BoAT IoT Framework SDK depends on the following software:
 
 | Dependent software | requirements                                         | Build environment         | Target environment        |
 | :----------------- | :--------------------------------------------------- | :------------------------ | :------------------------ |
-| Host OS            | linux，Or Cygwin on Windows                          | Required                  |                           |
-| Target OS          | linux                                                |                           | Required                  |
+| Host OS            | Linux，Or Cygwin on Windows                          | Required                  |                           |
+| Target OS          | Linux                                                |                           | Required                  |
 | Compiler           | gcc，Need to support c99 (9.3.0 is tested)           | Required                  |                           |
-| Cross-compiler     | arm-oe-linux-gnueabi-gcc 4.9.2 is tested             | Required                  |                           |
+| Cross-compiler     | arm-oe-linux-gnueabi-gcc (4.9.2 is tested)           | Required                  |                           |
 | Make               | GNU Make (4.3 is tested)                             | Required                  |                           |
 | Python             | Python 3.8.3 (Python 2.7 is also compatible)         | Required                  |                           |
-| curl               | libcurl and its development files (7.55.1 is tested) | Required on linux default | Required on linux default |
+| curl               | libcurl and its development files (7.55.1 is tested) | Required on Linux default | Required on Linux default |
 
 Before compiling the SDK and using it, you need to make sure that these software have been installed. On Ubuntu, can use the apt install command to install the corresponding package. Under Cygwin, use the Setup program that comes with Cygwin to install.
 
@@ -145,7 +145,7 @@ The following paths are not suitable:
 C:\Documents and Settings\developer\project\boatiotsdk  
 
 If you can't avoid the unsuitable characters above in the path, please use the following methods to avoid:  
-For linux: In a path without unsuitable characters, create a symbolic link to the SDK directory: ln -s \<SDKRoot\> boatiotsdk, and compile under the path of the symbolic link.  
+For Linux: In a path without unsuitable characters, create a symbolic link to the SDK directory: ln -s \<SDKRoot\> boatiotsdk, and compile under the path of the symbolic link.  
 For Windows: use the SUBST Z: \<SDKRoot\> command to create a virtual drive letter Z: (or other unused drive letter), and compile under the Z: drive.
 
 
@@ -162,12 +162,14 @@ In the top-level makefile:
 
 ````
 BOAT_PROTOCOL_USE_ETHEREUM  ?= 1
+BOAT_PROTOCOL_USE_PLATON    ?= 1
 BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 ````
 
 As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or while compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.  
+***Note：Since the PlatON, PlatONE, and FISCOBCOS blockchain wallet codes reuse the Ethereum wallet code in large numbers, it is necessary to enable Ethereum for any one of these three to be enabled***  
 - Log printing level adjustment
 If necessary, adjust the value of `BOAT_LOG_LEVEL` in the path \<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h to adjust the printer type of the log.
 
@@ -211,14 +213,15 @@ Follow the steps below to compile:
 1. Store the SDK source code in a path that meets the requirements of [SDK source code path](#SDK-Source-Code-Path)
 2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/demo/demo_\<protocol\>/demo_contract (see section 3.3)
 3. In the \<SDKRoot\> directory, execute the following command:  
+````
 $make boatlibs
-
+````
 After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See [Header Files and Libraries](#Header-Files-and-Libraries)chapter.
 
 #### Use Cygwin as The Compilation Environment
 On Windows, the SDK does not support compilation in environments other than Cygwin, nor does it support compilation with compilers other than gcc.
 
-The compilation steps are the same as under linux.
+The compilation steps are the same as under Linux.
 
 ### Cross-Compilation
 In cross-compilation, it is generally necessary to configure the compilation configuration file according to the specific compilation environment.
@@ -253,12 +256,14 @@ The `cross_compiler_config.sh` in the above example is not a script in this SDK,
 The `source` or `.` in the example is necessary, which makes the script execute in the context of the current shell, so the modification of environment variables in this script can only take effect in the current shell.
 
 You can execute the following command to view the environment variable settings in the current shell:  
+````
 $export
-
+````
 If the environment variables CC and AR have been set, you can execute the following command to view the current version of CC and AR to confirm whether the desired cross-compilation environment has been pointed to:  
+````
 ${CC} -v  
 ${AR} -v  
-
+````
 After the above configuration is completed, follow the steps in the chapter [Using Linux as the Compiling Environment](#Using-Linux-as-The-Compiling-Environment) chapter to compile.
 
 ##### A Cross-Compilation Environment Integrated with The Module Development Environment
@@ -355,12 +360,12 @@ f)	On the "Edit Environment Variables" page, click "New", add the bin path under
 ###### Other adjustments
 When cross-compiling outside of Cygwin, in addition to the previous section, the following adjustments are required:
 
-1.	Try make, if it prompts that the path is wrong, change the corresponding path separator in the Makefile from "/" to "\\". Don't change all "/" to "\\" at the beginning, because the Windows version of some tools derived from linux can recognize "/" as a path separator.
+1.	Try make, if it prompts that the path is wrong, change the corresponding path separator in the Makefile from "/" to "\\". Don't change all "/" to "\\" at the beginning, because the Windows version of some tools derived from Linux can recognize "/" as a path separator.
 2.	Configure the environment variables described in section [Independent Cross-Compilation Environment](#Independent-Cross-Compilation-Environment) to point to the correct cross-compilation environment. In these environment variables, the path should be separated by "\\".
 
 ### Compile and Run Demo
 #### Ready
-SDK provides Demo based on Ethereum , PlatONE , FISCO-BCOS and fabric. Before running these demos, you need to install the corresponding blockchain node software (or have known nodes) and deploy the smart contracts required by the demo.  
+SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS and fabric. Before running these demos, the corresponding blockchain node software is need to installed(or have known nodes) and deploy the smart contracts required by the demo.  
 
 The smart contract used by the demo and its ABI JSON file are placed in:  
 
@@ -376,6 +381,7 @@ Before running Ethereum's Demo, you need to install the Ethereum node simulator 
 Ganache has a ganache-cli version of the command line interface, and a Ganache version of the graphical interface. The ganache-cli of the command line interface and the Ganache 1.x version of the graphical interface will not be saved. If the process of ganache-cli or Ganache 1.x is terminated, the deployed contract will be lost. The command truffle migrate - reset Redeploy the contract, the address of the redeployed contract may change. The Ganache 2.x version of the graphical interface can create a Workspace save state. After closing and reopening the Workspace next time, the deployed contract still does not need to be redeployed.  
 In addition to using the ganache simulator, you can also use the Ethereum test network such as Ropsten (you need to apply for a free test token).  
 
+Before running the PlatON Demo, the PlatON node need to be installed. The specific process can be referred to this website: https://platon.network/  .  
 
 Before running the PlatONE Demo, you need to install the PlatONE node, as well as smart contract compilation and deployment tools,could visit this website: https://platone.wxblockchain.com  .
 
@@ -390,18 +396,21 @@ The Demo C code that calls the smart contract is placed in:
 | :---------------------------------------------------------- | :------------------------------ |
 | \<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c    | Ethereum demo use case          |
 | \<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c     | Ethereum transfer demo use case |
+| \<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c     | PLATON transfer demo use case |
 | \<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     | PLATONE demo use case           |
 | \<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c | FISCO-BCOS demo use case        |
 
 Before compiling the Demo, you need to modify the following parts of the Demo C code:  
-- For ETHEREUM, FISCO-BCOS, PLATONE:  
+- For ETHEREUM, PLATON, FISCO-BCOS, PLATONE:  
 	1. Search for `demoUrl` and fill in the node URL (including port) as the IP address and RPC port of the actual deployed node or simulator  
 	2. If the demo needs to use the native private key, search for `native_demoKey` and set the client private key as:  
 		- For ETHEREUM, set it to the private key of any account generated by ganache  
+    - For PlatON, there is no need to modify the private key in the Demo  
 		- For PlatONE, there is no need to modify the private key in the Demo  
 		- For FISCO-BCOS, set it to the native format private key corresponding to the private key under <FISCO-BCOS_ROOT>/console/accounts  
 	3. If the demo needs to use the native private key, search for `pkcs_demoKey` and set the client private key as:  
 		- For Ethereum, set the PKCS format private key corresponding to the private key of any account generated by Ganache  
+    - For PlatONE, there is no need to modify the private key in the Demo
 		- For PlatONE, there is no need to modify the private key in the Demo  
 		- For FISCO-BCOS, set it to the private key under <FISCO-BCOS_ROOT>/console/accounts  
 	4. Search for `demoRecipientAddress` and modify it to the deployment address of the Demo contract.  
@@ -414,10 +423,10 @@ Before compiling the Demo, you need to modify the following parts of the Demo C 
 
 #### Compile Demo
 Execute the following commands in the \<SDKRoot\> directory to compile the SDK call Demo:  
-
+````
 $make demo
-
-The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `fisco-bcos` `platone` `fabric`.
+````
+The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `platon` `fisco-bcos` `platone` `fabric`.
 
 
 ### Trouble Shooting in Compilation
@@ -425,7 +434,7 @@ The generated Demo programs are located under the path \<SDKRoot\>/build/demo/de
 This problem is generally caused by the command under target in the Makefile that does not start with Tab (ASCII code 0x09). Note that when you press the Tab key, the text editor may replace the Tab character with a number of spaces. The text editor should be set not to replace Tab with spaces.
 
 2. The prompt "curl/curl.h" cannot be found during compilation  
-This problem is caused by the fact that curl and its development files are not installed in the system. For Host compilation on a Linux distribution, please note that only installing the curl package is not enough, you also need to install its development file package. The development file package has different names in different linux distributions, usually named similar to curl-devel, or libcurl. For details, please refer to the package management tool of the Linux distribution you are using.    
+This problem is caused by the fact that curl and its development files are not installed in the system. For Host compilation on a Linux distribution, please note that only installing the curl package is not enough, you also need to install its development file package. The development file package has different names in different Linux distributions, usually named similar to curl-devel, or libcurl. For details, please refer to the package management tool of the Linux distribution you are using.    
 
 
 If curl is compiled with source code and is not installed in the system directory, you should specify its search path in external.env, and specify the path where the curl library is located when linking.  
@@ -525,12 +534,12 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type,
 
 Parameters:
 
-| parameter name         | Parameter Description                                        |
-| ---------------------- | ------------------------------------------------------------ |
-| **protocol_type**      | The blockchain protocol. See boattypes.h for supported protocol. |
-| **wallet_name_str**    | A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded. |
-| **wallet_config_ptr**  | Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>. |
-| **wallet_config_size** | Size (in byte) of configuration specified by \<wallet_config_ptr\>. |
+| parameter name         | Parameter Description                                            |
+| ---------------------- | ------------------------------------------------------------     |
+| protocol_type          | The blockchain protocol. See boattypes.h for supported protocol. |
+| wallet_name_str        | A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded. |
+| wallet_config_ptr      | Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>. |
+| wallet_config_size     | Size (in byte) of configuration specified by \<wallet_config_ptr\>. |
 
 **return value:**
 This function returns the non-negative index of the loaded wallet.
@@ -565,7 +574,7 @@ Parameters:
 
 | parameter name   | Parameter Description       |
 | ---------------- | --------------------------- |
-| **wallet_index** | The wallet index to unload. |
+| wallet_index     | The wallet index to unload. |
 
 
 #### Delete Wallet
@@ -579,7 +588,7 @@ Parameters:
 
 | parameter name      | Parameter Description      |
 | ------------------- | -------------------------- |
-| **wallet_name_str** | The wallet name to delete. |
+| wallet_name_str     | The wallet name to delete. |
 
 ### Key Generation
 The key that needs to be configured when creating a wallet can be inputted externally or generated by the SDK，this is achieved by setting `prikeyCtx_config.prikey_genMode` to the corresponding value.
@@ -597,8 +606,8 @@ Parameters:
 
 | parameter name    | Parameter Description                                        |
 | ----------------- | ------------------------------------------------------------ |
-| **tx_ptr**        | Transaction pointer.                                         |
-| **value_hex_str** | A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234". |
+| tx_ptr            | Transaction pointer.                                         |
+| value_hex_str     | A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234". |
 
 **return value:**
 This function returns `BOAT_SUCCESS` if transfer is successful.
@@ -813,12 +822,12 @@ Parameters:
 
 | parameter name    | Parameter Description                                        |
 | ----------------- | ------------------------------------------------------------ |
-| **wallet_ptr**    | The wallet pointer that this transaction is combined with.   |
-| **tx_ptr**        | Pointer a transaction object.                                |
-| **is_sync_tx**    | For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored. |
-| **gasprice**      | A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed. |
-| **gaslimit**      | A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed. |
-| **recipient_str** | A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed. |
+| wallet_ptr        | The wallet pointer that this transaction is combined with.   |
+| tx_ptr            | Pointer a transaction object.                                |
+| is_sync_tx        | For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored. |
+| gasprice          | A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed. |
+| gaslimit          | A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed. |
+| recipient_str     | A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed. |
 
 **return value:**
 This function returns `BOAT_SUCCESS` if initialization is successful.
@@ -971,7 +980,7 @@ The manual construction of transactions needs to follow the ABI interface of the
 If the SDK is ported to RTOS, the following points should generally be followed:
 ###### 1. Remove The Dependency On Curl
 
-curl is a communication protocol library under linux, used in the SDK to support http/https communication. Blockchain nodes usually use the http/https protocol to communicate.
+curl is a communication protocol library under Linux, used in the SDK to support http/https communication. Blockchain nodes usually use the http/https protocol to communicate.
 
 For modules using RTOS, you should add a call package to the module's http/https interface in\<SDKRoot\>/vendor/platform/\<platform_name\>/src/rpc, and modify \<SDKRoot\>/vendor/platform/\<platform_name\>/scripts/gen.py, close RPC_USE_LIBCURL and set the new RPC USE OPTION.
 

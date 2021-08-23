@@ -1,4 +1,4 @@
-# BoAT-X Framework for China Mobile YanFei-CUIot-MZ-6 Integration Guideline
+# BoAT-X Framework for China Unicom YanFei-CUIot-MZ-6 Integration Guideline
 
 
 ## About This Guideline

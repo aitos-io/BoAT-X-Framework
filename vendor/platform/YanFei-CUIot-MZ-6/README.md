@@ -1,4 +1,4 @@
-# BoAT-X-Framework for 中移物联Yanfei整合说明
+# BoAT-X-Framework for 中国联通YanFei-CUIot-MZ-6整合说明
 
 
 ## 一、前言

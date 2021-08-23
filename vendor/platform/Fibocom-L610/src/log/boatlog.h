@@ -44,7 +44,7 @@ boatLogConfig.h defines options for compiling.
 
 //void BoatPrintf(char* fmt, ...);
 #define BoatPrintf OSI_PRINTFI
-extern const BCHAR * const g_log_level_name_str[];
+extern const BCHAR *const g_log_level_name_str[];
 
 /*!****************************************************************************
  * @brief Log Output
@@ -89,14 +89,14 @@ extern const BCHAR * const g_log_level_name_str[];
 #else
 #define BoatLog_hexdump(level, title, buf, len)\
 	do{\
-		if( level <= BOAT_LOG_LEVEL ){\
-			BoatPrintf( "%s: %s[%03d]: ", g_log_level_name_str[level-1], title, len );\
-			if( len > 0 ){\
-				for( int i = 0; i < len; i++ ){BoatPrintf( "%c%c", "0123456789ABCDEF" [buf[i] / 16],"0123456789ABCDEF" [buf[i] % 16] );}\
+		if (level <= BOAT_LOG_LEVEL){\
+			BoatPrintf("%s: %s[%03d]: ", g_log_level_name_str[level-1], title, len);\
+			if (len > 0){\
+				for (int i = 0; i < len; i++){BoatPrintf("%c%c", "0123456789ABCDEF" [buf[i] / 16],"0123456789ABCDEF" [buf[i] % 16]);}\
 			}else{\
 				BoatPrintf("(nil)");\
 			}\
-			BoatPrintf( "\n" );\
+			BoatPrintf("\n");\
 		}\
 	}while(0)
 #endif
@@ -125,33 +125,33 @@ extern const BCHAR * const g_log_level_name_str[];
 #else
 #define BoatLog_hexasciidump(level, title, buf, len)\
 	   do{\
-		   if( level <= BOAT_LOG_LEVEL ){\
-		   BoatPrintf( "%s: %s[%03d]: \n", g_log_level_name_str[level-1], title, len );\
-			   if( len > 0 ){\
-				   for( int j = 0; j < len / 16 + 1; j++ ){\
+		   if (level <= BOAT_LOG_LEVEL){\
+		   BoatPrintf("%s: %s[%03d]: \n", g_log_level_name_str[level-1], title, len);\
+			   if (len > 0){\
+				   for (int j = 0; j < len / 16 + 1; j++){\
 					   BoatPrintf("%08x  ", j * 16);\
-					   for( int i = 0; i < 16; i++ ){\
-						   BoatPrintf( "%c%c ",\
+					   for (int i = 0; i < 16; i++){\
+						   BoatPrintf("%c%c ",\
 								   "0123456789ABCDEF " [(i + j * 16 < len) ? buf[i + j * 16] / 16 : 16],\
 								   "0123456789ABCDEF " [(i + j * 16 < len) ? buf[i + j * 16] % 16 : 16] );}\
-					   BoatPrintf( " |" );\
-					   for( int i = 0; i < 16; i++ ){\
-						   if( i + j * 16 < len ){\
-							   if( (buf[i + j * 16] > 32) && (buf[i + j * 16] < 127) ){\
-								   BoatPrintf( "%c", buf[ i + j * 16] );\
+					   BoatPrintf(" |");\
+					   for (int i = 0; i < 16; i++){\
+						   if (i + j * 16 < len){\
+							   if((buf[i + j * 16] > 32) && (buf[i + j * 16] < 127)){\
+								   BoatPrintf("%c", buf[ i + j * 16]);\
 							   }else{\
-								   BoatPrintf( "." );\
+								   BoatPrintf(".");\
 							   }\
 						   }else{\
-						   	   BoatPrintf( " " );\
+						   	   BoatPrintf(" ");\
 						   }\
 					   }\
-					   BoatPrintf( "|\n" );\
+					   BoatPrintf("|\n");\
 				   }\
 		   }else{\
 			   BoatPrintf("(nil)");\
 		   }\
-		   BoatPrintf( "\n" );\
+		   BoatPrintf("\n");\
 	   }\
    }while(0)
 #endif
