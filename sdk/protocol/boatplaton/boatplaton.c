@@ -453,7 +453,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Nonce    )", 
 					tx_ptr->rawtx_fields.nonce.field, tx_ptr->rawtx_fields.nonce.field_len);
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Sender   )", 
-					tx_ptr->address, strlen(tx_ptr->address));
+					tx_ptr->address, (BUINT32)strlen((BCHAR *)tx_ptr->address));
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Recipient)", 
 					tx_ptr->rawtx_fields.recipient, 20);
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Value    )", 

@@ -70,7 +70,7 @@ BUINT32 BoatConvertBits(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, BUINT32 fr
     return outLen;
 }
 
-BUINT8 *BoatExpandHrp(const BUINT8 *hrp, BUINT8 hrplen, BUINT8 *out) 
+BUINT8 *BoatExpandHrp(const BCHAR *hrp, BUINT8 hrplen, BUINT8 *out) 
 {
     BUINT8 i;
     BUINT8 c;
@@ -99,7 +99,7 @@ BUINT8 *BoatBech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, 
     BUINT32 chk = 1;
     BUINT32 b,i,j,len;
     BUINT8 *out = BoatMalloc(6);
-    BUINT8 *p;
+    const BUINT8 *p;
 
     memset(out, 0, 6);
 
@@ -142,7 +142,7 @@ BUINT8 *BoatBech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, 
     return out;
 }
 
-BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUINT8 *hrp, BUINT8 hrplen)
+BSINT32 BoatPlatONBech32Encode(const BCHAR *in, BUINT32 inlen, BCHAR *out, const BCHAR *hrp, BUINT8 hrplen)
 {
     if (in == NULL || hrp == NULL || out == NULL)
     {
@@ -165,7 +165,7 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, con
         return -1;
     }
 
-    BoatConvertBits(in, inlen, base32Data, 8, 5);
+    BoatConvertBits((BUINT8 *)in, inlen, base32Data, 8, 5);
 
     expandHRPData = BoatMalloc(hrplen * 2 + 1);
 
@@ -192,12 +192,13 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, con
     return hrplen + 1 + base32OutLen + 6;
 }
 
-BSINT32 BoatPlatONBech32Decode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out)
+BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BCHAR *out)
 {
     BSINT32 separatorOffset = 0;
     BSINT32 i;
     BSINT32 hrplen, datalen;
-    BUINT8 *hrp, *data, *chksum, *transData, *expandHRPData;
+    const BCHAR *hrp;
+    BUINT8 *data, *chksum, *expandHRPData;
     if (in == NULL || out == NULL)
     {
         return -1;
@@ -255,7 +256,7 @@ BSINT32 BoatPlatONBech32Decode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out)
     }
     BoatFree(chksum);
 
-    return BoatConvertBits(data, datalen, out, 5, 8);
+    return BoatConvertBits(data, datalen, (BUINT8 *)out, 5, 8);
 }
 
 #endif /* end of PROTOCOL_USE_PLATON */

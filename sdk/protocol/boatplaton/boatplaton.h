@@ -129,7 +129,7 @@ BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr);
  * @return
  *   This function returns the length of out array.
 *******************************************************************************/
-BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUINT8 *hrp, BUINT8 hrplen);
+BSINT32 BoatPlatONBech32Encode(const BCHAR *in, BUINT32 inlen, BCHAR *out, const BCHAR *hrp, BUINT8 hrplen);
 /*! @}*/
 
 
@@ -152,7 +152,7 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, con
  * @return
  *   This function returns the length of out array.
  ******************************************************************************/
-BSINT32 BoatPlatONBech32Decode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out);
+BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BCHAR *out);
 
 #ifdef __cplusplus
 }
