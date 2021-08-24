@@ -26,40 +26,40 @@
 #define USE_ONETIME_WALLET
 
 const BCHAR *fabric_client_demokey = "-----BEGIN PRIVATE KEY-----\n"
-"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgfaxaf+vmGKM4gZgc\n"
-"XTu8RvhtJ0XNRnlbAj03bS1j162hRANCAASyhzhG6XM2HHOmZhmls/XGVEqAXQmU\n"
-"3e4efiK0XxtINmKqLj7cAxUGjQD4/0CfOIYXfCZjWVuslM5JbrS3GAC1\n"
+"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgExGSgCJJjJNY+rm5\n"
+"PzSIdT9T0yq5HeMZfLWGIv4MMgmhRANCAAQjz9vBAzGon94IO318sSEsLPzv/hUG\n"
+"xpmVtgyP9M4kZiofXhHRFpd55yv1oSZVJ1qayXF72dVa3N1Efq3L6YPr\n"
 									 "-----END PRIVATE KEY-----\n";
 
 const BCHAR *fabric_client_democert = "-----BEGIN CERTIFICATE-----\n"
-"MIICKjCCAdGgAwIBAgIRAMGUJz7Botsdank/Gd5Nr4AwCgYIKoZIzj0EAwIwczEL\n"
+"MIICKzCCAdGgAwIBAgIRALjTWyXqQ91VfNkU3M4twDcwCgYIKoZIzj0EAwIwczEL\n"
 "MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\n"
 "cmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2Nh\n"
-"Lm9yZzEuZXhhbXBsZS5jb20wHhcNMjEwODA2MDYwMzAwWhcNMzEwODA0MDYwMzAw\n"
+"Lm9yZzEuZXhhbXBsZS5jb20wHhcNMjEwODI0MDI0MDAwWhcNMzEwODIyMDI0MDAw\n"
 "WjBsMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMN\n"
 "U2FuIEZyYW5jaXNjbzEPMA0GA1UECxMGY2xpZW50MR8wHQYDVQQDDBZVc2VyMUBv\n"
-"cmcxLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEsoc4Rulz\n"
-"NhxzpmYZpbP1xlRKgF0JlN3uHn4itF8bSDZiqi4+3AMVBo0A+P9AnziGF3wmY1lb\n"
-"rJTOSW60txgAtaNNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYD\n"
-"VR0jBCQwIoAgMyLSk8xfbqcNd5Z8pHDzWNJ5kRXS3cb2aENRaeE4TlIwCgYIKoZI\n"
-"zj0EAwIDRwAwRAIgc+xQKJ0EchEeYXoq/ysfq9ShAY9LiXrWI7/esrAZmhgCIDbe\n"
-"IM+jtVHhRfGric9YZUgmgiXf1t7Xl1ScYBoJRDhV\n"
+"cmcxLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEI8/bwQMx\n"
+"qJ/eCDt9fLEhLCz87/4VBsaZlbYMj/TOJGYqH14R0RaXeecr9aEmVSdamslxe9nV\n"
+"WtzdRH6ty+mD66NNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYD\n"
+"VR0jBCQwIoAgPimayAehE+5QzYJ97IrO6+0If9ytCf9CmoQERy15+PYwCgYIKoZI\n"
+"zj0EAwIDSAAwRQIhAJbvy8Xf9LR2Ms4xVqpBrokvumKuqV1Er9zsH9xU4EtlAiBi\n"
+"7/vhTB1ciEDv1xAl/MGeCv5Fw2/kTuhWaqnweoljQA==\n"
 									  "-----END CERTIFICATE-----\n";
 
 const BCHAR *fabric_org1_tlsCert = "-----BEGIN CERTIFICATE-----\n"
-"MIICVzCCAf2gAwIBAgIQdHWwna70/3lc0gi1/t/pKjAKBggqhkjOPQQDAjB2MQsw\n"
-"CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\n"
-"YW5jaXNjbzEZMBcGA1UEChMQb3JnMS5leGFtcGxlLmNvbTEfMB0GA1UEAxMWdGxz\n"
-"Y2Eub3JnMS5leGFtcGxlLmNvbTAeFw0yMTA4MDYwNjAzMDBaFw0zMTA4MDQwNjAz\n"
-"MDBaMHYxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH\n"
-"Ew1TYW4gRnJhbmNpc2NvMRkwFwYDVQQKExBvcmcxLmV4YW1wbGUuY29tMR8wHQYD\n"
-"VQQDExZ0bHNjYS5vcmcxLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0D\n"
-"AQcDQgAEgvDRn3tEYwVygfoFSOQiHk38MeY9PgRB6VgX3Q93tJTaPobje9vdzIES\n"
-"/v7Qj/s9nkhxKTGOLjTW3QM3sYcUzqNtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1Ud\n"
-"JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud\n"
-"DgQiBCBY7qlsEEUmcNP+GtyJugAVg/NE2/82xETa3apJ+saMiDAKBggqhkjOPQQD\n"
-"AgNIADBFAiEAgIO0mleh/BuE4Q3xC5XWClJsB+IfAXo4r+54aebkb5MCIADi605w\n"
-"GkfdWaW2VAYuSGKUPKFN89dPStiyC71aLQn8\n"
+"MIICWDCCAf6gAwIBAgIRAMLHCXEQpMlZvIgUacdL1f8wCgYIKoZIzj0EAwIwdjEL\n"
+"MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\n"
+"cmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHzAdBgNVBAMTFnRs\n"
+"c2NhLm9yZzEuZXhhbXBsZS5jb20wHhcNMjEwODI0MDI0MDAwWhcNMzEwODIyMDI0\n"
+"MDAwWjB2MQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UE\n"
+"BxMNU2FuIEZyYW5jaXNjbzEZMBcGA1UEChMQb3JnMS5leGFtcGxlLmNvbTEfMB0G\n"
+"A1UEAxMWdGxzY2Eub3JnMS5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49\n"
+"AwEHA0IABCOyMlRJgG6eXUEYlgiclBDQNMlhN0jHuc+ryPpZwEOdOY7SxOZwQlf3\n"
+"vPUP2shVBWzb6m6LQcCj3pb/KK8SaY2jbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNV\n"
+"HSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwDwYDVR0TAQH/BAUwAwEB/zApBgNV\n"
+"HQ4EIgQg49uDUbku1O1WGsTBuGxDhXXqnzM1qquJ60hQzJdDkCMwCgYIKoZIzj0E\n"
+"AwIDSAAwRQIhALP1edBV25XT0JbahsT9DmFHcG7jj4JnzW+T7P1lWSJiAiBOt1IY\n"
+"lzlTjaqaqtRYCUNOLH0awrZh4eegEU/GqsloGA==\n"
 								   "-----END CERTIFICATE-----\n";
 
 const BCHAR *fabric_org2_tlsCert = "-----BEGIN CERTIFICATE-----\n"
@@ -536,14 +536,21 @@ int main(int argc, char *argv[])
 
 
 	/* step-5: set transaction 'invoke' command */
-	result += BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "b", "a", "10", NULL);
+	result += BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
 	result += BoatHlfabricTxSubmit(&tx_ptr); 
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
 		return -1;
 	}
-
+	/* step-6: wait seconds and 'query' the tansaction */
+	BoatSleep(3);
+	result = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
+	if (result != BOAT_SUCCESS)
+	{
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
+		return -1;
+	}
 	result = BoatHlfabricTxEvaluate(&tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{

@@ -645,12 +645,12 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoverExec(BoatHlfabricTx *tx_ptr,
 				memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
 				// tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content;
 				// BoatLog(BOAT_LOG_CRITICAL, "hostname : %s ", tx_ptr->wallet_ptr->http2Context_ptr->hostName);
-				BoatLog_hexasciidump(BOAT_LOG_NORMAL, "tlsCAchain  :",
-									 tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr,
-									 tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 #endif
 				tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
 				tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
+				// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest  :",
+				// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
+				// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
 				result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 
 				if (result > 0)
@@ -710,14 +710,26 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 		BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack failed, maybe a invalid endorser.");
 		return 0;
 	}
+		for ( i = 0; i < discoveryResponse->n_results; i++)
+	{
+		if(discoveryResponse->results[i]->result_case == DISCOVERY__QUERY_RESULT__RESULT_ERROR || discoveryResponse->results[i]->result_case == DISCOVERY__QUERY_RESULT__RESULT__NOT_SET)
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "node discover err : %s ",discoveryResponse->results[i]->error->content);
+			return BOAT_ERROR;
+		}
+	}
+
 	Discovery__ConfigResult *mconfig_result;
+
 	mconfig_result = discoveryResponse->results[0]->config_result;
 	BUINT8 num = mconfig_result->n_msps;
 	// discoverResult->Peership.orgNum = num;
-
 	Discovery__ChaincodeQueryResult *cc_query_res;
 	cc_query_res = discoveryResponse->results[0]->cc_query_res;
 	num = cc_query_res->n_content;
+
+	
+	BoatLog(BOAT_LOG_CRITICAL, "[http2] cc_query_res->n_content  111");
 	BUINT8 n_layouts, n_quantities_by_group;
 	for ( i = 0; i < num; i++)
 	{
