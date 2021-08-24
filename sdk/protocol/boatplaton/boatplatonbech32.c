@@ -155,7 +155,7 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, con
 
     BUINT8 *base32Data;
     BUINT8 *expandHRPData;
-    BUINT32 base32OutLen = base32_encoded_length(inlen);
+    BUINT32 base32OutLen = (inlen / 5) * 8 + (inlen % 5 * 8 + 4) / 5;
     BUINT8 *bech32Chk;
     BUINT32 i;
 
