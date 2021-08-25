@@ -53,7 +53,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 	BoatHlfabricEndorserResponse *parsePtr = NULL;
 	Protos__ProposalResponse *proposalResponse = NULL;
 	Orderer__SubmitResponse *submitResponse = NULL;
-	BUINT8 count;
+	BUINT8 valid_node_quantities;
 	boat_try_declare;
 	// DiscoverRes discooverRes = tx_ptr->discooverRes;
 	int i, j, k;
@@ -76,7 +76,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 		{
 			for (j = 0; j < nodeCfg.layoutCfg[i].endorserGroupNum; j++)
 			{
-				count = 0;
+				valid_node_quantities = 0;
 				for (k = 0; k < nodeCfg.layoutCfg[i].groupCfg[j].endorserNumber; k++)
 				{
 					tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl;
@@ -149,8 +149,8 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 					{
 						return result;
 					}
-					count++;
-					if (count >= nodeCfg.layoutCfg[i].groupCfg[j].quantities)
+					valid_node_quantities++;
+					if (valid_node_quantities >= nodeCfg.layoutCfg[i].groupCfg[j].quantities)
 					{
 						if (nodeCfg.layoutCfg[i].endorserGroupNum == (j + 1))
 						{
@@ -159,7 +159,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 						break;
 					}
 				}
-				if (count < nodeCfg.layoutCfg[i].groupCfg[j].quantities)
+				if (valid_node_quantities < nodeCfg.layoutCfg[i].groupCfg[j].quantities)
 				{
 					BoatLog(BOAT_LOG_CRITICAL, "http2SubmitRequest failed ");
 					boat_throw(BOAT_ERROR, BoatHlfabricTxProposal_exception);
