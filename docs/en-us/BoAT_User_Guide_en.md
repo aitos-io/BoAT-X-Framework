@@ -64,7 +64,7 @@ Smart contract call (manual construction)
  ### BoAT IoT Framework SDK Architecture
  BoAT IoT Framework SDK is shown in Figure 2-2, which mainly includes Wallet API, blockchain client interface protocol, remote procedure call interface, common components, hardware dependent components and tool components.  
 
- ![BoAT Architecture](/images/BoAT_User_Guide_en-F2-2-BoAT_architecture.png)
+ ![BoAT Architecture](./images/BoAT_User_Guide_en-F2-2-BoAT_architecture.png)
  Figure 2-2 BoAT Architecture
 
 * The *Wallet API* is an interface that the SDK provides to the IoT Application to call, including the SDK public interface and wallet and transaction interfaces for different blockchain protocols.  
