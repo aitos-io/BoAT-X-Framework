@@ -652,11 +652,11 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoverExec(BoatHlfabricTx *tx_ptr,
 				// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 				// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
 				result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
-
-				if (result > 0)
+				if(result == BOAT_SUCCESS)
 				{
-					result = BOAT_SUCCESS;
+					return result;
 				}
+
 			}
 		}
 	}

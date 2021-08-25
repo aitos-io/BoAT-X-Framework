@@ -118,7 +118,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 									//  tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
 
 					result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
-					if(result < BOAT_SUCCESS)
+					if(result != BOAT_SUCCESS)
 					{
 						continue;
 					}
@@ -203,6 +203,11 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
 			parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
 			result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
+			if(result != BOAT_SUCCESS)
+			{
+				BoatLog(BOAT_LOG_CRITICAL, "[http2]http2SubmitRequest failed.");
+				continue;
+			}
 			submitResponse = orderer__submit_response__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
 			if (submitResponse != NULL)
 			{

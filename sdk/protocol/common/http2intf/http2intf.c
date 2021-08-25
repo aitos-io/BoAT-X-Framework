@@ -365,18 +365,37 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	nghttp2_session_client_new(&context->session, callbacks, context);
 	nghttp2_session_callbacks_del(callbacks);
 	
-	result += nghttp2_submit_settings(context->session, NGHTTP2_FLAG_NONE, NULL, 0);
+	result = nghttp2_submit_settings(context->session, NGHTTP2_FLAG_NONE, NULL, 0);
+	if(result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "submit settings failed.");
+		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+	}
 	data_prd.read_callback = data_source_read_callback;
-	result += nghttp2_submit_request(context->session, NULL, nva, sizeof(nva)/sizeof(nva[0]), &data_prd, NULL);
-	result += nghttp2_session_send(context->session);
-	result += nghttp2_session_recv(context->session);
-
+	result = nghttp2_submit_request(context->session, NULL, nva, sizeof(nva)/sizeof(nva[0]), &data_prd, NULL);
+	if(result < BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
+		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+	}
+	result = nghttp2_session_send(context->session);\
+	if(result < BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
+		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+	}
+	result = nghttp2_session_recv(context->session);
+	if(result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
+		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+	}
+	result = BOAT_SUCCESS;
 	boat_catch(http2SubmitRequest_exception)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
 	 	result = boat_exception;
 	}
-
 	return result;
 }
 #endif /* end of PROTOCOL_USE_HLFABRIC */
