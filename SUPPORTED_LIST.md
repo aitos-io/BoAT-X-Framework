@@ -1,6 +1,7 @@
 # Supported Blockchain List
 
 + Ethereum
++ PlatON
 + PlatON Enterprise (PlatONE)
 + FISCO-BCOS
 + Hyperledger Fabric
