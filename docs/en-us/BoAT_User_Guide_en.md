@@ -204,23 +204,23 @@ Different virtual machines and contract programming languages have different app
 
 The SDK provides the following tools to generate the corresponding C interface code according to the contract ABI, so that in the C code, the smart contract on the chain can be called through the generated interface code like a general C function:  
 
-| **Conversion tool**            | **use**                                                      |
-| :----------------------------- | :----------------------------------------------------------- |
-| \<SDKRoot\>/tools/eth2c.py     | According to the ABI of Ethereum Solidity, generate C calling code |
-| \<SDKRoot\>/tools/fiscobcos2c.py     | According to the ABI of FISCO-BCOS Solidity, generate C calling code |
-| \<SDKRoot\>/tools/platoneSolidity2c.py | Generate C calling code according to PlatONE (Solidity) ABI      |
-| \<SDKRoot\>/tools/platoneWASM2c.py | Generate C calling code according to PlatONE (WASM) ABI      |
+|Conversion tool                        |use                                                                  |
+|:------------------------------------- |:------------------------------------------------------------------- |
+|\<SDKRoot\>/tools/eth2c.py             |According to the ABI of Ethereum Solidity, generate C calling code   |
+|\<SDKRoot\>/tools/fiscobcos2c.py       |According to the ABI of FISCO-BCOS Solidity, generate C calling code |
+|\<SDKRoot\>/tools/platoneSolidity2c.py |Generate C calling code according to PlatONE (Solidity) ABI          |
+|\<SDKRoot\>/tools/platoneWASM2c.py     |Generate C calling code according to PlatONE (WASM) ABI              |
 
 Contract programming languages generally support "object-oriented". However, since C language does not support "object-oriented" and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools. The specific input types of support contract functions are described in the [Contract Call (Automatically Generated)](#Contract-Call-(automatically-generated)) chapter.
 
 Before making the call, you first need to compile the contract, and copy the ABI interface description JSON file generated in the contract compilation to the corresponding directory of the SDK: 
 
-| **Contract ABI storage path**                 | **use**                                                      |
-| :-------------------------------------------- | :----------------------------------------------------------- |
-| \<SDKRoot\>/demo/demo_ethereum/demo_contract  | Copy the ABI JSON file of Ethereum Solidity to this directory |
-| \<SDKRoot\>/demo/demo_fiscobcos/demo_contract | Copy the ABI JSON file of FISCO-BCOS to this directory       |
-| \<SDKRoot\>/demo/demo_platone/demo_contract\Solidity   | Copy PlatONE (Solidity) ABI JSON file to this directory          |
-| \<SDKRoot\>/demo/demo_platone/demo_contract\WASM   | Copy PlatONE (WASM) ABI JSON file to this directory          |
+|Contract ABI storage path                            |use                                                           |
+|:--------------------------------------------------- |:------------------------------------------------------------ |
+|\<SDKRoot\>/demo/demo_ethereum/demo_contract         |Copy the ABI JSON file of Ethereum Solidity to this directory |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract        |Copy the ABI JSON file of FISCO-BCOS to this directory        |
+|\<SDKRoot\>/demo/demo_platone/demo_contract\Solidity |Copy PlatONE (Solidity) ABI JSON file to this directory       |
+|\<SDKRoot\>/demo/demo_platone/demo_contract\WASM     |Copy PlatONE (WASM) ABI JSON file to this directory           |
 
 *Note: ABI's JSON file must have ".json" as the file name suffix.*  
 
@@ -256,10 +256,10 @@ Independent compilation environment means that arm-oe-linux-gnueabi-gcc (or simi
 
 The SDK requires at least the following environment variables to be set in the system to point to the cross-compilation environment:  
 
-| **Environment variable** | **Description**                                 |
-| :----------------------- | :---------------------------------------------- |
-| CC                       | Point to the cross compiler gcc executable file |
-| AR                       | Point to the cross compiler ar executable file  |
+|Environment variable  |Description                                     |
+|:-------------------- |:---------------------------------------------- |
+|CC                    |Point to the cross compiler gcc executable file |
+|AR                    |Point to the cross compiler ar executable file  |
 
 
 When the environment variables of CC and AR are not defined in the environment, GNU make will default CC=cc and AR=ar. Usually, the gcc and bintuils compilation environment of the host are installed in the Linux system. Therefore, if the above environment variables are not defined, the host compilation will be executed.
@@ -342,12 +342,12 @@ When cross-compiling outside of Cygwin, you still need to install Cygwin and adj
 ###### Install Cygwin
 The SDK compilation project relies on some Cygwin tools. The tools that need to be installed are as follows:
 
-| **Tools needed** | **use**                                                      |
-| :--------------- | :----------------------------------------------------------- |
-| find             | Cygwin's find.exe is needed to search the subdirectories to be compiled recursively. Windows comes with another FIND.EXE with the same name but completely different functions, which cannot be used. |
-| rm               | Used to delete specified directories and files. The built-in RMDIR/RD and DEL commands of the Windows cmd shell can only be used to delete directories (trees) and files, respectively, and are not compatible with Cygwin's rm.exe in terms of syntax. |
-| mkdir            | Used to create one or more levels of directories. The built-in MKDIR/MD commands of Windows cmd shell have the same function, but the syntax is not compatible. |
-| GNU make         | You can install make in Cygwin, or you can compile GNU make based on a compiler on Windows (such as Microsoft Visual Studio). The latter does not depend on Cygwin. |
+|Tools needed |use                                                                                                                                                            |
+|:----------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|find         |Cygwin's find.exe is needed to search the subdirectories to be compiled recursively. Windows comes with another FIND.EXE with the same name but completely different functions, which cannot be used. |
+|rm           |Used to delete specified directories and files. The built-in RMDIR/RD and DEL commands of the Windows cmd shell can only be used to delete directories (trees) and files, respectively, and are not compatible with Cygwin's rm.exe in terms of syntax. |
+|mkdir        |Used to create one or more levels of directories. The built-in MKDIR/MD commands of Windows cmd shell have the same function, but the syntax is not compatible. |
+|GNU make     |You can install make in Cygwin, or you can compile GNU make based on a compiler on Windows (such as Microsoft Visual Studio). The latter does not depend on Cygwin. |
 
 After installing Cygwin, you need to configure its path. Since some Cygwin tools that SDK compilation relies on have the same names as the Windows built-in tools, you must ensure that the relevant tools referenced in the compilation point to the Cygwin version.
 
@@ -393,11 +393,11 @@ SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS and fabric. Bef
 
 The smart contract used by the demo and its ABI JSON file are placed in:  
 
-| **Demo smart contract**                                      | **Contract ABI JSON file**                                   | **use**         |
-| :----------------------------------------------------------- | :----------------------------------------------------------- | :-------------- |
-| \<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.sol   | \<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.json  | Ethereum demo   |
-| \<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.sol    | \<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.json   | PlatONE demo    |
-| \<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol | \<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json | FISCO-BCOS demo |
+|Demo smart contract                                          |Contract ABI JSON file                                        |use             |
+|:----------------------------------------------------------- |:------------------------------------------------------------ |:-------------- |
+|\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.sol   |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.json   |Ethereum demo   |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.sol    |\<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.json    |PlatONE demo    |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json |FISCO-BCOS demo |
 
 
 Before running Ethereum's Demo, you need to install the Ethereum node simulator ganache, as well as the Ethereum smart contract compilation deployment tool truffle, could visit this website: https://truffleframework.com  .
@@ -416,13 +416,13 @@ After completing the node (or simulator) deployment, you need to follow the inst
 
 The Demo C code that calls the smart contract is placed in:  
 
-| **Demo C code**                                             | **use**                         |
-| :---------------------------------------------------------- | :------------------------------ |
-| \<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c    | Ethereum demo use case          |
-| \<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c     | Ethereum transfer demo use case |
-| \<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c     | PLATON transfer demo use case |
-| \<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     | PLATONE demo use case           |
-| \<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c | FISCO-BCOS demo use case        |
+|Demo C code                                                 |use                             |
+|:---------------------------------------------------------- |:------------------------------ |
+|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c    |Ethereum demo use case          |
+|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c     |Ethereum transfer demo use case |
+|\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         |PLATON transfer demo use case   |
+|\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     |PLATONE demo use case           |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c |FISCO-BCOS demo use case        |
 
 Before compiling the Demo, you need to modify the following parts of the Demo C code:  
 - For ETHEREUM, PLATON, FISCO-BCOS, PLATONE:  
@@ -558,12 +558,12 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type,
 
 Parameters:
 
-| parameter name         | Parameter Description                                            |
-| ---------------------- | ------------------------------------------------------------     |
-| protocol_type          | The blockchain protocol. See boattypes.h for supported protocol. |
-| wallet_name_str        | A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded. |
-| wallet_config_ptr      | Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>. |
-| wallet_config_size     | Size (in byte) of configuration specified by \<wallet_config_ptr\>. |
+|parameter name     |Parameter Description                                                                                                                    |
+|:----------------- |:--------------------------------------------------------------------------------------------------------------------------------------- |
+|protocol_type      |The blockchain protocol. See boattypes.h for supported protocol.                                                                         |
+|wallet_name_str    |A string of wallet name.<br>If the given \<wallet_name_str\> is NULL, a one-time wallet is created.<br>Otherwise a persistent wallet with the given name will be created or loaded. |
+|wallet_config_ptr  |Configuration (e.g. crypto key) for the wallet.<br>The exact configuration definition is determinted by the specified \<protocol_type\>. |
+|wallet_config_size |Size (in byte) of configuration specified by \<wallet_config_ptr\>.                                                                      |
 
 **return value:**
 This function returns the non-negative index of the loaded wallet.
@@ -596,9 +596,9 @@ void BoatWalletUnload(BSINT32 wallet_index);
 
 Parameters:
 
-| parameter name   | Parameter Description       |
-| ---------------- | --------------------------- |
-| wallet_index     | The wallet index to unload. |
+|parameter name   |Parameter Description       |
+|:--------------- |:-------------------------- |
+|wallet_index     |The wallet index to unload. |
 
 
 #### Delete Wallet
@@ -610,9 +610,9 @@ void BoatWalletDelete(BCHAR *wallet_name_str);
 
 Parameters:
 
-| parameter name      | Parameter Description      |
-| ------------------- | -------------------------- |
-| wallet_name_str     | The wallet name to delete. |
+|parameter name      |Parameter Description      |
+|:------------------ |:------------------------- |
+|wallet_name_str     |The wallet name to delete. |
 
 ### Key Generation
 The key that needs to be configured when creating a wallet can be inputted externally or generated by the SDK，this is achieved by setting `prikeyCtx_config.prikey_genMode` to the corresponding value.
@@ -628,10 +628,10 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str);
 
 Parameters:
 
-| parameter name    | Parameter Description                                        |
-| ----------------- | ------------------------------------------------------------ |
-| tx_ptr            | Transaction pointer.                                         |
-| value_hex_str     | A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234". |
+|parameter name    |Parameter Description                                        |
+|:---------------- |:----------------------------------------------------------- |
+|tx_ptr            |Transaction pointer.                                         |
+|value_hex_str     |A string representing the value (Unit: wei) to transfer, in HEX format like "0x89AB3C".<br>Note that decimal value is not accepted. If a decimal value such as "1234" is specified, it's treated as "0x1234". |
 
 **return value:**
 This function returns `BOAT_SUCCESS` if transfer is successful.
@@ -844,14 +844,14 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
 
 Parameters:
 
-| parameter name    | Parameter Description                                        |
-| ----------------- | ------------------------------------------------------------ |
-| wallet_ptr        | The wallet pointer that this transaction is combined with.   |
-| tx_ptr            | Pointer a transaction object.                                |
-| is_sync_tx        | For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored. |
-| gasprice          | A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed. |
-| gaslimit          | A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed. |
-| recipient_str     | A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed. |
+|parameter name  |Parameter Description                                        |
+|:-------------- |:----------------------------------------------------------- |
+|wallet_ptr      |The wallet pointer that this transaction is combined with.   |
+|tx_ptr          |Pointer a transaction object.                                |
+|is_sync_tx      |For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored. |
+|gasprice        |A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed. |
+|gaslimit        |A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed. |
+|recipient_str   |A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed. |
 
 **return value:**
 This function returns `BOAT_SUCCESS` if initialization is successful.
@@ -1031,10 +1031,10 @@ e) According to the actual situation, reduce the self-increment step size of web
 ## BoAT's Extended AT Command Suggestion
 
 ### Create/Load Wallet AT^BCWALT
-|**Command**|**Response(s)**|
-| :-----| :-----|
-|Write Command:<br>^BCWALT=\<protocol_type\>,\<wallet_name\>[,\<wallet_config\>]|^BCWALT: \<wallet_index\><br>OK<br>|
-|Test Command:<br>^BCWALT=?|+BCWALT: (list of supported \<protocol_type\>s)<br>OK<br>|
+|Command                                                                         |Response(s)                                               |
+|:------------------------------------------------------------------------------ |:-------------------------------------------------------- |
+|Write Command:<br>^BCWALT=\<protocol_type\>,\<wallet_name\>[,\<wallet_config\>] |^BCWALT: \<wallet_index\><br>OK<br>                       |
+|Test Command:<br>^BCWALT=?                                                      |+BCWALT: (list of supported \<protocol_type\>s)<br>OK<br> |
 
 Features:
 Create/load wallet, corresponding to BoatWalletCreate().
@@ -1056,10 +1056,10 @@ A JSON string representing the wallet configuration of \<protocol_type\>. The ex
 the index of the created wallet
 
 ### Unload Wallet AT^BUWALT
-|**Command**|**Response(s)**|
-| :-----| :-----|
-|Write Command:<br>^BUWALT=<wallet_index>|<br>OK<br>|
-|Test Command:<br>^BUWALT=?|+BUWALT: (list of loadeded \<wallet_index\>s)<br>OK<br>|
+|Command                                  |Response(s)                                             |
+|:--------------------------------------- |:------------------------------------------------------ |
+|Write Command:<br>^BUWALT=<wallet_index> |<br>OK<br>                                              |
+|Test Command:<br>^BUWALT=?               |+BUWALT: (list of loadeded \<wallet_index\>s)<br>OK<br> |
 
 Features:
 Unload wallet，corresponding to BoatWalletUnload ().
@@ -1067,9 +1067,9 @@ Unload wallet，corresponding to BoatWalletUnload ().
 Parameters:
 \<wallet_index\>: integer type; wallet index to unload, previously returned by ^BCWALT
 ### Delete Wallet AT^BDWALT
-|**Command**|**Response(s)**|
-| :-----| :-----|
-|Write Command:<br>^BDWALT=\<wallet_name\>|<br>OK<br>|
+|Command                                   |Response(s)  |
+|:---------------------------------------- |:----------- |
+|Write Command:<br>^BDWALT=\<wallet_name\> |<br>OK<br>   |
 
 Features:
 Delete the created persistent wallet, corresponding to BoatWalletDelete()。
@@ -1078,9 +1078,9 @@ Parameters:
 \<wallet_name\>: string type; the name of the wallet to delete
 
 ### Contract Function Call AT^BCALLFUNC
-|**Command**|**Response(s)**|
-| :-----| :-----|
-|Write Command:<br>^BCALLFUNC=\<wallet_index\>,\<tx_object\>|<br>OK<br>|
+|Command                                                     |Response(s)|
+|:---------------------------------------------------------- |:--------- |
+|Write Command:<br>^BCALLFUNC=\<wallet_index\>,\<tx_object\> |<br>OK<br> |
 
 Features:
 Initiating a contract call corresponds to the C call interface generated according to the contract ABI JSON file.
@@ -1094,9 +1094,9 @@ A JSON string representing the transaction object as per the generated C contrac
 \<wallet_index\>: integer type; the index of the created wallet
 
 ### Transfer AT^BTRANS
-|**Command**|**Response(s)**|
-| :-----| :-----|
-|Write Command:<br>^BTRANS=\<wallet_index\>,\<recipient\>,\<value\>|<br>OK<br>|
+|Command                                                            |Response(s)|
+|:----------------------------------------------------------------- |:--------- |
+|Write Command:<br>^BTRANS=\<wallet_index\>,\<recipient\>,\<value\> |<br>OK<br> |
 
 Features:
 Initiate a transfer of the designated Wallet (not all blockchains support transfers). For example, for Ethereum, it corresponds to BoatEthTransfer().
