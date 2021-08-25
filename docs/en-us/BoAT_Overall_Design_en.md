@@ -37,7 +37,7 @@ Figure 3-1 The position of BoAT in the blockchain interactive network
 
 ## BoAT Implementation Framework 
 Boat follows a hierarchical design consisting of Interface Layer, Protocol Layer, RPC Layer, Vendor Dependency Layer, Tool and Utility. The specific functions of each layer are as follows:   
-+ Interface Layer: Provide an interface for users to invoke the corresponding blockchain. 
++ Interface Layer: Provide an interface for IoT Application to invoke the corresponding blockchain. 
 + Protocol Layer: The main implementation of each block chain protocol.  
 + RPC Layer: Provide services to the protocol layer.  
 + Vendor Dependency Layer: Provide cryptographic algorithms, signature, storage and other services for the interface layer wallet.  
@@ -51,7 +51,7 @@ Figure 4-1 BoAT Overall Framework
 ### Interface Layer
 
 #### Overview
-The interface layer is located at the top layer of BoAT and provides users with access to each blockchain. The interface layer consists of two parts:  
+The interface layer is located at the top layer of BoAT and provides IoT applications with access to each blockchain. The interface layer consists of two parts:  
 + Wallet interface
    * The wallet interface is the entrance to the BoAT SDK, and different blockchains have a common wallet entrance.
 + Transaction interface
