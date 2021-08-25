@@ -118,6 +118,29 @@ BoAT IoT Framework SDK依赖于以下软件:
 
 在编译和使用SDK之前，需要确保这些软件已经安装。在Ubuntu下，可以使用apt install命令安装相应的包。在Cygwin下，使用Cygwin自带的Setup程序进行安装。  
 
+- Ubuntu
+````
+sudo apt install python
+download curl-7.55.1.tar.xz : https://curl.se/download/curl-7.55.1.tar.xz
+tar -xvf ./curl-7.55.1.tar.xz 
+cd curl-7.55.1
+./configure -enable-smtp -enable-pop3
+make
+sudo make install
+sudo apt-get install libcurl4-openssl-dev
+````
+- Cygwin  
+
+执行setup-x86_64.exe，安装make、gcc、python、libcurl等工具，如下图：
+![image](https://user-images.githubusercontent.com/81662688/130744353-3e6ad68c-7945-44e6-93ac-c8a468e8e0aa.png)
+![image](https://user-images.githubusercontent.com/81662688/130744453-08a1dff2-08d8-46d8-9732-de814b077ba7.png)
+![image](https://user-images.githubusercontent.com/81662688/130744464-409165ad-a743-401c-8ed2-68060cd4d9e1.png)
+![image](https://user-images.githubusercontent.com/81662688/130744485-e3d5a4ed-bd9a-4a44-b9fa-81066fe2165b.png)
+![image](https://user-images.githubusercontent.com/81662688/130744499-06029343-9f65-4f33-a094-01de4c8ae25e.png)
+![image](https://user-images.githubusercontent.com/81662688/130744525-e4614f6a-6f33-4dae-9d6c-2d0b5bb994ec.png)
+![image](https://user-images.githubusercontent.com/81662688/130744541-7645fe99-9c21-44e0-a3cc-fe84b102d0cf.png)
+![image](https://user-images.githubusercontent.com/81662688/130744556-163fb5e4-0260-42d8-b8c1-4c78052bd7d1.png)
+
 在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](####以Windows为编译环境)章节对编译文件进行调整。
 
 在RTOS上移植SDK时，应对libcurl依赖进行移植或将RPC方法重写。  
