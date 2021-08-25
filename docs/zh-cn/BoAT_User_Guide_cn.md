@@ -194,23 +194,23 @@ BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 
 SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，使得C代码中，可以像调用一般C函数一样，通过生成的接口代码调用链上智能合约：  
 
-|**转换工具**                  |**用途**                              |
-|:-----------------------------|:------------------------------------|
-|\<SDKRoot\>/tools/eth2c.py    |根据以太坊Solidity的ABI，生成C调用代码 |
-|\<SDKRoot\>/tools/fiscobcos2c.py|根据FISCO-BCOS Solidity的ABI，生成C调用代码 |
-|\<SDKRoot\>/tools/platoneSolidity2c.py|根据PlatONE Solidity的ABI，生成C调用代码|
-|\<SDKRoot\>/tools/platoneWASM2c.py|根据PlatONE WASM的ABI，生成C调用代码|
+|转换工具                                |用途                                      |
+|:------------------------------------- |:---------------------------------------- |
+|\<SDKRoot\>/tools/eth2c.py             |根据以太坊Solidity的ABI，生成C调用代码      |
+|\<SDKRoot\>/tools/fiscobcos2c.py       |根据FISCO-BCOS Solidity的ABI，生成C调用代码 |
+|\<SDKRoot\>/tools/platoneSolidity2c.py |根据PlatONE Solidity的ABI，生成C调用代码    |
+|\<SDKRoot\>/tools/platoneWASM2c.py     |根据PlatONE WASM的ABI，生成C调用代码        |
 
 由于合约编程语言一般支持面向对象，而C语言不支持面向对象，无法使用统一范式传递对象，因此只有参数类型与C语言内置类型一致的合约函数，可以通过工具转换为C调用代码。具体的支持合约函数输入类型详见[合约调用（自动生成）](###合约调用（自动生成）) 章节。
 
 在进行调用前，首先需要编译合约，将合约编译中生成的ABI接口描述JSON文件，拷贝至SDK相应目录中：
 
-|**合约ABI存放路径**           |**用途**                                  |
-| :---------------------------| :----------------------------------------| 
-|\<SDKRoot\>/demo/demo_ethereum/demo_contract|将以太坊的ABI JSON文件拷贝至该目录下  |
-|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract|将FISCO-BCOS的ABI JSON文件拷贝至该目录下  |
-|\<SDKRoot\>/demo/demo_platone/demo_contract/Solidity|将PlatONE（Solidity）的ABI JSON文件拷贝至该目录下 |
-|\<SDKRoot\>/demo/demo_platone/demo_contract/WSAM|将PlatONE（WASM）的ABI JSON文件拷贝至该目录下 |
+|合约ABI存放路径                                       |用途                                            |
+|:--------------------------------------------------- |:----------------------------------------       | 
+|\<SDKRoot\>/demo/demo_ethereum/demo_contract         |将以太坊的ABI JSON文件拷贝至该目录下              |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract        |将FISCO-BCOS的ABI JSON文件拷贝至该目录下          |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/Solidity |将PlatONE（Solidity）的ABI JSON文件拷贝至该目录下 |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/WSAM     |将PlatONE（WASM）的ABI JSON文件拷贝至该目录下     |
 
 ***注：ABI的JSON文件必须以“.json”为文件名后缀。***
 
@@ -250,10 +250,10 @@ $make boatlibs
 SDK要求系统中至少应该设置以下环境变量，使之指向交叉编译环境：
   
 
-|**环境变量**|**说明**                |
-| :---------| :---------------------| 
-|CC         |指向交叉编译器gcc可执行文件|
-|AR         |指向交叉编译器ar可执行文件 |
+|环境变量  |说明                      |
+|:------- |:------------------------ | 
+|CC       |指向交叉编译器gcc可执行文件 |
+|AR       |指向交叉编译器ar可执行文件  |
 
 
 当环境中没有定义CC和AR环境变量时，GNU make会默认CC=cc，AR=ar。通常，Linux系统中会安装host的gcc及bintuils编译环境，因此，未定义上述环境变量时，将会执行host编译。
@@ -340,12 +340,12 @@ boatiotsdkclean:
 
 SDK编译工程依赖于一些Cygwin工具，需要安装的工具如下:  
 
-|**所需工具**|**用途**                                                                                                             |
-| :---------| :------------------------------------------------------------------------------------------------------------------| 
-|find       |需要Cygwin的find.exe用于递归搜索要编译的子目录。Windows自带有另一个同名但功能完全不同的FIND.EXE，不能使用。                    |
+|所需工具    |用途                                                                                                                     |
+|:--------  |:----------------------------------------------------------------------------------------------------------------------- | 
+|find       |需要Cygwin的find.exe用于递归搜索要编译的子目录。Windows自带有另一个同名但功能完全不同的FIND.EXE，不能使用。                     |
 |rm         |用于删除指定目录和文件。Windows的cmd shell内置的RMDIR/RD和DEL命令分别只能用于删除目录（树）和文件，语法上与Cygwin的rm.exe不兼容。|
-|mkdir      |用于创建一级或多级目录。Windows的cmd shell内置的MKDIR/MD命令具有相同功能，但语法不兼容                                       |
-|GNU make   | 可以在Cygwin中安装make，也可以基于Windows上的编译器（例如Microsoft Visual Studio）自行编译GNU make。后者不依赖于Cygwin。     |
+|mkdir      |用于创建一级或多级目录。Windows的cmd shell内置的MKDIR/MD命令具有相同功能，但语法不兼容                                         |
+|GNU make   | 可以在Cygwin中安装make，也可以基于Windows上的编译器（例如Microsoft Visual Studio）自行编译GNU make。后者不依赖于Cygwin。      |
 
 安装Cygwin之后，需要配置其路径。由于SDK编译所依赖的部分Cygwin工具与Windows自带工具同名，因此必须确保编译中引用的相关工具指向Cygwin的版本。
 
@@ -389,11 +389,11 @@ SDK提供基于以太坊、PlatON、PlatONE、FISCO-BCOS和fabric的Demo。在�
 
 Demo所使用的智能合约及其ABI JSON文件放置在：  
 
-|**Demo智能合约**                             |**合约ABI JSON文件**                                  |**用途**   |
-| :------------------------------------------| :---------------------------------------------------| :--------| 
-|\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.sol |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.json |以太坊演示  |
-|\<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.sol |\<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.json |PlatONE演示  |
-|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json |FISCO-BCOS演示  |
+|Demo智能合约                                                  |合约ABI JSON文件                                              |用途           |
+|:----------------------------------------------------------- |:------------------------------------------------------------ |:------------ | 
+|\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.sol   |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.json   |以太坊演示     |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.sol    |\<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.json    |PlatONE演示    |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json |FISCO-BCOS演示 |
 
 
 在运行以太坊的Demo之前，需要安装以太坊节点模拟器ganache，以及以太坊智能合约编译部署工具truffle。  
@@ -414,13 +414,13 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 
 调用智能合约的Demo C代码放置在: 
 
-|**Demo C代码**                       |**用途**      |
-| :----------------------------------| :------------|
-|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c|以太坊合约演示用例  |
-|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c|以太坊转账演示用例  |
-|\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c|PLATON转账演示用例  |
-|\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c|PLATONE合约演示用例  |
-|\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c|FISCO-BCOS合约演示用例  |
+|Demo C代码                                                  |用途                    |
+|:---------------------------------------------------------- |:--------------------- |
+|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c    |以太坊合约演示用例       |
+|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c     |以太坊转账演示用例       |
+|\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         |PLATON转账演示用例      |
+|\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     |PLATONE合约演示用例     |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c |FISCO-BCOS合约演示用例  |
 
 编译Demo之前，需要修改Demo的C代码中以下部分：
 - 对于ETHEREUM、PLATON、FISCO-BCOS、PLATONE:
@@ -1011,10 +1011,10 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ## BoAT的扩展AT命令建议
 
 ### 创建/加载钱包 AT^BCWALT
-|**Command**                                                                    |**Response(s)**                                          |
-| :-----------------------------------------------------------------------------| :-------------------------------------------------------| 
-|Write Command:<br>^BCWALT=\<protocol_type\>,\<wallet_name\>[,\<wallet_config\>]|^BCWALT: \<wallet_index\><br>OK<br>                      |
-|Test Command:<br>^BCWALT=?                                                     |+BCWALT: (list of supported \<protocol_type\>s)<br>OK<br>|
+|Command                                                                         |Response(s)                                              |
+|:-----------------------------------------------------------------------------  |:------------------------------------------------------- | 
+|Write Command:<br>^BCWALT=\<protocol_type\>,\<wallet_name\>[,\<wallet_config\>] |^BCWALT: \<wallet_index\><br>OK<br>                      |
+|Test Command:<br>^BCWALT=?                                                      |+BCWALT: (list of supported \<protocol_type\>s)<br>OK<br>|
 
 功能：
 创建/加载钱包，与BoatWalletCreate()对应。
@@ -1034,8 +1034,8 @@ A JSON string representing the wallet configuration of \<protocol_type\>. The ex
 the index of the created wallet
 
 ### 卸载钱包AT^BUWALT
-|**Command**                             |**Response(s)**                                        |
-| :--------------------------------------| :-----------------------------------------------------| 
+|Command**                               |Response(s)                                            |
+|:-------------------------------------- |:----------------------------------------------------- | 
 |Write Command:<br>^BUWALT=<wallet_index>|<br>OK<br>                                             |
 |Test Command:<br>^BUWALT=?              |+BUWALT: (list of loadeded \<wallet_index\>s)<br>OK<br>|
 
@@ -1045,9 +1045,9 @@ the index of the created wallet
 参数:
 \<wallet_index\>: integer type; wallet index to unload, previously returned by ^BCWALT
 ### 删除钱包AT^BDWALT
-|**Command**                              |**Response(s)**|
-| :---------------------------------------| :-------------| 
-|Write Command:<br>^BDWALT=\<wallet_name\>|<br>OK<br>     |
+|Command                                  |Response(s)   |
+|:--------------------------------------- |:------------ | 
+|Write Command:<br>^BDWALT=\<wallet_name\>|<br>OK<br>    |
 
 功能：
 删除已创建的持久化钱包，与BoatWalletDelete()对应。
@@ -1056,9 +1056,9 @@ the index of the created wallet
 \<wallet_name\>: string type; the name of the wallet to delete
 
 ### 合约函数调用AT^BCALLFUNC
-|**Command**                                                |**Response(s)**|
-| :---------------------------------------------------------| :-------------| 
-|Write Command:<br>^BCALLFUNC=\<wallet_index\>,\<tx_object\>|<br>OK<br>     |
+|Command                                                    |Response(s)   |
+|:--------------------------------------------------------- |:------------ | 
+|Write Command:<br>^BCALLFUNC=\<wallet_index\>,\<tx_object\>|<br>OK<br>    |
 
 功能：
 发起合约调用，与根据合约ABI JSON文件生成的C调用接口对应。
@@ -1072,9 +1072,9 @@ A JSON string representing the transaction object as per the generated C contrac
 \<wallet_index\>: integer type; the index of the created wallet
 
 ### 转账AT^BTRANS
-|**Command**                                                       |**Response(s)**|
-| :----------------------------------------------------------------| :-------------| 
-|Write Command:<br>^BTRANS=\<wallet_index\>,\<recipient\>,\<value\>|<br>OK<br>     |
+|Command                                                           |Response(s)   |
+|:---------------------------------------------------------------- |:------------ | 
+|Write Command:<br>^BTRANS=\<wallet_index\>,\<recipient\>,\<value\>|<br>OK<br>    |
 
 功能：  
 发起指定Wallet的转账（并非所有区块链都支持转账）。例如，对以太坊，与BoatEthTransfer()对应。
