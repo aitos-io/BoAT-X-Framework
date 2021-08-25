@@ -134,13 +134,11 @@ ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default \
 	                -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default/aes \
                     -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
-                    -I$(BOAT_BASE_DIR)/vendor/common/storage \
-					-I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_crypto_default
+                    -I$(BOAT_BASE_DIR)/vendor/common/storage
 else ifeq ($(SOFT_CRYPTO), CRYPTO_MBEDTLS)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS/include \
                     -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
-                    -I$(BOAT_BASE_DIR)/vendor/common/storage \
-					-I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_mbedtls
+                    -I$(BOAT_BASE_DIR)/vendor/common/storage
 else
     BOAT_INCLUDE +=
 endif
