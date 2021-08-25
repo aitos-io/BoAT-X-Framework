@@ -59,6 +59,14 @@ typedef enum
 	HLFABRIC_TYPE_DISCOVER,
 }BoatHlfabricType;
 
+//!@brief fabric function type
+//! 
+typedef enum
+{
+	HLFABRIC_FUN_EVALUATE = 0,
+	HLFABRIC_FUN_SUBMIT ,
+}BoatHlfabricFunType;
+
 //!@brief fabric key pairs structure
 //!fabric key pairs structure
 typedef struct TBoatHlfabricKeyPair
@@ -259,6 +267,8 @@ typedef struct TBoatHlfabricWalletConfig
 	// BUINT32                     ordererNumber; //!< The number of orderer to be set
 	// BoatHlfabricNodeInfoCfg     orderer[BOAT_HLFABRIC_ORDERER_MAX_NUM];
 }BoatHlfabricWalletConfig;
+
+
 
 #ifdef __cplusplus
 extern "C" {

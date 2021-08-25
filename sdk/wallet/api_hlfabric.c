@@ -47,7 +47,7 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a failed code.
  ******************************************************************************/
 __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
-											BoatHlfabricNodesCfg nodeCfg, BBOOL queryFlag)
+											BoatHlfabricNodesCfg nodeCfg, BoatHlfabricFunType funType)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BoatHlfabricEndorserResponse *parsePtr = NULL;
@@ -145,7 +145,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 					{
 						continue;
 					}
-					if (queryFlag == BOAT_TRUE)
+					if (funType == HLFABRIC_FUN_EVALUATE)
 					{
 						return result;
 					}
@@ -1073,7 +1073,7 @@ BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr)
 	/* submit query */
 	tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
 	// urlTmp[0] = tx_ptr->wallet_ptr->network_info.endorser[0];
-	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, BOAT_TRUE);
+	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_EVALUATE);
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
 						 tx_ptr->endorserResponse.response[0].payload.field_ptr,
 						 tx_ptr->endorserResponse.response[0].payload.field_len);
@@ -1119,7 +1119,7 @@ BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr)
 
 	/* invoke-step1: submit proposal to endorer */
 	tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
-	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, BOAT_FALSE);
+	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
 		return BOAT_ERROR;
@@ -1127,7 +1127,7 @@ BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr)
 
 	/* invoke-step2: submit transaction to orderer */
 	tx_ptr->var.type = HLFABRIC_TYPE_TRANSACTION;
-	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, BOAT_FALSE);
+	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
 		return BOAT_ERROR;
