@@ -456,8 +456,8 @@ The vendor dependency layer should provide a pure software implementation of the
 
 #### TEE Support
 The design of BoAT should consider the support of TEE environment. For hardware with a TEE environment, BoAT should be able to put sensitive information in the TEE environment with a small amount of modification. To meet this goal, the wallet is designed to meet the following criteria:
-+ Independent design of wallet-related data structure
-+ Wallet related implementation independent design
++ Wallet related data structure modular design
++ Wallet related implementation modular design
 + Sensitive information related to the wallet is not reflected outside the wallet
 
 ### General Tool Implementation
