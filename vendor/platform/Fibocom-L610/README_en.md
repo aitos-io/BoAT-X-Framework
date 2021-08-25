@@ -79,8 +79,11 @@ In curly braces below `if(CONFIG_APPIMG_LOAD_FLASH)`,find `add_appimg(${target} 
    
       PLATFORM_TARGET ?= Fibocom-L610
    
+   #### b. Disable the Fabric Macro Switch  
+   
+   The platform does not support the FABRIC chain for the time being due to resource constraints. So, open the main makefile, find `BOAT_PROTOCOL_USE_HLFABRIC` and change the parameter to 0, which is` BOAT_PROTOCOL_USE_HLFABRIC?  = 0`.
 
-   #### b. Open a Linux shell, enter `<L610 Root>/BoAT-X-Framework` directory and compile BoAT static library
+   #### c. Open a Linux shell, enter `<L610 Root>/BoAT-X-Framework` directory and compile BoAT static library
 
       cd <L610 Root>/BoAT-X-Framework
       make clean

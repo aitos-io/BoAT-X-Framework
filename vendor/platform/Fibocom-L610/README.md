@@ -82,8 +82,12 @@
    ```
    PLATFORM_TARGET ?= Fibocom-L610
    ```
+
+   #### b、关闭FABRIC链宏开关  
+
+   由于资源限制，该平台暂时不支持FABRIC链。所以，需要打开主makefile，找到`BOAT_PROTOCOL_USE_HLFABRIC`,将后面参数改为0，即`BOAT_PROTOCOL_USE_HLFABRIC  ?= 0`。
    
-   #### b、打开Linux终端进入BoAT-X-Framework目录编译BoAT静态库
+   #### c、打开Linux终端进入BoAT-X-Framework目录编译BoAT静态库
    ```
    cd BoAT-X-Framework
    make clean
