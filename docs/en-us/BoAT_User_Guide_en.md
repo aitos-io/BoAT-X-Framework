@@ -4,7 +4,7 @@
 
 ### Overview
 This article introduces the functions and usage of BoAT IoT Framework SDK 2.x.  
-The intended readers of this article are customers who integrate the BoAT IoT Framework SDK.
+The intended readers of this guide are customers who integrate the BoAT IoT Framework SDK.
 
 ### Abbreviated Terms
 |Term |Explanation                                |
@@ -602,7 +602,7 @@ Parameters:
 
 
 #### Delete Wallet
-Deleting the wallet will delete the persistent wallet. If the wallet has been loaded before the deletion, after the deletion, the persistent wallet will become a one-time wallet, which can still be used before being unload.
+Deleting the wallet will delete the persistent wallet. If the wallet has been loaded before the deletion, the persistent wallet will become a one-time wallet, which can still be used before being unloaded.
 
 ````
 void BoatWalletDelete(BCHAR *wallet_name_str);
