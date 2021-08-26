@@ -20,12 +20,12 @@ The intended readers of this article are: BoAT SDK detailed designers.
 
 
 ## BoAT Design Goals
-As a middleware fusing Blockchain and IoT technologies, It should be easily and quickly transplanted into various IoT modules at the minimum cost of modification. The design of BoAT follows the following goals:
+As a middleware fusing Blockchain and IoT technologies, It should be easily and quickly transplanted into various IoT modules at the minimum cost of modification. The design of BoAT is based on these following principles:
 + Hierarchical design  
 + Multiple blockchain protocols are supported  
 + Scalable design  
 + Secret key security design  
-+ C interface code generation tool for corresponding smart contracts of different blockchains. 
++ C interface code generation tool for corresponding smart contracts of different blockchains  
 
 
 ## The Position of BoAT SDK in The Entire Blockchain Network
