@@ -21,7 +21,7 @@
 
 
 ## BoAT设计目标
-作为物联网区块链的一个中间件，应以最小的改动代价，方便、快速的移植到各物联网模组中，BoAT的设计遵循以下目标:
+作为物联网区块链的一个中间件，应以最小的改动代价，方便、快速的移植到各物联网模组中，BoAT的设计遵循以下原则:
 + 层次化设计  
 + 多个区块链协议支持  
 + 可扩展设计  
@@ -225,7 +225,7 @@ PlatON和Ethereum相比，差异主要集中在如下三点:
 ##### FISCO BCOS交易接口功能实现简述
 和Ethereum相比，有差异的地方可以参考FISCO BCOS官方文档 https://fisco-bcos-documentation.readthedocs.io/zh_CN/latest/docs/design/protocol_description.html 。  
 
-在设计FISCO BCOS的数据结构及代码实现时，应考虑数据结构的继承及代码实现的复用，这样既减少代码量，也便于维护。在交易结构体中中新增了以下四个字段：  
+在设计FISCO BCOS的数据结构及代码实现时，应考虑数据结构的继承及代码实现的复用，这样既减少代码量，也便于维护。在交易结构体中新增了以下四个字段：  
   1. blockLimit交易生命周期  
   2. chainId链信息  
   3. groupId群组ID  
