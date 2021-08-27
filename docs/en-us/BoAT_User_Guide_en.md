@@ -168,7 +168,8 @@ The following paths are not suitable:
 /home/developer/project+blockchain/boatiotsdk  
 C:\Documents and Settings\developer\project\boatiotsdk  
 
-If you can't avoid the unsuitable characters above in the path, please use the following methods to avoid:  
+If you can't avoid the unsuitable characters above in the path, please use the following methods to avoid:
+
 For Linux: In a path without unsuitable characters, create a symbolic link to the SDK directory: ln -s \<SDKRoot\> boatiotsdk, and compile under the path of the symbolic link.  
 For Windows: use the SUBST Z: \<SDKRoot\> command to create a virtual drive letter Z: (or other unused drive letter), and compile under the Z: drive.
 

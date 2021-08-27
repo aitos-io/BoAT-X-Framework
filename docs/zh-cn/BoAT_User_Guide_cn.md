@@ -162,6 +162,7 @@ C:\Documents and Settings\developer\project\boatiotsdk
  
 
 如果无法避免在路径中出现上述不适字符，请使用以下方法规避：  
+
 对于Linux：在一个没有不适字符的路径中，建立一个指向SDK目录的符号链接：ln -s \<SDKRoot\> boatiotsdk，在该符号链接的路径下进行编译。  
 对于Windows：使用SUBST Z: \<SDKRoot\>命令虚拟一个盘符Z:（也可以是其他未使用的盘符），在Z:盘下进行编译。  
 
