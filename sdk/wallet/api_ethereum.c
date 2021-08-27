@@ -33,20 +33,20 @@ BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 
 	BUINT8 pubkeyHash[32];
 	BUINT8 hashLenDummy;
 
-    if( config_ptr == NULL )
+    if (config_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return NULL;
     }
 
-    if( sizeof(BoatEthWalletConfig) != config_size )
+    if (sizeof(BoatEthWalletConfig) != config_size)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Incorrect configuration size.");
         return NULL;
     }
     
     wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
-    if( wallet_ptr == NULL )
+    if (wallet_ptr == NULL)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "wallet memory malloc falied.");
         return NULL;
@@ -55,7 +55,7 @@ BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 
     /* Init Web3 interface */
     wallet_ptr->web3intf_context_ptr = web3_init();
 
-    if( wallet_ptr->web3intf_context_ptr == NULL )
+    if (wallet_ptr->web3intf_context_ptr == NULL)
     {
         BoatFree(wallet_ptr);
 		BoatLog(BOAT_LOG_CRITICAL, "web3 interface initialization falied.");
@@ -68,11 +68,11 @@ BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 
 	//Configure priKey context information
     if(config_ptr->prikeyCtx_config.prikey_content.field_ptr != NULL)
     {
-        if( BOAT_SUCCESS != BoatPort_keyCreate( &config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx ) )
+        if(BOAT_SUCCESS != BoatPort_keyCreate(&config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
         {
             web3_deinit(wallet_ptr->web3intf_context_ptr);
             BoatFree(wallet_ptr);
-            BoatLog( BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate." );
+            BoatLog(BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate.");
             return NULL;
         }
     }
@@ -88,7 +88,7 @@ BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 
     // Configure node URL string
     wallet_ptr->network_info.node_url_ptr = NULL;
     result = BoatEthWalletSetNodeUrl(wallet_ptr, config_ptr->node_url_str);
-    if( result != BOAT_SUCCESS)
+    if (result != BOAT_SUCCESS)
     {
         web3_deinit(wallet_ptr->web3intf_context_ptr);
         BoatFree(wallet_ptr);
@@ -102,9 +102,9 @@ BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 
 
 void BoatEthWalletDeInit(BoatEthWallet *wallet_ptr)
 {
-    if( wallet_ptr != NULL )
+    if (wallet_ptr != NULL)
     {
-        if( wallet_ptr->network_info.node_url_ptr != NULL )
+        if(wallet_ptr->network_info.node_url_ptr != NULL)
         {
             BoatFree(wallet_ptr->network_info.node_url_ptr);
             wallet_ptr->network_info.node_url_ptr = NULL;
@@ -121,34 +121,34 @@ BOAT_RESULT BoatEthWalletSetNodeUrl(BoatEthWallet *wallet_ptr, const BCHAR *node
 {
     BOAT_RESULT result;
     
-    if( (wallet_ptr == NULL) || (node_url_ptr == NULL) )
+    if ((wallet_ptr == NULL) || (node_url_ptr == NULL))
     {
         BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or node_url_ptr cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
-	if( strchr(node_url_ptr, ':') == NULL )
+	if  strchr(node_url_ptr, ':') == NULL)
 	{
 	    BoatLog(BOAT_LOG_CRITICAL, "node URL has a invalid format: %s.", node_url_ptr);
         return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
     // string length check
-    if ( BOAT_SUCCESS != UtilityStringLenCheck( node_url_ptr ) )
+    if (BOAT_SUCCESS != UtilityStringLenCheck(node_url_ptr))
     {
         BoatLog(BOAT_LOG_CRITICAL, "node URL length out of limit: %s.", node_url_ptr);
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 	
     // Set Node URL
-	if( wallet_ptr->network_info.node_url_ptr != NULL )
+	if (wallet_ptr->network_info.node_url_ptr != NULL)
 	{
 		BoatFree(wallet_ptr->network_info.node_url_ptr);
 	}
 
 	// +1 for NULL Terminator
 	wallet_ptr->network_info.node_url_ptr = BoatMalloc(strlen(node_url_ptr)+1);
-	if( wallet_ptr->network_info.node_url_ptr == NULL )
+	if (wallet_ptr->network_info.node_url_ptr == NULL)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate memory for Node URL string.");
 		result = BOAT_ERROR_OUT_OF_MEMORY;
@@ -165,7 +165,7 @@ BOAT_RESULT BoatEthWalletSetNodeUrl(BoatEthWallet *wallet_ptr, const BCHAR *node
 
 BOAT_RESULT BoatEthWalletSetEIP155Comp(BoatEthWallet *wallet_ptr, BBOOL eip155_compatibility)
 {
-    if( wallet_ptr == NULL )
+    if (wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
@@ -180,7 +180,7 @@ BOAT_RESULT BoatEthWalletSetEIP155Comp(BoatEthWallet *wallet_ptr, BBOOL eip155_c
 
 BOAT_RESULT BoatEthWalletSetChainId(BoatEthWallet *wallet_ptr, BUINT32 chain_id)
 {
-    if( wallet_ptr == NULL )
+    if (wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
@@ -203,13 +203,13 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
     Param_eth_getBalance param_eth_getBalance;
     BCHAR *tx_balance_str;
 
-    if( wallet_ptr == NULL )
+    if (wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return NULL;
     }
 
-    if( alt_address_str == NULL )
+    if (alt_address_str == NULL)
     {
         // Query Wallet's Owner address
         // PRIVATE KEY MUST BE SET BEFORE GETTING BALANCE, BECAUSE GETTING BALANCE FROM
@@ -219,16 +219,16 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
     else
     {
         // Query specified altered address
-		UtilityHexToBin( alt_address, BOAT_ETH_ADDRESS_SIZE, alt_address_str,
-						TRIMBIN_TRIM_NO, BOAT_TRUE );
+		UtilityHexToBin(alt_address, BOAT_ETH_ADDRESS_SIZE, alt_address_str,
+						TRIMBIN_TRIM_NO, BOAT_TRUE);
 
         address_ptr = alt_address;
     }
     
     // Get balance from network
     // Return value of web3_getBalance() is balance in wei
-    UtilityBinToHex( address_str, address_ptr, BOAT_ETH_ADDRESS_SIZE,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+    UtilityBinToHex(address_str, address_ptr, BOAT_ETH_ADDRESS_SIZE,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     param_eth_getBalance.method_name_str = "eth_getBalance";               
     param_eth_getBalance.address_str     = address_str;
     param_eth_getBalance.block_num_str   = "latest";
@@ -236,7 +236,7 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
 									 wallet_ptr->network_info.node_url_ptr,
 									 &param_eth_getBalance);
 
-    if( tx_balance_str == NULL )
+    if (tx_balance_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to get balance from network.");
         return NULL;
@@ -246,9 +246,9 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
 }
 
 
-BOAT_RESULT BoatEthPraseRpcResponseResult( const BCHAR *json_string, 
-										   const BCHAR *child_name, 
-										   BoatFieldVariable *result_out )
+BOAT_RESULT BoatEthPraseRpcResponseResult(const BCHAR *json_string, 
+										  const BCHAR *child_name, 
+										  BoatFieldVariable *result_out)
 {
 	return web3_parse_json_result(json_string, child_name, result_out);
 }
@@ -263,14 +263,14 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
 {
     BOAT_RESULT result;
 
-    if( wallet_ptr == NULL || tx_ptr == NULL || recipient_str == NULL)
+    if (wallet_ptr == NULL || tx_ptr == NULL || recipient_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
     tx_ptr->wallet_ptr = wallet_ptr;
-    memset( &tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields) );
+    memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
 
     // Set synchronous transaction flag
     tx_ptr->is_sync_tx = is_sync_tx;
@@ -278,11 +278,11 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     // Initialize gasprice
     BoatFieldMax32B gasprice;
     // Either manually set the gas price or get the price from network
-    if( gasprice_str != NULL )
+    if (gasprice_str != NULL)
     {
         // Manually
-        gasprice.field_len = UtilityHexToBin( gasprice.field, 32, gasprice_str, 
-											 TRIMBIN_LEFTTRIM, BOAT_TRUE );
+        gasprice.field_len = UtilityHexToBin(gasprice.field, 32, gasprice_str, 
+											 TRIMBIN_LEFTTRIM, BOAT_TRUE);
         result = BoatEthTxSetGasPrice(tx_ptr, &gasprice);
     }
     else
@@ -291,7 +291,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
         result = BoatEthTxSetGasPrice(tx_ptr, NULL);
     }
 
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "set gas price failed: %d.", result);
         return result;
@@ -300,10 +300,10 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     // Initialize gaslimit
     BoatFieldMax32B gaslimit;
     
-    gaslimit.field_len = UtilityHexToBin( gaslimit.field, 32, gaslimit_str, 
-										 TRIMBIN_LEFTTRIM, BOAT_TRUE );
+    gaslimit.field_len = UtilityHexToBin(gaslimit.field, 32, gaslimit_str, 
+										 TRIMBIN_LEFTTRIM, BOAT_TRUE);
     result = BoatEthTxSetGasLimit(tx_ptr, &gaslimit);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxSetGasLimit failed.");
         return result;
@@ -312,9 +312,9 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     // Initialize recipient
     BUINT8 recipient[BOAT_ETH_ADDRESS_SIZE];
     BUINT32 converted_len;
-    converted_len = UtilityHexToBin( recipient, BOAT_ETH_ADDRESS_SIZE, recipient_str, 
-									TRIMBIN_TRIM_NO, BOAT_TRUE );
-    if( converted_len == 0 )
+    converted_len = UtilityHexToBin(recipient, BOAT_ETH_ADDRESS_SIZE, recipient_str, 
+									TRIMBIN_TRIM_NO, BOAT_TRUE);
+    if (converted_len == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "recipient Initialize failed.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
@@ -322,7 +322,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
 
     result = BoatEthTxSetRecipient(tx_ptr, recipient);
 
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxSetRecipient failed.");
         return result;
@@ -331,7 +331,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
     // Initialize value = 0
     result = BoatEthTxSetValue(tx_ptr, NULL);
 
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxSetValue failed.");
         return result;
@@ -348,20 +348,20 @@ BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce)
     BCHAR *tx_count_str;
     BOAT_RESULT result;
 
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
-	if( nonce == BOAT_ETH_NONCE_AUTO )
+	if (nonce == BOAT_ETH_NONCE_AUTO)
 	{
 		/* Get transaction count from network
 		   Return value of web3_getTransactionCount() is transaction count */
-		UtilityBinToHex( account_address_str, tx_ptr->wallet_ptr->account_info.address,
+		UtilityBinToHex(account_address_str, tx_ptr->wallet_ptr->account_info.address,
 						BOAT_ETH_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA, 
-						BIN2HEX_PREFIX_0x_YES, BOAT_FALSE ); 
-        param_eth_getTransactionCount.method_name_str = "eth_getTransactionCount";
+						BIN2HEX_PREFIX_0x_YES, BOAT_FALSE); 
+        param_eth_getTransactionCount.method_name_str  = "eth_getTransactionCount";
 		param_eth_getTransactionCount.address_str      = account_address_str;
 		param_eth_getTransactionCount.block_num_str    = "latest";
 		tx_count_str = web3_getTransactionCount(tx_ptr->wallet_ptr->web3intf_context_ptr,
@@ -369,34 +369,33 @@ BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce)
 												&param_eth_getTransactionCount);
 		result = BoatEthPraseRpcResponseResult(tx_count_str, "", 
 											   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-        if( result != BOAT_SUCCESS )
+        if (result != BOAT_SUCCESS)
         { 
             BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
             return result;
         }
 
 		/* Set nonce from transaction count */
-		tx_ptr->rawtx_fields.nonce.field_len = UtilityHexToBin( tx_ptr->rawtx_fields.nonce.field, 32,  
+		tx_ptr->rawtx_fields.nonce.field_len = UtilityHexToBin(tx_ptr->rawtx_fields.nonce.field, 32,  
 															   (BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
-															   TRIMBIN_LEFTTRIM, BOAT_TRUE );
+															   TRIMBIN_LEFTTRIM, BOAT_TRUE);
 	}
 	else
 	{
 		/* Set nonce */
-		tx_ptr->rawtx_fields.nonce.field_len = UtilityUint64ToBigend( tx_ptr->rawtx_fields.nonce.field,
-																	  nonce, TRIMBIN_LEFTTRIM);
+		tx_ptr->rawtx_fields.nonce.field_len = UtilityUint64ToBigend(tx_ptr->rawtx_fields.nonce.field,
+																	 nonce, TRIMBIN_LEFTTRIM);
 	}
 
     return BOAT_SUCCESS;
 }
-
 
 BOAT_RESULT BoatEthTxSetGasPrice(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_price_ptr)
 {
     BCHAR *gas_price_from_net_str;
     BOAT_RESULT result = BOAT_SUCCESS;
 
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
@@ -404,9 +403,9 @@ BOAT_RESULT BoatEthTxSetGasPrice(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_price_p
 
     // If gas price is specified, use it
     // Otherwise use gas price obtained from network
-    if( gas_price_ptr != NULL )
+    if (gas_price_ptr != NULL)
     {
-        memcpy(&tx_ptr->rawtx_fields.gasprice,  gas_price_ptr, sizeof(BoatFieldMax32B));
+        memcpy(&tx_ptr->rawtx_fields.gasprice, gas_price_ptr, sizeof(BoatFieldMax32B));
     }
     else
     {
@@ -415,14 +414,14 @@ BOAT_RESULT BoatEthTxSetGasPrice(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_price_p
         gas_price_from_net_str = web3_gasPrice(tx_ptr->wallet_ptr->web3intf_context_ptr, 
 											   tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                                "eth_gasPrice");
-		if( gas_price_from_net_str == NULL)
+		if (gas_price_from_net_str == NULL)
         {
             return BOAT_ERROR_RPC_FAILED;
         }
 
-        result = BoatEthPraseRpcResponseResult( gas_price_from_net_str, "", 
-												&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-        if( result == BOAT_SUCCESS )
+        result = BoatEthPraseRpcResponseResult(gas_price_from_net_str, "", 
+											   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+        if (result == BOAT_SUCCESS)
         {
             // Set transaction gasPrice with the one got from network
             tx_ptr->rawtx_fields.gasprice.field_len =
@@ -448,14 +447,14 @@ BOAT_RESULT BoatEthTxSetGasPrice(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_price_p
 
 BOAT_RESULT BoatEthTxSetGasLimit(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_limit_ptr)
 {
-    if( tx_ptr == NULL )
+    if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
     // Set gasLimit
-    if( gas_limit_ptr != NULL )
+    if (gas_limit_ptr != NULL)
     {
         memcpy(&tx_ptr->rawtx_fields.gaslimit, gas_limit_ptr,  sizeof(BoatFieldMax32B));
         return BOAT_SUCCESS;
@@ -470,7 +469,7 @@ BOAT_RESULT BoatEthTxSetGasLimit(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_limit_p
 
 BOAT_RESULT BoatEthTxSetRecipient(BoatEthTx *tx_ptr, BUINT8 address[BOAT_ETH_ADDRESS_SIZE])
 {
-    if( tx_ptr == NULL )
+    if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
@@ -485,14 +484,14 @@ BOAT_RESULT BoatEthTxSetRecipient(BoatEthTx *tx_ptr, BUINT8 address[BOAT_ETH_ADD
 
 BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr)
 {
-    if( tx_ptr == NULL )
+    if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
     
     // Set value
-    if( value_ptr != NULL )
+    if (value_ptr != NULL)
     {
         memcpy(&tx_ptr->rawtx_fields.value, value_ptr, sizeof(BoatFieldMax32B));
     }
@@ -510,14 +509,14 @@ BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr)
 
 BOAT_RESULT BoatEthTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr)
 {
-    if( tx_ptr == NULL )
+    if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
     
     // Set data
-    if( data_ptr != NULL )
+    if (data_ptr != NULL)
     {
         // NOTE: tx_ptr->rawtx_fields.data.field_ptr is a pointer
         //       The caller must make sure the storage it points to is available
@@ -540,15 +539,15 @@ BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr)
 {
     BOAT_RESULT result;
     
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
-    if( tx_ptr->is_sync_tx == BOAT_FALSE )
+    if (tx_ptr->is_sync_tx == BOAT_FALSE)
     {
-        result = EthSendRawtx( tx_ptr );
+        result = EthSendRawtx(tx_ptr);
     }
     else
     {
@@ -559,8 +558,8 @@ BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr)
 }
 
 
-BCHAR *BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
-								 BUINT8 *func_param_ptr, BUINT32 func_param_len )
+BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr, BCHAR *func_proto_str,
+							   BUINT8 *func_param_ptr, BUINT32 func_param_len)
 {
     BUINT8 function_selector[32];
 	BUINT8 hashLenDummy;
@@ -571,13 +570,13 @@ BCHAR *BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
     Param_eth_call param_eth_call;
     BCHAR *retval_str;
 
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
     }
     
-    if( func_param_ptr == NULL && func_param_len != 0 )
+    if (func_param_ptr == NULL && func_param_len != 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
@@ -589,8 +588,8 @@ BCHAR *BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
         return NULL;
 	}
 
-    if ( (BOAT_SUCCESS != UtilityStringLenCheck(func_proto_str)) && \
-         (BOAT_SUCCESS != UtilityStringLenCheck((BCHAR*)func_param_ptr)) )
+    if ((BOAT_SUCCESS != UtilityStringLenCheck(func_proto_str)) && \
+        (BOAT_SUCCESS != UtilityStringLenCheck((BCHAR*)func_param_ptr)))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
@@ -598,25 +597,25 @@ BCHAR *BoatEthCallContractFunc( BoatEthTx *tx_ptr, BCHAR *func_proto_str,
 
     BCHAR recipient_hexstr[BOAT_ETH_ADDRESS_SIZE*2+3];
     
-    UtilityBinToHex( recipient_hexstr, tx_ptr->rawtx_fields.recipient,
+    UtilityBinToHex(recipient_hexstr, tx_ptr->rawtx_fields.recipient,
 					BOAT_ETH_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA,
-					BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+					BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     param_eth_call.to  = recipient_hexstr;
 
     // Function call consumes zero gas but gasLimit and gasPrice must be specified.
     param_eth_call.gas = "0x1fffff";
     param_eth_call.gasPrice = "0x8250de00";
 
-	BoatHash( BOAT_HASH_KECCAK256, (BUINT8*)func_proto_str, 
-			  strlen(func_proto_str), function_selector, &hashLenDummy, NULL );
+	BoatHash(BOAT_HASH_KECCAK256, (BUINT8*)func_proto_str, 
+			 strlen(func_proto_str), function_selector, &hashLenDummy, NULL);
 
     // Set function selector
-    UtilityBinToHex( data_str, function_selector, 4,
+    UtilityBinToHex(data_str, function_selector, 4,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES,  BOAT_FALSE);
 
     // Set function parameters.param1 '+10' means skip function selector prefixed
 	// e.g. "0x12345678" is a function selector prefixed
-    UtilityBinToHex( data_str+10,  func_param_ptr,  func_param_len,
+    UtilityBinToHex(data_str+10,  func_param_ptr,  func_param_len,
 					BIN2HEX_LEFTTRIM_UNFMTDATA,  BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
     param_eth_call.method_name_str = "eth_call";
     param_eth_call.data            = data_str;
@@ -634,7 +633,7 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str)
     BoatFieldMax32B value;
     BOAT_RESULT result;
    
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL|| value_hex_str == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL|| value_hex_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
@@ -642,7 +641,7 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str)
     
     // Set nonce
     result = BoatEthTxSetNonce(tx_ptr, BOAT_ETH_NONCE_AUTO);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "nonce set failed.");
 		return result;
@@ -650,10 +649,10 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str)
 
     // Set value
 
-    value.field_len = UtilityHexToBin( value.field, 32, value_hex_str,
-									  TRIMBIN_LEFTTRIM, BOAT_TRUE );
+    value.field_len = UtilityHexToBin(value.field, 32, value_hex_str,
+									  TRIMBIN_LEFTTRIM, BOAT_TRUE);
     result = BoatEthTxSetValue(tx_ptr, &value);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "value set failed.");
 		return result;
@@ -661,7 +660,7 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str)
 	
     // Set data
     result = BoatEthTxSetData(tx_ptr, NULL);
-	if( result != BOAT_SUCCESS )
+	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "data set failed.");
 		return result;
@@ -670,7 +669,7 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str)
     // Perform the transaction
     // NOTE: Field v,r,s are calculated automatically
     result = BoatEthTxSend(tx_ptr);
-	if( result != BOAT_SUCCESS )
+	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "transaction send failed.");
 		return result;
@@ -689,8 +688,8 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
 
     BOAT_RESULT result = BOAT_SUCCESS;
 
-    UtilityBinToHex( tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     tx_mined_timeout = BOAT_ETH_WAIT_PENDING_TX_TIMEOUT;
     param_eth_getTransactionReceipt.method_name_str = "eth_getTransactionReceipt";
     param_eth_getTransactionReceipt.tx_hash_str = tx_hash_str;
@@ -700,9 +699,9 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
         tx_status_str = web3_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 														 tx_ptr->wallet_ptr->network_info.node_url_ptr,
 														 &param_eth_getTransactionReceipt);
-		result = BoatEthPraseRpcResponseResult( tx_status_str, "status", 
-												&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-        if( result != BOAT_SUCCESS )
+		result = BoatEthPraseRpcResponseResult(tx_status_str, "status", 
+											   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+        if (result != BOAT_SUCCESS)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             result = BOAT_ERROR_RPC_FAILED;
@@ -713,9 +712,9 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
             // tx_status_str == "": the transaction is pending
             // tx_status_str == "0x1": the transaction is successfully mined
             // tx_status_str == "0x0": the transaction fails
-            if( tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr[0] != '\0' )
+            if (tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr[0] != '\0')
             {
-                if( strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x1") == 0 )
+                if (strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x1") == 0)
                 {
                     BoatLog(BOAT_LOG_NORMAL, "Transaction has got mined.");
 					break;
@@ -731,7 +730,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
         
     }while(tx_mined_timeout > 0);
 
-    if( tx_mined_timeout <= 0)
+    if (tx_mined_timeout <= 0)
     {
         BoatLog(BOAT_LOG_NORMAL, "Wait for pending transaction timeout. This does not mean the transaction fails.");
         result = BOAT_ERROR_TX_PENDING;
