@@ -38,8 +38,6 @@ To use mbed HTTP RPC porting, RPC_USE_MBEDHTTPPORT in boatoptions.h must set to 
 //#include "rpcport.h"
 #include "mbedhttpport.h"
 
-#include "httpclient.h"
-
 
 
 /*!*****************************************************************************
@@ -60,82 +58,9 @@ Function: MbedHttpPortInit()
 @param This function doesn't take any argument.
 
 *******************************************************************************/
-MbedHttpPortContext *MbedHttpPortInit(void)
+nHttp_info *MbedHttpPortInit(void)
 {
-    MbedHttpPortContext *mbedhttpport_context_ptr;
-    BOAT_RESULT result = BOAT_SUCCESS;
-
-    mbedhttpport_context_ptr = BoatMalloc(sizeof(MbedHttpPortContext));
-
-    if (mbedhttpport_context_ptr != NULL)
-    {
-        result = BOAT_SUCCESS;
-    }
-    else
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate mbed HTTP RPC Context.");
-        result = BOAT_ERROR;
-    }
-    
-    if (result == BOAT_SUCCESS)
-    {
-        mbedhttpport_context_ptr->http_response_head.string_ptr = BoatMalloc(MBEDHTTPPORT_RECV_BUF_SIZE);
-
-        if (mbedhttpport_context_ptr->http_response_head.string_ptr != NULL)
-        {
-            mbedhttpport_context_ptr->http_response_head.string_space = MBEDHTTPPORT_RECV_BUF_SIZE;
-            mbedhttpport_context_ptr->http_response_head.string_len = 0;
-        }
-        else
-        {
-            BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate mbed HTTP RESPONSE head buffer.");
-            result = BOAT_ERROR;
-        }
-    }
-    
-    if (result == BOAT_SUCCESS)
-    {
-        mbedhttpport_context_ptr->http_response_body.string_ptr = BoatMalloc(MBEDHTTPPORT_RECV_BUF_SIZE);
-
-        if (mbedhttpport_context_ptr->http_response_body.string_ptr != NULL)
-        {
-            mbedhttpport_context_ptr->http_response_body.string_space = MBEDHTTPPORT_RECV_BUF_SIZE;
-            mbedhttpport_context_ptr->http_response_body.string_len = 0;
-        }
-        else
-        {
-            BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate mbed HTTP RESPONSE body buffer.");
-            result = BOAT_ERROR;
-        }
-    }
-    
-    if (result != BOAT_SUCCESS)
-    {
-        if (mbedhttpport_context_ptr != NULL)
-        {
-            if (mbedhttpport_context_ptr->http_response_head.string_ptr != NULL)
-            {
-                BoatFree(mbedhttpport_context_ptr->http_response_head.string_ptr);
-                mbedhttpport_context_ptr->http_response_head.string_ptr = NULL;
-                mbedhttpport_context_ptr->http_response_head.string_space = 0;
-                mbedhttpport_context_ptr->http_response_head.string_len = 0;
-            }
-
-            if (mbedhttpport_context_ptr->http_response_body.string_ptr != NULL)
-            {
-                BoatFree(mbedhttpport_context_ptr->http_response_body.string_ptr);
-                mbedhttpport_context_ptr->http_response_body.string_ptr = NULL;
-                mbedhttpport_context_ptr->http_response_body.string_space = 0;
-                mbedhttpport_context_ptr->http_response_body.string_len = 0;
-            }
-            
-            BoatFree(mbedhttpport_context_ptr);
-            mbedhttpport_context_ptr = NULL;
-        }
-    }
-    
-    return mbedhttpport_context_ptr;
-
+    return Init_Http();
 }
 
 
@@ -157,32 +82,9 @@ Function: MbedHttpPortDeinit()
     Pointer to the context of MbedHttpPortContext, which is returned by MbedHttpPortInit()
 
 *******************************************************************************/
-void MbedHttpPortDeinit(MbedHttpPortContext *mbedhttpport_context_ptr)
+void MbedHttpPortDeinit(nHttp_info *mbedhttpport_context_ptr)
 {
-    if (mbedhttpport_context_ptr == NULL)
-    {
-        return;
-    }
-    
-    mbedhttpport_context_ptr->http_response_head.string_space = 0;
-    mbedhttpport_context_ptr->http_response_head.string_len = 0;
-
-    mbedhttpport_context_ptr->http_response_body.string_space = 0;
-    mbedhttpport_context_ptr->http_response_body.string_len = 0;
-
-    if (mbedhttpport_context_ptr->http_response_head.string_ptr != NULL)
-    {
-        BoatFree(mbedhttpport_context_ptr->http_response_head.string_ptr);
-        mbedhttpport_context_ptr->http_response_head.string_ptr = NULL;
-    }
-
-    if (mbedhttpport_context_ptr->http_response_body.string_ptr != NULL)
-    {
-        BoatFree(mbedhttpport_context_ptr->http_response_body.string_ptr);
-        mbedhttpport_context_ptr->http_response_body.string_ptr = NULL;
-    }
-
-    BoatFree(mbedhttpport_context_ptr);
+    Term_Http(rpc_context_ptr);
 
     return;
 }
@@ -208,16 +110,18 @@ Function: MbedHttpPortSetOpt()
     The URL of the remote server.
 
 *******************************************************************************/
-BOAT_RESULT MbedHttpPortSetOpt(MbedHttpPortContext *mbedhttpport_context_ptr, BCHAR *remote_url_str)
+BOAT_RESULT MbedHttpPortSetOpt(nHttp_info *mbedhttpport_context_ptr, BCHAR *remote_url_str)
 {
     if (mbedhttpport_context_ptr == NULL || remote_url_str == NULL)
     {
         return BOAT_ERROR;
     }
 
-    mbedhttpport_context_ptr->remote_url_str = remote_url_str;
-
-    return BOAT_SUCCESS;
+    if (Http_para(rpc_context_ptr, "URL", remote_url_str))
+    {
+        return BOAT_SUCCESS;
+    }
+    return BOAT_ERROR
 }
 
 
@@ -267,16 +171,12 @@ Function: MbedHttpPortRequestSync()
     wrapper function. Typically it equals to strlen(response_str_ptr).
 
 *******************************************************************************/
-BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_ptr,
+BOAT_RESULT MbedHttpPortRequestSync(nHttp_info *mbedhttpport_context_ptr,
                                     const BCHAR *request_str,
                                     BUINT32 request_len,
                                     BOAT_OUT BCHAR **response_str_ptr,
                                     BOAT_OUT BUINT32 *response_len_ptr)
 {
-
-
-    httpclient_t client = {0};
-    httpclient_data_t client_data = {0};
     BSINT32 response_code;
     BSINT32 ret;
 
@@ -293,46 +193,39 @@ BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_pt
         result = BOAT_ERROR;
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, cleanup);
     }
-
-    memset(&client, 0x00, sizeof(client));
-    memset(&client_data, 0x00, sizeof(client_data));
-
-    client.timeout_in_sec = 30;
     
-    client_data.is_more = false;
+    Http_para(mbedhttpport_context_ptr, "TIMEOUT", "30");
+    //client.timeout_in_sec = 30;
     
-    client_data.header_buf = mbedhttpport_context_ptr->http_response_head.string_ptr;
+    //client_data.is_more = false;
+    
+    /*client_data.header_buf = mbedhttpport_context_ptr->http_response_head.string_ptr;
     client_data.header_buf_len = mbedhttpport_context_ptr->http_response_head.string_space;
     memset(client_data.header_buf, 0, client_data.header_buf_len);
 
     client_data.response_buf = mbedhttpport_context_ptr->http_response_body.string_ptr;
     client_data.response_buf_len = mbedhttpport_context_ptr->http_response_body.string_space;
-    memset(client_data.response_buf, 0, client_data.response_buf_len);
+    memset(client_data.response_buf, 0, client_data.response_buf_len);*/
 
-
-    client_data.post_buf = request_str;
-    client_data.post_buf_len = strlen(request_str);
-
-    client_data.post_content_type = "application/json";
-    
+    http_setUserdata(mbedhttpport_context_ptr, request_str, request_len);
+    //Http_para(mbedhttpport_context_ptr, "USERDATA", request_str);
+    Http_para(mbedhttpport_context_ptr, "CONTENT", "application/json");
+     
     BoatLog(BOAT_LOG_VERBOSE, "[HTTP]POST Start\n");
-    ret = httpclient_post(&client, mbedhttpport_context_ptr->remote_url_str, &client_data);
-    if (ret < 0)
+    if (!Http_postn(mbedhttpport_context_ptr))
     {
         BoatLog(BOAT_LOG_VERBOSE, "[HTTP]POST Failed:%d\n", ret);
     }
     else
     {
-        BoatLog(BOAT_LOG_VERBOSE, "[HTTP]POST:\n%s\n", client_data.response_buf);
+        BoatLog(BOAT_LOG_VERBOSE, "[HTTP]POST:\n%s\n", mbedhttpport_context_ptr->user_data);
 
-        mbedhttpport_context_ptr->http_response_body.string_len = client_data.response_buf_len;
-        
-        response_code = httpclient_get_response_code(&client);
+        response_code = mbedhttpport_context_ptr->status_code;
         
         if (response_code == 200 || response_code == 201)
         {
-            *response_str_ptr = mbedhttpport_context_ptr->http_response_body.string_ptr;
-            *response_len_ptr = mbedhttpport_context_ptr->http_response_body.string_len;
+            *response_len_ptr = mbedhttpport_context_ptr->content_length;
+            *response_str_ptr = mbedhttpport_context_ptr->user_data;
             
             BoatLog(BOAT_LOG_VERBOSE, "Post: %s", request_str);
             BoatLog(BOAT_LOG_VERBOSE, "Result Code: %d", response_code);

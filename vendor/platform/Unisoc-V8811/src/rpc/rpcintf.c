@@ -62,7 +62,7 @@ BOAT_RESULT RpcRequestSet(void *rpc_context_ptr, BCHAR *remote_url_str)
 #if RPC_USE_LIBCURL == 1    
     return CurlPortSetOpt((CurlPortContext*)rpc_context_ptr, remote_url_str);
 #elif RPC_USE_MBEDHTTPPORT == 1
-	return MbedHttpPortSetOpt((MbedHttpPortContext*)rpc_context_ptr, remote_url_str);
+	return MbedHttpPortSetOpt((nHttp_info *)rpc_context_ptr, remote_url_str);
 #endif
     return result;
 }

@@ -37,6 +37,7 @@ To use mbed HTTP RPC porting, RPC_USE_MBEDHTTPPORT in boatoptions.h must set to 
 #if RPC_USE_MBEDHTTPPORT == 1
 
 #include "boatinternal.h"
+#include "http_api.h"
 
 
 //!Receiving buffer size
@@ -55,13 +56,13 @@ typedef struct TMbedHttpPortContext
 extern "C" {
 #endif
 
-MbedHttpPortContext * MbedHttpPortInit(void);
+nHttp_info *MbedHttpPortInit(void);
 
-void MbedHttpPortDeinit(MbedHttpPortContext *mbedhttpport_context_ptr);
+void MbedHttpPortDeinit(nHttp_info *mbedhttpport_context_ptr);
 
-BOAT_RESULT MbedHttpPortSetOpt(MbedHttpPortContext *mbedhttpport_context_ptr, BCHAR *remote_url_str);
+BOAT_RESULT MbedHttpPortSetOpt(nHttp_info *mbedhttpport_context_ptr, BCHAR *remote_url_str);
 
-BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_ptr,
+BOAT_RESULT MbedHttpPortRequestSync(nHttp_info *mbedhttpport_context_ptr,
                                     const BCHAR *request_str,
                                     BUINT32 request_len,
                                     BOAT_OUT BCHAR **response_str_ptr,
