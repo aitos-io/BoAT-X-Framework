@@ -36,6 +36,8 @@
 #include "drv_spi_flash.h"
 #include "sffs.h"
 #include "sffs_vfs.h"
+#include "hal_chip.h"
+#include "errno.h"
 
 /* net releated include */
 #if (PROTOCOL_USE_HLFABRIC == 1)
@@ -147,7 +149,8 @@ BOAT_RESULT BoatInitFS(const BCHAR *fileName)
 	//DRV_NAME_SPI_FLASH
 	drvSpiFlash_t *flash = drvSpiFlashOpen(HAL_FLASH_DEVICE_NAME(CONFIG_FS_SYS_FLASH_ADDRESS));
 	blockDevice_t *bdev = flashBlockDeviceCreateV2(flash, 0, CONFIG_FS_SYS_FLASH_SIZE, CONFIG_FS_SYS_FLASH_ADDRESS, 16, false);
-	boat_internal_fs = sffsMount(bdev, cache_count, false);
+	boat_internal_fs = sffsMount(bdev, CONFIG_FS_SYS_FLASH_SIZE, false);
+	return BOAT_SUCCESS;
 }
 
 BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
@@ -163,7 +166,7 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 
 	if (boat_internal_fs == NULL)
 	{
-		if (BoatInitFS(fileName) != BOAT_RESULT)
+		if (BoatInitFS(fileName) != BOAT_SUCCESS)
 		{
 			//BoatLog(BOAT_LOG_CRITICAL, "need to use BoatOpenFile first.");
 			return BOAT_ERROR_INVALID_ARGUMENT;
@@ -192,7 +195,7 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 	}
 	
 	*size = file_st.st_size;
-	sffsClose(fs, fileName);
+	sffsClose(boat_internal_fs, fileName);
 #else
 	file_ptr = fopen(fileName, "rb");
 	if (file_ptr == NULL)
@@ -226,7 +229,7 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 
 	if (boat_internal_fs == NULL)
 	{
-		if (BoatInitFS(fileName) != BOAT_RESULT)
+		if (BoatInitFS(fileName) != BOAT_SUCCESS)
 		{
 			//BoatLog(BOAT_LOG_CRITICAL, "need to use BoatOpenFile first.");
 			return BOAT_ERROR_INVALID_ARGUMENT;
@@ -280,7 +283,7 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 
 	if (boat_internal_fs == NULL)
 	{
-		if (BoatInitFS(fileName) != BOAT_RESULT)
+		if (BoatInitFS(fileName) != BOAT_SUCCESS)
 		{
 			//BoatLog(BOAT_LOG_CRITICAL, "need to use BoatOpenFile first.");
 			return BOAT_ERROR_INVALID_ARGUMENT;
@@ -335,7 +338,7 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 
 	if (boat_internal_fs == NULL)
 	{
-		if (BoatInitFS(fileName) != BOAT_RESULT)
+		if (BoatInitFS(fileName) != BOAT_SUCCESS)
 		{
 			//BoatLog(BOAT_LOG_CRITICAL, "need to use BoatOpenFile first.");
 			return BOAT_ERROR_INVALID_ARGUMENT;
