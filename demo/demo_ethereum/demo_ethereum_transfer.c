@@ -33,25 +33,25 @@
  * PKCS format demo key. The original private key of 'pkcs_demoKey' is 
  * "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
  */
-const BCHAR * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
-                              "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
-                              "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
-                              "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
-                              "-----END EC PRIVATE KEY-----\n";
+const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
+                             "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
+                             "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
+                             "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
+                             "-----END EC PRIVATE KEY-----\n";
 /**
  * native demo key
  */
-const BCHAR * native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
 
 /**
  * test node url
  */
-const BCHAR * demoUrl = "http://192.168.132.200:7545";
+const BCHAR *demoUrl = "http://192.168.132.200:7545";
 
 /**
  * transfer recipient address
  */
-const BCHAR * demoRecipientAddress = "0x4BeC3cDD520B7985067219F6f596EF7a55Ee5963";
+const BCHAR *demoRecipientAddress = "0x4BeC3cDD520B7985067219F6f596EF7a55Ee5963";
 
 BoatEthWallet *g_ethereum_wallet_ptr;
 
@@ -98,7 +98,7 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
     if (index == BOAT_ERROR)
 	{
-        //BoatLog( BOAT_LOG_CRITICAL, "create one-time wallet failed." );
+        //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
         return BOAT_ERROR;
     }
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(index);
@@ -189,7 +189,7 @@ BOAT_RESULT ethereumGetBalance(BoatEthWallet *wallet_ptr)
 	result          = BoatEthPraseRpcResponseResult(cur_balance_wei, "", &prase_result);
 	if (result == BOAT_SUCCESS)
 	{
-		//BoatLog( BOAT_LOG_NORMAL, "BoatEthWalletGetBalance returns: %s", prase_result.field_ptr );
+		//BoatLog(BOAT_LOG_NORMAL, "BoatEthWalletGetBalance returns: %s", prase_result.field_ptr);
 	}
 	else
 	{
@@ -259,11 +259,13 @@ int main(int argc, char *argv[])
         //BoatLog(BOAT_LOG_NORMAL, "ethereumGetBalance Failed: %d.", result);
     }
 	result = ethereumTransfer(g_ethereum_wallet_ptr);
-        if (result != BOAT_SUCCESS)
+    
+    if (result != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "ethereumTransfer Failed: %d.", result);
     }
 	result = ethereumGetBalance(g_ethereum_wallet_ptr);
+    
     if (result != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "CaseEthereum Failed: %d.", result);

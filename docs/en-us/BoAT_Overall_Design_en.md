@@ -20,12 +20,12 @@ The intended readers of this article are: BoAT SDK detailed designers.
 
 
 ## BoAT Design Goals
-As a middleware fusing Blockchain and IoT technologies, It should be easily and quickly transplanted into various IoT modules at the minimum cost of modification. The design of BoAT follows the following goals:
+As a middleware fusing Blockchain and IoT technologies, It should be easily and quickly transplanted into various IoT modules at the minimum cost of modification. The design of BoAT is based on these following principles:
 + Hierarchical design  
 + Multiple blockchain protocols are supported  
 + Scalable design  
 + Secret key security design  
-+ C interface code generation tool for corresponding smart contracts of different blockchains. 
++ C interface code generation tool for corresponding smart contracts of different blockchains  
 
 
 ## The Position of BoAT SDK in The Entire Blockchain Network
@@ -37,7 +37,7 @@ Figure 3-1 The position of BoAT in the blockchain interactive network
 
 ## BoAT Implementation Framework 
 Boat follows a hierarchical design consisting of Interface Layer, Protocol Layer, RPC Layer, Vendor Dependency Layer, Tool and Utility. The specific functions of each layer are as follows:   
-+ Interface Layer: Provide an interface for users to invoke the corresponding blockchain. 
++ Interface Layer: Provide an interface for IoT Application to invoke the corresponding blockchain. 
 + Protocol Layer: The main implementation of each block chain protocol.  
 + RPC Layer: Provide services to the protocol layer.  
 + Vendor Dependency Layer: Provide cryptographic algorithms, signature, storage and other services for the interface layer wallet.  
@@ -51,7 +51,7 @@ Figure 4-1 BoAT Overall Framework
 ### Interface Layer
 
 #### Overview
-The interface layer is located at the top layer of BoAT and provides users with access to each blockchain. The interface layer consists of two parts:  
+The interface layer is located at the top layer of BoAT and provides IoT applications with access to each blockchain. The interface layer consists of two parts:  
 + Wallet interface
    * The wallet interface is the entrance to the BoAT SDK, and different blockchains have a common wallet entrance.
 + Transaction interface
@@ -456,8 +456,8 @@ The vendor dependency layer should provide a pure software implementation of the
 
 #### TEE Support
 The design of BoAT should consider the support of TEE environment. For hardware with a TEE environment, BoAT should be able to put sensitive information in the TEE environment with a small amount of modification. To meet this goal, the wallet is designed to meet the following criteria:
-+ Independent design of wallet-related data structure
-+ Wallet related implementation independent design
++ Wallet related data structure modular design
++ Wallet related implementation modular design
 + Sensitive information related to the wallet is not reflected outside the wallet
 
 ### General Tool Implementation

@@ -377,7 +377,7 @@ void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
 static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKeyCtx_config *config, 
-													       BoatWalletPriKeyCtx *pkCtx )
+													       BoatWalletPriKeyCtx *pkCtx)
 {
 	/* Valid private key value (as a UINT256) for Ethereum is [1, n-1], where n is
        0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 */
