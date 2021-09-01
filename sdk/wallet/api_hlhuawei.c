@@ -53,8 +53,13 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BoatHlfabricEndorserResponse *parsePtr = NULL;
 	Common__Transaction *proposalResponse = NULL;
-	Orderer__SubmitResponse *submitResponse = NULL;
+	Common__Response *resData = NULL;
+	Common__TxPayload *resPayload = NULL;
+	Common__CommonTxData *commondTxData = NULL;
+	
+	// Orderer__SubmitResponse *submitResponse = NULL;
 	BUINT8 valid_node_quantities;
+	BUINT32 datalen = 0;
 	boat_try_declare;
 	// DiscoverRes discooverRes = tx_ptr->discooverRes;
 	int i, j, k;
@@ -124,6 +129,11 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 					{
 						continue;
 					}
+
+					BoatLog_hexasciidump(BOAT_LOG_NORMAL, "parsePtr->http2Res :",
+					parsePtr->http2Res,
+					parsePtr->httpResLen);
+
 					proposalResponse = common__transaction__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
 					if(parsePtr->httpResLen != 0)
 					{
@@ -131,20 +141,58 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 					}
 					parsePtr->httpResLen = 0;
 
-						BoatLog(BOAT_LOG_CRITICAL, "http2SubmitRequest approval n = %d ",proposalResponse->n_approvals);
-
 					if ((proposalResponse != NULL) && (proposalResponse->n_approvals != 0)&& (proposalResponse->approvals != NULL))
 					{
 						BoatLog(BOAT_LOG_NORMAL, "[http2]endorser respond received.");
+									BoatLog_hexasciidump(BOAT_LOG_NORMAL, "proposalResponse->payload.data :",
+					proposalResponse->payload.data,
+					proposalResponse->payload.len);
+
+
+						resData = common__response__unpack(NULL,proposalResponse->payload.len,proposalResponse->payload.data);
+						BoatLog(BOAT_LOG_NORMAL, "[http2]common__response__unpack respond status : %d .",resData->status);
+						if(resData->status != COMMON__STATUS__HUAWEI__SUCCESS)
+						{
+							continue;
+						}
+
+						BoatLog_hexasciidump(BOAT_LOG_NORMAL, "resData->payload.data ",
+						resData->payload.data,
+						resData->payload.len);
+
+
+						datalen = (resData->payload.data[1] & 0x7F) + (resData->payload.data[2] <<7);
+						BoatLog(BOAT_LOG_NORMAL, "idatalen =  %x ",datalen);
+						resPayload = common__tx_payload__unpack(NULL,datalen  ,resData->payload.data+3);
+						
+						// BoatLog(BOAT_LOG_NORMAL, "[http2]invocationRes->status_info = %s ",invocationRes->data);
+						BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invocationRes->data.data :",
+						resPayload->data.data,
+						resPayload->data.len);
+
+						commondTxData = common__common_tx_data__unpack(NULL,resPayload->data.len,resPayload->data.data);
+						BoatLog(BOAT_LOG_NORMAL, "response->status_info =  %d  ,status_info = %x ",commondTxData->response->status,commondTxData->response->status_info[0]);
+						BoatLog_hexasciidump(BOAT_LOG_NORMAL, "commondTxData->data.data :",
+						commondTxData->response->payload.data,
+						commondTxData->response->payload.len);
+						if(commondTxData->response->status != COMMON__STATUS__HUAWEI__SUCCESS)
+						{
+							continue;
+						}
+					
+					
+
 						parsePtr->response[parsePtr->responseCount].contentPtr = proposalResponse;
 						parsePtr->response[parsePtr->responseCount].responseType = HLFABRIC_TYPE_PROPOSAL;
-						parsePtr->response[parsePtr->responseCount].payload.field_ptr = proposalResponse->payload.data;
-						parsePtr->response[parsePtr->responseCount].payload.field_len = proposalResponse->payload.len;
-						parsePtr->response[parsePtr->responseCount].endorser.field_ptr = proposalResponse->approvals[0]->identity.data;
-						parsePtr->response[parsePtr->responseCount].endorser.field_len = proposalResponse->approvals[0]->identity.len;
-						parsePtr->response[parsePtr->responseCount].signature.field_ptr = proposalResponse->approvals[0]->sign.data;
-						parsePtr->response[parsePtr->responseCount].signature.field_len = proposalResponse->approvals[0]->sign.len;
+						parsePtr->response[parsePtr->responseCount].payload.field_ptr = resData->payload.data;
+						parsePtr->response[parsePtr->responseCount].payload.field_len = resData->payload.len;
+						parsePtr->response[parsePtr->responseCount].endorser.field_ptr = commondTxData->response->payload.data;
+						parsePtr->response[parsePtr->responseCount].endorser.field_len = commondTxData->response->payload.len;
+						// parsePtr->response[parsePtr->responseCount].signature.field_ptr = proposalResponse->approvals[0]->sign.data;
+						// parsePtr->response[parsePtr->responseCount].signature.field_len = proposalResponse->approvals[0]->sign.len;
 						parsePtr->responseCount++;
+
+
 					}
 					else
 					{
@@ -214,19 +262,26 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 				BoatLog(BOAT_LOG_CRITICAL, "[http2]http2SubmitRequest failed.");
 				continue;
 			}
-			submitResponse = orderer__submit_response__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
-			if (submitResponse != NULL)
+			BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest response result :",
+					parsePtr->http2Res,
+					parsePtr->httpResLen);
+
+			// proposalResponse = common__transaction__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
+			resData = common__response__unpack(NULL,parsePtr->httpResLen - 7,parsePtr->http2Res + 7);
+			BoatLog(BOAT_LOG_NORMAL, "[http2]common__response__unpack respond status : %d .",resData->status);
+			if (resData->status == COMMON__STATUS__HUAWEI__SUCCESS)
 			{
-				BoatLog(BOAT_LOG_NORMAL, "[http2]orderer respond received.%d", submitResponse->status);
-				parsePtr->response[parsePtr->responseCount].contentPtr = submitResponse;
-				parsePtr->response[parsePtr->responseCount].responseType = HLFABRIC_TYPE_TRANSACTION;
-				parsePtr->responseCount++;
+				// BoatLog(BOAT_LOG_NORMAL, "[http2]orderer respond received.%d", proposalResponse->payload.len);
+				// parsePtr->response[parsePtr->responseCount].contentPtr = proposalResponse->payload.data;
+				// parsePtr->response[parsePtr->responseCount].responseType = HLFABRIC_TYPE_TRANSACTION;
+				// parsePtr->responseCount++;
 				result = BOAT_SUCCESS;
 				break;
 			}
 			else
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "[http2]orderer respond unpacked failed.");
+				result = BOAT_ERROR;
 				continue;
 			}
 		}
@@ -407,8 +462,8 @@ BOAT_RESULT BoatHlhuaweiTxEvaluate(BoatHlfabricTx *tx_ptr)
 	// urlTmp[0] = tx_ptr->wallet_ptr->network_info.endorser[0];
 	result = BoatHlhuaweiTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_EVALUATE);
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
-						 tx_ptr->endorserResponse.response[0].payload.field_ptr,
-						 tx_ptr->endorserResponse.response[0].payload.field_len);
+						 tx_ptr->endorserResponse.response[0].endorser.field_ptr,
+						 tx_ptr->endorserResponse.response[0].endorser.field_len);
 
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
@@ -456,7 +511,7 @@ BOAT_RESULT BoatHlhuaweiTxSubmit(BoatHlfabricTx *tx_ptr)
 	{
 		return BOAT_ERROR;
 	}
-
+	BoatLog(BOAT_LOG_NORMAL, "Submit proposal OK ...");
 	/* invoke-step2: submit transaction to orderer */
 	tx_ptr->var.type = HLFABRIC_TYPE_TRANSACTION;
 	result = BoatHlhuaweiTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_SUBMIT);
@@ -469,11 +524,11 @@ BOAT_RESULT BoatHlhuaweiTxSubmit(BoatHlfabricTx *tx_ptr)
 	{
 		if (tx_ptr->endorserResponse.response[i].responseType == HLFABRIC_TYPE_PROPOSAL)
 		{
-			protos__proposal_response__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
+			common__transaction__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
 		}
 		else
 		{
-			orderer__submit_response__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
+			// orderer__submit_response__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
 		}
 	}
 	tx_ptr->endorserResponse.responseCount = 0;
