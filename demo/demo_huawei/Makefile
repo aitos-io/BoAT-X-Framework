@@ -15,13 +15,13 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 all: $(OBJECTS_DIR)
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_huawei.c \
 	    -DUSE_ONETIME_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fabric_abac_onetime
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_huawei_onetime
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_huawei.c \
 	    -DUSE_CREATE_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fabric_abac_persist	
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_huawei_persist	
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_huawei.c \
 	    -DUSE_LOAD_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fabric_abac_load		
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_huawei_load		
 
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
