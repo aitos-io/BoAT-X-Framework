@@ -127,7 +127,7 @@ BOAT_RESULT BoatEthWalletSetNodeUrl(BoatEthWallet *wallet_ptr, const BCHAR *node
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
-	if  strchr(node_url_ptr, ':') == NULL)
+	if (strchr(node_url_ptr, ':') == NULL)
 	{
 	    BoatLog(BOAT_LOG_CRITICAL, "node URL has a invalid format: %s.", node_url_ptr);
         return BOAT_ERROR_INVALID_ARGUMENT;
