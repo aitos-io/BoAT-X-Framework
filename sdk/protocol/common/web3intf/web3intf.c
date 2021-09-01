@@ -181,67 +181,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR *json_string,
 }
 
 
-int supports_full_hd(const char * const monitor,nodesResult *result_out)
-{
-    const cJSON *resolution = NULL;
-    const cJSON *resolutions = NULL;
-    const cJSON *name = NULL;
-    int status = 0;
-    cJSON *monitor_json = cJSON_Parse(monitor);
-    if (monitor_json == NULL)
-    {
-        const char *error_ptr = cJSON_GetErrorPtr();
-        if (error_ptr != NULL)
-        {
-            fprintf(stderr, "Error before: %s\n", error_ptr);
-        }
-        status = 0;
-        goto end;
-    }
 
-    name = cJSON_GetObjectItemCaseSensitive(monitor_json, "code");
-    if (cJSON_IsString(name) && (name->valuestring != NULL))
-    {
-        printf("Checking monitor \"%s\"\n", name->valuestring);
-    }
-
-    resolutions = cJSON_GetObjectItemCaseSensitive(monitor_json, "data");
-    int num = cJSON_GetArraySize(resolutions);
-    printf(  "num  = %d ,,   \n", num);
-    result_out->nodeInfo = BoatMalloc(num * sizeof(wbe3_nodeInfo));
-    cJSON_ArrayForEach(resolution, resolutions)
-    {
-        result_out->num ++;
-        cJSON *externalIP = cJSON_GetObjectItemCaseSensitive(resolution, "externalIP");
-        cJSON *height = cJSON_GetObjectItemCaseSensitive(resolution, "rpcPort");
-
-        if( cJSON_IsString(externalIP) )
-        {
-            char *parse_result_str = cJSON_GetStringValue(externalIP);
-            if( parse_result_str != NULL )
-            {
-                
-
-                int parse_result_str_len = strlen(parse_result_str);
-                
-                result_out->nodeInfo[result_out->num-1].IP = malloc(parse_result_str_len);
-               
-            //    memcpy((char*)result_out->nodeInfo[result_out->num-1].IP, parse_result_str,parse_result_str_len);
-                strcpy(result_out->nodeInfo[result_out->num-1].IP, parse_result_str);
-            }
-        }
-        else
-        {
-            printf(  "un-implemention yet.");
-        }
-        result_out->nodeInfo[result_out->num-1].rpcPort = height->valueint;
-        
-    }
-
-end:
-    cJSON_Delete(monitor_json);
-    return status;
-}
 Web3IntfContext *web3_init(void)
 {
     Web3IntfContext *web3intf_context_ptr;

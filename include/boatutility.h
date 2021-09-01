@@ -487,6 +487,8 @@ void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_n
 *******************************************************************************/
 BOAT_RESULT UtilityStringLenCheck(const BCHAR *string);
 
+BUINT64 UtilityBuint8Buf2Uint64(BUINT8* from,BUINT32 len);
+
 /*! @}*/
 
 #ifdef __cplusplus

@@ -602,3 +602,22 @@ BOAT_RESULT UtilityStringLenCheck( const BCHAR *string )
     return BOAT_ERROR;
 }
 
+uint32_t random32(void)
+{
+	static uint32_t seed = 0;
+	// Linear congruential generator from Numerical Recipes
+	// https://en.wikipedia.org/wiki/Linear_congruential_generator
+	seed = 1664525 * seed + 1013904223;
+
+	return seed;
+}
+
+BUINT64 UtilityBuint8Buf2Uint64(BUINT8* from,BUINT32 len)
+{
+    long ret ;
+    ret =  (((long)(from[0]&0x7F) << 56) | ((long)from[1] << 48) | ((long)from[2] << 40) | ((long)from[3] << 32) | ((long)from[4] << 24) | ((long)from[5] << 16) | ((long)from[6] << 8) | from[7]);
+    // ret = random32() << 32 | random32();
+        ret =  (((long)from[4] << 24) | ((long)from[5] << 16) | ((long)from[6] << 8) | from[7]);
+    return ret;
+}
+

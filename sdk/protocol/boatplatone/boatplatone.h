@@ -127,6 +127,10 @@ BOAT_RESULT PlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr);
 
 /*! @}*/
 
+
+int supports_full_hd(const char * const monitor,nodesResult *result_out);
+
+
 #ifdef __cplusplus
 }
 #endif /* end of __cplusplus */

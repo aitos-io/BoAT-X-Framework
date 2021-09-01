@@ -308,7 +308,8 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	// pathTmp = "/discovery.Discovery/Discover";
 	if (context->type == HLFABRIC_TYPE_PROPOSAL)
 	{
-		pathTmp = "/protos.Endorser/ProcessProposal";
+		// pathTmp = "/protos.Endorser/ProcessProposal";
+		pathTmp = "/nodeservice.Contract/Invoke";
 	}
 	else if (context->type == HLFABRIC_TYPE_TRANSACTION)
 	{
@@ -325,6 +326,7 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 						 MAKE_NV(":authority", context->nodeUrl),
 						 MAKE_NV("content-type", "application/grpc"),
 						 MAKE_NV("user-agent", "grpc-go/1.15.0"),
+						 MAKE_NV("Accept-Encoding", "gzip, deflate"),
                          MAKE_NV("te", "trailers") };
 
 
