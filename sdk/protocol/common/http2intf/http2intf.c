@@ -313,12 +313,15 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	}
 	else if (context->type == HLFABRIC_TYPE_TRANSACTION)
 	{
-		pathTmp = "/orderer.AtomicBroadcast/Broadcast";
+		// pathTmp = "/orderer.AtomicBroadcast/Broadcast";
+		pathTmp = "/nodeservice.TransactionSender/SendTransaction";
 	}
 	else
 	{
 		pathTmp = "/discovery.Discovery/Discover";
 	}
+
+	BoatLog(BOAT_LOG_CRITICAL, "http2SubmitRequest pathTmp. = %s ",pathTmp);
 
 	nghttp2_nv nva[] = { MAKE_NV(":method", "POST"),
 						 MAKE_NV(":scheme", "http"),
