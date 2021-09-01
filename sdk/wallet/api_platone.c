@@ -64,7 +64,7 @@ BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
     // Set transaction type
     result = BoatPlatoneTxSetTxtype(tx_ptr, txtype);
 
-    if  result != BOAT_SUCCESS)
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "platone set Tx type failed.");
         return result;
