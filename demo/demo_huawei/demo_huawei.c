@@ -105,6 +105,9 @@ const BCHAR *huawei_demo_endorser_peer0Org1_hostName = "node-0.org1.bcs-epmmli.s
 const BCHAR *huawei_demo_endorser_peer0Org2_url = "49.4.115.203:30606";
 const BCHAR *huawei_demo_endorser_peer0Org2_hostName = "node-0.org2.bcs-epmmli.svc.cluster.local";
 
+const BCHAR *huawei_demo_order_url = "49.4.115.203:30616";
+const BCHAR *huawei_demo_order_hostName = "node-0.org1.bcs-epmmli.svc.cluster.local";
+
 BoatHlfabricWallet *g_fabric_wallet_ptr;
 // DiscoverRes discoverResult;
 BoatHlfabricWalletConfig wallet_config = {0};
@@ -170,10 +173,10 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	wallet_config.nodesCfg.orderCfg.tlsOrgCertContent.length = strlen(huawei_org1_tlsCert);
 	memcpy(wallet_config.nodesCfg.orderCfg.tlsOrgCertContent.content,huawei_org1_tlsCert,strlen(huawei_org1_tlsCert));
 	wallet_config.nodesCfg.orderCfg.endorser = BoatMalloc(wallet_config.nodesCfg.orderCfg.endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
-	wallet_config.nodesCfg.orderCfg.endorser[0].hostName = BoatMalloc(strlen(huawei_demo_endorser_peer0Org1_hostName)+1);
-	wallet_config.nodesCfg.orderCfg.endorser[0].nodeUrl = BoatMalloc(strlen(huawei_demo_endorser_peer0Org1_url)+1);
-	memcpy(wallet_config.nodesCfg.orderCfg.endorser[0].nodeUrl,huawei_demo_endorser_peer0Org1_url,strlen(huawei_demo_endorser_peer0Org1_url)+1);
-	memcpy(wallet_config.nodesCfg.orderCfg.endorser[0].hostName,huawei_demo_endorser_peer0Org1_hostName,strlen(huawei_demo_endorser_peer0Org1_hostName)+1);
+	wallet_config.nodesCfg.orderCfg.endorser[0].hostName = BoatMalloc(strlen(huawei_demo_order_hostName)+1);
+	wallet_config.nodesCfg.orderCfg.endorser[0].nodeUrl = BoatMalloc(strlen(huawei_demo_order_url)+1);
+	memcpy(wallet_config.nodesCfg.orderCfg.endorser[0].nodeUrl,huawei_demo_order_url,strlen(huawei_demo_order_url)+1);
+	memcpy(wallet_config.nodesCfg.orderCfg.endorser[0].hostName,huawei_demo_order_hostName,strlen(huawei_demo_order_hostName)+1);
 	/* create fabric wallet */
 #if defined(USE_ONETIME_WALLET)
 	index = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
@@ -246,7 +249,7 @@ int main(int argc, char *argv[])
 	*/
 
 	/* step-5: set transaction 'invoke' command */
-	result += BoatHlfabricTxSetArgs(&tx_ptr, "initMarble", "a", "1", NULL, NULL);
+	result += BoatHlfabricTxSetArgs(&tx_ptr, "initMarble", "a", "2", NULL, NULL);
 	result += BoatHlhuaweiTxSubmit(&tx_ptr); 
 	if (result != BOAT_SUCCESS)
 	{
