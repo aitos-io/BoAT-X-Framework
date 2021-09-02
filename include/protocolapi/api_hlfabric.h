@@ -49,6 +49,14 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 
 #define BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN     8192 //!< The maximum length of HTTP2 send buffer
 
+//!@brief  chain type
+//! 
+typedef enum
+{
+	HLCHAIN_TYPE_FABRIC = 0,
+	HLCHAIN_TYPE_HUAWEI,
+}BoatHlchainType;
+
 //!@brief fabric transaction type
 //! 
 typedef enum

@@ -123,7 +123,7 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 					parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
 
 
-
+					tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_HUAWEI;
 					result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 					if(result != BOAT_SUCCESS)
 					{
@@ -264,6 +264,7 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
 			parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
+			tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_HUAWEI;
 			result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 			if(result != BOAT_SUCCESS)
 			{
