@@ -220,14 +220,12 @@ int main(int argc, char *argv[])
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed.");
 		return -1;
 	}
-#if(DISCOVERY_PEER_QUERY != 1 )
 	result = BoatHlfabricWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed." );
 		return -1;
 	}
-#endif
 	/* step-4: set transaction timestamp */
 #if defined(__unix__) || defined(__unix) || defined(unix)
 	struct timespec txTimestamp;
@@ -249,7 +247,7 @@ int main(int argc, char *argv[])
 	*/
 
 	/* step-5: set transaction 'invoke' command */
-	result += BoatHlfabricTxSetArgs(&tx_ptr, "initMarble", "a", "2", NULL, NULL);
+	result += BoatHlfabricTxSetArgs(&tx_ptr, "initMarble", "a", "3", NULL, NULL);
 	result += BoatHlhuaweiTxSubmit(&tx_ptr); 
 	if (result != BOAT_SUCCESS)
 	{
