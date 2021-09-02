@@ -35,8 +35,8 @@ wait for its receipt.
 #include "msp/identities.pb-c.h"
 #include "peer/transaction.pb-c.h"
 #include "peer/proposal_response.pb-c.h"
-#include "transaction.pb-c-huawei.h"
-#include "contract.pb-c.h"
+#include "common/transaction.pb-c-huawei.h"
+#include "common/contract.pb-c.h"
 
 /*! @ingroup fabricp protocol-fabric
  * @{

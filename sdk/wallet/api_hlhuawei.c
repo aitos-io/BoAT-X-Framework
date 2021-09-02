@@ -28,7 +28,7 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
 /* protos include */
 #include "peer/proposal_response.pb-c.h"
 #include "orderer/cluster.pb-c.h"
-#include "transaction.pb-c-huawei.h"
+#include "common/transaction.pb-c-huawei.h"
 
 /*!****************************************************************************
  * @brief Access to the specified node 
