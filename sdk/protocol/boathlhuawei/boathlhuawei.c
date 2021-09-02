@@ -469,7 +469,6 @@ __BOATSTATIC BOAT_RESULT hlhuaweiPayloadPacked(BoatHlfabricTx *tx_ptr,
 	Common__TxHeader txhead = COMMON__TX_HEADER__INIT;
 	Common__Identity identity_creator = COMMON__IDENTITY__INIT;
 	Common__ContractInvocation contractInvocation = COMMON__CONTRACT_INVOCATION__INIT;
-	Common__Signature rawMessage_sign = COMMON__SIGNATURE__INIT;
 	BoatFieldVariable payloadDataPacked = {NULL, 0};
 	BoatSignatureResult signatureResult;
 	BUINT8 txIdBin[32];
