@@ -545,9 +545,6 @@ __BOATSTATIC BOAT_RESULT hlhuaweiPayloadPacked(BoatHlfabricTx *tx_ptr,
 	}
 
 	// txPayload.data.data = packedData;
-	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "txPayload  :",
-						 output_ptr->field_ptr,
-						 output_ptr->field_len);
 
 	/* boat catch handle */
 	boat_catch(hlhuaweiPayloadPacked_exception)
@@ -639,13 +636,10 @@ BOAT_RESULT hlhuaweiProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	transaction.payload.data = payloadPacked.field_ptr;
 	transaction.payload.len = payloadPacked.field_len;
 	transaction.n_approvals = 0;
-	BoatLog(BOAT_LOG_CRITICAL, "test 11111");
 	// if (tx_ptr->var.type == HLFABRIC_TYPE_PROPOSAL)
 	// {
-	BoatLog(BOAT_LOG_CRITICAL, "test 22222");
 	transaction.n_approvals = 1;
 	approval_messages = &approval_message;
-	BoatLog(BOAT_LOG_CRITICAL, "test 33333");
 	transaction.approvals = &approval_messages;
 	// }
 	// else if (tx_ptr->var.type == HLFABRIC_TYPE_TRANSACTION)
@@ -690,13 +684,9 @@ BOAT_RESULT hlhuaweiProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	// 					 packedData,
 	// 					 packedLength);
 
-	BoatLog(BOAT_LOG_CRITICAL, "test 44444 transaction.n_approvals = %d ", transaction.n_approvals);
 	packedLength = common__transaction__get_packed_size(&transaction);
-	BoatLog(BOAT_LOG_CRITICAL, "test 88888");
 	packedData = BoatMalloc(packedLength);
-	BoatLog(BOAT_LOG_CRITICAL, "test 77777");
 	common__transaction__pack(&transaction, packedData);
-	BoatLog(BOAT_LOG_CRITICAL, "test 555555");
 	/* step-7: packed data assignment */
 	/* ---grpcHeader compute */
 	grpcHeader[0] = 0x00; //uncompressed
@@ -710,7 +700,6 @@ BOAT_RESULT hlhuaweiProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	// common__envelope__pack(&envelope, &packedData[sizeof(grpcHeader)]);
 	memcpy(&tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr[sizeof(grpcHeader)], packedData, packedLength);
 
-	BoatLog(BOAT_LOG_CRITICAL, "test 66666");
 	/* boat catch handle */
 	boat_catch(hlhuaweiProposalTransactionPacked_exception)
 	{
