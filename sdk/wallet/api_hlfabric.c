@@ -934,7 +934,7 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 	paramDstList[3] = &tx_ptr->var.channelId;
 	paramDstList[4] = &tx_ptr->var.orgName;
 	paramDstList[5] = &tx_ptr->var.contract_name;
-	paramDstList[4] = &tx_ptr->var.creator_id;
+	paramDstList[6] = &tx_ptr->var.creator_id;
 
 	for (i = 0; i < sizeof(paramSrcList) / sizeof(paramSrcList[0]); i++)
 	{
