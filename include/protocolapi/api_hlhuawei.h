@@ -255,13 +255,15 @@ void BoatHlhuaweiWalletDeInit( BoatHlfabricWallet *wallet_ptr );
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlhuaweiTxInit(BoatHlfabricTx *tx_ptr, 
+BOAT_RESULT BoatHlhuaweiTxInit(BoatHlfabricTx *tx_ptr,
 							   const BoatHlfabricWallet *wallet_ptr,
 							   const BCHAR *chaincodeId_path_str,
 							   const BCHAR *chaincodeId_name_str,
 							   const BCHAR *chaincodeId_version_str,
 							   const BCHAR *channelId_str,
-						       const BCHAR *orgName_str);
+							   const BCHAR *orgName_str,
+							   const BCHAR *contract_name,
+							   const BCHAR *creator_id);
 
 
 /*!****************************************************************************

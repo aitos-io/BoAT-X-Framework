@@ -396,7 +396,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* step-3: fabric transaction structure initialization */
-	result = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
+	result = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP",NULL,NULL);
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed.");

@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* step-3: fabric transaction structure initialization */
-	result = BoatHlhuaweiTxInit(&tx_ptr, g_fabric_wallet_ptr, "default", "chaincode", NULL, "user-1.org1.bcs-epmmli.svc.cluster.local", "org1");
+	result = BoatHlhuaweiTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "default", NULL, NULL, "org1","chaincode","user-1.org1.bcs-epmmli.svc.cluster.local");
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed.");

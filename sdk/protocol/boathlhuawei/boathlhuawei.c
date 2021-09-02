@@ -483,7 +483,7 @@ __BOATSTATIC BOAT_RESULT hlhuaweiPayloadPacked(BoatHlfabricTx *tx_ptr,
 	boat_try_declare;
 	if (tx_ptr->var.type == HLFABRIC_TYPE_PROPOSAL)
 	{
-		contractInvocation.contract_name = tx_ptr->var.chaincodeId.name;
+		contractInvocation.contract_name = tx_ptr->var.contract_name;
 		contractInvocation.args = BoatMalloc((tx_ptr->var.args.nArgs - 1) * sizeof(ProtobufCBinaryData));
 		contractInvocation.func_name = tx_ptr->var.args.args[0];
 		contractInvocation.n_args = tx_ptr->var.args.nArgs - 1;
@@ -505,7 +505,7 @@ __BOATSTATIC BOAT_RESULT hlhuaweiPayloadPacked(BoatHlfabricTx *tx_ptr,
 
 		// protobuf_c_message_free_unpacked(&contractInvocation,NULL);
 		/* -type */
-		txhead.chain_id = tx_ptr->var.chaincodeId.path;
+		txhead.chain_id = tx_ptr->var.chaincodeId.name;
 		// protobuf_c_message_free_unpacked(&contractI
 		// txhead.nonce = UtilityBuint8Buf2Uint64(tx_ptr->var.nonce.field,sizeof(tx_ptr->var.nonce.field));
 		// txhead.nonce = 0x3333333333333333;
@@ -513,8 +513,8 @@ __BOATSTATIC BOAT_RESULT hlhuaweiPayloadPacked(BoatHlfabricTx *tx_ptr,
 		// txhead.timestamp = 0x5555555555555555;
 		// txhead.nonce = txhead.timestamp;
 		txhead.nonce = UtilityBuint8Buf2Uint64(tx_ptr->var.nonce.field, sizeof(tx_ptr->var.nonce.field));
-		identity_creator.id.data = tx_ptr->var.channelId;
-		identity_creator.id.len = strlen(tx_ptr->var.channelId);
+		identity_creator.id.data = tx_ptr->var.creator_id;
+		identity_creator.id.len = strlen(tx_ptr->var.creator_id);
 		identity_creator.org = tx_ptr->var.orgName;
 		txhead.creator = &identity_creator;
 		// txhead.type = COMMON__TX_TYPE__VOTE_TRANSACTION;

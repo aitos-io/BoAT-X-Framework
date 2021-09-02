@@ -161,9 +161,17 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 						resData->payload.len);
 
 
-						datalen = (resData->payload.data[1] & 0x7F) + (resData->payload.data[2] <<7);
-						BoatLog(BOAT_LOG_NORMAL, "idatalen =  %x ",datalen);
-						resPayload = common__tx_payload__unpack(NULL,datalen  ,resData->payload.data+3);
+						if((resData->payload.data[1] & 0x80) == 0x80){
+							datalen = (resData->payload.data[1] & 0x7F) + (resData->payload.data[2] <<7);
+							BoatLog(BOAT_LOG_NORMAL, "idatalen =  %x ",datalen);
+							resPayload = common__tx_payload__unpack(NULL,datalen  ,resData->payload.data+3);
+						}else{
+							datalen = resData->payload.data[1] ;
+							BoatLog(BOAT_LOG_NORMAL, "idatalen =  %x ",datalen);
+							resPayload = common__tx_payload__unpack(NULL,datalen  ,resData->payload.data+2);
+						}
+						
+
 						
 						// BoatLog(BOAT_LOG_NORMAL, "[http2]invocationRes->status_info = %s ",invocationRes->data);
 						BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invocationRes->data.data :",
@@ -419,9 +427,11 @@ BOAT_RESULT BoatHlhuaweiTxInit(BoatHlfabricTx *tx_ptr,
 							   const BCHAR *chaincodeId_name_str,
 							   const BCHAR *chaincodeId_version_str,
 							   const BCHAR *channelId_str,
-							   const BCHAR *orgName_str)
+							   const BCHAR *orgName_str,
+							   const BCHAR *contract_name,
+							   const BCHAR *creator_id)
 {
-	return BoatHlfabricTxInit(tx_ptr,wallet_ptr,chaincodeId_path_str,chaincodeId_name_str,chaincodeId_version_str,channelId_str,orgName_str);
+	return BoatHlfabricTxInit(tx_ptr,wallet_ptr,chaincodeId_path_str,chaincodeId_name_str,chaincodeId_version_str,channelId_str,orgName_str,contract_name,creator_id);
 }
 
 void BoatHlhuaweiTxDeInit(BoatHlfabricTx *tx_ptr)

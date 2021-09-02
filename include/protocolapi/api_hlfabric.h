@@ -232,6 +232,8 @@ typedef struct TBoatHlfabricVariable
 	BoatHlfabricArgs             args;       //!< Transaction arguments,e.g. "query a", "invoke a b 10".
 	BCHAR*                       channelId;  //!< Channel name
 	BCHAR*                       orgName;    //!< Organization name
+	BCHAR*                       contract_name;    //!< contract name
+	BCHAR*                       creator_id;    //!< creator id 
 }BoatHlfabricVariable;
 
 
@@ -452,16 +454,24 @@ void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr );
  * @param orgName_str 
  *   Organization name to be initialized.
  *
+ * @param contract_name 
+ *   contract name to be initialized.
+ * 
+ * @param creator_id 
+ *   cteator id to be initialized.
+ * 
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr, 
+BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 							   const BoatHlfabricWallet *wallet_ptr,
 							   const BCHAR *chaincodeId_path_str,
 							   const BCHAR *chaincodeId_name_str,
 							   const BCHAR *chaincodeId_version_str,
 							   const BCHAR *channelId_str,
-						       const BCHAR *orgName_str);
+							   const BCHAR *orgName_str,
+							   const BCHAR *contract_name,
+							   const BCHAR *creator_id);
 
 
 /*!****************************************************************************
