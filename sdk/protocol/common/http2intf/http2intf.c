@@ -158,8 +158,6 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
 	BoatHlfabricEndorserResponse *parsePtr = NULL;
 	uint8_t *temp = NULL;
 	parsePtr = (BoatHlfabricEndorserResponse *)http2Context->parseDataPtr;
-	BoatLog(BOAT_LOG_NORMAL, "[http2]endorser http2Context->type = %d ,, len = %d ", http2Context->type, len);
-
 	if (parsePtr->httpResLen != 0)
 	{
 		temp = BoatMalloc(parsePtr->httpResLen);
@@ -346,7 +344,6 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 						MAKE_NV("Accept-Encoding", "gzip, deflate"),
 						MAKE_NV("te", "trailers")};
 
-	BUINT32 offset = 0;
 	parsePtr = (BoatHlfabricEndorserResponse *)context->parseDataPtr;
 	if (parsePtr->httpResLen != 0)
 	{
