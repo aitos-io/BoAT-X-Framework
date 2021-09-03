@@ -324,7 +324,6 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 		if (context->type == HLFABRIC_TYPE_PROPOSAL)
 		{
 			pathTmp = "/nodeservice.Contract/Invoke";
-			// pathTmp = "/nodeservice.NodeService/GetOrgNodes";
 		}
 		else if (context->type == HLFABRIC_TYPE_TRANSACTION)
 		{

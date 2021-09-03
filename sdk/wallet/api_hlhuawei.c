@@ -56,7 +56,7 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 	Common__Response *resData = NULL;
 	Common__TxPayload *resPayload = NULL;
 	Common__CommonTxData *commondTxData = NULL;
-	
+
 	// Orderer__SubmitResponse *submitResponse = NULL;
 	BUINT8 valid_node_quantities;
 	BUINT32 datalen = 0;
@@ -104,60 +104,54 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 					tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = BoatMalloc(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 					memset(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, 0x00, tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 					memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
-// tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content;
-// BoatLog(BOAT_LOG_CRITICAL, "hostname : %s ", tx_ptr->wallet_ptr->http2Context_ptr->hostName);
 // 			BoatLog_hexasciidump(BOAT_LOG_NORMAL, "tlsCAchain  :",
 // 			 tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr,
 // 			 tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 #endif
-
-					// if (((nodeInfo + i)->hostName != NULL) && (strlen((nodeInfo + i)->hostName) > 0))
-
 					tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
 
 					tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
 
 					parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
 
-
 					tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_HUAWEI;
 					result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
-					if(result != BOAT_SUCCESS)
+					if (result != BOAT_SUCCESS)
 					{
 						continue;
 					}
 
 					proposalResponse = common__transaction__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
-					if(parsePtr->httpResLen != 0)
+					if (parsePtr->httpResLen != 0)
 					{
 						BoatFree(parsePtr->http2Res);
 					}
 					parsePtr->httpResLen = 0;
 
-					if ((proposalResponse != NULL) && (proposalResponse->n_approvals != 0)&& (proposalResponse->approvals != NULL))
+					if ((proposalResponse != NULL) && (proposalResponse->n_approvals != 0) && (proposalResponse->approvals != NULL))
 					{
-							
-						resData = common__response__unpack(NULL,proposalResponse->payload.len,proposalResponse->payload.data);
-						if(resData->status != COMMON__STATUS__HUAWEI__SUCCESS)
+
+						resData = common__response__unpack(NULL, proposalResponse->payload.len, proposalResponse->payload.data);
+						if (resData->status != COMMON__STATUS__HUAWEI__SUCCESS)
 						{
 							continue;
 						}
 
-
-						if((resData->payload.data[1] & 0x80) == 0x80){
-							datalen = (resData->payload.data[1] & 0x7F) + (resData->payload.data[2] <<7);
-							resPayload = common__tx_payload__unpack(NULL,datalen  ,resData->payload.data+3);
-						}else{
-							datalen = resData->payload.data[1] ;
-							resPayload = common__tx_payload__unpack(NULL,datalen  ,resData->payload.data+2);
+						if ((resData->payload.data[1] & 0x80) == 0x80)
+						{
+							datalen = (resData->payload.data[1] & 0x7F) + (resData->payload.data[2] << 7);
+							resPayload = common__tx_payload__unpack(NULL, datalen, resData->payload.data + 3);
 						}
-						commondTxData = common__common_tx_data__unpack(NULL,resPayload->data.len,resPayload->data.data);
-						if(commondTxData->response->status != COMMON__STATUS__HUAWEI__SUCCESS)
+						else
+						{
+							datalen = resData->payload.data[1];
+							resPayload = common__tx_payload__unpack(NULL, datalen, resData->payload.data + 2);
+						}
+						commondTxData = common__common_tx_data__unpack(NULL, resPayload->data.len, resPayload->data.data);
+						if (commondTxData->response->status != COMMON__STATUS__HUAWEI__SUCCESS)
 						{
 							continue;
 						}
-					
-					
 
 						parsePtr->response[parsePtr->responseCount].contentPtr = proposalResponse;
 						parsePtr->response[parsePtr->responseCount].responseType = HLFABRIC_TYPE_PROPOSAL;
@@ -168,8 +162,6 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 						// parsePtr->response[parsePtr->responseCount].signature.field_ptr = proposalResponse->approvals[0]->sign.data;
 						// parsePtr->response[parsePtr->responseCount].signature.field_len = proposalResponse->approvals[0]->sign.len;
 						parsePtr->responseCount++;
-
-
 					}
 					else
 					{
@@ -234,21 +226,16 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 			parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
 			tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_HUAWEI;
 			result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
-			if(result != BOAT_SUCCESS)
+			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "[http2]http2SubmitRequest failed.");
 				continue;
 			}
 
-			// proposalResponse = common__transaction__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
-			resData = common__response__unpack(NULL,parsePtr->httpResLen - 7,parsePtr->http2Res + 7);
-			BoatLog(BOAT_LOG_NORMAL, "[http2]common__response__unpack respond status : %d .",resData->status);
+			resData = common__response__unpack(NULL, parsePtr->httpResLen - 7, parsePtr->http2Res + 7);
+			BoatLog(BOAT_LOG_NORMAL, "[http2]common__response__unpack respond status : %d .", resData->status);
 			if (resData->status == COMMON__STATUS__HUAWEI__SUCCESS)
 			{
-				// BoatLog(BOAT_LOG_NORMAL, "[http2]orderer respond received.%d", proposalResponse->payload.len);
-				// parsePtr->response[parsePtr->responseCount].contentPtr = proposalResponse->payload.data;
-				// parsePtr->response[parsePtr->responseCount].responseType = HLFABRIC_TYPE_TRANSACTION;
-				// parsePtr->responseCount++;
 				result = BOAT_SUCCESS;
 				break;
 			}
@@ -261,40 +248,6 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 		}
 	}
 
-#if (0)
-	/* prepare http2-request argument */
-	for (int i = 0; i < nodeMaxNum; i++)
-	{
-		if ((NULL != (BoatHlfabricNodeInfo *)(nodeInfo + i)) &&
-			((nodeInfo + i)->nodeUrl != NULL) && (strlen((nodeInfo + i)->nodeUrl) > 0))
-		{
-			tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = (nodeInfo + i)->nodeUrl;
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
-			if (((nodeInfo + i)->hostName != NULL) && (strlen((nodeInfo + i)->hostName) > 0))
-			{
-				tx_ptr->wallet_ptr->http2Context_ptr->hostName = (nodeInfo + i)->hostName;
-				tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain = &tx_ptr->wallet_ptr->tlsCAchain.ca[0];
-			}
-#endif
-			// if (tx_ptr->var.type == HLFABRIC_TYPE_PROPOSAL)
-			// {
-			// 	tx_ptr->wallet_ptr->http2Context_ptr->isProposal = true;
-			// }
-			// else
-			// {
-			// 	tx_ptr->wallet_ptr->http2Context_ptr->isProposal = false;
-			// }
-			tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
-
-			tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
-			http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
-		}
-		else
-		{
-			break;
-		}
-	}
-#endif
 	//! boat catch handle
 	boat_catch(BoatHlfabricTxProposal_exception)
 	{
@@ -309,7 +262,7 @@ BOAT_RESULT BoatHlhuaweiWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr,
 											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
 											 const BoatHlfabricCertInfoCfg certContent)
 {
-	return BoatHlfabricWalletSetAccountInfo(wallet_ptr,prikeyCtx_config,certContent);
+	return BoatHlfabricWalletSetAccountInfo(wallet_ptr, prikeyCtx_config, certContent);
 }
 
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
@@ -364,7 +317,7 @@ BOAT_RESULT BoatHlhuaweiWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr,
 											const BoatHlfabricCertInfoCfg *rootCaContent,
 											BUINT32 rootCaNumber)
 {
-	return BoatHlfabricWalletSetRootCaInfo(wallet_ptr,rootCaContent,rootCaNumber);
+	return BoatHlfabricWalletSetRootCaInfo(wallet_ptr, rootCaContent, rootCaNumber);
 }
 #endif
 
@@ -372,19 +325,18 @@ BOAT_RESULT BoatHlhuaweiWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 											 const BoatHlfabricNodesCfg endorserInfo_ptr)
 {
 
-	return BoatHlfabricWalletSetNetworkInfo(wallet_ptr,endorserInfo_ptr);
+	return BoatHlfabricWalletSetNetworkInfo(wallet_ptr, endorserInfo_ptr);
 }
 
 BoatHlfabricWallet *BoatHlhuaweiWalletInit(const BoatHlfabricWalletConfig *config_ptr,
 										   BUINT32 config_size)
 {
-	return BoatHlfabricWalletInit(config_ptr,config_size);
+	return BoatHlfabricWalletInit(config_ptr, config_size);
 }
 
 void BoatHlhuaweiWalletDeInit(BoatHlfabricWallet *wallet_ptr)
 {
-                BoatHlfabricWalletDeInit(wallet_ptr);
-	
+	BoatHlfabricWalletDeInit(wallet_ptr);
 }
 
 BOAT_RESULT BoatHlhuaweiTxInit(BoatHlfabricTx *tx_ptr,
@@ -397,22 +349,20 @@ BOAT_RESULT BoatHlhuaweiTxInit(BoatHlfabricTx *tx_ptr,
 							   const BCHAR *contract_name,
 							   const BCHAR *creator_id)
 {
-	return BoatHlfabricTxInit(tx_ptr,wallet_ptr,chaincodeId_path_str,chaincodeId_name_str,chaincodeId_version_str,channelId_str,orgName_str,contract_name,creator_id);
+	return BoatHlfabricTxInit(tx_ptr, wallet_ptr, chaincodeId_path_str, chaincodeId_name_str, chaincodeId_version_str, channelId_str, orgName_str, contract_name, creator_id);
 }
 
 void BoatHlhuaweiTxDeInit(BoatHlfabricTx *tx_ptr)
 {
-	BoatHlfabricTxDeInit(tx_ptr); 
+	BoatHlfabricTxDeInit(tx_ptr);
 }
 
 BOAT_RESULT BoatHlhuaweiTxSetTimestamp(BoatHlfabricTx *tx_ptr,
 									   const BUINT64 sec,
 									   const BUINT64 nanos)
 {
-	return BoatHlfabricTxSetTimestamp(tx_ptr,sec,nanos);
+	return BoatHlfabricTxSetTimestamp(tx_ptr, sec, nanos);
 }
-
-
 
 BOAT_RESULT BoatHlhuaweiTxEvaluate(BoatHlfabricTx *tx_ptr)
 {
