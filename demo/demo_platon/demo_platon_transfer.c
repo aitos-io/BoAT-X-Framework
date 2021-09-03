@@ -236,8 +236,6 @@ BOAT_RESULT platonTransfer(BoatPlatONWallet *wallet_ptr)
 int main(int argc, char *argv[])
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-    BUINT32 bechaddresslen, i;
-    BUINT8 address[50];
 	
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();

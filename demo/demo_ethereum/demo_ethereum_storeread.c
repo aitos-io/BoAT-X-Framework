@@ -31,7 +31,7 @@
  * PKCS format demo key. The original private key of 'pkcs_demoKey' is 
  * "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
  */
-const BCHAR * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
+const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
                              "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
                              "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
                              "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
@@ -39,17 +39,17 @@ const BCHAR * pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const BCHAR * native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
 
 /**
  * test node url
  */
-const BCHAR * demoUrl = "http://192.168.132.200:7545";
+const BCHAR *demoUrl = "http://192.168.132.200:7545";
 
 /**
  * transfer recipient address
  */
-const BCHAR * demoRecipientAddress = "0xDED9ea325f8D657614f0F96444ca9DF1d7E2f27c";
+const BCHAR *demoRecipientAddress = "0xDED9ea325f8D657614f0F96444ca9DF1d7E2f27c";
 
 
 BoatEthWallet *g_ethereum_wallet_ptr;
@@ -213,7 +213,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
 							(BCHAR*)prase_result.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
             UtilityChangeEndian(index_u256_big, sizeof(index_u256_big));
             list_len = index_u256_big[0];      
-            for(index = 0; index < list_len; index++)
+            for (index = 0; index < list_len; index++)
             {
                 result_str = StoreRead_readListByIndex(&tx_ctx, index);
                 result     = BoatEthPraseRpcResponseResult(result_str, "", &prase_result);

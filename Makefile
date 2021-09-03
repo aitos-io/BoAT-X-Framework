@@ -86,7 +86,6 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
                   -I$(BOAT_SDK_DIR)/protocol/boatplaton \
 				  -I$(BOAT_SDK_DIR)/protocol/boatplatone \
 				  -I$(BOAT_SDK_DIR)/protocol/boatfiscobcos \
-				  -I$(BOAT_SDK_DIR)/third-party/cJSON \
                   -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
                   -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include \
                   -I$(BOAT_BASE_DIR)/vendor/platform/include \
@@ -134,17 +133,24 @@ ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default \
 	                -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default/aes \
                     -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
-                    -I$(BOAT_BASE_DIR)/vendor/common/storage \
-					-I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_crypto_default
+                    -I$(BOAT_BASE_DIR)/vendor/common/storage
 else ifeq ($(SOFT_CRYPTO), CRYPTO_MBEDTLS)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS/include \
                     -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
-                    -I$(BOAT_BASE_DIR)/vendor/common/storage \
-					-I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/port_mbedtls
+                    -I$(BOAT_BASE_DIR)/vendor/common/storage
 else
     BOAT_INCLUDE +=
 endif
 
+# cJSON Dependencies
+#
+# - CJSON_DEFAULT : default cJSON library
+# - CJSON_OUTTER  : externally provided by users
+CJSON_LIBRARY ?= CJSON_OUTTER
+
+ifeq ($(CJSON_LIBRARY), CJSON_DEFAULT)
+    BOAT_INCLUDE += -I$(BOAT_SDK_DIR)/third-party/cJSON
+endif
 
 # Combine FLAGS
 BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \
@@ -163,8 +169,10 @@ export BOAT_PROTOCOL_USE_PLATON
 export BOAT_PROTOCOL_USE_PLATONE
 export BOAT_PROTOCOL_USE_FISCOBCOS
 export BOAT_PROTOCOL_USE_HLFABRIC
+export BOAT_USE_DEFAULT_CJSON
 
 export SOFT_CRYPTO
+export CJSON_LIBRARY
 export PLATFORM_TARGET
 export BOAT_BASE_DIR
 export BOAT_LIB_DIR
