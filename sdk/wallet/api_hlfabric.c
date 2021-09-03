@@ -236,7 +236,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 				continue;
 			}
 			submitResponse = orderer__submit_response__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
-			if (submitResponse != NULL)
+			if (submitResponse != NULL && submitResponse->status == COMMON__STATUS__SUCCESS)
 			{
 				BoatLog(BOAT_LOG_NORMAL, "[http2]orderer respond received.%d", submitResponse->status);
 				parsePtr->response[parsePtr->responseCount].contentPtr = submitResponse;
