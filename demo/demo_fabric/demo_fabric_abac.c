@@ -557,6 +557,9 @@ int main(int argc, char *argv[])
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxEvaluate() failed.");
 		return -1;
 	}
+		BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
+						 tx_ptr.endorserResponse.http2Res,
+						 tx_ptr.endorserResponse.httpResLen);
 	
 	/* step-7: fabric transaction structure Deinitialization */
 	BoatHlfabricTxDeInit(&tx_ptr);

@@ -28,6 +28,7 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
 /* protos include */
 #include "peer/proposal_response.pb-c.h"
 #include "orderer/cluster.pb-c.h"
+#include "peer/proposal.pb-c.h"
 
 /*!****************************************************************************
  * @brief Access to the specified node 
@@ -53,6 +54,8 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 	BoatHlfabricEndorserResponse *parsePtr = NULL;
 	Protos__ProposalResponse *proposalResponse = NULL;
 	Orderer__SubmitResponse *submitResponse = NULL;
+	Protos__ProposalResponsePayload *proposalResPayload = NULL;
+	Protos__ChaincodeAction *chaincodeEvent = NULL;
 	BUINT8 valid_node_quantities;
 	boat_try_declare;
 	// DiscoverRes discooverRes = tx_ptr->discooverRes;
@@ -140,6 +143,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 						parsePtr->response[parsePtr->responseCount].signature.field_ptr = proposalResponse->endorsement->signature.data;
 						parsePtr->response[parsePtr->responseCount].signature.field_len = proposalResponse->endorsement->signature.len;
 						parsePtr->responseCount++;
+						
 					}
 					else
 					{
@@ -147,6 +151,27 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 					}
 					if (funType == HLFABRIC_FUN_EVALUATE)
 					{
+						if(proposalResponse->payload.len != 0)
+						{
+							proposalResPayload = protos__proposal_response_payload__unpack(NULL,proposalResponse->payload.len,proposalResponse->payload.data);
+							if(proposalResPayload == NULL || proposalResPayload->has_extension == BOAT_FALSE)
+							{
+								BoatLog(BOAT_LOG_CRITICAL, "proposalResPayload failed.");
+								continue;
+							}
+							chaincodeEvent = protos__chaincode_action__unpack(NULL,proposalResPayload->extension.len,proposalResPayload->extension.data);
+							protos__proposal_response_payload__free_unpacked(proposalResPayload,NULL);
+							if(chaincodeEvent == NULL || chaincodeEvent->response->status != COMMON__STATUS__SUCCESS)
+							{
+								BoatLog(BOAT_LOG_CRITICAL, "protos__chaincode_action__unpack failed.");
+								continue;
+							}
+							parsePtr->httpResLen = chaincodeEvent->response->payload.len;
+							parsePtr->http2Res = BoatMalloc(parsePtr->httpResLen);
+							memcpy(parsePtr->http2Res,chaincodeEvent->response->payload.data,chaincodeEvent->response->payload.len);
+							protos__chaincode_action__free_unpacked(chaincodeEvent,NULL);
+
+						}
 						return result;
 					}
 					valid_node_quantities++;
@@ -1086,9 +1111,9 @@ BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr)
 	tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
 	// urlTmp[0] = tx_ptr->wallet_ptr->network_info.endorser[0];
 	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_EVALUATE);
-	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
-						 tx_ptr->endorserResponse.response[0].payload.field_ptr,
-						 tx_ptr->endorserResponse.response[0].payload.field_len);
+	// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
+	// 					 tx_ptr->endorserResponse.response[0].payload.field_ptr,
+	// 					 tx_ptr->endorserResponse.response[0].payload.field_len);
 
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
