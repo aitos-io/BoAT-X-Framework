@@ -157,10 +157,10 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 						parsePtr->response[parsePtr->responseCount].responseType = HLFABRIC_TYPE_PROPOSAL;
 						parsePtr->response[parsePtr->responseCount].payload.field_ptr = resData->payload.data;
 						parsePtr->response[parsePtr->responseCount].payload.field_len = resData->payload.len;
-						parsePtr->response[parsePtr->responseCount].endorser.field_ptr = commondTxData->response->payload.data;
-						parsePtr->response[parsePtr->responseCount].endorser.field_len = commondTxData->response->payload.len;
-						// parsePtr->response[parsePtr->responseCount].signature.field_ptr = proposalResponse->approvals[0]->sign.data;
-						// parsePtr->response[parsePtr->responseCount].signature.field_len = proposalResponse->approvals[0]->sign.len;
+						// parsePtr->response[parsePtr->responseCount].endorser.field_ptr = commondTxData->response->payload.data;
+						// parsePtr->response[parsePtr->responseCount].endorser.field_len = commondTxData->response->payload.len;
+						parsePtr->http2Res =  commondTxData->response->payload.data;
+						parsePtr->httpResLen = commondTxData->response->payload.len;
 						parsePtr->responseCount++;
 					}
 					else
@@ -388,8 +388,8 @@ BOAT_RESULT BoatHlhuaweiTxEvaluate(BoatHlfabricTx *tx_ptr)
 	// urlTmp[0] = tx_ptr->wallet_ptr->network_info.endorser[0];
 	result = BoatHlhuaweiTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_EVALUATE);
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
-						 tx_ptr->endorserResponse.response[0].endorser.field_ptr,
-						 tx_ptr->endorserResponse.response[0].endorser.field_len);
+						 tx_ptr->endorserResponse.http2Res,
+						 tx_ptr->endorserResponse.httpResLen);
 
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
@@ -397,6 +397,11 @@ BOAT_RESULT BoatHlhuaweiTxEvaluate(BoatHlfabricTx *tx_ptr)
 		if (tx_ptr->endorserResponse.response[i].responseType == HLFABRIC_TYPE_PROPOSAL)
 		{
 			common__transaction__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
+			if(tx_ptr->endorserResponse.response[i].payload.field_len != 0)
+			{
+				BoatFree(tx_ptr->endorserResponse.response[i].payload.field_ptr);
+				tx_ptr->endorserResponse.response[i].payload.field_len = 0;
+			}
 		}
 	}
 	tx_ptr->endorserResponse.responseCount = 0;

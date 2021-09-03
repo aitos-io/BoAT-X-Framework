@@ -242,12 +242,23 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-/*
-	fabric discover nodes
-	*/
+	result = BoatHlfabricTxSetArgs(&tx_ptr, "getMarble", "a", NULL);
+	if (result != BOAT_SUCCESS)
+	{
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
+		return -1;
+	}
+	result = BoatHlhuaweiTxEvaluate(&tx_ptr);
+	if (result != BOAT_SUCCESS)
+	{
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxEvaluate() failed.");
+		return -1;
+	}
+	
+	tx_ptr.endorserResponse.http2Res[0] = tx_ptr.endorserResponse.http2Res[0] + 1;
 
 	/* step-5: set transaction 'invoke' command */
-	result += BoatHlfabricTxSetArgs(&tx_ptr, "initMarble", "a", "3", NULL, NULL);
+	result += BoatHlfabricTxSetArgs(&tx_ptr, "initMarble", "a",(BCHAR*)tx_ptr.endorserResponse.http2Res , NULL, NULL);
 	result += BoatHlhuaweiTxSubmit(&tx_ptr); 
 	if (result != BOAT_SUCCESS)
 	{

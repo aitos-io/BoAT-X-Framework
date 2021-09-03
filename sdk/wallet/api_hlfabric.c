@@ -1002,6 +1002,10 @@ void BoatHlfabricTxDeInit(BoatHlfabricTx *tx_ptr)
 	/* -----var.orgName */
 	BoatFree(tx_ptr->var.orgName);
 	tx_ptr->var.orgName = NULL;
+	if(tx_ptr->endorserResponse.httpResLen != 0)
+	{
+		BoatFree(tx_ptr->endorserResponse.http2Res);
+	}
 
 	/* endorserResponse DeInit */
 	//DO NOTHING:THIS FIELD HAD FREE AFTER EVERY TRANSCATION COMPLETED
