@@ -155,13 +155,16 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 
 						parsePtr->response[parsePtr->responseCount].contentPtr = proposalResponse;
 						parsePtr->response[parsePtr->responseCount].responseType = HLFABRIC_TYPE_PROPOSAL;
-						parsePtr->response[parsePtr->responseCount].payload.field_ptr = resData->payload.data;
 						parsePtr->response[parsePtr->responseCount].payload.field_len = resData->payload.len;
-						// parsePtr->response[parsePtr->responseCount].endorser.field_ptr = commondTxData->response->payload.data;
-						// parsePtr->response[parsePtr->responseCount].endorser.field_len = commondTxData->response->payload.len;
-						parsePtr->http2Res =  commondTxData->response->payload.data;
+						parsePtr->response[parsePtr->responseCount].payload.field_ptr = BoatMalloc(resData->payload.len);
+						memcpy(parsePtr->response[parsePtr->responseCount].payload.field_ptr,resData->payload.data,resData->payload.len);
 						parsePtr->httpResLen = commondTxData->response->payload.len;
+						parsePtr->http2Res = BoatMalloc(parsePtr->httpResLen);
+						memcpy(parsePtr->http2Res,commondTxData->response->payload.data,commondTxData->response->payload.len);
+						// parsePtr->http2Res =  commondTxData->response->payload.data;
 						parsePtr->responseCount++;
+						common__common_tx_data__free_unpacked(commondTxData,NULL);
+						common__response__free_unpacked(resData,NULL);
 					}
 					else
 					{
