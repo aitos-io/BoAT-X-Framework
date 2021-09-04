@@ -27,6 +27,7 @@ perform it and wait for its receipt.
 #include "web3intf.h"
 #include "boatethereum.h"
 #include "boatplatone.h"
+#include "cJSON.h"
 
 
 BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
