@@ -17,7 +17,7 @@
 /*!@brief Ethereum wallet API for BoAT IoT SDK
 
 @file
-api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
+api_hlhuawei.c defines the Ethereum wallet API for BoAT IoT SDK.
 */
 
 /* self-header include */
@@ -34,7 +34,7 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
  * @brief Access to the specified node 
  * 
  * @param tx_ptr 
- *   Fabric transaction structure pointer
+ *   huawei chain transaction structure pointer
  *
  * @param nodeInfo 
 *    The first element address of nodeinfo structure.

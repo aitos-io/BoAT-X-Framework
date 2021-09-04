@@ -111,7 +111,7 @@ const BCHAR *huawei_demo_order_hostName = "node-0.org1.bcs-epmmli.svc.cluster.lo
 BoatHlfabricWallet *g_fabric_wallet_ptr;
 // DiscoverRes discoverResult;
 BoatHlfabricWalletConfig wallet_config = {0};
-__BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
+__BOATSTATIC BOAT_RESULT huaweiWalletPrepare(void)
 {
 	BOAT_RESULT index;
 
@@ -126,23 +126,6 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	//set cert context
 	wallet_config.accountCertContent.length = strlen(huawei_client_democert) + 1;
 	memcpy(wallet_config.accountCertContent.content, huawei_client_democert, wallet_config.accountCertContent.length);
-
-	//set rootCA info
-	// wallet_config.rootCaNumber = 3;
-	// wallet_config.rootCaContent[0].length = strlen(fabric_ca1_democert) + 1;
-	// memcpy(wallet_config.rootCaContent[0].content, fabric_ca1_democert, wallet_config.rootCaContent[0].length);
-	// wallet_config.rootCaContent[1].length = strlen(fabric_ca2_democert) + 1;
-	// memcpy(wallet_config.rootCaContent[1].content, fabric_ca2_democert, wallet_config.rootCaContent[1].length);
-	// wallet_config.rootCaContent[2].length = strlen(fabric_ca3_democert) + 1;
-	// memcpy(wallet_config.rootCaContent[2].content, fabric_ca3_democert, wallet_config.rootCaContent[2].length);
-
-	//set endorser info
-	// wallet_config.endorserNumber = 2;
-	// memcpy(wallet_config.endorser[0].nodeUrl, fabric_demo_endorser1_url, strlen(fabric_demo_endorser1_url) + 1);
-	// memcpy(wallet_config.endorser[0].hostName, fabric_demo_endorser1_hostName, strlen(fabric_demo_endorser1_hostName) + 1);
-	// memcpy(wallet_config.endorser[1].nodeUrl, fabric_demo_endorser2_url, strlen(fabric_demo_endorser2_url) + 1);
-	// memcpy(wallet_config.endorser[1].hostName, fabric_demo_endorser2_hostName, strlen(fabric_demo_endorser2_hostName) + 1);
-
 
 
 	wallet_config.nodesCfg.endorserLayoutNum = 1;
@@ -206,7 +189,7 @@ int main(int argc, char *argv[])
     BoatIotSdkInit();
 	
 	/* step-2: prepare wallet */
-	result = fabricWalletPrepare();
+	result = huaweiWalletPrepare();
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
