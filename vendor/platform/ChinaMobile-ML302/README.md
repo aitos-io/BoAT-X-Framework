@@ -97,4 +97,4 @@
    build.bat CLEAN
    build.bat DNLM
    ```
-   编译成功会在`<ML302 Root>\firmware\DNLM`下生成ML302_OpenCPU.pac文件	
+   编译成功会在`<ML302 Root>\firmware\DNLM`下生成ML302_OpenCPU.pac文件。
