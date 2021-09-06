@@ -156,19 +156,19 @@
 
 ### 1、在Linux下编译BoAT-X-Framework静态库.a文件
    
-   #### a、修改`<XY1100 Root>/BoAT-X-Framework/Makefile`中的target
+   #### a、修改`<XY1100 Root>/userapp/BoAT-X-Framework/Makefile`中的target
    ```
    PLATFORM_TARGET ?= XinYi-XY1100
    ```
    
    #### b、打开Linux终端并进入BoAT-X-Framework目录编译BoAT静态库
    ```
-   cd <XY1100 Root>/BoAT-X-Framework
+   cd <XY1100 Root>/userapp/BoAT-X-Framework
    make clean
    make all
    ```
    
-   编译成功后，在`<XY1100 Root>/BoAT-X-Framework/lib`下会生成静态库libboatvendor.a、libboatwallet.a。
+   编译成功后，在`<XY1100 Root>/userapp/BoAT-X-Framework/lib`下会生成静态库libboatvendor.a、libboatwallet.a。
    
 
 ### 2、编译XY1100演示demo程序，生成.bin下载文件
