@@ -146,7 +146,7 @@ endif
 #
 # - CJSON_DEFAULT : default cJSON library
 # - CJSON_OUTTER  : externally provided by users
-CJSON_LIBRARY ?= CJSON_OUTTER
+CJSON_LIBRARY ?= CJSON_DEFAULT
 
 ifeq ($(CJSON_LIBRARY), CJSON_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_SDK_DIR)/third-party/cJSON
