@@ -180,8 +180,8 @@ __BOATSTATIC BOAT_RESULT ethereum_loadPersistWallet(BCHAR *wallet_name)
 
 BOAT_RESULT ethereumGetBalance(BoatEthWallet *wallet_ptr)
 {
-    //BCHAR * balance_wei;
-    BCHAR * cur_balance_wei = NULL;
+    //BCHAR *balance_wei;
+    BCHAR *cur_balance_wei = NULL;
     BOAT_RESULT result;
     BoatFieldVariable prase_result = {NULL, 0};
 
@@ -210,7 +210,7 @@ BOAT_RESULT ethereumTransfer(BoatEthWallet *wallet_ptr)
     /* Set Recipient Address */
     result = BoatEthTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
 						   "0x333333",
-						   (BCHAR *)demoRecipientAddress );
+						   (BCHAR *)demoRecipientAddress);
 
     if (result != BOAT_SUCCESS)
     {
