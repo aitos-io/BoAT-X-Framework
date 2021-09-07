@@ -76,7 +76,7 @@ As BoAT is a client for blockchain, some environment must be prepared before bui
 #### Make use of a deployed blockchain or deploy your own blockchain
 For public blockchain, you must prepare some gas for transaction fee in advance. If a simulator is available for that blockchain, it's a better choice.
 
-For consortium blockchain , you must consult the administrator to give you access permission on the blockchain. Or you may deploy your own consortium blockchain node for test purpose.
+For consortium blockchain, you must consult the administrator to give you access permission on the blockchain. Or you may deploy your own consortium blockchain node for test purpose.
 
 See blockchain official website for details:
 + [Ethereum](https://ethereum.org/)
@@ -158,7 +158,7 @@ real node of an Ethereum compatible blockchain network must be available.
 $chmod a+x ./build/demo/demo_<protocol>/<demo_name>
 $./build/demo/demo_<protocol>/<demo_name>
 ```
-< protocol> can be `ethereum` `fiscobcos` `platone` `fabric`.
+<protocol> can be `ethereum` `fiscobcos` `platone` `fabric`.
 Make sure the network connection to the blockchain node (or blockchain simulator) is available.
 
 
