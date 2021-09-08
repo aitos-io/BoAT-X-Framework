@@ -143,11 +143,6 @@
     #define MBEDTLS_PK_WRITE_C
     #define MBEDTLS_PEM_WRITE_C
     #define MBEDTLS_PK_PARSE_C
-    #define MBEDTLS_ASN1_PARSE_C
-    #define MBEDTLS_BIGNUM_C
-    #define MBEDTLS_OID_C
-
-    #define MBEDTLS_CIPHER_MODE_CBC
 
     #endif
 ```
