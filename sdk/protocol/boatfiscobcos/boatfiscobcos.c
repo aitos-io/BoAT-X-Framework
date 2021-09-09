@@ -242,10 +242,10 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     }
 	
 	// Encode extraData
-	tx_ptr->rawtx_fields.data.field_len = 0;
+	tx_ptr->rawtx_fields.extraData.field_len = 0;
     result = RlpInitStringObject(&extraData_rlp_object,
                                  tx_ptr->rawtx_fields.extraData.field_ptr,
-                                 tx_ptr->rawtx_fields.data.field_len);
+                                 tx_ptr->rawtx_fields.extraData.field_len);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize extraData RLP object.");
