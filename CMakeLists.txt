@@ -3,9 +3,13 @@ cmake_minimum_required (VERSION 3.10)
 
 project (BoAT_MT3620 C)
 
-azsphere_configure_tools(TOOLS_REVISION "20.04")
-azsphere_configure_api(TARGET_API_SET "7")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/archive)
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/library)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/runtime)
+
+set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/build/path)
 
 #string(REGEX MATCH "GNU" CMAKE_COMPILER_IS_GNU "${CMAKE_C_COMPILER_ID}")
 
@@ -21,7 +25,7 @@ azsphere_configure_api(TARGET_API_SET "7")
 set(BOAT_PROTOCOL_USE_ETHEREUM  ON)
 set(BOAT_PROTOCOL_USE_PLATONE  OFF)
 set(BOAT_PROTOCOL_USE_PLATON  OFF)
-set(BOAT_PROTOCOL_USE_FISCOBCOS  ON)
+set(BOAT_PROTOCOL_USE_FISCOBCOS  OFF)
 set(BOAT_PROTOCOL_USE_HLFABRIC  OFF)
 
 set(BUILD_SHARED_LIBS  ON)
@@ -65,7 +69,7 @@ endif()
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
 # - Microsoft-MT3602         : China Mobile's LTE Cat.1 module
 
-set(PLATFORM_TARGET "Microsoft-MT3602")
+set(PLATFORM_TARGET "linux-default")
 
 set(SOFT_CRYPTO "CRYPTO_DEFAULT")
 
@@ -203,26 +207,21 @@ endif()
 add_subdirectory(vendor)
 add_subdirectory(sdk)
 
-# Create executable
-# -create demo_ethereum_storeread
-#add_executable (demo_ethereum_storeread demo/demo_ethereum_storeread.c)
-#target_link_libraries (demo_ethereum_storeread boatwallet boathwdep boatcontract curl)
-# -create demo_ethereum_transfer
-#add_executable (demo_ethereum_transfer demo/demo_ethereum_transfer.c)
-#target_link_libraries (demo_ethereum_transfer boatwallet boathwdep boatcontract curl)
-# -create demo_fabric_invoke
-#add_executable (demo_fabric_invoke demo/demo_fabric_invoke.c)
-#target_link_libraries (demo_fabric_invoke boatwallet boathwdep boatcontract curl)
-# -create demo_fiscobcos_helloworld
-#add_executable (${PROJECT_NAME} demo/demo_fiscobcos_helloworld.c)
-add_executable (${PROJECT_NAME} "main.c"  "applibs_versions.h")
-target_include_directories (${PROJECT_NAME} PUBLIC ${AZURE_SPHERE_API_SET_DIR}/usr/include/azureiot)
-target_link_libraries (${PROJECT_NAME} boatwallet boatvendor fiscobcos_obj azureiot curl applibs pthread gcc_s c wolfssl tlsutils)
-# -create demo_platone_mycontract
-#add_executable (demo_platone_mycontract demo/demo_platone_mycontract.c)
-#target_link_libraries (demo_platone_mycontract boatwallet boathwdep boatcontract curl)
-
-
-azsphere_target_hardware_definition(${PROJECT_NAME} TARGET_DIRECTORY "../Hardware/mt3620_rdb" TARGET_DEFINITION "sample_hardware.json")
-azsphere_target_add_image_package( ${PROJECT_NAME} RESOURCE_FILES) 
+#Create executable
+#-create demo_ethereum_storeread
+# if (BOAT_PROTOCOL_USE_ETHEREUM)
+# add_executable (demo_ethereum_storeread demo/demo_ethereum_storeread.c)
+# target_link_libraries (demo_ethereum_storeread boatwallet boathwdep boatcontract curl)
+# endif()
+# #-create demo_ethereum_transfer
+# add_executable (demo_ethereum_transfer demo/demo_ethereum_transfer.c)
+# target_link_libraries (demo_ethereum_transfer boatwallet boathwdep boatcontract curl)
+# #-create demo_fabric_invoke
+# add_executable (demo_fabric_invoke demo/demo_fabric_invoke.c)
+# target_link_libraries (demo_fabric_invoke boatwallet boathwdep boatcontract curl)
+# #-create demo_fiscobcos_helloworld
+# add_executable (${PROJECT_NAME} demo/demo_fiscobcos_helloworld.c)
+# #-create demo_platone_mycontract
+# add_executable (demo_platone_mycontract demo/demo_platone_mycontract.c)
+# target_link_libraries (demo_platone_mycontract boatwallet boathwdep boatcontract curl)
 
