@@ -3,7 +3,7 @@
 ## 引言
 
 ### 概述
-本文描述BoAT Framework SDK区块链客户端（C语言版本）对蜂窝模组的系统需求。BoAT是一个运行在模组的应用处理器上的SDK。对于OpenCPU的蜂窝模组，BoAT作为库被应用程序链接和调用。对于非OpenCPU的蜂窝模组，BoAT的API需要扩展为AT命令，供上位机上的应用调用。
+本文描述BoAT Framework SDK区块链客户端（C语言版本）对蜂窝模组的系统需求。BoAT是一个运行在模组的应用处理器上的SDK。对于OpenCPU蜂窝模组，BoAT作为库被应用程序链接和调用。对于非OpenCPU的蜂窝模组，BoAT的API需要扩展为AT命令，供上位机上的应用调用。
 
 ### 缩写术语
 |术语  |解释                                                    |
