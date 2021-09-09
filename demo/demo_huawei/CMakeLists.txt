@@ -1,7 +1,7 @@
 
 
 
-set(HUAWEI_DEMO_SRC         demo_fabric_abac.c)
+set(HUAWEI_DEMO_SRC         demo_huawei.c)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/demo/demo_huawei/runtime)
 

@@ -44,5 +44,6 @@ target_include_directories(protos-obj
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/
     PUBLIC
+    ${PROJECT_SOURCE_DIR}/sdk/third-party/protobuf-c/include
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
 )

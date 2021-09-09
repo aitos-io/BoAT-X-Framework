@@ -25,6 +25,11 @@ add_subdirectory(boathlfabric)
 set(PROTOS  ${PROTOS} $<TARGET_OBJECTS:boathlfabric-obj>)
 endif()
 
+if(BOAT_PROTOCOL_USE_HLHUAWEI)
+add_subdirectory(boathlhuawei)
+set(PROTOS  ${PROTOS} $<TARGET_OBJECTS:boathlhuawei-obj>)
+endif()
+
 
 add_library(protocol_obj    OBJECT  ${PROTOS})
 
