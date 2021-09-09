@@ -1,7 +1,7 @@
 
 cmake_minimum_required (VERSION 3.10)
 
-project (BoAT_MT3620 C)
+project (BoAT_2.0 C)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/archive)
 
@@ -20,10 +20,10 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/build/path)
 #option(BUILD_BOAT_TEST "Build boat test application" OFF)
 #option(BUILD_BOAT_DEMO "Build boat demo application" ON)
 
-set(BOAT_PROTOCOL_USE_ETHEREUM  OFF)
-set(BOAT_PROTOCOL_USE_PLATONE  OFF)
-set(BOAT_PROTOCOL_USE_PLATON  OFF)
-set(BOAT_PROTOCOL_USE_FISCOBCOS  OFF)
+set(BOAT_PROTOCOL_USE_ETHEREUM  ON)
+set(BOAT_PROTOCOL_USE_PLATONE  ON)
+set(BOAT_PROTOCOL_USE_PLATON  ON)
+set(BOAT_PROTOCOL_USE_FISCOBCOS  ON)
 set(BOAT_PROTOCOL_USE_HLFABRIC  ON)
 set(BOAT_PROTOCOL_USE_HLHUAWEI  ON)
 set(BOAT_DISCOVERY_PEER_QUERY  ON)
@@ -73,7 +73,7 @@ endif()
 # - Neoway-N58                : Neoway's LTE Cat.1 module
 # - YanFei-CUIot-MZ-6         : China Unicom's LTE Cat.1 module
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
-# - Microsoft-MT3602         : China Mobile's LTE Cat.1 module
+# - MTK_MT3620                : MTK_MT3620 module
 
 set(PLATFORM_TARGET "linux-default")
 
@@ -98,8 +98,8 @@ elseif(PLATFORM_TARGET STREQUAL "YanFei-CUIot-MZ-6")
     message(STATUS "Platform using YanFei-CUIot-MZ-6")
 elseif(PLATFORM_TARGET STREQUAL "ChinaMobile-ML302")
     message(STATUS "Platform using ChinaMobile-ML302")
-elseif(PLATFORM_TARGET STREQUAL "Microsoft-MT3602")
-    message(STATUS "Platform using Microsoft-MT3602")
+elseif(PLATFORM_TARGET STREQUAL "MTK_MT3620")
+    message(STATUS "Platform using MTK_MT3620")
 else()
     message(FATAL_ERROR "Platform using ${PLATFORM_TARGET}, but not support")
 endif()

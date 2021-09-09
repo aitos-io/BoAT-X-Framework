@@ -20,6 +20,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/vendor/platform/include)
 add_subdirectory(demo_contract)
 
+
 add_executable(demo_ethereum_transfer_onetime_internalGen ${ETHEREUM_DEMO_SRC})
 target_compile_options(demo_ethereum_transfer_onetime_internalGen PRIVATE -DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION)
 target_link_libraries(demo_ethereum_transfer_onetime_internalGen
@@ -120,7 +121,6 @@ target_link_libraries(demo_ethereum_storeread_load
                         boatwallet
                         boatvendor
                         curl)
-
 
 
 

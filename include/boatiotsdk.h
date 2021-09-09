@@ -36,6 +36,7 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #include "boatutility.h"
 #include "boatrlp.h"
 #include "boatplatform.h"
+#include "boatconfig.h"
 
 #if PROTOCOL_USE_ETHEREUM == 1
 #include "protocolapi/api_ethereum.h"

@@ -81,6 +81,5 @@ target_link_libraries(demo_platone_mycontract_load
                        curl)
 
 
-
                 
 

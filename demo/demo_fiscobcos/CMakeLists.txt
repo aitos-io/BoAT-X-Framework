@@ -23,6 +23,7 @@ include_directories(${PROJECT_SOURCE_DIR}/demo/demo_fiscobcos/demo_contract)
 add_subdirectory(demo_contract)
 
 
+
 add_executable(demo_fiscobcos_helloworld_onetime_internalGen ${FISCOBCOS_DEMO_SRC})
 target_compile_options(demo_fiscobcos_helloworld_onetime_internalGen PRIVATE -DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION)
 target_link_libraries(demo_fiscobcos_helloworld_onetime_internalGen
@@ -79,7 +80,6 @@ target_link_libraries(demo_fiscobcos_helloworld_load
                        boatvendor
                        fiscobcos_obj
                        curl)
-
 
 
 
