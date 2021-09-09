@@ -255,7 +255,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     {
         rlp_stream_storage_ptr = RlpGetEncodedStream(&tx_rlp_object);
 		BoatLog_hexdump(BOAT_LOG_VERBOSE, "Encoded RLP stream", 
-						 rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len);
+						rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len);
     }
     else
     {
@@ -268,9 +268,9 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     **************************************************************************/
     // Hash the message
 	result = BoatHash(BOAT_HASH_KECCAK256,
-					   rlp_stream_storage_ptr->stream_ptr, 
-					   rlp_stream_storage_ptr->stream_len, 
-					   message_digest, &message_digestLen, NULL);
+					  rlp_stream_storage_ptr->stream_ptr, 
+					  rlp_stream_storage_ptr->stream_len, 
+					  message_digest, &message_digestLen, NULL);
 	if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Execute BoatHash failed.");
@@ -283,7 +283,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     BoatSignatureResult signatureResultTmp;
 
 	result = BoatSignature(tx_ptr->wallet_ptr->account_info.prikeyCtx, 
-							message_digest, message_digestLen, &signatureResultTmp, NULL);
+						   message_digest, message_digestLen, &signatureResultTmp, NULL);
 	if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Execute BoatSignature failed.");
@@ -335,8 +335,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
 
 
     result = RlpInitStringObject(&v_rlp_object,
-                                  tx_ptr->rawtx_fields.v.field,
-                                  tx_ptr->rawtx_fields.v.field_len);
+                                 tx_ptr->rawtx_fields.v.field,
+                                 tx_ptr->rawtx_fields.v.field_len);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Re-initialize v RLP object failed.");
@@ -414,7 +414,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     {   
         rlp_stream_storage_ptr = RlpGetEncodedStream(&tx_rlp_object);
 		BoatLog_hexdump(BOAT_LOG_VERBOSE, "Re-Encoded RLP stream", 
-						 rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len);
+						rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len);
     }
     else
     {
@@ -441,7 +441,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     
     // Print transaction recipient to log
     if (0 == UtilityBinToHex(rlp_stream_hex_str, tx_ptr->rawtx_fields.recipient, 20, 
-							BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE))
+							 BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE))
     {
         strcpy(rlp_stream_hex_str, "NULL");
     }
@@ -450,15 +450,15 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
 
 	/* print ethereum transaction message */
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Nonce    )", 
-					 tx_ptr->rawtx_fields.nonce.field, tx_ptr->rawtx_fields.nonce.field_len);
+					tx_ptr->rawtx_fields.nonce.field, tx_ptr->rawtx_fields.nonce.field_len);
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Sender   )", 
-					 tx_ptr->wallet_ptr->account_info.address, 20);
+					tx_ptr->wallet_ptr->account_info.address, 20);
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Recipient)", 
-					 tx_ptr->rawtx_fields.recipient, 20);
+					tx_ptr->rawtx_fields.recipient, 20);
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Value    )", 
-					 tx_ptr->rawtx_fields.value.field, tx_ptr->rawtx_fields.value.field_len);
+					tx_ptr->rawtx_fields.value.field, tx_ptr->rawtx_fields.value.field_len);
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Data     )", 
-					 tx_ptr->rawtx_fields.data.field_ptr, tx_ptr->rawtx_fields.data.field_len);
+					tx_ptr->rawtx_fields.data.field_ptr, tx_ptr->rawtx_fields.data.field_len);
 
     UtilityBinToHex(rlp_stream_hex_str, rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len,
 				    BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
@@ -474,8 +474,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
 		boat_throw(BOAT_ERROR_RPC_FAILED, EthSendRawtx_cleanup);
     }
-    result = BoatEthPraseRpcResponseResult(tx_hash_str, "", 
-											&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    result = web3_parse_json_result(tx_hash_str, "", 
+									&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");
