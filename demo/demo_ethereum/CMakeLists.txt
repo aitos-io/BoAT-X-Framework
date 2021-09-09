@@ -3,6 +3,8 @@
 
 set(ETHEREUM_DEMO_SRC         demo_ethereum_transfer.c)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/demo/demo_ethereum/runtime)
+
 if(BOAT_PYTHON_EXECUTABLE)
     execute_process(COMMAND ${BOAT_PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/eth2c.py ${PROJECT_SOURCE_DIR}/demo/demo_ethereum/demo_contract/StoreRead.json 
                     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/demo/demo_ethereum/demo_contract
@@ -33,7 +35,7 @@ target_link_libraries(demo_ethereum_transfer_onetime_pkcs
                         curl)
 
 add_executable(demo_ethereum_transfer_onetime_native ${ETHEREUM_DEMO_SRC})
-target_compile_options(demo_ethereum_transfer_onetime_native PRIVATE -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
+target_compile_options(demo_ethereum_transfer_onetime_native PRIVATE -DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
 target_link_libraries(demo_ethereum_transfer_onetime_native
                         boatwallet
                         boatvendor
