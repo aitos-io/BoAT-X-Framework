@@ -173,6 +173,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
+
     // Encode value
     result = RlpInitStringObject( &value_rlp_object,
                                   tx_ptr->rawtx_fields.value.field,
@@ -190,6 +191,8 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
+    	BoatLog_hexdump( BOAT_LOG_VERBOSE, "tx_ptr->rawtx_fields.data.field :", 
+					 tx_ptr->rawtx_fields.data.field_ptr, tx_ptr->rawtx_fields.data.field_len);
     // Encode data
     result = RlpInitStringObject( &data_rlp_object,
                                   tx_ptr->rawtx_fields.data.field_ptr,
@@ -242,10 +245,10 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     }
 	
 	// Encode extraData
-	tx_ptr->rawtx_fields.data.field_len = 0;
+	tx_ptr->rawtx_fields.extraData.field_len = 0;
     result = RlpInitStringObject( &extraData_rlp_object,
                                   tx_ptr->rawtx_fields.extraData.field_ptr,
-                                  tx_ptr->rawtx_fields.data.field_len );
+                                  tx_ptr->rawtx_fields.extraData.field_len );
     if( result != BOAT_SUCCESS )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize extraData RLP object.");

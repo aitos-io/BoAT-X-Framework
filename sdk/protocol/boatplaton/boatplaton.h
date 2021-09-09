@@ -147,10 +147,30 @@ BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr);
  * @return
  *   This function returns the length of out array.
 *******************************************************************************/
-BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out, const BUINT8 *hrp, BUINT8 hrplen);
+BSINT32 BoatPlatONBech32Encode(const BCHAR *in, BUINT32 inlen, BCHAR *out, const BCHAR *hrp, BUINT8 hrplen);
 /*! @}*/
 
-BSINT32 BoatPlatONBech32Decode(const BUINT8 *in, BUINT32 inlen, BUINT8 *out);
+
+/*!****************************************************************************
+ * @brief Decode Bech32 address of PlatON.
+ *
+ * @details
+ *   This function refer to the Java SDK source code for PlatON. Encode the public key 
+ *   address of Ethereum to Bech32 address of PlatON.
+ *   
+ * @param[in] in
+ *   A pointer to the HEX array that needs decoding.
+ * 
+ * @param[in] inlen
+ *   The length of in.
+ * 
+ * @param[out] out
+ *   A pointer to decoded array. Need to free up space after use.
+ * 
+ * @return
+ *   This function returns the length of out array.
+ ******************************************************************************/
+BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BCHAR *out);
 
 #ifdef __cplusplus
 }

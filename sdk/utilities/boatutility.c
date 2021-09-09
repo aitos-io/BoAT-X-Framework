@@ -602,6 +602,7 @@ BOAT_RESULT UtilityStringLenCheck( const BCHAR *string )
     return BOAT_ERROR;
 }
 
+/*
 uint32_t random32(void)
 {
 	static uint32_t seed = 0;
@@ -611,6 +612,7 @@ uint32_t random32(void)
 
 	return seed;
 }
+*/
 
 BUINT64 UtilityBuint8Buf2Uint64(BUINT8* from,BUINT32 len)
 {
