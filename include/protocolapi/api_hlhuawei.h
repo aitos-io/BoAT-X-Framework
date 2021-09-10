@@ -24,7 +24,7 @@ api_hlhuawei.h is header file for hauwei chain transaction construction and perf
 #define __API_HLHUAWEI_H__
 
 #include "boatiotsdk.h"
-#include "protocolapi/api_hlfabric_discover.h"
+#include "protocolapi/api_hlfabric.h"
 
 #ifdef __cplusplus
 extern "C" {

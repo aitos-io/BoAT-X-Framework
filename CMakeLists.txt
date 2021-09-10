@@ -81,10 +81,10 @@ set(PLATFORM_TARGET "linux-default")
 # The valid option value of SOFT_CRYPTO list as below:
 # - CRYPTO_DEFAULT      : default soft crypto algorithm
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
-set(SOFT_CRYPTO "CRYPTO_DEFAULT")
+set(SOFT_CRYPTO "CRYPTO_MBEDTLS")
 
 ########################################
-add_subdirectory( ${CMAKE_SOURCE_DIR}/vendor/platform/${PLATFORM_TARGET}/externalCmake)
+#add_subdirectory( ${CMAKE_SOURCE_DIR}/vendor/platform/${PLATFORM_TARGET}/externalCmake)
 
 message(STATUS "Platform using : " ${PLATFORM_TARGET})
 if( PLATFORM_TARGET STREQUAL "linux-default")

@@ -23,7 +23,6 @@
 #include "boatlog.h"
 #include <time.h>
 
-#define USE_ONETIME_WALLET
 
 const BCHAR *fabric_client_demokey = "-----BEGIN PRIVATE KEY-----\n"
 "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgExGSgCJJjJNY+rm5\n"

@@ -50,6 +50,7 @@ add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:wallet_obj>
 target_include_directories(${MODULE_NAME}
     PRIVATE
     ${PROJECT_SOURCE_DIR}/sdk/include
+    ${PROJECT_SOURCE_DIR}/include
     PUBLIC
     $<BUILD_INTERFACE:${KECCAK_FOLDER}>
 )

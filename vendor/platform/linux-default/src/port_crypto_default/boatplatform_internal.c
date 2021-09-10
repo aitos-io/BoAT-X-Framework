@@ -20,7 +20,7 @@
 */
 
 //! self header include
-#include "protocolapi/api_hlfabric.h"
+#include "boatiotsdk.h"
 #include "boatplatform_internal.h"
 
 #include "boattypes.h"

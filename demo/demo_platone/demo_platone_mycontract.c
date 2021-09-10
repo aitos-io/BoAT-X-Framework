@@ -54,8 +54,7 @@ const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
 
 
 BoatPlatoneWallet *g_platone_wallet_ptr;
-#define USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS
-#define USE_ONETIME_WALLET
+
 
 #if defined(USE_ONETIME_WALLET)
 __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
