@@ -144,7 +144,7 @@ This interface is used to check whether the given private key is valid. The cont
 #### Transaction Interface
 
 ##### Transaction Data Structure and Function Realization List
-A transaction is a signed message, transmitted through the blockchain network, and recorded on the blockchain. The functions of transaction interfaces provided by different blockchains are basically the same.  
+A transaction is a signed message, transmitted through the blockchain network and recorded on the blockchain. The functions of transaction interfaces provided by different blockchains are basically the same.  
 
 For Ethereum/PlatON/PlatONE/FISCO BCOS:
 
