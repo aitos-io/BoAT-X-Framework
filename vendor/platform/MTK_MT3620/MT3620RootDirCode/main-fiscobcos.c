@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "boatiotsdk.h"
-#include "boatlog.h"
 #include <iothub_device_client_ll.h>
 #include <iothub_client_options.h>
 #include <iothubtransportmqtt.h>
@@ -15,7 +14,6 @@
 
 #include "boatiotsdk.h"
 #include "HelloWorld.h"
-#include "boatlog.h"
 #include "protocolapi/api_fiscobcos.h"
 #include "HelloWorld.h"
 #include <pthread.h>
@@ -111,38 +109,38 @@ int boat_connect_wifi(const uint8_t* ssid, const char* psk)
 {
     if (WifiConfig_ForgetAllNetworks() < 0)
     {
-        BoatLog(BOAT_LOG_NORMAL, "ERROR: WifiConfig_ForgetAllNetworks failed: %s (%d).\n", strerror(errno), errno);
+        printf( "ERROR: WifiConfig_ForgetAllNetworks failed: %s (%d).\n", strerror(errno), errno);
     }
     else
     {
         mWifiId = WifiConfig_AddNetwork();
         if (mWifiId < 0)
         {
-            BoatLog(BOAT_LOG_CRITICAL, "ERROR: WifiConfig_AddNetwork failed: %s (%d).\n", strerror(errno), errno);
+            printf("ERROR: WifiConfig_AddNetwork failed: %s (%d).\n", strerror(errno), errno);
         }
         else if (WifiConfig_SetSecurityType(mWifiId, WifiConfig_Security_Wpa2_Psk) < 0)
         {
-            BoatLog(BOAT_LOG_CRITICAL, "ERROR: WifiConfig_SetSecurityType failed: %s (%d).\n", strerror(errno), errno);
+            printf("ERROR: WifiConfig_SetSecurityType failed: %s (%d).\n", strerror(errno), errno);
         }
         else if (WifiConfig_SetPSK(mWifiId, psk, strnlen(psk, WIFICONFIG_WPA2_KEY_MAX_BUFFER_SIZE)) < 0)
         {
-            BoatLog(BOAT_LOG_CRITICAL, "ERROR: WifiConfig_SetPSK failed: %s (%d).\n", strerror(errno), errno);
+            printf("ERROR: WifiConfig_SetPSK failed: %s (%d).\n", strerror(errno), errno);
         }
         else if (WifiConfig_SetSSID(mWifiId, ssid, strnlen(ssid, WIFICONFIG_SSID_MAX_LENGTH)) < 0)
         {
-            BoatLog(BOAT_LOG_CRITICAL, "ERROR: WifiConfig_SetSSID failed: %s (%d).\n", strerror(errno), errno);
+            printf("ERROR: WifiConfig_SetSSID failed: %s (%d).\n", strerror(errno), errno);
         }
         else if (WifiConfig_SetTargetedScanEnabled(mWifiId, true) < 0)
         {
-            BoatLog(BOAT_LOG_CRITICAL, "ERROR: WifiConfig_SetTargetedScanEnabled failed: %s (%d).\n", strerror(errno), errno);
+            printf("ERROR: WifiConfig_SetTargetedScanEnabled failed: %s (%d).\n", strerror(errno), errno);
         }
         else if (WifiConfig_SetNetworkEnabled(mWifiId, true))
         {
-            BoatLog(BOAT_LOG_CRITICAL, "ERROR: WifiConfig_SetNetworkEnabled failed: %s (%d).\n", strerror(errno), errno);
+            printf("ERROR: WifiConfig_SetNetworkEnabled failed: %s (%d).\n", strerror(errno), errno);
         }
         else
         {
-            BoatLog(BOAT_LOG_CRITICAL, "SUCCESS: wifi");
+            printf("SUCCESS: wifi");
         }
     }
     return mWifiId;
@@ -373,7 +371,7 @@ static void* thread_boat_fiscobcos(void* arg)
     {
         if (WifiConfig_GetCurrentNetwork(&network) >= 0)
         {
-            BoatLog(BOAT_LOG_NORMAL, "INFO: SSID \"%.*s\", BSSID %02x:%02x:%02x:%02x:%02x:%02x, Frequency %dMHz, %d dB.\n",
+                printf("INFO: SSID \"%.*s\", BSSID %02x:%02x:%02x:%02x:%02x:%02x, Frequency %dMHz, %d dB.\n",
                 network.ssidLength, network.ssid, network.bssid[0], network.bssid[1],
                 network.bssid[2], network.bssid[3], network.bssid[4], network.bssid[5],
                 network.frequencyMHz, network.signalRssi);
@@ -384,7 +382,7 @@ static void* thread_boat_fiscobcos(void* arg)
         }
         else
         {
-            BoatLog(BOAT_LOG_NORMAL, "wifi cannot connect");
+            printf("wifi cannot connect");
             BoatSleep(1);
         }
     }
@@ -399,27 +397,27 @@ void boat_demo_entry(void)
     int ret = pthread_create(&th, &attr, thread_boat_fiscobcos, NULL);
     if (ret != 0)
     {
-        BoatLog(BOAT_LOG_NORMAL, "ERROR: Create thread_boat_fiscobcos error\n");
+        printf("ERROR: Create thread_boat_fiscobcos error\n");
     }
     else
     {
-        BoatLog(BOAT_LOG_NORMAL, "INFO: This is the thread_boat_fiscobcos process.\n");
+        printf("INFO: This is the thread_boat_fiscobcos process.\n");
     }
 }
 
 
 int main(int argc, char* argv[])
 {
-    BoatLog(BOAT_LOG_NORMAL, "INFO: Application starting.\n");
+    printf("INFO: Application starting.\n");
 
-    BoatLog(BOAT_LOG_NORMAL, "INFO: Application init.\n");
+    printf("INFO: Application init.\n");
     int err = init();
 
     boat_demo_entry();
 
     if (err < 0)
     {
-        BoatLog(BOAT_LOG_NORMAL, "INFO: Application error.\n");
+        printf( "INFO: Application error.\n");
     }
     else
     {
@@ -430,7 +428,7 @@ int main(int argc, char* argv[])
     }
 
     while (!deinit(err)) {
-        if (DEBUG) BoatLog(BOAT_LOG_NORMAL, "INFO: Application deinit.\n");
+        if (DEBUG) printf("INFO: Application deinit.\n");
     }
 
     return 0;
@@ -457,7 +455,7 @@ static int init(void)
 {
     if (!AzureIoT_Initialize())
     {
-        BoatLog(BOAT_LOG_NORMAL, "ERROR: Cannot initialize Azure IoT Hub SDK.\n");
+        printf("ERROR: Cannot initialize Azure IoT Hub SDK.\n");
         return -1;
     }
     return 1;

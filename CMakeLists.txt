@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.10)
 
 project (BoAT_2.0 C)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/archive)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/library)
 
@@ -81,7 +81,10 @@ set(PLATFORM_TARGET "linux-default")
 # The valid option value of SOFT_CRYPTO list as below:
 # - CRYPTO_DEFAULT      : default soft crypto algorithm
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
-set(SOFT_CRYPTO "CRYPTO_MBEDTLS")
+set(SOFT_CRYPTO "CRYPTO_DEFAULT")
+
+########################################
+add_subdirectory( ${CMAKE_SOURCE_DIR}/vendor/platform/${PLATFORM_TARGET}/externalCmake)
 
 message(STATUS "Platform using : " ${PLATFORM_TARGET})
 if( PLATFORM_TARGET STREQUAL "linux-default")
