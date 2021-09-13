@@ -30,6 +30,12 @@ api_hw_bcs.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "orderer/cluster.pb-c.h"
 #include "common/transaction.pb-c-hwbcs.h"
 
+#if (BOAT_HWBCS_TLS_SUPPORT == 1)
+#include "mbedtls/x509_crt.h"
+#include "mbedtls/oid.h"
+#include "boatutility.h"
+#endif
+
 /*!****************************************************************************
  * @brief Access to the specified node 
  * 
@@ -48,7 +54,7 @@ api_hw_bcs.c defines the Ethereum wallet API for BoAT IoT SDK.
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a failed code.
  ******************************************************************************/
 __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
-											BoatHwbcsNodesCfg nodeCfg, BoatHwbcsFunType funType)
+										 BoatHwbcsNodesCfg nodeCfg, BoatHwbcsFunType funType)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BoatHwbcsEndorserResponse *parsePtr = NULL;
@@ -157,14 +163,14 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 						parsePtr->response[parsePtr->responseCount].responseType = HWBCS_TYPE_PROPOSAL;
 						parsePtr->response[parsePtr->responseCount].payload.field_len = resData->payload.len;
 						parsePtr->response[parsePtr->responseCount].payload.field_ptr = BoatMalloc(resData->payload.len);
-						memcpy(parsePtr->response[parsePtr->responseCount].payload.field_ptr,resData->payload.data,resData->payload.len);
+						memcpy(parsePtr->response[parsePtr->responseCount].payload.field_ptr, resData->payload.data, resData->payload.len);
 						parsePtr->httpResLen = commondTxData->response->payload.len;
 						parsePtr->http2Res = BoatMalloc(parsePtr->httpResLen);
-						memcpy(parsePtr->http2Res,commondTxData->response->payload.data,commondTxData->response->payload.len);
+						memcpy(parsePtr->http2Res, commondTxData->response->payload.data, commondTxData->response->payload.len);
 						// parsePtr->http2Res =  commondTxData->response->payload.data;
 						parsePtr->responseCount++;
-						common__common_tx_data__free_unpacked(commondTxData,NULL);
-						common__response__free_unpacked(resData,NULL);
+						common__common_tx_data__free_unpacked(commondTxData, NULL);
+						common__response__free_unpacked(resData, NULL);
 					}
 					else
 					{
@@ -262,16 +268,16 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 }
 
 BOAT_RESULT BoatHwbcsWalletSetAccountInfo(BoatHwbcsWallet *wallet_ptr,
-											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											 const BoatHwbcsCertInfoCfg certContent)
+										  const BoatWalletPriKeyCtx_config prikeyCtx_config,
+										  const BoatHwbcsCertInfoCfg certContent)
 {
 	return BoatHlfabricWalletSetAccountInfo(wallet_ptr, prikeyCtx_config, certContent);
 }
 
 #if (BOAT_HWBCS_TLS_SUPPORT == 1) && (BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
 BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo(BoatHwbcsWallet *wallet_ptr,
-											   const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											   const BoatHwbcsCertInfoCfg certContent)
+											const BoatWalletPriKeyCtx_config prikeyCtx_config,
+											const BoatHwbcsCertInfoCfg certContent)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
@@ -317,22 +323,22 @@ BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo(BoatHwbcsWallet *wallet_ptr,
 
 #if (BOAT_HWBCS_TLS_SUPPORT == 1)
 BOAT_RESULT BoatHwbcsWalletSetRootCaInfo(BoatHwbcsWallet *wallet_ptr,
-											const BoatHwbcsCertInfoCfg *rootCaContent,
-											BUINT32 rootCaNumber)
+										 const BoatHwbcsCertInfoCfg *rootCaContent,
+										 BUINT32 rootCaNumber)
 {
 	return BoatHlfabricWalletSetRootCaInfo(wallet_ptr, rootCaContent, rootCaNumber);
 }
 #endif
 
 BOAT_RESULT BoatHwbcsWalletSetNetworkInfo(BoatHwbcsWallet *wallet_ptr,
-											 const BoatHwbcsNodesCfg endorserInfo_ptr)
+										  const BoatHwbcsNodesCfg endorserInfo_ptr)
 {
 
 	return BoatHlfabricWalletSetNetworkInfo(wallet_ptr, endorserInfo_ptr);
 }
 
 BoatHwbcsWallet *BoatHwbcsWalletInit(const BoatHwbcsWalletConfig *config_ptr,
-										   BUINT32 config_size)
+									 BUINT32 config_size)
 {
 	return BoatHlfabricWalletInit(config_ptr, config_size);
 }
@@ -343,18 +349,17 @@ void BoatHwbcsWalletDeInit(BoatHwbcsWallet *wallet_ptr)
 }
 
 BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
-							   const BoatHwbcsWallet *wallet_ptr,
-							   const BCHAR *chaincodeId_path_str,
-							   const BCHAR *chaincodeId_name_str,
-							   const BCHAR *chaincodeId_version_str,
-							   const BCHAR *channelId_str,
-							   const BCHAR *orgName_str,
-							   const BCHAR *contract_name,
-							   const BCHAR *creator_id)
+							const BoatHwbcsWallet *wallet_ptr,
+							const BCHAR *chaincodeId_path_str,
+							const BCHAR *chaincodeId_name_str,
+							const BCHAR *chaincodeId_version_str,
+							const BCHAR *channelId_str,
+							const BCHAR *orgName_str,
+							const BCHAR *contract_name)
 {
 	BUINT32 stringLen;
-	BCHAR *paramSrcList[7];
-	BCHAR **paramDstList[7];
+	BCHAR *paramSrcList[6];
+	BCHAR **paramDstList[6];
 	BUINT16 i = 0;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -412,14 +417,12 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 	paramSrcList[3] = (BCHAR *)channelId_str;
 	paramSrcList[4] = (BCHAR *)orgName_str;
 	paramSrcList[5] = (BCHAR *)contract_name;
-	paramSrcList[6] = (BCHAR *)creator_id;
 	paramDstList[0] = &tx_ptr->var.chaincodeId.path;
 	paramDstList[1] = &tx_ptr->var.chaincodeId.name;
 	paramDstList[2] = &tx_ptr->var.chaincodeId.version;
 	paramDstList[3] = &tx_ptr->var.channelId;
 	paramDstList[4] = &tx_ptr->var.orgName;
 	paramDstList[5] = &tx_ptr->var.contract_name;
-	paramDstList[6] = &tx_ptr->var.creator_id;
 
 	for (i = 0; i < sizeof(paramSrcList) / sizeof(paramSrcList[0]); i++)
 	{
@@ -434,6 +437,24 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 			memcpy(*paramDstList[i], paramSrcList[i], stringLen + 1);
 		}
 	}
+#if (BOAT_HWBCS_TLS_SUPPORT == 1)
+	mbedtls_x509_crt m_certificate;
+	mbedtls_x509_crt_init(&m_certificate);
+	uint32_t status = mbedtls_x509_crt_parse(&m_certificate, (const unsigned char *)tx_ptr->wallet_ptr->account_info.cert.field_ptr, tx_ptr->wallet_ptr->account_info.cert.field_len);
+
+	const mbedtls_x509_name *name = &m_certificate.subject;
+	char value[64];
+	size_t value_len;
+
+	value_len = Utility_find_oid_value_in_name(name, "CN", value, sizeof(value));
+	if (value_len)
+	{
+		tx_ptr->var.creator_id = BoatMalloc(value_len + 1);
+		memcpy(tx_ptr->var.creator_id,value,value_len);
+	}
+
+
+#endif
 
 	/* boat catch handle */
 	boat_catch(BoatHlfabricTxInit_exception)
@@ -456,8 +477,8 @@ void BoatHwbcsTxDeInit(BoatHwbcsTx *tx_ptr)
 }
 
 BOAT_RESULT BoatHwbcsTxSetTimestamp(BoatHwbcsTx *tx_ptr,
-									   const BUINT64 sec,
-									   const BUINT64 nanos)
+									const BUINT64 sec,
+									const BUINT64 nanos)
 {
 	return BoatHlfabricTxSetTimestamp(tx_ptr, sec, nanos);
 }
@@ -495,7 +516,7 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr)
 		if (tx_ptr->endorserResponse.response[i].responseType == HWBCS_TYPE_PROPOSAL)
 		{
 			common__transaction__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
-			if(tx_ptr->endorserResponse.response[i].payload.field_len != 0)
+			if (tx_ptr->endorserResponse.response[i].payload.field_len != 0)
 			{
 				BoatFree(tx_ptr->endorserResponse.response[i].payload.field_ptr);
 				tx_ptr->endorserResponse.response[i].payload.field_len = 0;
@@ -503,8 +524,6 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr)
 		}
 	}
 	tx_ptr->endorserResponse.responseCount = 0;
-
-
 
 	return result;
 }
@@ -555,8 +574,6 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 		}
 	}
 	tx_ptr->endorserResponse.responseCount = 0;
-
-
 
 	return result;
 }

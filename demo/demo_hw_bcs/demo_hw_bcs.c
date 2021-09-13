@@ -108,14 +108,14 @@ const BCHAR *hw_bcs_demo_endorser_peer0Org2_hostName = "node-0.org2.bcs-epmmli.s
 const BCHAR *hw_bcs_demo_order_url = "49.4.115.203:30616";
 const BCHAR *hw_bcs_demo_order_hostName = "node-0.org1.bcs-epmmli.svc.cluster.local";
 
-BoatHlfabricWallet *g_fabric_wallet_ptr;
+BoatHwbcsWallet *g_hwbcs_wallet_ptr;
 // DiscoverRes discoverResult;
-BoatHlfabricWalletConfig wallet_config = {0};
+BoatHwbcsWalletConfig wallet_config = {0};
 __BOATSTATIC BOAT_RESULT hw_bcs_WalletPrepare(void)
 {
 	BOAT_RESULT index;
 
-	//BoatHlfabricWalletConfig wallet_config = {0};
+	//BoatHwbcsWalletConfig wallet_config = {0};
 	//set private key context
 	wallet_config.accountPriKey_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
 	wallet_config.accountPriKey_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
@@ -129,12 +129,12 @@ __BOATSTATIC BOAT_RESULT hw_bcs_WalletPrepare(void)
 
 
 	wallet_config.nodesCfg.endorserLayoutNum = 1;
-	wallet_config.nodesCfg.layoutCfg = BoatMalloc(wallet_config.nodesCfg.endorserLayoutNum * sizeof(BoatHlfabricNodeLayoutCfg));
+	wallet_config.nodesCfg.layoutCfg = BoatMalloc(wallet_config.nodesCfg.endorserLayoutNum * sizeof(BoatHwbcsNodeLayoutCfg));
 	wallet_config.nodesCfg.layoutCfg[0].endorserGroupNum = 2;
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg = BoatMalloc(wallet_config.nodesCfg.layoutCfg[0].endorserGroupNum * sizeof(BoatHlfabricNodeGroupCfg));
+	wallet_config.nodesCfg.layoutCfg[0].groupCfg = BoatMalloc(wallet_config.nodesCfg.layoutCfg[0].endorserGroupNum * sizeof(BoatHwbcsNodeGroupCfg));
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorserNumber = 1;
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].quantities = 1;
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser = BoatMalloc(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
+	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser = BoatMalloc(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorserNumber * sizeof(BoatHwbcsNodeInfoCfg));
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl = BoatMalloc(strlen(hw_bcs_demo_endorser_peer0Org1_url)+1);
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName = BoatMalloc(strlen(hw_bcs_demo_endorser_peer0Org1_hostName)+1);
 	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,hw_bcs_demo_endorser_peer0Org1_url,strlen(hw_bcs_demo_endorser_peer0Org1_url)+1);
@@ -144,7 +144,7 @@ __BOATSTATIC BOAT_RESULT hw_bcs_WalletPrepare(void)
 
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].endorserNumber = 1;
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].quantities = 1;
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].endorser = BoatMalloc(wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
+	wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].endorser = BoatMalloc(wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].endorserNumber * sizeof(BoatHwbcsNodeInfoCfg));
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].endorser[0].nodeUrl = BoatMalloc(strlen(hw_bcs_demo_endorser_peer0Org2_url)+1);
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].endorser[0].hostName = BoatMalloc(strlen(hw_bcs_demo_endorser_peer0Org2_hostName)+1);
 	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].endorser[0].nodeUrl,hw_bcs_demo_endorser_peer0Org2_url,strlen(hw_bcs_demo_endorser_peer0Org2_url)+1);
@@ -155,27 +155,27 @@ __BOATSTATIC BOAT_RESULT hw_bcs_WalletPrepare(void)
 	wallet_config.nodesCfg.orderCfg.endorserNumber = 1;
 	wallet_config.nodesCfg.orderCfg.tlsOrgCertContent.length = strlen(hw_bcs_org1_tlsCert);
 	memcpy(wallet_config.nodesCfg.orderCfg.tlsOrgCertContent.content,hw_bcs_org1_tlsCert,strlen(hw_bcs_org1_tlsCert));
-	wallet_config.nodesCfg.orderCfg.endorser = BoatMalloc(wallet_config.nodesCfg.orderCfg.endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
+	wallet_config.nodesCfg.orderCfg.endorser = BoatMalloc(wallet_config.nodesCfg.orderCfg.endorserNumber * sizeof(BoatHwbcsNodeInfoCfg));
 	wallet_config.nodesCfg.orderCfg.endorser[0].hostName = BoatMalloc(strlen(hw_bcs_demo_order_hostName)+1);
 	wallet_config.nodesCfg.orderCfg.endorser[0].nodeUrl = BoatMalloc(strlen(hw_bcs_demo_order_url)+1);
 	memcpy(wallet_config.nodesCfg.orderCfg.endorser[0].nodeUrl,hw_bcs_demo_order_url,strlen(hw_bcs_demo_order_url)+1);
 	memcpy(wallet_config.nodesCfg.orderCfg.endorser[0].hostName,hw_bcs_demo_order_hostName,strlen(hw_bcs_demo_order_hostName)+1);
-	/* create fabric wallet */
+	/* create hwbcs wallet */
 #if defined(USE_ONETIME_WALLET)
-	index = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+	index = BoatWalletCreate(BOAT_PROTOCOL_HWBCS, NULL, &wallet_config, sizeof(BoatHwbcsWalletConfig));
 #elif defined(USE_CREATE_PERSIST_WALLET)
-	index = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+	index = BoatWalletCreate(BOAT_PROTOCOL_HWBCS, "hwbcs.cfg", &wallet_config, sizeof(BoatHwbcsWalletConfig));
 #elif defined(USE_LOAD_PERSIST_WALLET)
-	index = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", NULL, sizeof(BoatHlfabricWalletConfig));
+	index = BoatWalletCreate(BOAT_PROTOCOL_HWBCS, "hwbcs.cfg", NULL, sizeof(BoatHwbcsWalletConfig));
 #else
 	return BOAT_ERROR;
 #endif
 	if (index == BOAT_ERROR)
 	{
-		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
+		//BoatLog(BOAT_LOG_CRITICAL, "hwbcsWalletPrepare failed.");
 		return BOAT_ERROR;
 	}
-	g_fabric_wallet_ptr = BoatGetWalletByIndex(index);
+	g_hwbcs_wallet_ptr = BoatGetWalletByIndex(index);
 	
 	return BOAT_SUCCESS;
 }
@@ -183,7 +183,7 @@ __BOATSTATIC BOAT_RESULT hw_bcs_WalletPrepare(void)
 int main(int argc, char *argv[])
 {
 	BOAT_RESULT       result  = BOAT_SUCCESS;
-	BoatHlfabricTx    tx_ptr;
+	BoatHwbcsTx    tx_ptr;
 	
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
@@ -192,79 +192,79 @@ int main(int argc, char *argv[])
 	result = hw_bcs_WalletPrepare();
 	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
+		//BoatLog(BOAT_LOG_CRITICAL, "hwbcsWalletPrepare failed.");
 		return -1;
 	}
 
-	/* step-3: fabric transaction structure initialization */
-	result = BoatHwbcsTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "default", NULL, NULL, "org1","chaincode","user-1.org1.bcs-epmmli.svc.cluster.local");
+	/* step-3: hwbcs transaction structure initialization */
+	result = BoatHwbcsTxInit(&tx_ptr, g_hwbcs_wallet_ptr, NULL, "default", NULL, NULL, "org1","chaincode");
 	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed.");
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHwbcsTxInit failed.");
 		return -1;
 	}
-	result = BoatHlfabricWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
+	result = BoatHwbcsWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
 	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed." );
+		//BoatLog( BOAT_LOG_CRITICAL, "BoatHwbcsTxSetTimestamp failed." );
 		return -1;
 	}
 	/* step-4: set transaction timestamp */
 #if defined(__unix__) || defined(__unix) || defined(unix)
 	struct timespec txTimestamp;
 	clock_gettime(CLOCK_REALTIME, &txTimestamp);
-	result = BoatHlfabricTxSetTimestamp( &tx_ptr, txTimestamp.tv_sec, txTimestamp.tv_nsec);
+	result = BoatHwbcsTxSetTimestamp( &tx_ptr, txTimestamp.tv_sec, txTimestamp.tv_nsec);
 #else
 	long int timesec = 0;
 	time(&timesec);
-	result = BoatHlfabricTxSetTimestamp(&tx_ptr, timesec, 0);
+	result = BoatHwbcsTxSetTimestamp(&tx_ptr, timesec, 0);
 #endif
 	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed.");
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHwbcsTxSetTimestamp failed.");
 		return -1;
 	}
 
-	result = BoatHlfabricTxSetArgs(&tx_ptr, "getMarble", "a", NULL);
+	result = BoatHwbcsTxSetArgs(&tx_ptr, "getMarble", "a", NULL);
 	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHwbcsTxSetArgs() failed.");
 		return -1;
 	}
 	result = BoatHwbcsTxEvaluate(&tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxEvaluate() failed.");
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHwbcsTxEvaluate() failed.");
 		return -1;
 	}
 	
 	tx_ptr.endorserResponse.http2Res[0] = tx_ptr.endorserResponse.http2Res[0] + 1;
 
 	/* step-5: set transaction 'invoke' command */
-	result += BoatHlfabricTxSetArgs(&tx_ptr, "initMarble", "a",(BCHAR*)tx_ptr.endorserResponse.http2Res , NULL, NULL);
+	result += BoatHwbcsTxSetArgs(&tx_ptr, "initMarble", "a",(BCHAR*)tx_ptr.endorserResponse.http2Res , NULL, NULL);
 	result += BoatHwbcsTxSubmit(&tx_ptr); 
 	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHwbcsTxSetArgs() failed.");
 		return -1;
 	}
 	/* step-6: wait seconds and 'query' the tansaction */
 	BoatSleep(3);
-	result = BoatHlfabricTxSetArgs(&tx_ptr, "getMarble", "a", NULL);
+	result = BoatHwbcsTxSetArgs(&tx_ptr, "getMarble", "a", NULL);
 	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHwbcsTxSetArgs() failed.");
 		return -1;
 	}
 	result = BoatHwbcsTxEvaluate(&tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
-		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxEvaluate() failed.");
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHwbcsTxEvaluate() failed.");
 		return -1;
 	}
 	
-	/* step-7: fabric transaction structure Deinitialization */
-	BoatHlfabricTxDeInit(&tx_ptr);
+	/* step-7: hwbcs transaction structure Deinitialization */
+	BoatHwbcsTxDeInit(&tx_ptr);
 	
 	/* step-8: Boat SDK Deinitialization */
     BoatIotSdkDeInit();

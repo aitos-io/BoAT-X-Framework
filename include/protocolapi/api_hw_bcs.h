@@ -252,8 +252,7 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 							   const BCHAR *chaincodeId_version_str,
 							   const BCHAR *channelId_str,
 							   const BCHAR *orgName_str,
-							   const BCHAR *contract_name,
-							   const BCHAR *creator_id);
+							   const BCHAR *contract_name);
 
 
 /*!****************************************************************************
@@ -353,6 +352,8 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr);
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
 BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr);
+
+
 
 /*! @}*/
 
