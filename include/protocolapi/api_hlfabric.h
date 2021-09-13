@@ -477,9 +477,7 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 							   const BCHAR *chaincodeId_name_str,
 							   const BCHAR *chaincodeId_version_str,
 							   const BCHAR *channelId_str,
-							   const BCHAR *orgName_str,
-							   const BCHAR *contract_name,
-							   const BCHAR *creator_id);
+							   const BCHAR *orgName_str);
 
 
 /*!****************************************************************************

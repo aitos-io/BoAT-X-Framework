@@ -24,7 +24,63 @@ api_hw_bcs.h is header file for hauwei chain transaction construction and perfor
 #define __API_HW_BCS_H__
 
 #include "boatiotsdk.h"
-#include "protocolapi/api_hlfabric.h"
+
+
+#define    BOAT_HWBCS_NODE_URL_MAX_LEN     BOAT_HLFABRIC_NODE_URL_MAX_LEN   //!< Maxmum length of node's URL
+#define    BOAT_HWBCS_HOSTNAME_MAX_LEN     BOAT_HLFABRIC_HOSTNAME_MAX_LEN //!< Maxmum length of hostname
+#define    BOAT_HWBCS_CERT_MAX_LEN         BOAT_HLFABRIC_CERT_MAX_LEN//!< Maxmum length of certificate
+
+
+#define    BOAT_HWBCS_ARGS_MAX_NUM         BOAT_HLFABRIC_ARGS_MAX_NUM//!< Arguments max number in fabric command
+#define    BOAT_HWBCS_ENDORSER_MAX_NUM     BOAT_HLFABRIC_ENDORSER_MAX_NUM  //!< Support endorser max number
+#define    BOAT_HWBCS_ORDERER_MAX_NUM      BOAT_HLFABRIC_ORDERER_MAX_NUM   //!< Support orderer max number
+
+#define    BOAT_HWBCS_TLS_SUPPORT          BOAT_HLFABRIC_TLS_SUPPORT//!< If need client support TLS, set it to 1.
+#define    BOAT_HWBCS_TLS_IDENTIFY_CLIENT  BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT     //!< If server need identify client, set it to 1.
+
+                                                   //!< This macro valid only BOAT_HLFABRIC_TLS_SUPPORT has
+                                                   //!< set to 1. 
+												   //!< @note This macro is reserved for future.
+#define    BOAT_HWBCS_ROOTCA_MAX_NUM        BOAT_HLFABRIC_ROOTCA_MAX_NUM//!< Support ROOT CA certificate max number
+
+#define    BOAT_HWBCS_HTTP2_SEND_BUF_MAX_LEN BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN //!< The maximum length of HTTP2 send buffer
+
+#define  BoatHwbcsKeyPair BoatHlfabricKeyPair
+#define  BoatHwbcsTlsCAchain BoatHlfabricTlsCAchain
+#define  BoatHwbcsNodeInfo BoatHlfabricNodeInfo
+#define  BoatHwbcsCertInfoCfg BoatHlfabricCertInfoCfg
+#define  BoatHwbcsNodeInfoCfg BoatHlfabricNodeInfoCfg
+#define  BoatHwbcsNodeGroupCfg BoatHlfabricNodeGroupCfg
+#define  BoatHwbcsNodeLayoutCfg BoatHlfabricNodeLayoutCfg
+#define  BoatHwbcsNodesCfg  BoatHlfabricNodesCfg
+#define  BoatHwbcsWallet  BoatHlfabricWallet
+#define  BoatHwbcsTimestamp BoatHlfabricTimestamp
+#define  BoatHwbcsChaincodeId BoatHlfabricChaincodeId
+#define  BoatHwbcsArgs BoatHlfabricArgs
+#define  BoatHwbcsSingleEndorserResponse BoatHlfabricSingleEndorserResponse
+#define  BoatHwbcsEndorserResponse BoatHlfabricEndorserResponse
+#define  BoatHwbcsVariable BoatHlfabricVariable
+#define  BoatHwbcsTx  BoatHlfabricTx
+#define  BoatHwbcsWalletConfig BoatHlfabricWalletConfig
+
+//!@brief fabric transaction type
+//! 
+typedef enum
+{
+	HWBCS_TYPE_IDLE = 0,
+	HWBCS_TYPE_PROPOSAL,
+	HWBCS_TYPE_TRANSACTION,
+	HWBCS_TYPE_DISCOVER,
+}BoatHwbcsType;
+
+//!@brief fabric function type
+//! 
+typedef enum
+{
+	HWBCS_FUN_EVALUATE = 0,
+	HWBCS_FUN_SUBMIT ,
+}BoatHwbcsFunType;
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,12 +107,12 @@ extern "C" {
  * @return
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHwbcsWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr, 
+BOAT_RESULT BoatHwbcsWalletSetAccountInfo(BoatHwbcsWallet *wallet_ptr, 
 											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											 const BoatHlfabricCertInfoCfg certContent);
+											 const BoatHwbcsCertInfoCfg certContent);
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_HWBCS_TLS_SUPPORT == 1) && (BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
 /*!****************************************************************************
  * @brief 
  *   Set TLS key pairs of client.
@@ -79,13 +135,13 @@ BOAT_RESULT BoatHwbcsWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr,
  *
  *@note This function is reserved for future. DO NOT use it in your application.
  ******************************************************************************/
-BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr, 
+BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo( BoatHwbcsWallet *wallet_ptr, 
 											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											    const BoatHlfabricCertInfoCfg certContent );
+											    const BoatHwbcsCertInfoCfg certContent );
 #endif
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_HWBCS_TLS_SUPPORT == 1)
 /*!****************************************************************************
  * @brief Set root CA certificate for TLS connection.
  * 
@@ -104,8 +160,8 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHwbcsWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr, 
-											const BoatHlfabricCertInfoCfg *rootCaContent,
+BOAT_RESULT BoatHwbcsWalletSetRootCaInfo(BoatHwbcsWallet *wallet_ptr, 
+											const BoatHwbcsCertInfoCfg *rootCaContent,
 											BUINT32 rootCaNumber);
 #endif
 
@@ -144,8 +200,8 @@ BOAT_RESULT BoatHwbcsWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHwbcsWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr, 
-							const BoatHlfabricNodesCfg endorserInfo_ptr );
+BOAT_RESULT BoatHwbcsWalletSetNetworkInfo( BoatHwbcsWallet *wallet_ptr, 
+							const BoatHwbcsNodesCfg endorserInfo_ptr );
 
 /*!****************************************************************************
  * @brief 
@@ -157,7 +213,7 @@ BOAT_RESULT BoatHwbcsWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
  * @param wallet_ptr 
  *   To be de-initialized huawei chain wallet pointer.
  ******************************************************************************/
-void BoatHwbcsWalletDeInit( BoatHlfabricWallet *wallet_ptr );
+void BoatHwbcsWalletDeInit( BoatHwbcsWallet *wallet_ptr );
 
 
 /*!****************************************************************************
@@ -189,8 +245,8 @@ void BoatHwbcsWalletDeInit( BoatHlfabricWallet *wallet_ptr );
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHwbcsTxInit(BoatHlfabricTx *tx_ptr,
-							   const BoatHlfabricWallet *wallet_ptr,
+BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
+							   const BoatHwbcsWallet *wallet_ptr,
 							   const BCHAR *chaincodeId_path_str,
 							   const BCHAR *chaincodeId_name_str,
 							   const BCHAR *chaincodeId_version_str,
@@ -213,7 +269,7 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHlfabricTx *tx_ptr,
  * @return 
  *   This function doesn't return any thing.
  ******************************************************************************/
-void BoatHwbcsTxDeInit(BoatHlfabricTx *tx_ptr);
+void BoatHwbcsTxDeInit(BoatHwbcsTx *tx_ptr);
 
 
 /*!****************************************************************************
@@ -236,7 +292,7 @@ void BoatHwbcsTxDeInit(BoatHlfabricTx *tx_ptr);
  * @return  
  *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHwbcsTxSetTimestamp(BoatHlfabricTx *tx_ptr, 
+BOAT_RESULT BoatHwbcsTxSetTimestamp(BoatHwbcsTx *tx_ptr, 
 									   const BUINT64 sec, 
 									   const BUINT64 nanos);
 
@@ -280,7 +336,7 @@ BOAT_RESULT BoatHwbcsTxSetTimestamp(BoatHlfabricTx *tx_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if evaluate success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHwbcsTxEvaluate(BoatHlfabricTx *tx_ptr);
+BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief 
@@ -296,7 +352,7 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHlfabricTx *tx_ptr);
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHwbcsTxSubmit(BoatHlfabricTx *tx_ptr);
+BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr);
 
 /*! @}*/
 
