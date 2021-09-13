@@ -296,47 +296,14 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 {
 	nghttp2_data_provider data_prd;
 	nghttp2_session_callbacks *callbacks;
-	char *pathTmp = NULL;
+	// char *pathTmp = NULL;
 	BoatHlfabricEndorserResponse *parsePtr = NULL;
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
 
-	// pathTmp          = (context->isProposal) ? "/protos.Endorser/ProcessProposal" : \
-	// 				                           "/orderer.AtomicBroadcast/Broadcast";
-	// pathTmp = "/discovery.Discovery/Discover";
-	if (context->chainType == HLCHAIN_TYPE_FABRIC)
-	{
-		if (context->type == HLFABRIC_TYPE_PROPOSAL)
-		{
-			pathTmp = "/protos.Endorser/ProcessProposal";
-		}
-		else if (context->type == HLFABRIC_TYPE_TRANSACTION)
-		{
-			pathTmp = "/orderer.AtomicBroadcast/Broadcast";
-		}
-		else
-		{
-			pathTmp = "/discovery.Discovery/Discover";
-		}
-	}
-	else
-	{
-		if (context->type == HLFABRIC_TYPE_PROPOSAL)
-		{
-			pathTmp = "/nodeservice.Contract/Invoke";
-		}
-		else if (context->type == HLFABRIC_TYPE_TRANSACTION)
-		{
-			pathTmp = "/nodeservice.TransactionSender/SendTransaction";
-		}
-		else
-		{
-			pathTmp = "/nodeservice.ChainManager/QueryAllChainInfos";
-		}
-	}
 	nghttp2_nv nva[] = {MAKE_NV(":method", "POST"),
 						MAKE_NV(":scheme", "http"),
-						MAKE_NV(":path", pathTmp),
+						MAKE_NV(":path", context->pathTmp),
 						MAKE_NV(":authority", context->nodeUrl),
 						MAKE_NV("content-type", "application/grpc"),
 						MAKE_NV("user-agent", "grpc-go/1.15.0"),
