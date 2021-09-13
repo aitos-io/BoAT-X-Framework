@@ -24,8 +24,8 @@ if(BOAT_PROTOCOL_USE_HLFABRIC)
 set(FILE_SRC    ${FILE_SRC} api_hlfabric.c)
 endif()
 
-if(BOAT_PROTOCOL_USE_HLHUAWEI)
-set(FILE_SRC    ${FILE_SRC} api_hlhuawei.c)
+if(BOAT_PROTOCOL_USE_HWBCS)
+set(FILE_SRC    ${FILE_SRC} api_hw_bcs.c)
 endif()
 
 
@@ -40,7 +40,7 @@ target_include_directories(${SUB_MODULE_NAME}
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/vendor/platform/include
     ${PROJECT_SOURCE_DIR}/sdk/protocol
-    ${PROJECT_SOURCE_DIR}/sdk/protocol/boathlhuawei/protos
+    ${PROJECT_SOURCE_DIR}/sdk/protocol/boathwbcs/protos
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )

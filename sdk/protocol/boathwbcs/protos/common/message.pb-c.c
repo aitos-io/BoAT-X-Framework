@@ -268,7 +268,7 @@ static const ProtobufCFieldDescriptor common__response__field_descriptors[3] =
     PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
     offsetof(Common__Response, status),
-    &common__status__huawei__descriptor,
+    &common__status__hwbcs__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -360,7 +360,7 @@ static const ProtobufCEnumValueIndex common__status__enum_values_by_name[14] =
   { "SUCCESS", 1 },
   { "UNKNOWN", 0 },
 };
-const ProtobufCEnumDescriptor common__status__huawei__descriptor =
+const ProtobufCEnumDescriptor common__status__hwbcs__descriptor =
 {
   PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
   "common.Status",

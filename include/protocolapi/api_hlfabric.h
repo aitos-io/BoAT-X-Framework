@@ -54,7 +54,7 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 typedef enum
 {
 	HLCHAIN_TYPE_FABRIC = 0,
-	HLCHAIN_TYPE_HUAWEI,
+	HLCHAIN_TYPE_HWBCS,
 }BoatHlchainType;
 
 //!@brief fabric transaction type

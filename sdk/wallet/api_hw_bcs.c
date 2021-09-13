@@ -17,18 +17,18 @@
 /*!@brief Ethereum wallet API for BoAT IoT SDK
 
 @file
-api_hlhuawei.c defines the Ethereum wallet API for BoAT IoT SDK.
+api_hw_bcs.c defines the Ethereum wallet API for BoAT IoT SDK.
 */
 
 /* self-header include */
 #include "boatinternal.h"
-#if PROTOCOL_USE_HLHUAWEI == 1
+#if PROTOCOL_USE_HWBCS == 1
 #include "boatprotocols.h"
 #include "http2intf.h"
 /* protos include */
 #include "peer/proposal_response.pb-c.h"
 #include "orderer/cluster.pb-c.h"
-#include "common/transaction.pb-c-huawei.h"
+#include "common/transaction.pb-c-hwbcs.h"
 
 /*!****************************************************************************
  * @brief Access to the specified node 
@@ -47,7 +47,7 @@ api_hlhuawei.c defines the Ethereum wallet API for BoAT IoT SDK.
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a failed code.
  ******************************************************************************/
-__BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
+__BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHlfabricTx *tx_ptr,
 											BoatHlfabricNodesCfg nodeCfg, BoatHlfabricFunType funType)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -70,7 +70,7 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
-	result = hlhuaweiProposalTransactionPacked(tx_ptr);
+	result = hwbcsProposalTransactionPacked(tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
@@ -114,7 +114,7 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 
 					parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
 
-					tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_HUAWEI;
+					tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_HWBCS;
 					result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 					if (result != BOAT_SUCCESS)
 					{
@@ -132,7 +132,7 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 					{
 
 						resData = common__response__unpack(NULL, proposalResponse->payload.len, proposalResponse->payload.data);
-						if (resData->status != COMMON__STATUS__HUAWEI__SUCCESS)
+						if (resData->status != COMMON__STATUS__HWBCS__SUCCESS)
 						{
 							continue;
 						}
@@ -148,7 +148,7 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 							resPayload = common__tx_payload__unpack(NULL, datalen, resData->payload.data + 2);
 						}
 						commondTxData = common__common_tx_data__unpack(NULL, resPayload->data.len, resPayload->data.data);
-						if (commondTxData->response->status != COMMON__STATUS__HUAWEI__SUCCESS)
+						if (commondTxData->response->status != COMMON__STATUS__HWBCS__SUCCESS)
 						{
 							continue;
 						}
@@ -227,7 +227,7 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
 			parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
-			tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_HUAWEI;
+			tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_HWBCS;
 			result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 			if (result != BOAT_SUCCESS)
 			{
@@ -237,7 +237,7 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 
 			resData = common__response__unpack(NULL, parsePtr->httpResLen - 7, parsePtr->http2Res + 7);
 			BoatLog(BOAT_LOG_NORMAL, "[http2]common__response__unpack respond status : %d .", resData->status);
-			if (resData->status == COMMON__STATUS__HUAWEI__SUCCESS)
+			if (resData->status == COMMON__STATUS__HWBCS__SUCCESS)
 			{
 				result = BOAT_SUCCESS;
 				break;
@@ -261,7 +261,7 @@ __BOATSTATIC BOAT_RESULT BoatHlhuaweiTxExec(BoatHlfabricTx *tx_ptr,
 	return result;
 }
 
-BOAT_RESULT BoatHlhuaweiWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr,
+BOAT_RESULT BoatHwbcsWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr,
 											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
 											 const BoatHlfabricCertInfoCfg certContent)
 {
@@ -316,7 +316,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo(BoatHlfabricWallet *wallet_ptr,
 #endif
 
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
-BOAT_RESULT BoatHlhuaweiWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr,
+BOAT_RESULT BoatHwbcsWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr,
 											const BoatHlfabricCertInfoCfg *rootCaContent,
 											BUINT32 rootCaNumber)
 {
@@ -324,25 +324,25 @@ BOAT_RESULT BoatHlhuaweiWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr,
 }
 #endif
 
-BOAT_RESULT BoatHlhuaweiWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
+BOAT_RESULT BoatHwbcsWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 											 const BoatHlfabricNodesCfg endorserInfo_ptr)
 {
 
 	return BoatHlfabricWalletSetNetworkInfo(wallet_ptr, endorserInfo_ptr);
 }
 
-BoatHlfabricWallet *BoatHlhuaweiWalletInit(const BoatHlfabricWalletConfig *config_ptr,
+BoatHlfabricWallet *BoatHwbcsWalletInit(const BoatHlfabricWalletConfig *config_ptr,
 										   BUINT32 config_size)
 {
 	return BoatHlfabricWalletInit(config_ptr, config_size);
 }
 
-void BoatHlhuaweiWalletDeInit(BoatHlfabricWallet *wallet_ptr)
+void BoatHwbcsWalletDeInit(BoatHlfabricWallet *wallet_ptr)
 {
 	BoatHlfabricWalletDeInit(wallet_ptr);
 }
 
-BOAT_RESULT BoatHlhuaweiTxInit(BoatHlfabricTx *tx_ptr,
+BOAT_RESULT BoatHwbcsTxInit(BoatHlfabricTx *tx_ptr,
 							   const BoatHlfabricWallet *wallet_ptr,
 							   const BCHAR *chaincodeId_path_str,
 							   const BCHAR *chaincodeId_name_str,
@@ -355,19 +355,19 @@ BOAT_RESULT BoatHlhuaweiTxInit(BoatHlfabricTx *tx_ptr,
 	return BoatHlfabricTxInit(tx_ptr, wallet_ptr, chaincodeId_path_str, chaincodeId_name_str, chaincodeId_version_str, channelId_str, orgName_str, contract_name, creator_id);
 }
 
-void BoatHlhuaweiTxDeInit(BoatHlfabricTx *tx_ptr)
+void BoatHwbcsTxDeInit(BoatHlfabricTx *tx_ptr)
 {
 	BoatHlfabricTxDeInit(tx_ptr);
 }
 
-BOAT_RESULT BoatHlhuaweiTxSetTimestamp(BoatHlfabricTx *tx_ptr,
+BOAT_RESULT BoatHwbcsTxSetTimestamp(BoatHlfabricTx *tx_ptr,
 									   const BUINT64 sec,
 									   const BUINT64 nanos)
 {
 	return BoatHlfabricTxSetTimestamp(tx_ptr, sec, nanos);
 }
 
-BOAT_RESULT BoatHlhuaweiTxEvaluate(BoatHlfabricTx *tx_ptr)
+BOAT_RESULT BoatHwbcsTxEvaluate(BoatHlfabricTx *tx_ptr)
 {
 	// BoatHlfabricNodeInfo urlTmp[2]    = {{NULL,NULL}, {NULL,NULL}};
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -389,7 +389,7 @@ BOAT_RESULT BoatHlhuaweiTxEvaluate(BoatHlfabricTx *tx_ptr)
 	/* submit query */
 	tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
 	// urlTmp[0] = tx_ptr->wallet_ptr->network_info.endorser[0];
-	result = BoatHlhuaweiTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_EVALUATE);
+	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_EVALUATE);
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
 						 tx_ptr->endorserResponse.http2Res,
 						 tx_ptr->endorserResponse.httpResLen);
@@ -419,7 +419,7 @@ BOAT_RESULT BoatHlhuaweiTxEvaluate(BoatHlfabricTx *tx_ptr)
 	return result;
 }
 
-BOAT_RESULT BoatHlhuaweiTxSubmit(BoatHlfabricTx *tx_ptr)
+BOAT_RESULT BoatHwbcsTxSubmit(BoatHlfabricTx *tx_ptr)
 {
 	// BoatHlfabricNodeInfo urlTmp[2]    = {{NULL,NULL}, {NULL,NULL}};
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -440,7 +440,7 @@ BOAT_RESULT BoatHlhuaweiTxSubmit(BoatHlfabricTx *tx_ptr)
 
 	/* invoke-step1: submit proposal to endorer */
 	tx_ptr->var.type = HLFABRIC_TYPE_PROPOSAL;
-	result = BoatHlhuaweiTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_SUBMIT);
+	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
 		return BOAT_ERROR;
@@ -448,7 +448,7 @@ BOAT_RESULT BoatHlhuaweiTxSubmit(BoatHlfabricTx *tx_ptr)
 	BoatLog(BOAT_LOG_NORMAL, "Submit proposal OK ...");
 	/* invoke-step2: submit transaction to orderer */
 	tx_ptr->var.type = HLFABRIC_TYPE_TRANSACTION;
-	result = BoatHlhuaweiTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_SUBMIT);
+	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
 		return BOAT_ERROR;

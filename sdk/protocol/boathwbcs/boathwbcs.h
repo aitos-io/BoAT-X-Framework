@@ -20,13 +20,13 @@
 boathlfabric.h is header file for RAW transaction construction and performing.
 */
 
-#ifndef __BOATHLHUAWEI_H__
-#define __BOATHLHUAWEI_H__
+#ifndef __BOATHWBCS_H__
+#define __BOATHWBCS_H__
 
 #include "boatconfig.h"
 #include "boatinternal.h"
 
-#if PROTOCOL_USE_HLHUAWEI == 1
+#if PROTOCOL_USE_HWBCS == 1
 
 /*! @defgroup fabricp protocol-fabric 
  * @{
@@ -46,7 +46,7 @@ extern "C" {
  * @return 
  *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code.
  ******************************************************************************/
-BOAT_RESULT hlhuaweiProposalTransactionPacked(BoatHlfabricTx *tx_ptr);
+BOAT_RESULT hwbcsProposalTransactionPacked(BoatHlfabricTx *tx_ptr);
 
 /*! @}*/
 

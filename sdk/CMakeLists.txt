@@ -27,9 +27,9 @@ set(TARGET  ${TARGET} $<TARGET_OBJECTS:nghttps2-obj>)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:protos-obj>)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:protobuf-obj>)
 endif()
-if(BOAT_PROTOCOL_USE_HLHUAWEI)
-set(TARGET  ${TARGET} $<TARGET_OBJECTS:boathlhuawei-obj>)
-set(TARGET  ${TARGET} $<TARGET_OBJECTS:protos-huawei-obj>)
+if(BOAT_PROTOCOL_USE_HWBCS)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:boathwbcs-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:protos-hwbcs-obj>)
 endif()
 
 add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:wallet_obj>

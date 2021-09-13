@@ -4,9 +4,9 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-.PHONY: all rotocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hlhuawei
+.PHONY: all rotocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs
 
-all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hlhuawei $(OBJECTS_DIR) $(OBJECTS)
+all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs $(OBJECTS_DIR) $(OBJECTS)
 
 
 protocol_common:
@@ -37,9 +37,9 @@ ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)
 	make -C  boathlfabric all
 endif
 
-protocol_hlhuawei:
-ifeq ($(BOAT_PROTOCOL_USE_HLHUAWEI), 1)
-	make -C  boathlhuawei all
+protocol_hw_bcs:
+ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
+	make -C  boathwbcs all
 endif
 
 $(OBJECTS_DIR):
@@ -59,6 +59,6 @@ clean:
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)	
 	make -C boathlfabric  clean
 endif
-ifeq ($(BOAT_PROTOCOL_USE_HLHUAWEI), 1)	
-	make -C boathlhuawei  clean
+ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)	
+	make -C boathwbcs  clean
 endif

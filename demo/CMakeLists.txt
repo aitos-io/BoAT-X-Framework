@@ -19,8 +19,8 @@ if(BOAT_PROTOCOL_USE_HLFABRIC)
 add_subdirectory(demo_fabric)
 endif()
 
-if(BOAT_PROTOCOL_USE_HLHUAWEI)
-add_subdirectory(demo_huawei)
+if(BOAT_PROTOCOL_USE_HWBCS)
+add_subdirectory(demo_hw_bcs)
 endif()
 
 

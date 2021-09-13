@@ -25,7 +25,7 @@ wait for its receipt.
 #include "boatconfig.h"
 #include "boathlfabric.h"
 
-#if PROTOCOL_USE_HLHUAWEI == 1
+#if PROTOCOL_USE_HWBCS == 1
 #include "http2intf.h"
 #include "boatplatform_internal.h"
 /* protos header include */
@@ -35,7 +35,7 @@ wait for its receipt.
 #include "msp/identities.pb-c.h"
 #include "peer/transaction.pb-c.h"
 #include "peer/proposal_response.pb-c.h"
-#include "common/transaction.pb-c-huawei.h"
+#include "common/transaction.pb-c-hwbcs.h"
 #include "common/contract.pb-c.h"
 
 /*!****************************************************************************
@@ -57,7 +57,7 @@ wait for its receipt.
  * @return 
  *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
  ******************************************************************************/
-__BOATSTATIC BOAT_RESULT hlhuaweiPayloadPacked(BoatHlfabricTx *tx_ptr,
+__BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHlfabricTx *tx_ptr,
 											   BoatFieldVariable *output_ptr)
 {
 	Common__TxPayload txPayload = COMMON__TX_PAYLOAD__INIT;
@@ -128,7 +128,7 @@ __BOATSTATIC BOAT_RESULT hlhuaweiPayloadPacked(BoatHlfabricTx *tx_ptr,
 	return result;
 }
 
-BOAT_RESULT hlhuaweiProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
+BOAT_RESULT hwbcsProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 {
 	Common__Approval approval_message = COMMON__APPROVAL__INIT;
 	Common__Transaction transaction = COMMON__TRANSACTION__INIT;
@@ -158,11 +158,11 @@ BOAT_RESULT hlhuaweiProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec hlfabricGenNonce.");
-		boat_throw(result, hlhuaweiProposalTransactionPacked_exception);
+		boat_throw(result, hwbcsProposalTransactionPacked_exception);
 	}
 
 	/* step-2:  payload packed  */
-	result = hlhuaweiPayloadPacked(tx_ptr, &payloadPacked);
+	result = hwbcsPayloadPacked(tx_ptr, &payloadPacked);
 
 
 
@@ -219,7 +219,7 @@ BOAT_RESULT hlhuaweiProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	memcpy(&tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr[sizeof(grpcHeader)], packedData, packedLength);
 
 	/* boat catch handle */
-	boat_catch(hlhuaweiProposalTransactionPacked_exception)
+	boat_catch(hwbcsProposalTransactionPacked_exception)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
 		result = boat_exception;

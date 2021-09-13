@@ -17,11 +17,11 @@
 /*!@brief Header file for performing hauwei chain transaction
 
 @file
-api_hlhuawei.h is header file for hauwei chain transaction construction and performing.
+api_hw_bcs.h is header file for hauwei chain transaction construction and performing.
 */
 
-#ifndef __API_HLHUAWEI_H__
-#define __API_HLHUAWEI_H__
+#ifndef __API_HW_BCS_H__
+#define __API_HW_BCS_H__
 
 #include "boatiotsdk.h"
 #include "protocolapi/api_hlfabric.h"
@@ -51,7 +51,7 @@ extern "C" {
  * @return
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlhuaweiWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr, 
+BOAT_RESULT BoatHwbcsWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr, 
 											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
 											 const BoatHlfabricCertInfoCfg certContent);
 
@@ -104,7 +104,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlhuaweiWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr, 
+BOAT_RESULT BoatHwbcsWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr, 
 											const BoatHlfabricCertInfoCfg *rootCaContent,
 											BUINT32 rootCaNumber);
 #endif
@@ -144,7 +144,7 @@ BOAT_RESULT BoatHlhuaweiWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlhuaweiWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr, 
+BOAT_RESULT BoatHwbcsWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr, 
 							const BoatHlfabricNodesCfg endorserInfo_ptr );
 
 /*!****************************************************************************
@@ -157,7 +157,7 @@ BOAT_RESULT BoatHlhuaweiWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
  * @param wallet_ptr 
  *   To be de-initialized huawei chain wallet pointer.
  ******************************************************************************/
-void BoatHlhuaweiWalletDeInit( BoatHlfabricWallet *wallet_ptr );
+void BoatHwbcsWalletDeInit( BoatHlfabricWallet *wallet_ptr );
 
 
 /*!****************************************************************************
@@ -189,7 +189,7 @@ void BoatHlhuaweiWalletDeInit( BoatHlfabricWallet *wallet_ptr );
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlhuaweiTxInit(BoatHlfabricTx *tx_ptr,
+BOAT_RESULT BoatHwbcsTxInit(BoatHlfabricTx *tx_ptr,
 							   const BoatHlfabricWallet *wallet_ptr,
 							   const BCHAR *chaincodeId_path_str,
 							   const BCHAR *chaincodeId_name_str,
@@ -213,7 +213,7 @@ BOAT_RESULT BoatHlhuaweiTxInit(BoatHlfabricTx *tx_ptr,
  * @return 
  *   This function doesn't return any thing.
  ******************************************************************************/
-void BoatHlhuaweiTxDeInit(BoatHlfabricTx *tx_ptr);
+void BoatHwbcsTxDeInit(BoatHlfabricTx *tx_ptr);
 
 
 /*!****************************************************************************
@@ -236,7 +236,7 @@ void BoatHlhuaweiTxDeInit(BoatHlfabricTx *tx_ptr);
  * @return  
  *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlhuaweiTxSetTimestamp(BoatHlfabricTx *tx_ptr, 
+BOAT_RESULT BoatHwbcsTxSetTimestamp(BoatHlfabricTx *tx_ptr, 
 									   const BUINT64 sec, 
 									   const BUINT64 nanos);
 
@@ -260,19 +260,19 @@ BOAT_RESULT BoatHlhuaweiTxSetTimestamp(BoatHlfabricTx *tx_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
  ******************************************************************************/
-// BOAT_RESULT BoatHlhuaweiTxSetArgs(BoatHlfabricTx *tx_ptr, 
+// BOAT_RESULT BoatHwbcsTxSetArgs(BoatHlfabricTx *tx_ptr, 
 // 								  const BCHAR *arg1, 
 // 								  ...);
-#define BoatHlhuaweiTxSetArgs BoatHlfabricTxSetArgs
+#define BoatHwbcsTxSetArgs BoatHlfabricTxSetArgs
 
 /*!****************************************************************************
  * @brief 
  *   Evaluate transaction.
  *
  * @details
- *   This function should be invoked after BoatHlhuaweiTxSetTimestamp() and
- *   BoatHlhuaweiTxSetArgs() had excuted.When you need to get states from
- *   Hlhuawei,use this function.
+ *   This function should be invoked after BoatHwbcsTxSetTimestamp() and
+ *   BoatHwbcsTxSetArgs() had excuted.When you need to get states from
+ *   Hwbcs,use this function.
  *
  * @param tx_ptr 
  *   huawei chain transaction structure pointer.
@@ -280,15 +280,15 @@ BOAT_RESULT BoatHlhuaweiTxSetTimestamp(BoatHlfabricTx *tx_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if evaluate success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlhuaweiTxEvaluate(BoatHlfabricTx *tx_ptr);
+BOAT_RESULT BoatHwbcsTxEvaluate(BoatHlfabricTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief 
  *   Submit transaction.
  *
  * @details
- *   This function should be invoked after BoatHlhuaweiTxSetTimestamp() and
- *   BoatHlhuaweiTxSetArgs() had excuted.When you need to set states to
+ *   This function should be invoked after BoatHwbcsTxSetTimestamp() and
+ *   BoatHwbcsTxSetArgs() had excuted.When you need to set states to
  *   Hlhuawei,use this function.
  * @param tx_ptr 
  *   huawei chain transaction structure pointer.
@@ -296,7 +296,7 @@ BOAT_RESULT BoatHlhuaweiTxEvaluate(BoatHlfabricTx *tx_ptr);
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlhuaweiTxSubmit(BoatHlfabricTx *tx_ptr);
+BOAT_RESULT BoatHwbcsTxSubmit(BoatHlfabricTx *tx_ptr);
 
 /*! @}*/
 

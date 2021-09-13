@@ -1,14 +1,14 @@
-set(SUB_MODULE_NAME boathlhuawei-obj)
+set(SUB_MODULE_NAME boathwbcs-obj)
 
 add_subdirectory(protos)
 
-set(FILE_SRC    boathlhuawei.c)
+set(FILE_SRC    boathwbcs.c)
 
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
 
-target_link_libraries(${SUB_MODULE_NAME}  protos-huawei-obj)
+target_link_libraries(${SUB_MODULE_NAME}  protos-hwbcs-obj)
 
-add_dependencies(${SUB_MODULE_NAME} protos-huawei-obj)
+add_dependencies(${SUB_MODULE_NAME} protos-hwbcs-obj)
 
 target_include_directories(${SUB_MODULE_NAME}
     PRIVATE
