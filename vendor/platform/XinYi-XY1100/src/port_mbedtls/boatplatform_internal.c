@@ -380,8 +380,19 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 		//! @todo function todo
 		
 		/* parse is prikey content */
-		result = mbedtls_pk_parse_key( &mbedtls_pkCtx, prikeyCtx.extra_data.value,
-		                               strlen((const char*)prikeyCtx.extra_data.value) + 1, NULL, 0 );
+		BoatLog( BOAT_LOG_CRITICAL, "priKey str=>%s.", prikeyCtx.extra_data.value);
+		//result = mbedtls_pk_parse_key( &mbedtls_pkCtx, prikeyCtx.extra_data.value,
+		//                               strlen((const char*)prikeyCtx.extra_data.value) + 1, NULL, 0 );
+		result = mbedtls_pk_setup( &mbedtls_pkCtx, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY) );
+		if(result)
+		{
+			BoatLog(BOAT_LOG_NORMAL, "== mbedtls_pk_setup ERROR result=%d", result);
+			mbedtls_pk_free( &mbedtls_pkCtx );
+			return result;
+		}
+    
+		ecPrikey = ( (mbedtls_ecp_keypair *) (mbedtls_pkCtx).pk_ctx );
+		boat_get_mbedtls_ecp_key(ecPrikey, prikeyCtx.extra_data.value);
 	}
 	else
 	{
@@ -393,7 +404,7 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 		BoatLog( BOAT_LOG_CRITICAL, "Fail to exec mbedtls_pk_parse." );
         boat_throw( result, BoatSignature_exception );
     }
-	ecPrikey = mbedtls_pk_ec( mbedtls_pkCtx );
+	//ecPrikey = mbedtls_pk_ec( mbedtls_pkCtx );
 
 	/* signature process */
 	result = Boat_private_ecdsa_sign( ecPrikey, digest, digestLen, signatureTmp, &signatureTmpLen, raw_r, raw_s, 
@@ -433,7 +444,6 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 
 	return result;
 }
-
 
 
 
@@ -828,6 +838,130 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native( const BoatWall
     return result;
 }
 
+static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs( const BoatWalletPriKeyCtx_config* config, 
+															    BoatWalletPriKeyCtx* pkCtx )
+{
+	mbedtls_pk_context     mbedtls_pkCtx;
+	BOAT_RESULT            result = BOAT_SUCCESS;
+	mbedtls_ecdsa_context* ecPrikey = NULL;
+
+	// 0- check input parameter
+	if( (config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "input parameter can not be NULL." );
+		return BOAT_ERROR;
+	}
+
+	mbedtls_pk_init( &mbedtls_pkCtx );
+
+	result = mbedtls_pk_setup( &mbedtls_pkCtx, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY) );
+	if(result)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "== mbedtls_pk_setup ERROR result=%d", result);
+		mbedtls_pk_free( &mbedtls_pkCtx );
+		return result;
+	}
+    
+#if 1
+	ecPrikey = ( (mbedtls_ecp_keypair *) (mbedtls_pkCtx).pk_ctx );
+
+    boat_get_mbedtls_ecp_key(ecPrikey, config->prikey_content.field_ptr);
+
+    BoatLog(BOAT_LOG_NORMAL, "==pubkey d.n=%d", ecPrikey->d.n);
+    BoatLog(BOAT_LOG_NORMAL, "==pubkey d.s=%d", ecPrikey->d.s);
+	BoatLog(BOAT_LOG_NORMAL, "==pubkey grp.id=%d", ecPrikey->grp.id);
+
+	result=mbedtls_ecp_mul( &ecPrikey->grp, 
+                    &ecPrikey->Q, 
+                    &ecPrikey->d, 
+                    &ecPrikey->grp.G,
+                    NULL,
+                    NULL);
+	if(result)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "== mbedtls_ecp_mul ERROR result=%d", result);
+		mbedtls_pk_free( &mbedtls_pkCtx );
+		return result;
+	}
+
+	//pub_key[0] = 0x04;
+	// 1- update private key
+	if( config->prikey_content.field_len > sizeof(pkCtx->extra_data.value) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "Error: length of injection key is too long." );
+		return BOAT_ERROR;
+	}
+	memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
+	pkCtx->extra_data.value_len = config->prikey_content.field_len;
+
+	// 2- update private key format
+	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+	
+	// 3- update private key type
+	pkCtx->prikey_type   = config->prikey_type;
+
+	// 4- update private key index
+	// This field should update by 'key secure storage'(such as TE/SE).
+	// When algorithms are implemented by software, this field is default to 0, means
+	// that ignore this field.
+	pkCtx->prikey_index  = 0; 
+
+	// 5- update public key
+	// Ethereum series need NATIVE public key to calculate account address
+	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
+
+    mbedtls_mpi_write_binary(&ecPrikey->Q.X, &pkCtx->pubkey_content[0], 32);
+    mbedtls_mpi_write_binary(&ecPrikey->Q.Y, &pkCtx->pubkey_content[32], 32);
+
+	
+	mbedtls_pk_free( &mbedtls_pkCtx );
+#endif
+
+#if 0
+	result = mbedtls_pk_parse_key( &mbedtls_pkCtx, config->prikey_content.field_ptr,
+								   config->prikey_content.field_len, NULL, 0 );
+	if(result != BOAT_SUCCESS)
+	{
+		mbedtls_pk_free( &mbedtls_pkCtx );
+		BoatLog( BOAT_LOG_CRITICAL, "Error: pkcs key prase failed,result=%d",result );
+		return BOAT_ERROR;
+	}
+
+	
+	// 1- update private key
+	if( config->prikey_content.field_len > sizeof(pkCtx->extra_data.value) )
+	{
+		BoatLog( BOAT_LOG_CRITICAL, "Error: length of injection key is too long." );
+		return BOAT_ERROR;
+	}
+	memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
+	pkCtx->extra_data.value_len = config->prikey_content.field_len;
+
+	// 2- update private key format
+	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+	
+	// 3- update private key type
+	pkCtx->prikey_type   = config->prikey_type;
+
+	// 4- update private key index
+	// This field should update by 'key secure storage'(such as TE/SE).
+	// When algorithms are implemented by software, this field is default to 0, means
+	// that ignore this field.
+	pkCtx->prikey_index  = 0; 
+
+	// 5- update public key
+	// Ethereum series need NATIVE public key to calculate account address
+	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
+	mbedtls_mpi_write_binary( &mbedtls_pk_ec( mbedtls_pkCtx )->Q.X, &pkCtx->pubkey_content[0],  32 );
+    mbedtls_mpi_write_binary( &mbedtls_pk_ec( mbedtls_pkCtx )->Q.Y, &pkCtx->pubkey_content[32], 32 );
+
+	/* free */
+	mbedtls_pk_free( &mbedtls_pkCtx );
+#endif
+    return result;
+}
+
+
 
 BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx )
 {
@@ -849,8 +983,10 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 		switch (config->prikey_format)
 		{
 			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
-				BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );
-				result = BOAT_ERROR;
+				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[pkcs] set..." );
+				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
+				//BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );
+				//result = BOAT_ERROR;
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
 				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[native] set..." );

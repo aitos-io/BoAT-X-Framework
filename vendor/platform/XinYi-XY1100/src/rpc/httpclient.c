@@ -218,46 +218,6 @@ int httpclient_parse_url(const char *url, char *scheme, size_t max_scheme_len, c
     return HTTPCLIENT_OK;
 }
 
-#if 0
-int httpclient_parse_host(char *url, char *host, size_t maxhost_len)
-{
-    char *host_ptr = (char *) strstr(url, "://");
-    size_t host_len = 0;
-    char *port_ptr;
-    char *path_ptr;
-
-    if (host_ptr == NULL) {
-        WARN("Could not find host");
-        return HTTPCLIENT_ERROR_PARSE; /* URL is invalid */
-    }
-    host_ptr += 3;
-
-    port_ptr = strchr(host_ptr, ':');
-    if ( port_ptr != NULL ) {
-        uint16_t tport;
-        host_len = port_ptr - host_ptr;
-        port_ptr++;
-        if ( sscanf(port_ptr, "%hu", &tport) != 1) {
-            WARN("Could not find port");
-            return HTTPCLIENT_ERROR_PARSE;
-        }
-    }
-
-    path_ptr = strchr(host_ptr, '/');
-    if ( host_len == 0 ) {
-        host_len = path_ptr - host_ptr;
-    }
-
-    if ( maxhost_len < host_len + 1 ) { /* including NULL-terminating char */
-        WARN("Host str is too small (%d >= %d)", maxhost_len, host_len + 1);
-        return HTTPCLIENT_ERROR_PARSE;
-    }
-    memcpy(host, host_ptr, host_len);
-    host[host_len] = '\0';
-
-    return HTTPCLIENT_OK;
-}
-#endif
 
 int httpclient_get_info(httpclient_t *client, char *send_buf, int *send_idx, char *buf, size_t len)   /* 0 on success, err code on failure */
 {
