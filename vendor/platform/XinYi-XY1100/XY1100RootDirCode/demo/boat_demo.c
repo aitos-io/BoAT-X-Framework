@@ -82,7 +82,7 @@ BOAT_RESULT platone_createOnetimeWallet()
     BoatPlatoneWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]               = {0};
 
-    //(void)binFormatKey; //avoid warning
+    (void)binFormatKey; //avoid warning
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
@@ -141,7 +141,7 @@ BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
     BoatPlatoneWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]               = {0};
 
-    //(void)binFormatKey; //avoid warning
+    (void)binFormatKey; //avoid warning
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
@@ -317,7 +317,7 @@ static void* boat_task_entry(void *args)
     xy_work_lock(1);
     xy_printf("boatiotsdk  boat_task_entry!!! \n");
     xy_sleep(30000);
-    
+
 #ifdef BOAT_TEST
     boat_platone_entry();
 #endif

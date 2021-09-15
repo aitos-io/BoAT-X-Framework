@@ -778,7 +778,7 @@ void boat_get_public_key_byprikey(BUINT8 *priv_key, BUINT8 *pub_key)
 */
     mbedtls_pk_free( &prikeyCtx );
  }
-
+/*
 static BOAT_RESULT sBoatPort_keyCreate_external_injection_native( const BoatWalletPriKeyCtx_config* config, 
 													              BoatWalletPriKeyCtx* pkCtx )
 {
@@ -837,7 +837,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native( const BoatWall
 	
     return result;
 }
-
+*/
 static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs( const BoatWalletPriKeyCtx_config* config, 
 															    BoatWalletPriKeyCtx* pkCtx )
 {
@@ -985,13 +985,8 @@ BOAT_RESULT  BoatPort_keyCreate( const BoatWalletPriKeyCtx_config* config, BoatW
 			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
 				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[pkcs] set..." );
 				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
-				//BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );
-				//result = BOAT_ERROR;
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
-				BoatLog( BOAT_LOG_VERBOSE, "wallet private key[native] set..." );
-				result = sBoatPort_keyCreate_external_injection_native(config, pkCtx);
-				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
 				BoatLog( BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET." );
 				result = BOAT_ERROR;
