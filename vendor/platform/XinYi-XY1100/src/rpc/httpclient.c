@@ -114,9 +114,6 @@ int httpclient_conn(httpclient_t *client, char *host)
             continue;
         }
         /* set timeout if user need */
-        timeout.tv_sec=50;
-        timeout.tv_usec=500*1000;
-
         if ( client->timeout_in_sec > 0) {
             lwip_setsockopt(client->socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
             lwip_setsockopt(client->socket, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
@@ -458,7 +455,7 @@ int httpclient_recv(httpclient_t *client, char *buf, int min_len, int max_len, i
     while (readLen < max_len) {
         buf[readLen] = '\0';
         if (client->is_http) {
-        #if 1
+        #if 0
             if (readLen < min_len) {
                 ret = recv(client->socket, buf + readLen, min_len - readLen, 0);
                 DBG("recv [blocking] return:%d", ret);
