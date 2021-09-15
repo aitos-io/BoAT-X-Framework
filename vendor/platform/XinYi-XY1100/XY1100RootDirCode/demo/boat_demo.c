@@ -26,9 +26,12 @@ SOFTWARE.
 #include "boatconfig.h"
 #include "protocolapi/api_platone.h"
 
+#include "pem.h"
+
 static int g_boat_task_Handle = -1;
 BoatPlatoneWallet *g_platone_wallet_ptr;
-#define USE_PRIKEY_FORMAT_INTERNAL_GENERATION
+//#define USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE
+#define USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS
 #define BOAT_TEST
 #define USE_ONETIME_WALLET
 //#define USE_CREATE_PERSIST_WALLET
@@ -38,11 +41,13 @@ BoatPlatoneWallet *g_platone_wallet_ptr;
  * PKCS format demo key. The original private key of 'pkcs_demoKey' is 
  * "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
  */
+
 const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
                              "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
                              "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
                              "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
                              "-----END EC PRIVATE KEY-----\n";
+
 /**
  * native demo key
  */
@@ -52,11 +57,20 @@ const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a
  * test node url
  */
 const BCHAR *demoUrl = "http://116.236.47.90:7545";
+//const BCHAR *demoUrl = "http://121.5.173.139:8080/public/eth_gasPrice";
 
 /**
  * transfer recipient address
  */
 const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
+
+typedef struct
+{
+    unsigned char *buf;     /*!< buffer for decoded data             */
+    size_t buflen;          /*!< length of the buffer                */
+    unsigned char *info;    /*!< buffer for extra header information */
+}
+mbedtls_pem_context;
 
 #ifdef BOAT_TEST
 BOAT_RESULT platone_createOnetimeWallet()
@@ -68,7 +82,7 @@ BOAT_RESULT platone_createOnetimeWallet()
     BoatPlatoneWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]               = {0};
 
-    (void)binFormatKey; //avoid warning
+    //(void)binFormatKey; //avoid warning
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
@@ -77,11 +91,19 @@ BOAT_RESULT platone_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
         //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+
+        UtilityHex2Bin( binFormatKey,
+                    32,
+                    "0xe55464c12b9e034ab00f7dddeb01874edcf514b3cd77a9ad0ad8796b4d3b1faf",
+                    TRIMBIN_TRIM_NO,
+                    BOAT_FALSE);
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
-        wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
+        //wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
+        //wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
+        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)binFormatKey;
+        wallet_config.prikeyCtx_config.prikey_content.field_len = 32; //length contain terminator
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
         //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
@@ -119,7 +141,7 @@ BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
     BoatPlatoneWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]               = {0};
 
-    (void)binFormatKey; //avoid warning
+    //(void)binFormatKey; //avoid warning
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
@@ -128,11 +150,18 @@ BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
         //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+        UtilityHex2Bin( binFormatKey,
+                    32,
+                    "0xe55464c12b9e034ab00f7dddeb01874edcf514b3cd77a9ad0ad8796b4d3b1faf",
+                    TRIMBIN_TRIM_NO,
+                    BOAT_FALSE);
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
-        wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
+        //wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
+        //wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
+        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)binFormatKey;
+        wallet_config.prikeyCtx_config.prikey_content.field_len = 32; //length contain terminator
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
         //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
@@ -198,7 +227,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
         return BOAT_ERROR;
     }
 
-    result_str = my_contract_cpp_abi_setName(&tx_ctx, "HelloWorld");
+    result_str = my_contract_cpp_abi_setName(&tx_ctx, "zzq_HelloWorld");
     if (result_str == NULL)
 	{
         xy_printf( "my_contract_cpp_abi_setName failed: %s.\n", result_str);
@@ -221,44 +250,28 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 void boat_platone_entry(void)
 {
     BOAT_RESULT  result  = BOAT_SUCCESS;
-    int rand=0;
     int ret=0;
-
-    BoatRandom((BUINT8*)&rand,sizeof(rand),NULL);
-    xy_printf("======= Ready to INIT BoatIotSdk ======1,rand=%d\n",rand);
-    xy_printf("======= Ready to INIT BoatIotSdk ======2,rand=%d\n",rand);
-    xy_printf("======= Ready to INIT BoatIotSdk ======3,rand=%d\n",rand);
-
+    xy_printf("======= Ready to INIT BoatIotSdk ======\n");
 	/* step-1: Boat SDK initialization */
     result = BoatIotSdkInit();
     if(result != BOAT_SUCCESS)
     {
-        xy_printf("BoatIotSdkInit failed 1 : %d.", result);
-        xy_printf("BoatIotSdkInit failed 2 : %d.", result);
-        xy_printf("BoatIotSdkInit failed 3 : %d.", result);
+        xy_printf("BoatIotSdkInit failed ,result = %d.\n", result);
         return;
 
     }
-    BoatRandom((BUINT8*)&rand,sizeof(rand),NULL);
-    xy_printf("======= BoatIotSdkInit run success ======1,rand=%d\n",rand);
-    xy_printf("======= BoatIotSdkInit run success ======2,rand=%d\n",rand);
-    xy_printf("======= BoatIotSdkInit run success ======3,rand=%d\n",rand);
-    
-    
+        
     xy_printf("g_check_valid_sim = %d\n",g_check_valid_sim); 
 
-    ret = xy_wait_tcpip_ok(2*60);
-    if(ret == 1)
+    if((g_check_valid_sim == 1) && (1 == xy_wait_tcpip_ok(2*60)))
     {
-       xy_printf("tcp/ip is ok!!!\n");
-       xy_printf("tcp/ip is ok!!!\n");
        xy_printf("tcp/ip is ok!!!\n");
     }
     else
     {
+       xy_printf("xy_wait_tcpip_ok error, ret=%x\n",ret);
        xy_printf("tcp/ip is not ok!!!\n");
-       xy_printf("tcp/ip is not ok!!!\n");
-       xy_printf("tcp/ip is not ok!!!\n");
+       return ;
     }
 
     /* step-2: create platone wallet */
@@ -277,55 +290,20 @@ void boat_platone_entry(void)
 #endif	
     if( result != BOAT_SUCCESS )
 	{
-		xy_printf("platone create Wallet failed 1 : %d.", result);
-        xy_printf("platone create Wallet failed 2 : %d.", result);
-        xy_printf("platone create Wallet failed 3 : %d.", result);
+		xy_printf("platone create Wallet failed ,result = %d.\n", result);
 		goto end;
 	}
-    xy_printf("======= platone create Wallet run success ======1\n");
-    xy_printf("======= platone create Wallet run success ======2\n");
-    xy_printf("======= platone create Wallet run success ======3\n");
-#if 0
-    // POST the REQUEST through curl
-    BUINT8 *str=xy_malloc(1000);
-    memset(str,0,1000);
-    BUINT32 str_len=1000;
-    result = RpcRequestSet( g_platone_wallet_ptr->web3intf_context_ptr->rpc_context_ptr, "http://121.5.173.139:8080/device/key/list" );
-    if (result != BOAT_SUCCESS)
-    {
-        xy_printf("RpcRequestSet failed\n");
-        xy_printf("RpcRequestSet failed\n");
-    }
-    
-    result = RpcRequestSync(g_platone_wallet_ptr->web3intf_context_ptr->rpc_context_ptr,
-                    "12345",
-                    5,
-                    (BOAT_OUT BUINT8 **)&str,
-                    &str_len);
+    xy_printf("======= platone create Wallet run success ======\n");
 
-    if (result != BOAT_SUCCESS)
-    {
-        xy_printf( "RpcRequestSync() fails.result=%d\n",result);
-        xy_printf( "RpcRequestSync() fails.result=%d\n",result);
-    }
-
-    xy_printf( "RESPONSE: %s", str);
-    xy_printf( "RESPONSE: %s", str);
-#endif
-#if 1
 	/* step-3: execute 'platone_call_mycontract' */
 	result = platone_call_mycontract( g_platone_wallet_ptr );
     if( result != BOAT_SUCCESS )
 	{
-        xy_printf("platone_call_mycontract failed 1 : %d.", result);
-        xy_printf("platone_call_mycontract failed 2 : %d.", result);
-        xy_printf("platone_call_mycontract failed 3 : %d.", result);
+        xy_printf("platone_call_mycontract failed , result = %d.\n", result);
         goto end;
     }
-    xy_printf("======= platone_call_mycontract run success ======1\n");
-    xy_printf("======= platone_call_mycontract run success ======2\n");
-    xy_printf("======= platone_call_mycontract run success ======3\n");
-#endif
+    xy_printf("======= platone_call_mycontract run success ======\n");
+
 end:	
     /* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
@@ -337,11 +315,9 @@ end:
 static void* boat_task_entry(void *args)
 {
     xy_work_lock(1);
-    xy_printf("boatiotsdk zzq boat_task_entry!!! ==1\n");
-    xy_printf("boatiotsdk zzq boat_task_entry!!! ==2\n");
+    xy_printf("boatiotsdk  boat_task_entry!!! \n");
     xy_sleep(30000);
-
-    xy_printf("boatiotsdk zzq boat_task_entry!!! ==3\n");
+    
 #ifdef BOAT_TEST
     boat_platone_entry();
 #endif

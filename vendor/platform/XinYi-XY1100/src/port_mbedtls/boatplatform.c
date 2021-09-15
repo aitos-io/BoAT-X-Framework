@@ -55,6 +55,154 @@
 /*xinyi1100 header include */
 #include "softap_api.h"
 
+
+
+BUINT32 UtilityHex2Bin(
+                        BOAT_OUT BUINT8 *to_ptr,
+                        BUINT32 to_size,
+                        const BCHAR *from_str,
+                        TRIMBIN_TRIM_MODE trim_mode,
+                        BBOOL zero_as_null
+                      )
+{
+    BUINT32 from_offset;
+    BUINT32 from_len;
+    BUINT32 to_offset;
+    BUINT32 odd_flag;
+
+    unsigned char octet;
+    unsigned char halfbyte;
+    char halfbytechar;
+    BBOOL bool_trim_done;
+     
+    if( to_ptr == NULL || to_size == 0 || from_str == NULL)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "<to_ptr>, <to_size> and <from_str> cannot be 0 or NULL.");
+        return 0;
+    }
+
+    octet = 0;
+
+    from_len = strlen(from_str);
+
+    from_offset = 0;
+    to_offset = 0;
+
+    // Skip leading "0x" or "0X" if there be.
+    // Note: If strlen(from_ptr) <= 2 or <from_up_to_len> <= 2, no "0x" prefix
+    //       is allowed in HEX string.
+    if( from_len > 2 )
+    {
+        if(     from_str[0] == '0' 
+            && (from_str[1] == 'x' || from_str[1] == 'X')
+           )
+        {
+            from_offset += 2;
+        }
+    }
+
+            
+    // if HEX length is odd, treat as if it were left filled with one more '0'
+    if( (from_len&0x01) != 0 )
+    {
+        // length is odd 
+        odd_flag = 1;
+    }
+    else
+    {
+        // length is even
+        odd_flag = 0;
+    }
+
+    if( trim_mode == TRIMBIN_TRIM_NO)
+    {
+        bool_trim_done = BOAT_TRUE;
+    }
+    else
+    {
+        bool_trim_done = BOAT_FALSE;
+    }
+    
+
+    while( from_offset < from_len )
+    {
+        halfbytechar = from_str[from_offset];
+        
+        if( halfbytechar >= '0' && halfbytechar <= '9')
+        {
+            halfbyte = halfbytechar - '0';
+        }
+        else if( halfbytechar >= 'A' && halfbytechar <= 'F')
+        {
+            halfbyte = halfbytechar - 'A' + 0x0A;
+        }
+        else if( halfbytechar >= 'a' && halfbytechar <= 'f')
+        {
+            halfbyte = halfbytechar - 'a' + 0x0A;
+        }
+        else
+        {
+            BoatLog(BOAT_LOG_NORMAL, "<from_str> contains non-HEX character 0x%02x (%c) at Position %d of \"%s\".\n", halfbytechar, halfbytechar, from_offset, from_str);
+            if( halfbytechar == ' ' || halfbytechar == '\t' )
+            {
+                BoatLog(BOAT_LOG_NORMAL, "There should be no space between HEX codes.");
+            }
+            return 0;
+        }
+
+        // If from_len is even, pack 2 half bytes to a byte when from_offset is odd.
+        // For example, "0x012345" is packed when from_offset points to '1', '3' and '5'.
+        //
+        // If from_len is odd, pack 2 half bytes to a byte when from_offset is even.
+        // For example, "0x12345" is packed when from_offset points to '1', '3' and '5'.
+        if( (from_offset&0x01) == odd_flag )
+        {
+            octet = halfbyte << 4;
+            from_offset++;
+            continue;
+        }
+        else
+        {
+            octet |= halfbyte;
+        
+            if( bool_trim_done == BOAT_FALSE && octet == 0x00 )
+            {
+                from_offset++;
+                continue;  // Trim leading zeros.
+            }
+            else
+            {
+                bool_trim_done = BOAT_TRUE;
+            }
+            
+            to_ptr[to_offset++] = octet;
+
+            from_offset++;
+
+            // Check capacity of output buffer
+            if( to_offset >= to_size )
+            {
+                break;
+            }
+         }
+    }
+
+    // Special process for trimed all zero HEX string
+    if( to_offset == 0 && zero_as_null == BOAT_FALSE)
+    {
+        to_ptr[0] = 0x00;
+        to_offset = 1;
+    }
+
+    return to_offset;
+    
+}
+
+
+
+
+
+
 BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 inputLen,
 				       BUINT8* hashed, BUINT8* hashedLen, void* rsvd )
 {
