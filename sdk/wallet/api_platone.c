@@ -87,23 +87,6 @@ BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txty
     return BOAT_SUCCESS;
 }
 
- void hex2array(BUINT8* in, int inlen, BUINT8* out)
-{
-	int i;
-	unsigned char r;
-	for (i = 0; i < inlen; i += 2)
-	{
-		r = in[i] - '0';
-		if (r > 9) r += '0' + 10 - 'a';
-		//printf("%c(%x): %x\n", in[i], in[i], r);
-		out[i / 2] = r << 4;
-		r = in[i + 1] - '0';
-		if (r > 9) r += '0' + 10 - 'a';
-		out[i / 2] += r;
- 
-		//printf("%c(%x): %x <%x>\n", in[i+1], in[i+1], r, out[i/2]);
-	}
-}
 
 void nodeResFree(nodesResult *result_out)
 {
@@ -208,7 +191,8 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     web3_parse_json_result(rpc_response_str, "result", &prase_result);
     nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr))/2);
     memset(nodeManagerAddr,0x00,strlen((BCHAR*)(prase_result.field_ptr))/2);
-    hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
+    // hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
+    UtilityHexToBin(nodeManagerAddr,strlen((BCHAR*)(prase_result.field_ptr))/2,prase_result.field_ptr,TRIMBIN_TRIM_NO,BOAT_FALSE);
  // Construct the REQUEST
 	do{
 		malloc_size_expand_flag = false;
@@ -268,12 +252,13 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
 
     nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr))/2);
     memset(nodeManagerAddr,0x00,strlen((BCHAR*)(prase_result.field_ptr))/2);
-    hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
+    // hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
+    UtilityHexToBin(nodeManagerAddr,strlen((BCHAR*)(prase_result.field_ptr))/2,prase_result.field_ptr,TRIMBIN_TRIM_NO,BOAT_FALSE);
  // Construct the REQUEST
     
     // web3_parse_fatherNamejson_result(nodeManagerAddr,"data", "externalIP", &prase_result);
     nodeResFree(result_out);
-    supports_full_hd(nodeManagerAddr,result_out);
+    Platone_get_Nodeinfo(nodeManagerAddr,result_out);
 
 
 
