@@ -222,8 +222,8 @@ endif()
 if(SOFT_CRYPTO STREQUAL "CRYPTO_DEFAULT")
 include_directories(${PROJECT_SOURCE_DIR}/vendor/common/crypto/crypto_default)
 endif()
-if(SOFT_CRYPTO STREQUAL "CRYPTO_DEFAULT")
-include_directories(${PROJECT_SOURCE_DIR}/vendor/common/crypto/mbedTLS)
+if(SOFT_CRYPTO STREQUAL "CRYPTO_MBEDTLS")
+include_directories(${PROJECT_SOURCE_DIR}/vendor/common/crypto/mbedTLS/include)
 endif()
 
 #add compile option

@@ -5,7 +5,7 @@ add_subdirectory(protos)
 set(FILE_SRC    boathlfabric.c)
 
 if(BOAT_DISCOVERY_PEER_QUERY)
-set(FILE_SRC    ${FILE_SRC} boathlfabric_discover.c)
+set(FILE_SRC    ${FILE_SRC} boathlfabric_discovery.c)
 endif()
 
 
