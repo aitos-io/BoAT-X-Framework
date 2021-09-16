@@ -619,7 +619,7 @@ BUINT64 UtilityBuint8Buf2Uint64(BUINT8* from,BUINT32 len)
     long ret ;
     ret =  (((long)(from[0]&0x7F) << 56) | ((long)from[1] << 48) | ((long)from[2] << 40) | ((long)from[3] << 32) | ((long)from[4] << 24) | ((long)from[5] << 16) | ((long)from[6] << 8) | from[7]);
     // ret = random32() << 32 | random32();
-        ret =  (((long)from[4] << 24) | ((long)from[5] << 16) | ((long)from[6] << 8) | from[7]);
+        // ret =  (((long)from[4] << 24) | ((long)from[5] << 16) | ((long)from[6] << 8) | from[7]);
     return ret;
 }
 #if (BOAT_HWBCS_TLS_SUPPORT == 1)
@@ -674,4 +674,42 @@ size_t Utility_find_oid_value_in_name(const mbedtls_x509_name *name, const char*
     return retval;
 }
 #endif
+
+
+
+char *Utility_itoa(int num, char *str, int radix)
+{ /*索引表*/
+	char index[] = "0123456789ABCDEF";
+	unsigned unum; /*中间变量*/
+	int i = 0, j, k;
+	/*确定unum的值*/
+	if (radix == 10 && num < 0) /*十进制负数*/
+	{
+		unum = (unsigned)-num;
+		str[i++] = '-';
+	}
+	else
+		unum = (unsigned)num; /*其他情况*/
+	/*转换*/
+	do
+	{
+		str[i++] = index[unum % (unsigned)radix];
+		unum /= radix;
+	} while (unum);
+	str[i] = '\0';
+	/*逆序*/
+	if (str[0] == '-')
+		k = 1; /*十进制负数*/
+	else
+		k = 0;
+
+	for (j = k; j <= (i - 1) / 2; j++)
+	{
+		char temp;
+		temp = str[j];
+		str[j] = str[i - 1 + k - j];
+		str[i - 1 + k - j] = temp;
+	}
+	return str;
+}
 

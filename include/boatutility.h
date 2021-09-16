@@ -500,6 +500,8 @@ BUINT64 UtilityBuint8Buf2Uint64(BUINT8* from,BUINT32 len);
 size_t Utility_find_oid_value_in_name(const mbedtls_x509_name *name, const char* target_short_name, char *value, size_t value_length);
 #endif
 
+char *Utility_itoa(int num, char *str, int radix);
+
 /*! @}*/
 
 #ifdef __cplusplus

@@ -37,7 +37,7 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "peer/proposal_response.pb-c.h"
 #include "discovery/protocol.pb-c.h"
 
-BUINT32 getURL(BUINT8 *data, BUINT32 datalen, BUINT32 *outOffset)
+BUINT32 hlfabricDiscoverGetURL(BUINT8 *data, BUINT32 datalen, BUINT32 *outOffset)
 {
 	BUINT32 len = 0;
 	BUINT32 offset = 0;
@@ -80,41 +80,6 @@ BUINT32 getURL(BUINT8 *data, BUINT32 datalen, BUINT32 *outOffset)
 	return len;
 }
 
-char *itoa(int num, char *str, int radix)
-{ /*索引表*/
-	char index[] = "0123456789ABCDEF";
-	unsigned unum; /*中间变量*/
-	int i = 0, j, k;
-	/*确定unum的值*/
-	if (radix == 10 && num < 0) /*十进制负数*/
-	{
-		unum = (unsigned)-num;
-		str[i++] = '-';
-	}
-	else
-		unum = (unsigned)num; /*其他情况*/
-	/*转换*/
-	do
-	{
-		str[i++] = index[unum % (unsigned)radix];
-		unum /= radix;
-	} while (unum);
-	str[i] = '\0';
-	/*逆序*/
-	if (str[0] == '-')
-		k = 1; /*十进制负数*/
-	else
-		k = 0;
-
-	for (j = k; j <= (i - 1) / 2; j++)
-	{
-		char temp;
-		temp = str[j];
-		str[j] = str[i - 1 + k - j];
-		str[i - 1 + k - j] = temp;
-	}
-	return str;
-}
 
 /*!****************************************************************************
  * @brief signature header packed
@@ -779,7 +744,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID = BoatMalloc(strlen(msp_serializedIdentity->mspid));
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID, msp_serializedIdentity->mspid, strlen(msp_serializedIdentity->mspid));
 							// BoatLog(BOAT_LOG_CRITICAL, " endorsers[%d].MSPID  : %s ", l, discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID);
-							len = getURL(cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.len, &offset);
+							len = hlfabricDiscoverGetURL(cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.len, &offset);
 
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint = BoatMalloc(len);
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data + offset, len);
@@ -820,7 +785,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host = BoatMalloc(strlen(config_result->orderers[i]->value->endpoint[j]->host));
 			memcpy(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host, config_result->orderers[i]->value->endpoint[j]->host, strlen(config_result->orderers[i]->value->endpoint[j]->host));
 			// discoverResult->discoverConfig.discoverOrders.discoverOrderinfo[k].port = config_result->orderers[i]->value->endpoint[j]->port;
-			itoa(config_result->orderers[i]->value->endpoint[j]->port, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].port, 10);
+			Utility_itoa(config_result->orderers[i]->value->endpoint[j]->port, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].port, 10);
 			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].name = BoatMalloc(strlen(config_result->orderers[i]->key));
 			memcpy(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k++].name, config_result->orderers[i]->key, strlen(config_result->orderers[i]->key));
 		}
