@@ -173,8 +173,8 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverSignatureHeaderPacked(const BoatHlfabri
 		boat_throw(result, hlfabricSignatureHeaderPacked_exception);
 	};
 	/* pack the signatureHeader */
-	if (tx_ptr->var.type == HLFABRIC_TYPE_DISCOVER)
-	{
+	// if (tx_ptr->var.type == HLFABRIC_TYPE_DISCOVER)
+	// {
 		packedLength = common__signature_header__get_packed_size(&signatureHeader);
 		output_ptr->field_ptr = BoatMalloc(packedLength + 3);
 		output_ptr->field_len = packedLength + 3;
@@ -182,14 +182,14 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverSignatureHeaderPacked(const BoatHlfabri
 		output_ptr->field_ptr[0] = 0x0A;
 		output_ptr->field_ptr[1] = (packedLength & 0xFF) | 0x80;
 		output_ptr->field_ptr[2] = packedLength >> 7;
-	}
-	else
-	{
-		packedLength = common__signature_header__get_packed_size(&signatureHeader);
-		output_ptr->field_ptr = BoatMalloc(packedLength);
-		output_ptr->field_len = packedLength;
-		common__signature_header__pack(&signatureHeader, output_ptr->field_ptr);
-	}
+	// }
+	// else
+	// {
+	// 	packedLength = common__signature_header__get_packed_size(&signatureHeader);
+	// 	output_ptr->field_ptr = BoatMalloc(packedLength);
+	// 	output_ptr->field_len = packedLength;
+	// 	common__signature_header__pack(&signatureHeader, output_ptr->field_ptr);
+	// }
 
 	/* boat catch handle */
 	boat_catch(hlfabricSignatureHeaderPacked_exception)
