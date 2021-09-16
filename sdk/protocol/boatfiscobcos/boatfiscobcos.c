@@ -173,6 +173,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
+
     // Encode value
     result = RlpInitStringObject(&value_rlp_object,
                                  tx_ptr->rawtx_fields.value.field,
@@ -190,6 +191,8 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
+    	BoatLog_hexdump( BOAT_LOG_VERBOSE, "tx_ptr->rawtx_fields.data.field :", 
+					 tx_ptr->rawtx_fields.data.field_ptr, tx_ptr->rawtx_fields.data.field_len);
     // Encode data
     result = RlpInitStringObject(&data_rlp_object,
                                  tx_ptr->rawtx_fields.data.field_ptr,

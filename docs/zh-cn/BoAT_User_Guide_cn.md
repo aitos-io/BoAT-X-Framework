@@ -162,15 +162,15 @@ C:\Documents and Settings\developer\project\boatiotsdk
  
 
 如果无法避免在路径中出现上述不适字符，请使用以下方法规避：  
-
-对于Linux：在一个没有不适字符的路径中，建立一个指向SDK目录的符号链接：ln -s \<SDKRoot\> boatiotsdk，在该符号链接的路径下进行编译。  
-对于Windows：使用SUBST Z: \<SDKRoot\>命令虚拟一个盘符Z:（也可以是其他未使用的盘符），在Z:盘下进行编译。  
+- Linux：在一个没有不适字符的路径中，建立一个指向SDK目录的符号链接：ln -s \<SDKRoot\> boatiotsdk，在该符号链接的路径下进行编译。  
+- Windows：使用SUBST Z: \<SDKRoot\>命令虚拟一个盘符Z:（也可以是其他未使用的盘符），在Z:盘下进行编译。  
 
 
 #### 引用的外部环境变量
 根据需要，修改SDK以下文件中的环境变量：  
 \<SDKRoot\>/vendor/platform/\<platform_name\>/external.env：配置外部编译环境依赖、硬件相关的头文件搜索路径。
 在Host编译时，如果gcc和binutils已经安装在系统中，通常不需要修改这些环境变量配置。  
+
 在交叉编译时，如果交叉编译环境需要配置特定的INCLUDE路径，需要在上述文件中添加路径。    
 
 #### BoAT IoT Framework SDK配置
@@ -233,6 +233,7 @@ Host编译指编译环境与目标环境一致，例如，在x86上编译x86程�
 ```
 $make boatlibs
 ```
+	
 编译完成后，生成的库文件在./lib中。应用应当包含./include下的头文件，并链接./lib下的库，实现访问区块链的功能。参见[头文件和库](###头文件和库)章节。
 
 #### 以Cygwin为编译环境
@@ -267,7 +268,8 @@ $source cross_compiler_config.sh
 ```  
 $. cross_compiler_config.sh  
 ```
-如上示例中的`cross_compiler_config.sh`并非本SDK中的脚本，而是交叉编译环境中的配置脚本，其具体名称和位置请参考交叉编译环境相关的说明。  
+如上示例中的`cross_compiler_config.sh`并非本SDK中的脚本，而是交叉编译环境中的配置脚本，其具体名称和位置请参考交叉编译环境相关的说明。 
+	
 示例中的`source`或`.`是必需的，这使得该脚本在当前shell的上下文中执行，因而该脚本中对环境变量的修改仅能在当前shell中生效。
 
 
@@ -281,7 +283,7 @@ $export
 ${CC} -v  
 ${AR} -v
 ```
-
+	
 以上配置完成后，遵照[以Linux为编译环境](####以Linux为编译环境)章节的步骤进行编译。
 
 

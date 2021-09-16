@@ -37,6 +37,7 @@
 #include "nghttp2_http.h"
 #include "nghttp2_pq.h"
 #include "nghttp2_debug.h"
+#include "boatlog.h"
 
 /*
  * Returns non-zero if the number of outgoing opened streams is larger

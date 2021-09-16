@@ -41,13 +41,13 @@ const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const BCHAR *native_demoKey = "0x370ea4b099f43f6afb3dc09741bfebce846e3c6027b48b12eb26261897cd1316";
+const BCHAR *native_demoKey = "0xa09952a7a3e257cfd5af8c844f8cd77f56809cf29ac51893450a7df3aac146c3";
 
 /**
  * PlatON test network node url
  */
 //const BCHAR *demoUrl = "http://47.241.98.219:6789";
-const BCHAR *demoUrl = "http://192.168.132.151:7000";
+const BCHAR *demoUrl = "http://35.247.155.162:6789";
 
 /**
  * PlatON test network human-readable part
@@ -97,7 +97,7 @@ __BOATSTATIC BOAT_RESULT platon_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
 
-    wallet_config.chain_id             = 100;//210309;
+    wallet_config.chain_id             = 210309;
     wallet_config.eip155_compatibility = BOAT_TRUE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 

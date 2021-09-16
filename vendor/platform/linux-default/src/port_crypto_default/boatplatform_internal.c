@@ -20,7 +20,7 @@
 */
 
 //! self header include
-#include "protocolapi/api_hlfabric.h"
+#include "boatiotsdk.h"
 #include "boatplatform_internal.h"
 
 #include "boattypes.h"
@@ -48,6 +48,7 @@
 #include "http2intf.h"
 #endif
 
+/*
 uint32_t random32(void)
 {
 	static uint32_t seed = 0;
@@ -61,7 +62,7 @@ uint32_t random32(void)
 
 	return seed;
 }
-
+*/
 
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 {	
@@ -170,7 +171,6 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	
 	(void)rsvd;
-	result = result;
 	
 	if ((fileName == NULL) || (writeBuf == NULL))
 	{
@@ -206,7 +206,7 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	
 	(void)rsvd;
-	result = result;
+
 	
 	if ((fileName == NULL) || (readBuf == NULL))
 	{
