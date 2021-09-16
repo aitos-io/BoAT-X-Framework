@@ -24,7 +24,7 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 #define __API_HLFABRIC_H__
 
 #include "boatiotsdk.h"
-#include "protocolapi/api_hlfabric_discover.h"
+// #include "protocolapi/api_hlfabric_discovery.h"
 
 /*! @defgroup fabric-api boat fabric-API 
  * @{
@@ -577,22 +577,7 @@ BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr);
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr);
 
-/*!****************************************************************************
- * @brief 
- *   Submit transaction.
- *
- * @details
- *   This function should be invoked after BoatHlfabricTxSetTimestamp() and
- *   BoatHlfabricTxSetArgs() had excuted.When you need to set states to
- *   Hlfabric,use this function.
- * @param tx_ptr 
- *   Fabric transaction structure pointer.
- *
- * @return 
- *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
- ******************************************************************************/
-BOAT_RESULT BoatHlfabricDiscoverSubmit( BoatHlfabricTx *tx_ptr,const BoatHlfabricNodesCfg endorserInfo_ptr );
-/*! @}*/
+
 
 #ifdef __cplusplus
 }
