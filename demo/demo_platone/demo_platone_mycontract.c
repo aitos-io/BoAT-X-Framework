@@ -149,7 +149,7 @@ __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, &wallet_config, sizeof(BoatPlatoneWalletConfig));
-    if(index == BOAT_ERROR)
+    if (index == BOAT_ERROR)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR;

@@ -51,7 +51,7 @@ extern "C" {
  *	 
  * @see RpcInit()
  ******************************************************************************/
-void* RpcInit(void);
+void *RpcInit(void);
 
 
 /*!****************************************************************************
@@ -132,11 +132,11 @@ BOAT_RESULT RpcRequestSet(void *rpc_context_ptr, BCHAR *remote_url_str);
  *   If any error occurs or RPC REQUEST timeouts, it transfers the error code
  *   returned by the wrapped function.
  ******************************************************************************/
-BOAT_RESULT RpcRequestSync( void *rpc_context_ptr,
-                            BUINT8 *request_ptr,
-                            BUINT32 request_len,
-                            BOAT_OUT BUINT8 **response_pptr,
-                            BOAT_OUT BUINT32 *response_len_ptr );
+BOAT_RESULT RpcRequestSync(void *rpc_context_ptr,
+                           BUINT8 *request_ptr,
+                           BUINT32 request_len,
+                           BOAT_OUT BUINT8 **response_pptr,
+                           BOAT_OUT BUINT32 *response_len_ptr);
 
 #ifdef __cplusplus
 }

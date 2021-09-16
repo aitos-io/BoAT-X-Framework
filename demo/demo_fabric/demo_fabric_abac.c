@@ -380,8 +380,8 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 
 int main(int argc, char *argv[])
 {
-	BOAT_RESULT       result  = BOAT_SUCCESS;
-	BoatHlfabricTx    tx_ptr;
+	BOAT_RESULT result = BOAT_SUCCESS;
+	BoatHlfabricTx tx_ptr;
 	
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();

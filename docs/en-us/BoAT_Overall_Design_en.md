@@ -20,12 +20,12 @@ The intended readers of this article are: BoAT SDK detailed designers.
 
 
 ## BoAT Design Goals
-As a middleware fusing Blockchain and IoT technologies, It should be easily and quickly transplanted into various IoT modules at the minimum cost of modification. The design of BoAT follows the following goals:
+As a middleware fusing Blockchain and IoT technologies, It should be easily and quickly transplanted into various IoT modules at the minimum cost of modification. The design of BoAT is based on these following principles:
 + Hierarchical design  
 + Multiple blockchain protocols are supported  
 + Scalable design  
 + Secret key security design  
-+ C interface code generation tool for corresponding smart contracts of different blockchains. 
++ C interface code generation tool for corresponding smart contracts of different blockchains  
 
 
 ## The Position of BoAT SDK in The Entire Blockchain Network
@@ -37,11 +37,11 @@ Figure 3-1 The position of BoAT in the blockchain interactive network
 
 ## BoAT Implementation Framework 
 Boat follows a hierarchical design consisting of Interface Layer, Protocol Layer, RPC Layer, Vendor Dependency Layer, Tool and Utility. The specific functions of each layer are as follows:   
-+ Interface Layer: Provide an interface for users to invoke the corresponding blockchain. 
++ Interface Layer: Provide an interface for IoT Application to invoke the corresponding blockchain. 
 + Protocol Layer: The main implementation of each block chain protocol.  
 + RPC Layer: Provide services to the protocol layer.  
 + Vendor Dependency Layer: Provide cryptographic algorithms, signature, storage and other services for the interface layer wallet.  
-+ Tool: The general tool layer is used to generate the C language interface of the smart contract and provide services such as data encoding and format conversion for the remaining layers.
++ Tool: The general tool is used to generate the C language interface of the smart contract.
 + Utility: The utility program provides services such as data format conversion, message encoding and decoding to each layer.
 
 The overall framework of BoAT is shown in Figure 4-1.  
@@ -51,14 +51,14 @@ Figure 4-1 BoAT Overall Framework
 ### Interface Layer
 
 #### Overview
-The interface layer is located at the top layer of BoAT and provides users with access to each blockchain. The interface layer consists of two parts:  
+The interface layer is located at the top layer of BoAT and provides IoT applications with access to each blockchain. The interface layer consists of two parts:  
 + Wallet interface
    * The wallet interface is the entrance to the BoAT SDK, and different blockchains have a common wallet entrance.
 + Transaction interface
    * Each blockchain provides a set of transaction interfaces with similar functions but different implementations.  
 
 The wallet interface of the interface layer is supported by the vendor dependency layer. For the description of the vendor dependency layer, please refer to [Vendor Dependency Layer](#vendor-dependency-layer).  
-The transaction interface of the interface layer is supported by the protocol layer. For a description of the protocol layer, please refer to [Protocol layer](#Protocol-layer).  
+The transaction interface of the interface layer is supported by the protocol layer. For a description of the protocol layer, please refer to [Protocol layer](#protocol-layer).  
 
 #### Wallet Interface
 
@@ -93,7 +93,7 @@ The wallet should provide the following functions to achieve:
 + SDK initialization:
 SDK initialization should be done before using BoAT SDK. The contents of this interface include:
    1. Initialization of wallet list  
-The wallet list is a data structure that contains a fixed number of wallets and wallet-related usage information. The wallet-related usage information includes wallet usage identification, wallet name, and blockchain to which the wallet belongs. The wallet list is a global resource. The initialization of the wallet list means that each member in the data structure is initialized once, such as initializing the use identifier as unused, and initializing the wallet as a null pointer.  
+The wallet list is a data structure that contains a fixed number of wallets and wallet-related usage information. The wallet-related usage information includes wallet usage identification, wallet name, and blockchain to which the wallet belongs. The wallet list is a global resource. The initialization of the wallet list means that each member in the data structure is initialized once, such as initializing the usage identification as unused.  
    2. Other global resource initialization  
 If some third-party libraries used by the SDK need to be initialized before calling, they should be initialized here, such as the third-party library cURL used by the RPC layer.
 
@@ -144,9 +144,9 @@ This interface is used to check whether the given private key is valid. The cont
 #### Transaction Interface
 
 ##### Transaction Data Structure and Function Realization List
-A transaction is a signed message, transmitted through the blockchain network, and recorded on the blockchain. The functions of transaction interfaces provided by different blockchains are basically the same.  
+A transaction is a signed message, transmitted through the blockchain network and recorded on the blockchain. The functions of transaction interfaces provided by different blockchains are basically the same.  
 
-For Ethereum/PlatONE/FISCO BCOS:
+For Ethereum/PlatON/PlatONE/FISCO BCOS:
 
 The transaction should contain at least the following elements:
 + The data structure of the wallet
@@ -203,8 +203,21 @@ The transaction should provide the following functions:
   4. Execute sending transaction
 + Stateless message call:
   The content implemented by this interface includes:  
-  1. Prepare message information needed for stateless message call
+  1. Prepare message information needed for stateless message call  
   2. Call the web3 interface "blockchain stateless call" provided by the protocol layer  
+
+##### Brief Description of PlatON Transaction Interface Function Implementation
+There are three main differences between PlatON and Ethereum:  
+  1. The addresses are different.  
+  PlatON adds an additional bitcoin like Bech32 format address to Ethereum. Therefore, when initializing a transaction, you need to set HRP (Human-readable Parts) for the address in addition to the parameters that Ethereum requires. The wallet will automatically use the specified address format when invoking RPC.  
+  2. The names of functions invoked through RPC are different.  
+  There is no difference for BoAT SDK users.  
+  3. PlatON must use the specified blockchain ID mode.
+  EIP-155 describes two data formats that can be used for transactions, but PlatON supports only one, more detail see [Brief Description of Raw Transaction Interface](#brief-description-of-raw-transaction-interface).  
+
+When designing the data structure and code implementation of PlatON, we should consider the inheritance of data structure and the reuse of code implementation, so as to reduce the amount of code and facilitate maintenance. Although PlatON's transaction structure is the same as Ethereum, bech32 addresses are required for calls in some RPC commands. Therefore, in the design of data structure, two fields are added to store the address in Bech32 format. The possible design ideas are shown in Figure 4-2:  
+![A possible design idea of PlatON data structure](./images/BoAT_Overall_Design_en-F4-2-PlatON_Data_Structure.png)  
+Figure 4-2 illustrates one possible data structure design idea for PlatON. Note that the two additional address fields for PlatON should be placed at the end of the data structure without compromising the integrity of the reused Ethereum data structure. Disrupting the integrity of Ethereum's data structure will make the implementation methods associated with that data structure in Ethereum unreusable.
 
 ##### Brief Description of PlatONE Transaction Interface Function Implementation
 Compared with Ethereum, the differences are listed below:
@@ -213,14 +226,25 @@ In addition to the initialization steps described by Ethereum, PlatONE also:
   1. Set transaction type field  
 
 
-It can be seen from the foregoing that the difference between PlatONE and Ethereum is very small. When designing the data structure and code implementation of PlatONE, the inheritance of the data structure and the reuse of code implementation should be considered, which not only reduces the amount of code, but also facilitates maintenance. For example, the composition of the transaction structure. The transaction structure of PlatONE has one more transaction type field than the transaction structure of Ethereum. Therefore, in the design of the data structure, a possible design idea is shown in Figure 4-2.  
-![A possible design idea of data structure](./images/BoAT_Overall_Design_en-F4-2-Data_Structure.png)  
-Figure 4-2 A possible design idea of data structure  
-Figure 4-2 describes a possible data structure design idea of PlatONE. Please note that the transaction type field of PlatONE should be placed at the end of the data structure, and the integrity of the data structure of the multiplexed Ethereum should not be destroyed. If the integrity of the data structure of Ethereum is destroyed, the implementation methods related to the data structure in Ethereum will not be reused.
+It can be seen from the foregoing that the difference between PlatONE and Ethereum is very small. When designing the data structure and code implementation of PlatONE, the inheritance of the data structure and the reuse of code implementation should be considered, which not only reduces the amount of code, but also facilitates maintenance. For example, the composition of the transaction structure. The transaction structure of PlatONE has one more transaction type field than the transaction structure of Ethereum. Therefore, in the design of the data structure, a possible design idea is shown in Figure 4-3.  
+![A possible design idea of PlatONE data structure](./images/BoAT_Overall_Design_en-F4-3-PlatONE_Data_Structure.png)  
+Figure 4-3 A possible design idea of data structure  
+Figure 4-3 describes a possible data structure design idea of PlatONE. Please note that the transaction type field of PlatONE should be placed at the end of the data structure, and the integrity of the data structure of the multiplexed Ethereum should not be destroyed. If the integrity of the data structure of Ethereum is destroyed, the implementation methods related to the data structure in Ethereum will not be reused.
 
-##### Brief Description of PlatONE Transaction Interface Function Implementation
-Compared with Ethereum, the differences are listed below:
-@todo
+##### Brief Description of FISCO BCOS Transaction Interface Function Implementation
+Compared with Ethereum, the differences please refer to FISCO BCOS official documentation https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/design/protocol_description.html.  
+
+When designing the data structure and code implementation of FISCO BCOS, the inheritance of data structure and the reuse of code implementation should be considered, so as to reduce the amount of code and facilitate maintenance. The following four fields have been added to the transaction structure:  
+  1. blockLimit
+  2. chainId
+  3. groupId
+  4. extraData
+Therefore, in the design of the data structure, a possible design idea is shown in Figure 4-4.  
+![A possible design idea of FISCO BCOS data structure](./images/BoAT_Overall_Design_en-F4-4-FISCOBCOS_Data_Structure.png)  
+Figure 4-4 A possible design idea of data structure  
+Figure 4-4 describes a possible data structure design idea of FISCO BCOS. Please note that the transaction type field of FISCO BCOS should be placed at the end of the data structure, and the integrity of the data structure of the multiplexed Ethereum should not be destroyed. If the integrity of the data structure of Ethereum is destroyed, the implementation methods related to the data structure in Ethereum will not be reused.  
+
+***Note: Since FISCO BCOS adds new fields to transactions, RLP coding is different from Ethereum. See the RC2 section linked in this chapter for details.***
 
 ##### Brief Description of Fabric Transaction Interface Function Implementation
 + Wallet initialization:
@@ -261,8 +285,8 @@ Compared with Ethereum, the differences are listed below:
 
 ### Protocol Layer
 #### Overview
-The protocol layer is located in the second layer of the BoAT SDK, which mainly implements the protocol part of each blockchain. For Ethereum series blockchains, their protocols are very similar, such as Ethereum and PlatONE.   
-The protocol layer is supported by the RPC layer. Please refer to [RPC Layer](#RPC-Layer).  
+The protocol layer is located in the second layer of the BoAT SDK, which mainly implements the protocol part of each blockchain. For Ethereum series blockchains, their protocols are very similar, such as Ethereum, PlatON, PlatONE and FISCO BCOS.   
+The protocol layer is supported by the RPC layer. Please refer to [RPC Layer](#rpc-layer).  
 
 #### Ethereum's Protocol Layer Implementation
 ##### Raw Transaction Interface
@@ -310,7 +334,7 @@ In addition to the raw transaction interface, the protocol layer should also pro
 + Blockchain stateless call
 + Send raw transaction  
 
-Looking through the RPC-related documents of Ethereum, you can know that Ethereum provides about 64 RPC methods. In the BoAT SDK, we only implement the above. The reason is the same as the description in [Wallet interface](#Wallet-interface). The resources of the SDK operating environment are limited. The above-mentioned RPC methods are several methods commonly used in data on the blockchain. If customers need other RPC methods in the future, BoAT SDK will provide them in a customized way.
+Looking through the RPC-related documents of Ethereum, you can know that Ethereum provides about 64 RPC methods. In the BoAT SDK, we only implement the above. The reason is the same as the description in [Wallet interface](#wallet-interface). The resources of the SDK operating environment are limited. The above-mentioned RPC methods are several methods commonly used in data on the blockchain. If customers need other RPC methods in the future, BoAT SDK will provide them in a customized way.
 
 ##### Brief Description of Web3 Interface
 + web3 interface initialization  
@@ -366,23 +390,26 @@ Looking through the RPC-related documents of Ethereum, you can know that Ethereu
   3. Call the RPC method "web3_sendRawTransaction" to send the request message to the blockchain
   4. Parse the received blockchain response message and return the analysis result
 
+#### Protocol Layer Implementation of PlatON  
+The protocol implementation of PlatON is exactly the same as that of Ethereum except that PlatON only supports data encoding using specified chain ID.  
+
 #### Protocol Layer Implementation of PlatONE
 The implementation of PlatONE's protocol layer is almost the same as that of Ethereum. The only difference is that the data field of raw transaction is filled with one more transaction type encoding, and has one more transaction type field in the RLP process of raw transaction. Because the data field is filled by users who use BoAT SDK before calling BoAT SDK-related APIs, the protocol layer of PlatONE can reuse the protocol layer of Ethereum.
 
 #### Protocol Layer Implementation of FISCO BCOS
-@todo
+The protocol layer implementation of FISCO BCOS is almost the same as that of Ethereum. The only difference is that there are four more fields encoded in the RLP encoding process of raw Transaction. Because the RLP coding for the raw transaction is implemented by the user using the BoAT SDK before calling the BoAT SDK related APIs, the FISCO BCOS protocol layer can reuse Ethereum's protocol layer.  
 
 #### Protocol Layer Implementation of Fabric
 ##### Brief Description of Fabric Protocol Layer
-The Fabric protocol layer mainly contains proposal protocol and transaction protocol, and the query protocol is the same as the proposal protocol. Proposal agreement and transaction agreement are respectively as follows Figure 4-3,Figure 4-4:  
-![ Fabric proposal protocol struct](./images/BoAT_Overall_Design_en-F4-3-Fabric-Proposal.png)  
-Figure 4-3 Fabric proposal protocol struct  
-![ Fabric transaction protocol struct](./images/BoAT_Overall_Design_en-F4-4-Fabric-Transaction.png)  
-Figure 4-4 Fabric transaction protocol struct  
+The Fabric protocol layer mainly contains proposal protocol and transaction protocol, and the query protocol is the same as the proposal protocol. Proposal agreement and transaction agreement are respectively as follows Figure 4-5,Figure 4-6:  
+![ Fabric proposal protocol struct](./images/BoAT_Overall_Design_en-F4-5-Fabric-Proposal.png)  
+Figure 4-5 Fabric proposal protocol struct  
+![ Fabric transaction protocol struct](./images/BoAT_Overall_Design_en-F4-6-Fabric-Transaction.png)  
+Figure 4-6 Fabric transaction protocol struct  
 
-When Fabric client launches a deal,will first send proposal to endorse node, get the data of proposal signature returned after endorse node signatures. then the Fabric client puts the data endorse signature together with transaction parameters according to the transaction message format and sends to order nodes. After order node check through, it will updating the state of the chain. The detailed transaction process is shown in Figure 4-5,This figure is taken from the <Hyperledger-FabricDocs Master> document. For more information on Fabric, refer to the Fabric documentation: <https://hyperledger-fabric.readthedocs.io/en/release-1.4/>.  
-![ Fabric transaction flow](./images/BoAT_Overall_Design_en-F4-5-Fabric-Transaction-Flow.png)  
-Figure 4-5 Fabric transaction flow  
+When Fabric client launches a deal,will first send proposal to endorse node, get the data of proposal signature returned after endorse node signatures. then the Fabric client puts the data endorse signature together with transaction parameters according to the transaction message format and sends to order nodes. After order node check through, it will updating the state of the chain. The detailed transaction process is shown in Figure 4-6,This figure is taken from the <Hyperledger-FabricDocs Master> document. For more information on Fabric, refer to the Fabric documentation: <https://hyperledger-fabric.readthedocs.io/en/release-1.4/>.  
+![ Fabric transaction flow](./images/BoAT_Overall_Design_en-F4-7-Fabric-Transaction-Flow.png)  
+Figure 4-7 Fabric transaction flow  
 #####	Fabric protocol interface implementation
 In the Fabric message, the fields in the protocol are serialized through ProtoBuf and then sent out through the HTTP2 protocol. As can be seen from the preface section, there are some duplicates and similarities between the proposal and transaction messages, and these duplicates can be split into a submodule for easier reuse. One possible split is listed as follows:
 -	channelHeader packaging
@@ -429,8 +456,8 @@ The vendor dependency layer should provide a pure software implementation of the
 
 #### TEE Support
 The design of BoAT should consider the support of TEE environment. For hardware with a TEE environment, BoAT should be able to put sensitive information in the TEE environment with a small amount of modification. To meet this goal, the wallet is designed to meet the following criteria:
-+ Independent design of wallet-related data structure
-+ Wallet related implementation independent design
++ Wallet related data structure modular design
++ Wallet related implementation modular design
 + Sensitive information related to the wallet is not reflected outside the wallet
 
 ### General Tool Implementation
@@ -439,6 +466,7 @@ The design of BoAT should consider the support of TEE environment. For hardware 
 General tools exist independently of each layer and are used to generate C language interfaces for accessing blockchain smart contracts. General tools should be implemented in scripting languages. Common tools include:
 + Tool used to generate C language interface of Ethereum smart contract
 + Tool used to generate C language interface of PlatONE smart contract
++ Tool used to generate C language interface of FISCO BCOS smart contract
 
 #### Brief Description of General Tools
 
@@ -517,6 +545,9 @@ For the generated C language contract interface, the corresponding relationship 
 ##### Tool for Generating C Language Interface of PlatONE Smart Contract
 The commonly used PlatONE smart contract development language is C++. Like Ethereum, the PlatONE smart contract will also generate a JSON file describing the contract interface after being compiled. Its JSON field is the same as Ethereum's JSON field, and the correspondence between C language interface and JSON field is also consistent with Ethereum.
 
+##### Tool for Generating C Language Interface of FISCO BCOS Smart Contract
+The common development language for FISCO BCOS smart contracts is Solidity. For details, please refer to [Tool for Generating C Language Interface of Ethereum Smart Contract](#tool-for-generating-c-language-interface-of-ethereum-smart-contract).  
+
 
 ### Application
 
@@ -543,9 +574,9 @@ In addition, in order to adapt the SDK to more environments, you can also encaps
 
 ##### Structure of RLP
 RLP encoding is used in two places. One is that the protocol layer organizes transaction messages to use RLP encoding, and the other is that RLP encoding may be used in the generated C language contract interface code.  
-The definition of RLP encoding only handles two types of data: one is a string and the other is a list. String refer to a string of binary data, such as a byte array; List is a nested recursive structure, which can contain strings and lists, and its structure is shown in Figure 4-6:  
-![The structure of the RLP list](./images/BoAT_Overall_Design_en-F4-6-Structure_Of_RLP.png)  
-Figure 4-6 The structure of the RLP list  
+The definition of RLP encoding only handles two types of data: one is a string and the other is a list. String refer to a string of binary data, such as a byte array; List is a nested recursive structure, which can contain strings and lists, and its structure is shown in Figure 4-8:  
+![The structure of the RLP list](./images/BoAT_Overall_Design_en-F4-8-Structure_Of_RLP.png)  
+Figure 4-8 The structure of the RLP list  
 
 ##### RLP Encoding Rules
 The encoding rules of RLP are described as follows:
@@ -558,9 +589,9 @@ For a more detailed description of RLP encoding rules, please refer to the refer
 
 
 ##### RLP Encoding Implementation
-RLP encoding can be implemented in many different ways. As can be seen from the foregoing chapters, a possible data structure composition description of RLP encoding is shown in Figure 4-7:  
-![A possible data structure of RLP encoding](./images/BoAT_Overall_Design_en-F4-7-Data_Structure_Of_RLP.png)   
-Figure 4-7 A possible data structure of RLP encoding  
+RLP encoding can be implemented in many different ways. As can be seen from the foregoing chapters, a possible data structure composition description of RLP encoding is shown in Figure 4-9:  
+![A possible data structure of RLP encoding](./images/BoAT_Overall_Design_en-F4-9-Data_Structure_Of_RLP.png)   
+Figure 4-9 A possible data structure of RLP encoding  
 
 The figure defines four types to express the nested recursive structure of the RLP list. If there is a list object named List, it contains three string objects: stringA, stringB, stringC,Then a possible process of performing RLP encoding on the list object List is described as follows:
 1. Initialize the list object List
@@ -595,21 +626,26 @@ Figure 5-1 The process of creating a transaction using BoAT
 
 among them:
 + BoAT SDK initialization:
-Please refer to the description of "BoAT SDK Initialization" in [SDK Initialization/Deinitialization](#SDK-Initialization-de-initialization)
+Please refer to the description of "BoAT SDK Initialization" in [SDK Initialization/Deinitialization](#sdk-initialization-de-initialization)
 + Create a wallet  
-Please refer to the description of "Create Wallet" in [Wallet Operation](#Wallet-Operation)
+Please refer to the description of "Create Wallet" in [Wallet Operation](#wallet-operation)
 + Transaction initialization  
-Please refer to the description of "transaction initialization" in [Ethereum transaction interface function implementation brief description](#Brief-description-of-Ethereum-transaction-interface-function-implementation)
+Please refer to the description of "transaction initialization" in [Ethereum transaction interface function implementation brief description](#brief-description-of-ethereum-transaction-interface-function-implementation)
 + Set the Nonce field
 + Set the Data field
 + Send transaction  
-Please refer to the description of "send transaction" in [Ethereum transaction interface function implementation brief description](#Brief-description-of-Ethereum-transaction-interface-function-implementation)
+Please refer to the description of "send transaction" in [Ethereum transaction interface function implementation brief description](#brief-description-of-ethereum-transaction-interface-function-implementation)
 + BoAT SDK de-initialization:  
-Please refer to the description of "BoAT SDK de-initialization" in [SDK Initialization/Deinitialization](#SDK-Initialization-de-initialization)
+Please refer to the description of "BoAT SDK de-initialization" in [SDK Initialization/Deinitialization](#sdk-initialization-de-initialization)
 
-### The Process of Creating An PlatONE Transaction Using BoAT
-The process of creating a PlatONE transaction is similar to Ethereum. In addition to setting the Nonce field and the Data field, PlatONE also needs to set the transaction type field before sending the transaction. The rest of the process is consistent with Ethereum. For related description, please refer to [Process of creating an Ethereum transaction using BoAT](#The-process-of-creating-an-Ethereum-transaction-using-BoAT)
+### The Process of Creating A PlatON Transaction Using BoAT  
+The process for creating a PlatON transaction is the same as for Ethereum. For details, see [Process of creating an Ethereum transaction using BoAT](#the-process-of-creating-an-ethereum-transaction-using-boat).  
 
+### The Process of Creating A PlatONE Transaction Using BoAT
+The process of creating a PlatONE transaction is similar to Ethereum. In addition to setting the Nonce field and the Data field, PlatONE also needs to set the transaction type field before sending the transaction. The rest of the process is consistent with Ethereum. For related description, please refer to [Process of creating an Ethereum transaction using BoAT](#the-process-of-creating-an-ethereum-transaction-using-boat).  
+
+### The Process of Creating A FISCO BCOS Transaction Using BoAT  
+The process for creating a FISCO BCOS transaction is similar to Ethereum. FISCO BCOS also needs to set the transaction blockLimit field, chainId field, groupId field and extraData field before sending a transaction. The rest of the process is the same as Ethereum. For details, please refer to [Process of creating an Ethereum transaction using BoAT](#the-process-of-creating-an-ethereum-transaction-using-boat).  
 
 ## Reference
 [1]. cJSON <https://github.com/DaveGamble/cJSON#welcome-to-cjson>  

@@ -4,29 +4,29 @@
 ## Introduction
 
 ### Overview
-In this article, we discribe system requirements for BoAT Framework (C language version) on cellular modules. BoAT is an SDK that runs on the module's application processor. For the cellular module with an OpenCPU, BoAT is linked and called by the application as a library. For cellular modules without OpenCPU,BoAT APIs will be wrapped into AT commands to works fine in host MCUs.
+This article describes the system requirements for BoAT Framework (C language version) on cellular modules. BoAT is an SDK that runs on the module's application processor. For the cellular module with an OpenCPU, BoAT is linked and called by the application as a library. For cellular modules without OpenCPU,BoAT APIs will be wrapped into AT commands to works fine in host MCUs.
 
 ### Abbreviated Terms
-|Term   |Explanation                  |
-|:----- |:--------------------------- |
-|BoAT|Blockchain of AI Things|
-|SDK|Software Development Kit|
-|API|Application Programming Interface|
-|MCU|Microcontroller Unit|
-|RTOS|Real Time Operating System|
-|TRNG|True Random Number Generator|
-|CSPRNG|Cryptographically Secure Pseudo-Random Number Generator|
-|RTC|Real Time Clock|
-|NTP|Network Time Protocol|
-|HTTP|Hyper Text Transfer Protocol|
-|HTTPs|Hyper Text Transfer Protocol Secure|
-|CoAP|Constrained Application Protocol|
-|MQTT|Message Queuing Telemetry Transport|
-|TCP|Transmission Control Protocol|
-|TEE|Trusted Execution Environment|
-|TA|Trusted Application|
-|ECDSA|Elliptic Curve Digital Signature Algorithm|
-|SHA2|Secure Hash Algorithm 2|
+|Term   |Explanation                                            |
+|:----- |:----------------------------------------------------- |
+|BoAT   |Blockchain of AI Things                                |
+|SDK    |Software Development Kit                               |
+|API    |Application Programming Interface                      |
+|MCU    |Microcontroller Unit                                   |
+|RTOS   |Real Time Operating System                             |
+|TRNG   |True Random Number Generator                           |
+|CSPRNG |Cryptographically Secure Pseudo-Random Number Generator|
+|RTC    |Real Time Clock                                        |
+|NTP    |Network Time Protocol                                  |
+|HTTP   |Hyper Text Transfer Protocol                           |
+|HTTPs  |Hyper Text Transfer Protocol Secure                    |
+|CoAP   |Constrained Application Protocol                       |
+|MQTT   |Message Queuing Telemetry Transport                    |
+|TCP    |Transmission Control Protocol                          |
+|TEE    |Trusted Execution Environment                          |
+|TA     |Trusted Application                                    |
+|ECDSA  |Elliptic Curve Digital Signature Algorithm             |
+|SHA2   |Secure Hash Algorithm 2                                |
 
 
 ## Part 1 Storage Requirements

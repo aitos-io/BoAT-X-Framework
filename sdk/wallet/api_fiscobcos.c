@@ -44,25 +44,25 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 {
 	BCHAR   *retval_str = NULL;
     BOAT_RESULT result;
-    BUINT16      i = 0;
+    BUINT16     i = 0;
 
-    if( (wallet_ptr == NULL) || (tx_ptr == NULL) || (gasprice_str == NULL) || (recipient_str == NULL) )
+    if ((wallet_ptr == NULL) || (tx_ptr == NULL) || (gasprice_str == NULL) || (recipient_str == NULL))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
     tx_ptr->wallet_ptr = wallet_ptr;
-    memset( &tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields) );
+    memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
 
     // Set synchronous transaction flag
     tx_ptr->is_sync_tx = is_sync_tx;
     
     // Initialize gasprice
 	BoatFieldMax32B gasprice;
-	gasprice.field_len = UtilityHexToBin( gasprice.field, 32, gasprice_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
+	gasprice.field_len = UtilityHexToBin(gasprice.field, 32, gasprice_str, TRIMBIN_LEFTTRIM, BOAT_TRUE);
 	result = BoatFiscobcosTxSetGasPrice(tx_ptr, &gasprice);
-	if( result != BOAT_SUCCESS )
+	if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosTxSetGasPrice failed.");
         return result;
@@ -70,9 +70,9 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	
     // Initialize gaslimit
     BoatFieldMax32B gaslimit;
-    gaslimit.field_len = UtilityHexToBin( gaslimit.field, 32, gaslimit_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
+    gaslimit.field_len = UtilityHexToBin(gaslimit.field, 32, gaslimit_str, TRIMBIN_LEFTTRIM, BOAT_TRUE);
     result = BoatFiscobcosTxSetGasLimit(tx_ptr, &gaslimit);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosTxSetGasLimit failed.");
         return result;
@@ -81,34 +81,34 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
     // Initialize recipient
 	BUINT32 converted_len;
     BUINT8  recipient[BOAT_FISCOBCOS_ADDRESS_SIZE];
-    converted_len = UtilityHexToBin( recipient, BOAT_FISCOBCOS_ADDRESS_SIZE, 
-									recipient_str, TRIMBIN_TRIM_NO, BOAT_TRUE );
-    if( converted_len == 0 )
+    converted_len = UtilityHexToBin(recipient, BOAT_FISCOBCOS_ADDRESS_SIZE, 
+									recipient_str, TRIMBIN_TRIM_NO, BOAT_TRUE);
+    if (converted_len == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "recipient Initialize failed.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
     result = BoatFiscobcosTxSetRecipient(tx_ptr, recipient);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosTxSetRecipient failed.");
         return result;
     }
 	
 	//chainid
-	tx_ptr->rawtx_fields.chainid.field_len    = UtilityHexToBin( tx_ptr->rawtx_fields.chainid.field, 32, 
-															    chainid_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
-	if( tx_ptr->rawtx_fields.chainid.field_len == 0 )
+	tx_ptr->rawtx_fields.chainid.field_len    = UtilityHexToBin(tx_ptr->rawtx_fields.chainid.field, 32, 
+															    chainid_str, TRIMBIN_LEFTTRIM, BOAT_TRUE);
+	if (tx_ptr->rawtx_fields.chainid.field_len == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "chainid Initialize failed.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
     }
 	
 	//groupid
-	tx_ptr->rawtx_fields.groupid.field_len    = UtilityHexToBin( tx_ptr->rawtx_fields.groupid.field, 32, 
-																groupid_str, TRIMBIN_LEFTTRIM, BOAT_TRUE );
-	if( tx_ptr->rawtx_fields.groupid.field_len == 0 )
+	tx_ptr->rawtx_fields.groupid.field_len    = UtilityHexToBin(tx_ptr->rawtx_fields.groupid.field, 32, 
+																groupid_str, TRIMBIN_LEFTTRIM, BOAT_TRUE);
+	if (tx_ptr->rawtx_fields.groupid.field_len == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "groupid Initialize failed.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
@@ -117,29 +117,30 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	// Initialize blocklimit
 	// blocklimit should be greater than current blocknumber, 
 	// and less than current blocknumber plus 1000.
-	retval_str = BoatFiscobcosGetBlockNumber( tx_ptr );
-	result     = BoatFiscobcosPraseRpcResponseResult( retval_str, "", 
-											    &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-	if( result != BOAT_SUCCESS )
+	retval_str = BoatFiscobcosGetBlockNumber(tx_ptr);
+	result     = BoatFiscobcosPraseRpcResponseResult(retval_str, "", 
+											    	 &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosGetBlockNumber failed.");
         return result;
 	}
 
 	tx_ptr->rawtx_fields.blocklimit.field_len = \
-							UtilityHexToBin( tx_ptr->rawtx_fields.blocklimit.field, 32, 
+							UtilityHexToBin(tx_ptr->rawtx_fields.blocklimit.field, 32, 
 											(BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
-											TRIMBIN_LEFTTRIM, BOAT_TRUE );
-	if( tx_ptr->rawtx_fields.blocklimit.field_len == 0 )
+											TRIMBIN_LEFTTRIM, BOAT_TRUE);
+	BoatLog(BOAT_LOG_CRITICAL, "%s", tx_ptr->rawtx_fields.blocklimit.field);
+	if (tx_ptr->rawtx_fields.blocklimit.field_len == 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "blocklimit Initialize failed.");
         return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
 	//convert to bigendian uint256
-	BoatFieldMax32B  blocklimitTmp;
-	memset( &blocklimitTmp, 0, sizeof(BoatFieldMax32B) );
-	for( i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++ )
+	BoatFieldMax32B blocklimitTmp;
+	memset(&blocklimitTmp, 0, sizeof(BoatFieldMax32B));
+	for (i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++)
 	{
 		blocklimitTmp.field[31 - i] = tx_ptr->rawtx_fields.blocklimit.field[tx_ptr->rawtx_fields.blocklimit.field_len - i - 1];
 	}
@@ -147,11 +148,11 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	
 	//convert bigendian uint256 to bignumber
 	utilityBignum256 convertTmp;
-	BUINT32   blockLimitOffset = 500; //value should rangle of 1 ~ 1000
-	UtilityReadBigendToBignum( &blocklimitTmp.field[0], &convertTmp );
+	BUINT32 blockLimitOffset = 500; //value should rangle of 1 ~ 1000
+	UtilityReadBigendToBignum(&blocklimitTmp.field[0], &convertTmp);
 	
 	//execute bignumber plus uint
-	for( i = 0; i < 9; i++ )
+	for (i = 0; i < 9; i++)
 	{
 		blockLimitOffset += convertTmp.val[i];
 		convertTmp.val[i] = blockLimitOffset & 0x3FFFFFFF;
@@ -159,20 +160,21 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	}
 	
 	//convert bignumber to bigendian uint256
-	UtilityWriteBignumToBigend( &convertTmp, &blocklimitTmp.field[0] );	
+	UtilityWriteBignumToBigend(&convertTmp, &blocklimitTmp.field[0]);	
 	BoatLog_hexdump(BOAT_LOG_NORMAL, "blocklimitTmp2:", blocklimitTmp.field, 32);
 	memset(tx_ptr->rawtx_fields.blocklimit.field, 0, 32);
 	
 	//convert bigendian uint256 to foregone
-	for( i = 0; i < 32; i++)
+	for (i = 0; i < 32; i++)
 	{
-		if(blocklimitTmp.field[i] != 0x00)
+		if (blocklimitTmp.field[i] != 0x00)
 		{
-			blocklimitTmp.field_len++; //compute valid data length
+			blocklimitTmp.field_len = 32 - i; //compute valid data length
+			break;
 		}
 	}
 	tx_ptr->rawtx_fields.blocklimit.field_len = blocklimitTmp.field_len;//update data length
-	for( i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++)
+	for (i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++)
 	{
 		tx_ptr->rawtx_fields.blocklimit.field[i] = blocklimitTmp.field[32 - tx_ptr->rawtx_fields.blocklimit.field_len + i];
 	}
@@ -180,7 +182,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	// Initialize value = 0
 	//FISCO BCOS DOES NOT SET VALUE, IT'S DE-COINIZED
     result = BoatFiscobcosTxSetValue(tx_ptr, NULL);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosTxSetValue failed.");
         return result;
@@ -190,34 +192,34 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 }
 
 
-BOAT_RESULT BoatFiscobcosTxSetNonce( BoatFiscobcosTx *tx_ptr, BUINT64 nonce )
+BOAT_RESULT BoatFiscobcosTxSetNonce(BoatFiscobcosTx *tx_ptr, BUINT64 nonce)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
-	if( nonce == BOAT_FISCOBCOS_NONCE_AUTO )
+	if (nonce == BOAT_FISCOBCOS_NONCE_AUTO)
 	{
 		tx_ptr->rawtx_fields.nonce.field_len = 32;
-		result = BoatRandom( tx_ptr->rawtx_fields.nonce.field, 
-							 tx_ptr->rawtx_fields.nonce.field_len, NULL );
+		result = BoatRandom(tx_ptr->rawtx_fields.nonce.field, 
+							tx_ptr->rawtx_fields.nonce.field_len, NULL);
 	}
 	else
 	{
 		tx_ptr->rawtx_fields.nonce.field_len = \
-			   UtilityUint64ToBigend( tx_ptr->rawtx_fields.nonce.field, nonce, TRIMBIN_LEFTTRIM );
+			   UtilityUint64ToBigend(tx_ptr->rawtx_fields.nonce.field, nonce, TRIMBIN_LEFTTRIM);
 	}
 
     return result;
 }
 
-BOAT_RESULT BoatFiscobcosTxSetGasPrice( BoatFiscobcosTx *tx_ptr, BoatFieldMax32B *gas_price_ptr )
+BOAT_RESULT BoatFiscobcosTxSetGasPrice(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B *gas_price_ptr)
 {
-    if( (tx_ptr == NULL) || (gas_price_ptr == NULL) )
+    if ((tx_ptr == NULL) || (gas_price_ptr == NULL))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
@@ -233,14 +235,14 @@ BOAT_RESULT BoatFiscobcosTxSend(BoatFiscobcosTx *tx_ptr)
 {
     BOAT_RESULT result;
 
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
 
-    if( tx_ptr->is_sync_tx == BOAT_FALSE )
+    if (tx_ptr->is_sync_tx == BOAT_FALSE)
     {
         result = FiscobcosSendRawtx(tx_ptr);
     }
@@ -253,27 +255,27 @@ BOAT_RESULT BoatFiscobcosTxSend(BoatFiscobcosTx *tx_ptr)
 }
 
 
-BCHAR *BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_str,
-									   BUINT8 *func_param_ptr, BUINT32 func_param_len )
+BCHAR *BoatFiscobcosCallContractFunc(BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_str,
+									 BUINT8 *func_param_ptr, BUINT32 func_param_len)
 {
     Param_fiscobcos_call param_fiscobcos_call;
 	BUINT8 function_selector[32];
 	BUINT8 hashLenDummy;
 	BCHAR  groupid_hexstr[67];
-	BCHAR  from_hexstr[BOAT_FISCOBCOS_ADDRESS_SIZE*2+3];
-	BCHAR  to_hexstr[BOAT_FISCOBCOS_ADDRESS_SIZE*2+3];
-    BCHAR  data_hexstr[(func_param_len + 4)*2 + 3]; /* +4 for function selector, *2 for bin to HEX, 
+	BCHAR  from_hexstr[BOAT_FISCOBCOS_ADDRESS_SIZE * 2 + 3];
+	BCHAR  to_hexstr[BOAT_FISCOBCOS_ADDRESS_SIZE * 2 + 3];
+    BCHAR  data_hexstr[(func_param_len + 4) * 2 + 3]; /* +4 for function selector, *2 for bin to HEX, 
 	                                                   +3 for "0x" prefix and NULL terminator Compiler 
 												       MUST support C99 to allow variable-size local array */
     BCHAR  *retval_str;
 
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
-        BoatLog( BOAT_LOG_CRITICAL, "Arguments cannot be NULL." );
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
     }
     
-    if( func_param_ptr == NULL && func_param_len != 0 )
+    if (func_param_ptr == NULL && func_param_len != 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
@@ -285,8 +287,8 @@ BCHAR *BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_proto
         return NULL;
 	}
 	
-    if ( (BOAT_SUCCESS != UtilityStringLenCheck(func_proto_str)) && \
-	     (BOAT_SUCCESS != UtilityStringLenCheck((BCHAR*)func_param_ptr)) )
+    if ((BOAT_SUCCESS != UtilityStringLenCheck(func_proto_str)) && \
+	    (BOAT_SUCCESS != UtilityStringLenCheck((BCHAR*)func_param_ptr)))
     {
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
@@ -294,34 +296,34 @@ BCHAR *BoatFiscobcosCallContractFunc( BoatFiscobcosTx *tx_ptr, BCHAR *func_proto
 
 	//set groupid
 	memset(groupid_hexstr, 0, sizeof(groupid_hexstr));
-	UtilityBinToHex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
-					BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
+	UtilityBinToHex(groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
+					BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
 	param_fiscobcos_call.groupid = groupid_hexstr;
 	//set from
 	memset(from_hexstr, 0, sizeof(from_hexstr));
-	UtilityBinToHex( from_hexstr, tx_ptr->wallet_ptr->account_info.address, BOAT_FISCOBCOS_ADDRESS_SIZE,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+	UtilityBinToHex(from_hexstr, tx_ptr->wallet_ptr->account_info.address, BOAT_FISCOBCOS_ADDRESS_SIZE,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
 	 param_fiscobcos_call.from  = from_hexstr;
 	//set to
 	 memset(to_hexstr, 0, sizeof(to_hexstr));
-    UtilityBinToHex( to_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_FISCOBCOS_ADDRESS_SIZE, 
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+    UtilityBinToHex(to_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_FISCOBCOS_ADDRESS_SIZE, 
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     param_fiscobcos_call.to  = to_hexstr;
 	//set value
 	param_fiscobcos_call.value = "";
 	//set data
 	memset(data_hexstr, 0, sizeof(data_hexstr));
-	BoatHash( BOAT_HASH_KECCAK256, (BUINT8*)func_proto_str, 
-			  strlen(func_proto_str), function_selector, &hashLenDummy, NULL );
-    UtilityBinToHex( data_hexstr, function_selector, 4,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES,  BOAT_FALSE );
-	UtilityBinToHex( data_hexstr+10, func_param_ptr, func_param_len,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
+	BoatHash(BOAT_HASH_KECCAK256, (BUINT8*)func_proto_str, 
+			 strlen(func_proto_str), function_selector, &hashLenDummy, NULL);
+    UtilityBinToHex(data_hexstr, function_selector, 4,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES,  BOAT_FALSE);
+	UtilityBinToHex(data_hexstr+10, func_param_ptr, func_param_len,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
 	param_fiscobcos_call.data  = data_hexstr;
 
-    retval_str = web3_fiscobcos_call( tx_ptr->wallet_ptr->web3intf_context_ptr,
-									  tx_ptr->wallet_ptr->network_info.node_url_ptr,
-									  &param_fiscobcos_call );
+    retval_str = web3_fiscobcos_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
+									 tx_ptr->wallet_ptr->network_info.node_url_ptr,
+									 &param_fiscobcos_call);
 
     return retval_str;
 }
@@ -340,13 +342,13 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
 	
 	//set groupid
 	memset(groupid_hexstr, 0, sizeof(groupid_hexstr));
-	UtilityBinToHex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
-					BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
+	UtilityBinToHex(groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
+					BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
 	param_fiscobcos_getTransactionReceipt.groupid = groupid_hexstr;
 	//set txHash
 	memset(txhash_hexstr, 0, sizeof(txhash_hexstr));
-	UtilityBinToHex( txhash_hexstr, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+	UtilityBinToHex(txhash_hexstr, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     param_fiscobcos_getTransactionReceipt.tx_hash_str = txhash_hexstr;
 
     do{
@@ -354,9 +356,9 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
         tx_status_str = web3_fiscobcos_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 						tx_ptr->wallet_ptr->network_info.node_url_ptr,
 						&param_fiscobcos_getTransactionReceipt);
-		result = BoatFiscobcosPraseRpcResponseResult( tx_status_str, "status", 
+		result = BoatFiscobcosPraseRpcResponseResult(tx_status_str, "status", 
 												&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-        if( result != BOAT_SUCCESS )
+        if (result != BOAT_SUCCESS)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             result = BOAT_ERROR_RPC_FAILED;
@@ -367,9 +369,9 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
             // tx_status_str == "": the transaction is pending
             // tx_status_str == "0x0": the transaction is successfully mined
             // tx_status_str == "0x1": the transaction fails
-            if( tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr[0] != '\0' )
+            if (tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr[0] != '\0')
             {
-                if( strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x0") == 0 )
+                if (strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x0") == 0)
                 {
                     BoatLog(BOAT_LOG_NORMAL, "Transaction has got mined.");
 					break;
@@ -385,7 +387,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
         
     }while(tx_mined_timeout > 0);
 
-    if( tx_mined_timeout <= 0)
+    if (tx_mined_timeout <= 0)
     {
         BoatLog(BOAT_LOG_NORMAL, "Wait for pending transaction timeout. This does not mean the transaction fails.");
         result = BOAT_ERROR_TX_PENDING;
@@ -395,27 +397,27 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
 }
 
 
-BCHAR *BoatFiscobcosGetBlockNumber( BoatFiscobcosTx *tx_ptr )
+BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr)
 {
     Param_fiscobcos_getBlockNumber param_fiscobcos_getBlockNumber;
-	BCHAR  groupid_hexstr[67];
-    BCHAR  *retval_str;
+	BCHAR groupid_hexstr[67];
+    BCHAR *retval_str;
 
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
-        BoatLog( BOAT_LOG_CRITICAL, "Arguments cannot be NULL." );
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
     }
 
 	//set groupid
 	memset(groupid_hexstr, 0, sizeof(groupid_hexstr));
-	UtilityBinToHex( groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
-					BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE );
+	UtilityBinToHex(groupid_hexstr, tx_ptr->rawtx_fields.groupid.field, tx_ptr->rawtx_fields.groupid.field_len,
+					BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
 	param_fiscobcos_getBlockNumber.groupid = groupid_hexstr;
 
-    retval_str = web3_fiscobcos_getBlockNumber( tx_ptr->wallet_ptr->web3intf_context_ptr,
-												tx_ptr->wallet_ptr->network_info.node_url_ptr,
-												&param_fiscobcos_getBlockNumber );
+    retval_str = web3_fiscobcos_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
+											   tx_ptr->wallet_ptr->network_info.node_url_ptr,
+											   &param_fiscobcos_getBlockNumber);
 
     return retval_str;
 }

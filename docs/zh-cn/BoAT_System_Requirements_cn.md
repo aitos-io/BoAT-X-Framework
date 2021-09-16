@@ -3,42 +3,42 @@
 ## 引言
 
 ### 概述
-本文描述BoAT Framework SDK区块链客户端（C语言版本）对蜂窝模组的系统需求。BoAT是一个运行在模组的应用处理器上的SDK。对于OpenCPU的蜂窝模组，BoAT作为库被应用程序链接和调用。对于非OpenCPU的蜂窝模组，BoAT的API需要扩展为AT命令，供上位机上的应用调用。
+本文描述BoAT Framework SDK区块链客户端（C语言版本）对蜂窝模组的系统需求。BoAT是一个运行在模组的应用处理器上的SDK。对于OpenCPU蜂窝模组，BoAT作为库被应用程序链接和调用。对于非OpenCPU的蜂窝模组，BoAT的API需要扩展为AT命令，供上位机上的应用调用。
 
 ### 缩写术语
-|术语   |解释                          |
-|:----- |:--------------------------- |
-|BoAT|Blockchain of AI Things|
-|SDK|Software Development Kit|
-|API|Application Programming Interface|
-|MCU|Microcontroller Unit|
-|RTOS|Real Time Operating System|
-|TRNG|True Random Number Generator|
+|术语  |解释                                                    |
+|:---- |:----------------------------------------------------- |
+|BoAT  |Blockchain of AI Things                                |
+|SDK   |Software Development Kit                               |
+|API   |Application Programming Interface                      |
+|MCU   |Microcontroller Unit                                   |
+|RTOS  |Real Time Operating System                             |
+|TRNG  |True Random Number Generator                           |
 |CSPRNG|Cryptographically Secure Pseudo-Random Number Generator|
-|RTC|Real Time Clock|
-|NTP|Network Time Protocol|
-|HTTP|Hyper Text Transfer Protocol|
-|HTTPs|Hyper Text Transfer Protocol Secure|
-|CoAP|Constrained Application Protocol|
-|MQTT|Message Queuing Telemetry Transport|
-|TCP|Transmission Control Protocol|
-|TEE|Trusted Execution Environment|
-|TA|Trusted Application|
-|ECDSA|Elliptic Curve Digital Signature Algorithm|
-|SHA2|Secure Hash Algorithm 2|
+|RTC   |Real Time Clock                                        |
+|NTP   |Network Time Protocol                                  |
+|HTTP  |Hyper Text Transfer Protocol                           |
+|HTTPs |Hyper Text Transfer Protocol Secure                    |
+|CoAP  |Constrained Application Protocol                       |
+|MQTT  |Message Queuing Telemetry Transport                    |
+|TCP   |Transmission Control Protocol                          |
+|TEE   |Trusted Execution Environment                          |
+|TA    |Trusted Application                                    |
+|ECDSA |Elliptic Curve Digital Signature Algorithm             |
+|SHA2  |Secure Hash Algorithm 2                                |
 
 
 ## 存储需求
 
 仅支持以太坊/PlatONE/FISCO BCOS时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
-- Flash（代码和只读数据）：约210KB
+- Flash（代码和只读数据）：约210kB
 - Flash（持久性读写数据）：数百Bytes
-- RAM（全局变量、堆、栈）：约10KB
+- RAM（全局变量、堆、栈）：约10kB
 
 仅支持HyperLedger Fabric时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
-- Flash（代码和只读数据）：约520KB
+- Flash（代码和只读数据）：约520kB
 - Flash（持久性读写数据）：数千Bytes
-- RAM（全局变量、堆、栈）：约30KB
+- RAM（全局变量、堆、栈）：约30kB
 
 以上不含BoAT Framework SDK（C语言版本）所依赖的系统库，具体数值随不同区块链协议而有所不同。
 

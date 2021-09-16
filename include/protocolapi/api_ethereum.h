@@ -179,9 +179,9 @@ extern "C" {
  *   @verbatim
      BoatEthWalletConfig eth_config = {...};
      BSINT32 wallet_index;
-     wallet_index = BoatWalletCreate( BOAT_PROTOCOL_ETHEREUM,
-                                      &eth_config,
-                                      sizeof(BoatEthWalletConfig)
+     wallet_index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM,
+                                     &eth_config,
+                                     sizeof(BoatEthWalletConfig)
                                     );
      @endverbatim
  *   \n BoatEthWalletInit() MUST be called before any use of Boat Ethereum Wallet.
@@ -309,7 +309,7 @@ BOAT_RESULT BoatEthWalletSetChainId(BoatEthWallet *wallet_ptr, BUINT32 chain_id)
  *   i.e. 1e-18 ETH) of the account.\n
  *   If any error occurs, it returns NULL.
  ******************************************************************************/
-BCHAR * BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_ptr);
+BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_ptr);
 
 
 /*!*****************************************************************************
@@ -598,7 +598,7 @@ BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
  *
  * @see BoatEthTxSend()
  ******************************************************************************/
-BCHAR * BoatEthCallContractFunc(BoatEthTx *tx_ptr,
+BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr,
 								BCHAR *func_proto_str,
 								BUINT8 *func_param_ptr,
 								BUINT32 func_param_len);

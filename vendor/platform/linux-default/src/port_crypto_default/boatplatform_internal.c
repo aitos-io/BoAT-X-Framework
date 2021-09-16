@@ -64,7 +64,7 @@ uint32_t random32(void)
 }
 */
 
-BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
+BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 {	
 	BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -76,9 +76,9 @@ BOAT_RESULT  BoatRandom( BUINT8* output, BUINT32 outputLen, void* rsvd )
 }
 
 
-BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx, 
-						   const BUINT8* digest, BUINT32 digestLen, 
-						   BoatSignatureResult* signatureResult, void* rsvd )
+BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
+						  const BUINT8 *digest, BUINT32 digestLen, 
+						  BoatSignatureResult *signatureResult, void *rsvd)
 {
 	BUINT8 signatureTmp[64];
 	BUINT8 ecdsPrefix = 0;
@@ -88,43 +88,43 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 	(void)rsvd;
 	
 	/* param check */
-	if( (digest == NULL) || (signatureResult == NULL) )
+	if ((digest == NULL) || (signatureResult == NULL))
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
-	if( prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1 )
+	if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
 	{
-		result = ecdsa_sign_digest( &secp256k1,      // const ecdsa_curve *curve
-									prikeyCtx.extra_data.value,        // const uint8_t *priv_key
-									digest,          // const uint8_t *digest
-									signatureTmp,    // uint8_t *sig,
-									&ecdsPrefix,     // uint8_t *pby,
-									NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-									);
+		result = ecdsa_sign_digest(&secp256k1,      // const ecdsa_curve *curve
+								   prikeyCtx.extra_data.value,        // const uint8_t *priv_key
+								   digest,          // const uint8_t *digest
+								   signatureTmp,    // uint8_t *sig,
+								   &ecdsPrefix,     // uint8_t *pby,
+								   NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
+								   );
 	}
-	else if( prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1 )
+	else if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
 	{
-		result = ecdsa_sign_digest( &nist256p1,      // const ecdsa_curve *curve
-									prikeyCtx.extra_data.value,        // const uint8_t *priv_key
-									digest,          // const uint8_t *digest
-									signatureTmp,    // uint8_t *sig,
-									&ecdsPrefix,     // uint8_t *pby,
-									NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-									);
+		result = ecdsa_sign_digest(&nist256p1,      // const ecdsa_curve *curve
+								   prikeyCtx.extra_data.value,        // const uint8_t *priv_key
+								   digest,          // const uint8_t *digest
+								   signatureTmp,    // uint8_t *sig,
+								   &ecdsPrefix,     // uint8_t *pby,
+								   NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
+								   );
 	}
 	else
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "Unkown private key type." );
-		return  BOAT_ERROR;
+		BoatLog(BOAT_LOG_CRITICAL, "Unkown private key type.");
+		return BOAT_ERROR;
 	}
 
 	// signature result assign
 	memset(signatureResult, 0, sizeof(BoatSignatureResult));
 	
 	signatureResult->native_format_used = true;
-	memcpy(	signatureResult->native_sign,  signatureTmp, 64 );
+	memcpy(signatureResult->native_sign,  signatureTmp, 64);
 
 	signatureResult->signPrefix_used = true;
 	signatureResult->signPrefix      = ecdsPrefix;
@@ -136,35 +136,35 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 /******************************************************************************
                               BOAT FILE OPERATION WARPPER
 *******************************************************************************/
-BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
+BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 {
-	FILE   *file_ptr;
+	FILE *file_ptr;
 	
 	(void)rsvd;
 	
-	if( (fileName == NULL) || (size == NULL) )
+	if ((fileName == NULL) || (size == NULL))
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'size' can't be NULL." );
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
-	file_ptr = fopen( fileName, "rb" );
-	if( file_ptr == NULL )
+	file_ptr = fopen(fileName, "rb");
+	if (file_ptr == NULL)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName );
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
 		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
 	}
 	
-	fseek( file_ptr, 0, SEEK_END );
-	*size   = ftell( file_ptr );
-	fclose( file_ptr );
+	fseek(file_ptr, 0, SEEK_END);
+	*size = ftell(file_ptr);
+	fclose(file_ptr);
 	
 	return BOAT_SUCCESS;
 }
 
 
-BOAT_RESULT  BoatWriteFile( const BCHAR *fileName, 
-						    BUINT8* writeBuf, BUINT32 writeLen, void* rsvd )
+BOAT_RESULT BoatWriteFile(const BCHAR *fileName, 
+						  BUINT8 *writeBuf, BUINT32 writeLen, void *rsvd)
 {
 	FILE         *file_ptr;
 	BSINT32      count = 0;
@@ -172,25 +172,25 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
 	
 	(void)rsvd;
 	
-	if( (fileName == NULL) || (writeBuf == NULL) )
+	if ((fileName == NULL) || (writeBuf == NULL))
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'writeBuf' can't be NULL." );
+		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'writeBuf' can't be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
 	/* write to file-system */
-	file_ptr = fopen( fileName, "wb" );
-	if( file_ptr == NULL )
+	file_ptr = fopen(fileName, "wb");
+	if (file_ptr == NULL)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to create file: %s.", fileName );
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to create file: %s.", fileName);
 		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
 	}
 	
-	count = fwrite( writeBuf, 1, writeLen, file_ptr );
-	fclose( file_ptr );
-	if( count != writeLen )
+	count = fwrite(writeBuf, 1, writeLen, file_ptr);
+	fclose(file_ptr);
+	if (count != writeLen)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to write file: %s.", fileName );
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to write file: %s.", fileName);
 		return BOAT_ERROR;
 	}
 	
@@ -198,8 +198,8 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
 }
 
 
-BOAT_RESULT  BoatReadFile( const BCHAR *fileName, 
-						   BUINT8 *readBuf, BUINT32 readLen, void* rsvd )
+BOAT_RESULT BoatReadFile(const BCHAR *fileName, 
+					  	 BUINT8 *readBuf, BUINT32 readLen, void *rsvd)
 {
 	FILE         *file_ptr;
 	BSINT32      count = 0;
@@ -208,24 +208,24 @@ BOAT_RESULT  BoatReadFile( const BCHAR *fileName,
 	(void)rsvd;
 
 	
-	if( (fileName == NULL) || (readBuf == NULL) )
+	if ((fileName == NULL) || (readBuf == NULL))
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'readBuf' can't be NULL." );
+		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'readBuf' can't be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
 	/* read from file-system */
 	file_ptr = fopen(fileName, "rb");
-	if( file_ptr == NULL )
+	if (file_ptr == NULL)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName );
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
 		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
 	}
-	count = fread( readBuf, 1, readLen, file_ptr );
-	fclose( file_ptr );
-	if( count != readLen )
+	count = fread(readBuf, 1, readLen, file_ptr);
+	fclose(file_ptr);
+	if (count != readLen)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName );
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName);
 		return BOAT_ERROR;
 	}
 	
@@ -233,17 +233,17 @@ BOAT_RESULT  BoatReadFile( const BCHAR *fileName,
 }
 
 
-BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd )
+BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 {
 	(void)rsvd;
 		
-	if( fileName == NULL )
+	if (fileName == NULL)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL." );
+		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	
-	if( 0 != remove(fileName) )
+	if (0 != remove(fileName))
     {
         return BOAT_ERROR;
     }
@@ -273,9 +273,9 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
     (void)rsvd;
 
     ptr = strchr(address, ':');
-    if( NULL == ptr )
+    if (NULL == ptr)
     {
-        BoatLog( BOAT_LOG_CRITICAL, "invalid address:%s.", address );
+        BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", address);
         return -1;
     }
 
@@ -284,15 +284,15 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
     memcpy(ip  , address, (int)(ptr - address));
     memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
 
-    if( (he = gethostbyname(ip)) == NULL )
+    if ((he = gethostbyname(ip)) == NULL)
     {
-        BoatLog( BOAT_LOG_CRITICAL, "gethostbyname() error" );
+        BoatLog(BOAT_LOG_CRITICAL, "gethostbyname() error");
         return -1;
     }
 
-    if( (connectfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
+    if ((connectfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
-        BoatLog( BOAT_LOG_CRITICAL, "socket() error" );
+        BoatLog(BOAT_LOG_CRITICAL, "socket() error");
         return -1;
     }
 
@@ -305,15 +305,15 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
     server.sin_port = htons(atoi(port));
     server.sin_addr = *((struct in_addr *)(he->h_addr_list[0])); 
 
-    if(connect(connectfd, (struct sockaddr *)&server,sizeof(struct sockaddr)) < 0)
+    if (connect(connectfd, (struct sockaddr *)&server,sizeof(struct sockaddr)) < 0)
     {
-        BoatLog( BOAT_LOG_CRITICAL, "connect() error" );
+        BoatLog(BOAT_LOG_CRITICAL, "connect() error");
         close(connectfd);
         return -1;
     }
-    if(getsockname(connectfd, &localaddr, &addrlen) < 0)
+    if (getsockname(connectfd, &localaddr, &addrlen) < 0)
     {
-        BoatLog( BOAT_LOG_CRITICAL, "getsockname() error" );
+        BoatLog(BOAT_LOG_CRITICAL, "getsockname() error");
         close(connectfd);
         return -1;
     }
@@ -331,8 +331,8 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 
 
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
-BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain,
-						 BSINT32 socketfd, void* tlsContext, void* rsvd )
+BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
+						BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
 	
 	//! @todo BoatTlsInit implementation in crypto default.
@@ -341,29 +341,29 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
 #endif
 
 
-BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, void* rsvd)
+BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, void *rsvd)
 {
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
 	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
 	return -1;
 #else
-	return send( sockfd, buf, len, 0 );	
+	return send(sockfd, buf, len, 0);	
 #endif	
 }
 
 
-BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* rsvd)
+BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd)
 {
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
 	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
 	return -1;
 #else
-	return recv( sockfd, buf, len, 0 );
+	return recv(sockfd, buf, len, 0);
 #endif	
 }
 
 
-void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
+void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 {
 	close(sockfd);
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
@@ -376,8 +376,8 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
-static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriKeyCtx_config* config, 
-													        BoatWalletPriKeyCtx* pkCtx )
+static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKeyCtx_config *config, 
+													       BoatWalletPriKeyCtx *pkCtx)
 {
 	/* Valid private key value (as a UINT256) for Ethereum is [1, n-1], where n is
        0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 */
