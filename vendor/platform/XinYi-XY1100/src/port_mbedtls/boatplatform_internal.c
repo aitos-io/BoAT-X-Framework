@@ -776,14 +776,6 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs( const BoatWallet
 
 	mbedtls_pk_init( &mbedtls_pkCtx );
 
-	result = mbedtls_pk_setup( &mbedtls_pkCtx, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY) );
-	if(result)
-	{
-		BoatLog(BOAT_LOG_NORMAL, "== mbedtls_pk_setup ERROR result=%d", result);
-		mbedtls_pk_free( &mbedtls_pkCtx );
-		return result;
-	}
-
 
 	result = mbedtls_pk_parse_key( &mbedtls_pkCtx, config->prikey_content.field_ptr,
 								   config->prikey_content.field_len, NULL, 0 );
