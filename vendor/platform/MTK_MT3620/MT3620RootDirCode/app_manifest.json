@@ -1,0 +1,31 @@
+﻿{
+  "SchemaVersion": 1,
+  "Name": "BoAT_MT3620",
+  "ComponentId": "df4e0b49-b5c2-4ff1-a077-f5641802733b",
+  "EntryPoint": "/bin/app",
+  "CmdArgs": [""],
+  "Capabilities": {
+    "AllowedConnections": [ "35.247.155.162", "192.168.132.190", "116.236.47.90", "192.168.132.10", "192.168.132.83", "iot-hub-aitos.azure-devices.net", "global.azure-devices-provisioning.net" ],
+    "Gpio": [
+      "$MT3620_RDB_HEADER2_PIN6_GPIO",
+      "$MT3620_RDB_HEADER2_PIN8_GPIO",
+      "$MT3620_RDB_HEADER1_PIN12_GPIO",
+      "$MT3620_RDB_HEADER4_PIN13_GPIO",
+      "$MT3620_RDB_HEADER3_PIN12_GPIO",
+      "$MT3620_GPIO8",
+      "$MT3620_GPIO9",
+      "$MT3620_GPIO10"
+    ],
+    "Uart": [ "$MT3620_RDB_HEADER4_ISU1_UART", "$MT3620_RDB_HEADER4_ISU2_UART", "$MT3620_RDB_HEADER3_ISU3_UART" ],
+    "WifiConfig": true,
+    "NetworkConfig": true,
+    "CertStore": true,
+    "AllowedTcpServerPorts": [ 11000 ],
+    "DhcpService": true,
+    "MutableStorage": { "SizeKB": 8 },
+    "PowerControls": [ "ForcePowerDown", "ForceReboot" ],
+    "DeviceAuthentication": "2010b6e5-4bf4-4037-afab-95311a901298",
+    "AllowedApplicationConnections": []
+  },
+  "ApplicationType": "Default"
+}

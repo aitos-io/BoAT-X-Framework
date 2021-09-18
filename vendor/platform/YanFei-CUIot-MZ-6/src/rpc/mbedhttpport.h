@@ -56,7 +56,7 @@ typedef struct TMbedHttpPortContext
 extern "C" {
 #endif
 
-MbedHttpPortContext * MbedHttpPortInit(void);
+MbedHttpPortContext *MbedHttpPortInit(void);
 
 void MbedHttpPortDeinit(MbedHttpPortContext *mbedhttpport_context_ptr);
 

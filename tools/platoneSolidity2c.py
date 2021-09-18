@@ -813,7 +813,7 @@ class CFunctionGen():
         func_body_str     += '    }\n\n'
 
         # Set Nonce
-        if abi_item['constant'] != True:
+        if abi_item['constant'] == False:
             func_body_str += '    boat_try(BoatPlatoneTxSetNonce(tx_ptr, BOAT_PLATONE_NONCE_AUTO));\n\n'
 
 

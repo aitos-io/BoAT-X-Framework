@@ -199,8 +199,9 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
             break;
         #endif
 
-        #if PROTOCOL_USE_HLFABRIC == 1
+        #if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_HWBCS == 1)
         case BOAT_PROTOCOL_HLFABRIC:
+        case BOAT_PROTOCOL_HWBCS:
             if (wallet_config_ptr != NULL)
             {
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);

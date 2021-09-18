@@ -90,6 +90,19 @@ typedef struct TBoatPlatoneTx
     BoatPlatoneRawtxFields rawtx_fields;      //!< RAW transaction fields
 }BoatPlatoneTx;
 
+typedef struct T_wbe3_nodeInfo
+{
+    char * IP;
+    BUINT32 rpcPort;
+    
+}wbe3_nodeInfo;
+
+typedef struct T_nodesResult
+{
+    BUINT8 num;
+    wbe3_nodeInfo *nodeInfo;
+}nodesResult;
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -405,14 +418,20 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneGetTransactionReceipt(BoatPlato
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.
- * @see BoatEthPraseRpcResponseResult()
+ * @see web3_parse_json_result()
  ******************************************************************************/
 __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR *json_string, 
                                                                         const BCHAR *child_name, 
                                                                         BoatFieldVariable *result_out)
 {
-    return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);
+    return web3_parse_json_result(json_string, child_name, result_out);
 }
+
+/*!****************************************************************************
+ * @brief Get Nodes Info e.g. IP/Port.
+ * @see BoatPlatoneGetNodesInfo()
+ ******************************************************************************/
+BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out);
 
 /*! @}*/
 

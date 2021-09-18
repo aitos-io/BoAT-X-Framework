@@ -93,7 +93,7 @@ The wallet should provide the following functions to achieve:
 + SDK initialization:
 SDK initialization should be done before using BoAT SDK. The contents of this interface include:
    1. Initialization of wallet list  
-The wallet list is a data structure that contains a fixed number of wallets and wallet-related usage information. The wallet-related usage information includes wallet usage identification, wallet name, and blockchain to which the wallet belongs. The wallet list is a global resource. The initialization of the wallet list means that each member in the data structure is initialized once, such as initializing the use identifier as unused, and initializing the wallet as a null pointer.  
+The wallet list is a data structure that contains a fixed number of wallets and wallet-related usage information. The wallet-related usage information includes wallet usage identification, wallet name, and blockchain to which the wallet belongs. The wallet list is a global resource. The initialization of the wallet list means that each member in the data structure is initialized once, such as initializing the usage identification as unused.  
    2. Other global resource initialization  
 If some third-party libraries used by the SDK need to be initialized before calling, they should be initialized here, such as the third-party library cURL used by the RPC layer.
 
@@ -144,7 +144,7 @@ This interface is used to check whether the given private key is valid. The cont
 #### Transaction Interface
 
 ##### Transaction Data Structure and Function Realization List
-A transaction is a signed message, transmitted through the blockchain network, and recorded on the blockchain. The functions of transaction interfaces provided by different blockchains are basically the same.  
+A transaction is a signed message, transmitted through the blockchain network and recorded on the blockchain. The functions of transaction interfaces provided by different blockchains are basically the same.  
 
 For Ethereum/PlatON/PlatONE/FISCO BCOS:
 

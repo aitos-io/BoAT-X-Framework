@@ -44,7 +44,8 @@ const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a
 /**
  * test node url
  */
-const BCHAR *demoUrl = "http://192.168.132.200:7545";
+const BCHAR * demoUrl = "http://192.168.132.190:7545";
+
 
 /**
  * transfer recipient address
@@ -205,7 +206,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
     {
         result_str = StoreRead_readListLength(&tx_ctx);
         result = BoatEthPraseRpcResponseResult(result_str, "", &prase_result);
-        if(result_str != NULL)
+        if(result == BOAT_SUCCESS && result_str != NULL )
         {
             //BoatLog(BOAT_LOG_NORMAL, "readListLength returns: %s", result_str);
             
@@ -217,7 +218,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
             {
                 result_str = StoreRead_readListByIndex(&tx_ctx, index);
                 result     = BoatEthPraseRpcResponseResult(result_str, "", &prase_result);
-                if (result_str != NULL)
+                if (result == BOAT_SUCCESS && result_str != NULL)
                 {
                     //BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", prase_result.field_ptr);
                 }

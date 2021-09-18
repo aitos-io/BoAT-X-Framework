@@ -106,8 +106,7 @@ int strncasecmp(const char *str1, const char *str2, size_t len)
         return 0;
     }
     
-    if ((str1 == NULL && str2 != NULL)
-       || (str1 != NULL && str2 == NULL))
+    if ((str1 == NULL) || (str2 == NULL))
     {
         return -1;
     }
@@ -1394,9 +1393,7 @@ int httpclient_get_response_code(httpclient_t *client)
 
 static HTTPCLIENT_RESULT httpclient_common(httpclient_t *client, char *url, int method, httpclient_data_t *client_data)
 {
-    HTTPCLIENT_RESULT ret = HTTPCLIENT_ERROR_CONN;
-
-    ret = httpclient_connect(client, url);
+    HTTPCLIENT_RESULT ret = httpclient_connect(client, url);
     
     if (!ret) 
     {

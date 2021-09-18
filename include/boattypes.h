@@ -59,7 +59,8 @@ typedef enum
     BOAT_PROTOCOL_HLFABRIC,        //!< HyperLedger Fabric
     BOAT_PROTOCOL_PLATON,          //!< PlatON
     BOAT_PROTOCOL_PLATONE,         //!< PlatONE Enterprise consortium chain
-	BOAT_PROTOCOL_FISCOBCOS        //!< FISCOBCOS Enterprise consortium chain
+	BOAT_PROTOCOL_FISCOBCOS,        //!< FISCOBCOS Enterprise consortium chain
+    BOAT_PROTOCOL_HWBCS            // huawei chain
 }BoatProtocolType;
 
 //!@brief Blockchain hash algorithm

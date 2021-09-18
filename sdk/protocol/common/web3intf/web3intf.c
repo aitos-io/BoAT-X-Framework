@@ -181,6 +181,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR *json_string,
 }
 
 
+
 Web3IntfContext *web3_init(void)
 {
     Web3IntfContext *web3intf_context_ptr;
@@ -905,6 +906,9 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
 
     return return_value_ptr;
 }
+
+
+
 
 
 

@@ -130,6 +130,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 							UtilityHexToBin(tx_ptr->rawtx_fields.blocklimit.field, 32, 
 											(BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
 											TRIMBIN_LEFTTRIM, BOAT_TRUE);
+	BoatLog(BOAT_LOG_CRITICAL, "%s", tx_ptr->rawtx_fields.blocklimit.field);
 	if (tx_ptr->rawtx_fields.blocklimit.field_len == 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "blocklimit Initialize failed.");
@@ -137,7 +138,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	}
 
 	//convert to bigendian uint256
-	BoatFieldMax32B  blocklimitTmp;
+	BoatFieldMax32B blocklimitTmp;
 	memset(&blocklimitTmp, 0, sizeof(BoatFieldMax32B));
 	for (i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++)
 	{
@@ -147,7 +148,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	
 	//convert bigendian uint256 to bignumber
 	utilityBignum256 convertTmp;
-	BUINT32   blockLimitOffset = 500; //value should rangle of 1 ~ 1000
+	BUINT32 blockLimitOffset = 500; //value should rangle of 1 ~ 1000
 	UtilityReadBigendToBignum(&blocklimitTmp.field[0], &convertTmp);
 	
 	//execute bignumber plus uint
@@ -168,7 +169,8 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	{
 		if (blocklimitTmp.field[i] != 0x00)
 		{
-			blocklimitTmp.field_len++; //compute valid data length
+			blocklimitTmp.field_len = 32 - i; //compute valid data length
+			break;
 		}
 	}
 	tx_ptr->rawtx_fields.blocklimit.field_len = blocklimitTmp.field_len;//update data length
@@ -269,7 +271,7 @@ BCHAR *BoatFiscobcosCallContractFunc(BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_
 
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
-        BoatLog( BOAT_LOG_CRITICAL, "Arguments cannot be NULL." );
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
     }
     
@@ -354,8 +356,11 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
         tx_status_str = web3_fiscobcos_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 						tx_ptr->wallet_ptr->network_info.node_url_ptr,
 						&param_fiscobcos_getTransactionReceipt);
+		// "status" == null : the transaction is pending, the result is BOAT_ERROR
+		// todo: need to change web3_parse_json_result() 
 		result = BoatFiscobcosPraseRpcResponseResult(tx_status_str, "status", 
-												&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+													 &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+		
         if (result != BOAT_SUCCESS)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
@@ -364,9 +369,8 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
         }
         else
         {
-            // tx_status_str == "": the transaction is pending
             // tx_status_str == "0x0": the transaction is successfully mined
-            // tx_status_str == "0x1": the transaction fails
+            // tx_status_str is ohters: error number, for detail, see https://fisco-bcos-documentation.readthedocs.io/zh_CN/latest/docs/api.html#
             if (tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr[0] != '\0')
             {
                 if (strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x0") == 0)
@@ -376,7 +380,8 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
                 }
                 else
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_FISCOBCOS_MINE_INTERVAL);
+                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, error number is %s.", tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr);
+					break;
                 }
             }
 
@@ -395,7 +400,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
 }
 
 
-BCHAR *BoatFiscobcosGetBlockNumber( BoatFiscobcosTx *tx_ptr )
+BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr)
 {
     Param_fiscobcos_getBlockNumber param_fiscobcos_getBlockNumber;
 	BCHAR groupid_hexstr[67];

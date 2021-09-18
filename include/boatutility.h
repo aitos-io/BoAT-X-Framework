@@ -24,6 +24,10 @@ boatutility.h is header file for boatwallet utility functions.
 #define __BOATUTILITY_H__
 
 #include "boatiotsdk.h"
+#if PROTOCOL_USE_HWBCS == 1
+#include "protocolapi/api_hlfabric.h"
+#include "protocolapi/api_hw_bcs.h"
+#endif
 
 /*! @defgroup utility boat utility
  * @{
@@ -486,6 +490,17 @@ void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_n
 *   return  BOAT_ERROR.
 *******************************************************************************/
 BOAT_RESULT UtilityStringLenCheck(const BCHAR *string);
+
+BUINT64 UtilityBuint8Buf2Uint64(BUINT8* from,BUINT32 len);
+
+
+#if(BOAT_HWBCS_TLS_SUPPORT == 1)
+#include "mbedtls/x509_crt.h"
+#include "mbedtls/oid.h"
+size_t Utility_find_oid_value_in_name(const mbedtls_x509_name *name, const char* target_short_name, char *value, size_t value_length);
+#endif
+
+char *Utility_itoa(int num, char *str, int radix);
 
 /*! @}*/
 

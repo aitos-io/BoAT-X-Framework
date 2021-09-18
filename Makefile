@@ -11,9 +11,11 @@ BOAT_PROTOCOL_USE_PLATON    ?= 1
 BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
+BOAT_PROTOCOL_USE_HWBCS     ?= 1
+BOAT_DISCOVERY_PEER_QUERY   ?= 1
 
 # Chain config check
-ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATON)_$(BOAT_PROTOCOL_USE_PLATONE)_$(BOAT_PROTOCOL_USE_FISCOBCOS)_$(BOAT_PROTOCOL_USE_HLFABRIC), 0_0_0_0_0)
+ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATON)_$(BOAT_PROTOCOL_USE_PLATONE)_$(BOAT_PROTOCOL_USE_FISCOBCOS)_$(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS), 0_0_0_0_0_0)
     $(error Select at least one chain)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_FISCOBCOS), 0_1)
@@ -25,13 +27,18 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATONE), 0_1)
     $(error PLATONE depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_ETHEREUM' to 1 if enable PLATONE)
 endif
+ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS), 0_1)
+    $(error HWBCS depends on FABRIC, set 'BOAT_PROTOCOL_USE_HLFABRIC' to 1 if enable HWBCS)
+endif
 
 # Set parameter to scripts
 SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
                  "BOAT_PROTOCOL_USE_PLATON=$(BOAT_PROTOCOL_USE_PLATON)" \
                  "BOAT_PROTOCOL_USE_PLATONE=$(BOAT_PROTOCOL_USE_PLATONE)" \
                  "BOAT_PROTOCOL_USE_FISCOBCOS=$(BOAT_PROTOCOL_USE_FISCOBCOS)" \
-                 "BOAT_PROTOCOL_USE_HLFABRIC=$(BOAT_PROTOCOL_USE_HLFABRIC)"
+                 "BOAT_PROTOCOL_USE_HLFABRIC=$(BOAT_PROTOCOL_USE_HLFABRIC)" \
+                 "BOAT_PROTOCOL_USE_HWBCS=$(BOAT_PROTOCOL_USE_HWBCS)" \
+                 "BOAT_DISCOVERY_PEER_QUERY=$(BOAT_DISCOVERY_PEER_QUERY)" 
 
 
 # Platform target
@@ -81,7 +88,9 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
                   -I$(BOAT_SDK_DIR)/protocol/common/http2intf \
                   -I$(BOAT_SDK_DIR)/protocol/common/web3intf \
 				  -I$(BOAT_SDK_DIR)/protocol/boathlfabric \
+                  -I$(BOAT_SDK_DIR)/protocol/boathwbcs \
                   -I$(BOAT_SDK_DIR)/protocol/boathlfabric/protos \
+                  -I$(BOAT_SDK_DIR)/protocol/boathwbcs/protos \
 				  -I$(BOAT_SDK_DIR)/protocol/boatethereum \
                   -I$(BOAT_SDK_DIR)/protocol/boatplaton \
 				  -I$(BOAT_SDK_DIR)/protocol/boatplatone \
@@ -127,7 +136,7 @@ endif
 # The valid option value of SOFT_CRYPTO list as below:
 # - CRYPTO_DEFAULT      : default soft crypto algorithm
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
-SOFT_CRYPTO ?= CRYPTO_DEFAULT
+SOFT_CRYPTO ?= CRYPTO_MBEDTLS
 
 ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default \
@@ -146,7 +155,7 @@ endif
 #
 # - CJSON_DEFAULT : default cJSON library
 # - CJSON_OUTTER  : externally provided by users
-CJSON_LIBRARY ?= CJSON_OUTTER
+CJSON_LIBRARY ?= CJSON_DEFAULT
 
 ifeq ($(CJSON_LIBRARY), CJSON_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_SDK_DIR)/third-party/cJSON
@@ -169,7 +178,10 @@ export BOAT_PROTOCOL_USE_PLATON
 export BOAT_PROTOCOL_USE_PLATONE
 export BOAT_PROTOCOL_USE_FISCOBCOS
 export BOAT_PROTOCOL_USE_HLFABRIC
+export BOAT_PROTOCOL_USE_HWBCS
+export BOAT_DISCOVERY_PEER_QUERY
 export BOAT_USE_DEFAULT_CJSON
+
 
 export SOFT_CRYPTO
 export CJSON_LIBRARY

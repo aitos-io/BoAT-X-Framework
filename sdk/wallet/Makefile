@@ -19,6 +19,9 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)
 	SOURCES += api_hlfabric.c
 endif
+ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
+	SOURCES += api_hw_bcs.c
+endif
 
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/wallet
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
