@@ -29,7 +29,7 @@ This article describes the system requirements for BoAT Framework (C language ve
 |SHA2   |Secure Hash Algorithm 2                                |
 
 
-## Part 1 Storage Requirements
+## Part 1- Storage Requirements
 
 To enable Ethereum/PlatONE/FISCO BCOS capabilities, the storage requirements of the C-language BoAT Framework (excluding static or shared dependent libraries such as the C library) are:
 - Flash (code and read-only data): about 210kB
@@ -44,13 +44,13 @@ To enable HyperLedger Fabric capability, the storage requirements of the C-langu
 
 The above does not include the system libraries that the BoAT Framework (C language version) depends on. The exact values may vary with different blockchain protocols.
 
-## Part 2 Process Capacity Requirements
+## Part 2- Process Capacity Requirements
 
 In Ethereum blockchain, the BoAT Framework (C language version) takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, running on an ARM Cortex M4 at around 100MHz. The exact time can vary with different blockchain protocols.
 
 The exact computing performance requirements depend on the power consumption and latency requirements of the application calling (porting in) the BoAT Framework SDK. BoAT itself has no special requirements.
 
-## Part 3 Operating System and Communication Requirements 
+## Part 3- Operating System and Communication Requirements 
 
 There really are no special requirements for the operating system. Generally BoAT Framework (C language version) can be ported over most operating systems (e.g. Linux, various RTOS), as long as the following capabilities (below) are supported: 
 
@@ -79,7 +79,7 @@ If the device can only connect to the IoT platform of a specific operator or ser
 
 8. If the cellular IoT Module utilizes a Linux operating system, it should support adb or similar login mechanism and have root privileges during debugging.
 
-## Part 4 TEE and Remote Attestation (optional)
+## Part 4- TEE and Remote Attestation (optional)
 
 ### TEE
 
@@ -97,7 +97,7 @@ Remote attestation is a mechanism that uses the Root of Trust embedded in the ch
 2. If the TEE is supported, the data should be signed in TEE (optional)
 
 
-## Part 5 Cryptography Hardware Acceleration (optional)
+## Part 5- Cryptography Hardware Acceleration (optional)
 
 If the hardware supports cryptographic hardware acceleration, utilizing this technology will improve the performance of cryptographic operations.
 
