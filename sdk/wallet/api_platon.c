@@ -485,4 +485,12 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
 
     return result;
 }
+
+BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
+                                             const BCHAR *child_name, 
+                                             BoatFieldVariable *result_out)
+{
+    return web3_parse_json_result(json_string, child_name, result_out);
+}
+
 #endif /* end of PROTOCOL_USE_PLATON */
