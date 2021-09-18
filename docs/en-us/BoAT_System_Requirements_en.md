@@ -73,7 +73,7 @@ There are no special requirements concerning the operating system. Generally, Bo
    (3) MQTT <br>
    (4) TCP <br>
 
-If the device can only connect to the IoT platform of a specific operator or service provider (such as OneNET, OceanConnect), the communication protocol follows the operator's requirements.
+The communication protocol follows the operator's requirements if the device can only connect to a specific operator or service provider (such as OneNET, OceanConnect).
 
 7. Supports commonly used standard C library functions such as memcpy(), strcpy(), snprintf()(optional for I/O-related functions such as printf()).
 
