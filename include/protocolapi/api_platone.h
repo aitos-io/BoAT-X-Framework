@@ -420,12 +420,9 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneGetTransactionReceipt(BoatPlato
  * @brief Prase RPC method RESPONSE.
  * @see web3_parse_json_result()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR *json_string, 
-                                                                        const BCHAR *child_name, 
-                                                                        BoatFieldVariable *result_out)
-{
-    return web3_parse_json_result(json_string, child_name, result_out);
-}
+BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR *json_string, 
+                                              const BCHAR *child_name, 
+                                              BoatFieldVariable *result_out);
 
 /*!****************************************************************************
  * @brief Get Nodes Info e.g. IP/Port.

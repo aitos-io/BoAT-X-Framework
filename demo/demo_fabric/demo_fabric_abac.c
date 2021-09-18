@@ -433,7 +433,7 @@ int main(int argc, char *argv[])
 		BoatLog( BOAT_LOG_CRITICAL, "begin discover node   " );
 		tx_ptr.var.args.nArgs = 0;
 		BoatSleep(3);
-		result += BoatHlfabricDiscoverSubmit(&tx_ptr,wallet_config.nodesCfg);
+		result += BoatHlfabricDiscoverySubmit(&tx_ptr,wallet_config.nodesCfg);
 		if (result != BOAT_SUCCESS)
 		{
 			//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(query) failed." );

@@ -424,4 +424,11 @@ BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr)
 
     return retval_str;
 }
+
+BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
+                                                const BCHAR *child_name, 
+                                                BoatFieldVariable *result_out)
+{
+    return web3_parse_json_result(json_string, child_name, result_out);
+}
 #endif /* end of PROTOCOL_USE_FISCOBCOS */

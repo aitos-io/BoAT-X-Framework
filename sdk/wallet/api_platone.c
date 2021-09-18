@@ -499,4 +499,11 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
 
     return BOAT_SUCCESS;
 }
+
+BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR *json_string, 
+                                              const BCHAR *child_name, 
+                                              BoatFieldVariable *result_out)
+{
+    return web3_parse_json_result(json_string, child_name, result_out);
+}
 #endif /* end of PROTOCOL_USE_PLATONE */
