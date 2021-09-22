@@ -486,6 +486,12 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
 		}          
     }
 
+	if (result == BOAT_ERROR)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "generate private key failed.");
+		return result;
+	}
+
 	// 1- update private key
 	memcpy(pkCtx->extra_data.value, prikeyTmp, 32);
 	pkCtx->extra_data.value_len = 32;

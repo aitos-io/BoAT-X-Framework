@@ -75,8 +75,6 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd )
 	return result;
 }
 
-
-
 BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
 						  const BUINT8* digest, BUINT32 digestLen, 
 						  BoatSignatureResult* signatureResult, void *rsvd)
@@ -470,6 +468,12 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 			result = BOAT_ERROR;
 		}          
     }
+
+	if (result == BOAT_ERROR)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "generate private key failed.");
+		return result;
+	}
 
 	// 1- update private key
 	memcpy(pkCtx->extra_data.value, prikeyTmp, 32);
