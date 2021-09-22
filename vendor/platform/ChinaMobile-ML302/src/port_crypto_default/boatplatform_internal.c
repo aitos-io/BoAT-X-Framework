@@ -49,6 +49,8 @@
 #include "http2intf.h"
 #endif
 
+#define GENERATE_KEY_REPEAT_TIMES	100
+
 /*
 uint32_t random32(void)
 {
@@ -399,8 +401,9 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
 	/* Convert priv_key_max_u256 from UINT256 to Bignum256 format */
     bn_read_le((const uint8_t *)priv_key_max_u256, &priv_key_max_bn256);
 
+	// 1- update private key
 	/* generate native private key loop */
-	for( key_try_count = 0; key_try_count < 100; key_try_count++ )
+	for( key_try_count = 0; key_try_count < GENERATE_KEY_REPEAT_TIMES; key_try_count++ )
     {
 		/* generate native private key */
         result = BoatRandom( prikeyTmp, 32, NULL );
@@ -416,10 +419,11 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
 		{
 			/* key is valid */
 			memcpy( pkCtx->extra_data.value, prikeyTmp, 32 );
+			pkCtx->extra_data.value_len = 32;
 			result = BOAT_SUCCESS;
 			break;
 		}
-		else
+		else if (key_try_count == GENERATE_KEY_REPEAT_TIMES - 1)
 		{
 			result = BOAT_ERROR;
 		}
@@ -430,10 +434,6 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation( const BoatWalletPriK
 		BoatLog( BOAT_LOG_CRITICAL, "generate private key failed." );
 		return result;
 	}
-
-	// 1- update private key
-	memcpy(pkCtx->extra_data.value, prikeyTmp, 32);
-	pkCtx->extra_data.value_len = 32;
 
 	// 2- update private key format
 	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
