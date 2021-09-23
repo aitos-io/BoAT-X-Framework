@@ -1,11 +1,11 @@
 # Select one of the crypto-dep and platform
 
-.PHONY:all mbedTLS crypto_default keccak storage platform
+.PHONY:all  crypto_default keccak storage platform
 
 ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
-    BUILD_DEP :=  keccak storage crypto_default platform
+    BUILD_DEP :=   storage crypto_default platform
 else ifeq ($(SOFT_CRYPTO), CRYPTO_MBEDTLS)
-    BUILD_DEP :=  keccak  storage mbedTLS platform
+    BUILD_DEP :=  keccak  storage  platform
 else
     BUILD_DEP :=
 endif

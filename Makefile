@@ -7,12 +7,12 @@ BOAT_BUILD_DIR := $(BOAT_BASE_DIR)/build
 # Set chain support
 # Set to 1 to enable releated chain, to 0 to disable
 BOAT_PROTOCOL_USE_ETHEREUM  ?= 1
-BOAT_PROTOCOL_USE_PLATON    ?= 1
+BOAT_PROTOCOL_USE_PLATON    ?= 0
 BOAT_PROTOCOL_USE_PLATONE   ?= 1
-BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
-BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
-BOAT_PROTOCOL_USE_HWBCS     ?= 1
-BOAT_DISCOVERY_PEER_QUERY   ?= 1
+BOAT_PROTOCOL_USE_FISCOBCOS ?= 0
+BOAT_PROTOCOL_USE_HLFABRIC  ?= 0
+BOAT_PROTOCOL_USE_HWBCS     ?= 0
+BOAT_DISCOVERY_PEER_QUERY   ?= 0
 
 # Chain config check
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATON)_$(BOAT_PROTOCOL_USE_PLATONE)_$(BOAT_PROTOCOL_USE_FISCOBCOS)_$(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS), 0_0_0_0_0_0)
@@ -50,7 +50,8 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - Neoway-N58                : Neoway's LTE Cat.1 module
 # - YanFei-CUIot-MZ-6         : China Unicom's LTE Cat.1 module
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
-PLATFORM_TARGET ?= linux-default
+# - ChinaMobile-M5311         : China Mobile's LTE Cat.1 module
+PLATFORM_TARGET ?= ChinaMobile-M5311
 
 # Environment-specific Settings
 include $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/external.env
@@ -136,7 +137,7 @@ endif
 # The valid option value of SOFT_CRYPTO list as below:
 # - CRYPTO_DEFAULT      : default soft crypto algorithm
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
-SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+SOFT_CRYPTO ?= CRYPTO_DEFAULT
 
 ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default \
@@ -155,7 +156,7 @@ endif
 #
 # - CJSON_DEFAULT : default cJSON library
 # - CJSON_OUTTER  : externally provided by users
-CJSON_LIBRARY ?= CJSON_DEFAULT
+CJSON_LIBRARY ?= CJSON_OUTTER
 
 ifeq ($(CJSON_LIBRARY), CJSON_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_SDK_DIR)/third-party/cJSON
