@@ -45,7 +45,6 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # The valid option value of PLATFORM_TARGET list as below:
 # - linux-default             : Default linux platform
 # - Fibocom-L610              : Fibocom's LTE Cat.1 module
-# - Fibocom-L718              : Fibocom's LTE Cat.4 module
 # - Quectel-BG95              : Quectel's NB-IoT/GSM module
 # - Neoway-N58                : Neoway's LTE Cat.1 module
 # - YanFei-CUIot-MZ-6         : China Unicom's LTE Cat.1 module
