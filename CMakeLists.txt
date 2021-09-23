@@ -76,7 +76,7 @@ endif()
 # - Neoway-N58                : Neoway's LTE Cat.1 module
 # - YanFei-CUIot-MZ-6         : China Unicom's LTE Cat.1 module
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
-# - MTK_MT3620                : MTK_MT3620 module
+# - MTK-MT3620                : MTK-MT3620 module
 
 set(PLATFORM_TARGET "linux-default")
 
@@ -104,8 +104,8 @@ elseif(PLATFORM_TARGET STREQUAL "YanFei-CUIot-MZ-6")
     message(STATUS "Platform using YanFei-CUIot-MZ-6")
 elseif(PLATFORM_TARGET STREQUAL "ChinaMobile-ML302")
     message(STATUS "Platform using ChinaMobile-ML302")
-elseif(PLATFORM_TARGET STREQUAL "MTK_MT3620")
-    message(STATUS "Platform using MTK_MT3620")
+elseif(PLATFORM_TARGET STREQUAL "MTK-MT3620")
+    message(STATUS "Platform using MTK-MT3620")
 else()
     message(FATAL_ERROR "Platform using ${PLATFORM_TARGET}, but not support")
 endif()
