@@ -20,7 +20,7 @@ The intended readers of this article are: BoAT SDK detailed designers.
 
 
 ## BoAT Design Goals
-As a middleware fusing Blockchain and IoT technologies, It should be easily and quickly transplanted into various IoT modules at the minimum cost of modification. The design of BoAT is based on these following principles:
+As a middleware fusing Blockchain and IoT technologies, it should be efficiently transplanted into various IoT modules and at a minimum modification cost. The design of BoAT is based on the following principles:
 + Hierarchical design  
 + Multiple blockchain protocols are supported  
 + Scalable design  
@@ -217,7 +217,8 @@ There are three main differences between PlatON and Ethereum:
 
 When designing the data structure and code implementation of PlatON, we should consider the inheritance of data structure and the reuse of code implementation, so as to reduce the amount of code and facilitate maintenance. Although PlatON's transaction structure is the same as Ethereum, bech32 addresses are required for calls in some RPC commands. Therefore, in the design of data structure, two fields are added to store the address in Bech32 format. The possible design ideas are shown in Figure 4-2:  
 ![A possible design idea of PlatON data structure](./images/BoAT_Overall_Design_en-F4-2-PlatON_Data_Structure.png)  
-Figure 4-2 illustrates one possible data structure design idea for PlatON. Note that the two additional address fields for PlatON should be placed at the end of the data structure without compromising the integrity of the reused Ethereum data structure. Disrupting the integrity of Ethereum's data structure will make the implementation methods associated with that data structure in Ethereum unreusable.
+Figure 4-2 illustrates one possible data structure design idea for PlatON  
+Note that the two additional address fields for PlatON should be placed at the end of the data structure without compromising the integrity of the reused Ethereum data structure. Disrupting the integrity of Ethereum's data structure will make the implementation methods associated with that data structure in Ethereum unreusable.
 
 ##### Brief Description of PlatONE Transaction Interface Function Implementation
 Compared with Ethereum, the differences are listed below:
