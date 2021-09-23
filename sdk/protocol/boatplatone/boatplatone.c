@@ -586,7 +586,8 @@ int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
     int num = cJSON_GetArraySize(resolutions);
     printf(  "num  = %d ,,   \n", num);
     result_out->nodeInfo = BoatMalloc(num * sizeof(wbe3_nodeInfo));
-    cJSON_ArrayForEach(resolution, resolutions)
+    //  cJSON_ArrayForEach(resolution, resolutions)
+    for(resolution = (resolutions != NULL) ? (resolutions)->child : NULL; resolution != NULL; resolution = resolution->next)
     {
         result_out->num ++;
         cJSON *externalIP = cJSON_GetObjectItemCaseSensitive(resolution, "externalIP");
