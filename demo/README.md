@@ -25,3 +25,13 @@ PlatONE源码及工具可以访问该网站：https://platone.wxblockchain.com
 FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-documentation.readthedocs.io
 
 在完成节点（或模拟器）部署后，需要分别遵照相关网站的说明，部署Demo智能合约。智能合约部署成功后，将生成合约地址。
+
+调用智能合约的Demo C代码放置在: 
+
+|Demo C代码                                                  |用途                   |
+|:---------------------------------------------------------- |:--------------------- |
+|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c    |以太坊合约演示用例     |
+|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c     |以太坊转账演示用例     |
+|\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         |PLATON转账演示用例     |
+|\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     |PLATONE合约演示用例    |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c |FISCO-BCOS合约演示用例 |
