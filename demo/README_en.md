@@ -63,3 +63,11 @@ Before compiling the Demo, you need to modify the following parts of the Demo C 
 	4. Search for `hw_bcs_demo_endorser_peer0Org1_url`, `hw_bcs_demo_endorser_peer0Org2_url`, `hw_bcs_demo_order_url`, and set the url address of the endorsement node and sorting node  
 	5. If TLS is enabled in the demo, search for `hw_bcs_demo_endorser_peer0Org1_hostName`, `hw_bcs_demo_endorser_peer0Org2_hostName`, `hw_bcs_demo_order_hostName`and set the host name of the node  
 
+#### Compile Demo
+Execute the following commands in the \<SDKRoot\> directory to compile the SDK call Demo:  
+````
+$make demo
+````
+
+The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `platon` `fisco-bcos` `platone` `fabric` `hwbcs`.
+
