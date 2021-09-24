@@ -22,4 +22,15 @@ Before running the PlatONE Demo, you need to install the PlatONE node, as well a
 Before running the FISCO-BCOS Demo, you need to install the FISCO-BCOS node and contract deployment.
 FISCO-BCOS source code and installation and deployment steps can visit this website: https://fisco-bcos-documentation.readthedocs.io
 
-After completing the node (or simulator) deployment, you need to follow the instructions on the relevant websites to deploy the Demo smart contract. After the smart contract is successfully deployed, the contract address will be generated.
+After completing the node (or simulator) deployment, you need to follow the instructions on the relevant websites to deploy the Demo smart contract. After the smart contract is successfully deployed, the contract address will be generated.  
+
+The Demo C code that calls the smart contract is placed in:  
+
+|Demo C code                                                 |use                             |
+|:---------------------------------------------------------- |:------------------------------ |
+|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c    |Ethereum demo use case          |
+|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c     |Ethereum transfer demo use case |
+|\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         |PLATON transfer demo use case   |
+|\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     |PLATONE demo use case           |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c |FISCO-BCOS demo use case        |
+
