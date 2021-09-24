@@ -48,3 +48,11 @@ Before compiling the Demo, you need to modify the following parts of the Demo C 
 		- For PlatONE, there is no need to modify the private key in the Demo  
 		- For FISCO-BCOS, set it to the private key under <FISCO-BCOS_ROOT>/console/accounts  
 	4. Search for `demoRecipientAddress` and modify it to the deployment address of the Demo contract.  
+
+- For FABRIC:  
+	1. Search for `fabric_client_demokey` and set the private key used by the client  
+	2. Search for `fabric_client_democert` and set the certificate corresponding to the client private key  
+	3. If TLS is enabled for the demo, search for `fabric_org1_tlsCert`, `fabric_org2_tlsCert`, `fabric_order_tlsCert`, and set the CA certificate chain  
+	4. Search for `fabric_demo_order1_url`, `fabric_demo_endorser_peer0Org1_url`, `fabric_demo_endorser_peer1Org1_url`, `fabric_demo_endorser_peer0Org2_url`, `fabric_demo_endorser_peer1Org2_url`, and set the url address of the endorsement node and sorting node  
+	5. If TLS is enabled in the demo, search for `fabric_demo_order1_hostName`, `fabric_demo_endorser_peer0Org1_hostName`, `fabric_demo_endorser_peer1Org1_hostName`, `fabric_demo_endorser_peer0Org2_hostName`, `fabric_demo_endorser_peer1Org2_hostName` and set the host name of the node  
+
