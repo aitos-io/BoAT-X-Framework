@@ -56,3 +56,10 @@ Before compiling the Demo, you need to modify the following parts of the Demo C 
 	4. Search for `fabric_demo_order1_url`, `fabric_demo_endorser_peer0Org1_url`, `fabric_demo_endorser_peer1Org1_url`, `fabric_demo_endorser_peer0Org2_url`, `fabric_demo_endorser_peer1Org2_url`, and set the url address of the endorsement node and sorting node  
 	5. If TLS is enabled in the demo, search for `fabric_demo_order1_hostName`, `fabric_demo_endorser_peer0Org1_hostName`, `fabric_demo_endorser_peer1Org1_hostName`, `fabric_demo_endorser_peer0Org2_hostName`, `fabric_demo_endorser_peer1Org2_hostName` and set the host name of the node  
 
+- For HW-BCS:  
+	1. Search for `hw_bcs_client_demokey` and set the private key used by the client  
+	2. Search for `hw_bcs_client_democert` and set the certificate corresponding to the client private key  
+	3. If TLS is enabled for the demo, search for `hw_bcs_org1_tlsCert`, `hw_bcs_org2_tlsCert`, and set the CA certificate chain  
+	4. Search for `hw_bcs_demo_endorser_peer0Org1_url`, `hw_bcs_demo_endorser_peer0Org2_url`, `hw_bcs_demo_order_url`, and set the url address of the endorsement node and sorting node  
+	5. If TLS is enabled in the demo, search for `hw_bcs_demo_endorser_peer0Org1_hostName`, `hw_bcs_demo_endorser_peer0Org2_hostName`, `hw_bcs_demo_order_hostName`and set the host name of the node  
+
