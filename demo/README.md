@@ -62,10 +62,19 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
   4. 搜索`hw_bcs_demo_endorser_peer0Org1_url`、`hw_bcs_demo_endorser_peer0Org2_url`、`hw_bcs_demo_order_url`，设置背书节点、排序节点的url地址
   5. 如果demo启用TLS,则搜索`hw_bcs_demo_endorser_peer0Org1_hostName`、`hw_bcs_demo_endorser_peer0Org2_hostName`、`hw_bcs_demo_order_hostName`，设置节点的主机名称
 
-
 #### 编译Demo
 在\<SDKRoot\>目录下执行以下命令编译SDK的调用Demo：
 ```
 $make demo
 ```
 生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下，< protocol>可以为`ethereum` `platon` `fisco-bcos` `platone` `fabric` `hwbcs`。
+
+### 编译中的常见问题
+1.  编译中提示类似“Makefile: 120: *** 缺失分隔符。 停止”的信息。  
+该问题一般是因为Makefile中的target下的命令不是以Tab（ASCII码0x09）开头引起。注意按Tab键时，文本编辑器可能将Tab字符替换为若干空格。应将文本编辑器设置为不要用空格替代Tab。
+
+2. 编译中提示“curl/curl.h”找不到  
+该问题是因为系统中未安装curl及其开发文件引起。对于在Linux发行版上做Host编译而言，注意只安装curl包不够，还需要安装其开发文件包。开发文件包在不同的Linux发行版中有不同的名称，通常会命名为类似curl-devel，或者libcurl。具体请参照所使用的Linux发行版的软件包管理工具。  
+
+如果curl采用源码编译，且未安装到系统目录，则应在external.env中指定其搜索路径，并在链接时指定curl库所在路径。  
+在交叉编译中，尤其要注意搜索路径和库应指向交叉编译环境中的头文件和库，而不应指向执行编译的Host上的路径。
