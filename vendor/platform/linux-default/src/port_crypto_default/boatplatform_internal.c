@@ -257,7 +257,7 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 					        THIS ONLY USED BY FABRIC
 *******************************************************************************/
 #if (PROTOCOL_USE_HLFABRIC == 1)
-BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
+BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
     int                connectfd;
     char               ip[64];
@@ -340,7 +340,7 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 #endif
 
 
-BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, void *rsvd)
+BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, void *rsvd)
 {
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
 	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
@@ -463,8 +463,8 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 	return result;
 }
 
-static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalletPriKeyCtx_config* config, 
-													             BoatWalletPriKeyCtx* pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalletPriKeyCtx_config *config, 
+													             BoatWalletPriKeyCtx *pkCtx)
 {
 	BUINT8       pubKey65[65] = {0};
 	BOAT_RESULT  result = BOAT_SUCCESS;
@@ -521,7 +521,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalle
 }
 
 
-BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx)
+BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
@@ -567,13 +567,13 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config* config, BoatWa
     return result;
 }
 
-BOAT_RESULT BoatPort_keyQuery(const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx)
+BOAT_RESULT BoatPort_keyQuery(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
 {
 	//! @todo
 	return BOAT_ERROR;
 }
 
-BOAT_RESULT BoatPort_keyDelete(BoatWalletPriKeyCtx* pkCtx)
+BOAT_RESULT BoatPort_keyDelete(BoatWalletPriKeyCtx *pkCtx)
 {
 	//! @todo
 	return BOAT_ERROR;
