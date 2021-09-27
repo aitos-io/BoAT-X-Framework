@@ -71,12 +71,11 @@ endif()
 # The valid option value of PLATFORM_TARGET list as below:
 # - linux-default             : Default linux platform
 # - Fibocom-L610              : Fibocom's LTE Cat.1 module
-# - Fibocom-L718              : Fibocom's LTE Cat.4 module
 # - Quectel-BG95              : Quectel's NB-IoT/GSM module
 # - Neoway-N58                : Neoway's LTE Cat.1 module
 # - YanFei-CUIot-MZ-6         : China Unicom's LTE Cat.1 module
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
-# - MTK_MT3620                : MTK_MT3620 module
+# - MTK-MT3620                : MTK-MT3620 module
 
 set(PLATFORM_TARGET "linux-default")
 
@@ -94,8 +93,6 @@ if( PLATFORM_TARGET STREQUAL "linux-default")
     message(STATUS "Platform using linux")
 elseif(PLATFORM_TARGET STREQUAL "Fibocom-L610")
     message(STATUS "Platform using Fibocom-L610")
-elseif(PLATFORM_TARGET STREQUAL "Fibocom-L718")
-    message(STATUS "Platform using Fibocom-L718")
 elseif(PLATFORM_TARGET STREQUAL "Quectel-BG95")
     message(STATUS "Platform using Quectel-BG95")
 elseif(PLATFORM_TARGET STREQUAL "Neoway-N58")
@@ -104,8 +101,8 @@ elseif(PLATFORM_TARGET STREQUAL "YanFei-CUIot-MZ-6")
     message(STATUS "Platform using YanFei-CUIot-MZ-6")
 elseif(PLATFORM_TARGET STREQUAL "ChinaMobile-ML302")
     message(STATUS "Platform using ChinaMobile-ML302")
-elseif(PLATFORM_TARGET STREQUAL "MTK_MT3620")
-    message(STATUS "Platform using MTK_MT3620")
+elseif(PLATFORM_TARGET STREQUAL "MTK-MT3620")
+    message(STATUS "Platform using MTK-MT3620")
 else()
     message(FATAL_ERROR "Platform using ${PLATFORM_TARGET}, but not support")
 endif()

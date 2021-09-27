@@ -20,7 +20,7 @@ The intended readers of this article are: BoAT SDK detailed designers.
 
 
 ## BoAT Design Goals
-As a middleware fusing Blockchain and IoT technologies, It should be easily and quickly transplanted into various IoT modules at the minimum cost of modification. The design of BoAT is based on these following principles:
+As a middleware fusing Blockchain and IoT technologies, it should be efficiently transplanted into various IoT modules and at a minimum modification cost. The design of BoAT is based on the following principles:
 + Hierarchical design  
 + Multiple blockchain protocols are supported  
 + Scalable design  
@@ -36,13 +36,13 @@ Figure 3-1 The position of BoAT in the blockchain interactive network
 
 
 ## BoAT Implementation Framework 
-Boat follows a hierarchical design consisting of Interface Layer, Protocol Layer, RPC Layer, Vendor Dependency Layer, Tool and Utility. The specific functions of each layer are as follows:   
-+ Interface Layer: Provide an interface for IoT Application to invoke the corresponding blockchain. 
-+ Protocol Layer: The main implementation of each block chain protocol.  
-+ RPC Layer: Provide services to the protocol layer.  
-+ Vendor Dependency Layer: Provide cryptographic algorithms, signature, storage and other services for the interface layer wallet.  
+BoAT follows a hierarchical design consisting of Interface Layer, Protocol Layer, RPC Layer, Vendor Dependency Layer, Tool and Utility. The specific functions of each layer are as follows:   
++ Interface Layer: Provides an interface for IoT applications to invoke the corresponding blockchain. 
++ Protocol Layer: The primary implementation of each blockchain protocol.  
++ RPC Layer: Provides services for the protocol layer.  
++ Vendor Dependency Layer: Provides cryptographic algorithms, signature, storage, and other services for the interface layer wallet.  
 + Tool: The general tool is used to generate the C language interface of the smart contract.
-+ Utility: The utility program provides services such as data format conversion, message encoding and decoding to each layer.
++ Utility: The utility program provides data format conversion, message encoding, and decoding to each layer.
 
 The overall framework of BoAT is shown in Figure 4-1.  
 ![BoAT Overall Framework](./images/BoAT_Overall_Design_en-F4-1-BoAT_Overall_Framework.png)   
@@ -63,9 +63,9 @@ The transaction interface of the interface layer is supported by the protocol la
 #### Wallet Interface
 
 ##### The Data Structure and Function Implementation List of The Wallet
-The wallet is a container. In addition to storing the information necessary to access the blockchain, the container also contains a key management system, which corresponds to the data structure and implementation method of the wallet.
+The wallet is a container responsible for storing the information necessary to access the blockchain. It also contains a key management system corresponding to the wallet's data structure and implementation method.
 
-When the BoAT SDK runs on the application processor of the cellular module, which can only provide resource-constrained operating environment. For example, some cellular modules may not provide non-volatile memory access interfaces; on the other hand, from the user's point of view, some users may just want to create a temporary wallet for testing, but don't want to store it for a long time. In view of this, in the design of BoAT SDK, wallets are divided into two categories: persistent wallets and one-time wallets. Persistent wallets are stored in the non-volatile memory of the operating environment and will not be lost when power is off; one-time wallets are stored in the RAM of the operating environment and will be lost when power is off.  
+When the BoAT SDK runs on the application processor of the cellular module, which can only provide a resource-constrained operating environment. For example, some cellular modules may not provide non-volatile memory access interfaces; on the other hand, from the user's point of view, some users may want to create a temporary wallet for testing but don't want to store it for a long time. In view of this, in the design of BoAT SDK, wallets are divided into two categories: persistent wallets and one-time wallets. Persistent wallets are stored in the non-volatile memory of the operating environment and will not be lost when power is off. One-time wallets are stored in the RAM of the operating environment and will be lost when power is off.  
   
 In the data structure of the wallet, It should contain at least the following elements:  
   + Account private key
@@ -217,7 +217,8 @@ There are three main differences between PlatON and Ethereum:
 
 When designing the data structure and code implementation of PlatON, we should consider the inheritance of data structure and the reuse of code implementation, so as to reduce the amount of code and facilitate maintenance. Although PlatON's transaction structure is the same as Ethereum, bech32 addresses are required for calls in some RPC commands. Therefore, in the design of data structure, two fields are added to store the address in Bech32 format. The possible design ideas are shown in Figure 4-2:  
 ![A possible design idea of PlatON data structure](./images/BoAT_Overall_Design_en-F4-2-PlatON_Data_Structure.png)  
-Figure 4-2 illustrates one possible data structure design idea for PlatON. Note that the two additional address fields for PlatON should be placed at the end of the data structure without compromising the integrity of the reused Ethereum data structure. Disrupting the integrity of Ethereum's data structure will make the implementation methods associated with that data structure in Ethereum unreusable.
+Figure 4-2 illustrates one possible data structure design idea for PlatON  
+Note that the two additional address fields for PlatON should be placed at the end of the data structure without compromising the integrity of the reused Ethereum data structure. Disrupting the integrity of Ethereum's data structure will make the implementation methods associated with that data structure in Ethereum unreusable.
 
 ##### Brief Description of PlatONE Transaction Interface Function Implementation
 Compared with Ethereum, the differences are listed below:

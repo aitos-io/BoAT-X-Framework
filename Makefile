@@ -45,11 +45,12 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # The valid option value of PLATFORM_TARGET list as below:
 # - linux-default             : Default linux platform
 # - Fibocom-L610              : Fibocom's LTE Cat.1 module
-# - Fibocom-L718              : Fibocom's LTE Cat.4 module
 # - Quectel-BG95              : Quectel's NB-IoT/GSM module
 # - Neoway-N58                : Neoway's LTE Cat.1 module
 # - YanFei-CUIot-MZ-6         : China Unicom's LTE Cat.1 module
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
+# - MTK-MT3620                : MTK MT3620
+# - XinYi-XY1100              : XY1100
 PLATFORM_TARGET ?= linux-default
 
 # Environment-specific Settings
@@ -136,7 +137,37 @@ endif
 # The valid option value of SOFT_CRYPTO list as below:
 # - CRYPTO_DEFAULT      : default soft crypto algorithm
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
-SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+# SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+
+ifeq ($(PLATFORM_TARGET), linux-default)
+    SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+else ifeq ($(PLATFORM_TARGET), Fibocom-L610) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else ifeq ($(PLATFORM_TARGET), Quectel-BG95) 
+    SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+else ifeq ($(PLATFORM_TARGET), Neoway-N58) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else ifeq ($(PLATFORM_TARGET), YanFei-CUIot-MZ-6) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else ifeq ($(PLATFORM_TARGET), ChinaMobile-ML302) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else ifeq ($(PLATFORM_TARGET), XinYi-XY1100) 
+    SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+else ifeq ($(PLATFORM_TARGET), MTK-MT3620) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else
+    $(error not support this platform : $(PLATFORM_TARGET))
+endif
+
+
+ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
+    ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)
+    $(error $(PLATFORM_TARGET) not support fabric)
+    endif
+    ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
+    $(error $(PLATFORM_TARGET) not support HWBCS)
+    endif
+endif
 
 ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default \

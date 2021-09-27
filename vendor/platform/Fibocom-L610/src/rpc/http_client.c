@@ -26,11 +26,11 @@
 #include "fibo_opencpu.h"
 
 #define sys_arch_printf OSI_PRINTFI
-#define DBG(x, arg...)  sys_arch_printf("[ONEMO_OC]"x,##arg)
-#define WARN(x, arg...) sys_arch_printf("[ONEMO_OC]"x,##arg)
-#define ERR(x, arg...)  sys_arch_printf("[ONEMO_OC]"x,##arg)
+#define DBG(x, arg...)  sys_arch_printf("[BOAT]"x,##arg)
+#define WARN(x, arg...) sys_arch_printf("[BOAT]"x,##arg)
+#define ERR(x, arg...)  sys_arch_printf("[BOAT]"x,##arg)
 
-#define onemo_sys_log DBG
+#define boat_sys_log DBG
 
 //#define strncasecmp lwip_strnicmp
 
@@ -56,16 +56,16 @@ static int httpclient_conn(httpclient_t *client, char *host);
 static int httpclient_recv(httpclient_t *client, char *buf, int min_len, int max_len, int *p_read_len);
 static int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpclient_data_t *client_data);
 static int httpclient_response_parse(httpclient_t *client, char *data, int len, httpclient_data_t *client_data);
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
 static int httpclient_ssl_conn(httpclient_t *client, char *host);
 static int httpclient_ssl_send_all( const char *data, size_t length);
 
 static int httpclient_ssl_close(httpclient_t *client);
 #endif
 
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
-ssl_ctx_t onemo_ssl_ctx;
-WOLFSSL *onemo_ssl;
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
+ssl_ctx_t boat_ssl_ctx;
+WOLFSSL *boat_ssl;
 #endif
 static void httpclient_base64enc(char *out, const char *in)
 {
@@ -727,7 +727,7 @@ int httpclient_send_header(httpclient_t *client, char *url, int method, httpclie
 
     DBG("Trying to write %d bytes http header:%s", len, send_buf);
 
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
     if (client->is_http == false) 
     {
         DBG("Enter PolarSSL_write");        
@@ -767,7 +767,7 @@ int httpclient_send_userdata(httpclient_t *client, httpclient_data_t *client_dat
     if (client_data->post_buf && client_data->post_buf_len) 
     {
         DBG("client_data->post_buf:%s", client_data->post_buf);
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
         if (client->is_http == false) 
         {
             if (httpclient_ssl_send_all(client_data->post_buf, client_data->post_buf_len) != client_data->post_buf_len) 
@@ -835,7 +835,7 @@ int httpclient_recv(httpclient_t *client, char *buf, int min_len, int max_len, i
             ret = fibo_sock_recv(client->socket, (unsigned char*)buf + readLen, max_len - readLen);
         #endif
         }
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
         else 
         {       
             int nb_flag;
@@ -843,18 +843,18 @@ int httpclient_recv(httpclient_t *client, char *buf, int min_len, int max_len, i
             {   
                 // nb_flag = 1;
                 // lwip_ioctl(client->socket, FIONBIO, &nb_flag);
-                onemo_sys_log("httpread:readlen:%d,min_len:%d",readLen,min_len);
-                ret = wolfSSL_read(onemo_ssl, (unsigned char *)buf + readLen, max_len - readLen);
-                onemo_sys_log("httpread:ret:%d",ret);
+                boat_sys_log("httpread:readlen:%d,min_len:%d",readLen,min_len);
+                ret = wolfSSL_read(boat_ssl, (unsigned char *)buf + readLen, max_len - readLen);
+                boat_sys_log("httpread:ret:%d",ret);
                
             } 
             else 
             {
                 // nb_flag = 0;
                 // lwip_ioctl(client->socket, FIONBIO, &nb_flag);
-                onemo_sys_log("httpread1:readlen:%d,max_len:%d",readLen,max_len);
-                ret = wolfSSL_read(onemo_ssl, (unsigned char *)buf + readLen, max_len - readLen);  
-                onemo_sys_log("httpread2:ret:%d",ret);                
+                boat_sys_log("httpread1:readlen:%d,max_len:%d",readLen,max_len);
+                ret = wolfSSL_read(boat_ssl, (unsigned char *)buf + readLen, max_len - readLen);  
+                boat_sys_log("httpread2:ret:%d",ret);                
             }
         }
 #endif
@@ -1005,7 +1005,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
             client_data->response_content_len += client_data->retrieve_len;
             if (n != 1) 
             {
-                onemo_sys_log("Could not read chunk length");
+                boat_sys_log("Could not read chunk length");
                 return HTTPCLIENT_ERROR_PRTCL;
             }
 
@@ -1103,7 +1103,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
             }
             if ((data[0] != '\r') || (data[1] != '\n')) 
             {
-                onemo_sys_log("Format error, %s", data); /* after memmove, the beginning of next chunk */
+                boat_sys_log("Format error, %s", data); /* after memmove, the beginning of next chunk */
                 return HTTPCLIENT_ERROR_PRTCL;
             }
             memmove(data, &data[2], len - 2); /* remove the \r\n */
@@ -1136,7 +1136,7 @@ int httpclient_response_parse(httpclient_t *client, char *data, int len, httpcli
     char *crlf_ptr = strstr(data, "\r\n");
     if (crlf_ptr == NULL) 
     {
-        onemo_sys_log("\r\n not found");
+        boat_sys_log("\r\n not found");
         return HTTPCLIENT_ERROR_PRTCL;
     }
 
@@ -1147,7 +1147,7 @@ int httpclient_response_parse(httpclient_t *client, char *data, int len, httpcli
     if (sscanf(data, "HTTP/%*d.%*d %d %*[^\r\n]", &(client->response_code)) != 1) 
     {
         /* Cannot match string, error */
-        onemo_sys_log("Not a correct HTTP answer : %s", data);
+        boat_sys_log("Not a correct HTTP answer : %s", data);
         return HTTPCLIENT_ERROR_PRTCL;
     }
 
@@ -1295,7 +1295,7 @@ HTTPCLIENT_RESULT httpclient_connect(httpclient_t *client, char *url)
     client->socket = -1;
     if (client->is_http) 
         ret = httpclient_conn(client, host);
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
     else {
         ret = httpclient_ssl_conn(client, host);
     }
@@ -1335,7 +1335,7 @@ HTTPCLIENT_RESULT httpclient_recv_response(httpclient_t *client, httpclient_data
     int ret = HTTPCLIENT_ERROR_CONN;
     // TODO: header format:  name + value must not bigger than HTTPCLIENT_CHUNK_SIZE.
     char buf[HTTPCLIENT_CHUNK_SIZE] = {0}; // char buf[HTTPCLIENT_CHUNK_SIZE*2] = {0};
-    onemo_sys_log("http start recv response");
+    boat_sys_log("http start recv response");
     if (client->socket < 0) 
     {
         return (HTTPCLIENT_RESULT)ret;
@@ -1343,13 +1343,13 @@ HTTPCLIENT_RESULT httpclient_recv_response(httpclient_t *client, httpclient_data
 
     if (client_data->is_more) 
     {
-        onemo_sys_log("http start retrieve data");
+        boat_sys_log("http start retrieve data");
         client_data->response_buf[0] = '\0';
         ret = httpclient_retrieve_content(client, buf, reclen, client_data);
     } 
     else 
     {
-        onemo_sys_log("http enter recv");
+        boat_sys_log("http enter recv");
         ret = httpclient_recv(client, buf, 1, HTTPCLIENT_CHUNK_SIZE - 1, &reclen);
         if (ret != 0) 
         {
@@ -1377,7 +1377,7 @@ void httpclient_close(httpclient_t *client)
             //close(client->socket);
             fibo_sock_close(client->socket);
     }
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
     else 
         httpclient_ssl_close(client);
 #endif
@@ -1397,12 +1397,12 @@ static HTTPCLIENT_RESULT httpclient_common(httpclient_t *client, char *url, int 
     
     if (!ret) 
     {
-        onemo_sys_log("http send request");
+        boat_sys_log("http send request");
         ret = httpclient_send_request(client, url, method, client_data);
 
         if (!ret) 
         {
-            onemo_sys_log("recv response");
+            boat_sys_log("recv response");
             ret = httpclient_recv_response(client, client_data);
         }
     }
@@ -1472,7 +1472,7 @@ int httpclient_get_response_header_value(char *header_buf, char *name, int *val_
     }
 }
 
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
 
 
 
@@ -1488,7 +1488,7 @@ static int httpclient_ssl_send_all(const char *data, size_t length)
 
     while (written_len < length) 
     {
-        int ret = wolfSSL_write(onemo_ssl, (unsigned char *)(data + written_len), (length - written_len));
+        int ret = wolfSSL_write(boat_ssl, (unsigned char *)(data + written_len), (length - written_len));
         if (ret > 0) 
         {
             written_len += ret;
@@ -1520,7 +1520,7 @@ static int httpclient_ssl_conn(httpclient_t *client, char *host)
     timeout.tv_sec  = client->timeout_in_sec > HTTPCLIENT_MAX_SOC_TIMEOUT ? HTTPCLIENT_MAX_SOC_TIMEOUT : client->timeout_in_sec;
     timeout.tv_usec = 0;
     
-    onemo_sys_log("ssl conn starts");
+    boat_sys_log("ssl conn starts");
     /* Do name resolution with both IPv6 and IPv4 */
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
@@ -1529,7 +1529,7 @@ static int httpclient_ssl_conn(httpclient_t *client, char *host)
      snprintf(port, sizeof(port), "%d", client->remote_port);
     if (getaddrinfo(host, port, &hints, &addr_list) != 0)
     {
-        onemo_sys_log("ssl dns failed");
+        boat_sys_log("ssl dns failed");
         return -1;
     }
         
@@ -1564,20 +1564,20 @@ static int httpclient_ssl_conn(httpclient_t *client, char *host)
         DBG("ssl tcp connect failed\n");
         return -1;
     }
-    set_ssl_ctx_default(&onemo_ssl_ctx);
-    wolf_ssl_init(&onemo_ssl_ctx);  
+    set_ssl_ctx_default(&boat_ssl_ctx);
+    wolf_ssl_init(&boat_ssl_ctx);  
     
-    onemo_ssl = wolfSSL_new(onemo_ssl_ctx.wolf_ctx);
+    boat_ssl = wolfSSL_new(boat_ssl_ctx.wolf_ctx);
     
-    SSL_set_fd(onemo_ssl, client->socket);
-    if ((SSL_connect(onemo_ssl)) == WOLFSSL_SUCCESS)
+    SSL_set_fd(boat_ssl, client->socket);
+    if ((SSL_connect(boat_ssl)) == WOLFSSL_SUCCESS)
     {
-        onemo_sys_log("WOLFSSL_CONNECT_SUCCESS");     
+        boat_sys_log("WOLFSSL_CONNECT_SUCCESS");     
     }
     else
     {
-        onemo_sys_log("WOLFSSL_CONNECT_ERROR"); 
-        wolfSSL_free(onemo_ssl);
+        boat_sys_log("WOLFSSL_CONNECT_ERROR"); 
+        wolfSSL_free(boat_ssl);
     } 
     return ret;
 }
@@ -1585,7 +1585,7 @@ static int httpclient_ssl_conn(httpclient_t *client, char *host)
 static int httpclient_ssl_close(httpclient_t *client)
 {
     close(client->socket);
-    wolfSSL_free(onemo_ssl);
+    wolfSSL_free(boat_ssl);
     return 0;
 }
 #endif
