@@ -51,6 +51,7 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
 # - MTK-MT3620                : MTK MT3620
 # - XinYi-XY1100              : XY1100
+# - Fibocom-MA510             : MA510
 PLATFORM_TARGET ?= linux-default
 
 # Environment-specific Settings
