@@ -24,7 +24,7 @@ boatLogConfig.h defines options for compiling.
 #define __BOATLOG_H__
 
 #include "boattypes.h"
-#include "softap_api.h"
+#include "qflog_utils.h"
 
 //! BOAT LOG LEVEL DEFINITION
 //! Log level is used to control the detail of log output.
@@ -62,7 +62,7 @@ extern const BCHAR * const g_log_level_name_str[];
 #else
 #define BoatLog(level, format,...)\
     do{\
-        if( level <= BOAT_LOG_LEVEL ) {xy_printf(format,##__VA_ARGS__ );}\
+        if( level <= BOAT_LOG_LEVEL ) {QFLOG_MSG(format,##__VA_ARGS__ );}\
     }while(0)
 #endif
 
