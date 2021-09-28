@@ -156,6 +156,8 @@ else ifeq ($(PLATFORM_TARGET), XinYi-XY1100)
     SOFT_CRYPTO ?= CRYPTO_MBEDTLS
 else ifeq ($(PLATFORM_TARGET), MTK-MT3620) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else ifeq ($(PLATFORM_TARGET), Fibocom-MA510) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else
     $(error not support this platform : $(PLATFORM_TARGET))
 endif
