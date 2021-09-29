@@ -42,11 +42,8 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_addre
 
     if (alt_address_str == NULL)
     {
-        //***************************************
-        //需要将钱包地址转换为bech32格式的字符串
-        //address_ptr = wallet_ptr->account_info.address;
         address_ptr = BoatMalloc(50);
-        BoatPlatONBech32Encode(alt_address_str, strlen(alt_address_str), address_ptr, "lax", 3);
+        BoatPlatONBech32Encode(wallet_ptr->account_info.address, BOAT_PLATON_ADDRESS_SIZE, address_ptr, "lax", 3);
     }
     else
     {
