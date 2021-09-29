@@ -89,19 +89,22 @@ extern "C" {
 /*!****************************************************************************
  * @brief Get Balance of the wallet account
  *
- * @param[in] alt_address_str
- *   the target bech32 address, such as "lat10ulx8pmdnj7cnmr0m79fafczp2s3qaawy5aawh", string
+ * @param[in] hrp_str
+ *   for PlatON, it is "lat", for Alaya, it is "atp". string
  *   
- * @see BoatEthWalletGetBalance()
+ * @return
+ *   This function returns a HEX string representing the balance (Unit: von,\n
+ *   ) of the account.\n
+ *   If any error occurs, it returns NULL.
  ******************************************************************************/
-BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_address_ptr);
+BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, const BCHAR *hrp_str);
 
 
 /*!****************************************************************************
  * @brief Initialize a transaction
  *
  * @param[in] hrp_str
- *   for PlatON, it is "lat", for Alaya, it is "atp"
+ *   for PlatON, it is "lat", for Alaya, it is "atp". string
  * 
  * @see BoatEthTxInit()
  ******************************************************************************/

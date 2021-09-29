@@ -28,27 +28,26 @@ api_platon.c defines the PlatON wallet API for BoAT IoT SDK.
 #include "rpcintf.h"
 #include "cJSON.h"
 
-BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_address_str)
+BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, const BCHAR *hrp_str)
 {
     Param_eth_getBalance param_platon_getBalance;
     BCHAR *tx_balance_str;
     BCHAR *address_ptr;
 
-    if (wallet_ptr == NULL)
+    if (wallet_ptr == NULL || hrp_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return NULL;
     }
 
-    if (alt_address_str == NULL)
+    address_ptr = BoatMalloc(50);
+    if (address_ptr == NULL)
     {
-        address_ptr = BoatMalloc(50);
-        BoatPlatONBech32Encode(wallet_ptr->account_info.address, BOAT_PLATON_ADDRESS_SIZE, address_ptr, "lax", 3);
+        BoatLog(BOAT_LOG_CRITICAL, "Malloc memory failed.");
+        return NULL;
     }
-    else
-    {
-        address_ptr = alt_address_str;
-    }
+    BoatPlatONBech32Encode(wallet_ptr->account_info.address, BOAT_PLATON_ADDRESS_SIZE, 
+                           address_ptr, hrp_str, strlen(hrp_str));
     
     // Get balance from network
     // Return value of web3_getBalance() is balance in von
@@ -64,10 +63,8 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_addre
         BoatLog(BOAT_LOG_CRITICAL, "Fail to get balance from network.");
         return NULL;
     }
-    if (alt_address_str == NULL)
-    {
-        BoatFree(address_ptr);
-    }
+
+    BoatFree(address_ptr);
 
     return tx_balance_str;
 }
