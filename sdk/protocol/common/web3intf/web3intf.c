@@ -337,17 +337,17 @@ BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", web3intf_context_ptr->web3_json_string_buf.field_ptr);
 
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getTransactionCount_cleanup);
     }
    
-    result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
-							(BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
-							expected_string_size,
-							(BOAT_OUT BUINT8 **)&rpc_response_str,
-							&rpc_response_len);
+    result = RpcRequestSync( web3intf_context_ptr->rpc_context_ptr,
+							 (BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
+							 expected_string_size,
+							 (BOAT_OUT BUINT8 **)&rpc_response_str,
+							 &rpc_response_len );
 
     if (result != BOAT_SUCCESS)
     {
@@ -383,7 +383,7 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
     
     boat_try_declare;
     
-    if (web3intf_context_ptr == NULL)
+    if( web3intf_context_ptr == NULL )
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_gasPrice_cleanup);
@@ -391,7 +391,7 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
 
     web3intf_context_ptr->web3_message_id++;
     
-    if (node_url_str == NULL)
+    if( node_url_str == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_gasPrice_cleanup);
@@ -400,7 +400,8 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
     // Construct the REQUEST
 	do{
 		malloc_size_expand_flag = false;
-		expected_string_size = snprintf((BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
+		expected_string_size = snprintf(
+                                        (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
                                         web3intf_context_ptr->web3_json_string_buf.field_len,
                                         "{\"jsonrpc\":\"2.0\",\"method\":\"%s\",\"params\":"
                                         "[],\"id\":%u}",
@@ -417,22 +418,22 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
 			}
 			malloc_size_expand_flag = true;
 		}
-	}while(malloc_size_expand_flag);
+	}while( malloc_size_expand_flag );
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr);
 
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_gasPrice_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
-                            (BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
-                            expected_string_size,
-                            (BOAT_OUT BUINT8 **)&rpc_response_str,
-                            &rpc_response_len);
+                    (BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
+                    expected_string_size,
+                    (BOAT_OUT BUINT8 **)&rpc_response_str,
+                    &rpc_response_len);
 
     if (result != BOAT_SUCCESS)
     {
@@ -507,12 +508,12 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
 			}
 			malloc_size_expand_flag = true;
 		}
-	}while(malloc_size_expand_flag);
+	}while( malloc_size_expand_flag );
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr);
 
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getBalance_cleanup);
@@ -596,12 +597,12 @@ BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
 			}
 			malloc_size_expand_flag = true;
 		}
-	}while(malloc_size_expand_flag);
+	}while( malloc_size_expand_flag );
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr);
 
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_sendRawTransaction_cleanup);
@@ -687,12 +688,12 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
 			}
 			malloc_size_expand_flag = true;
 		}
-	}while(malloc_size_expand_flag);
+	}while( malloc_size_expand_flag );
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr);
     
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getStorageAt_cleanup);
@@ -776,12 +777,12 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
 			}
 			malloc_size_expand_flag = true;
 		}
-	}while(malloc_size_expand_flag);
+	}while( malloc_size_expand_flag );
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr);
 
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getTransactionReceiptStatus_cleanup);
@@ -869,12 +870,12 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
 			}
 			malloc_size_expand_flag = true;
 		}
-	}while(malloc_size_expand_flag);
+	}while( malloc_size_expand_flag );
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr);
 
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_call_cleanup);
@@ -921,9 +922,9 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
 ***************************************************************************************************/
 #if (PROTOCOL_USE_FISCOBCOS == 1)	
 
-BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
-						   BCHAR *node_url_str,
-						   const Param_fiscobcos_call *param_ptr)
+BCHAR *web3_fiscobcos_call( Web3IntfContext *web3intf_context_ptr,
+						    BCHAR *node_url_str,
+						    const Param_fiscobcos_call *param_ptr )
 {
     BCHAR *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -952,7 +953,8 @@ BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
     // Construct the REQUEST
     do{
         malloc_size_expand_flag = false;
-        expected_string_size = snprintf((BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
+        expected_string_size = snprintf( 
+                                        (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
 				                        web3intf_context_ptr->web3_json_string_buf.field_len,
                                         "{\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":"
                                         "[%s,{\"from\":\"%s\",\"to\":\"%s\",\"value\":\"%s\",\"data\":\"%s\"}],\"id\":%u}",
@@ -961,7 +963,7 @@ BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
                                         param_ptr->to,
                                         param_ptr->value,
                                         param_ptr->data,
-                                        web3intf_context_ptr->web3_message_id);
+                                        web3intf_context_ptr->web3_message_id );
 
         if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
@@ -973,22 +975,22 @@ BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
 			}
 			malloc_size_expand_flag = true;
 		}
-	}while(malloc_size_expand_flag);
+	}while( malloc_size_expand_flag );
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", web3intf_context_ptr->web3_json_string_buf.field_ptr);
 
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_call_cleanup);
     }
     
-    result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
-							(BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr, 
-							expected_string_size,
-							(BOAT_OUT BUINT8 **)&rpc_response_str,
-							&rpc_response_len);
+    result = RpcRequestSync( web3intf_context_ptr->rpc_context_ptr,
+							 (BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr, 
+							 expected_string_size,
+							 (BOAT_OUT BUINT8 **)&rpc_response_str,
+							 &rpc_response_len );
 
     if (result != BOAT_SUCCESS)
     {
@@ -1042,13 +1044,14 @@ BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
     // Construct the REQUEST
     do{
         malloc_size_expand_flag = false;
-        expected_string_size = snprintf((BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
+        expected_string_size = snprintf( 
+                                        (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
 				                        web3intf_context_ptr->web3_json_string_buf.field_len,
                                         "{\"jsonrpc\":\"2.0\",\"method\":\"sendRawTransaction\",\"params\":"
                                         "[%s,\"%s\"],\"id\":%u}",
                                         param_ptr->groupid,
                                         param_ptr->signedtx_str,
-                                        web3intf_context_ptr->web3_message_id);
+                                        web3intf_context_ptr->web3_message_id );
 
         if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
@@ -1060,22 +1063,22 @@ BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
 			}
 			malloc_size_expand_flag = true;
 		}
-	}while(malloc_size_expand_flag);
+	}while( malloc_size_expand_flag );
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", web3intf_context_ptr->web3_json_string_buf.field_ptr);
 
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_sendRawTransaction_cleanup);
     }
     
-    result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
-							(BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr, 
-							expected_string_size,
-							(BOAT_OUT BUINT8 **)&rpc_response_str,
-							&rpc_response_len);
+    result = RpcRequestSync( web3intf_context_ptr->rpc_context_ptr,
+							 (BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr, 
+							 expected_string_size,
+							 (BOAT_OUT BUINT8 **)&rpc_response_str,
+							 &rpc_response_len );
 
     if (result != BOAT_SUCCESS)
     {
@@ -1099,9 +1102,9 @@ BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
 }
 
 
-BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
-												  BCHAR *node_url_str,
-												  const Param_fiscobcos_getTransactionReceipt *param_ptr)
+BCHAR *web3_fiscobcos_getTransactionReceiptStatus( Web3IntfContext *web3intf_context_ptr,
+												   BCHAR *node_url_str,
+												   const Param_fiscobcos_getTransactionReceipt *param_ptr )
 {
     BCHAR  *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -1131,13 +1134,14 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
     // Construct the REQUEST
     do{
 		malloc_size_expand_flag = false;
-        expected_string_size = snprintf((BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
+        expected_string_size = snprintf( 
+                                        (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
 				                        web3intf_context_ptr->web3_json_string_buf.field_len,
                                         "{\"jsonrpc\":\"2.0\",\"method\":\"getTransactionReceipt\",\"params\":"
                                         "[%s,\"%s\"],\"id\":%u}",
                                         param_ptr->groupid,
                                         param_ptr->tx_hash_str,
-                                        web3intf_context_ptr->web3_message_id);
+                                        web3intf_context_ptr->web3_message_id );
 
         if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
@@ -1149,22 +1153,22 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
 			}
 			malloc_size_expand_flag = true;
 		}
-	}while(malloc_size_expand_flag);
+	}while( malloc_size_expand_flag );
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", web3intf_context_ptr->web3_json_string_buf.field_ptr);
 
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
     }
     
-    result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
-							(BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr,  
-							expected_string_size,
-							(BOAT_OUT BUINT8 **)&rpc_response_str,
-							&rpc_response_len);
+    result = RpcRequestSync( web3intf_context_ptr->rpc_context_ptr,
+							 (BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr,  
+							 expected_string_size,
+							 (BOAT_OUT BUINT8 **)&rpc_response_str,
+							 &rpc_response_len );
 
     if (result != BOAT_SUCCESS)
     {
@@ -1188,9 +1192,9 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
 }
 
 
-BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
-									 BCHAR *node_url_str,
-									 const Param_fiscobcos_getBlockNumber *param_ptr)
+BCHAR *web3_fiscobcos_getBlockNumber( Web3IntfContext *web3intf_context_ptr,
+									  BCHAR *node_url_str,
+									  const Param_fiscobcos_getBlockNumber *param_ptr )
 {
     BCHAR   *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -1225,7 +1229,7 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
                                         "{\"jsonrpc\":\"2.0\",\"method\":\"getBlockNumber\",\"params\":"
                                         "[%s],\"id\":%u}",
                                         param_ptr->groupid,
-                                        web3intf_context_ptr->web3_message_id);
+                                        web3intf_context_ptr->web3_message_id );
 
         if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
@@ -1237,12 +1241,12 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
 			}
 			malloc_size_expand_flag = true;
 		}
-	}while(malloc_size_expand_flag);
+	}while( malloc_size_expand_flag );
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", web3intf_context_ptr->web3_json_string_buf.field_ptr);
 
     // POST the REQUEST through curl
-    result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
+    result = RpcRequestSet( web3intf_context_ptr->rpc_context_ptr, node_url_str );
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getBlockNumber_cleanup);
@@ -1252,7 +1256,7 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
 							(BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
 							expected_string_size,
 							(BOAT_OUT BUINT8 **)&rpc_response_str,
-							&rpc_response_len);
+							&rpc_response_len );
 
     if (result != BOAT_SUCCESS)
     {

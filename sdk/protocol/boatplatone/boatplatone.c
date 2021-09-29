@@ -558,7 +558,7 @@ BOAT_RESULT PlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr)
 }
 
 
-int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
+int supports_full_hd(const char * const monitor,nodesResult *result_out)
 {
     const cJSON *resolution = NULL;
     const cJSON *resolutions = NULL;

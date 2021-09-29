@@ -44,7 +44,7 @@ boatLogConfig.h defines options for compiling.
 
 #define BoatPrintf                               printf
 
-extern const BCHAR *const g_log_level_name_str[];
+extern const BCHAR * const g_log_level_name_str[];
 
 /*!****************************************************************************
  * @brief Log Output
@@ -53,7 +53,7 @@ extern const BCHAR *const g_log_level_name_str[];
  *   Log priority level. 
  *   One of BOAT_LOG_CRITICAL, BOAT_LOG_NORMAL or BOAT_LOG_VERBOSE.
  *
- * @param format
+ *@param format
  *   Similar to that in printf().
  ******************************************************************************/
 #if BOAT_LOG_LEVEL == BOAT_LOG_NONE

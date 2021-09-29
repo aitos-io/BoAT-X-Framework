@@ -23,6 +23,7 @@
 #include "boatlog.h"
 #include <time.h>
 
+#define USE_ONETIME_WALLET
 
 const BCHAR *fabric_client_demokey = "-----BEGIN PRIVATE KEY-----\n"
 "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgExGSgCJJjJNY+rm5\n"
@@ -380,8 +381,8 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 
 int main(int argc, char *argv[])
 {
-	BOAT_RESULT result = BOAT_SUCCESS;
-	BoatHlfabricTx tx_ptr;
+	BOAT_RESULT       result  = BOAT_SUCCESS;
+	BoatHlfabricTx    tx_ptr;
 	
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
@@ -395,7 +396,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* step-3: fabric transaction structure initialization */
-	result = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
+	result = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP",NULL,NULL);
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed.");
@@ -433,7 +434,7 @@ int main(int argc, char *argv[])
 		BoatLog( BOAT_LOG_CRITICAL, "begin discover node   " );
 		tx_ptr.var.args.nArgs = 0;
 		BoatSleep(3);
-		result += BoatHlfabricDiscoverySubmit(&tx_ptr,wallet_config.nodesCfg);
+		result += BoatHlfabricDiscoverSubmit(&tx_ptr,wallet_config.nodesCfg);
 		if (result != BOAT_SUCCESS)
 		{
 			//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(query) failed." );

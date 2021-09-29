@@ -107,7 +107,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 								BCHAR *gaslimit_str,
 								BCHAR *recipient_str,
 								BCHAR *chainid_str,
-								BCHAR *groupid_str);
+								BCHAR *groupid_str );
 
 
 /*!****************************************************************************
@@ -269,11 +269,15 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.
- * @see web3_parse_json_result()
+ * @see BoatEthPraseRpcResponseResult()
  ******************************************************************************/
-BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
-                                                const BCHAR *child_name, 
-                                                BoatFieldVariable *result_out);
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
+                                                                          const BCHAR *child_name, 
+                                                                          BoatFieldVariable *result_out)
+{
+    return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);
+}
+
 
 /*! @}*/
 

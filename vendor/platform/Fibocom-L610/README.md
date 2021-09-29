@@ -82,12 +82,8 @@
    ```
    PLATFORM_TARGET ?= Fibocom-L610
    ```
-
-   #### b、关闭FABRIC链宏开关  
-
-   由于资源限制，该平台暂时不支持FABRIC链。所以，需要打开主makefile，找到`BOAT_PROTOCOL_USE_HLFABRIC`,将后面参数改为0，即`BOAT_PROTOCOL_USE_HLFABRIC  ?= 0`。
    
-   #### c、打开Linux终端进入BoAT-X-Framework目录编译BoAT静态库
+   #### b、打开Linux终端进入BoAT-X-Framework目录编译BoAT静态库
    ```
    cd BoAT-X-Framework
    make clean
@@ -99,9 +95,9 @@
 
 ### 2、编译L610演示demo程序，生成.pac下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在L610平台代码根目录下的demo.c。
+   通过BoAT-X-Framework访问区块链的演示代码，在L610平台代码根目录下的demo.c
    
-   打开Linux终端进入L610根目录。
+   打开Linux终端进入L610根目录
    ```
    cd L610代码根目录
    cd out
@@ -112,4 +108,4 @@
    cmake ../.. -G Ninja
    ninja
    ```
-   编译成功会在out/appimage_debug/hex/下生成.pac文件。	
+   编译成功会在out/appimage_debug/hex/下生成.pac文件	

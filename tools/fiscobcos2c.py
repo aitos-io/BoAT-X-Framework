@@ -232,7 +232,7 @@ class CFunctionGen():
         with open(abi_file_name) as file_handle:
             self.abi_object = json.load(file_handle)
             self.abi_file_name = os.path.basename(abi_file_name)
-            #print(self.abi_object)
+            #print(self.abi_object);
 
         self.output_path = output_path
         

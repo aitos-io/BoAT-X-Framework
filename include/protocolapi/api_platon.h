@@ -65,11 +65,11 @@ typedef struct TBoatPlatONRawtxFields
     BoatEthTxFieldSig sig;        //!< ECDSA signature, including r and s parts
     
     // PlatON specific fields are appended here.
-    BUINT8 recipientbech32[BOAT_PLATON_BECH32_ADDRESS_SIZE]; //!< recipient's address in PlatON's bech32 format, string
+    BUINT8 recipientbech32[BOAT_PLATON_BECH32_ADDRESS_SIZE];
 }BoatPlatONRawtxFields;
 
 //! The only difference between PlatON transaction and Ethereum transaction is
-//! PlatON has an additional address format. To allow PlatON to re-use Ethereum APIs that 
+//! the address format is different. To allow PlatON to re-use Ethereum APIs that 
 //! take BoatEthTx as function arguments, the <address> MUST be the last field.
 typedef struct TBoatPlatONTx
 {
@@ -79,7 +79,7 @@ typedef struct TBoatPlatONTx
 
     // rawtx_fields MUST be the last field
     BoatPlatONRawtxFields rawtx_fields;      //!< RAW transaction fields
-    BUINT8 address[BOAT_PLATON_BECH32_ADDRESS_SIZE]; //!< Wallet's address in PlatON's bech32 format, string
+    BUINT8  address[BOAT_PLATON_BECH32_ADDRESS_SIZE];
 }BoatPlatONTx;
 
 #ifdef __cplusplus
@@ -89,20 +89,23 @@ extern "C" {
 /*!****************************************************************************
  * @brief Get Balance of the wallet account
  *
+ * @details  
+ *   todo
+ * 
+ * @param[in] wallet_ptr
+ *   Wallet context pointer.
+ *
  * @param[in] alt_address_str
- *   the target bech32 address, such as "lat10ulx8pmdnj7cnmr0m79fafczp2s3qaawy5aawh", string
+ *   todo
  *   
- * @see BoatEthWalletGetBalance()
+ * @return
+ *   todo
  ******************************************************************************/
 BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_address_ptr);
 
 
 /*!****************************************************************************
  * @brief Initialize a transaction
- *
- * @param[in] hrp_str
- *   for PlatON, it is "lat", for Alaya, it is "atp"
- * 
  * @see BoatEthTxInit()
  ******************************************************************************/
 BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
@@ -165,7 +168,24 @@ BOAT_RESULT BoatPlatONTxSend(BoatPlatONTx *tx_ptr);
 /*!****************************************************************************
  * @brief Transfer PlatON value to spceified recipient
  *
- * @see BoatEthTxSend()
+ * @details
+ *   This function transfer PlatON value from the wallet's owner account to the
+ *   specified recipient account.
+ *   \n Before calling this function, all necessary wallet fields such as private key,
+ *   node URL and etc. must be set correctly.
+ *
+ * @param[in] tx_ptr
+ *   Transaction pointer.
+ *
+ * @param[in] value_hex_str
+ *   A string representing the value (Unit: wei) to transfer, in HEX format like
+ *   "0x89AB3C".\n
+ *   Note that decimal value is not accepted. If a decimal value such as "1234"
+ *   is specified, it's treated as "0x1234".
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if transfer is successful.\n
+ *   Otherwise it returns one of the error codes.
  ******************************************************************************/
 BOAT_RESULT BoatPlatONTransfer(BoatPlatONTx *tx_ptr, BCHAR *value_hex_str);
 
@@ -181,7 +201,7 @@ BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr,
 
 /*!****************************************************************************
  * @brief Wait for a transaction being mined.
- * @see BoatEthGetTransactionReceipt()
+* @see BoatEthGetTransactionReceipt()
  ******************************************************************************/
 BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr);
 
@@ -277,11 +297,14 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONTxSetData(BoatPlatONTx *tx_ptr, 
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.
- * @see web3_parse_json_result()
+ * @see BoatEthPraseRpcResponseResult()
  ******************************************************************************/
-BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
-                                             const BCHAR *child_name, 
-                                             BoatFieldVariable *result_out);
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
+                                                                       const BCHAR *child_name, 
+                                                                       BoatFieldVariable *result_out)
+{
+    return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);
+}
 
 /*!****************************************************************************
  * @brief Set EIP155

@@ -49,12 +49,13 @@ void tcp_testcase(void)
     memset(&addr, 0, sizeof(GAPP_TCPIP_ADDR_T));
     OSI_PRINTFI("demo case 9 sys_sock_create start :\n");
     socketid = fibo_sock_create(GAPP_IPPROTO_TCP);
-    OSI_PRINTFI("demo case 9 sys_sock_create retcode = %d\n", socketid);
+    OSI_PRINTFI("demo case 9 sys_sock_create  retcode = %d\n", socketid);
 
     addr.sin_port = htons(7545);
 
     ip4addr_aton("58.215.142.223", &addr.sin_addr.u_addr.ip4);
     addr.sin_addr.u_addr.ip4.addr = htonl(addr.sin_addr.u_addr.ip4.addr);
+
 
     retcode = fibo_sock_connect(socketid, &addr);
     OSI_PRINTFI("BoAT: demo case 9 sys_sock_connect addr.sin_addr.addr = %u\n", addr.sin_addr.u_addr.ip4.addr);
@@ -95,12 +96,12 @@ static BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, NULL, sizeof(BoatPlatoneWalletConfig));
-    if (index == BOAT_ERROR)
+    if( index == BOAT_ERROR )
 	{
         OSI_LOGI(0, "load wallet failed.");
         return BOAT_ERROR;
     }
-    g_platone_wallet_ptr = BoatGetWalletByIndex(index);
+    g_platone_wallet_ptr = BoatGetWalletByIndex( index );
 
     return BOAT_SUCCESS;
 }
@@ -116,28 +117,28 @@ static BOAT_RESULT platone_createOnetimeWallet()
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
 #if 1
-    char *nativedemoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+    char * nativedemoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
     wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
     wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    UtilityHexToBin(wallet_config.prikeyCtx_config.prikey_content.field_ptr, 32, nativedemoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    UtilityHexToBin( wallet_config.prikeyCtx_config.prikey_content.field_ptr, 32, nativedemoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
     wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
 #endif
   
-	strncpy(wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_PLATONE_NODE_URL_MAX_LEN - 1); // "http://116.236.47.90:7545" //"http://106.14.94.165:8080"
+	strncpy( wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_PLATONE_NODE_URL_MAX_LEN - 1 ); // "http://116.236.47.90:7545" //"http://106.14.94.165:8080"
  
 	OSI_LOGI(0, "======node_url_str:%s", wallet_config.node_url_str);
 
 	/* create platone wallet */
-    index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, PERSIST_WALLET_NAME, &wallet_config, sizeof(BoatPlatoneWalletConfig)); // "/nvm/test.txt"
+    index = BoatWalletCreate( BOAT_PROTOCOL_PLATONE, PERSIST_WALLET_NAME, &wallet_config, sizeof(BoatPlatoneWalletConfig) ); // "/nvm/test.txt"
     OSI_LOGI(0, "BoatWalletCreate index=%d", index);
 
-    if (index == BOAT_ERROR)
+    if( index == BOAT_ERROR )
 	{
-        OSI_LOGI(0, "create one-time wallet failed.");
+        OSI_LOGI(0, "create one-time wallet failed." );
         return BOAT_ERROR;
     }
-    g_platone_wallet_ptr = BoatGetWalletByIndex(index);
+    g_platone_wallet_ptr = BoatGetWalletByIndex( index );
     
     return BOAT_SUCCESS;
 }
@@ -148,20 +149,22 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     BoatPlatoneTx tx_ctx;
     BOAT_RESULT result;
 
+
+	
     /* Set Contract Address */
     result = BoatPlatoneTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
 							   "0x333333",
 							   "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45",
 							   BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
 
-    if (result != BOAT_SUCCESS)
+    if( result != BOAT_SUCCESS )
 	{
         OSI_LOGI(0, "BoatPlatoneTxInit fails.");
         return BOAT_ERROR;
     }
 
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "L610 HelloWorld 0602");
-    if (result_str == NULL)
+    if( result_str == NULL )
 	{
         OSI_LOGI(0, "my_contract_cpp_abi_setName failed: %s.", result_str);
 		return BOAT_ERROR;
@@ -169,7 +172,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 	OSI_LOGI(0, "setName returns: %s", result_str);
     
     result_str = my_contract_cpp_abi_getName(&tx_ctx);
-    if (result_str == NULL)
+    if( result_str == NULL )
 	{
         OSI_LOGI(0, "my_contract_cpp_abi_getName failed: %s.", result_str);
 		return BOAT_ERROR;
@@ -181,21 +184,21 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 
 void boat_platone_entry(void)
 {
-    BOAT_RESULT result = BOAT_SUCCESS;
+    BOAT_RESULT  result  = BOAT_SUCCESS;
 
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     /* step-2: create platone wallet */
     result = platone_createOnetimeWallet();
     //result = platone_loadPersistWallet(PERSIST_WALLET_NAME);
-    if (result != BOAT_SUCCESS)
+    if( result != BOAT_SUCCESS )
 	{
 		OSI_LOGI(0, "platoneWalletPrepare_create failed : %d.", result);
 		return ;
 	}
 	/* step-3: execute 'platone_call_mycontract' */
-	result = platone_call_mycontract(g_platone_wallet_ptr);
-    if (result != BOAT_SUCCESS)
+	result = platone_call_mycontract( g_platone_wallet_ptr );
+    if( result != BOAT_SUCCESS )
 	{
         OSI_LOGI(0, "platone mycontract access Failed: %d.", result);
     }
@@ -233,9 +236,10 @@ static void prvThreadEntry(void *param)
     
     #define MAX_PDPRETRY 10
     
+
     OSI_LOGI(0, "BoAT: Activate PDP");
 
-    for (i = 0; i < MAX_PDPRETRY; i++)
+    for( i = 0; i < MAX_PDPRETRY; i++ )
     {
         OSI_LOGI(0, "BoAT: Try to activate PDP: %d", i);
         fibo_taskSleep(5000);
@@ -250,7 +254,7 @@ static void prvThreadEntry(void *param)
 
         fibo_taskSleep(10000);
         
-        if (ret == 0 /*&& ip[0] != 0 && ip[0] != '0'*/)
+        if( ret == 0 /*&& ip[0] != 0 && ip[0] != '0'*/)
         {
             OSI_LOGI(0, "Activate PDP succeeds");
             fibo_taskSleep(5000);
@@ -259,7 +263,7 @@ static void prvThreadEntry(void *param)
     }
     
     // Fail to activate PDP after MAX_PDPRETRY tries
-    if (i >= MAX_PDPRETRY)
+    if( i >= MAX_PDPRETRY )
     {
         OSI_LOGI(0, "Activate PDP fails");
         fibo_taskSleep(5000);
@@ -295,10 +299,10 @@ static void sig_res_callback(GAPP_SIGNAL_ID_T sig, va_list arg)
     switch (sig)
     {
 	
-        default:
-        {
-            break;
-        }
+    default:
+    {
+        break;
+    }
     }
     OSI_LOGI(0, "test");
 }
@@ -310,7 +314,7 @@ void *appimg_enter(void *param)
 {
     OSI_LOGI(0, "application image enter, param 0x%x", param);
     prvInvokeGlobalCtors();
-    fibo_thread_create(prvThreadEntry, "mythread", 1024 * 16, NULL, OSI_PRIORITY_HIGH);
+    fibo_thread_create(prvThreadEntry, "mythread", 1024*16, NULL, OSI_PRIORITY_HIGH);
     return (void *)&user_callback;
 }
 

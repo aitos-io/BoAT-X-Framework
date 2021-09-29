@@ -54,7 +54,8 @@ const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
 
 
 BoatPlatoneWallet *g_platone_wallet_ptr;
-
+#define USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS
+#define USE_ONETIME_WALLET
 
 #if defined(USE_ONETIME_WALLET)
 __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
@@ -149,7 +150,7 @@ __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, &wallet_config, sizeof(BoatPlatoneWalletConfig));
-    if (index == BOAT_ERROR)
+    if(index == BOAT_ERROR)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR;

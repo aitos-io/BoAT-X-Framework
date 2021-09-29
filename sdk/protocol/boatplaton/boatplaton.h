@@ -60,16 +60,34 @@ extern "C" {
  *   For Ethereum any fields (except <recipient>) having a value of zero are
  *   treated as NULL stream in RLP encoding instead of 1-byte-size stream whose
  *   value is 0. For example, nonce = 0 is encoded as 0x80 which represents NULL
- *   instead of 0x00 which represents a 1-byte-size stream whose value is 0.
+ *   instead of 0x00 which represents a 1-byte-size stream whose value is 0. The 
+ *   <recipient> data is in the recipientbech32.
  *
+ *   <b>[HOW TO CONSTRUCT A RAW TRANSACTION]</b>  
+ *   A RAW transaction is constructed in 4 steps in different ways according to
+ *   the blockchain network's EIP-155 compatibility. 
+ *
+ *   See following article for details about EIP-155: 
+ *   https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
+ *  
+ *   <I>CASE 1: If the blockchain network does NOT support EIP-155:</I> 
+ *       \n - Step 1: Encode a LIST containing only the first 6 fields.
+ *       \n - Step 2: Calculate SHA3 hash of the encoded stream in Step 1.
+ *       \n - Step 3: Sign the hash in Step 2. This generates r, s and parity (0 or 1) for recovery identifier.
+ *       \n - Step 4: Encode a LIST containing all 9 fields, where
+ *               First 6 fields are same as what they are;
+ *               v = parity + 27, where parity is given in Step 3;
+ *               r and s are given in Step 3.
+ *
+ *   <I>CASE 2: If the blockchain network DOES support EIP-155:</I>
  *       \n - Step 1: Encode all 9 fields (a LIST containing all 9 fields), where
  *               First 6 fields are same as what they are;
  *               v = Chain ID;
  *               r = 0;
  *               s = 0. 
  *                  NOTE: zero value fields other than <recipient> are encoded as NULL stream.
- *       \n - Step 2: Calculate SHA3 hash of the encoded stream in Step 1.
- *       \n - Step 3: Sign the hash in Step 2. This generates r, s and parity (0 or 1) for recovery identifier.
+ *       \n - Step 2: Same as CASE 1.
+ *       \n - Step 3: Same as CASE 1.
  *       \n - Step 4: Encode a LIST containing all 9 fields, where
  *               First 6 fields are same as what they are;
  *               v = Chain ID * 2 + parity + 35, where parity is given in Step 3;
@@ -105,11 +123,11 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr);
 BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr);
 
 /*!****************************************************************************
- * @brief Encode the Bech32 address of PlatON.
+ * @brief Generates the Bech32 address of PlatON.
  *
  * @details
- *   This function refer to the Java SDK source code for PlatON. Encode the public key 
- *   address of Ethereum to Bech32 address of PlatON.
+ *   This function references the Java SDK source code for PlatON. 
+ *   
  *   
  * @param[in] in
  *   A pointer to the HEX array that needs encoding.
@@ -120,7 +138,7 @@ BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr);
  * @param[out] out
  *   A pointer to encoded array. Need to free up space after use.
  * 
- * @param[in] hrp
+* @param[in] hrp
  *   A pointer to the human-readable part array that needs encoding.
  * 
  * @param[in] hrplen

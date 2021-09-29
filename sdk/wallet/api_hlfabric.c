@@ -120,7 +120,6 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 									//  tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 									//  tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
 					tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_FABRIC;
-					tx_ptr->wallet_ptr->http2Context_ptr->pathTmp = "/protos.Endorser/ProcessProposal";
 					result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 					if(result != BOAT_SUCCESS)
 					{
@@ -230,7 +229,6 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 			parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
 
 			tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_FABRIC;
-			tx_ptr->wallet_ptr->http2Context_ptr->pathTmp = "/orderer.AtomicBroadcast/Broadcast";
 			result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 			if(result != BOAT_SUCCESS)
 			{
@@ -890,11 +888,13 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 							   const BCHAR *chaincodeId_name_str,
 							   const BCHAR *chaincodeId_version_str,
 							   const BCHAR *channelId_str,
-							   const BCHAR *orgName_str)
+							   const BCHAR *orgName_str,
+							   const BCHAR *contract_name,
+							   const BCHAR *creator_id)
 {
 	BUINT32 stringLen;
-	BCHAR *paramSrcList[5];
-	BCHAR **paramDstList[5];
+	BCHAR *paramSrcList[7];
+	BCHAR **paramDstList[7];
 	BUINT16 i = 0;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -951,11 +951,15 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 	paramSrcList[2] = (BCHAR *)chaincodeId_version_str;
 	paramSrcList[3] = (BCHAR *)channelId_str;
 	paramSrcList[4] = (BCHAR *)orgName_str;
+	paramSrcList[5] = (BCHAR *)contract_name;
+	paramSrcList[6] = (BCHAR *)creator_id;
 	paramDstList[0] = &tx_ptr->var.chaincodeId.path;
 	paramDstList[1] = &tx_ptr->var.chaincodeId.name;
 	paramDstList[2] = &tx_ptr->var.chaincodeId.version;
 	paramDstList[3] = &tx_ptr->var.channelId;
 	paramDstList[4] = &tx_ptr->var.orgName;
+	paramDstList[5] = &tx_ptr->var.contract_name;
+	paramDstList[6] = &tx_ptr->var.creator_id;
 
 	for (i = 0; i < sizeof(paramSrcList) / sizeof(paramSrcList[0]); i++)
 	{

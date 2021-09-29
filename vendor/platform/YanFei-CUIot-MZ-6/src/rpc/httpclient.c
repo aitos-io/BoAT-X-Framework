@@ -85,6 +85,35 @@ struct timeval {
 };
 #endif /* LWIP_TIMEVAL_PRIVATE */
 
+static int binder(char localip[24], int connfd){
+
+	//devide ip
+	int ip[4]={0};
+    int ip_bit = 0, j = 0;
+    for(int c = 0; c < 24; ++c){
+        ip_bit = ((ip_bit*10)+(localip[c]-'0'));
+        if(ip[c]=='.'){
+            ip[j++] = ip_bit;
+            MG_osiTracePrintf(LOG_TAG, "ip out : %d", ip_bit);
+            ip_bit = 0;
+        }
+    }
+
+	//local ip and port
+	ip4_addr_t nIpAddr;
+	nIpAddr.addr = PP_HTONL(LWIP_MAKEU32(ip[0],ip[1],ip[2],ip[3]));
+	struct sockaddr_in  localAddr;
+	struct sockaddr_in *to4 = &localAddr;
+	to4->sin_len = sizeof(struct sockaddr_in);
+	to4->sin_family = AF_INET;
+	to4->sin_port = lwip_htons(9700);
+	inet_addr_from_ip4addr(&to4->sin_addr, &nIpAddr);
+
+
+	return MG_CFW_TcpipSocketBind(connfd, (const struct sockaddr *)&localAddr, sizeof(localAddr));
+
+}
+
 int httpclient_conn(httpclient_t *client, char *host)
 {
     struct sockaddr_in hints, *addr_list, *cur;
@@ -103,7 +132,7 @@ int httpclient_conn(httpclient_t *client, char *host)
 
     client->socket = lwip_socket( AF_INET, SOCK_STREAM, IPPROTO_TCP);
     DBG(" ==MG_CFW_TcpipSocket , socketid:%d!",client->socket);
-    if (client->socket < 0) 
+    if ( client->socket < 0 ) 
     {
         return HTTPCLIENT_ERROR_CONN;
     }
@@ -134,7 +163,7 @@ int httpclient_conn(httpclient_t *client, char *host)
 	to4->sin_port = lwip_htons(client->remote_port);
 	inet_addr_from_ip4addr(&to4->sin_addr, &nIpAddr);
 
-    ret = lwip_connect(client->socket, (const struct sockaddr *)&nDestAddr, sizeof(nDestAddr));
+    ret=lwip_connect(client->socket, (const struct sockaddr *)&nDestAddr, sizeof(nDestAddr));
 	int err = CFW_TcpipGetLastError();
 	DBG(" ==connect ret:%d,err :%d!",ret,err);
 
@@ -169,7 +198,7 @@ int httpclient_parse_url(const char *url, char *scheme, size_t max_scheme_len, c
     }
     else
     {
-        if (max_scheme_len < host_ptr - scheme_ptr + 1) { /* including NULL-terminating char */
+        if ( max_scheme_len < host_ptr - scheme_ptr + 1 ) { /* including NULL-terminating char */
             WARN("Scheme str is too small (%d >= %d)", max_scheme_len, host_ptr - scheme_ptr + 1);
             return HTTPCLIENT_ERROR_PARSE;
         }
@@ -181,11 +210,11 @@ int httpclient_parse_url(const char *url, char *scheme, size_t max_scheme_len, c
 
 
     port_ptr = strchr(host_ptr, ':');
-    if (port_ptr != NULL) {
+    if ( port_ptr != NULL ) {
         uint16_t tport;
         host_len = port_ptr - host_ptr;
         port_ptr++;
-        if (sscanf(port_ptr, "%hu", &tport) != 1) {
+        if ( sscanf(port_ptr, "%hu", &tport) != 1) {
             WARN("Could not find port");
             return HTTPCLIENT_ERROR_PARSE;
         }
@@ -197,11 +226,11 @@ int httpclient_parse_url(const char *url, char *scheme, size_t max_scheme_len, c
     //if (path_ptr == NULL) {
     //    return HTTPCLIENT_ERROR_PARSE;
     //}
-    if (host_len == 0) {
+    if ( host_len == 0 ) {
         host_len = path_ptr - host_ptr;
     }
 
-    if (maxhost_len < host_len + 1) { /* including NULL-terminating char */
+    if ( maxhost_len < host_len + 1 ) { /* including NULL-terminating char */
         WARN("Host str is too small (%d >= %d)", maxhost_len, host_len + 1);
         return HTTPCLIENT_ERROR_PARSE;
     }
@@ -219,7 +248,7 @@ int httpclient_parse_url(const char *url, char *scheme, size_t max_scheme_len, c
         }
     }
 
-    if (max_path_len < path_len + 1) { /* including NULL-terminating char */
+    if ( max_path_len < path_len + 1 ) { /* including NULL-terminating char */
         WARN("Path str is too small (%d >= %d)", max_path_len, path_len + 1);
         return HTTPCLIENT_ERROR_PARSE;
     }
@@ -247,22 +276,22 @@ int httpclient_parse_host(char *url, char *host, size_t maxhost_len)
     host_ptr += 3;
 
     port_ptr = strchr(host_ptr, ':');
-    if (port_ptr != NULL) {
+    if ( port_ptr != NULL ) {
         uint16_t tport;
         host_len = port_ptr - host_ptr;
         port_ptr++;
-        if (sscanf(port_ptr, "%hu", &tport) != 1) {
+        if ( sscanf(port_ptr, "%hu", &tport) != 1) {
             WARN("Could not find port");
             return HTTPCLIENT_ERROR_PARSE;
         }
     }
 
     path_ptr = strchr(host_ptr, '/');
-    if (host_len == 0) {
+    if ( host_len == 0 ) {
         host_len = path_ptr - host_ptr;
     }
 
-    if (maxhost_len < host_len + 1) { /* including NULL-terminating char */
+    if ( maxhost_len < host_len + 1 ) { /* including NULL-terminating char */
         WARN("Host str is too small (%d >= %d)", maxhost_len, host_len + 1);
         return HTTPCLIENT_ERROR_PARSE;
     }
@@ -385,7 +414,7 @@ int httpclient_send_header(httpclient_t *client, char *url, int method, httpclie
     len = 0 ; /* Reset send buffer */
     client->method = method;
     
-    if (strlen(path) == 0) {
+    if( strlen(path) == 0 ) {
         snprintf(buf, sizeof(buf), "%s /%s HTTP/1.1\r\nHost: %s\r\n", meth, path, host); /* Write request */
     }
     else {
@@ -409,11 +438,11 @@ int httpclient_send_header(httpclient_t *client, char *url, int method, httpclie
         httpclient_get_info(client, send_buf, &len, (char *)client->header, strlen(client->header));
     }
 
-    if (client_data->post_buf != NULL) {
+    if ( client_data->post_buf != NULL ) {
         snprintf(buf, sizeof(buf), "Content-Length: %d\r\n", client_data->post_buf_len);
         httpclient_get_info(client, send_buf, &len, buf, strlen(buf));
 
-        if (client_data->post_content_type != NULL) {
+        if (client_data->post_content_type != NULL)  {
             snprintf(buf, sizeof(buf), "Content-Type: %s\r\n", client_data->post_content_type);
             httpclient_get_info(client, send_buf, &len, buf, strlen(buf));
         }
@@ -427,7 +456,7 @@ int httpclient_send_header(httpclient_t *client, char *url, int method, httpclie
     ret = httpclient_tcp_send_all(client->socket, send_buf, len);
     if (ret > 0) {
         DBG("Written %d bytes, socket = %d", ret, client->socket);
-    } else if (ret == 0) {
+    } else if ( ret == 0 ) {
         WARN("ret == 0,Connection was closed by server");
         return HTTPCLIENT_CLOSED; /* Connection was closed by server */
     } else {
@@ -448,7 +477,7 @@ int httpclient_send_userdata(httpclient_t *client, httpclient_data_t *client_dat
             ret = httpclient_tcp_send_all(client->socket, client_data->post_buf, client_data->post_buf_len);
             if (ret > 0) {
                 DBG("Written %d bytes", ret);
-            } else if (ret == 0) {
+            } else if ( ret == 0 ) {
                 WARN("ret == 0,Connection was closed by server");
                 return HTTPCLIENT_CLOSED; /* Connection was closed by server */
             } else {
@@ -519,7 +548,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
     //?a¨¢?¡¤?¡ã¨¹???¨®     
 	static char remain_buf[512] = {0};
 	static int remain_len = 0;
-	if (remain_len > 0 && remain_len < 512)
+	if(remain_len > 0 && remain_len < 512)
 	{
 		DBG("last retrieve remain_len:%d",remain_len);
 		memcpy(data,remain_buf,remain_len);
@@ -571,7 +600,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
     while (true) {
         size_t readLen = 0;
 
-        if (client_data->is_chunked && client_data->retrieve_len <= 0) {
+        if ( client_data->is_chunked && client_data->retrieve_len <= 0) {
             /* Read chunk header */
             bool foundCrlf;
             int n;
@@ -582,7 +611,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
                 data[len] = 0;
                 if (len >= 2) {
                     for (; crlf_pos < len - 2; crlf_pos++) {
-                        if (data[crlf_pos] == '\r' && data[crlf_pos + 1] == '\n') {
+                        if ( data[crlf_pos] == '\r' && data[crlf_pos + 1] == '\n' ) {
                             foundCrlf = true;
                             break;
                         }
@@ -590,7 +619,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
                 }
                 if (!foundCrlf) { /* Try to read more */
                     int max_len = MIN(HTTPCLIENT_CHUNK_SIZE - len - 1, client_data->response_buf_len - 1 - count);
-                    if (len < max_len) {
+                    if ( len < max_len ) {
                         int new_trf_len, ret;
                         ret = httpclient_recv(client, data + len, 0, max_len, &new_trf_len);
                         len += new_trf_len;
@@ -618,7 +647,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
             memmove(data, &data[crlf_pos + 2], len - (crlf_pos + 2)); /* Not need to move NULL-terminating char any more */
             len -= (crlf_pos + 2);
 
-            if (readLen == 0) {
+            if ( readLen == 0 ) {
                 /* Last chunk */
                 client_data->is_more = false;
                 DBG("no more (last chunk)");
@@ -644,7 +673,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
                 client_data->retrieve_len -= (client_data->response_buf_len - 1 - count);
 				//?a¨¢?¡¤?¡ã¨¹???¨®
 				remain_len = templen - (client_data->response_buf_len - 1 - count);
-				if (remain_len)
+				if(remain_len)
 				{
 					memcpy(remain_buf,data + client_data->response_buf_len - 1 - count,remain_len);
 					DBG("data is larger than response_buf_len,remain_len:%d",remain_len);
@@ -658,8 +687,8 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
                 }
             }
 
-            // if (len > readLen) {            
-            if (len >= readLen) {
+            // if ( len > readLen ) {            
+            if ( len >= readLen ) {
                 DBG("memmove %d %d %d", readLen, len, client_data->retrieve_len);
                 memmove(data, &data[readLen], len - readLen); /* chunk case, read between two chunks */
                 len -= readLen;
@@ -680,7 +709,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
             }
         } while (readLen);
 
-        if (client_data->is_chunked) {
+        if ( client_data->is_chunked ) {
             if (len < 2) {
                 int new_trf_len, ret;
                 int max_len = MIN(HTTPCLIENT_CHUNK_SIZE - len - 1, client_data->response_buf_len - 1 - count);
@@ -691,7 +720,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
                 }
                 len += new_trf_len;
             }
-            if ((data[0] != '\r') || (data[1] != '\n')) {
+            if ( (data[0] != '\r') || (data[1] != '\n') ) {
                 DBG("Format error, %s", data); /* after memmove, the beginning of next chunk */
                 return HTTPCLIENT_ERROR_PRTCL;
             }
@@ -730,13 +759,13 @@ int httpclient_response_parse(httpclient_t *client, char *data, int len, httpcli
     data[crlf_pos] = '\0';
 
     /* Parse HTTP response */
-    if (sscanf(data, "HTTP/%*d.%*d %d %*[^\r\n]", &(client->response_code)) != 1) {
+    if ( sscanf(data, "HTTP/%*d.%*d %d %*[^\r\n]", &(client->response_code)) != 1 ) {
         /* Cannot match string, error */
         DBG("Not a correct HTTP answer : %s", data);
         return HTTPCLIENT_ERROR_PRTCL;
     }
 
-    if ((client->response_code < 200) || (client->response_code >= 400)) {
+    if ( (client->response_code < 200) || (client->response_code >= 400) ) {
         /* Did not return a 2xx code; TODO fetch headers/(&data?) anyway and implement a mean of writing/reading headers */
         WARN("Response code %d", client->response_code);
     }
@@ -749,13 +778,13 @@ int httpclient_response_parse(httpclient_t *client, char *data, int len, httpcli
     client_data->is_chunked = false;
 
     /* Now get headers */
-    while (true) {
+    while ( true ) {
         char *colon_ptr, *key_ptr, *value_ptr;
         int key_len, value_len;
         
         crlf_ptr = strstr(data, "\r\n");
         if (crlf_ptr == NULL) {
-            if (len < HTTPCLIENT_CHUNK_SIZE - 1) {
+            if ( len < HTTPCLIENT_CHUNK_SIZE - 1 ) {
                 int new_trf_len, ret;
                 ret = httpclient_recv(client, data + len, 1, HTTPCLIENT_CHUNK_SIZE - len - 1, &new_trf_len);
                 len += new_trf_len;

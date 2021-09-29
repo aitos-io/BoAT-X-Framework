@@ -38,7 +38,7 @@ To use mbed HTTP RPC porting, RPC_USE_MBEDHTTPPORT in boatoptions.h must set to 
 //#include "rpcport.h"
 #include "mbedhttpport.h"
 
-#include "http_client.h"
+#include "httpclient.h"
 
 
 
@@ -227,7 +227,13 @@ BOAT_RESULT MbedHttpPortSetOpt(MbedHttpPortContext *mbedhttpport_context_ptr, BC
 
 Function: MbedHttpPortRequestSync()
 
-    This function performs a synchronous mbed HTTP POST and waits for its response.
+    This function initiates a curl session, performs a synchronous HTTP POST
+    and waits for its response.
+
+    is a callback function as per libcurl CURLOPT_WRITEFUNCTION option.
+    libcurl will call this function (possibly) multiple times to write received
+    data from peer to the buffer specified by this function. The received data
+    are typically some RESPONSE from the HTTP server.
 
 @see https://curl.haxx.se/libcurl/c/CURLOPT_WRITEFUNCTION.html
     

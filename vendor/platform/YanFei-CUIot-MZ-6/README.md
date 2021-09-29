@@ -104,4 +104,4 @@
    cmake ../.. -G Ninja
    ninja
    ```
-   编译成功会在out\appimage_debug\hex下生成main_flash.pac文件。
+   编译成功会在out\appimage_debug\hex下生成main_flash.pac文件	

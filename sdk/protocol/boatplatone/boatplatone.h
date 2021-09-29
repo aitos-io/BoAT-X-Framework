@@ -128,25 +128,7 @@ BOAT_RESULT PlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr);
 /*! @}*/
 
 
-/*!****************************************************************************
- * @brief parse platone nodeinfo form Contract management service
- *
- * @details
- *   This function Obtain node information by calling the contract management service，
- * and parse platone nodeinfo 
- *	 
- * @param[in] monitor
- *   return form contract management service
- * @param[in] result_out
- * platone node info for Boat
- *
- * @return
- *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
- *   of the error codes.
- *	 
- * @see 
- ******************************************************************************/
-int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out);
+int supports_full_hd(const char * const monitor,nodesResult *result_out);
 
 
 #ifdef __cplusplus
