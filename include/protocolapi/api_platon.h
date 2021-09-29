@@ -65,7 +65,7 @@ typedef struct TBoatPlatONRawtxFields
     BoatEthTxFieldSig sig;        //!< ECDSA signature, including r and s parts
     
     // PlatON specific fields are appended here.
-    BUINT8 recipientbech32[BOAT_PLATON_BECH32_ADDRESS_SIZE]; //!< recipient's address in PlatON's bech32 format, string
+    BCHAR recipientbech32[BOAT_PLATON_BECH32_ADDRESS_SIZE]; //!< recipient's address in PlatON's bech32 format, string
 }BoatPlatONRawtxFields;
 
 //! The only difference between PlatON transaction and Ethereum transaction is
@@ -79,7 +79,7 @@ typedef struct TBoatPlatONTx
 
     // rawtx_fields MUST be the last field
     BoatPlatONRawtxFields rawtx_fields;      //!< RAW transaction fields
-    BUINT8 address[BOAT_PLATON_BECH32_ADDRESS_SIZE]; //!< Wallet's address in PlatON's bech32 format, string
+    BCHAR address[BOAT_PLATON_BECH32_ADDRESS_SIZE]; //!< Wallet's address in PlatON's bech32 format, string
 }BoatPlatONTx;
 
 #ifdef __cplusplus
