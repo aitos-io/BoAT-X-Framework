@@ -134,12 +134,6 @@ typedef struct TBoatChainmakerWallet
 	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
 }BoatChainmakerWallet;
 
-typedef struct TBoatChainmakerTimestamp
-{
-	BUINT64 sec;   //!< passing seconds from 1970-01-01 00:00:00
-	BUINT64 nanos; //!< Non-negative fractions of a second at nanosecond resolution
-}BoatChainmakerTimestamp;
-
 
 /*! @}*/
 
