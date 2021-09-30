@@ -94,17 +94,17 @@ const BCHAR *chainmaker_consensus_hostName  = "chainmaker.org";
 
 BoatChainmakerWalletConfig *g_chaninmaker_wallet_ptr;
 
-void chainmaker_set_node_info(BoatChainmakerNode node)
+void chainmaker_set_node_info(BoatChainmakerNode *node)
 {
 	int length; 
-	node.addr = BoatMalloc(strlen(chainmaker_consensus_url)+1);
+	node->addr = BoatMalloc(strlen(chainmaker_consensus_url)+1);
 	memcpy(node.addr, chainmaker_consensus_url, strlen(chainmaker_consensus_url)+1);
 
-	node.tlsHostName = BoatMalloc(strlen(chainmaker_consensus_hostName)+1);
+	node->tlsHostName = BoatMalloc(strlen(chainmaker_consensus_hostName)+1);
 	memcpy(node.tlsHostName, chainmaker_consensus_hostName, strlen(chainmaker_consensus_hostName)+1);
 
-	node.useTLS = TRUE;
-	node.connCnt = 10;
+	node->useTLS = TRUE;
+	node->connCnt = 10;
 }
 
 __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
@@ -138,7 +138,7 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	{
 		memcpy(wallet_config.roo_ca_cert, chainmaker_root_ca_cert, strlen(chainmaker_root_ca_cert));	
 	}
-	chainmaker_set_node_info(wallet_config.node_info);
+	chainmaker_set_node_info(&wallet_config.node_info);
 	
 	/* create fabric wallet */
 	index = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatChainmakerWalletConfig));
