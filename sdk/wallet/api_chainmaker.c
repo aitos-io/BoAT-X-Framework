@@ -23,6 +23,21 @@ api_chainmaker.c defines the Ethereum wallet API for BoAT IoT SDK.
 /* self-header include */
 #include "boatinternal.h"
 
+
+BoatchainmakerGenerateTxRequest
+
+void BoatCHainmakerTxRequestDeInit(BoatChainmkaerTxRequest *tx_ptr)
+{
+	if (tx_ptr == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Tx argument cannot be nULL.");
+		return;
+	}
+	
+	BoatFree();
+}
+
+
 BOAT_RESULT BoatchainmakerGenerateTxRequest(BoatChainmkaerTxRequest *tx_ptr, BUINT32             txType, BoatChainmakerTransactPayload* payload)						 
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
