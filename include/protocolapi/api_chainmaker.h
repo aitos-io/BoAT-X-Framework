@@ -105,7 +105,7 @@ typedef struct TBoatChainmakerWalletConfig
 	BoatChainmakerCertInfoCfg   user_sign_cert_content;	
 
 	BUINT32 rootCaNumber; //!< The number of rootCA file to be set
-	BoatChainmakerCertInfoCfg     roo_ca_cnotent[BOAT_CHAINMAKER_ROOTCA_MAX_NUM];//!< certificate content of rootCA
+	BoatChainmakerCertInfoCfg     roo_ca_cert[BOAT_CHAINMAKER_ROOTCA_MAX_NUM];//!< certificate content of rootCA
 
 	BoatChainmakerNode 		    node_info;
 }BoatChainmakerWalletConfig;
