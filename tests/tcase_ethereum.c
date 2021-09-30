@@ -115,10 +115,10 @@ START_TEST(test_Api_SetChainId)
 	//case 1:
 	g_test_wallet_ptr->network_info.chain_id = 0xFF;
 	ck_assert(BoatEthWalletSetChainId(g_test_wallet_ptr, 0) == BOAT_SUCCESS);
-	ck_assert(g_test_wallet_ptr->network_info.chain_id == BOAT_FALSE);
+	ck_assert(g_test_wallet_ptr->network_info.chain_id == 0);
 
 	//case 2:
-	ck_assert(BoatEthWalletSetChainId(NULL, BOAT_FALSE) == BOAT_ERROR_INVALID_ARGUMENT);
+	ck_assert(BoatEthWalletSetChainId(NULL, 0) == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
 
