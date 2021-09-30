@@ -25,7 +25,7 @@ api_chainmaker.c defines the Ethereum wallet API for BoAT IoT SDK.
 
 BOAT_RESULT BoatChainmakerTxSetTimestamp(BUINT64 *time_stamp)
 {
-	if (tx_ptr == NULL)
+	if (time_stamp == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
