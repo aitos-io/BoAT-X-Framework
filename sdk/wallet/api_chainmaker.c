@@ -44,6 +44,14 @@ BOAT_RESULT BoaTChainmakerCalcUnsignedTxRequestBytes(BoatChainmkaerTxRequest *tx
 	return result;	
 }
 
+//sign 
+BOAT_RESULT BoaTChainmakerSignTx(char *privateKey, char*cert, char* hash_data)
+{
+	BOAT_RESULT result = BOAT_SUCCESS;
+	return result;
+}
+
+
 BOAT_RESULT BoatChainmakerGenerateTxRequest(BoatChainmkaerTxRequest *tx_ptr, BUINT32             txType, BoatChainmakerTransactPayload* payload)						 
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
