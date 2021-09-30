@@ -27,13 +27,24 @@
 #include "boatlog.h"
 
 #include "sha3.h"
-#include "fibo_opencpu.h"
 
 /* net releated include */
 #include <sys/types.h>
 #include <string.h>
 
+#include "txm_module.h"
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdarg.h>
 
+#include "qapi_diag.h"
+#include "qflog_utils.h"
+#include "qapi_types.h"
+#include "qapi_fibocom.h"
+#include "qapi_timer.h"
+
+TX_BYTE_POOL *byte_pool_test;
 
 
 BOAT_RESULT  BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 inputLen, 
@@ -74,19 +85,67 @@ BOAT_RESULT  BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 i
 }
 
 
+
+
+void *data_malloc(uint32_t size)
+{
+  void *data = NULL;
+  uint32_t status = 0;
+
+  if (0 == size)
+  {
+    return NULL;
+  }
+
+  status = tx_byte_allocate(byte_pool_test, (VOID **)&data, size, TX_NO_WAIT);
+
+  if (TX_SUCCESS != status)
+  {
+    LOG_ERROR("DAM_APP:Failed to allocate memory with %d", status); 
+    return NULL;
+  }
+
+  if(NULL != data)
+  {
+    memset(data, 0, size);
+  }
+
+  return data;
+}
+
+
+void data_free(void *data)
+{
+  uint32_t status = 0;
+  
+  if(NULL == data)
+  {
+    return;
+  }
+
+  status = tx_byte_release(data);
+  
+  if (TX_SUCCESS != status)
+  {
+    LOG_ERROR("DAM_APP:Failed to release memory with %d", status); 
+  }
+
+  data = NULL;
+}
+
 void *BoatMalloc(size_t size)
 {
-    return(fibo_malloc(size));
+	return data_malloc(size);
 }
 
 
 void BoatFree(void *mem_ptr)
 {
-    fibo_free(mem_ptr);
+    data_free(mem_ptr);
 }
 
 
 void BoatSleep(BUINT32 second)
 {
-    fibo_taskSleep(1000 * second);
+    qapi_Timer_Sleep(second,QAPI_TIMER_UNIT_SEC,true);
 }
