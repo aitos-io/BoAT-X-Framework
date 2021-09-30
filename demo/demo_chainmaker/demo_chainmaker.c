@@ -92,7 +92,7 @@ const BCHAR * chainmaker_root_ca_cert =  "-----BEGIN CERTIFICATE-----\n"
 const BCHAR *chainmaker_consensus_url       = "127.0.0.1:12301";
 const BCHAR *chainmaker_consensus_hostName  = "chainmaker.org";
 
-BoatChainmakerWalletConfig
+BoatChainmakerWalletConfig *g_chaninmaker_wallet_ptr;
 
 void chainmaker_set_node_info(BoatChainmakerNode node)
 {
@@ -155,5 +155,17 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 
 int main(int argc, char *argv[])
 {
+	BOAT_RESULT       result  = BOAT_SUCCESS;
+	
+	/* step-1: Boat SDK initialization */
+    BoatIotSdkInit();
+	
+	/* step-2: prepare wallet */
+	result = chainmakerWalletPrepare();
+	if (result != BOAT_SUCCESS)
+	{
+		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
+		return -1;
+	}
     return 0;
 }
