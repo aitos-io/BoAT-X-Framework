@@ -28,7 +28,8 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 /*! @defgroup eth-api boat ethereum-API
  * @{
  */
-
+#define BOAT_CHAINMAKER_CERT_MAX_LEN 1024
+#define BOAT_CHAINMAKER_ROOTCA_MAX_NUM 3
 typedef struct TBoatChainmakerSender {
 	// organization identifier of the member
 	char* orgId;
@@ -79,7 +80,35 @@ typedef struct TBoatChainmkaerTxRequest {
 	char* signature;
 } BoatChainmkaerTxRequest;
 
+//! chainmaker certificate information config structure
+typedef struct TBoatChainmakerCertInfoCfg {
+	BUINT32  length;                                //!< length of certificate content, this length contains the terminator '\0'.
+	BCHAR    content[BOAT_CHAINMAKER_CERT_MAX_LEN]; //!< content of certificate.
+} BoatChainmakerCertInfoCfg;
 
+typedef struct TBoatChainmakerNode{
+	BCHAR*  addr;  
+	BUINT32 connCnt;
+	bool    useTLS;
+	BCHAR*  tlsHostName; 
+	
+} BoatChainmakerNode;
+
+// chainmaker wallet config structure
+typedef struct TBoatChainmakerWalletConfig
+{
+	BoatWalletPriKeyCtx_config  user_pri_key_config;
+	// certificate content of account
+	BoatChainmakerCertInfoCfg   user_cert_content;   
+	BoatWalletPriKeyCtx_config  user_sign_pri_key_config;
+	//certificate content of TLS 
+	BoatChainmakerCertInfoCfg   user_sign_cert_content;	
+
+	BUINT32 rootCaNumber; //!< The number of rootCA file to be set
+	BoatChainmakerCertInfoCfg     roo_ca_cnotent[BOAT_CHAINMAKER_ROOTCA_MAX_NUM];//!< certificate content of rootCA
+
+	BoatChainmakerNode 		    node_info;
+}BoatChainmakerWalletConfig;
 
 
 
