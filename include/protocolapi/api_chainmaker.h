@@ -58,6 +58,26 @@ typedef struct TBoatChainmakerTxHeader {
 	
 } BoatChainmakerTxHeader;
 
+typedef struct TKeyValuePair {
+	char* key;  
+	char* value;
+} KeyValuePair;
+
+typedef struct TBoatChainmakerTransactPayload {
+
+	char* contractName; 
+	char* method; 
+	KeyValuePair* Parameters; 
+} BoatChainmakerTransactPayload;
+
+//request 
+typedef struct TBoatChainmkaerTxRequest {
+	BoatChainmakerTxHeader  tx_header;
+	BoatChainmakerTransactPayload* payload;
+	char* signature;
+} BoatChainmkaerTxRequest;
+
+
 
 
 
