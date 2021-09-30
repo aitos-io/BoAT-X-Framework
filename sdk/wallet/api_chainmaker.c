@@ -38,13 +38,18 @@ void BoatCHainmakerTxRequestDeInit(BoatChainmkaerTxRequest *tx_ptr)
 }
 
 
-BOAT_RESULT BoatchainmakerGenerateTxRequest(BoatChainmkaerTxRequest *tx_ptr, BUINT32             txType, BoatChainmakerTransactPayload* payload)						 
+//cacl hash
+BOAT_RESULT BoaTChainmakerCalcUnsignedTxRequestBytes(BoatChainmkaerTxRequest *tx_ptr) {
+	BOAT_RESULT result = BOAT_SUCCESS;
+	return result;	
+}
+
+BOAT_RESULT BoatChainmakerGenerateTxRequest(BoatChainmkaerTxRequest *tx_ptr, BUINT32             txType, BoatChainmakerTransactPayload* payload)						 
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 
 	return result;
 }
-
 
 BOAT_RESULT BoatChainmakerTxSetTimestamp(BUINT64 *time_stamp)
 {
