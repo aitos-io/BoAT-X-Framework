@@ -65,7 +65,16 @@
 
 #define GENERATE_KEY_REPEAT_TIMES	100
 
+BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
+{	
+	BOAT_RESULT result = BOAT_SUCCESS;
 
+	(void)rsvd;
+
+	qapi_fibo_random_data_get(outputLen,output);
+	
+	return result;
+}
 
 
 BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
