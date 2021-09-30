@@ -110,6 +110,29 @@ typedef struct TBoatChainmakerWalletConfig
 	BoatChainmakerNode 		    node_info;
 }BoatChainmakerWalletConfig;
 
+//!chainmaker key pairs structure
+typedef struct TBoatChainmakerKeyPair {
+	BoatWalletPriKeyCtx  prikeyCtx; //!< @NOTE This field MUST BE placed in the first member of the structure                              //!< because in function BoatWalletCreate(), 
+	BoatFieldVariable    cert;      //!< client certificate content
+	
+} BoatChainmakerKeyPair;
+
+//! chainmaker all fully trusted top-level CAs
+typedef struct TBoatChainmakerRootCA
+{
+	BoatFieldVariable      ca[BOAT_CHAINMAKER_ROOTCA_MAX_NUM]; //!< rootCA certificate content
+}BoatChainmakerRootCA;
+
+//chainmaker wallet structure
+typedef struct TBoatChainmakerWallet
+{
+	BoatChainmakerKeyPair   signClient_info; //!< sign information
+	BoatChainmakerKeyPair   tlsClinet_info;  //!< tls information
+	BoatChainmakerRootCA    tlsRootCA_info;  //!< rootCA certificate list
+	BoatChainmakerNode      node_info;       //!< node information
+	
+	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
+}BoatChainmakerWallet;
 
 
 /*! @}*/
