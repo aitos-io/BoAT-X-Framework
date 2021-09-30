@@ -43,6 +43,17 @@
 #endif
 #include <sys/time.h>
 
+// Qualcomm include
+#include "qapi_uart.h"
+#include "qapi_timer.h"
+#include "qapi_diag.h"
+#include "qapi_fs.h"
+#include "qapi_uart.h"
+
+// fibocom include
+#include "qapi_fibocom.h"
+
+
 #if (PROTOCOL_USE_HLFABRIC == 1)
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 // for TTLSContext structure
@@ -50,31 +61,12 @@
 #endif
 #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
 
-#include "fibo_opencpu.h"
+
 
 #define GENERATE_KEY_REPEAT_TIMES	100
 
-uint32_t random32(void)
-{
-	static uint32_t seed = 0;
-	// Linear congruential generator from Numerical Recipes
-	// https://en.wikipedia.org/wiki/Linear_congruential_generator
-	seed = 1664525 * seed + 1013904223;
-
-	return seed;
-}
 
 
-BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
-{	
-	BOAT_RESULT result = BOAT_SUCCESS;
-
-	(void)rsvd;
-
-	random_buffer(output, outputLen);
-	
-	return result;
-}
 
 BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
 						  const BUINT8 *digest, BUINT32 digestLen, 
@@ -138,34 +130,27 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 *******************************************************************************/
 BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 {
-#if BOAT_USE_FIBO_FILESYSTEM == 1
-	BSINT32 file_fd = -1;
-#else
-	FILE *file_ptr;
-#endif
-	
-	(void)rsvd;
-	
-	if ((fileName == NULL) || (size == NULL))
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'size' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
-	}
-#if BOAT_USE_FIBO_FILESYSTEM == 1
-	*size = fibo_file_getSize(fileName);
-#else
-	file_ptr = fopen(fileName, "rb");
-	if (file_ptr == NULL)
+	qapi_FS_Status_t status = QAPI_OK;
+  	int    fd = -1;
+	qapi_FS_Offset_t seek_status = 0;
+
+	status = qapi_FS_Open(fileName, QAPI_FS_O_RDONLY_E, &fd);
+	if((status != QAPI_OK) && (-1 == fd))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
 		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
 	}
-	
-	fseek(file_ptr, 0, SEEK_END);
-	*size = ftell(file_ptr);
-	fclose(file_ptr);
-#endif
+	status = qapi_FS_Seek(fd, 0, QAPI_FS_SEEK_END_E, &seek_status);
+	if(status != QAPI_OK)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to qapi_FS_Seek.");
+		qapi_FS_Close(fd);
+		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+	}
 
+	*size = (BUINT32)seek_status;
+
+	qapi_FS_Close(fd);
 	return BOAT_SUCCESS;
 }
 
@@ -173,47 +158,28 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 BOAT_RESULT BoatWriteFile(const BCHAR *fileName, 
 						  BUINT8 *writeBuf, BUINT32 writeLen, void *rsvd)
 {
-#if BOAT_USE_FIBO_FILESYSTEM == 1
-	BSINT32 file_fd = -1;
-#else
-	FILE *file_ptr;
-#endif
-	BSINT32 count = 0;
-	
+
+	qapi_FS_Status_t status = QAPI_OK;
+  	int    fd = -1;
+	int   wr_bytes = 0;
 	(void)rsvd;
-	
-	if ((fileName == NULL) || (writeBuf == NULL))
+	status = qapi_FS_Open(fileName, QAPI_FS_O_WRONLY_E, &fd);
+	if((status != QAPI_OK) && (-1 == fd))
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'writeBuf' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
-	}
-
-	/* write to file-system */
-#if BOAT_USE_FIBO_FILESYSTEM == 1
-	file_fd = fibo_file_open(fileName, FS_O_WRONLY | FS_O_CREAT);
-	if (file_fd >= 0)
-	{
-		count = fibo_file_write(file_fd, (const void *)writeBuf, writeLen);
-		fibo_file_close(file_fd);
-	}
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to create file: %s.", fileName);
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
 		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
 	}
-#else
-	file_ptr = fopen(fileName, "wb");
-	if (file_ptr == NULL)
+
+	status = qapi_FS_Write(fd, writeBuf, writeLen, &wr_bytes);
+	if(status != QAPI_OK)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to create file: %s.", fileName);
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to qapi_FS_Write.");
+		qapi_FS_Close(fd);
 		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
 	}
-	
-	count = fwrite(writeBuf, 1, writeLen, file_ptr);
-	fclose(file_ptr);
-#endif
+	qapi_FS_Close(fd);
 
-	if (count != writeLen)
+	if (wr_bytes != writeLen)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to write file: %s.", fileName);
 		return BOAT_ERROR;
@@ -226,53 +192,32 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 BOAT_RESULT BoatReadFile(const BCHAR *fileName, 
 						 BUINT8 *readBuf, BUINT32 readLen, void *rsvd)
 {
-#if BOAT_USE_FIBO_FILESYSTEM == 1
-	BSINT32 file_fd = -1;
-#else
-	FILE *file_ptr;
-#endif
-	BSINT32 count = 0;
-	
+	qapi_FS_Status_t status = QAPI_OK;
+  	int    fd = -1;
+	int   rd_bytes = 0;
 	(void)rsvd;
-	
-	if ((fileName == NULL) || (readBuf == NULL))
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'readBuf' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
-	}
-
-	/* read from file-system */
-#if BOAT_USE_FIBO_FILESYSTEM == 1
-	file_fd = fibo_file_open(fileName, FS_O_RDONLY);
-
-	if (file_fd >= 0)
-	{
-		count = fibo_file_read(file_fd, readBuf, readLen);
-		fibo_file_close(file_fd);
-	}
-	else
+	status = qapi_FS_Open(fileName, QAPI_FS_O_RDONLY_E, &fd);
+	if((status != QAPI_OK) && (-1 == fd))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
 		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
 	}
-#else
-	
-	file_ptr = fopen(fileName, "rb");
-	if (file_ptr == NULL)
+
+	status = qapi_FS_Read(fd, readBuf, readLen, &rd_bytes);
+	if(status != QAPI_OK)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to qapi_FS_Read.");
+		qapi_FS_Close(fd);
 		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
 	}
-	count = fread(readBuf, 1, readLen, file_ptr);
-	fclose(file_ptr);
-#endif
+	qapi_FS_Close(fd);
 
-	if (count != readLen)
+	if (rd_bytes != readLen)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName);
 		return BOAT_ERROR;
 	}
-	
+
 	return BOAT_SUCCESS;
 }
 
@@ -286,11 +231,8 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-#if BOAT_USE_FIBO_FILESYSTEM == 1
-	if (0 != fibo_file_delete(fileName))
-#else
-	if (0 != remove(fileName))
-#endif
+
+	if(QAPI_OK != qapi_FS_Unlink(fileName))
     {
         return BOAT_ERROR;
     }
