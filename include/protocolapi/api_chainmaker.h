@@ -64,9 +64,11 @@ typedef struct TKeyValuePair {
 } KeyValuePair;
 
 typedef struct TBoatChainmakerTransactPayload {
-
+	// smart contract name
 	char* contractName; 
+	// invoke method
 	char* method; 
+	// invoke parameters in k-v format
 	KeyValuePair* Parameters; 
 } BoatChainmakerTransactPayload;
 
