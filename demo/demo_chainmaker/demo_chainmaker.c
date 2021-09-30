@@ -92,6 +92,48 @@ const BCHAR * chainmaker_root_ca_cert =  "-----BEGIN CERTIFICATE-----\n"
 const BCHAR *chainmaker_consensus_url       = "127.0.0.1:12301";
 const BCHAR *chainmaker_consensus_hostName  = "chainmaker.org";
 
+BoatChainmakerWalletConfig
+
+__BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
+{
+	BOAT_RESULT index;
+
+	BoatChainmakerWalletConfig wallet_config = {0};
+	//set clinet private key context
+	wallet_config.user_pri_key_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+	wallet_config.user_pri_key_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
+	wallet_config.user_pri_key_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+	wallet_config.user_pri_key_config.prikey_content.field_ptr = (BUINT8 *)chainmaker_user_key;
+	wallet_config.user_pri_key_config.prikey_content.field_len = strlen(chainmaker_user_key) + 1; //length contain terminator
+
+	//set clinet cert context
+	wallet_config.user_cert_content.length = strlen(chainmaker_user_cert) + 1;
+	memcpy(wallet_config.user_cert_content.content, chainmaker_user_cert, wallet_config.user_cert_content.length);
+
+	//set tls key context
+	wallet_config.user_sign_pri_key_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+	wallet_config.user_sign_pri_key_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
+	wallet_config.user_sign_pri_key_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+	wallet_config.user_sign_pri_key_config.prikey_content.field_ptr = (BUINT8 *)chainmaker_user_sign_key;
+	wallet_config.user_sign_pri_key_config.prikey_content.field_len = strlen(chainmaker_user_sign_key) + 1; //length contain terminator
+
+	//set tls cert context
+	wallet_config.user_sign_cert_content.length = strlen(chainmaker_user_sign_cert) + 1;
+	memcpy(wallet_config.user_sign_cert_content.content, chainmaker_user_sign_cert, wallet_config.user_sign_cert_content.length);
+
+	chainmaker_set_node_info(wallet_config.node_info);
+	
+	/* create fabric wallet */
+	index = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatChainmakerWalletConfig));
+
+	if(index == BOAT_ERROR)
+	{
+		//BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );
+		return BOAT_ERROR;
+	}
+	g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(index);
+	return BOAT_SUCCESS;
+}
 
 
 int main(int argc, char *argv[])
