@@ -176,10 +176,14 @@ static bool getApn(char name[THE_APN_MAX_LEN])
 
 static void simQuery(int *simStatus, int *registerStatus, char name[THE_APN_MAX_LEN])
 {
-	int len = 8;
-	*simStatus = MG_cfwGetSimStatus(0);
+	//int len = 8;
+	if (simStatus == NULL || registerStatus == NULL) 
+	{
+		return;
+	}
+	
 	MG_osiTracePrintf(LOG_TAG, "==SIM status : %d", *simStatus);
-	if (simStatus == NULL) return;
+	*simStatus = MG_cfwGetSimStatus(0);
 	MG_osiTracePrintf(LOG_TAG, "==SIM status : %d", *simStatus);
 
 	while(getApn(name))
