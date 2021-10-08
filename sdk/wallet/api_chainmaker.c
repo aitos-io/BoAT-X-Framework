@@ -139,6 +139,66 @@ BOAT_RESULT BoatChainmakerWalletSetRootCaInfo(BoatChainmakerWallet *wallet_ptr,
 	return result;
 }
 
+
+BoatChainmakerWallet *BoatChainmakerWalletInit(const BoatChainmakerWalletConfig *config_ptr,
+										   BUINT32 config_size)
+{
+	BoatChainmakerWallet *wallet_ptr = NULL;
+	BOAT_RESULT result = BOAT_SUCCESS;
+	BUINT8 i = 0;
+
+	if ((config_ptr == NULL) || (config_size == 0))
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "config_ptr cannot be NULL or config_size cannot be zero.");
+		return NULL;
+	}
+
+	/* allocate wallet memory */
+	wallet_ptr = BoatMalloc(sizeof(BoatChainmakerWallet));
+	if (wallet_ptr == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to malloc wallet memory.");
+		return NULL;
+	}
+	if (sizeof(BoatChainmakerWalletConfig) != config_size)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Incorrect configuration size.");
+		return NULL;
+	}
+
+	/* initialization */
+	wallet_ptr->signClient_info.cert.field_ptr = NULL;
+	wallet_ptr->signClient_info.cert.field_len = 0;
+
+	for (i = 0; i < BOAT_CHAINMAKER_ROOTCA_MAX_NUM; i++)
+	{
+		wallet_ptr->tlsRootCA_info.ca[i].field_len = 0;
+		wallet_ptr->tlsRootCA_info.ca[i].field_ptr = NULL;
+	}
+
+	wallet_ptr->http2Context_ptr = NULL;
+
+	/* account_info assignment */
+	result += BoatHlfabricWalletSetAccountInfo(wallet_ptr, config_ptr->user_pri_key_config,
+											   config_ptr->user_cert_content);
+
+	/* tlsRootCa_info assignment */
+	BoatHlfabricWalletSetRootCaInfo(wallet_ptr, config_ptr->root_ca_cert, config_ptr->rootCaNumber);
+
+	/* http2Context_ptr assignment */
+	wallet_ptr->http2Context_ptr = http2Init();
+
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to set accountInfo|TlsUInfo|networkInfo.");
+		return NULL;
+	}
+
+	return wallet_ptr;
+}
+
+											
+
 void BoatCHainmakerTxRequestDeInit(BoatChainmkaerTxRequest *tx_ptr)
 {
 	if (tx_ptr == NULL)
