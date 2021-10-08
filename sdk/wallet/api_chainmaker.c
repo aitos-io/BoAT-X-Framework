@@ -24,7 +24,57 @@ api_chainmaker.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "boatinternal.h"
 
 
-BoatchainmakerGenerateTxRequest
+//set signClient prikey and cert
+BOAT_RESULT BoatChainmakerWalletSetSignInfo(BoatChainmakerWallet *wallet_ptr,
+											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
+											 const BoatChainmakerCertInfoCfg certContent)
+{
+	BOAT_RESULT result = BOAT_SUCCESS;
+	boat_try_declare;
+
+	if (wallet_ptr == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* initialization */
+	memset(&wallet_ptr->signClient_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx));
+	wallet_ptr->signClient_info.cert.field_ptr = NULL;
+	wallet_ptr->signClient_info.cert.field_len = 0;
+
+	/* prikey context assignment */
+	if (prikeyCtx_config.prikey_content.field_ptr != NULL)
+	{
+		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->signClient_info.prikeyCtx))
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate.");
+			return BOAT_ERROR_INVALID_ARGUMENT;
+		}
+	}
+
+	/* cert assignment */
+	wallet_ptr->signClient_info.cert.field_ptr = BoatMalloc(certContent.length);
+	if (wallet_ptr->signClient_info.cert.field_ptr == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
+		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHChainmakerWalletSetAccountInfo_exception);
+	}
+	memcpy(wallet_ptr->signClient_info.cert.field_ptr, certContent.content, certContent.length);
+	wallet_ptr->signClient_info.cert.field_len = certContent.length;
+
+	/* boat catch handle */
+	boat_catch(BoatHChainmakerWalletSetAccountInfo_exception)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+		result = boat_exception;
+		/* free malloc param Deinit */
+		BoatFree(wallet_ptr->signClient_info.cert.field_ptr);
+		wallet_ptr->signClient_info.cert.field_len = 0;
+	}
+
+	return result;
+}
 
 void BoatCHainmakerTxRequestDeInit(BoatChainmkaerTxRequest *tx_ptr)
 {
