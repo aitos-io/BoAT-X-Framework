@@ -25,7 +25,7 @@ api_chainmaker.c defines the Ethereum wallet API for BoAT IoT SDK.
 
 
 //set signClient prikey and cert
-BOAT_RESULT BoatChainmakerWalletSetSignInfo(BoatChainmakerWallet *wallet_ptr,
+BOAT_RESULT BoatChainmakerWalletSetSignClientInfo(BoatChainmakerWallet *wallet_ptr,
 											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
 											 const BoatChainmakerCertInfoCfg certContent)
 {
@@ -71,6 +71,69 @@ BOAT_RESULT BoatChainmakerWalletSetSignInfo(BoatChainmakerWallet *wallet_ptr,
 		/* free malloc param Deinit */
 		BoatFree(wallet_ptr->signClient_info.cert.field_ptr);
 		wallet_ptr->signClient_info.cert.field_len = 0;
+	}
+
+	return result;
+}
+
+
+BOAT_RESULT BoatChainmakerWalletSetRootCaInfo(BoatChainmakerWallet *wallet_ptr,
+											const BoatChainmakerCertInfoCfg *rootCaContent,
+											BUINT32 rootCaNumber)
+{
+	BUINT16 i = 0;
+
+	BOAT_RESULT result = BOAT_SUCCESS;
+	boat_try_declare;
+
+	if (rootCaContent == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
+	if ((rootCaNumber == 0) || (rootCaNumber > BOAT_CHAINMAKER_ROOTCA_MAX_NUM))
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "parameter rootCaNumber out of limit.");
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* initialization */
+	for (i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++)
+	{
+		wallet_ptr->tlsRootCA_info.ca[i].field_len = 0;
+		wallet_ptr->tlsRootCA_info.ca[i].field_ptr = NULL;
+	}
+
+	/* assignment */
+	for (i = 0; i < rootCaNumber; i++)
+	{
+		/* get rootCA file size */
+		wallet_ptr->tlsRootCA_info.ca[i].field_len = (rootCaContent + i)->length;
+
+		wallet_ptr->tlsRootCA_info.ca[i].field_ptr = BoatMalloc(wallet_ptr->tlsRootCA_info.ca[i].field_len);
+		if (wallet_ptr->tlsRootCA_info.ca[i].field_ptr == NULL)
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
+			boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatChainmakerWalletSetRootCaInfo_exception);
+		}
+		memset(wallet_ptr->tlsRootCA_info.ca[i].field_ptr, 0, wallet_ptr->tlsRootCA_info.ca[i].field_len);
+		memcpy(wallet_ptr->tlsRootCA_info.ca[i].field_ptr, (rootCaContent + i)->content, wallet_ptr->tlsRootCA_info.ca[i].field_len);
+	}
+
+	/* boat catch handle */
+	boat_catch(BoatChainmakerWalletSetRootCaInfo_exception)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+		result = boat_exception;
+		/* free malloc param Deinit */
+		for (i = 0; i < rootCaNumber; i++)
+		{
+			if (wallet_ptr->tlsRootCA_info.ca[i].field_ptr != NULL)
+			{
+				BoatFree(wallet_ptr->tlsRootCA_info.ca[i].field_ptr);
+				wallet_ptr->tlsRootCA_info.ca[i].field_len = 0;
+			}
+		}
 	}
 
 	return result;
