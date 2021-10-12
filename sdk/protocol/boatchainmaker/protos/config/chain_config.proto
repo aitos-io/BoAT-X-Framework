@@ -1,0 +1,161 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.config";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/config";
+package config;
+
+import "consensus/consensus.proto";
+import "common/request.proto";
+import "accesscontrol/policy.proto";
+
+// ChainConfig
+message ChainConfig {
+  // blockchain identifier
+  string                          chain_id = 1;
+
+  // blockchain version
+  string                          version = 2;
+
+  // authentication type
+  string                          auth_type = 3;
+
+  // config sequence
+  uint64                          sequence = 4;
+
+  // encryption algorithm related configuration
+  CryptoConfig                    crypto = 5;
+
+  // block related configuration
+  BlockConfig                     block = 6;
+
+  // core module related configuration
+  CoreConfig                      core = 7;
+
+  // consensus related configuration
+  ConsensusConfig                 consensus = 8;
+
+  // trusted root related configuration
+  // for alliance members, the initial member's root info of the consortium; for public chain, there is no need to configure
+  // Key: node_id; value: address, node public key / CA certificate
+  repeated TrustRootConfig        trust_roots = 9;
+
+  // permission related configuration
+  repeated ResourcePolicy         resource_policies = 10;
+  ContractConfig contract = 11;
+
+  // snapshot module related configuration
+  SnapshotConfig snapshot = 12;
+
+  // scheduler module related configuration
+  SchedulerConfig                 scheduler = 13;
+
+  // tx sim context module related configuration
+  ContextConfig context = 14;
+}
+
+// specific permission configuration structure
+message ResourcePolicy {
+  // resource name
+  string          resource_name = 1;
+
+  // policy(permission)
+  accesscontrol.Policy          policy = 2;
+}
+
+// encryption configuration
+message CryptoConfig {
+  // enable Transaction timestamp verification or Not
+  string hash = 1;
+}
+
+// elockConfig
+message BlockConfig {
+  // enable transaction timestamp verification or Not
+  bool   tx_timestamp_verify = 1;
+
+  // expiration time of transaction timestamp (seconds)
+  uint32 tx_timeout = 2;
+
+  // maximum number of transactions in a block
+  uint32 block_tx_capacity = 3;
+
+  // maximum block size, in MB
+  uint32 block_size = 4;
+
+  // block proposing interval, in ms
+  uint32 block_interval = 5;
+}
+
+// Scheduler configuration
+message SchedulerConfig {
+  // for evidence constract
+  bool enable_evidence = 1;
+}
+
+// Snapshot configuration
+message SnapshotConfig {
+  // for the evidence contract
+  bool enable_evidence = 1;
+}
+
+// TxSimContext configuration
+message ContextConfig {
+  // for the evidence contract
+  bool enable_evidence = 1;
+}
+
+// core module related configuration
+message CoreConfig {
+  // [0, 60], the time when the transaction scheduler gets the transaction from the transaction pool to schedule
+  uint64 tx_scheduler_timeout = 1;
+
+  // [0, 60], the time-out for verification after the transaction scheduler obtains the transaction from the block
+  uint64 tx_scheduler_validate_timeout = 2;
+}
+
+// consensus module related configuration
+message ConsensusConfig {
+  // consensus type
+  consensus.ConsensusType           type = 1;
+
+  // organization list of nodes
+  repeated OrgConfig      nodes = 2;
+
+  // expand the field, record the difficulty, reward and other consensus algorithm configuration
+  repeated common.KeyValuePair   ext_config = 3;
+
+  // Initialize the configuration of DPOS
+  repeated common.KeyValuePair   dpos_config = 4;
+}
+
+// organization related configuration
+message OrgConfig {
+  // organization identifier
+  string org_id = 1;
+
+  // address list owned by the organization
+  // Deprecated , replace by node_id
+  repeated string address = 2;
+
+  // node id list owned by the organization
+  repeated string node_id = 3;
+}
+
+// trusted root related configuration
+message TrustRootConfig {
+  // oranization ideftifier
+  string org_id = 1;
+
+  // root certificate / public key
+  string root = 2;
+}
+message ContractConfig {
+  bool enable_sql_support = 1;
+}
+

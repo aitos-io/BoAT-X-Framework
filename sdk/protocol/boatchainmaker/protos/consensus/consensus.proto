@@ -1,0 +1,78 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.consensus";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/consensus";
+package consensus;
+
+import "common/block.proto";
+import "common/rwset.proto";
+
+enum ConsensusType {
+  SOLO = 0;
+  TBFT = 1;
+  MBFT = 2;
+  HOTSTUFF = 3;
+  RAFT = 4;
+  DPOS = 5;
+  POW = 10;
+}
+
+message VerifyResult {
+  common.Block  verified_block = 1;
+
+  enum Code {
+    SUCCESS = 0;
+    FAIL    = 1;
+  }
+  Code code  = 2;
+  string msg = 3;
+  map<string, common.TxRWSet> txs_rw_set = 4;
+}
+
+message ProposalBlock{
+  common.Block  block = 1;
+  map<string, common.TxRWSet> txs_rw_set = 2;
+}
+
+message BlockHeaderConsensusArgs {
+  int64 ConsensusType = 1;
+  // bytes ConsensusData = 2;
+  uint64 Round = 3;
+  uint64 Level = 4;
+  common.TxRWSet ConsensusData = 5;
+}
+
+message GovernanceMember{
+  string NodeID = 1;
+  int64 Index =2;
+}
+
+message GovernanceContract {
+  uint64  EpochId = 1;    //epoch id，increase by epoch switch
+  ConsensusType Type =2;  //consensus type
+  int64 CurMaxIndex =3;   //current index to be assigned
+  bool SkipTimeoutCommit = 4;
+  //bool IsConfigChg = 4;   //is the configuration changed
+  //bool IsValidatorChg = 5;    //is the validator changed
+  uint64 ConfigSequence  =6;    //config sequence, check whether the configuration is changed
+  uint64 N = 7;    //number of nodes participating in the consensus
+  uint64 MinQuorumForQc = 8;   //the minimum number of consensus nodes that need to survive
+  uint64 CachedLen = 9;
+  uint64 NextSwitchHeight = 10;   //the next height of switching validator
+  uint64 TransitBlock = 11;    //the buffer height of switching validator
+  uint64 BlockNumPerEpoch = 12;    //cycle of switching validator
+  uint64 ValidatorNum = 13;    //maximum number of participating validators
+  uint64 NodeProposeRound = 14; //the rounds in which each validator can produce blocks continuously
+  repeated GovernanceMember Members = 15; //currently maintained nodes
+  repeated GovernanceMember Validators = 16;  //currently participate validators
+  repeated GovernanceMember NextValidators = 17;  //next participate validators
+  uint64 LastMinQuorumForQc = 18;   //the last epoch minimum number of consensus nodes that need to survive
+  uint64 HotstuffRoundTimeoutMill = 19; //The base timeout for viewChange
+  uint64 HotstuffRoundTimeoutIntervalMill = 20; //The delta timeout for the viewChange
+}

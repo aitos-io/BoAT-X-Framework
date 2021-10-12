@@ -1,0 +1,25 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.accesscontrol";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/accesscontrol";
+
+package accesscontrol;
+
+// Policy used to describe how to authenticate a specific action
+message Policy {
+    // rule keywords, e.g., ANY/MAJORITY/ALL/SELF/a number/a rate
+    string rule = 1;
+
+    // org_list describes the organization set included in the authentication
+    repeated string org_list = 2;
+
+    // role_list describes the role set included in the authentication
+    // e.g., admin/client/consensus/common
+    repeated string role_list = 3;
+}

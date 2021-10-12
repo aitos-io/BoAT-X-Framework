@@ -1,0 +1,136 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.consensus.chainedbft";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/consensus/chainedbft";
+package chainedbft;
+
+import "common/block.proto";
+import "common/request.proto";
+//import "common/rwset.proto";
+
+message QuorumCert {
+    bytes        BlockID = 1;
+    uint64       Height = 2;
+    uint64       Level = 3;
+    bool         NewView = 4;
+    uint64       EpochId = 5;
+    repeated VoteData Votes = 6;
+}
+
+message ConsensusInfo {
+    QuorumCert    QC = 1;
+}
+
+message SyncInfo {
+    QuorumCert HighestQC = 1;
+    QuorumCert HighestTC = 2;
+    uint64     HighestTCLevel = 3;
+}
+
+message ProposalData {
+    common.Block          Block = 1;
+    uint64            Height = 2;
+    uint64            Level = 3;
+    bytes             Proposer = 4;
+    uint64            ProposerIdx = 5;
+    uint64            EpochId = 6;
+    QuorumCert        JustifyQC = 7;  //QC for parent block
+    // pb.EndorsementEntry  Signature = 7;
+}
+
+message ProposalMsg {
+    ProposalData     ProposalData = 1;
+    SyncInfo         SyncInfo = 2;
+}
+
+message VoteData {
+    bytes           BlockID = 1;
+    uint64          Height = 2;
+    uint64          Level = 3;
+    bytes           Author = 4;
+    uint64          AuthorIdx = 5;
+    bool            NewView = 6;
+    uint64          EpochId = 7;
+    common.EndorsementEntry   Signature = 8;
+}
+
+message VoteMsg {
+    VoteData       VoteData = 1;
+    SyncInfo       SyncInfo = 2;
+}
+
+message BlockFetchMsg {
+    bytes         BlockID = 1;
+    uint64        Height = 2;
+    uint64        NumBlocks = 3;
+    uint64        AuthorIdx = 4;
+    uint64        ReqID = 5;
+    bytes         CommitBlock = 6;
+    bytes 	      LockedBLock = 7;
+}
+
+message BlockPair {
+    common.Block      Block = 1;
+    QuorumCert    QC = 2;
+}
+
+enum BlockFetchStatus {
+    Succeeded = 0;
+    IdNotFound = 1;
+    NotEnoughBlocks = 2;
+}
+
+message BlockFetchRespMsg {
+    BlockFetchStatus Status = 1;
+    repeated BlockPair Blocks = 2;
+    uint64     AuthorIdx = 3;
+    uint64     RespID = 4;
+}
+
+enum ConsStateType {
+    NewHeight = 0;
+    NewLevel = 1;
+    Propose = 2;
+    Vote = 3;
+    PaceMaker = 4;
+}
+
+enum MessageType {
+    ProposalMessage = 0;
+    VoteMessage = 1;
+    BlockFetchMessage = 2;
+    BlockFetchRespMessage = 3;
+}
+
+message ConsensusPayload {
+    MessageType Type = 1;
+    oneof Data {
+        ProposalMsg ProposalMsg = 2;
+        VoteMsg     VoteMsg = 3;
+        BlockFetchMsg BlockFetchMsg = 4;
+        BlockFetchRespMsg BlockFetchRespMsg = 5;
+    }
+}
+
+message ConsensusMsg {
+    ConsensusPayload payload = 1;
+    common.EndorsementEntry SignEntry = 2;
+}
+
+message BuildProposal {
+    uint64 Height = 1;
+    bytes  PreHash = 2;
+    bool   IsProposer = 3;
+}
+
+message WalEntry{
+    ConsensusMsg Msg = 1;
+    MessageType MsgType = 2;
+    uint64 LastSnapshotIndex = 3;
+}

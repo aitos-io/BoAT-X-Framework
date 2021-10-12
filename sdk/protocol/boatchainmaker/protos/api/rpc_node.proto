@@ -1,0 +1,39 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.api";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/api";
+
+package api;
+
+import "common/request.proto";
+import "common/result.proto";
+import "config/local_config.proto";
+import "config/log_config.proto";
+import "config/chainmaker_server.proto";
+
+// rpcNnode is the server API for
+service RpcNode {
+	// processing transaction message requests
+	rpc SendRequest(common.TxRequest) returns (common.TxResponse) {};
+
+	// processing requests for message subscription
+	rpc Subscribe(common.TxRequest) returns (stream common.SubscribeResult) {};
+
+	// update debug status (development debugging)
+	rpc UpdateDebugConfig(config.DebugConfigRequest) returns (config.DebugConfigResponse) {};
+
+	// refreshLogLevelsConfig
+	rpc RefreshLogLevelsConfig(config.LogLevelsRequest) returns (config.LogLevelsResponse) {};
+
+	// get chainmaker version
+	rpc GetChainMakerVersion(config.ChainMakerVersionRequest) returns(config.ChainMakerVersionResponse) {};
+
+	// check chain configuration and load new chain dynamically
+	rpc CheckNewBlockChainConfig(config.CheckNewBlockChainConfigRequest) returns (config.CheckNewBlockChainConfigResponse) {};
+}

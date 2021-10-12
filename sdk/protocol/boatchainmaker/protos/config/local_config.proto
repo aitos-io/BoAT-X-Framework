@@ -1,0 +1,42 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.config";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/config";
+package config;
+
+import "common/request.proto";
+
+// rquest for debug configuration
+message DebugConfigRequest {
+    repeated common.KeyValuePair pairs = 1;
+}
+
+// Rrsponse for debug configuration
+message DebugConfigResponse {
+    // 0 success
+    // 1 fail
+    int32 code = 1;
+
+    // failure message
+    string message = 2;
+}
+
+// request for check new block configuration
+message CheckNewBlockChainConfigRequest {
+}
+
+// response for check new block configuration
+message CheckNewBlockChainConfigResponse {
+    // 0 success
+    // 1 fail
+    int32 code = 1;
+
+    // failure message
+    string message = 2;
+}

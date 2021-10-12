@@ -1,0 +1,26 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.config";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/config";
+package config;
+
+// request for log level
+message LogLevelsRequest {
+
+}
+
+// response for log level
+message LogLevelsResponse {
+    // 0 success
+    // 1 fail
+    int32 code = 1;
+
+    // failure message
+    string message = 2;
+}

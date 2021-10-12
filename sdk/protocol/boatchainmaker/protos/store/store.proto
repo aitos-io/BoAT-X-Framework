@@ -1,0 +1,53 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.store";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/store";
+
+package store;
+import "common/block.proto";
+import "common/rwset.proto";
+import "common/result.proto";
+enum DbType {
+  INVALID_DB = 0;
+  BLOCK_DB = 1;
+  BLOCK_INDEX_DB = 2;
+  TX_DB = 3;
+  TX_INDEX_DB = 4;
+  SOFT_DB = 5;
+  STATE_DB = 6;
+  READ_WRITE_DB = 7;
+}
+
+// block structure used in serialization
+message SerializedBlock {
+  // header of block
+  common.BlockHeader header = 1;
+
+  // transaction execution sequence of the block, described by DAG
+  common.DAG dag = 2;
+
+  // transaction id list within the block
+  repeated string tx_ids = 3;
+
+  // block additional data, not included in block hash calculation
+  common.AdditionalData additional_data = 4;
+}
+
+// Block and its read/write set information
+message BlockWithRWSet {
+  // block data
+  common.Block block = 1;
+
+  // transaction read/write set of blocks
+  repeated common.TxRWSet txRWSets = 2;
+
+  // contract event info
+  repeated common.ContractEvent contract_events = 3;
+
+}
