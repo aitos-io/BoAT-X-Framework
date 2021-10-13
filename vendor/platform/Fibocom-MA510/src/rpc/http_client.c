@@ -16,14 +16,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "httpclient.h"
-#include "lwip/sockets.h"
+#include "http_client.h"
+#include "qapi_socket.h"
 #include "stdio.h"
-#include "lwip/netdb.h"
-#include "lwip/tcp.h"
-#include "lwip/err.h"
 
-#include "fibo_opencpu.h"
 
 #define sys_arch_printf OSI_PRINTFI
 #define DBG(x, arg...)  sys_arch_printf("[BOAT]"x,##arg)
@@ -139,198 +135,19 @@ int strncasecmp(const char *str1, const char *str2, size_t len)
     
 }
 
-unsigned long boat_htonl(unsigned long n)
-{
-    return ((n & 0xff) << 24) | ((n & 0xff00) << 8) | ((n & 0xff0000) >> 8) | ((n & 0xff000000) >> 24);
-}
-
-unsigned short boat_htons(unsigned short n)
-{
-    return ((n & 0xff) << 8) | ((n & 0xff00) >> 8);
-}
-
-int ip4addr_aton(const char *cp, ip4_addr_t *addr)
-{
-    u32_t val;
-    u8_t base;
-    char c;
-    u32_t parts[4];
-    u32_t *pp = parts;
-
-    c = *cp;
-    for (;;)
-    {
-        /*
-     * Collect number up to ``.''.
-     * Values are specified as for C:
-     * 0x=hex, 0=octal, 1-9=decimal.
-     */
-        if (!isdigit(c))
-        {
-            return 0;
-        }
-        val = 0;
-        base = 10;
-        if (c == '0')
-        {
-            c = *++cp;
-            if (c == 'x' || c == 'X')
-            {
-                base = 16;
-                c = *++cp;
-            }
-            else
-            {
-                base = 8;
-            }
-        }
-        for (;;)
-        {
-            if (isdigit(c))
-            {
-                val = (val * base) + (u32_t)(c - '0');
-                c = *++cp;
-            }
-            else if (base == 16 && isxdigit(c))
-            {
-                val = (val << 4) | (u32_t)(c + 10 - (islower(c) ? 'a' : 'A'));
-                c = *++cp;
-            }
-            else
-            {
-                break;
-            }
-        }
-        if (c == '.')
-        {
-            /*
-       * Internet format:
-       *  a.b.c.d
-       *  a.b.c   (with c treated as 16 bits)
-       *  a.b (with b treated as 24 bits)
-       */
-            if (pp >= parts + 3)
-            {
-                return 0;
-            }
-            *pp++ = val;
-            c = *++cp;
-        }
-        else
-        {
-            break;
-        }
-    }
-    /*
-   * Check for trailing characters.
-   */
-    if (c != '\0' && !isspace(c))
-    {
-        return 0;
-    }
-    /*
-   * Concoct the address according to
-   * the number of parts specified.
-   */
-    switch (pp - parts + 1)
-    {
-
-    case 0:
-        return 0; /* initial nondigit */
-
-    case 1: /* a -- 32 bits */
-        break;
-
-    case 2: /* a.b -- 8.24 bits */
-        if (val > 0xffffffUL)
-        {
-            return 0;
-        }
-        if (parts[0] > 0xff)
-        {
-            return 0;
-        }
-        val |= parts[0] << 24;
-        break;
-
-    case 3: /* a.b.c -- 8.8.16 bits */
-        if (val > 0xffff)
-        {
-            return 0;
-        }
-        if ((parts[0] > 0xff) || (parts[1] > 0xff))
-        {
-            return 0;
-        }
-        val |= (parts[0] << 24) | (parts[1] << 16);
-        break;
-
-    case 4: /* a.b.c.d -- 8.8.8.8 bits */
-        if (val > 0xff)
-        {
-            return 0;
-        }
-        if ((parts[0] > 0xff) || (parts[1] > 0xff) || (parts[2] > 0xff))
-        {
-            return 0;
-        }
-        val |= (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8);
-        break;
-    default:
-        break;
-    }
-    if (addr)
-    {
-        ip4_addr_set_u32(addr, val);
-    }
-    return 1;
-}
-
-
-static int getHostByIpOrName(char *hostorip_str, GAPP_TCPIP_ADDR_T *addr)
-{
-    int i;
-    char c;
-    int hostnamefound = 0;
-
-    for (i = 0; i < strlen(hostorip_str); i++) 
-    {
-        c = hostorip_str[i];
-        if (!((c >= '0' && c <= '9') || c == '.')) 
-        {
-            hostnamefound = 1;
-            break;
-        }
-    }
-
-    if (hostnamefound != 0) 
-    {
-        if (fibo_getHostByName(hostorip_str, &addr->sin_addr, 1, 0) != 0) 
-        {
-            return HTTPCLIENT_UNRESOLVED_DNS;
-        }
-    }
-    else
-    {
-        ip4addr_aton(hostorip_str, &addr->sin_addr.u_addr.ip4);
-        addr->sin_addr.u_addr.ip4.addr = boat_htonl(addr->sin_addr.u_addr.ip4.addr);
-    }
-    
-    return 0;
-}
 
 int httpclient_conn(httpclient_t *client, char *host)
 {
-#if 0
+
     struct addrinfo hints, *addr_list, *cur;
     struct timeval timeout;
     int ret = 0;
     char port[10] = {0};
 
     memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_UNSPEC;
+    hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-    hints.ai_protocol = IPPROTO_TCP;
+  //  hints.ai_protocol = IPPROTO_TCP;
 
     timeout.tv_sec  = client->timeout_in_sec > HTTPCLIENT_MAX_SOC_TIMEOUT ? HTTPCLIENT_MAX_SOC_TIMEOUT : client->timeout_in_sec;
     timeout.tv_usec = 0;
@@ -345,9 +162,9 @@ int httpclient_conn(httpclient_t *client, char *host)
     ret = HTTPCLIENT_UNRESOLVED_DNS;
     for (cur = addr_list; cur != NULL; cur = cur->ai_next) 
     {
-        client->socket = (int)socket(cur->ai_family, cur->ai_socktype,
-                                     cur->ai_protocol);
-        if (client->socket < 0) 
+        client->handle = qapi_socket(cur->ai_family, cur->ai_socktype,
+                                     0);
+        if (client->handle == -1) 
         {
             ret = HTTPCLIENT_ERROR_CONN;
             continue;
@@ -355,55 +172,21 @@ int httpclient_conn(httpclient_t *client, char *host)
         /* set timeout if user need */
         if (client->timeout_in_sec > 0) 
         {
-            lwip_setsockopt(client->socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
-            lwip_setsockopt(client->socket, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
+            qapi_setsockopt(client->handle, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+            qapi_setsockopt(client->handle, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
         }
-        if (connect(client->socket, cur->ai_addr, (int)cur->ai_addrlen) == 0) 
+        if (qapi_connect(client->handle, cur->ai_addr, (int)cur->ai_addrlen) == 0) 
         {
             ret = 0;
             break;
         }
 
-        close(client->socket);
+        qapi_socketclose(client->handle);
         ret = HTTPCLIENT_ERROR_CONN;
     }
 
     freeaddrinfo(addr_list);
-#endif
-
-    GAPP_TCPIP_ADDR_T addr;
-
-    
-    if (getHostByIpOrName(host, &addr) != 0) 
-    {
-        DBG("getaddrinfo != 0, return HTTPCLIENT_UNRESOLVED_DNS");
-        return HTTPCLIENT_UNRESOLVED_DNS;
-    }
-
-    addr.sin_port = boat_htons(/*7545*/client->remote_port);
-
-    //ip4addr_aton("58.215.142.223", &addr.sin_addr.u_addr.ip4);
-    
-    //addr.sin_addr.u_addr.ip4.addr = boat_htonl(addr.sin_addr.u_addr.ip4.addr);
-
-    client->socket = (int) fibo_sock_create(GAPP_IPPROTO_TCP);
-
-    if (client->socket < 0) 
-    {
-        return HTTPCLIENT_ERROR_CONN;
-    }
-
-
-    if (fibo_sock_connect(client->socket, &addr) == 0) 
-    {
-        return 0;
-    }
-    else 
-    {
-        fibo_sock_close(client->socket);
-        return HTTPCLIENT_ERROR_CONN;
-    }
-
+    return ret;
 }
 
 
@@ -585,7 +368,7 @@ int httpclient_get_info(httpclient_t *client, char *send_buf, int *send_idx, cha
                 ERR("send buffer overflow");
                 return HTTPCLIENT_ERROR ;
             }
-            ret = httpclient_tcp_send_all(client->socket, send_buf, HTTPCLIENT_SEND_BUF_SIZE) ;
+            ret = httpclient_tcp_send_all(client->handle, send_buf, HTTPCLIENT_SEND_BUF_SIZE) ;
             if (ret) 
             {
                 return (ret) ;
@@ -631,7 +414,7 @@ int httpclient_send_auth(httpclient_t *client, char *send_buf, int *send_idx)
 }
 
 
-int httpclient_tcp_send_all(int sock_fd, char *data, int length)
+int httpclient_tcp_send_all(int sock_handle, char *data, int length)
 {
     int written_len = 0;
     int ret = 0;
@@ -639,7 +422,7 @@ int httpclient_tcp_send_all(int sock_fd, char *data, int length)
     while (written_len < length)
     {
         //ret = send(sock_fd, data + written_len, length - written_len, 0);
-        ret = fibo_sock_send(sock_fd, (unsigned char*)data + written_len, length - written_len);
+        ret = qapi_send(sock_handle,data + written_len, length - written_len,0);
         if (ret > 0) 
         {
             written_len += ret;
@@ -741,7 +524,7 @@ int httpclient_send_header(httpclient_t *client, char *url, int method, httpclie
     }
 #endif
 
-    ret = httpclient_tcp_send_all(client->socket, send_buf, len);
+    ret = httpclient_tcp_send_all(client->handle, send_buf, len);
     if (ret > 0) 
     {
         DBG("Written %d bytes, socket = %d", ret, client->socket);
@@ -778,7 +561,7 @@ int httpclient_send_userdata(httpclient_t *client, httpclient_data_t *client_dat
         } else
 #endif
         {
-            ret = httpclient_tcp_send_all(client->socket, client_data->post_buf, client_data->post_buf_len);
+            ret = httpclient_tcp_send_all(client->handle, client_data->post_buf, client_data->post_buf_len);
             if (ret > 0) 
             {
                 DBG("Written %d bytes", ret);
@@ -832,7 +615,8 @@ int httpclient_recv(httpclient_t *client, char *buf, int min_len, int max_len, i
             }
         #else
             //ret = recv(client->socket, buf + readLen, max_len - readLen, 0);
-            ret = fibo_sock_recv(client->socket, (unsigned char*)buf + readLen, max_len - readLen);
+            //ret = fibo_sock_recv(client->socket, (unsigned char*)buf + readLen, max_len - readLen);
+            ret = qapi_recv(client->handle,buf + readLen, max_len - readLen,0);
         #endif
         }
 #ifdef BOAT_HTTPCLIENT_SSL_ENABLE
@@ -891,7 +675,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
     int count = 0;
     int templen = 0;
     int crlf_pos;
-    //?a¨¢?¡¤?¡ã¨¹???¨®     
+    //?aï¿½ï¿½?ï¿½ï¿½?ï¿½ã¨¹???ï¿½ï¿½     
 	static char remain_buf[512] = {0};
 	static int remain_len = 0;
 	if (remain_len > 0 && remain_len < 512)
@@ -1042,14 +826,14 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
                 memcpy(client_data->response_buf + count, data, client_data->response_buf_len - 1 - count);
                 client_data->response_buf[client_data->response_buf_len - 1] = '\0';
                 client_data->retrieve_len -= (client_data->response_buf_len - 1 - count);
-				//?a¨¢?¡¤?¡ã¨¹???¨®
+				//?aï¿½ï¿½?ï¿½ï¿½?ï¿½ã¨¹???ï¿½ï¿½
 				remain_len = templen - (client_data->response_buf_len - 1 - count);
 				if(remain_len)
 				{
 					memcpy(remain_buf,data + client_data->response_buf_len - 1 - count,remain_len);
 					DBG("data is larger than response_buf_len,remain_len:%d",remain_len);
 				}
-				//?a¨¢?¡¤?¡ã¨¹???¨®
+				//?aï¿½ï¿½?ï¿½ï¿½?ï¿½ã¨¹???ï¿½ï¿½
                 if (readLen > len || remain_len) 
                 {
                     client_data->content_block_len = client_data->response_buf_len - 1;
@@ -1292,7 +1076,7 @@ HTTPCLIENT_RESULT httpclient_connect(httpclient_t *client, char *url)
         
     DBG("http?:%d, port:%d, host:%s", client->is_http, client->remote_port, host);
 
-    client->socket = -1;
+    client->handle = -1;
     if (client->is_http) 
         ret = httpclient_conn(client, host);
 #ifdef BOAT_HTTPCLIENT_SSL_ENABLE
@@ -1309,7 +1093,7 @@ HTTPCLIENT_RESULT httpclient_send_request(httpclient_t *client, char *url, int m
 {
     int ret = HTTPCLIENT_ERROR_CONN;
 
-    if (client->socket < 0) 
+    if (client->handle == -1) 
     {
         return (HTTPCLIENT_RESULT)ret;
     }
@@ -1336,7 +1120,7 @@ HTTPCLIENT_RESULT httpclient_recv_response(httpclient_t *client, httpclient_data
     // TODO: header format:  name + value must not bigger than HTTPCLIENT_CHUNK_SIZE.
     char buf[HTTPCLIENT_CHUNK_SIZE] = {0}; // char buf[HTTPCLIENT_CHUNK_SIZE*2] = {0};
     boat_sys_log("http start recv response");
-    if (client->socket < 0) 
+    if (client->handle == -1) 
     {
         return (HTTPCLIENT_RESULT)ret;
     }
@@ -1373,16 +1157,16 @@ void httpclient_close(httpclient_t *client)
 {
     if (client->is_http) 
     {
-        if (client->socket >= 0)
+        if (client->handle != -1)
             //close(client->socket);
-            fibo_sock_close(client->socket);
+            qapi_socketclose(client->handle);
     }
 #ifdef BOAT_HTTPCLIENT_SSL_ENABLE
     else 
         httpclient_ssl_close(client);
 #endif
 
-    client->socket = -1;
+    client->handle = -1;
     DBG("httpclient_close() client:%p", client);
 }
 
