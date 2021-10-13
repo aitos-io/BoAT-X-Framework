@@ -142,5 +142,11 @@ int main(int argc, char *argv[])
 		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
 		return -1;
 	}
+	/* step-3: Chainmaker transaction structure initialization */
+	result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, &tx_ptr);
+	if (result != BOAT_SUCCESS)
+	{
+		return -1;
+	}
     return 0;
 }
