@@ -21,31 +21,6 @@
 #include "boatconfig.h"
 #include "boatiotsdk.h"
 
-const BCHAR * chainmaker_user_key = "-----BEGIN EC PRIVATE KEY-----\n"
-									"MHcCAQEEIByphjR4auvodMAWeaWsDXuADlGVi0ODAZtOh7tcIr2hoAoGCCqGSM49\n"
-									"AwEHoUQDQgAE56xayRx0/a8KEXPxRfiSzYgJ/sE4tVeI/ZbjpiUX9m0TCJX7W/VH\n"
-									"dm6WeJLOdCDuLLNvjGTyt8LLyqyubJI5AA==\n"
-									"-----END EC PRIVATE KEY-----\n";
-
-
-const BCHAR * chainmaker_user_cert = "-----BEGIN CERTIFICATE-----\n"
-									 "MIICijCCAi+gAwIBAgIDBS9vMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
-									 "MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
-									 "b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-									 "ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIwMTIwODA2NTM0M1oXDTI1\n"
-									 "MTIwNzA2NTM0M1owgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
-									 "DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
-									 "MQ8wDQYDVQQLEwZjbGllbnQxLDAqBgNVBAMTI2NsaWVudDEuc2lnbi53eC1vcmcx\n"
-									 "LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE56xayRx0\n"
-									 "/a8KEXPxRfiSzYgJ/sE4tVeI/ZbjpiUX9m0TCJX7W/VHdm6WeJLOdCDuLLNvjGTy\n"
-									 "t8LLyqyubJI5AKN7MHkwDgYDVR0PAQH/BAQDAgGmMA8GA1UdJQQIMAYGBFUdJQAw\n"
-									 "KQYDVR0OBCIEIMjAiM2eMzlQ9HzV9ePW69rfUiRZVT2pDBOMqM4WVJSAMCsGA1Ud\n"
-									 "IwQkMCKAIDUkP3EcubfENS6TH3DFczH5dAnC2eD73+wcUF/bEIlnMAoGCCqGSM49\n"
-									 "BAMCA0kAMEYCIQCWUHL0xisjQoW+o6VV12pBXIRJgdeUeAu2EIjptSg2GAIhAIxK\n"
-									 "LXpHIBFxIkmWlxUaanCojPSZhzEbd+8LRrmhEO8n\n"
-									 "-----END CERTIFICATE-----\n";
-
-
 const BCHAR * chainmaker_user_sign_key  = "-----BEGIN EC PRIVATE KEY-----\n"
 										  "MHcCAQEEIM+5FVFBOHIUeUDH2wOkC4Fn6FnMsLHz0SOTreQKz1bDoAoGCCqGSM49\n"
 										  "AwEHoUQDQgAED88H7OwVPitBf2NjCH2ZRM0L9k3csW9nq5qFbyAOSsM+ppi0qrFV\n"
