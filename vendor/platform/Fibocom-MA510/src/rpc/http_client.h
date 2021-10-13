@@ -22,7 +22,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <sys/time.h>
-#include "lwip/sockets.h"
+#include "qapi_socket.h"
 
 //#define BOAT_HTTPCLIENT_SSL_ENABLE
 #ifdef BOAT_HTTPCLIENT_SSL_ENABLE
@@ -132,7 +132,8 @@ typedef enum {
   */
 /** @brief   This structure defines the httpclient_t structure.  */
 typedef struct {
-    int socket;                     /**< Socket ID. */
+//    int socket;                     /**< Socket ID. */
+    int handle;                     /**< qapi socket handle returned from qapi_socket(), */
     int remote_port;                /**< HTTP or HTTPS port. */
     int response_code;              /**< Response code. */
     char *header;                   /**< Request custom header. */
