@@ -527,7 +527,7 @@ int httpclient_send_header(httpclient_t *client, char *url, int method, httpclie
     ret = httpclient_tcp_send_all(client->handle, send_buf, len);
     if (ret > 0) 
     {
-        DBG("Written %d bytes, socket = %d", ret, client->socket);
+        DBG("Written %d bytes, socket_handle = %d", ret, client->handle);
     } 
     else if (ret == 0) 
     {
