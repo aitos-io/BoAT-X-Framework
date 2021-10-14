@@ -148,5 +148,13 @@ int main(int argc, char *argv[])
 	{
 		return -1;
 	}
+	
+	result = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005");
+   	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
+		return -1;
+	}
+
     return 0;
 }
