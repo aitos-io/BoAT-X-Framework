@@ -171,6 +171,7 @@ result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &que
 	
 	/* step-6: chainmaker transaction structure Deinitialization */
 	BoatHlchainmakerTxDeInit(&tx_ptr);
-
+/* step-7: Boat SDK Deinitialization */
+    BoatIotSdkDeInit();
     return 0;
 }
