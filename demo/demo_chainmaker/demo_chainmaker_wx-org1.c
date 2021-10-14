@@ -155,6 +155,12 @@ int main(int argc, char *argv[])
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
 		return -1;
 	}
+		/* step-4: set transaction 'invoke' command */
+	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", true, &invoke_reponse); 
+	if (result != BOAT_SUCCESS)
+	{
+		return -1;
+	}
 
     return 0;
 }
