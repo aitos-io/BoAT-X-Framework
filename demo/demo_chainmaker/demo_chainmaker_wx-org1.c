@@ -162,5 +162,15 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+
+result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &query_reponse);
+	if (result != BOAT_SUCCESS)
+	{
+		return -1;
+	}
+	
+	/* step-6: chainmaker transaction structure Deinitialization */
+	BoatHlchainmakerTxDeInit(&tx_ptr);
+
     return 0;
 }
