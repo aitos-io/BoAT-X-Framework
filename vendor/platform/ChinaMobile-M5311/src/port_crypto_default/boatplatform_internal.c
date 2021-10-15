@@ -142,27 +142,47 @@ BOAT_RESULT BoatSignature( BoatWalletPriKeyCtx prikeyCtx,
 *******************************************************************************/
 BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 {
-	FILE   *file_ptr;
-	
+	BUINT8       file_num = 0;
+	BUINT8       file_name_max_len = 100;
+	BUINT8       file_content_addr_l = 2;
+	BUINT8       file_content_Len_l = 2;
+	BUINT32      file_info_start_addr= 0;
+	BUINT32      file_info_max_len = 1050;
+	BUINT32      file_name_addr = 0 ,file_len = 0; ;
+	BUINT8       temp[1050] = {0};
+
 	(void)rsvd;
-	
-	if( (fileName == NULL) || (size == NULL) )
+
+	if( fileName == NULL)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'size' can't be NULL." );
+		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'writeBuf' can't be NULL." );
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-	
-	file_ptr = fopen( fileName, "rb" );
-	if( file_ptr == NULL )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName );
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+	if(strlen(fileName) > file_name_max_len ){
+		BoatLog( BOAT_LOG_CRITICAL, "file name too long" );
+		return BOAT_ERROR;
 	}
-	
-	fseek( file_ptr, 0, SEEK_END );
-	*size   = ftell( file_ptr );
-	fclose( file_ptr );
-	
+
+	opencpu_flash_read(file_info_start_addr,temp,file_info_max_len);
+	file_num = temp[0];
+	if(file_num == 0){
+		BoatLog( BOAT_LOG_CRITICAL, "have no file" );
+		return BOAT_ERROR;
+	}
+	file_name_addr = file_info_start_addr + 1;
+		while(file_name_addr < file_info_max_len){
+			if(memcmp(temp+file_name_addr,fileName,strlen(fileName)) == 0){
+				file_len = temp[file_name_addr+file_name_max_len+ file_content_addr_l] << 8 | temp[file_name_addr+file_name_max_len + file_content_addr_l+ 1];
+				break;
+			}
+			file_name_addr += file_name_max_len + file_content_addr_l + file_content_Len_l;
+		}
+	if(file_len == 0){
+		BoatLog( BOAT_LOG_CRITICAL, "not find this file" );
+		return BOAT_ERROR;
+	}
+	*size = file_len;
+
 	return BOAT_SUCCESS;
 }
 
