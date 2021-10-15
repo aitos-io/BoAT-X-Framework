@@ -170,9 +170,19 @@ BOAT_RESULT  BoatGetFileSize( const BCHAR *fileName, BUINT32 *size, void* rsvd )
 BOAT_RESULT  BoatWriteFile( const BCHAR *fileName, 
 						    BUINT8* writeBuf, BUINT32 writeLen, void* rsvd )
 {
-	FILE         *file_ptr;
 	BSINT32      count = 0;
 	BOAT_RESULT  result = BOAT_SUCCESS;
+	BUINT8       file_num = 0;
+	BUINT8       file_name_max_len = 100;
+	BUINT8       file_content_addr_l = 2;
+	BUINT8       file_content_Len_l = 2;
+	BUINT32      file_info_start_addr= 0;
+	BUINT32      file_content_start_addr = 4096;
+	BUINT32      flash_block_len = 4096;
+	BUINT32      file_content_max_len = 1024;
+	BUINT32      file_info_max_len = 1050;
+	BUINT32      file_addr = 0,file_name_addr = 0 , flash_block_addr = 0 , file_write_addr = 0;
+	BUINT8       temp[4096] = {0};
 	
 	(void)rsvd;
 	result = result;
@@ -182,22 +192,68 @@ BOAT_RESULT  BoatWriteFile( const BCHAR *fileName,
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' or 'writeBuf' can't be NULL." );
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-
-	/* write to file-system */
-	file_ptr = fopen( fileName, "wb" );
-	if( file_ptr == NULL )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to create file: %s.", fileName );
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
-	}
-	
-	count = fwrite( writeBuf, 1, writeLen, file_ptr );
-	fclose( file_ptr );
-	if( count != writeLen )
-	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to write file: %s.", fileName );
+	if(strlen(fileName) > file_name_max_len ){
+		BoatLog( BOAT_LOG_CRITICAL, "file name too long" );
 		return BOAT_ERROR;
 	}
+	if(writeLen > file_content_max_len ){
+		BoatLog( BOAT_LOG_CRITICAL, "file content too long" );
+		return BOAT_ERROR;
+	}
+	opencpu_flash_read(file_info_start_addr,temp,file_info_max_len);
+	if(temp[0] == 0xFF){
+		file_num = 0;
+	}else{
+	file_num = temp[0];
+	}
+
+	if(file_num == 0){
+		file_num ++;
+		file_addr = file_content_start_addr;
+		file_name_addr = file_info_start_addr + 1;
+	}else{
+		file_name_addr = file_info_start_addr + 1;
+		while(file_name_addr < file_info_max_len){
+			if(memcmp(temp+file_name_addr,fileName,strlen(fileName)) == 0){
+				file_addr = temp[file_name_addr+file_name_max_len] << 8 | temp[file_name_addr+file_name_max_len + 1];
+				break;
+			}
+			file_name_addr += file_name_max_len + file_content_addr_l + file_content_Len_l;
+		}
+
+		if(file_addr == 0)
+		{
+			file_name_addr = file_info_start_addr + 1 + file_num * (file_name_max_len + file_content_addr_l + file_content_Len_l);
+			file_addr = file_content_start_addr + file_num*file_content_max_len;
+			file_num ++;
+			if(file_num > 10){
+				BoatLog( BOAT_LOG_CRITICAL, "file num  > 10 " );
+				return BOAT_ERROR;
+			}
+		}else{
+			file_name_addr = 0;
+			// file_addr = file_content_start_addr + file_num*file_content_max_len;
+		}
+	}
+
+	if(file_name_addr != 0){
+		temp[0] = file_num;
+		memset(temp + file_name_addr , 0x00,file_name_max_len);
+		memcpy(temp + file_name_addr, fileName, strlen(fileName));
+		temp[file_name_addr + file_name_max_len] =  ((file_addr >> 8)&0xFF);
+		temp[file_name_addr + file_name_max_len + 1] =  ((file_addr >> 0)&0xFF);
+		temp[file_name_addr + file_name_max_len + file_content_addr_l] =  ((writeLen >> 8)&0xFF);
+		temp[file_name_addr + file_name_max_len + file_content_addr_l + 1] =  ((writeLen >> 0)&0xFF);
+		opencpu_flash_erase(file_info_start_addr,file_info_max_len);
+		opencpu_flash_write(file_info_start_addr,temp,file_info_max_len);
+	}
+
+	flash_block_addr = ((file_addr - file_content_start_addr)/flash_block_len) + file_content_start_addr;
+	opencpu_flash_read(flash_block_addr,temp,flash_block_len);
+	opencpu_flash_erase(flash_block_addr,flash_block_len);
+	file_write_addr = (file_addr - file_content_start_addr)% flash_block_len;
+	memcpy(temp + file_write_addr,writeBuf,writeLen);
+	opencpu_flash_write(flash_block_addr,temp,flash_block_len);
 	
 	return BOAT_SUCCESS;
 }
