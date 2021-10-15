@@ -67,13 +67,16 @@ uint32_t random32(void)
 
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 {	
-	BOAT_RESULT result = BOAT_SUCCESS;
+	/* param check */
+	if (output == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
 
 	(void)rsvd;
 
-	random_buffer(output, outputLen);
-	
-	return result;
+	return random_buffer(output, outputLen);
 }
 
 
@@ -191,10 +194,8 @@ BOAT_RESULT  BoatWriteFile(const BCHAR *fileName,
 	FILE         *file_ptr;
 #endif
 	BSINT32      count = 0;
-	BOAT_RESULT  result = BOAT_SUCCESS;
 	
 	(void)rsvd;
-	result = result;
 	
 	if ((fileName == NULL) || (writeBuf == NULL))
 	{
@@ -246,10 +247,8 @@ BOAT_RESULT  BoatReadFile(const BCHAR *fileName,
 	FILE         *file_ptr;
 #endif
 	BSINT32      count = 0;
-	BOAT_RESULT  result = BOAT_SUCCESS;
 	
 	(void)rsvd;
-	result = result;
 	
 	if ((fileName == NULL) || (readBuf == NULL))
 	{

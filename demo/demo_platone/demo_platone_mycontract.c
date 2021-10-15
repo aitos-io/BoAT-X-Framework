@@ -198,7 +198,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
         return BOAT_ERROR;
     }
     result_str = BoatPlatoneGetNodesInfo(&tx_ctx,&result_out);
-    for (size_t i = 0; i < result_out.num; i++)
+    for (BSINT32 i = 0; i < result_out.num; i++)
     {
         /* code */
         printf( "node[%d] : IP[%s],port[%d]. \n",i,result_out.nodeInfo[i].IP,result_out.nodeInfo[i].rpcPort);

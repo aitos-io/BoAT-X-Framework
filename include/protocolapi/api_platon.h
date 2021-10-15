@@ -58,14 +58,14 @@ typedef struct TBoatPlatONRawtxFields
     BoatFieldMax32B nonce;        //!< nonce, uint256 in bigendian, equal to the transaction count of the sender's account address
     BoatFieldMax32B gasprice;     //!< gasprice in wei, uint256 in bigendian
     BoatFieldMax32B gaslimit;     //!< gaslimit, uint256 in bigendian
-    BUINT8 recipient[BOAT_ETH_ADDRESS_SIZE]; //!< recipient's address, 160 bits
+    BUINT8 recipient[BOAT_PLATON_ADDRESS_SIZE]; //!< recipient's address, 160 bits
     BoatFieldMax32B value;        //!< value to transfer, uint256 in bigendian
     BoatFieldVariable data;       //!< data to transfer, unformatted stream
     BoatFieldMax4B v;             //!< chain id or recovery identifier, @see RawtxPerform()
     BoatEthTxFieldSig sig;        //!< ECDSA signature, including r and s parts
     
     // PlatON specific fields are appended here.
-    BUINT8 recipientbech32[BOAT_PLATON_BECH32_ADDRESS_SIZE]; //!< recipient's address in PlatON's bech32 format, string
+    BCHAR recipientbech32[BOAT_PLATON_BECH32_ADDRESS_SIZE]; //!< recipient's address in PlatON's bech32 format, string
 }BoatPlatONRawtxFields;
 
 //! The only difference between PlatON transaction and Ethereum transaction is
@@ -79,7 +79,7 @@ typedef struct TBoatPlatONTx
 
     // rawtx_fields MUST be the last field
     BoatPlatONRawtxFields rawtx_fields;      //!< RAW transaction fields
-    BUINT8 address[BOAT_PLATON_BECH32_ADDRESS_SIZE]; //!< Wallet's address in PlatON's bech32 format, string
+    BCHAR address[BOAT_PLATON_BECH32_ADDRESS_SIZE]; //!< Wallet's address in PlatON's bech32 format, string
 }BoatPlatONTx;
 
 #ifdef __cplusplus
@@ -89,19 +89,22 @@ extern "C" {
 /*!****************************************************************************
  * @brief Get Balance of the wallet account
  *
- * @param[in] alt_address_str
- *   the target bech32 address, such as "lat10ulx8pmdnj7cnmr0m79fafczp2s3qaawy5aawh", string
+ * @param[in] hrp_str
+ *   for PlatON, it is "lat", for Alaya, it is "atp". string
  *   
- * @see BoatEthWalletGetBalance()
+ * @return
+ *   This function returns a HEX string representing the balance (Unit: von,\n
+ *   ) of the account.\n
+ *   If any error occurs, it returns NULL.
  ******************************************************************************/
-BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_address_ptr);
+BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, const BCHAR *hrp_str);
 
 
 /*!****************************************************************************
  * @brief Initialize a transaction
  *
  * @param[in] hrp_str
- *   for PlatON, it is "lat", for Alaya, it is "atp"
+ *   for PlatON, it is "lat", for Alaya, it is "atp". string
  * 
  * @see BoatEthTxInit()
  ******************************************************************************/

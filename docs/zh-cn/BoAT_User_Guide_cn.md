@@ -32,6 +32,7 @@ PlatON
 PlatONE  
 FISCO-BCOS  
 Hyperledger Fabric  
+Huawei BCS (华为链)  
 
 **支持的Target操作系统：**  
 Linux  
@@ -182,6 +183,7 @@ BOAT_PROTOCOL_USE_PLATON    ?= 1
 BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
+BOAT_PROTOCOL_USE_HWBCS     ?= 1
 ```
 根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁用相应的区块链协议。  
 ***注：由于PlatON，PlatONE和FISCO BCOS三个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能***  

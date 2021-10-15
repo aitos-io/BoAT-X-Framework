@@ -66,7 +66,7 @@ BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 
     BoatEthWalletSetEIP155Comp(wallet_ptr, config_ptr->eip155_compatibility);
 	
 	//Configure priKey context information
-    if(config_ptr->prikeyCtx_config.prikey_content.field_ptr != NULL)
+    // if(config_ptr->prikeyCtx_config.prikey_content.field_ptr != NULL)
     {
         if(BOAT_SUCCESS != BoatPort_keyCreate(&config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
         {

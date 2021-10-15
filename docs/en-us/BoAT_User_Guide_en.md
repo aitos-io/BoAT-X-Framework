@@ -32,6 +32,7 @@ PlatON<br>
 PlatONE<br>
 FISCO-BCOS<br>
 Hyperledger Fabric<br>
+Huawei BCS<br>
 
 **Supported Target Operating System:**  
 Linux<br>
@@ -191,6 +192,7 @@ BOAT_PROTOCOL_USE_PLATON    ?= 1
 BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
+BOAT_PROTOCOL_USE_HWBCS     ?= 1
 ````
 
 As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or while compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.  

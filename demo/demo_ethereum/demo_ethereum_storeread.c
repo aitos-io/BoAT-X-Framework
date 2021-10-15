@@ -235,7 +235,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
 
 int main(int argc, char *argv[])
 {
-    BOAT_RESULT  result  = BOAT_SUCCESS;
+    BOAT_RESULT result = BOAT_SUCCESS;
 
     /* step-1: Boat SDK initialization */
     BoatIotSdkInit();

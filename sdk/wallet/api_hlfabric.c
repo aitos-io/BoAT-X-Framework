@@ -318,7 +318,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr,
 	wallet_ptr->account_info.cert.field_len = 0;
 
 	/* prikey context assignment */
-	if (prikeyCtx_config.prikey_content.field_ptr != NULL)
+	// if (prikeyCtx_config.prikey_content.field_ptr != NULL)
 	{
 		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
 		{
