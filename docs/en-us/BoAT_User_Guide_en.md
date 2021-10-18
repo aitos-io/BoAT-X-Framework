@@ -392,7 +392,7 @@ When cross-compiling outside of Cygwin, in addition to the previous section, the
 
 ### Compile and Run Demo
 #### Ready
-SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS and fabric. Before running these demos, the corresponding blockchain node software is need to installed(or have known nodes) and deploy the smart contracts required by the demo.  
+SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, fabric and HW-BCS. Before running these demos, the corresponding blockchain node software is need to installed(or have known nodes) and deploy the smart contracts required by the demo.  
 
 The smart contract used by the demo and its ABI JSON file are placed in:  
 
@@ -444,16 +444,22 @@ Before compiling the Demo, you need to modify the following parts of the Demo C 
 - For FABRIC:  
 	1. Search for `fabric_client_demokey` and set the private key used by the client  
 	2. Search for `fabric_client_democert` and set the certificate corresponding to the client private key  
-	3. If TLS is enabled for the demo, search for `fabric_ca1_democert`, `fabric_ca2_democert`, `fabric_ca3_democert`, and set the CA certificate chain  
-	4. Search for `fabric_demo_endorser1_url`, `fabric_demo_endorser2_url`, `fabric_demo_order1_url`, and set the url address of the endorsement node and sorting node  
-	5. If TLS is enabled in the demo, search for `fabric_demo_endorser1_hostName`, `fabric_demo_endorser2_hostName`, `fabric_demo_order1_hostName` and set the host name of the node  
+	3. If TLS is enabled for the demo, search for `fabric_org1_tlsCert`, `fabric_org2_tlsCert`, `fabric_order_tlsCert`, and set the CA certificate chain  
+	4. Search for `fabric_demo_order1_url`, `fabric_demo_endorser_peer0Org1_url`, `fabric_demo_endorser_peer1Org1_url`, `fabric_demo_endorser_peer0Org2_url`, `fabric_demo_endorser_peer1Org2_url`, and set the url address of the endorsement node and sorting node  
+	5. If TLS is enabled in the demo, search for `fabric_demo_order1_hostName`, `fabric_demo_endorser_peer0Org1_hostName`, `fabric_demo_endorser_peer1Org1_hostName`, `fabric_demo_endorser_peer0Org2_hostName`, `fabric_demo_endorser_peer1Org2_hostName` and set the host name of the node  
+- For HW-BCS:  
+	1. Search for `hw_bcs_client_demokey` and set the private key used by the client  
+	2. Search for `hw_bcs_client_democert` and set the certificate corresponding to the client private key  
+	3. If TLS is enabled for the demo, search for `hw_bcs_org1_tlsCert`, `hw_bcs_org2_tlsCert`, and set the CA certificate chain  
+	4. Search for `hw_bcs_demo_endorser_peer0Org1_url`, `hw_bcs_demo_endorser_peer0Org2_url`, `hw_bcs_demo_order_url`, and set the url address of the endorsement node and sorting node  
+	5. If TLS is enabled in the demo, search for `hw_bcs_demo_endorser_peer0Org1_hostName`, `hw_bcs_demo_endorser_peer0Org2_hostName`, `hw_bcs_demo_order_hostName`and set the host name of the node  
 
 #### Compile Demo
 Execute the following commands in the \<SDKRoot\> directory to compile the SDK call Demo:  
 ````
 $make demo
 ````
-The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `platon` `fisco-bcos` `platone` `fabric`.
+The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `platon` `fisco-bcos` `platone` `fabric` `hwbcs`.
 
 
 ### Trouble Shooting in Compilation
@@ -883,7 +889,7 @@ BCHAR *result_str;
 result_str = StoreRead_saveList(&tx_ctx, (BUINT8 *)"HelloWorld");
 ```
 ### Manually Construct Contract Calls
-If the automatic generation tool cannot generate the C call interface, you need to manually construct the transaction message. In addition, because the Fabric invocation itself is so convenient that there is no need to use automatically generate interface tools, all contracts need to be invoked manually.
+If the automatic generation tool cannot generate the C call interface, you need to manually construct the transaction message. In addition, because the Fabric and hwbcs invocation itself is so convenient that there is no need to use automatically generate interface tools, all contracts need to be invoked manually.
 
 The manual construction of transactions needs to follow the ABI interface of the specific blockchain protocol.
 
@@ -980,17 +986,21 @@ The manual construction of transactions needs to follow the ABI interface of the
 
 **Example 3: Hyperledger Fabric transaction structure**  
 - **Step 1** Call BoatHlfabricTxInit() to initialize the transaction, The parameters are set based on actual usage.  
-  
-- **Step 2** Call BoatHlfabricTxSetTimestamp() to set timestamp, The real-time is obtained based on hardware functions.
 
-- **Step 3** Set trasaction parameters.  
+- **Step 2** If the node discovery function is not turned on,call BoatHlfabricWalletSetNetworkInfo() to set the newwork parameters. 
+  
+- **Step 3** Call BoatHlfabricTxSetTimestamp() to set timestamp, The real-time is obtained based on hardware functions.
+
+- **Step 4** If the node discovery function is turned on,call BoatHlfabricDiscoverySubmit() to get all the nodes information on current chain. 
+
+- **Step 5** Set trasaction parameters.  
   Examples of using demo_fabric_abac.c code:  
   ```
   result = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
   ```  
   All function call of Fabric's input data are string. In the above code, "invoke" is the function name in the ABAC chain code. "a", "b", and "10" are the corresponding three inputs to the function. Regardless of the type of the corresponding variable in the chain code, the shape of string is used as the input.This is why there is no need to use automatically generate the contract interface tool.  
 
-- **Step 4** Send the transaction.  
+- **Step 6** Send the transaction.  
   - For contract calls that change the state of the blockchain, call the BoatHlfabricTxSubmit function：
     ```
     BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr);
@@ -999,6 +1009,32 @@ The manual construction of transactions needs to follow the ABI interface of the
   - For contract calls that do not change the state of the blockchain, call the BoatHlfabricTxEvaluate contract function：
     ```
     BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr);
+    ```
+  When the return result is BOAT_SUCCESS, the call succeeds。
+
+**Example 4: HW BCS transaction structure**  
+- **Step 1** Call BoatHwbcsTxInit() to initialize the transaction, The parameters are set based on actual usage.  
+
+- **Step 2** Call BoatHwbcsWalletSetNetworkInfo() to set the newwork parameters. 
+  
+- **Step 3** Call BoatHwbcsTxSetTimestamp() to set timestamp, The real-time is obtained based on hardware functions.
+
+- **Step 4** Set trasaction parameters.  
+  Examples of using demo_hw_bcs.c code:  
+  ```
+  result = BoatHwbcsTxSetArgs(&tx_ptr, "initMarble", "a","1" , NULL, NULL);
+  ```  
+  All function call of Hwbcs's input data are string. In the above code, "initMarble" is the function name in the hw chain code. "a", "1" are the corresponding two inputs to the function. Regardless of the type of the corresponding variable in the chain code, the shape of string is used as the input.This is why there is no need to use automatically generate the contract interface tool.  
+
+- **Step 5** Send the transaction.  
+  - For contract calls that change the state of the blockchain, call the BoatHwbcsTxSubmit function：
+    ```
+    BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
+    ```
+
+  - For contract calls that do not change the state of the blockchain, call the BoatHwbcsTxEvaluate contract function：
+    ```
+    BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr);
     ```
   When the return result is BOAT_SUCCESS, the call succeeds。
 
