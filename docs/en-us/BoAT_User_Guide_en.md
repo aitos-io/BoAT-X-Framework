@@ -537,7 +537,7 @@ Before calling the SDK, you must call BoatIotSdkInit() to initialize the global 
 BOAT_RESULT BoatIotSdktInit(void);
 ````
 
-After the end of use, you should call BoatIotSdkDeInit() to release resources:
+If the SDK is no longer needed, call BoatIotSdkDeInit() to release resources:
 
 ````
 void BoatIotSdkDeInit(void);
