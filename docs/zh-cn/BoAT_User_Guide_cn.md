@@ -993,7 +993,7 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
     ```
     当返回的结果为BOAT_SUCCESS时，说明调用成功。
 
-**例3：HW-BCS交易构造**
+**例4：HW-BCS交易构造**
 - **步骤1** BoatHwbcsTxInit()进行交易初始化，其中参数根据实际使用进行设置。
 - **步骤2** 调用BoatHwbcsWalletSetNetworkInfo()进行网络参数设置。
 - **步骤3** 调用BoatHwbcsTxSetTimestamp()设置时间戳，实时时间通过硬件相应功能获取。
@@ -1002,7 +1002,7 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
     ```
     result = BoatHwbcsTxSetArgs(&tx_ptr, "initMarble", "a","1", NULL, NULL);
     ```
-    hwbcs所有的函数调用输入数据均为string类型。拿上述代码来说，"initMarble"是abac链码中的函数名。"a","1"均为该函数的相应的两个输入，不论链码中的相应变量是什么类型，均以string的形视作为输入。这也是不需要自动生成合约调用接口工具的原因。  
+    hwbcs所有的函数调用输入数据均为string类型。拿上述代码来说，"initMarble"是hw链码中的函数名。"a","1"均为该函数的相应的两个输入，不论链码中的相应变量是什么类型，均以string的形视作为输入。这也是不需要自动生成合约调用接口工具的原因。  
 - **步骤5** 发送交易。
   - 对于改变区块链状态的合约调用，调用BoatHwbcsTxSubmit函数：
     ```
