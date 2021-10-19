@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "qapi_socket.h"
 #include "include/netdb.h"
 #include "http_client.h"
 #include "qapi.h"

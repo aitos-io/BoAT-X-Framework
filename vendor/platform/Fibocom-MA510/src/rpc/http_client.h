@@ -33,6 +33,9 @@
 #include "wolfssl/internal.h"
 #endif
 
+
+
+
 typedef struct WOLFSSL_CTX WOLFSSL_CTX;
  typedef struct ssl_ctx {
 	WOLFSSL_CTX *wolf_ctx;
