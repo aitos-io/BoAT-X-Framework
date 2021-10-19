@@ -19,12 +19,13 @@
 #include "http_client.h"
 #include "qapi_socket.h"
 #include "stdio.h"
+//#include "include/netdb.h"
 
 
-#define sys_arch_printf OSI_PRINTFI
-#define DBG(x, arg...)  sys_arch_printf("[BOAT]"x,##arg)
-#define WARN(x, arg...) sys_arch_printf("[BOAT]"x,##arg)
-#define ERR(x, arg...)  sys_arch_printf("[BOAT]"x,##arg)
+#define sys_arch_printf QFLOG_MSG
+#define DBG(x, arg...)  sys_arch_printf(MSG_SSID_DFLT,MSG_MASK_2,"[DBG_http:]"x,##arg)
+#define WARN(x, arg...) sys_arch_printf(MSG_SSID_DFLT,MSG_MASK_2,"[WARN_http:]"x,##arg)
+#define ERR(x, arg...)  sys_arch_printf(MSG_SSID_DFLT,MSG_MASK_2,"[ERR_http:]"x,##arg)
 
 #define boat_sys_log DBG
 
