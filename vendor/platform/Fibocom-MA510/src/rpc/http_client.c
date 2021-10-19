@@ -218,7 +218,7 @@ int httpclient_parse_url(const char *url, char *scheme, size_t max_scheme_len, c
     {
         if (max_scheme_len < host_ptr - scheme_ptr + 1 ) 
         { /* including NULL-terminating char */
-            WARN("Scheme str is too small (%d >= %d)", max_scheme_len, host_ptr - scheme_ptr + 1);
+            //WARN("Scheme str is too small (%d >= %d)", max_scheme_len, host_ptr - scheme_ptr + 1);
             return HTTPCLIENT_ERROR_PARSE;
         }
         memcpy(scheme, scheme_ptr, host_ptr - scheme_ptr);
