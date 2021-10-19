@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#if defined(__unix__) || defined(__unix) || defined(unix)
-	/* for timestamp source */
-	#define _POSIX_C_SOURCE 200809L
-	#include <time.h>
-#endif
+
+#include <time.h>
 #include "boatconfig.h"
 #include "boatiotsdk.h"
 
