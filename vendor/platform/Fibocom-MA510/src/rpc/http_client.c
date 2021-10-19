@@ -17,10 +17,9 @@
  */
 
 #include "http_client.h"
-#include "qapi_socket.h"
+//#include "qapi_socket.h"
 #include "stdio.h"
-//#include "include/netdb.h"
-
+#include "include/netdb.h"
 
 #define sys_arch_printf QFLOG_MSG
 #define DBG(x, arg...)  sys_arch_printf(MSG_SSID_DFLT,MSG_MASK_2,"[DBG_http:]"x,##arg)
