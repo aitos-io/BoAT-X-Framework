@@ -127,7 +127,15 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	return BOAT_SUCCESS;
 }
 
+void get_time_string(char* time_buf)
+{
+	time_t rawtime;
+	struct tm *info;
 
+	time(&rawtime);
+	info = localtime(&rawtime);
+	strftime(time_buf, TIME_LEN, "%Y-%m-%d %H:%M:%S", info);	
+} 
 int main(int argc, char *argv[])
 {
 	BOAT_RESULT       result  = BOAT_SUCCESS;
