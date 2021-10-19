@@ -16,10 +16,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
+#include <stdio.h>
+#include <string.h>
+#include "include/netdb.h"
 #include "http_client.h"
 //#include "qapi_socket.h"
-#include "stdio.h"
-#include "include/netdb.h"
 
 #define sys_arch_printf QFLOG_MSG
 #define DBG(x, arg...)  sys_arch_printf(MSG_SSID_DFLT,MSG_MASK_2,"[DBG_http:]"x,##arg)
@@ -108,7 +110,7 @@ int strncasecmp(const char *str1, const char *str2, size_t len)
     }
     
     str1_len = strlen(str1);
-    str2_len = strlen(str2);
+    str2_len = (int)strlen(str2);
     
     compare_len = str1_len < str2_len ? str1_len : str2_len;
     compare_len = len < compare_len ? len : compare_len;
