@@ -21,6 +21,10 @@
 BCHAR str_value[90] = {"file_"};
 BCHAR time_buf[TIME_LEN]  = {0};
 BCHAR file_hash[33] = {0};
+
+BCHAR *key1 = "time";
+BCHAR *key2 = "file_hash";
+BCHAR *key3 = "file_name";
 const BCHAR * chainmaker_user_sign_key  = "-----BEGIN EC PRIVATE KEY-----\n"
 										  "MHcCAQEEIM+5FVFBOHIUeUDH2wOkC4Fn6FnMsLHz0SOTreQKz1bDoAoGCCqGSM49\n"
 										  "AwEHoUQDQgAED88H7OwVPitBf2NjCH2ZRM0L9k3csW9nq5qFbyAOSsM+ppi0qrFV\n"
