@@ -25,11 +25,11 @@ BCHAR file_hash[33] = {0};
 BCHAR *key1 = "time";
 BCHAR *key2 = "file_hash";
 BCHAR *key3 = "file_name";
-const BCHAR * chainmaker_user_sign_key  = "-----BEGIN EC PRIVATE KEY-----\n"
-										  "MHcCAQEEIM+5FVFBOHIUeUDH2wOkC4Fn6FnMsLHz0SOTreQKz1bDoAoGCCqGSM49\n"
-										  "AwEHoUQDQgAED88H7OwVPitBf2NjCH2ZRM0L9k3csW9nq5qFbyAOSsM+ppi0qrFV\n"
-										  "+mcQcGEP4H/VTMxWZCmnVZ7a5d+JQt42OQ==\n"
-										  "-----END EC PRIVATE KEY-----\n";
+const BCHAR * chainmaker_user_sign_key  ="-----BEGIN EC PRIVATE KEY-----\n"
+"MHcCAQEEIGAsHq9vdQSPywbdy0vBEzWexkMwjtO0jjn7aiSoPZZKoAoGCCqGSM49\n"
+"AwEHoUQDQgAE5lSVTF90J60bc8U2MNyYzmS1f7Ez1jOUXNXrakbHU6ZRWmZpAswb\n"
+"mhWkOfpEWBoegtGdPgIeIJX8z8KT7RL1YQ==\n"
+"-----END EC PRIVATE KEY-----\n";
 
 
 const BCHAR * chainmaker_user_sign_cert = "-----BEGIN CERTIFICATE-----\n"
