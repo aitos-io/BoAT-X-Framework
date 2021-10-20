@@ -36,8 +36,8 @@
 
 
 
-BOAT_RESULT  BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 inputLen, 
-				      BUINT8 *hashed, BUINT8 *hashedLen, void *rsvd )
+BOAT_RESULT BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 inputLen, 
+				     BUINT8 *hashed, BUINT8 *hashedLen, void *rsvd)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
