@@ -68,7 +68,7 @@ const BCHAR * chainmaker_root_ca_cert =  "-----BEGIN CERTIFICATE-----\n"
 										 "-----END CERTIFICATE-----\n";
 
 
-const BCHAR *chainmaker_consensus_url       = "127.0.0.1:12301";
+const BCHAR *chainmaker_consensus_url       = "127.0.0.1:12302";
 const BCHAR *chainmaker_consensus_hostName  = "chainmaker.org";
 
 BoatChainmakerWalletConfig *g_chaninmaker_wallet_ptr;
