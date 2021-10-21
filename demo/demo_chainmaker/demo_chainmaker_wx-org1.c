@@ -49,24 +49,23 @@ const BCHAR * chainmaker_user_sign_cert = "-----BEGIN CERTIFICATE-----\n"
 "-----END CERTIFICATE-----\n";
 
 
-const BCHAR * chainmaker_root_ca_cert =  "-----BEGIN CERTIFICATE-----\n"
-										 "MIICrzCCAlWgAwIBAgIDDsPeMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
-										 "MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
-										 "b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-										 "ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIwMTIwODA2NTM0M1oXDTMw\n"
-										 "MTIwNjA2NTM0M1owgYoxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
-										 "DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
-										 "MRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMTGWNhLnd4LW9yZzEuY2hhaW5t\n"
-										 "YWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAT7NyTIKcjtUVeMn29b\n"
-										 "GKeEmwbefZ7g9Uk5GROl+o4k7fiIKNuty1rQHLQUvAvkpxqtlmOpPOZ0Qziu6Hw6\n"
-										 "hi19o4GnMIGkMA4GA1UdDwEB/wQEAwIBpjAPBgNVHSUECDAGBgRVHSUAMA8GA1Ud\n"
-										 "EwEB/wQFMAMBAf8wKQYDVR0OBCIEIDUkP3EcubfENS6TH3DFczH5dAnC2eD73+wc\n"
-										 "UF/bEIlnMEUGA1UdEQQ+MDyCDmNoYWlubWFrZXIub3Jngglsb2NhbGhvc3SCGWNh\n"
-										 "Lnd4LW9yZzEuY2hhaW5tYWtlci5vcmeHBH8AAAEwCgYIKoZIzj0EAwIDSAAwRQIg\n"
-										 "ar8CSuLl7pA4Iy6ytAMhR0kzy0WWVSElc+koVY6pF5sCIQCDs+vTD/9V1azmbDXX\n"
-										 "bjoWeEfXbFJp2X/or9f4UIvMgg==\n"
-										 "-----END CERTIFICATE-----\n";
-
+const BCHAR * chainmaker_root_ca_cert =  ----BEGIN CERTIFICATE-----\n"
+"MIICnTCCAkOgAwIBAgICafcwCgYIKoZIzj0EAwIwgYoxCzAJBgNVBAYTAkNOMRAw\n"
+"DgYDVQQIEwdCZWlqaW5nMRAwDgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1v\n"
+"cmcxLmNoYWlubWFrZXIub3JnMRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMT\n"
+"GWNhLnd4LW9yZzEuY2hhaW5tYWtlci5vcmcwHhcNMjExMTA3MTUzMTQ2WhcNMzEx\n"
+"MTA1MTUzMTQ2WjCBijELMAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaWppbmcxEDAO\n"
+"BgNVBAcTB0JlaWppbmcxHzAdBgNVBAoTFnd4LW9yZzEuY2hhaW5tYWtlci5vcmcx\n"
+"EjAQBgNVBAsTCXJvb3QtY2VydDEiMCAGA1UEAxMZY2Eud3gtb3JnMS5jaGFpbm1h\n"
+"a2VyLm9yZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABMRD6zki7fZP1BiGj0g+\n"
+"A94SbxIkDvntlRSO6HLqvJMG8jn4Ur4RwplvOkVz1jbD9WVRVPY7O91XiyU5ov+t\n"
+"f0WjgZYwgZMwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wKQYDVR0O\n"
+"BCIEIKHQDgYZIdDzDcmdr5v7yrR52mzecWHmdaWmUVerWnaVMEUGA1UdEQQ+MDyC\n"
+"DmNoYWlubWFrZXIub3Jngglsb2NhbGhvc3SCGWNhLnd4LW9yZzEuY2hhaW5tYWtl\n"
+"ci5vcmeHBH8AAAEwCgYIKoZIzj0EAwIDSAAwRQIgXeECA7tcPFd9BpkcSCGelV25\n"
+"5fJDVQiRTGyg79MfxncCIQDTP3z3L84lrwe+YxppKyFS9ISSOA0EUc4o+/RdoGi8\n"
+"aQ==\n"
+"-----END CERTIFICATE-----\n";
 
 const BCHAR *chainmaker_consensus_url       = "127.0.0.1:12302";
 const BCHAR *chainmaker_consensus_hostName  = "chainmaker.org";
