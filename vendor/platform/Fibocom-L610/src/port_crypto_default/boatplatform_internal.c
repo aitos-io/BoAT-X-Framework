@@ -76,7 +76,9 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 
 	(void)rsvd;
 
-	return random_buffer(output, outputLen);
+	random_buffer(output, outputLen)
+
+	return BOAT_SUCCESS;
 }
 
 BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
