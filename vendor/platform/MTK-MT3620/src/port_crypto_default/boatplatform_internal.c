@@ -107,7 +107,7 @@ BOAT_RESULT  BoatRandom(BUINT8* output, BUINT32 outputLen, void* rsvd)
 
 	(void)rsvd;
 
-	return random_buffer(output, outputLen);
+	return random_stream(output, outputLen);
 }
 
 
