@@ -76,11 +76,11 @@ BoatChainmakerWalletConfig *g_chaninmaker_wallet_ptr;
 void chainmaker_set_node_info(BoatChainmakerNode *node)
 {
 	int length; 
-	node->addr = BoatMalloc(strlen(chainmaker_consensus_url)+1);
-	memcpy(node.addr, chainmaker_consensus_url, strlen(chainmaker_consensus_url)+1);
+	node->addr = BoatMalloc(strlen(chainmaker_consensus_url));
+	memcpy(node.addr, chainmaker_consensus_url, strlen(chainmaker_consensus_url));
 
-	node->tlsHostName = BoatMalloc(strlen(chainmaker_consensus_hostName)+1);
-	memcpy(node.tlsHostName, chainmaker_consensus_hostName, strlen(chainmaker_consensus_hostName)+1);
+	node->tlsHostName = BoatMalloc(strlen(chainmaker_consensus_hostName));
+	memcpy(node.tlsHostName, chainmaker_consensus_hostName, strlen(chainmaker_consensus_hostName));
 
 	node->useTLS = TRUE;
 	node->connCnt = 10;
