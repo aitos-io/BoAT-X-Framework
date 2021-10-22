@@ -8,7 +8,7 @@
 
 @    /* Define application-specific start/stop entry points for the module.  */
 
-    .extern test_dam_app_start
+    .extern fibocom_task_entry
 
 
 @    /* Define common external refrences.  */
@@ -46,7 +46,7 @@ _txm_module_preamble:
 																   @		   1 -> MMU protection Enabled
         .word       _txm_module_thread_shell_entry - . + .            @ Module Shell Entry Point
 		.p2align 2
-        .word       test_dam_app_start - . + .                         @ Module Start Thread Entry Point
+        .word       fibocom_task_entry - . + .                         @ Module Start Thread Entry Point
 		.p2align 2
         .word       0                                                 @ Module Stop Thread Entry Point 
 		.p2align 2
