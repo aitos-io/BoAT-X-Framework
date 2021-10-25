@@ -14,18 +14,10 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <time.h>
 #include "boatconfig.h"
 #include "boatiotsdk.h"
-#define TIME_LEN 80
-BCHAR str_value[90] = {"file_"};
-BCHAR time_buf[TIME_LEN]  = {0};
-BCHAR file_hash[33] = {0};
-
 #define RANDOM 16
-BCHAR *key1 = "time";
-BCHAR *key2 = "file_hash";
-BCHAR *key3 = "file_name";
+
 const BCHAR * chainmaker_user_sign_key  ="-----BEGIN EC PRIVATE KEY-----\n"
 "MHcCAQEEIGAsHq9vdQSPywbdy0vBEzWexkMwjtO0jjn7aiSoPZZKoAoGCCqGSM49\n"
 "AwEHoUQDQgAE5lSVTF90J60bc8U2MNyYzmS1f7Ez1jOUXNXrakbHU6ZRWmZpAswb\n"
