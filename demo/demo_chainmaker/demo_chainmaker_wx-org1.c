@@ -22,6 +22,7 @@ BCHAR str_value[90] = {"file_"};
 BCHAR time_buf[TIME_LEN]  = {0};
 BCHAR file_hash[33] = {0};
 
+#define RANDOM 16
 BCHAR *key1 = "time";
 BCHAR *key2 = "file_hash";
 BCHAR *key3 = "file_name";
@@ -88,11 +89,11 @@ BoatTransactionPara get_invoke_para()
 {
 	//randrom generate
 	BoatFieldMax16B  random_data;
-	random_data.field_len = 16;
+	random_data.field_len = RANDOM;
 	BoatRandom(random_data.field, random_data.field_len, NULL);
 
 	get_time_string(time_buf);
-	array_to_str(random_data.field ,file_hash, 16);
+	array_to_str(random_data.field ,file_hash, RANDOM);
 	
 	BoatTransactionPara transaction_para;
 	transaction_para.n_parameters = 3;
