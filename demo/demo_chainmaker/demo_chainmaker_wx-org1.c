@@ -85,29 +85,7 @@ void chainmaker_set_node_info(BoatChainmakerNode *node)
 	node->useTLS = TRUE;
 	node->connCnt = 10;
 }
-BoatTransactionPara get_invoke_para()
-{
-	//randrom generate
-	BoatFieldMax16B  random_data;
-	random_data.field_len = RANDOM;
-	BoatRandom(random_data.field, random_data.field_len, NULL);
 
-	get_time_string(time_buf);
-	array_to_str(random_data.field ,file_hash, RANDOM);
-	
-	BoatTransactionPara transaction_para;
-	transaction_para.n_parameters = 3;
-	transaction_para.parameters = BoatMalloc(transaction_para.n_parameters * sizeof(BoatKeyValuePair));
-
-	transaction_para.parameters[0].key   = key1;
-	transaction_para.parameters[0].value = time_buf;
-	transaction_para.parameters[1].key   = key2;
-	transaction_para.parameters[1].value = file_hash;;
-	transaction_para.parameters[2].key   = key3;
-	transaction_para.parameters[2].value = strcat(str_value, time_buf);
-	
-	return transaction_para;
-}
 __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 {
 	BOAT_RESULT index;
