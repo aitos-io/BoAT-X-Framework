@@ -71,36 +71,25 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 {
 	BOAT_RESULT index;
 
-	BoatChainmakerWalletConfig wallet_config = {0};
-	//set clinet private key context
-	wallet_config.user_pri_key_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-	wallet_config.user_pri_key_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
-	wallet_config.user_pri_key_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-	wallet_config.user_pri_key_config.prikey_content.field_ptr = (BUINT8 *)chainmaker_user_key;
-	wallet_config.user_pri_key_config.prikey_content.field_len = strlen(chainmaker_user_key) + 1; //length contain terminator
+	//set user private key context
+	wallet_config.user_prikey_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+	wallet_config.user_prikey_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
+	wallet_config.user_prikey_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+	wallet_config.user_prikey_config.prikey_content.field_ptr = (BUINT8 *)chainmaker_user_key;
+	wallet_config.user_prikey_config.prikey_content.field_len = strlen(chainmaker_user_key) + 1; 
 
-	//set clinet cert context
-	wallet_config.user_cert_content.length = strlen(chainmaker_user_cert) + 1;
+	//set user cert context
+	wallet_config.user_cert_content.length = strlen(chainmaker_user_cert);
 	memcpy(wallet_config.user_cert_content.content, chainmaker_user_cert, wallet_config.user_cert_content.length);
-
-	//set tls key context
-	wallet_config.user_sign_pri_key_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-	wallet_config.user_sign_pri_key_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
-	wallet_config.user_sign_pri_key_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-	wallet_config.user_sign_pri_key_config.prikey_content.field_ptr = (BUINT8 *)chainmaker_user_sign_key;
-	wallet_config.user_sign_pri_key_config.prikey_content.field_len = strlen(chainmaker_user_sign_key) + 1; //length contain terminator
-
-	//set tls cert context
-	wallet_config.user_sign_cert_content.length = strlen(chainmaker_user_sign_cert) + 1;
-	memcpy(wallet_config.user_sign_cert_content.content, chainmaker_user_sign_cert, wallet_config.user_sign_cert_content.length);
-
-	if (strlen(chainmaker_root_ca_cert) < BOAT_HLFABRIC_CERT_MAX_LEN)
-	{
-		memcpy(wallet_config.roo_ca_cert, chainmaker_root_ca_cert, strlen(chainmaker_root_ca_cert));	
-	}
-	chainmaker_set_node_info(&wallet_config.node_info);
 	
-	/* create fabric wallet */
+	//set url and name
+    wallet_config.node_cfg.node_url  = chainmaker_node_url;
+    wallet_config.node_cfg.host_name = chainmaker_host_name;
+
+	//tls ca cert
+	wallet_config.node_cfg.org_tls_ca_cert.length = strlen(chainmaker_tls_ca_cert);
+	memcpy(wallet_config.node_cfg.org_tls_ca_cert.content, chainmaker_tls_ca_cert, wallet_config.node_cfg.org_tls_ca_cert.length);
+
 	// create wallet
 #if defined(USE_ONETIME_WALLET)
 	index = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
@@ -111,14 +100,20 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 #else
 	return BOAT_ERROR;
 #endif
-	if(index == BOAT_ERROR)
+	if (index == BOAT_ERROR)
 	{
-		//BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );
 		return BOAT_ERROR;
 	}
+	
 	g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(index);
+	if (g_chaninmaker_wallet_ptr == NULL)
+	{
+		return BOAT_ERROR;
+	}
+
 	return BOAT_SUCCESS;
 }
+
 
 void get_time_string(char* time_buf)
 {
