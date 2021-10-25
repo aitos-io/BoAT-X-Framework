@@ -142,8 +142,16 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	chainmaker_set_node_info(&wallet_config.node_info);
 	
 	/* create fabric wallet */
-	index = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatChainmakerWalletConfig));
-
+	// create wallet
+#if defined(USE_ONETIME_WALLET)
+	index = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
+#elif defined(USE_CREATE_PERSIST_WALLET)
+	index = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, "chainmaker.cfg", &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
+#elif defined(USE_LOAD_PERSIST_WALLET)
+	index = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, "chainmaker.cfg", NULL, sizeof(BoatHlchainmakerWalletConfig));
+#else
+	return BOAT_ERROR;
+#endif
 	if(index == BOAT_ERROR)
 	{
 		//BoatLog( BOAT_LOG_CRITICAL, "fabricWalletPrepare failed." );
