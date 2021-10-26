@@ -138,7 +138,7 @@ endif
 # The valid option value of SOFT_CRYPTO list as below:
 # - CRYPTO_DEFAULT      : default soft crypto algorithm
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
-# SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+#SOFT_CRYPTO ?= CRYPTO_DEFAULT
 
 ifeq ($(PLATFORM_TARGET), linux-default)
     SOFT_CRYPTO ?= CRYPTO_MBEDTLS
