@@ -43,16 +43,10 @@
 #endif
 #include <sys/time.h>
 
-// Qualcomm include
-#include "qapi_uart.h"
-#include "qapi_timer.h"
-#include "qapi_diag.h"
-#include "qapi_fs.h"
-#include "qapi_uart.h"
 
 // fibocom include
 #include "qapi_fibocom.h"
-
+#include "qapi_fs.h"
 
 #if (PROTOCOL_USE_HLFABRIC == 1)
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)

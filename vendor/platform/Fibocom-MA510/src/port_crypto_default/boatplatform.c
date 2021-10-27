@@ -38,11 +38,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "qapi_diag.h"
-#include "qflog_utils.h"
-#include "qapi_types.h"
 #include "qapi_fibocom.h"
-#include "qapi_timer.h"
 
 TX_BYTE_POOL *byte_pool_test;
 
