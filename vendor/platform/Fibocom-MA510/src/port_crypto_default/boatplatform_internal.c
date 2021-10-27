@@ -65,6 +65,26 @@
 
 #define GENERATE_KEY_REPEAT_TIMES	100
 
+
+uint32_t random32(void)
+{
+	
+	static uint32_t seed = 0;
+	// Linear congruential generator from Numerical Recipes
+	// https://en.wikipedia.org/wiki/Linear_congruential_generator
+	seed = 1664525 * seed + 1013904223;
+	
+/*
+	static uint32_t seed = 0;
+
+	uint16_t *random_ptr=(uint16_t *)&seed;
+
+	qapi_fibo_random_data_get(1,random_ptr);
+	qapi_fibo_random_data_get(1,random_ptr+1);
+*/
+	return seed;
+}
+
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 {	
 	BOAT_RESULT result = BOAT_SUCCESS;
