@@ -24,6 +24,7 @@
 #include "http_client.h"
 #include "qapi.h"
 #include "qflog_utils.h"
+#include "qapi_timer.h"
 
 
 
@@ -777,7 +778,8 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
                         } 
                         else 
                         {
-                            osiDelayUS(1000);
+                            //osiDelayUS(1000);
+                            qapi_Timer_Sleep(1000,QAPI_TIMER_UNIT_USEC,true);
                             continue;
                         }
                     } 
