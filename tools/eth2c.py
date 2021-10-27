@@ -447,6 +447,18 @@ class CFunctionGen():
             i += 1
         
         return False
+    
+    def is_Change_Blockchain_State(self, abi_item):
+        if ('constant' in abi_item):
+            if abi_item['constant'] == True:
+                return True
+            else:
+                return False
+        else:
+            if (abi_item['stateMutability'] == 'nonpayable') or (abi_item['stateMutability'] == 'payable'):
+                return False
+            else:
+                return True
 
     def get_input_type(self, abi_item):
         if abi_item in type_mapping:
@@ -766,16 +778,10 @@ class CFunctionGen():
         inputName_str = ''
 
         # Generate local variables
-        if ('constant' in abi_item):
-            if abi_item['constant'] == True:
-                func_body_str += '    BCHAR *call_result_str = NULL;\n'
-            else:
-                func_body_str += '    static BCHAR tx_hash_str[67] = \"\";\n'
+        if self.is_Change_Blockchain_State(abi_item):
+            func_body_str += '    BCHAR *call_result_str = NULL;\n'
         else:
-            if abi_item['stateMutability'] == 'nonpayable':
-                func_body_str += '    static BCHAR tx_hash_str[67] = \"\";\n'
-            else:
-                func_body_str += '    BCHAR *call_result_str = NULL;\n'
+            func_body_str += '    static BCHAR tx_hash_str[67] = \"\";\n'
 
         func_body_str += '    BoatFieldVariable data_field = {NULL, 0};\n'
         func_body_str += '    BCHAR *function_prototye_str;\n'
@@ -820,13 +826,9 @@ class CFunctionGen():
         func_body_str     += '    }\n\n'
 
         # Set Nonce
-        if ('constant' in abi_item):
-            if abi_item['constant'] == False:
-                func_body_str += '    boat_try(BoatEthTxSetNonce(tx_ptr, BOAT_ETH_NONCE_AUTO));\n\n'
-        else:
-            if abi_item['stateMutability'] == 'nonpayable':
-                func_body_str += '    boat_try(BoatEthTxSetNonce(tx_ptr, BOAT_ETH_NONCE_AUTO));\n\n'
-            
+        if not self.is_Change_Blockchain_State(abi_item):
+            func_body_str += '    boat_try(BoatEthTxSetNonce(tx_ptr, BOAT_ETH_NONCE_AUTO));\n\n'
+
         # Extract solidity function inputs
         inputs_len = len(inputs)
         nonFixed_filedLen_str = self.gen_nonFixed_mallocSize_exp(abi_item, 27)
@@ -1012,25 +1014,14 @@ class CFunctionGen():
                 func_body_str += '    }\n\n'
             i = i + 1
 
-        if ('constant' in abi_item):
-            if abi_item['constant'] == True:
-                # for state-less funciton call
-                func_body_str += '    call_result_str = BoatEthCallContractFunc(tx_ptr, function_prototye_str, data_field.field_ptr+4, data_field.field_len-4);\n\n'
-            else:
-                # for stateful transaction
-                func_body_str += '    boat_try(BoatEthTxSetData(tx_ptr, &data_field));\n\n'
-                func_body_str += '    boat_try(BoatEthTxSend(tx_ptr));\n\n'
-                func_body_str += '    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
+        if self.is_Change_Blockchain_State(abi_item):
+            func_body_str += '    call_result_str = BoatEthCallContractFunc(tx_ptr, function_prototye_str, data_field.field_ptr+4, data_field.field_len-4);\n\n'
         else:
-            if abi_item['stateMutability'] == 'nonpayable':
-                # for stateful transaction
-                func_body_str += '    boat_try(BoatEthTxSetData(tx_ptr, &data_field));\n\n'
-                func_body_str += '    boat_try(BoatEthTxSend(tx_ptr));\n\n'
-                func_body_str += '    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
-            else:
-                # for state-less funciton call
-                func_body_str += '    call_result_str = BoatEthCallContractFunc(tx_ptr, function_prototye_str, data_field.field_ptr+4, data_field.field_len-4);\n\n'
-        
+            # for stateful transaction
+            func_body_str += '    boat_try(BoatEthTxSetData(tx_ptr, &data_field));\n\n'
+            func_body_str += '    boat_try(BoatEthTxSend(tx_ptr));\n\n'
+            func_body_str += '    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
+
         # Cleanup Label
         func_body_str += '''
     boat_catch(cleanup)
@@ -1045,16 +1036,10 @@ class CFunctionGen():
 
         func_body_str += '\n    BoatFree(data_field.field_ptr);\n'
 
-        if ('constant' in abi_item):
-            if abi_item['constant'] == True:
-                func_body_str += '    return(call_result_str);\n'
-            else:
-                func_body_str += '    return(tx_hash_str);\n'
+        if self.is_Change_Blockchain_State(abi_item):
+            func_body_str += '    return(call_result_str);\n'
         else:
-            if abi_item['stateMutability'] == 'nonpayable':
-                func_body_str += '    return(tx_hash_str);\n'
-            else:
-                func_body_str += '    return(call_result_str);\n'
+            func_body_str += '    return(tx_hash_str);\n'
 
         func_body_str += '\n}\n\n'
         self.c_file_content += func_body_str
