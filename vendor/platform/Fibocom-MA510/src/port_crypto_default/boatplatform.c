@@ -101,7 +101,7 @@ void *data_malloc(uint32_t size)
 
   if (TX_SUCCESS != status)
   {
-    LOG_ERROR("DAM_APP:Failed to allocate memory with %d", status); 
+   	BoatLog(BOAT_LOG_CRITICAL,"DAM_APP:Failed to allocate memory with %d", status); 
     return NULL;
   }
 
@@ -127,7 +127,7 @@ void data_free(void *data)
   
   if (TX_SUCCESS != status)
   {
-    LOG_ERROR("DAM_APP:Failed to release memory with %d", status); 
+    BoatLog(BOAT_LOG_CRITICAL,"DAM_APP:Failed to release memory with %d", status); 
   }
 
   data = NULL;
