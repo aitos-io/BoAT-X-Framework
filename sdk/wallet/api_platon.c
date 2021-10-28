@@ -279,6 +279,24 @@ BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BUINT8 address[BOAT_P
     return BOAT_SUCCESS;    
 }
 
+BOAT_RESULT BoatPlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr)
+{
+    BOAT_RESULT result = BOAT_ERROR;
+
+    result = PlatONSendRawtx(tx_ptr);
+
+    if (result == BOAT_SUCCESS)
+    {
+        result = BoatPlatONGetTransactionReceipt(tx_ptr);
+    }
+	else
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "PlatONSendRawtx failed.");
+	}
+
+    return result;
+}
+
 BOAT_RESULT BoatPlatONTxSend(BoatPlatONTx *tx_ptr)
 {
     BOAT_RESULT result;
@@ -295,7 +313,7 @@ BOAT_RESULT BoatPlatONTxSend(BoatPlatONTx *tx_ptr)
     }
     else
     {
-        result = PlatONSendRawtxWithReceipt(tx_ptr);
+        result = BoatPlatONSendRawtxWithReceipt(tx_ptr);
     }
     
     return result;

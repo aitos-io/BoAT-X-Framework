@@ -84,26 +84,6 @@ extern "C" {
  ******************************************************************************/
 BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr);
 
-
-
-/*!****************************************************************************
- * @brief Construct a raw PlatON transaction synchronously.
- *
- * @details
- *   This function is similar to PlatONSendRawtx except that it waits for the
- *   transaction being mined.
- *   
- * @param[in] tx_ptr
- *   A pointer to the context of the transaction.
- *
- * @return
- *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
- *   of the error codes.
- *	
- * @see PlatONSendRawtx() BoatPlatONGetTransactionReceipt() 
-*******************************************************************************/
-BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr);
-
 /*!****************************************************************************
  * @brief Encode the Bech32 address of PlatON.
  *
