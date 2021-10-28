@@ -543,21 +543,6 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
 }
 
 
-BOAT_RESULT PlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr)
-{
-    BOAT_RESULT result = BOAT_ERROR;
-
-    result = PlatoneSendRawtx(tx_ptr);
-
-    if (result == BOAT_SUCCESS)
-    {
-        result = BoatPlatoneGetTransactionReceipt(tx_ptr);
-    }
-
-    return result;
-}
-
-
 int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
 {
     const cJSON *resolution = NULL;
