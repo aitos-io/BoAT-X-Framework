@@ -490,6 +490,23 @@ BOAT_RESULT BoatEthTxSetGasLimit(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_limit_p
  ******************************************************************************/
 BOAT_RESULT BoatEthTxSetRecipient(BoatEthTx *tx_ptr, BUINT8 address[BOAT_ETH_ADDRESS_SIZE]);
 
+/*!****************************************************************************
+ * @brief Construct a raw ethereum transaction synchronously.
+ *
+ * @details
+ *   This function is similar to EthSendRawtx except that it waits for the
+ *   transaction being mined.
+ *   
+ * @param[in] tx_ptr
+ *   A pointer to the context of the transaction.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
+ *   of the error codes.
+ *	
+ * @see EthSendRawtx() BoatEthGetTransactionReceipt() 
+*******************************************************************************/
+BOAT_RESULT BoatEthSendRawtxWithReceipt(BOAT_INOUT BoatEthTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief Set Transaction Parameter: Value

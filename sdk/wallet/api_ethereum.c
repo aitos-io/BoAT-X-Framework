@@ -490,6 +490,24 @@ BOAT_RESULT BoatEthTxSetRecipient(BoatEthTx *tx_ptr, BUINT8 address[BOAT_ETH_ADD
     return BOAT_SUCCESS;    
 }
 
+BOAT_RESULT BoatEthSendRawtxWithReceipt(BOAT_INOUT BoatEthTx *tx_ptr)
+{
+    BOAT_RESULT result = BOAT_ERROR;
+
+    result = EthSendRawtx(tx_ptr);
+
+    if (result == BOAT_SUCCESS)
+    {
+        result = BoatEthGetTransactionReceipt(tx_ptr);
+    }
+	else
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "EthSendRawtx failed.");
+	}
+
+    return result;
+}
+
 
 BOAT_RESULT BoatEthTxSetValue(BoatEthTx *tx_ptr, BoatFieldMax32B *value_ptr)
 {
@@ -560,7 +578,7 @@ BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr)
     }
     else
     {
-        result = EthSendRawtxWithReceipt(tx_ptr);
+        result = BoatEthSendRawtxWithReceipt(tx_ptr);
     }
     
     return result;
