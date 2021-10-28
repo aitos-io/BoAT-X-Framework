@@ -103,9 +103,9 @@ const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
 #ifdef BOAT_TEST
 BOAT_RESULT platone_createOnetimeWallet()
 {
-    xy_printf("Ready to run platone_createOnetimeWallet1.\n");
-    xy_printf("Ready to run platone_createOnetimeWallet2.\n");
-    xy_printf("Ready to run platone_createOnetimeWallet3.\n");
+    BoatLog(BOAT_LOG_NORMAL,"Ready to run platone_createOnetimeWallet1.\n");
+    BoatLog(BOAT_LOG_NORMAL,"Ready to run platone_createOnetimeWallet2.\n");
+    BoatLog(BOAT_LOG_NORMAL,"Ready to run platone_createOnetimeWallet3.\n");
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]               = {0};
@@ -146,7 +146,7 @@ BOAT_RESULT platone_createOnetimeWallet()
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet_config, sizeof(BoatPlatoneWalletConfig));
     if (index == BOAT_ERROR)
 	{
-        xy_printf("create one-time wallet failed.\n");
+        BoatLog(BOAT_LOG_CRITICAL,"create one-time wallet failed.\n");
         return BOAT_ERROR;
     }
 
