@@ -490,18 +490,4 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     return result;
 }
 
-
-BOAT_RESULT FiscobcosSendRawtxWithReceipt(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
-{
-    BOAT_RESULT result = BOAT_ERROR;
-
-    result = FiscobcosSendRawtx(tx_ptr);
-
-    if (result == BOAT_SUCCESS)
-    {
-        result = BoatFiscobcosGetTransactionReceipt(tx_ptr);
-    }
-
-    return result;
-}
 #endif /* end of PROTOCOL_USE_FISCOBCOS */

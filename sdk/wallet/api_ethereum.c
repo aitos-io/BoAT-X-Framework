@@ -245,11 +245,20 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
     return tx_balance_str;
 }
 
+BOAT_RESULT BoatEthPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
+{
+    return web3_parse_json_result(json_string, NULL, result_out);
+}
 
 BOAT_RESULT BoatEthPraseRpcResponseResult(const BCHAR *json_string, 
 										  const BCHAR *child_name, 
 										  BoatFieldVariable *result_out)
 {
+    if (child_name == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
 	return web3_parse_json_result(json_string, child_name, result_out);
 }
 
@@ -367,8 +376,8 @@ BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce)
 		tx_count_str = web3_getTransactionCount(tx_ptr->wallet_ptr->web3intf_context_ptr,
 												tx_ptr->wallet_ptr->network_info.node_url_ptr,
 												&param_eth_getTransactionCount);
-		result = BoatEthPraseRpcResponseResult(tx_count_str, "", 
-											   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+		result = BoatEthPraseRpcResponseStringResult(tx_count_str,
+											         &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS)
         { 
             BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
@@ -419,8 +428,8 @@ BOAT_RESULT BoatEthTxSetGasPrice(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_price_p
             return BOAT_ERROR_RPC_FAILED;
         }
 
-        result = BoatEthPraseRpcResponseResult(gas_price_from_net_str, "", 
-											   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+        result = BoatEthPraseRpcResponseStringResult(gas_price_from_net_str,
+											         &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result == BOAT_SUCCESS)
         {
             // Set transaction gasPrice with the one got from network
@@ -479,6 +488,24 @@ BOAT_RESULT BoatEthTxSetRecipient(BoatEthTx *tx_ptr, BUINT8 address[BOAT_ETH_ADD
     memcpy(&tx_ptr->rawtx_fields.recipient, address, BOAT_ETH_ADDRESS_SIZE);
 
     return BOAT_SUCCESS;    
+}
+
+BOAT_RESULT BoatEthSendRawtxWithReceipt(BOAT_INOUT BoatEthTx *tx_ptr)
+{
+    BOAT_RESULT result = BOAT_ERROR;
+
+    result = EthSendRawtx(tx_ptr);
+
+    if (result == BOAT_SUCCESS)
+    {
+        result = BoatEthGetTransactionReceipt(tx_ptr);
+    }
+	else
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "EthSendRawtx failed.");
+	}
+
+    return result;
 }
 
 
@@ -551,7 +578,7 @@ BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr)
     }
     else
     {
-        result = EthSendRawtxWithReceipt(tx_ptr);
+        result = BoatEthSendRawtxWithReceipt(tx_ptr);
     }
     
     return result;

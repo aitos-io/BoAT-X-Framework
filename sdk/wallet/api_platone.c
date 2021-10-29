@@ -425,6 +425,19 @@ BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out)
 
 }
 
+BOAT_RESULT BoatPlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr)
+{
+    BOAT_RESULT result = BOAT_ERROR;
+
+    result = PlatoneSendRawtx(tx_ptr);
+
+    if (result == BOAT_SUCCESS)
+    {
+        result = BoatPlatoneGetTransactionReceipt(tx_ptr);
+    }
+
+    return result;
+}
 
 BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
 {
@@ -442,7 +455,7 @@ BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
     }
     else
     {
-        result = PlatoneSendRawtxWithReceipt(tx_ptr);
+        result = BoatPlatoneSendRawtxWithReceipt(tx_ptr);
     }
     
     return result;

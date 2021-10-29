@@ -76,7 +76,9 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 
 	(void)rsvd;
 
-	return random_buffer(output, outputLen);
+	random_buffer(output, outputLen)
+
+	return BOAT_SUCCESS;
 }
 
 BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
@@ -440,8 +442,6 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 	BUINT32     key_try_count;
     BOAT_RESULT result = BOAT_SUCCESS;
 
-	/* Convert private key from UINT256 to Bignum256 format */
-    bn_read_le(prikeyTmp, &priv_key_bn256);
 
 	/* Convert priv_key_max_u256 from UINT256 to Bignum256 format */
     bn_read_le((const uint8_t *)priv_key_max_u256, &priv_key_max_bn256);
@@ -456,7 +456,10 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
         {
             BoatLog(BOAT_LOG_CRITICAL, "Fail to generate private key.");
             break;
-        }        
+        } 
+
+		/* Convert private key from UINT256 to Bignum256 format */
+    	bn_read_le(prikeyTmp, &priv_key_bn256);       
 
 		/* check the generated private key is valid or not */
 		if ((bn_is_zero(&priv_key_bn256) == 0) && \

@@ -188,7 +188,7 @@ BOAT_RESULT ethereumGetBalance(BoatEthWallet *wallet_ptr)
     BoatFieldVariable prase_result = {NULL, 0};
 
     cur_balance_wei = BoatEthWalletGetBalance(wallet_ptr, NULL);
-	result          = BoatEthPraseRpcResponseResult(cur_balance_wei, "", &prase_result);
+	result          = BoatEthPraseRpcResponseStringResult(cur_balance_wei, &prase_result);
 	if (result == BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_NORMAL, "BoatEthWalletGetBalance returns: %s", prase_result.field_ptr);

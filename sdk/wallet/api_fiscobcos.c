@@ -231,6 +231,21 @@ BOAT_RESULT BoatFiscobcosTxSetGasPrice(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B 
 	return BOAT_SUCCESS;
 }
 
+
+BOAT_RESULT BoatFiscobcosSendRawtxWithReceipt(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
+{
+    BOAT_RESULT result = BOAT_ERROR;
+
+    result = FiscobcosSendRawtx(tx_ptr);
+
+    if (result == BOAT_SUCCESS)
+    {
+        result = BoatFiscobcosGetTransactionReceipt(tx_ptr);
+    }
+
+    return result;
+}
+
 BOAT_RESULT BoatFiscobcosTxSend(BoatFiscobcosTx *tx_ptr)
 {
     BOAT_RESULT result;
@@ -248,7 +263,7 @@ BOAT_RESULT BoatFiscobcosTxSend(BoatFiscobcosTx *tx_ptr)
     }
     else
     {
-        result = FiscobcosSendRawtxWithReceipt(tx_ptr);
+        result = BoatFiscobcosSendRawtxWithReceipt(tx_ptr);
     }
     
     return result;

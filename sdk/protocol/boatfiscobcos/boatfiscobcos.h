@@ -109,25 +109,6 @@ extern "C" {
  ******************************************************************************/
 BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr);
 
-
-/*!****************************************************************************
- * @brief Construct a raw FISCO BCOS transaction synchronously.
- *
- * @details
- *   This function is similar to FiscobcosSendRawtx except that it waits for the
- *   transaction being mined.
- *	 
- * @param[in] tx_ptr
- *   A pointer to the context of the transaction.
- *
- * @return
- *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
- *   of the error codes.
- *	 
- * @see FiscobcosSendRawtx()
- ******************************************************************************/
-BOAT_RESULT FiscobcosSendRawtxWithReceipt(BOAT_INOUT BoatFiscobcosTx *tx_ptr);
-
 /*! @}*/
 
 #ifdef __cplusplus

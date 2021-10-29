@@ -123,6 +123,23 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
  ******************************************************************************/
 BOAT_RESULT BoatPlatONTxSetNonce(BoatPlatONTx *tx_ptr, BUINT64 nonce);
 
+/*!****************************************************************************
+ * @brief Construct a raw PlatON transaction synchronously.
+ *
+ * @details
+ *   This function is similar to PlatONSendRawtx except that it waits for the
+ *   transaction being mined.
+ *   
+ * @param[in] tx_ptr
+ *   A pointer to the context of the transaction.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
+ *   of the error codes.
+ *	
+ * @see PlatONSendRawtx() BoatPlatONGetTransactionReceipt() 
+*******************************************************************************/
+BOAT_RESULT BoatPlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief Sign and send a transaction. Also call a stateful contract function.
