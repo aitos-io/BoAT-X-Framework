@@ -53,7 +53,7 @@
   
   找到include_directories(xxx ), 在最后添加以下BoAT-X-Framework内容：
   ```
-  include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
+  include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi BoAT-X-Framework/vendor/platform/include)
   ```
 
 ### 3、添加BoAT-X-Framework lib文件到target_link_libraries
