@@ -247,7 +247,7 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
 
 BOAT_RESULT BoatEthPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return web3_parse_json_result(json_string, NULL, result_out);
+    return web3_parse_json_result(json_string, "", result_out);
 }
 
 BOAT_RESULT BoatEthPraseRpcResponseResult(const BCHAR *json_string, 
