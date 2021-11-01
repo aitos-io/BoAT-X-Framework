@@ -148,7 +148,9 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
         case BOAT_PROTOCOL_ETHEREUM:
             if (wallet_config_ptr != NULL)
             {
+                
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
+                ((BoatEthWalletConfig*)wallet_config_ptr)->load_existed_wallet = false;
                 wallet_ptr = BoatEthWalletInit((BoatEthWalletConfig*)wallet_config_ptr, wallet_config_size);
                 if (wallet_ptr != NULL)
                 {
@@ -183,6 +185,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 BoatEthWalletConfig *load_wallet_config_ptr = (BoatEthWalletConfig*)boatwalletStore_ptr; 
                 load_wallet_config_ptr->prikeyCtx_config.prikey_content.field_ptr = NULL;
                 load_wallet_config_ptr->prikeyCtx_config.prikey_content.field_len = 0;
+                load_wallet_config_ptr->load_existed_wallet = true;
                 wallet_ptr = BoatEthWalletInit(load_wallet_config_ptr, wallet_config_size);
                 if (wallet_ptr != NULL)
                 {
@@ -205,6 +208,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
             if (wallet_config_ptr != NULL)
             {
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
+                ((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.load_existed_wallet = false;
                 wallet_ptr = BoatHlfabricWalletInit((BoatHlfabricWalletConfig*)wallet_config_ptr, wallet_config_size);
                 if(wallet_ptr != NULL)
                 {
@@ -240,6 +244,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 BoatHlfabricWalletConfig *load_wallet_config_ptr = (BoatHlfabricWalletConfig*)boatwalletStore_ptr; 
                 load_wallet_config_ptr->accountPriKey_config.prikey_content.field_ptr = NULL;
                 load_wallet_config_ptr->accountPriKey_config.prikey_content.field_len = 0;
+                load_wallet_config_ptr->accountPriKey_config.load_existed_wallet = true;
                 wallet_ptr = BoatHlfabricWalletInit(load_wallet_config_ptr, wallet_config_size);
                 if (wallet_ptr != NULL)
                 {
@@ -257,6 +262,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
             if (wallet_config_ptr != NULL)
             {
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
+                ((BoatEthWalletConfig*)wallet_config_ptr)->load_existed_wallet = false;
                 wallet_ptr = BoatPlatONWalletInit((BoatPlatONWalletConfig*)wallet_config_ptr, wallet_config_size);
                 if (wallet_ptr != NULL)
                 {
@@ -291,6 +297,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 BoatPlatONWalletConfig *load_wallet_config_ptr = (BoatPlatONWalletConfig*)boatwalletStore_ptr; 
                 load_wallet_config_ptr->prikeyCtx_config.prikey_content.field_ptr = NULL;
                 load_wallet_config_ptr->prikeyCtx_config.prikey_content.field_len = 0;
+                load_wallet_config_ptr->load_existed_wallet = true;
                 wallet_ptr = BoatPlatONWalletInit(load_wallet_config_ptr, wallet_config_size);
                 if (wallet_ptr != NULL)
                 {
@@ -312,6 +319,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
             if (wallet_config_ptr != NULL)
             {
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
+                ((BoatEthWalletConfig*)wallet_config_ptr)->load_existed_wallet = false;
                 wallet_ptr = BoatPlatoneWalletInit((BoatPlatoneWalletConfig*)wallet_config_ptr, wallet_config_size);
                 if (wallet_ptr != NULL)
                 {
@@ -346,6 +354,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 BoatPlatoneWalletConfig *load_wallet_config_ptr = (BoatPlatoneWalletConfig*)boatwalletStore_ptr; 
                 load_wallet_config_ptr->prikeyCtx_config.prikey_content.field_ptr = NULL;
                 load_wallet_config_ptr->prikeyCtx_config.prikey_content.field_len = 0;
+                load_wallet_config_ptr->load_existed_wallet = true;
                 wallet_ptr = BoatPlatoneWalletInit(load_wallet_config_ptr, wallet_config_size);
                 if (wallet_ptr != NULL)
                 {
@@ -366,6 +375,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
             if(wallet_config_ptr != NULL)
             {
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
+                ((BoatEthWalletConfig*)wallet_config_ptr)->load_existed_wallet = false;
                 wallet_ptr = BoatFiscobcosWalletInit((BoatFiscobcosWalletConfig*)wallet_config_ptr, wallet_config_size);
                 if (wallet_ptr != NULL)
                 {
@@ -400,6 +410,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 BoatFiscobcosWalletConfig *load_wallet_config_ptr = (BoatFiscobcosWalletConfig*)boatwalletStore_ptr; 
                 load_wallet_config_ptr->prikeyCtx_config.prikey_content.field_ptr = NULL;
                 load_wallet_config_ptr->prikeyCtx_config.prikey_content.field_len = 0;
+                load_wallet_config_ptr->load_existed_wallet = true;
                 wallet_ptr = BoatFiscobcosWalletInit(load_wallet_config_ptr, wallet_config_size);
                 if (wallet_ptr != NULL)
                 {
