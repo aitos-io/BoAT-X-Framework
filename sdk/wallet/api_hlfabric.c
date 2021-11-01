@@ -319,6 +319,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr,
 
 	/* prikey context assignment */
 	// if (prikeyCtx_config.prikey_content.field_ptr != NULL)
+	if(prikeyCtx_config.load_existed_wallet == false)
 	{
 		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
 		{
@@ -773,9 +774,7 @@ BoatHlfabricWallet *BoatHlfabricWalletInit(const BoatHlfabricWalletConfig *confi
 	// 	wallet_ptr->network_info.endorser[i].nodeUrl = NULL;
 	// 	wallet_ptr->network_info.endorser[i].hostName = NULL;
 	// }
-
 	wallet_ptr->http2Context_ptr = NULL;
-
 	/* account_info assignment */
 	result += BoatHlfabricWalletSetAccountInfo(wallet_ptr, config_ptr->accountPriKey_config,
 											   config_ptr->accountCertContent);
