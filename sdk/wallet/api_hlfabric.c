@@ -547,8 +547,10 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 			memcpy(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, endorserInfo_ptr.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, endorserInfo_ptr.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
 			for (k = 0; k < endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorserNumber; k++)
 			{
-				wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = BoatMalloc(strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].hostName));
-				wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = BoatMalloc(strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl));
+				wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = BoatMalloc(strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].hostName)+1);
+				wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = BoatMalloc(strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl)+1);
+				memset(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName,0x00, strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].hostName)+1);
+				memset(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl,0x00,strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl)+1);
 				memcpy(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName, endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].hostName, strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].hostName));
 				memcpy(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl));
 			}
@@ -614,8 +616,10 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 	wallet_ptr->network_info.orderCfg.endorser = BoatMalloc(wallet_ptr->network_info.orderCfg.endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
 	for (i = 0; i < wallet_ptr->network_info.orderCfg.endorserNumber; i++)
 	{
-		wallet_ptr->network_info.orderCfg.endorser[i].hostName = BoatMalloc(strlen(endorserInfo_ptr.orderCfg.endorser[i].hostName));
-		wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(strlen(endorserInfo_ptr.orderCfg.endorser[i].nodeUrl));
+		wallet_ptr->network_info.orderCfg.endorser[i].hostName = BoatMalloc(strlen(endorserInfo_ptr.orderCfg.endorser[i].hostName)+1);
+		wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(strlen(endorserInfo_ptr.orderCfg.endorser[i].nodeUrl)+1);
+		memset(wallet_ptr->network_info.orderCfg.endorser[i].hostName,0x00,strlen(endorserInfo_ptr.orderCfg.endorser[i].hostName)+1);
+		memset(wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl,0x00,strlen(endorserInfo_ptr.orderCfg.endorser[i].nodeUrl)+1);
 		memcpy(wallet_ptr->network_info.orderCfg.endorser[i].hostName, endorserInfo_ptr.orderCfg.endorser[i].hostName, strlen(endorserInfo_ptr.orderCfg.endorser[i].hostName));
 		memcpy(wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl, endorserInfo_ptr.orderCfg.endorser[i].nodeUrl, strlen(endorserInfo_ptr.orderCfg.endorser[i].nodeUrl));
 	}
@@ -753,6 +757,10 @@ BoatHlfabricWallet *BoatHlfabricWalletInit(const BoatHlfabricWalletConfig *confi
 	/* initialization */
 	wallet_ptr->account_info.cert.field_ptr = NULL;
 	wallet_ptr->account_info.cert.field_len = 0;
+	wallet_ptr->network_info.endorserLayoutNum = 0;
+	wallet_ptr->network_info.orderCfg.endorserNumber = 0;
+	wallet_ptr->network_info.layoutCfg = NULL;
+	// wallet_ptr->network_info.layoutCfg->endorserGroupNum = 0;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 #if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
 	wallet_ptr->tlsClinet_info.cert.field_ptr = NULL;
@@ -785,7 +793,7 @@ BoatHlfabricWallet *BoatHlfabricWalletInit(const BoatHlfabricWalletConfig *confi
 												 config_ptr->tlsClientCertContent);
 #endif
 	/* tlsRootCa_info assignment */
-	BoatHlfabricWalletSetRootCaInfo(wallet_ptr, config_ptr->rootCaContent, config_ptr->rootCaNumber);
+	//BoatHlfabricWalletSetRootCaInfo(wallet_ptr, config_ptr->rootCaContent, config_ptr->rootCaNumber);
 #endif
 	/* network_info assignment */
 	// result += BoatHlfabricWalletSetNetworkInfo(wallet_ptr, config_ptr->nodesCfg);
@@ -929,6 +937,7 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 	tx_ptr->var.orgName = NULL;
 	/* ----->tx_ptr->endorserResponse reset */
 	tx_ptr->endorserResponse.responseCount = 0;
+	tx_ptr->endorserResponse.httpResLen = 0;
 	for (i = 0; i < BOAT_HLFABRIC_ENDORSER_MAX_NUM; i++)
 	{
 		tx_ptr->endorserResponse.response[i].contentPtr = NULL;
