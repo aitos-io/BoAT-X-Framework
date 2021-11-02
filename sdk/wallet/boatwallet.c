@@ -204,10 +204,10 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
             if (wallet_config_ptr != NULL)
             {
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
-                wallet_ptr = BoatChainmakerWalletInit((BoatHlfabricWalletConfig*)wallet_config_ptr, wallet_config_size);
+                wallet_ptr = BoatHlchainmakerWalletInit((BoatHlchainmakerWalletConfig*)wallet_config_ptr, wallet_config_size);
                 if(wallet_ptr != NULL)
                 {
-                    memcpy(boatwalletStore_ptr + wallet_config_size, &((BoatChainmakerWallet*)wallet_ptr)->account_info.prikeyCtx, sizeof(BoatWalletPriKeyCtx));
+                    memcpy(boatwalletStore_ptr + wallet_config_size, &((BoatHlchainmakerWallet*)wallet_ptr)->user_client_info.prikeyCtx, sizeof(BoatWalletPriKeyCtx));
                     if (wallet_name_str != NULL)
                     {
                         /* create persistent wallet / Overwrite existed configuration */
@@ -235,14 +235,14 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                     return BOAT_ERROR;
                 }
            
-                BoatChainmakerWalletConfig *load_wallet_config_ptr = (BoatChainmakerWalletConfig*)boatwalletStore_ptr; 
-                load_wallet_config_ptr->user_pri_key_config.prikey_content.field_ptr = NULL;
-                load_wallet_config_ptr->user_pri_key_config.prikey_content.field_len = 0;
-                wallet_ptr = BoatChainmakerWalletInit(load_wallet_config_ptr, wallet_config_size);
+                BoatHlchainmakerWalletConfig *load_wallet_config_ptr = (BoatHlchainmakerWalletConfig*)boatwalletStore_ptr; 
+                load_wallet_config_ptr->user_prikey_config.prikey_content.field_ptr = NULL;
+                load_wallet_config_ptr->user_prikey_config.prikey_content.field_len = 0;
+                wallet_ptr = BoatHlchainmakerWalletInit(load_wallet_config_ptr, wallet_config_size);
                 if (wallet_ptr != NULL)
                 {
                     // re-assign private key context
-                    memcpy(&((BoatChainmakerWallet*)wallet_ptr)->signClient_info.prikeyCtx, boatwalletStore_ptr + wallet_config_size, sizeof(BoatWalletPriKeyCtx));                
+                    memcpy(&((BoatHlchainmakerWallet*)wallet_ptr)->user_client_info.prikeyCtx, boatwalletStore_ptr + wallet_config_size, sizeof(BoatWalletPriKeyCtx));                
                 }
             }
 
@@ -508,6 +508,12 @@ void BoatWalletUnload(BSINT32 wallet_index)
             #if PROTOCOL_USE_HLFABRIC == 1
             case BOAT_PROTOCOL_HLFABRIC:
                 BoatHlfabricWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
+            break;
+            #endif
+
+			#if PROTOCOL_USE_CHAINMKAER == 1
+            case BOAT_PROTOCOL_CHAINMKAER:
+                BoatHlchainmakerWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
             break;
             #endif
 
