@@ -80,19 +80,30 @@ BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, Boat
 	transactPayload.contract_name = tx_ptr->wallet_ptr->node_info.claim_contract_name;
 	transactPayload.method        = method;
 	transactPayload.n_parameters  = transaction_para->n_parameters;
-	transactPayload.parameters = (Common__KeyValuePair **)BoatMalloc(transactPayload.n_parameters * sizeof(BoatKeyValuePair));
+
+	transactPayload.parameters = (BoatKeyValuePair**) BoatMalloc(sizeof(BoatKeyValuePair*) * transactPayload.n_parameters);
 
 	int i;
 	for (i = 0; i < transactPayload.n_parameters; i++)
 	{
-		transactPayload.parameters[i] = &transaction_para->parameters[i];
-	}
+		transactPayload.parameters[i] = BoatMalloc(sizeof(BoatKeyValuePair));
+		transactPayload.parameters[i]->key = transaction_para->parameters[i].key;
+		transactPayload.parameters[i]->value = transaction_para->parameters[i].value;
+	}	
 
 	/* pack the Common__TransactPayload */
 	packedLength = common__transact_payload__get_packed_size(&transactPayload);
 	output_ptr->field_ptr = BoatMalloc(packedLength);
 	output_ptr->field_len = packedLength;
 	common__transact_payload__pack(&transactPayload, output_ptr->field_ptr);
+
+	//free
+	for (i = 0; i < transactPayload.n_parameters; i++)
+	{
+		BoatFree(transactPayload.parameters[i]);
+	}
+	BoatFree(transactPayload.parameters);
+	
 	return result;
 }
 
