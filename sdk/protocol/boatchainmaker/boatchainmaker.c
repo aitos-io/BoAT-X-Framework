@@ -82,12 +82,13 @@ BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, Boat
 	transactPayload.n_parameters  = transaction_para->n_parameters;
 
 	transactPayload.parameters = (BoatKeyValuePair**) BoatMalloc(sizeof(BoatKeyValuePair*) * transactPayload.n_parameters);
+	BoatKeyValuePair* array    = BoatMalloc(sizeof(BoatKeyValuePair) * transactPayload.n_parameters);
 
 	int i;
 	for (i = 0; i < transactPayload.n_parameters; i++)
 	{
-		transactPayload.parameters[i] = BoatMalloc(sizeof(BoatKeyValuePair));
-		transactPayload.parameters[i]->key = transaction_para->parameters[i].key;
+		transactPayload.parameters[i]        = &array[i];
+		transactPayload.parameters[i]->key   = transaction_para->parameters[i].key;
 		transactPayload.parameters[i]->value = transaction_para->parameters[i].value;
 	}	
 
@@ -97,11 +98,7 @@ BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, Boat
 	output_ptr->field_len = packedLength;
 	common__transact_payload__pack(&transactPayload, output_ptr->field_ptr);
 
-	//free
-	for (i = 0; i < transactPayload.n_parameters; i++)
-	{
-		BoatFree(transactPayload.parameters[i]);
-	}
+	BoatFree(array);
 	BoatFree(transactPayload.parameters);
 	
 	return result;
