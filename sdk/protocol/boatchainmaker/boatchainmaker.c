@@ -72,25 +72,27 @@ void array_to_str(char* array, char *str, char lenth)
 BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, BoatTransactionPara *transaction_para, Common__TxHeader *tx_header, BoatFieldVariable *output_ptr)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-
-	Common__TransactPayload transactPayload = COMMON__TRANSACT_PAYLOAD__INIT;
-	BoatFieldVariable payload_data;
 	BUINT32 packedLength;
 
-	transactPayload.contract_name = tx_ptr->wallet_ptr->node_info.claim_contract_name;
-	transactPayload.method        = method;
-	transactPayload.n_parameters  = transaction_para->n_parameters;
+	Common__TransactPayload transactPayload = COMMON__TRANSACT_PAYLOAD__INIT;
+	Common__KeyValuePair keyValuePair       = COMMON__KEY_VALUE_PAIR__INIT;
+	transactPayload.contract_name           = tx_ptr->wallet_ptr->node_info.claim_contract_name;
+	transactPayload.method                  = method;
 
-	transactPayload.parameters = (BoatKeyValuePair**) BoatMalloc(sizeof(BoatKeyValuePair*) * transactPayload.n_parameters);
-	BoatKeyValuePair* array    = BoatMalloc(sizeof(BoatKeyValuePair) * transactPayload.n_parameters);
-
+	transactPayload.parameters = (Common__KeyValuePair**)BoatMalloc(sizeof(Common__KeyValuePair*) * transaction_para->n_parameters);
+	
 	int i;
-	for (i = 0; i < transactPayload.n_parameters; i++)
+	for (i = 0; i < transaction_para->n_parameters; i++)
 	{
-		transactPayload.parameters[i]        = &array[i];
-		transactPayload.parameters[i]->key   = transaction_para->parameters[i].key;
-		transactPayload.parameters[i]->value = transaction_para->parameters[i].value;
+		Common__KeyValuePair* tkvp = BoatMalloc(sizeof(Common__KeyValuePair));
+		memcpy(tkvp, &keyValuePair, sizeof(Common__KeyValuePair));
+		tkvp->key   = transaction_para->parameters[i].key;
+		tkvp->value = transaction_para->parameters[i].value;
+
+		transactPayload.parameters[i] = tkvp;
 	}	
+
+	transactPayload.n_parameters  = transaction_para->n_parameters;
 
 	/* pack the Common__TransactPayload */
 	packedLength = common__transact_payload__get_packed_size(&transactPayload);
@@ -98,7 +100,11 @@ BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, Boat
 	output_ptr->field_len = packedLength;
 	common__transact_payload__pack(&transactPayload, output_ptr->field_ptr);
 
-	BoatFree(array);
+	for (i = 0; i < transaction_para->n_parameters; i++)
+	{
+		BoatFree(transactPayload.parameters[i]);
+	}	
+
 	BoatFree(transactPayload.parameters);
 	
 	return result;
