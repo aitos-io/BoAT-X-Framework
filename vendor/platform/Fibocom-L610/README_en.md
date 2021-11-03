@@ -100,9 +100,7 @@ In curly braces below `if(CONFIG_APPIMG_LOAD_FLASH)`,find `add_appimg(${target} 
    Open a Linux shell and build the demo:
 
       cd <L610 Root>
-      cd out
-      rm -r appimage_release//The files generated on the local PC must be deleted first
-      cd ..
+      rm -r out//The files generated on the local PC must be deleted first
       . tools/core_launch.sh
       cout
       cmake ../.. -G Ninja
