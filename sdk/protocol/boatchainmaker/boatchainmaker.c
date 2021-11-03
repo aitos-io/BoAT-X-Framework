@@ -206,44 +206,26 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	tx_request.signature.len   = signatureResult.pkcs_sign_length;
 	tx_request.signature.data  = signatureResult.pkcs_sign;
 	packedLength               = common__tx_request__get_packed_size(&tx_request);
-	packedData                 = BoatMalloc(packedLength);
-	common__tx_request__pack(&tx_request, packedData);
 
-	printf("ttttxxxxxxxxxxxx start\n");
-	printf("1111111111111111chain_id  = %s\n", tx_request.header->chain_id);
-	printf("1111111111111111tx_id     = %s\n", tx_request.header->tx_id);
-	printf("1111111111111111timestamp = %d\n", tx_request.header->timestamp);
-	printf("1111111111111111tx_type   = %d\n", tx_request.header->tx_type);
-	printf("1111111111111111sender    = %s\n", tx_request.header->sender->org_id);
-	printf("1111111111111111          = %s\n", tx_request.header->sender->member_info.data);
-
-	printf("2222222222222222 =  %s\n", tx_request.payload.data);
-	printf("ttttxxxxxxxxxxxx start\n");
-	//printf("ttttxxxxxxxxxxxx = %s\n", packedData);
-	printf("ttttxxxxxxxxxxxx end\n");
-	
 	/* step-6: packed length assignment */
-	
-	/* step-7: packed data assignment */
-	/* ---grpcHeader compute */
 	tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len = packedLength + sizeof(grpcHeader);
 	if( tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "packed length out of sendbuffer size limit.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, chainmakerProposalTransactionPacked_exception);
 	}
 	
+	/* step-7: packed data assignment */
+	/* ---grpcHeader compute */
 	grpcHeader[0] = 0x00;//uncompressed
 	for(int i = 0 ; i < 4; i++)
 	{
 		grpcHeader[i + 1] = (packedLength >> (32 - 8*(i+1)))&0xFF;
 	}
+
 	/* ---generate packed data */
-
-	memcpy(tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr, grpcHeader, sizeof(grpcHeader));
-	memcpy(&tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr[sizeof(grpcHeader)], packedData, packedLength);
-
-printf("send bud = %s\n", tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr);
+	packedData = tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr;
+	memcpy(packedData, grpcHeader, sizeof(grpcHeader));
+	common__tx_request__pack(&tx_request, &packedData[sizeof(grpcHeader)]);
 
 	/* boat catch handle */
 	boat_catch(chainmakerProposalTransactionPacked_exception)
