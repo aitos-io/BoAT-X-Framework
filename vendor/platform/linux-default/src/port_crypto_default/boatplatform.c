@@ -27,6 +27,7 @@
 #include "boatutility.h"
 
 #include "sha2.h"
+#include "keccak.h"
 
 /* net releated include */
 #include <sys/types.h>
