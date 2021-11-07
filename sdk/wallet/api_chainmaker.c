@@ -140,12 +140,11 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr needn't DeInit: wallet_ptr is NULL.");
 		return;
 	}
-
 	/* account_info DeInit */
 	BoatFree(wallet_ptr->user_client_info.cert.field_ptr);
 	wallet_ptr->user_client_info.cert.field_len = 0;
 	
-#if 0
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	/* tlsClinet_info DeInit */
 	BoatFree(wallet_ptr->tls_client_info.field_ptr);
 	wallet_ptr->tls.field_len = 0;
@@ -157,14 +156,8 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	}
 #endif
 
-	if (wallet_ptr->node_info.host_name != NULL)
-	{
-		BoatFree(wallet_ptr->node_info.host_name);
-	}
-	if (wallet_ptr->node_info.node_url != NULL)
-	{
-		BoatFree(wallet_ptr->node_info.node_url);
-	}
+	wallet_ptr->node_info.host_name = NULL;
+	wallet_ptr->node_info.node_url  = NULL;
 	/* http2Context DeInit */
 	http2DeInit(wallet_ptr->http2Context_ptr);
 
