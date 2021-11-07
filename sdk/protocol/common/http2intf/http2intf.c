@@ -21,9 +21,6 @@
 
 /* self header include */
 #include "boatconfig.h"
-
-#if (PROTOCOL_USE_CHAINMAKER == 1)
-
 #include "boatplatform_internal.h"
 #include "http2intf.h"
 #include "protocolapi/api_hlfabric.h"
@@ -40,7 +37,7 @@
 // BUINT32 http2Reslen = 0;
 // BUINT32 http2Reallen = 0;
 // BUINT8 *http2ResData;
-#define CHAINMAKER_TYPE 2
+
 //! xx
 #define MAKE_NV(K, V)                                                                          \
 	{                                                                                          \
@@ -63,9 +60,11 @@ __BOATSTATIC ssize_t send_callback(nghttp2_session *session, const uint8_t *data
 	BSINT32 sendLen;
 	http2IntfContext *http2Context = (http2IntfContext *)user_data;
 
-#if 0
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+
 	sendLen = BoatSend(http2Context->sockfd, http2Context->tlsContext, data, length, NULL);
 #else
+
 	sendLen = BoatSend(http2Context->sockfd, NULL, data, length, NULL);
 #endif
 	return sendLen;
@@ -87,10 +86,11 @@ __BOATSTATIC ssize_t recv_callback(nghttp2_session *session, uint8_t *buf,
 	BSINT32 recvLen;
 	http2IntfContext *http2Context = (http2IntfContext *)user_data;
 
-#if 0
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	recvLen = BoatRecv(http2Context->sockfd, http2Context->tlsContext, buf, length, NULL);
 #else
 	recvLen = BoatRecv(http2Context->sockfd, NULL, buf, length, NULL);
+	
 #endif
 	if (recvLen > 0)
 	{
@@ -153,11 +153,9 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
 											 size_t len, void *user_data)
 {
 	http2IntfContext *http2Context = (http2IntfContext *)user_data;
-	// Protos__ProposalResponse *proposalResponse = NULL;
-	// Orderer__SubmitResponse *submitResponse = NULL;
-	BoatHlfabricEndorserResponse *parsePtr = NULL;
+	BoatHlchainmakerResponse *parsePtr = NULL;
 	uint8_t *temp = NULL;
-	parsePtr = (BoatHlfabricEndorserResponse *)http2Context->parseDataPtr;
+	parsePtr = (BoatHlchainmakerResponse *)http2Context->parseDataPtr;
 	if (parsePtr->httpResLen != 0)
 	{
 		temp = BoatMalloc(parsePtr->httpResLen);
@@ -213,7 +211,7 @@ __BOATSTATIC int on_stream_close_callback(nghttp2_session *session, int32_t stre
 {
 	http2IntfContext *http2Context = (http2IntfContext *)user_data;
 	nghttp2_session_terminate_session(session, 0);
-#if 0
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	BoatClose(http2Context->sockfd, http2Context->tlsContext, NULL);
 #else
 	BoatClose(http2Context->sockfd, NULL, NULL);
@@ -236,7 +234,7 @@ http2IntfContext *http2Init(void)
 	}
 	http2Context->session = NULL;
 	http2Context->nodeUrl = NULL;
-#if 0
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	http2Context->hostName = NULL;
 	http2Context->tlsCAchain = NULL;
 	http2Context->tlsContext = BoatMalloc(sizeof(TTLSContext));
@@ -283,7 +281,7 @@ void http2DeInit(http2IntfContext *http2Context)
 			nghttp2_session_del(http2Context->session);
 			http2Context->session = NULL;
 		}
-#if 0
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 		BoatFree(http2Context->tlsContext);
 		http2Context->tlsContext = NULL;
 #endif
@@ -297,14 +295,10 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	nghttp2_data_provider data_prd;
 	nghttp2_session_callbacks *callbacks;
 	char *pathTmp = NULL;
-	BoatHlfabricEndorserResponse *parsePtr = NULL;
+	BoatHlchainmakerResponse *parsePtr = NULL;
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
-
-	
-	// pathTmp          = (context->isProposal) ? "/protos.Endorser/ProcessProposal" : \
-	// 				                           "/orderer.AtomicBroadcast/Broadcast";
-	// pathTmp = "/discovery.Discovery/Discover";
+;
 	if (context->chainType == HLCHAIN_TYPE_FABRIC)
 	{
 		if (context->type == HLFABRIC_TYPE_PROPOSAL)
@@ -315,15 +309,14 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 		{
 			pathTmp = "/orderer.AtomicBroadcast/Broadcast";
 		}
-
 		else
 		{
 			pathTmp = "/discovery.Discovery/Discover";
 		}
 	}
-	else if (context->chainType == CHAINMAKER_TYPE)
-	{
-			pathTmp = "/api.RpcNode/SendRequest";
+	else if (context->chainType == 2){
+		pathTmp = "/api.RpcNode/SendRequest";
+
 	}
 	else
 	{
@@ -335,7 +328,6 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 		{
 			pathTmp = "/nodeservice.TransactionSender/SendTransaction";
 		}
-
 		else
 		{
 			pathTmp = "/nodeservice.ChainManager/QueryAllChainInfos";
@@ -350,15 +342,7 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 						MAKE_NV("Accept-Encoding", "gzip, deflate"),
 						MAKE_NV("te", "trailers")};
 
-	if (context->chainType == CHAINMAKER_TYPE)
-	{
-		parsePtr = (BoatHlchainmakerResponse *)context->parseDataPtr;
-	}
-	else
-	{
-		parsePtr = (BoatHlfabricEndorserResponse *)context->parseDataPtr;
-	}
-	
+	parsePtr = (BoatHlchainmakerResponse *)context->parseDataPtr;
 	if (parsePtr->httpResLen != 0)
 	{
 		BoatFree(parsePtr->http2Res);
@@ -372,7 +356,7 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 		BoatLog(BOAT_LOG_CRITICAL, "BoatConnect failed.");
 		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, http2SubmitRequest_exception);
 	}
-#if 0
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	result = BoatTlsInit(context->hostName, context->tlsCAchain, context->sockfd, context->tlsContext, NULL);
 	if (result != BOAT_SUCCESS)
 	{
@@ -427,4 +411,3 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	}
 	return result;
 }
-#endif /* end of PROTOCOL_USE_HLFABRIC */
