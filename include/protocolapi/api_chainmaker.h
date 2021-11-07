@@ -20,119 +20,114 @@
 api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 */
 
-#ifndef __API_ETHEREUM_H__
-#define __API_ETHEREUM_H__
+#ifndef __API_CHAINMAKER_H__
+#define __API_CHAINMAKER_H__
 
 #include "boatiotsdk.h"
 
-/*! @defgroup eth-api boat ethereum-API
+/*! @defgroup eth-api boat chainmaker-API
  * @{
  */
+#define BOAT_HLFABRIC_TLS_SUPPORT                0 //!< If need client support TLS, set it to 1.
 #define BOAT_CHAINMAKER_CERT_MAX_LEN 1024
 #define BOAT_CHAINMAKER_ROOTCA_MAX_NUM 3
-typedef struct TBoatChainmakerSender {
-	// organization identifier of the member
-	char* orgId;
-	// member identity related info bytes
-	char* memberInfo;
-	// use cert compression
-	// todo: is_full_cert -> compressed
-	bool  isFullCert;
-
-} BoatChainmakerSender;
+#define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN     8192 //!< The maximum length of HTTP2 send buffer
 
 
-typedef struct TBoatChainmakerTxHeader {
-	// blockchain identifier
-	char*                chainId;     
-	// sender identifier
-	BoatChainmakerSender sender;
-	// transaction type
-	BUINT32              txType;   
-	// transaction id set by sender, should be unique
-	char*                txId;
-	// transaction timestamp, in unix timestamp format, seconds
-	BUINT64              timestamp;
-	// expiration timestamp in unix timestamp format
-	// after that the transaction is invalid if it is not included in block yet
-	BUINT64              expirationTime;
-	
-} BoatChainmakerTxHeader;
+// call a pre created user contract, tx included in block
+// query a pre-created user contract, tx not included in block
+typedef enum {
 
-typedef struct TKeyValuePair {
-	char* key;  
-	char* value;
-} KeyValuePair;
-
-typedef struct TBoatChainmakerTransactPayload {
-	// smart contract name
-	char* contractName; 
-	// invoke method
-	char* method; 
-	// invoke parameters in k-v format
-	KeyValuePair* Parameters; 
-} BoatChainmakerTransactPayload;
-
-//request 
-typedef struct TBoatChainmkaerTxRequest {
-	BoatChainmakerTxHeader  tx_header;
-	BoatChainmakerTransactPayload* payload;
-	char* signature;
-} BoatChainmkaerTxRequest;
+	TxType_INVOKE_USER_CONTRACT = 0,
+	TxType_QUERY_USER_CONTRACT
+} TxType;
 
 //! chainmaker certificate information config structure
-typedef struct TBoatChainmakerCertInfoCfg {
+typedef struct TBoatHlchainmakerCertInfoCfg {
 	BUINT32  length;                                //!< length of certificate content, this length contains the terminator '\0'.
 	BCHAR    content[BOAT_CHAINMAKER_CERT_MAX_LEN]; //!< content of certificate.
-} BoatChainmakerCertInfoCfg;
+} BoatHlchainmakerCertInfoCfg;
 
-typedef struct TBoatChainmakerNode{
-	BCHAR*  addr;  
-	BUINT32 connCnt;
-	bool    useTLS;
-	BCHAR*  tlsHostName; 
+typedef struct  TBoatKeyValuePair {
+  char *key;
+  char *value;
+} BoatKeyValuePair;
+
+
+typedef struct TBoatTransactionPara {
 	
-} BoatChainmakerNode;
+	BUINT32 n_parameters;
+	BoatKeyValuePair *parameters; 
+	
+} BoatTransactionPara;
+
+typedef struct TBoatHlchainmakerNode{
+	bool   use_tls;
+	BCHAR  *org_Id;  
+	BCHAR  *chain_Id;
+	BCHAR  *node_url;
+	BCHAR  *host_name;
+	BCHAR  *claim_contract_name;
+	BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
+	
+} BoatHlchainmakerNode;
+
+typedef struct TBoatHlchainamkerResult {
+	BUINT32             code;
+	char*               message;
+	BoatFieldVariable   payload;
+
+} BoatHlchainamkerResult;
+
+typedef struct TBoatHlchainmakerResponse
+{
+	BoatHlchainamkerResult   http_result;
+	BUINT32			         httpResLen;
+	BUINT8 			         *http2Res;
+}BoatHlchainmakerResponse;
 
 // chainmaker wallet config structure
-typedef struct TBoatChainmakerWalletConfig
+typedef struct TBoatHlchainmakerWalletConfig
 {
-	BoatWalletPriKeyCtx_config  user_pri_key_config;
-	// certificate content of account
-	BoatChainmakerCertInfoCfg   user_cert_content;   
-	BoatWalletPriKeyCtx_config  user_sign_pri_key_config;
-	//certificate content of TLS 
-	BoatChainmakerCertInfoCfg   user_sign_cert_content;	
+	//usr private key
+	BoatWalletPriKeyCtx_config    user_prikey_config;
+	BoatHlchainmakerCertInfoCfg   user_cert_content;   
 
-	BUINT32 rootCaNumber; //!< The number of rootCA file to be set
-	BoatChainmakerCertInfoCfg     roo_ca_cert[BOAT_CHAINMAKER_ROOTCA_MAX_NUM];//!< certificate content of rootCA
+	BoatWalletPriKeyCtx_config    tls_PriKey_config;
+	BoatHlchainmakerCertInfoCfg   tls_cert_content;
 
-	BoatChainmakerNode 		    node_info;
-}BoatChainmakerWalletConfig;
+	BoatHlchainmakerNode          node_cfg;
+}BoatHlchainmakerWalletConfig;
 
 //!chainmaker key pairs structure
-typedef struct TBoatChainmakerKeyPair {
+typedef struct TBoatHlchainmakerKeyPair {
 	BoatWalletPriKeyCtx  prikeyCtx; //!< @NOTE This field MUST BE placed in the first member of the structure                              //!< because in function BoatWalletCreate(), 
 	BoatFieldVariable    cert;      //!< client certificate content
 	
-} BoatChainmakerKeyPair;
-
-//! chainmaker all fully trusted top-level CAs
-typedef struct TBoatChainmakerRootCA
-{
-	BoatFieldVariable      ca[BOAT_CHAINMAKER_ROOTCA_MAX_NUM]; //!< rootCA certificate content
-}BoatChainmakerRootCA;
+} BoatHlchainmakerKeyPair;
 
 //chainmaker wallet structure
-typedef struct TBoatChainmakerWallet
+typedef struct TBoatHlchainmakerWallet
 {
-	BoatChainmakerKeyPair   signClient_info; //!< sign information
-	BoatChainmakerKeyPair   tlsClinet_info;  //!< tls information
-	BoatChainmakerRootCA    tlsRootCA_info;  //!< rootCA certificate list
-	BoatChainmakerNode      node_info;       //!< node information
+	BoatHlchainmakerKeyPair   user_client_info; //!< user information
+	BoatHlchainmakerKeyPair   tls_client_info;  //!< tls information
+	BoatHlchainmakerNode      node_info;        //!< node information
 	
 	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
-}BoatChainmakerWallet;
+} BoatHlchainmakerWallet;
+
+typedef struct TBoatHlchainamkerTx
+{
+	BoatHlchainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet
+	BoatHlchainmakerResponse    tx_reponse;   
+}BoatHlchainmakerTx;
+
+BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletConfig *config_ptr,
+										   BUINT32 config_size);
+BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet *wallet_ptr, BoatHlchainmakerTx *tx_ptr);
+void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr);
+BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, char* method);
+BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, char* method);
 
 
 /*! @}*/
