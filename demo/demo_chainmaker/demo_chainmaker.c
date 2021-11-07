@@ -40,23 +40,21 @@ const BCHAR * chainmaker_user_cert ="-----BEGIN CERTIFICATE-----\n"
 									"a1azgQ44SZFRowIhAOSqB0T6fjVYc6owMKfUtUJpEC1XSO/tlHDD0NpdLCWk\n"
 									"-----END CERTIFICATE-----\n";
 
-
-
-const BCHAR *chainmaker_org_tls_ca_cert =   "-----BEGIN CERTIFICATE-----\n"
-											"MIICaDCCAg2gAwIBAgIDASOLMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
-											"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
-											"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-											"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTEwNDE1MjYxOFoXDTI2\n"
-											"MTEwMzE1MjYxOFowgZAxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
-											"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
-											"MQ8wDQYDVQQLEwZjbGllbnQxKzApBgNVBAMTImNsaWVudDEudGxzLnd4LW9yZzEu\n"
-											"Y2hhaW5tYWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnsMSX7Ext\n"
-											"ve3k6iuic565OvEbyzqpZhmOJzSHyHAeQLoAaxaVrfdhKSKv+BTP+G4B9vtoiTv2\n"
-											"ivkx+0fusbHCo1owWDApBgNVHQ4EIgQgTNoJ0i4SvDiXqMjvIT34OwlzhRUlRJEv\n"
-											"DzJoWVVpimAwKwYDVR0jBCQwIoAgFXNa14VEFwAzhtccsY5AY9Mxt7qk6R5DFot6\n"
-											"C1QeLzcwCgYIKoZIzj0EAwIDSQAwRgIhAJ71SLWBzKM7dw0SQ9T4UmzAfzTFBCqZ\n"
-											"g8ss2+gWyqP9AiEAp2tcMOY4JPQcWT6sG0Q7zQdP8LQdmEqZrwZFubJUtSE=\n"
-											"-----END CERTIFICATE-----\n";
+const BCHAR *chainmaker_org_tls_ca_cert = "-----BEGIN CERTIFICATE-----\n"
+										  "MIICaDCCAg2gAwIBAgIDASOLMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+										  "MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
+										  "b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
+										  "ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTEwNDE1MjYxOFoXDTI2\n"
+										  "MTEwMzE1MjYxOFowgZAxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+										  "DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
+										  "MQ8wDQYDVQQLEwZjbGllbnQxKzApBgNVBAMTImNsaWVudDEudGxzLnd4LW9yZzEu\n"
+										  "Y2hhaW5tYWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnsMSX7Ext\n"
+										  "ve3k6iuic565OvEbyzqpZhmOJzSHyHAeQLoAaxaVrfdhKSKv+BTP+G4B9vtoiTv2\n"
+										  "ivkx+0fusbHCo1owWDApBgNVHQ4EIgQgTNoJ0i4SvDiXqMjvIT34OwlzhRUlRJEv\n"
+										  "DzJoWVVpimAwKwYDVR0jBCQwIoAgFXNa14VEFwAzhtccsY5AY9Mxt7qk6R5DFot6\n"
+										  "C1QeLzcwCgYIKoZIzj0EAwIDSQAwRgIhAJ71SLWBzKM7dw0SQ9T4UmzAfzTFBCqZ\n"
+										  "g8ss2+gWyqP9AiEAp2tcMOY4JPQcWT6sG0Q7zQdP8LQdmEqZrwZFubJUtSE=\n"
+										  "-----END CERTIFICATE-----\n";
 
 
 BCHAR *chain_Id              = "chain1";
@@ -87,7 +85,6 @@ void get_time_string(char* time_buf)
 	time(&rawtime);
 	info = localtime(&rawtime);
 	strftime(time_buf, TIME_LEN, "%Y-%m-%d %H:%M:%S", info);	
-	return;
 } 
 
 __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
@@ -192,8 +189,6 @@ int main(int argc, char *argv[])
 	query_transaction_para.parameters->key   = key2;
 	query_transaction_para.parameters->value = file_hash;
 
-	printf("query = %s\n", query_transaction_para.parameters->key);
-	printf("query = %s\n", query_transaction_para.parameters->value);
 	result = BoatHlchainmakerContractClaimQuery(&tx_ptr, &query_transaction_para, query_metod);
 	if (result != BOAT_SUCCESS)
 	{
@@ -205,7 +200,17 @@ int main(int argc, char *argv[])
 	
 	/* step-7: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
-    
+
+    if (inovke_transaction_para.parameters != NULL)
+    {
+    	BoatFree(inovke_transaction_para.parameters);
+    }
+
+    if (query_transaction_para.parameters != NULL)
+    {
+    	BoatFree(query_transaction_para.parameters);
+    }
+ 
     return 0;
 }
 
