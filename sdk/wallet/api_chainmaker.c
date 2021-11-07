@@ -36,8 +36,6 @@ BCHAR str_value[90] = {"file_"};
 BCHAR time_buf[TIME_LEN]  = {0};
 BCHAR file_hash[33] = {0};
 
-
-
 void get_time_string(char* time_buf)
 {
 	time_t rawtime;
@@ -65,12 +63,10 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 	memset(&wallet_ptr->user_client_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx));
 	wallet_ptr->user_client_info.cert.field_ptr = NULL;
 	wallet_ptr->user_client_info.cert.field_len = 0;
-
-	printf("gooooooooooooo\n");
+	
 	/* prikey context assignment */
 	if (prikeyCtx_config.prikey_content.field_ptr != NULL)
 	{
-		printf("gccccccccccccccc\n");
 		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->user_client_info.prikeyCtx))
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate.");
@@ -127,13 +123,12 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 
 	/* initialization */
 	wallet_ptr->user_client_info.cert.field_ptr = NULL;
-	wallet_ptr->user_client_info.cert.field_len = 0;
+	wallet_ptr->user_client_info.cert.field_len = 0;	
 	wallet_ptr->tls_client_info.cert.field_ptr = NULL;
 	wallet_ptr->tls_client_info.cert.field_len = 0;
 
 	wallet_ptr->node_info.org_tls_ca_cert.length = 0;
 	wallet_ptr->http2Context_ptr = NULL;
-
 
     wallet_ptr->node_info.org_Id    = config_ptr->node_cfg.org_Id;
 	wallet_ptr->node_info.chain_Id  = config_ptr->node_cfg.chain_Id;
@@ -141,12 +136,16 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	wallet_ptr->node_info.node_url  = config_ptr->node_cfg.node_url;
 	wallet_ptr->node_info.claim_contract_name = config_ptr->node_cfg.claim_contract_name;
 	/* assignment */
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	wallet_ptr->node_info.org_tls_ca_cert.length = config_ptr->node_cfg.org_tls_ca_cert.length;
 	memset(wallet_ptr->node_info.org_tls_ca_cert.content, 0, BOAT_CHAINMAKER_CERT_MAX_LEN);
 	memcpy(wallet_ptr->node_info.org_tls_ca_cert.content, config_ptr->node_cfg.org_tls_ca_cert.content, wallet_ptr->node_info.org_tls_ca_cert.length);
+#endif
 
 	/* account_info assignment */
 	result = BoatHlchainmakerWalletSetUserClientInfo(wallet_ptr, config_ptr->user_prikey_config, config_ptr->user_cert_content);
+
+	/* tls set*/
 
 	/* http2Context_ptr assignment */
 	wallet_ptr->http2Context_ptr = http2Init();
@@ -155,8 +154,6 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to set accountInfo|TlsUInfo|networkInfo.");
 		return NULL;
 	}
-
-	printf("liuzhenhe1 = %s\n", wallet_ptr->node_info.org_Id);
 	return wallet_ptr;
 }
 
@@ -171,11 +168,11 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	/* account_info DeInit */
 	BoatFree(wallet_ptr->user_client_info.cert.field_ptr);
 	wallet_ptr->user_client_info.cert.field_len = 0;
-
-	/* tlsClinet_info DeInit */
+	
 #if 0
-	BoatFree(wallet_ptr->tls_rootCA_info.field_ptr);
-	wallet_ptr->tls_rootCA_info.field_len = 0;
+	/* tlsClinet_info DeInit */
+	BoatFree(wallet_ptr->tls_client_info.field_ptr);
+	wallet_ptr->tls.field_len = 0;
 	
 	for (i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++)
 	{
@@ -241,6 +238,14 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 	BoatHlchainmakerResponse *parsePtr = NULL;
 	Common__TxResponse *tx_reponse = NULL;
 
+	int ret, i;
+	Common__TxResponse common_tx_res = COMMON__TX_RESPONSE__INIT;
+	common_tx_res.message = "OK";
+	ret = common__tx_response__get_packed_size(&common_tx_res);
+
+	char* data = BoatMalloc(ret);
+	common__tx_response__pack(&common_tx_res, data);
+
 	boat_try_declare;
 
 	if (tx_ptr == NULL)
@@ -257,28 +262,18 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 	get_time_string(time_buf);
 	array_to_str(random_data.field ,file_hash, 16);
 	
-
 	BoatTransactionPara transaction_para;
 	transaction_para.n_parameters = 3;
 	transaction_para.parameters = BoatMalloc(transaction_para.n_parameters * sizeof(BoatKeyValuePair));
 
-	transaction_para.parameters[0].key   = key1;
-	
-	transaction_para.parameters[0].value = time_buf;
+	transaction_para.parameters[2].key   = key3;
+	 transaction_para.parameters[2].value = strcat(str_value, time_buf);
 
 	transaction_para.parameters[1].key   = key2;
-	transaction_para.parameters[1].value = file_hash;
+	transaction_para.parameters[1].value = file_hash;;
 
-	transaction_para.parameters[2].key   = key3;
-	transaction_para.parameters[2].value = strcat(str_value, time_buf);
-
-	int i = 0;
-
-	for (i = 0; i < 3; i++)
-	{
-		printf("ghgggkhn = %s\n", transaction_para.parameters[i].key);
-		printf("ghgggkhn = %s\n", transaction_para.parameters[i].value);
-	}
+	transaction_para.parameters[0].key   = key1;
+	transaction_para.parameters[0].value = time_buf;
 
 	result = hlchainmakerTransactionPacked(tx_ptr, method, &transaction_para, tx_type);
 	if (result != BOAT_SUCCESS)
@@ -287,7 +282,7 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 	}
 
 	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = node_cfg.node_url;
-
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	// clear last data
 	if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain != NULL)
 	{
@@ -305,15 +300,20 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = BoatMalloc(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 	memset(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, 0x00, tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 	memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, node_cfg.org_tls_ca_cert.content, node_cfg.org_tls_ca_cert.length);
-
+#endif
+	
 	tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->tx_reponse;
-	printf("BoatHlchainmakerTxExec 222222222222222\n");
 	parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
 	tx_ptr->wallet_ptr->http2Context_ptr->chainType = 2;
-	result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 
-	printf("BoatHlchainmakerTxExec 3333333333333333333\n");
-	tx_reponse = common__tx_response__unpack(NULL, parsePtr->httpResLen, parsePtr->http2Res);
+	result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
+	tx_reponse = common__tx_response__unpack(NULL, parsePtr->httpResLen-5, parsePtr->http2Res+5);
+	if (tx_reponse == NULL)
+	{
+		printf("tx_reponse.message NULL\n");
+	}
+	printf("tx_reponse.message =%s\n", tx_reponse->message);
+
 	if(parsePtr->httpResLen != 0)
 	{
 		BoatFree(parsePtr->http2Res);
@@ -322,7 +322,7 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 	parsePtr->httpResLen = 0;
 	if (tx_reponse != NULL) 
 	{
-		BoatLog(BOAT_LOG_NORMAL, "[http2]endorser respond received.");
+		BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
 	}
 	return result;
 }
