@@ -16,6 +16,7 @@
 
 #include "boatconfig.h"
 #include "boatiotsdk.h"
+#include <time.h>
 
 const BCHAR * chainmaker_user_key = "-----BEGIN EC PRIVATE KEY-----\n"
 									"MHcCAQEEIKK+XvZxuruLLZROu/kcL0DkTyru3B3YpRovEpjoufA1oAoGCCqGSM49\n"
@@ -64,10 +65,30 @@ BCHAR *claim_contract_name   = "fact";
 BCHAR *chainmaker_node_url   = "127.0.0.1:12301";
 BCHAR *chainmaker_host_name  = "chainmaker.org";
 BCHAR *invoke_metod          = "save";
-BCHAR *query_metod           = "find_by_file_hash";    
+BCHAR *query_metod           = "find_by_file_hash";   
+
+BCHAR *key1 = "time";
+BCHAR *key2 = "file_hash";
+BCHAR *key3 = "file_name";
+
+#define TIME_LEN 80
+BCHAR str_value[90] = {"file_"};
+BCHAR time_buf[TIME_LEN]  = {0};
+BCHAR file_hash[33] = {0};
 
 BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
 BoatHlchainmakerWalletConfig wallet_config = {0};
+
+void get_time_string(char* time_buf)
+{
+	time_t rawtime;
+	struct tm *info;
+
+	time(&rawtime);
+	info = localtime(&rawtime);
+	strftime(time_buf, TIME_LEN, "%Y-%m-%d %H:%M:%S", info);	
+	return;
+} 
 
 __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 {
@@ -108,10 +129,36 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	return BOAT_SUCCESS;
 }
 
+BoatTransactionPara get_invoke_para()
+{
+	//randrom generate
+	BoatFieldMax16B  random_data;
+	random_data.field_len = 16;
+	BoatRandom(random_data.field, random_data.field_len, NULL);
+
+	get_time_string(time_buf);
+	array_to_str(random_data.field ,file_hash, 16);
+	
+	BoatTransactionPara transaction_para;
+	transaction_para.n_parameters = 3;
+	transaction_para.parameters = BoatMalloc(transaction_para.n_parameters * sizeof(BoatKeyValuePair));
+
+	transaction_para.parameters[0].key   = key1;
+	transaction_para.parameters[0].value = time_buf;
+	transaction_para.parameters[1].key   = key2;
+	transaction_para.parameters[1].value = file_hash;;
+	transaction_para.parameters[2].key   = key3;
+	transaction_para.parameters[2].value = strcat(str_value, time_buf);
+	
+	return transaction_para;
+}
+
 int main(int argc, char *argv[])
 {
 	BOAT_RESULT           result  = BOAT_SUCCESS;
 	BoatHlchainmakerTx    tx_ptr;
+	BoatTransactionPara   inovke_transaction_para;
+	BoatTransactionPara   query_transaction_para;
 
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
@@ -130,8 +177,9 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	inovke_transaction_para = get_invoke_para();
 	/* step-4: set transaction 'invoke' command */
-	result = BoatHlchainmakerContractClaimInvoke(&tx_ptr, invoke_metod); 
+	result = BoatHlchainmakerContractClaimInvoke(&tx_ptr, &inovke_transaction_para, invoke_metod); 
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
@@ -139,7 +187,14 @@ int main(int argc, char *argv[])
 
 	/* step-5: wait seconds and 'query' the tansaction */
 	BoatSleep(3);
-	//result = BoatHlchainmakerContractClaimQuery(&tx_ptr, query_metod);
+	query_transaction_para.n_parameters = 1;
+	query_transaction_para.parameters = BoatMalloc(sizeof(BoatKeyValuePair));
+	query_transaction_para.parameters->key   = key2;
+	query_transaction_para.parameters->value = file_hash;
+
+	printf("query = %s\n", query_transaction_para.parameters->key);
+	printf("query = %s\n", query_transaction_para.parameters->value);
+	result = BoatHlchainmakerContractClaimQuery(&tx_ptr, &query_transaction_para, query_metod);
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
