@@ -53,7 +53,7 @@ void array_to_str(char* array, char *str, char lenth)
         }
         else if ((value_up >= 0xA) && (value_up <= 0xF))
         {
-             str[n++] = value_up + 0x37;
+             str[n++] = value_up + 0x57;
         }
 
         value_down = array[i] & 0x0f;
@@ -63,13 +63,13 @@ void array_to_str(char* array, char *str, char lenth)
         }
         else if ((value_down >= 0xA) && (value_down <= 0xF))
         {
-             str[n++] = value_down + 0x37;
+             str[n++] = value_down + 0x57;
         }
     }
 }
 
 
-BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, BoatTransactionPara *transaction_para, Common__TxHeader *tx_header, BoatFieldVariable *output_ptr)
+BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, BoatTransactionPara *transaction_para, BoatFieldVariable *output_ptr)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -99,15 +99,13 @@ BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, Boat
 	output_ptr->field_ptr = BoatMalloc(packed_length_payload);
 	common__transact_payload__pack(&transactPayload, output_ptr->field_ptr);
 	output_ptr->field_len = packed_length_payload;
-	printf("payload = %s\n", output_ptr->field_ptr);
 
 	for (i = 0; i < transaction_para->n_parameters; i++)
-	{
+	{	
 		BoatFree(transactPayload.parameters[i]);
 	}	
 
-	BoatFree(transactPayload.parameters);
-	
+	BoatFree(transactPayload.parameters);	
 	return result;
 }
 
@@ -125,12 +123,6 @@ void get_tx_header_data(BoatHlchainmakerTx *tx_ptr, TxType tx_type, Accesscontro
 	tx_header->tx_type         = tx_type;
 	tx_header->tx_id           = txid_array;
 	tx_header->timestamp       = timesec;
-	tx_header->expiration_time = 0;
-
-	sender->org_id             = org_id;
-	sender->member_info.len    = tx_ptr->wallet_ptr->node_info.org_tls_ca_cert.length;
-	sender->member_info.data   = tx_ptr->wallet_ptr->node_info.org_tls_ca_cert.content;
-	sender->is_full_cert       = true;
 	tx_header->sender          = sender;
 }
 
@@ -161,14 +153,21 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 		return BOAT_ERROR;
 	}
 
+	sender.org_id             = org_id;
+	sender.member_info.len    = tx_ptr->wallet_ptr->user_client_info.cert.field_len;
+	sender.member_info.data   = tx_ptr->wallet_ptr->user_client_info.cert.field_ptr;
+	sender.is_full_cert       = true;
+
 	get_tx_header_data(tx_ptr, tx_type, &sender, &tx_header);
 	/* step-1: compute payload packed length */
-	result = generateTxRequestPack(tx_ptr,method,transaction_para, &tx_header, &payloadPacked);
+	result = generateTxRequestPack(tx_ptr,method,transaction_para, &payloadPacked);
 
 	/* step-2: compute payload packed length */
 	packedHeaderLength = common__tx_header__get_packed_size(&tx_header);
 	packedLength = packedHeaderLength + payloadPacked.field_len;
+
 	hash_data.field_ptr = BoatMalloc(packedLength);
+	hash_data.field_len = packedLength;
 	common__tx_header__pack(&tx_header, hash_data.field_ptr);
 	hash_data.field_ptr += packedHeaderLength;
 	memcpy(hash_data.field_ptr, payloadPacked.field_ptr, payloadPacked.field_len);
@@ -177,6 +176,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	/* step-3: compute hash */
 	result = BoatHash(BOAT_HASH_SHA256,hash_data.field_ptr, 
 					   hash_data.field_len, hash, NULL, NULL );
+
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatHash.");
@@ -232,11 +232,9 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	{
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
-    }
-	
+     }
 	/* free malloc */
 	BoatFree(payloadPacked.field_ptr);
-	
 	return result;
 }
 
