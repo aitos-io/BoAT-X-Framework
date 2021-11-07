@@ -25,27 +25,7 @@ api_chainmaker.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "boatiotsdk.h"
 #include "http2intf.h"
 #include "common/result.pb-c.h"
-#include <time.h>
 
-const BCHAR *key1 = "time";
-const BCHAR *key2 = "file_hash";
-const BCHAR *key3 = "file_name";
-
-#define TIME_LEN 80
-BCHAR str_value[90] = {"file_"};
-BCHAR time_buf[TIME_LEN]  = {0};
-BCHAR file_hash[33] = {0};
-
-void get_time_string(char* time_buf)
-{
-	time_t rawtime;
-	struct tm *info;
-
-	time(&rawtime);
-	info = localtime(&rawtime);
-	strftime(time_buf, TIME_LEN, "%Y-%m-%d %H:%M:%S", info);	
-	return;
-}
 BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wallet_ptr,
 											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
 											 const BoatHlchainmakerCertInfoCfg certContent)
@@ -93,7 +73,6 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 		BoatFree(wallet_ptr->user_client_info.cert.field_ptr);
 		wallet_ptr->user_client_info.cert.field_len = 0;
 	}
-
 	return result;
 }
 
@@ -144,9 +123,6 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 
 	/* account_info assignment */
 	result = BoatHlchainmakerWalletSetUserClientInfo(wallet_ptr, config_ptr->user_prikey_config, config_ptr->user_cert_content);
-
-	/* tls set*/
-
 	/* http2Context_ptr assignment */
 	wallet_ptr->http2Context_ptr = http2Init();
 	if (result != BOAT_SUCCESS)
@@ -232,20 +208,13 @@ void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr)
 	}
 }
 
-__BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, BoatHlchainmakerTx *tx_ptr, char* method, TxType tx_type)
+__BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, BoatHlchainmakerTx *tx_ptr, BoatTransactionPara *transaction_para, char* method, TxType tx_type)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BoatHlchainmakerResponse *parsePtr = NULL;
 	Common__TxResponse *tx_reponse = NULL;
 
-	int ret, i;
-	Common__TxResponse common_tx_res = COMMON__TX_RESPONSE__INIT;
-	common_tx_res.message = "OK";
-	ret = common__tx_response__get_packed_size(&common_tx_res);
-
-	char* data = BoatMalloc(ret);
-	common__tx_response__pack(&common_tx_res, data);
-
+	int i;
 	boat_try_declare;
 
 	if (tx_ptr == NULL)
@@ -253,34 +222,13 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-
-	//randrom generate
-	BoatFieldMax16B  random_data;
-	random_data.field_len = 16;
-	BoatRandom(random_data.field, random_data.field_len, NULL);
-
-	get_time_string(time_buf);
-	array_to_str(random_data.field ,file_hash, 16);
-	
-	BoatTransactionPara transaction_para;
-	transaction_para.n_parameters = 3;
-	transaction_para.parameters = BoatMalloc(transaction_para.n_parameters * sizeof(BoatKeyValuePair));
-
-	transaction_para.parameters[2].key   = key3;
-	 transaction_para.parameters[2].value = strcat(str_value, time_buf);
-
-	transaction_para.parameters[1].key   = key2;
-	transaction_para.parameters[1].value = file_hash;;
-
-	transaction_para.parameters[0].key   = key1;
-	transaction_para.parameters[0].value = time_buf;
-
-	result = hlchainmakerTransactionPacked(tx_ptr, method, &transaction_para, tx_type);
+	printf("BoatHlchainmakerTxExec start\n");
+	result = hlchainmakerTransactionPacked(tx_ptr, method, transaction_para, tx_type);
 	if (result != BOAT_SUCCESS)
 	{
 		return result;
 	}
-
+printf("BoatHlchainmakerTxExec end\n");
 	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = node_cfg.node_url;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	// clear last data
@@ -303,6 +251,10 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 #endif
 	
 	tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->tx_reponse;
+	if (tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr == NULL)
+	{
+		printf("tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr NULL\n");
+	}
 	parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
 	tx_ptr->wallet_ptr->http2Context_ptr->chainType = 2;
 
@@ -327,7 +279,7 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 	return result;
 }
 
-BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, char* method)
+BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, BoatTransactionPara *transaction_para, char* method)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	TxType tx_type = TxType_INVOKE_USER_CONTRACT;
@@ -339,7 +291,7 @@ BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, char
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
-	result = BoatHlchainmakerTxExec(tx_ptr->wallet_ptr->node_info, tx_ptr, method, tx_type);
+	result = BoatHlchainmakerTxExec(tx_ptr->wallet_ptr->node_info, tx_ptr, transaction_para, method, tx_type);
 	if (result != BOAT_SUCCESS)
 	{
 		return BOAT_ERROR;
@@ -348,10 +300,10 @@ BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, char
 }
 
 
-BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, char* method)
+BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, BoatTransactionPara *transaction_para, char* method)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-	TxType tx_type = TxType_INVOKE_USER_CONTRACT;
+	TxType tx_type = TxType_QUERY_USER_CONTRACT;
 
 	if (tx_ptr == NULL)
 	{
@@ -360,7 +312,7 @@ BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, char*
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
-	result = BoatHlchainmakerTxExec(tx_ptr->wallet_ptr->node_info, tx_ptr,method, tx_type);
+	result = BoatHlchainmakerTxExec(tx_ptr->wallet_ptr->node_info, tx_ptr, transaction_para, method, tx_type);
 	if (result != BOAT_SUCCESS)
 	{
 		return BOAT_ERROR;
