@@ -18,53 +18,53 @@
 #include "boatiotsdk.h"
 
 const BCHAR * chainmaker_user_key = "-----BEGIN EC PRIVATE KEY-----\n"
-									"MHcCAQEEIMWFr8I0WTT4WZKlToYIA/009/76L92EdseVcdTkCIxcoAoGCCqGSM49\n"
-									"AwEHoUQDQgAEn+VS1wxvWZ7KexzxBaqMFbkAShsYN5jNvl0tK8U4ZQE2vazs5h6V\n"
-									"0QnHI6cZNYfitnm3q6ua3UDcK5Vmi6w2SQ==\n"
-									"-----END EC PRIVATE KEY-----";
+									"MHcCAQEEIKK+XvZxuruLLZROu/kcL0DkTyru3B3YpRovEpjoufA1oAoGCCqGSM49\n"
+									"AwEHoUQDQgAEr4tYkplYDG56ZHngTHV16MYfIp7cThIvotDdzY1UxNDCWRf+9FdX\n"
+									"oLXO+LU8fJmKEL3C9wcYe2CwuxxnZnuaJA==\n"
+									"-----END EC PRIVATE KEY-----\n";
 
-const BCHAR *chainmaker_user_cert = "-----BEGIN CERTIFICATE-----\n"
-									"MIICZjCCAg2gAwIBAgIDBn+vMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+const BCHAR * chainmaker_user_cert ="-----BEGIN CERTIFICATE-----\n"
+									"MIICaTCCAg6gAwIBAgIDCQLCMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
 									"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
 									"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-									"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTAxMzExMDY0MVoXDTI2\n"
-									"MTAxMjExMDY0MVowgZAxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+									"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTEwNTA3MDQwNFoXDTI2\n"
+									"MTEwNDA3MDQwNFowgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
 									"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
-									"MQ8wDQYDVQQLEwZjbGllbnQxKzApBgNVBAMTImNsaWVudDEudGxzLnd4LW9yZzEu\n"
-									"Y2hhaW5tYWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASf5VLXDG9Z\n"
-									"nsp7HPEFqowVuQBKGxg3mM2+XS0rxThlATa9rOzmHpXRCccjpxk1h+K2eberq5rd\n"
-									"QNwrlWaLrDZJo1owWDApBgNVHQ4EIgQgTx52MwE6udu+5+cWWcDTyX8tr/CvbZ+2\n"
-									"8gAbU2jBIb8wKwYDVR0jBCQwIoAgIpsb3IHzZkTPGWvYWDYBnEhKUdSl0xXwXf+N\n"
-									"yJ3VNMEwCgYIKoZIzj0EAwIDRwAwRAIgdY3hnAn42SQhsTUG9bwvfnbIObfModMT\n"
-									"Jb84nb/3IDQCIBl7allce0cJ342OGWnoaD4l9hsd43mD0erI9fM/H2yv\n"
+									"MQ8wDQYDVQQLEwZjbGllbnQxLDAqBgNVBAMTI2NsaWVudDEuc2lnbi53eC1vcmcx\n"
+									"LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEr4tYkplY\n"
+									"DG56ZHngTHV16MYfIp7cThIvotDdzY1UxNDCWRf+9FdXoLXO+LU8fJmKEL3C9wcY\n"
+									"e2CwuxxnZnuaJKNaMFgwKQYDVR0OBCIEII98SnKFINcwDJPKFO5j0Lg74NUEGB7A\n"
+									"OB0rBrj+255iMCsGA1UdIwQkMCKAIC6CzrupVs0JiDU7tsAhWVOWWQqJnQl3NMFY\n"
+									"ISPFx9atMAoGCCqGSM49BAMCA0kAMEYCIQD9G8pXsRig7CWUXysmipY2S+QcmXyS\n"
+									"a1azgQ44SZFRowIhAOSqB0T6fjVYc6owMKfUtUJpEC1XSO/tlHDD0NpdLCWk\n"
 									"-----END CERTIFICATE-----\n";
 
-const BCHAR * chainmaker_root_ca_cert = "-----BEGIN CERTIFICATE-----\n"
-									    "MIICnjCCAkSgAwIBAgIDAItWMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
-										"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
-										"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-										"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTAxMzExMDY0MVoXDTMx\n"
-										"MTAxMTExMDY0MVowgYoxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
-										"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
-										"MRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMTGWNhLnd4LW9yZzEuY2hhaW5t\n"
-										"YWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQQWQ4YdSBc+BCf1bfr\n"
-										"0pEvffC8XLcaKlu+ltjsd56MKTz8SI4haQGnXeXoOnkqMtxV3bjeGkJEllo8r7Up\n"
-										"e6ILo4GWMIGTMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud\n"
-										"DgQiBCAimxvcgfNmRM8Za9hYNgGcSEpR1KXTFfBd/43IndU0wTBFBgNVHREEPjA8\n"
-										"gg5jaGFpbm1ha2VyLm9yZ4IJbG9jYWxob3N0ghljYS53eC1vcmcxLmNoYWlubWFr\n"
-										"ZXIub3JnhwR/AAABMAoGCCqGSM49BAMCA0gAMEUCIQC0i6lAHBpgiE1W2pW35zdw\n"
-										"XMGyayGkiOGTgKOZ0W+aSQIgcT0DiYqQVcop/oKMlaV+FTagEcNw0+sjts36uSQA\n"
-										"PT4=\n"
-										"-----END CERTIFICATE-----\n";
 
 
-const BCHAR *chain_Id              = "chain1";
-const BCHAR *org_Id                = "wx-org1.chainmaker.org";
-const BCHAR *claim_contract_name   = "claim001";
-const BCHAR *chainmaker_node_url   = "127.0.0.1:12301";
-const BCHAR *chainmaker_host_name  = "chainmaker.org";
-const BCHAR *invoke_metod          = "save";
-const BCHAR *query_metod           = "find_by_file_hash";    
+const BCHAR *chainmaker_org_tls_ca_cert =   "-----BEGIN CERTIFICATE-----\n"
+											"MIICaDCCAg2gAwIBAgIDASOLMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+											"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
+											"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
+											"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTEwNDE1MjYxOFoXDTI2\n"
+											"MTEwMzE1MjYxOFowgZAxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+											"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
+											"MQ8wDQYDVQQLEwZjbGllbnQxKzApBgNVBAMTImNsaWVudDEudGxzLnd4LW9yZzEu\n"
+											"Y2hhaW5tYWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnsMSX7Ext\n"
+											"ve3k6iuic565OvEbyzqpZhmOJzSHyHAeQLoAaxaVrfdhKSKv+BTP+G4B9vtoiTv2\n"
+											"ivkx+0fusbHCo1owWDApBgNVHQ4EIgQgTNoJ0i4SvDiXqMjvIT34OwlzhRUlRJEv\n"
+											"DzJoWVVpimAwKwYDVR0jBCQwIoAgFXNa14VEFwAzhtccsY5AY9Mxt7qk6R5DFot6\n"
+											"C1QeLzcwCgYIKoZIzj0EAwIDSQAwRgIhAJ71SLWBzKM7dw0SQ9T4UmzAfzTFBCqZ\n"
+											"g8ss2+gWyqP9AiEAp2tcMOY4JPQcWT6sG0Q7zQdP8LQdmEqZrwZFubJUtSE=\n"
+											"-----END CERTIFICATE-----\n";
+
+
+BCHAR *chain_Id              = "chain1";
+BCHAR *org_Id                = "wx-org1.chainmaker.org";
+BCHAR *claim_contract_name   = "fact";
+BCHAR *chainmaker_node_url   = "127.0.0.1:12301";
+BCHAR *chainmaker_host_name  = "chainmaker.org";
+BCHAR *invoke_metod          = "save";
+BCHAR *query_metod           = "find_by_file_hash";    
 
 BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
 BoatHlchainmakerWalletConfig wallet_config = {0};
@@ -81,24 +81,17 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	wallet_config.user_prikey_config.prikey_content.field_len = strlen(chainmaker_user_key) + 1; 
 
 	//set user cert context
-	wallet_config.user_cert_content.length = strlen(chainmaker_user_cert) + 1;
+	wallet_config.user_cert_content.length = strlen(chainmaker_user_cert);
 	memcpy(wallet_config.user_cert_content.content, chainmaker_user_cert, wallet_config.user_cert_content.length);
-
-	//root ca pool
-	if (strlen(chainmaker_root_ca_cert) < BOAT_CHAINMAKER_CERT_MAX_LEN)
-	{
-		memcpy(wallet_config.root_ca_cert[0], chainmaker_root_ca_cert, strlen(chainmaker_root_ca_cert));	
-	}
 	
-	wallet_config.root_ca_number = 1;
-	wallet_config.node_info.org_Id    = org_Id;
-	wallet_config.node_info.chain_Id  = chain_Id;
-	wallet_config.node_info.node_url  = chainmaker_node_url;
-	wallet_config.node_info.host_name = chainmaker_host_name;
-	wallet_config.node_info.claim_contract_name  = claim_contract_name;
-	wallet_config.node_info.tls_root_cert.length = strlen(chainmaker_root_ca_cert);
-	memcpy(wallet_config.node_info.tls_root_cert.content, chainmaker_root_ca_cert, wallet_config.node_info.tls_root_cert.length);
-			
+	wallet_config.node_cfg.org_Id    = org_Id;
+	wallet_config.node_cfg.chain_Id  = chain_Id;
+	wallet_config.node_cfg.node_url  = chainmaker_node_url;
+	wallet_config.node_cfg.host_name = chainmaker_host_name;
+	wallet_config.node_cfg.claim_contract_name  = claim_contract_name;
+	wallet_config.node_cfg.org_tls_ca_cert.length = strlen(chainmaker_org_tls_ca_cert);
+	memcpy(wallet_config.node_cfg.org_tls_ca_cert.content, chainmaker_org_tls_ca_cert, wallet_config.node_cfg.org_tls_ca_cert.length);
+		
 	/* create chainmaker wallet */
 	index = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
 	if (index == BOAT_ERROR)
@@ -107,6 +100,11 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	}
 	
 	g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(index);
+	if (g_chaninmaker_wallet_ptr == NULL)
+	{
+		return BOAT_ERROR;
+	}
+
 	return BOAT_SUCCESS;
 }
 
@@ -114,7 +112,7 @@ int main(int argc, char *argv[])
 {
 	BOAT_RESULT           result  = BOAT_SUCCESS;
 	BoatHlchainmakerTx    tx_ptr;
-	
+
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
 
@@ -126,14 +124,14 @@ int main(int argc, char *argv[])
 	}
 
 	/* step-3: Chainmaker transaction structure initialization */
-	result = BoatHlChainmakerTxInit(&tx_ptr, g_chaninmaker_wallet_ptr);
+	result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, &tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
 	}
 
 	/* step-4: set transaction 'invoke' command */
-	result += BoatHlchainmakerContractClaimInvoke(&tx_ptr, "save"); 
+	result = BoatHlchainmakerContractClaimInvoke(&tx_ptr, invoke_metod); 
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
@@ -141,12 +139,12 @@ int main(int argc, char *argv[])
 
 	/* step-5: wait seconds and 'query' the tansaction */
 	BoatSleep(3);
-	result = BoatHlchainmakerContractClaimQuery(&tx_ptr, "find_by_file_hash");
+	//result = BoatHlchainmakerContractClaimQuery(&tx_ptr, query_metod);
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
 	}
-	
+
 	/* step-6: chainmaker transaction structure Deinitialization */
 	BoatHlchainmakerTxDeInit(&tx_ptr);
 	
