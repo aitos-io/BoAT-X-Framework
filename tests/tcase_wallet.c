@@ -26,7 +26,8 @@
 
 
 
-START_TEST(test_BoatWalletCreate_1) {
+START_TEST(test_BoatWalletCreate_1) 
+{
     BoatEthWalletConfig wallet_config = {0};
     BSINT32 rtnVal;
     extern BoatIotSdkContext g_boat_iot_sdk_context;
@@ -36,7 +37,7 @@ START_TEST(test_BoatWalletCreate_1) {
     wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     strncpy(wallet_config.node_url_str, TEST_ETH_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
     /* 2. execute unit test */
-    rtnVal = BoatWalletCreate( BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig) );
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
     /* 3. verify test result */
     /* 3-1. verify the return value(if have) */
     ck_assert_int_eq(rtnVal, 0);
@@ -49,7 +50,7 @@ START_TEST(test_BoatWalletCreate_1) {
     /* if BoatWalletCreate be invoked again, the return value should growth to 1.
        note: in a unit test, if a faild condition be detected, it will break and the following
        test result can't be verified. */
-    rtnVal = BoatWalletCreate( BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig) );
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
     /* 3. verify test result */
     /* 3-1. verify the return value(if have) */
     ck_assert_int_eq(rtnVal, 1);
@@ -61,7 +62,8 @@ START_TEST(test_BoatWalletCreate_1) {
 }
 END_TEST
 
-START_TEST(test_BoatWalletCreate_2) {
+START_TEST(test_BoatWalletCreate_2) 
+{
     BoatEthWalletConfig wallet_config = {0};
     BSINT32 rtnVal;
     extern BoatIotSdkContext g_boat_iot_sdk_context;
@@ -71,7 +73,7 @@ START_TEST(test_BoatWalletCreate_2) {
     wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     strncpy(wallet_config.node_url_str, TEST_ETH_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
     /* 2. execute unit test */
-    rtnVal = BoatWalletCreate( BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig) );
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
     /* 3. verify test result */
     /* 3-1. verify the return value(if have) */
     ck_assert_int_eq(rtnVal, 0);
@@ -84,7 +86,8 @@ START_TEST(test_BoatWalletCreate_2) {
 END_TEST
 
 
-Suite * make_wallet_suite(void) {
+Suite *make_wallet_suite(void) 
+{
     /* Create Suite */
     Suite *s_wallet = suite_create("wallet");
     /* Create test cases */

@@ -509,21 +509,4 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
 }
 
 
-BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr)
-{
-    BOAT_RESULT result = BOAT_ERROR;
-
-    result = PlatONSendRawtx(tx_ptr);
-
-    if (result == BOAT_SUCCESS)
-    {
-        result = BoatPlatONGetTransactionReceipt(tx_ptr);
-    }
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "PlatONSendRawtx failed.");
-	}
-
-    return result;
-}
 #endif /* end of PROTOCOL_USE_PLATON */

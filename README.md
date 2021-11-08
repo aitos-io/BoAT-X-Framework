@@ -158,7 +158,7 @@ real node of an Ethereum compatible blockchain network must be available.
 $chmod a+x ./build/demo/demo_<protocol>/<demo_name>
 $./build/demo/demo_<protocol>/<demo_name>
 ```
-\<protocol\> can be `ethereum` `fiscobcos` `platone` `fabric` `platon`.  
+\<protocol\> can be `ethereum` `fiscobcos` `platone` `fabric` `platon` `hw_bcs`.  
 Make sure the network connection to the blockchain node (or blockchain simulator) is available.
 
 

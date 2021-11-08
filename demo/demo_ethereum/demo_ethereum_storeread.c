@@ -205,7 +205,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
     if (result_str != NULL)
     {
         result_str = StoreRead_readListLength(&tx_ctx);
-        result = BoatEthPraseRpcResponseResult(result_str, "", &prase_result);
+        result = BoatEthPraseRpcResponseStringResult(result_str, &prase_result);
         if(result == BOAT_SUCCESS && result_str != NULL )
         {
             //BoatLog(BOAT_LOG_NORMAL, "readListLength returns: %s", result_str);
@@ -217,7 +217,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
             for (index = 0; index < list_len; index++)
             {
                 result_str = StoreRead_readListByIndex(&tx_ctx, index);
-                result     = BoatEthPraseRpcResponseResult(result_str, "", &prase_result);
+                result     = BoatEthPraseRpcResponseStringResult(result_str, &prase_result);
                 if (result == BOAT_SUCCESS && result_str != NULL)
                 {
                     //BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", prase_result.field_ptr);
@@ -235,7 +235,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
 
 int main(int argc, char *argv[])
 {
-    BOAT_RESULT  result  = BOAT_SUCCESS;
+    BOAT_RESULT result = BOAT_SUCCESS;
 
     /* step-1: Boat SDK initialization */
     BoatIotSdkInit();

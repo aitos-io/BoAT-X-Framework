@@ -217,6 +217,23 @@ BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txty
  ******************************************************************************/
 BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
 
+/*!****************************************************************************
+ * @brief Construct a raw PlatONE transaction synchronously.
+ *
+ * @details
+ *   This function is similar to PlatoneSendRawtx except that it waits for the
+ *   transaction being mined.
+ *	 
+ * @param[in] tx_ptr
+ *   A pointer to the context of the transaction.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
+ *   of the error codes.
+ *	 
+ * @see PlatoneSendRawtx()
+ ******************************************************************************/
+BOAT_RESULT BoatPlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief Sign and send a transaction. Also call a stateful contract function.

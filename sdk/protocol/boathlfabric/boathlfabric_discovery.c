@@ -648,9 +648,7 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	DiscoverRes discoverResult;
 	BUINT32 len = 0, offset = 0;
 	BCHAR *port;
-	BCHAR *IP = "192.168.132.190";
 	int i,j,k,l,m;
-	// BCHAR *IP2 = "192.168.132.190:";
 	// boat_try_declare;
 
 	if (tx_ptr == NULL)
@@ -829,9 +827,9 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 				len = strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint);
 				tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = BoatMalloc(len);
 
-				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, IP, strlen(IP));
-				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl + strlen(IP), port, strlen(port));
-				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
+				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, IP, strlen(IP));
+				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl + strlen(IP), port, strlen(port));
+				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
 
 				for ( l = 0; l < discoverResult.discoverConfig.discoverMsps.num; l++)
 				{
@@ -851,10 +849,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		len = sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port) + strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host) + 1;
 		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(len);
 		offset = 0;
-		// memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host, strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host));
-		// offset += strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host);
-		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, IP, strlen(IP));
-		offset += strlen(IP);
+		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host, strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host));
+		offset += strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host);
+		// memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, IP, strlen(IP));
+		// offset += strlen(IP);
 		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl[offset++] = ':';
 		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port, sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port));
 

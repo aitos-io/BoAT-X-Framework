@@ -447,6 +447,18 @@ class CFunctionGen():
             i += 1
         
         return False
+    
+    def is_Change_Blockchain_State(self, abi_item):
+        if ('constant' in abi_item):
+            if abi_item['constant'] == True:
+                return True
+            else:
+                return False
+        else:
+            if (abi_item['stateMutability'] == 'nonpayable') or (abi_item['stateMutability'] == 'payable'):
+                return False
+            else:
+                return True
 
     def get_input_type(self, abi_item):
         if abi_item in type_mapping:
@@ -765,8 +777,7 @@ class CFunctionGen():
         inputName_str = ''
 
         # Generate local variables
-        
-        if abi_item['constant'] == True:
+        if self.is_Change_Blockchain_State(abi_item):
             func_body_str += '    BCHAR *call_result_str = NULL;\n'
         else:
             func_body_str += '    static BCHAR tx_hash_str[67] = \"\";\n'
@@ -815,7 +826,7 @@ class CFunctionGen():
         func_body_str     += '    }\n\n'
 
         # Set Nonce
-        if abi_item['constant'] == False:   
+        if not self.is_Change_Blockchain_State(abi_item):
             func_body_str += '    boat_try(BoatFiscobcosTxSetNonce(tx_ptr, BOAT_FISCOBCOS_NONCE_AUTO));\n\n'
 
 
@@ -1005,7 +1016,7 @@ class CFunctionGen():
                 func_body_str += '    }\n\n'
             i = i + 1
 
-        if abi_item['constant'] == True:
+        if self.is_Change_Blockchain_State(abi_item):
             # for state-less funciton call
             func_body_str += '    call_result_str = BoatFiscobcosCallContractFunc(tx_ptr, function_prototye_str, data_field.field_ptr+4, data_field.field_len-4);\n\n'
         else:
@@ -1029,8 +1040,8 @@ class CFunctionGen():
 
         func_body_str += '\n    BoatFree(data_field.field_ptr);\n'
 
-        if abi_item['constant'] == True: 
-            func_body_str += '    return(call_result_str);\n'  
+        if self.is_Change_Blockchain_State(abi_item):
+            func_body_str += '    return(call_result_str);\n'
         else:
             func_body_str += '    return(tx_hash_str);\n'
 
