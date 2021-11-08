@@ -165,7 +165,8 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	wallet_ptr = NULL;
 }
 
-BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet *wallet_ptr, BoatHlchainmakerTx *tx_ptr)
+BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr,const BCHAR* chain_id, const BCHAR* org_id,
+								   const BCHAR* contract_name, BoatHlchainmakerTx* tx_ptr)
 {
 	BUINT32 stringLen;
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -178,6 +179,11 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet *wallet_ptr, Boa
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
     tx_ptr->tx_reponse.httpResLen = 0;
+
+    tx_ptr->client_info.chain_id      = chain_id;
+    tx_ptr->client_info.org_id        = org_id;
+    tx_ptr->client_info.contract_name = contract_name;
+
     tx_ptr->wallet_ptr = (BoatHlchainmakerWallet *)wallet_ptr;
 	stringLen = wallet_ptr->node_info.org_tls_ca_cert.length;
 	memcpy(tx_ptr->wallet_ptr->node_info.org_tls_ca_cert.content, wallet_ptr->node_info.org_tls_ca_cert.content, stringLen);
