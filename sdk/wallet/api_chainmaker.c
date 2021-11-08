@@ -109,11 +109,8 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	wallet_ptr->node_info.org_tls_ca_cert.length = 0;
 	wallet_ptr->http2Context_ptr = NULL;
 
-    wallet_ptr->node_info.org_Id    = config_ptr->node_cfg.org_Id;
-	wallet_ptr->node_info.chain_Id  = config_ptr->node_cfg.chain_Id;
 	wallet_ptr->node_info.host_name = config_ptr->node_cfg.host_name;
 	wallet_ptr->node_info.node_url  = config_ptr->node_cfg.node_url;
-	wallet_ptr->node_info.claim_contract_name = config_ptr->node_cfg.claim_contract_name;
 	/* assignment */
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	wallet_ptr->node_info.org_tls_ca_cert.length = config_ptr->node_cfg.org_tls_ca_cert.length;
