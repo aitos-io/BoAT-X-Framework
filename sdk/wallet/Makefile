@@ -3,7 +3,7 @@
 #SOURCES = $(wildcard *.c)
 SOURCES = boatwallet.c \
           boatversion.c
-		  
+
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
 	SOURCES += api_ethereum.c
 endif
@@ -22,6 +22,11 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_HLHUAWEI), 1)
 	SOURCES += api_hlhuawei.c
 endif
+
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
+	SOURCES += api_chainmaker.c
+endif
+
 
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/wallet
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))

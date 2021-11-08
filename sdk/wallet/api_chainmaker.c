@@ -146,14 +146,14 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	/* tlsClinet_info DeInit */
-	BoatFree(wallet_ptr->tls_client_info.field_ptr);
-	wallet_ptr->tls.field_len = 0;
+	// BoatFree(wallet_ptr->tls_client_info.field_ptr);
+	// wallet_ptr->tls.field_len = 0;
 	
-	for (i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++)
-	{
-		BoatFree(wallet_ptr->tlsCAchain.ca[i].field_ptr);
-		wallet_ptr->tlsCAchain.ca[i].field_len = 0;
-	}
+	// for (i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++)
+	// {
+	// 	BoatFree(wallet_ptr->tlsCAchain.ca[i].field_ptr);
+	// 	wallet_ptr->tlsCAchain.ca[i].field_len = 0;
+	// }
 #endif
 
 	wallet_ptr->node_info.host_name = NULL;
@@ -180,7 +180,7 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet *wallet_ptr, Boa
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments 'tx_ptr' or 'wallet_ptr' cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-   
+    tx_ptr->tx_reponse.httpResLen = 0;
     tx_ptr->wallet_ptr = (BoatHlchainmakerWallet *)wallet_ptr;
 	stringLen = wallet_ptr->node_info.org_tls_ca_cert.length;
 	memcpy(tx_ptr->wallet_ptr->node_info.org_tls_ca_cert.content, wallet_ptr->node_info.org_tls_ca_cert.content, stringLen);
@@ -215,13 +215,11 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-	printf("BoatHlchainmakerTxExec start\n");
 	result = hlchainmakerTransactionPacked(tx_ptr, method, transaction_para, tx_type);
 	if (result != BOAT_SUCCESS)
 	{
 		return result;
 	}
-printf("BoatHlchainmakerTxExec end\n");
 	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = node_cfg.node_url;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	// clear last data
@@ -244,10 +242,6 @@ printf("BoatHlchainmakerTxExec end\n");
 #endif
 	
 	tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->tx_reponse;
-	if (tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr == NULL)
-	{
-		printf("tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr NULL\n");
-	}
 	parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
 	tx_ptr->wallet_ptr->http2Context_ptr->chainType = 2;
 

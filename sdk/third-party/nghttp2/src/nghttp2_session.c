@@ -3266,6 +3266,7 @@ static ssize_t session_recv(nghttp2_session *session, uint8_t *buf,
   ssize_t rv;
   rv = session->callbacks.recv_callback(session, buf, len, 0,
                                         session->user_data);
+
   if (rv > 0) {
     if ((size_t)rv > len) {
       return NGHTTP2_ERR_CALLBACK_FAILURE;

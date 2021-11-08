@@ -44,6 +44,11 @@ void array_to_str(char* array, char *str, char lenth)
     int i = 0;
     int n = 0;
 
+    if ((array == NULL) || (str == NULL))
+    {
+    		return;
+    }
+
     for (i = 0; i < lenth; i++)
     {
         value_up = (array[i] & 0xf0) >> 4;
@@ -99,6 +104,21 @@ BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, Boat
 	output_ptr->field_ptr = BoatMalloc(packed_length_payload);
 	common__transact_payload__pack(&transactPayload, output_ptr->field_ptr);
 	output_ptr->field_len = packed_length_payload;
+//liuzhenhe
+	printf("payload contract_name contract_name = %s\n",transactPayload.contract_name );
+	printf("payload contract_name method = %s\n",transactPayload.method);
+	for(i = 0; i < transactPayload.n_parameters; i++)
+	{
+		printf("payloadpara = %s\n",transactPayload.parameters[i]->key);
+		printf("payloadpara = %s\n",transactPayload.parameters[i]->value);
+	}
+
+	printf("payload to proto= %d\n", output_ptr->field_len);
+	for (i = 0; i < output_ptr->field_len; i++)
+	{
+		printf("%02x",output_ptr->field_ptr[i]);
+	}
+	printf("payload to proto\n");
 
 	for (i = 0; i < transaction_para->n_parameters; i++)
 	{	
@@ -126,7 +146,7 @@ void get_tx_header_data(BoatHlchainmakerTx *tx_ptr, TxType tx_type, Accesscontro
 	tx_header->sender          = sender;
 }
 
-BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* method,BoatTransactionPara *transaction_para, TxType tx_type)
+BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* method, BoatTransactionPara *transaction_para, TxType tx_type)
 {
 	Common__TxRequest  tx_request  = COMMON__TX_REQUEST__INIT;
 	Common__TxHeader   tx_header   = COMMON__TX_HEADER__INIT;
@@ -159,6 +179,14 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	sender.is_full_cert       = true;
 
 	get_tx_header_data(tx_ptr, tx_type, &sender, &tx_header);
+	//liuzhenhe
+	printf("get_tx_header_data origin id = %s\n",tx_header.chain_id);
+	printf("get_tx_header_data org_id  = %s\n",tx_header.sender->org_id);
+	printf("get_tx_header_data member_info  = %s\n",tx_header.sender->member_info.data);
+	printf("get_tx_header_data is_full_cert  = %d\n",tx_header.sender->is_full_cert);
+	printf("get_tx_header_data tx_id  = %s\n",tx_header.tx_id);
+	printf("get_tx_header_data timestamp  = %d\n",tx_header.timestamp);
+	printf("get_tx_header_data tx_type  = %d\n",tx_header.tx_type);
 	/* step-1: compute payload packed length */
 	result = generateTxRequestPack(tx_ptr,method,transaction_para, &payloadPacked);
 
@@ -169,10 +197,23 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	hash_data.field_ptr = BoatMalloc(packedLength);
 	hash_data.field_len = packedLength;
 	common__tx_header__pack(&tx_header, hash_data.field_ptr);
+	 int i = 0;
+	printf("tx_header to proto\n");
+	for (i = 0; i < packedHeaderLength; i++)
+	{
+		printf("%02x",hash_data.field_ptr[i]);
+	}
+	printf("tx_header to proto\n");
 	hash_data.field_ptr += packedHeaderLength;
 	memcpy(hash_data.field_ptr, payloadPacked.field_ptr, payloadPacked.field_len);
 	hash_data.field_ptr -= packedHeaderLength;
 
+	printf("hash data start\n");
+	for (i = 0; i < hash_data.field_len; i++)
+	{
+		printf("%02x", hash_data.field_ptr[i]);
+	}
+     printf("hash data end\n");
 	/* step-3: compute hash */
 	result = BoatHash(BOAT_HASH_SHA256,hash_data.field_ptr, 
 					   hash_data.field_len, hash, NULL, NULL );
@@ -192,7 +233,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
 		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, chainmakerProposalTransactionPacked_exception);
 	}
-	
+	printf("BoatSignature finish\n");
 	if (!signatureResult.pkcs_format_used)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
@@ -206,7 +247,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	tx_request.signature.len   = signatureResult.pkcs_sign_length;
 	tx_request.signature.data  = signatureResult.pkcs_sign;
 	packedLength               = common__tx_request__get_packed_size(&tx_request);
-
+	printf("envelope finish\n");
 	/* step-6: packed length assignment */
 	tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len = packedLength + sizeof(grpcHeader);
 	if( tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN )
@@ -214,6 +255,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 		BoatLog(BOAT_LOG_CRITICAL, "packed length out of sendbuffer size limit.");
 	}
 	
+		printf("envelope finish\n");
 	/* step-7: packed data assignment */
 	/* ---grpcHeader compute */
 	grpcHeader[0] = 0x00;//uncompressed
@@ -221,7 +263,6 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	{
 		grpcHeader[i + 1] = (packedLength >> (32 - 8*(i+1)))&0xFF;
 	}
-
 	/* ---generate packed data */
 	packedData = tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr;
 	memcpy(packedData, grpcHeader, sizeof(grpcHeader));

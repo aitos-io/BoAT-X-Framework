@@ -33,14 +33,12 @@
 #include <string.h>
 
 /* net releated include */
-#if (PROTOCOL_USE_HLFABRIC == 1)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 
-#endif
 #include <sys/time.h>
 
 #if (PROTOCOL_USE_HLFABRIC == 1)

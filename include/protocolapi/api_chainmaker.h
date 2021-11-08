@@ -28,7 +28,7 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 /*! @defgroup eth-api boat chainmaker-API
  * @{
  */
-#define BOAT_HLFABRIC_TLS_SUPPORT                0 //!< If need client support TLS, set it to 1.
+#define BOAT_HLFABRIC_TLS_SUPPORT                1 //!< If need client support TLS, set it to 1.
 #define BOAT_CHAINMAKER_CERT_MAX_LEN 1024
 #define BOAT_CHAINMAKER_ROOTCA_MAX_NUM 3
 #define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN     8192 //!< The maximum length of HTTP2 send buffer
@@ -126,8 +126,8 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 										   BUINT32 config_size);
 BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet *wallet_ptr, BoatHlchainmakerTx *tx_ptr);
 void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr);
-BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, char* method);
-BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, char* method);
+BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr,  BoatTransactionPara *transaction_para, char* method);
+BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr,  BoatTransactionPara *transaction_para, char* method);
 
 
 /*! @}*/

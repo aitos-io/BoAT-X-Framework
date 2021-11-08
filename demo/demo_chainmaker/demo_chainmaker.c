@@ -19,43 +19,45 @@
 #include <time.h>
 
 const BCHAR * chainmaker_user_key = "-----BEGIN EC PRIVATE KEY-----\n"
-									"MHcCAQEEIKK+XvZxuruLLZROu/kcL0DkTyru3B3YpRovEpjoufA1oAoGCCqGSM49\n"
-									"AwEHoUQDQgAEr4tYkplYDG56ZHngTHV16MYfIp7cThIvotDdzY1UxNDCWRf+9FdX\n"
-									"oLXO+LU8fJmKEL3C9wcYe2CwuxxnZnuaJA==\n"
-									"-----END EC PRIVATE KEY-----\n";
+"MHcCAQEEIGAsHq9vdQSPywbdy0vBEzWexkMwjtO0jjn7aiSoPZZKoAoGCCqGSM49\n"
+"AwEHoUQDQgAE5lSVTF90J60bc8U2MNyYzmS1f7Ez1jOUXNXrakbHU6ZRWmZpAswb\n"
+"mhWkOfpEWBoegtGdPgIeIJX8z8KT7RL1YQ==\n"
+"-----END EC PRIVATE KEY-----\n";
 
 const BCHAR * chainmaker_user_cert ="-----BEGIN CERTIFICATE-----\n"
-									"MIICaTCCAg6gAwIBAgIDCQLCMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
-									"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
-									"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-									"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTEwNTA3MDQwNFoXDTI2\n"
-									"MTEwNDA3MDQwNFowgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
-									"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
-									"MQ8wDQYDVQQLEwZjbGllbnQxLDAqBgNVBAMTI2NsaWVudDEuc2lnbi53eC1vcmcx\n"
-									"LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEr4tYkplY\n"
-									"DG56ZHngTHV16MYfIp7cThIvotDdzY1UxNDCWRf+9FdXoLXO+LU8fJmKEL3C9wcY\n"
-									"e2CwuxxnZnuaJKNaMFgwKQYDVR0OBCIEII98SnKFINcwDJPKFO5j0Lg74NUEGB7A\n"
-									"OB0rBrj+255iMCsGA1UdIwQkMCKAIC6CzrupVs0JiDU7tsAhWVOWWQqJnQl3NMFY\n"
-									"ISPFx9atMAoGCCqGSM49BAMCA0kAMEYCIQD9G8pXsRig7CWUXysmipY2S+QcmXyS\n"
-									"a1azgQ44SZFRowIhAOSqB0T6fjVYc6owMKfUtUJpEC1XSO/tlHDD0NpdLCWk\n"
-									"-----END CERTIFICATE-----\n";
+"MIICaDCCAg6gAwIBAgIDCK2ZMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
+"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
+"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTEwNzE1MzE0NloXDTI2\n"
+"MTEwNjE1MzE0NlowgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
+"MQ8wDQYDVQQLEwZjbGllbnQxLDAqBgNVBAMTI2NsaWVudDEuc2lnbi53eC1vcmcx\n"
+"LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE5lSVTF90\n"
+"J60bc8U2MNyYzmS1f7Ez1jOUXNXrakbHU6ZRWmZpAswbmhWkOfpEWBoegtGdPgIe\n"
+"IJX8z8KT7RL1YaNaMFgwKQYDVR0OBCIEIP4DgiyLenX5yCWNDAby3VDxjQ1Cha/R\n"
+"f8oU/WORTOagMCsGA1UdIwQkMCKAIKHQDgYZIdDzDcmdr5v7yrR52mzecWHmdaWm\n"
+"UVerWnaVMAoGCCqGSM49BAMCA0gAMEUCIEneyi79s4M5VjZ6gw4jxHhs8M5h3QAn\n"
+"PndVTWzaoaVHAiEAvVmqpu11y7jYpgflziCtU80ujlLs8XHDqSet+l+5oiw=\n"
+"-----END CERTIFICATE-----\n";
 
-const BCHAR *chainmaker_org_tls_ca_cert = "-----BEGIN CERTIFICATE-----\n"
-										  "MIICaDCCAg2gAwIBAgIDASOLMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
-										  "MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
-										  "b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-										  "ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTEwNDE1MjYxOFoXDTI2\n"
-										  "MTEwMzE1MjYxOFowgZAxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
-										  "DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
-										  "MQ8wDQYDVQQLEwZjbGllbnQxKzApBgNVBAMTImNsaWVudDEudGxzLnd4LW9yZzEu\n"
-										  "Y2hhaW5tYWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnsMSX7Ext\n"
-										  "ve3k6iuic565OvEbyzqpZhmOJzSHyHAeQLoAaxaVrfdhKSKv+BTP+G4B9vtoiTv2\n"
-										  "ivkx+0fusbHCo1owWDApBgNVHQ4EIgQgTNoJ0i4SvDiXqMjvIT34OwlzhRUlRJEv\n"
-										  "DzJoWVVpimAwKwYDVR0jBCQwIoAgFXNa14VEFwAzhtccsY5AY9Mxt7qk6R5DFot6\n"
-										  "C1QeLzcwCgYIKoZIzj0EAwIDSQAwRgIhAJ71SLWBzKM7dw0SQ9T4UmzAfzTFBCqZ\n"
-										  "g8ss2+gWyqP9AiEAp2tcMOY4JPQcWT6sG0Q7zQdP8LQdmEqZrwZFubJUtSE=\n"
-										  "-----END CERTIFICATE-----\n";
 
+const BCHAR *chainmaker_org_tls_ca_cert =   "-----BEGIN CERTIFICATE-----\n"
+"MIICnTCCAkOgAwIBAgICafcwCgYIKoZIzj0EAwIwgYoxCzAJBgNVBAYTAkNOMRAw\n"
+"DgYDVQQIEwdCZWlqaW5nMRAwDgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1v\n"
+"cmcxLmNoYWlubWFrZXIub3JnMRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMT\n"
+"GWNhLnd4LW9yZzEuY2hhaW5tYWtlci5vcmcwHhcNMjExMTA3MTUzMTQ2WhcNMzEx\n"
+"MTA1MTUzMTQ2WjCBijELMAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaWppbmcxEDAO\n"
+"BgNVBAcTB0JlaWppbmcxHzAdBgNVBAoTFnd4LW9yZzEuY2hhaW5tYWtlci5vcmcx\n"
+"EjAQBgNVBAsTCXJvb3QtY2VydDEiMCAGA1UEAxMZY2Eud3gtb3JnMS5jaGFpbm1h\n"
+"a2VyLm9yZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABMRD6zki7fZP1BiGj0g+\n"
+"A94SbxIkDvntlRSO6HLqvJMG8jn4Ur4RwplvOkVz1jbD9WVRVPY7O91XiyU5ov+t\n"
+"f0WjgZYwgZMwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wKQYDVR0O\n"
+"BCIEIKHQDgYZIdDzDcmdr5v7yrR52mzecWHmdaWmUVerWnaVMEUGA1UdEQQ+MDyC\n"
+"DmNoYWlubWFrZXIub3Jngglsb2NhbGhvc3SCGWNhLnd4LW9yZzEuY2hhaW5tYWtl\n"
+"ci5vcmeHBH8AAAEwCgYIKoZIzj0EAwIDSAAwRQIgXeECA7tcPFd9BpkcSCGelV25\n"
+"5fJDVQiRTGyg79MfxncCIQDTP3z3L84lrwe+YxppKyFS9ISSOA0EUc4o+/RdoGi8\n"
+"aQ==\n"
+"-----END CERTIFICATE-----\n";
 
 BCHAR *chain_Id              = "chain1";
 BCHAR *org_Id                = "wx-org1.chainmaker.org";
@@ -107,6 +109,7 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	wallet_config.node_cfg.node_url  = chainmaker_node_url;
 	wallet_config.node_cfg.host_name = chainmaker_host_name;
 	wallet_config.node_cfg.claim_contract_name  = claim_contract_name;
+
 	wallet_config.node_cfg.org_tls_ca_cert.length = strlen(chainmaker_org_tls_ca_cert);
 	memcpy(wallet_config.node_cfg.org_tls_ca_cert.content, chainmaker_org_tls_ca_cert, wallet_config.node_cfg.org_tls_ca_cert.length);
 		
@@ -210,7 +213,7 @@ int main(int argc, char *argv[])
     {
     	BoatFree(query_transaction_para.parameters);
     }
- 
+
     return 0;
 }
 

@@ -23,6 +23,8 @@ OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/cJSON/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlhuawei/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlhuawei/protos/*/*.o) \
+		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker/*.o) \
+		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker/protos/*/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/common/http2intf/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/common/web3intf/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/*.o) \

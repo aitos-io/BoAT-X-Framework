@@ -596,12 +596,13 @@ BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 
     return connectfd;
 }
-
+#define BOAT_HLFABRIC_TLS_SUPPORT 1
 
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
 BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain,
 						 BSINT32 socketfd, void* tlsContext, void* rsvd )
 {
+	printf("BoatTlsInit start\n");
 	TTLSContext * tlsContext_ptr = (TTLSContext *)tlsContext;
 	mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
@@ -670,6 +671,7 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
 	// 	caChain[0].field_ptr,
 	// 	caChain[0].field_len);
 
+	printf("zhensghu = %s\n", caChain[0].field_ptr);
 	result += mbedtls_x509_crt_parse(tlsContext_ptr->ssl_crt, caChain[0].field_ptr, caChain[0].field_len);
 	if( result != BOAT_SUCCESS )
     {
@@ -725,7 +727,6 @@ BOAT_RESULT BoatTlsInit( const BCHAR *hostName, const BoatFieldVariable *caChain
 }
 #endif
 
-
 BSINT32 BoatSend(BSINT32 sockfd, void* tlsContext, const void *buf, size_t len, void* rsvd)
 {
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
@@ -752,6 +753,7 @@ BSINT32 BoatRecv(BSINT32 sockfd, void* tlsContext, void *buf, size_t len, void* 
 	return mbedtls_ssl_read( ((TTLSContext*)tlsContext)->ssl, buf, len );
 #else
 	return recv( sockfd, buf, len, 0 );
+	printf("BoatRecv = %d = %s\n", len, buf);
 #endif	
 }
 

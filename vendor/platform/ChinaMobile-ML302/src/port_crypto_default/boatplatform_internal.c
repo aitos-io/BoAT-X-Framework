@@ -34,7 +34,6 @@
 #include <string.h>
 
 /* net releated include */
-#if (PROTOCOL_USE_HLFABRIC == 1)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -42,7 +41,6 @@
 #include <arpa/inet.h>
 
 #include <sys/time.h>
-#endif
 
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 // for TTLSContext structure
@@ -258,7 +256,6 @@ BOAT_RESULT  BoatRemoveFile( const BCHAR *fileName, void* rsvd )
                               BOAT SOCKET WARPPER
 					        THIS ONLY USED BY FABRIC
 *******************************************************************************/
-#if (PROTOCOL_USE_HLFABRIC == 1)
 BSINT32 BoatConnect(const BCHAR *address, void* rsvd)
 {
     int                 connectfd;
@@ -372,7 +369,7 @@ void BoatClose(BSINT32 sockfd, void* tlsContext, void* rsvd)
 	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
 #endif
 }
-#endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
+
 
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER

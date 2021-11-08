@@ -249,7 +249,6 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 }
             }
             g_boat_iot_sdk_context.wallet_list[i].wallet_ptr = wallet_ptr;
-            //printf("liuzhenhe2 = %s", g_boat_iot_sdk_context.wallet_list[i].wallet_ptr->node_info.org_Id);
             
             break;
         #endif
