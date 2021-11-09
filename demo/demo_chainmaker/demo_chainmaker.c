@@ -87,6 +87,7 @@ BoatHlchainmakerWalletConfig wallet_config = {0};
 
 void get_file_name_str(char** file_name_str, char* time_buf)
 {
+
 	char* file_name_buf = BoatMalloc(FILE_NAME_LEN);
 	memset(file_name_buf, 0, FILE_NAME_LEN);
 	memcpy(file_name_buf, file_name_header, 5);
@@ -189,9 +190,9 @@ int main(int argc, char *argv[])
 	BoatHlchainmakerTx    tx_ptr;
 	BoatTransactionPara   inovke_transaction_para;
 	BoatTransactionPara   query_transaction_para;
-	char* time_str;
-	char* file_hash_str;
-	char* file_name_str;
+	char* time_str       = NULL;
+	char* file_hash_str  = NULL;
+	char* file_name_str  = NULL;
 
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
