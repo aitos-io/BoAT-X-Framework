@@ -76,7 +76,7 @@ Smart contract call (manual construction)
 
 * *Public Components* implement common functions such as RLP encoding, JSON codec, string processing, etc.  
 
-* *Hardware Dependent Components* are ported components involving different hardware, such as cryptography accelerators, secure storage, random numbers, etc. This component needs to be ported according to specific hardware. SDK also provides a set of default Hardware dependent components witch implementations by software.  
+* *Hardware Dependent Components* are ported components involving different hardware, such as cryptography accelerators, secure storage, random numbers, etc. This component needs to be ported according to specific hardware. The SDK also provides a set of default hardware dependent components with an implementation method that is software-based.  
 
 * The *Tool Component* provides a set of  Python tools, which are used to generate C language contract call interface of smart contract ABI interface based on Solidity or WASM C++. 
 

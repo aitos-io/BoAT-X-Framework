@@ -97,6 +97,7 @@ typedef struct TBoatEthWalletConfig
     BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
     BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatEthNetworkInfo
     BCHAR    node_url_str[BOAT_ETH_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
+    BBOOL    load_existed_wallet;   //false: need creat key by Boat , true: not need creat key
 }BoatEthWalletConfig;
 
 

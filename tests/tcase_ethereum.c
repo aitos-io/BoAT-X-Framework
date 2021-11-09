@@ -131,7 +131,7 @@ START_TEST(test_Api_GetBalance)
 	result_ptr.field_len = 128;
 	result_ptr.field_ptr = BoatMalloc(result_ptr.field_len);
 	ck_assert((wallet_balance_ptr = BoatEthWalletGetBalance(g_test_wallet_ptr, TEST_ETH_WALLET_ADDR_0)) != NULL);
-	ck_assert((BoatEthPraseRpcResponseResultwallet_balance_ptr,"result",&result_ptr) == BOAT_SUCCESS);
+	ck_assert(BoatEthPraseRpcResponseResult(wallet_balance_ptr,"result",&result_ptr) == BOAT_SUCCESS);
 	//! @todo 
 	//ck_assert_str_eq(result_ptr.field_ptr, TEST_ETH_WALLET_BALANCE);
 	BoatFree(result_ptr.field_ptr);

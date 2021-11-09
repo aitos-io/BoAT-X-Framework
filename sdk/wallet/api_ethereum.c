@@ -67,6 +67,7 @@ BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 
 	
 	//Configure priKey context information
     // if(config_ptr->prikeyCtx_config.prikey_content.field_ptr != NULL)
+    if(config_ptr->load_existed_wallet == false)
     {
         if(BOAT_SUCCESS != BoatPort_keyCreate(&config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
         {
@@ -247,7 +248,7 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
 
 BOAT_RESULT BoatEthPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return web3_parse_json_result(json_string, NULL, result_out);
+    return web3_parse_json_result(json_string, "", result_out);
 }
 
 BOAT_RESULT BoatEthPraseRpcResponseResult(const BCHAR *json_string, 
