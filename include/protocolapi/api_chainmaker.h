@@ -38,8 +38,8 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 // query a pre-created user contract, tx not included in block
 typedef enum {
 
-	TxType_INVOKE_USER_CONTRACT = 0,
-	TxType_QUERY_USER_CONTRACT
+	TXTYPE_INVOKE_USER_CONTRACT = 0,
+	TXTYPE_QUERY_USER_CONTRACT
 } TxType;
 
 //! chainmaker certificate information config structure
@@ -134,8 +134,7 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr,const BCHAR* chain_id, const BCHAR* org_id,
 								                   const BCHAR* contract_name, BoatHlchainmakerTx* tx_ptr);
 void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr);
-BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, char* method);
-BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, char* method);
+BOAT_RESULT BoatHlchainmakerContractClaimOperate(BoatHlchainmakerTx *tx_ptr, char* method);
 
 
 /*! @}*/

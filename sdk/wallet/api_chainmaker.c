@@ -331,14 +331,28 @@ BOAT_RESULT BoatHlchainmaker(BoatHlchainmakerTx *tx_ptr, char* key_str, char* va
 // }
 
 
-BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, char* method)
+BOAT_RESULT BoatHlchainmakerContractClaimOperate(BoatHlchainmakerTx *tx_ptr, char* method)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-	TxType tx_type = TxType_INVOKE_USER_CONTRACT;
+	TxType tx_type;
 
-	if (tx_ptr == NULL)
+	if ((tx_ptr == NULL) || (method == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
+
+	if (strcmp(method, "save") == 0)
+	{
+		tx_type = TXTYPE_INVOKE_USER_CONTRACT;
+	}
+
+	else if (strcmp(method, "find_by_file_hash") == 0)
+	{
+		tx_type = TXTYPE_QUERY_USER_CONTRACT;
+	}
+	else
+	{
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
@@ -349,31 +363,4 @@ BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, char
 		return BOAT_ERROR;
 	}
 	return result;
-}
-
-
-BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, char* method)
-{
-	BOAT_RESULT result = BOAT_SUCCESS;
-	TxType tx_type = TxType_QUERY_USER_CONTRACT;
-
-	if (tx_ptr == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
-	}
-
-	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
-	result = BoatHlchainmakerTxExec(tx_ptr->wallet_ptr->node_info, tx_ptr, method, tx_type);
-	if (result != BOAT_SUCCESS)
-	{
-		return BOAT_ERROR;
-	}
-
-	return result;
-}
-
-
-
-
-							   
+}							   
