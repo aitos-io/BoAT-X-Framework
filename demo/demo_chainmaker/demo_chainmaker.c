@@ -79,12 +79,22 @@ BCHAR *key3 = "file_name";
 
 
 #define TIME_LEN 20
+#define FILE_HASH_LEN 32
 BCHAR str_value[90] = {"file_"};
-// BCHAR time_buf[TIME_LEN]  = {0};
-BCHAR file_hash[33] = {0};
 
 BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
 BoatHlchainmakerWalletConfig wallet_config = {0};
+
+void  get_file_hash_str(char** file_hash_str)
+{
+	char* file_hash = BoatMalloc(FILE_HASH_LEN);
+	//randrom generate
+	BoatFieldMax16B  random_data;
+	random_data.field_len = 16;
+	BoatRandom(random_data.field, random_data.field_len, NULL);
+	array_to_str(random_data.field ,file_hash, 16);
+	*file_hash_str = file_hash;
+}
 
 void get_time_string(char** time_str)
 {
@@ -144,28 +154,22 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	return BOAT_SUCCESS;
 }
 
-BoatTransactionPara get_invoke_para(char* time_str)
+BoatTransactionPara get_invoke_para(char* time_str, char* file_hash_str)
 {
-	//randrom generate
-	BoatFieldMax16B  random_data;
-	random_data.field_len = 16;
-	BoatRandom(random_data.field, random_data.field_len, NULL);
-
-	get_time_string(&time_str);
-	array_to_str(random_data.field ,file_hash, 16);
-	
 	BoatTransactionPara transaction_para;
 	transaction_para.n_parameters = 3;
 	transaction_para.parameters = BoatMalloc(transaction_para.n_parameters * sizeof(BoatKeyValuePair));
 
+	get_time_string(&time_str);
+	get_file_hash_str(&file_hash_str);
+
 	transaction_para.parameters[0].key   = key1;
 	transaction_para.parameters[0].value = time_str;
 	transaction_para.parameters[1].key   = key2;
-	transaction_para.parameters[1].value = file_hash;;
+	transaction_para.parameters[1].value = file_hash_str;;
 	transaction_para.parameters[2].key   = key3;
 	transaction_para.parameters[2].value = strcat(str_value, time_str);
 
-	printf("transaction_para.parameters[2].value = %d\n", strlen(transaction_para.parameters[2].value));
 	return transaction_para;
 }
 
@@ -176,6 +180,7 @@ int main(int argc, char *argv[])
 	BoatTransactionPara   inovke_transaction_para;
 	BoatTransactionPara   query_transaction_para;
 	char* time_str;
+	char* file_hash_str;
 
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
@@ -194,7 +199,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	inovke_transaction_para = get_invoke_para(time_str);
+	inovke_transaction_para = get_invoke_para(time_str, file_hash_str);
 	tx_ptr.wallet_ptr->node_info.node_url  = chainmaker_node_url;
 	tx_ptr.wallet_ptr->node_info.host_name = chainmaker_host_name;
 	/* step-4: set transaction 'invoke' command */
@@ -209,7 +214,7 @@ int main(int argc, char *argv[])
 	query_transaction_para.n_parameters = 1;
 	query_transaction_para.parameters = BoatMalloc(sizeof(BoatKeyValuePair));
 	query_transaction_para.parameters->key   = key2;
-	query_transaction_para.parameters->value = file_hash;
+	query_transaction_para.parameters->value = file_hash_str;
 
 	result = BoatHlchainmakerContractClaimQuery(&tx_ptr, &query_transaction_para, query_metod);
 	if (result != BOAT_SUCCESS)
@@ -237,6 +242,12 @@ int main(int argc, char *argv[])
     {
     	BoatFree(time_str);
     }
+
+    if (file_hash_str != NULL) 
+    {
+    	BoatFree(file_hash_str);
+    }
+
 
     return 0;
 }
