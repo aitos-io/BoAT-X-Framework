@@ -111,6 +111,7 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 
 	wallet_ptr->node_info.host_name = config_ptr->node_cfg.host_name;
 	wallet_ptr->node_info.node_url  = config_ptr->node_cfg.node_url;
+
 	/* assignment */
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	wallet_ptr->node_info.org_tls_ca_cert.length = config_ptr->node_cfg.org_tls_ca_cert.length;
@@ -204,11 +205,12 @@ void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr)
 	}
 }
 
-__BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, BoatHlchainmakerTx *tx_ptr, BoatTransactionPara *transaction_para, char* method, TxType tx_type)
+__BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, BoatHlchainmakerTx *tx_ptr, char* method, TxType tx_type)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-	BoatHlchainmakerResponse *parsePtr = NULL;
-	Common__TxResponse *tx_reponse = NULL;
+	BoatHlchainmakerResponse *parsePtr      = NULL;
+	Common__TxResponse *tx_reponse          = NULL;
+	Common__ContractResult *contract_result = NULL;
 
 	int i;
 	boat_try_declare;
@@ -218,11 +220,13 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-	result = hlchainmakerTransactionPacked(tx_ptr, method, transaction_para, tx_type);
+
+	result = hlchainmakerTransactionPacked(tx_ptr, method, tx_type);
 	if (result != BOAT_SUCCESS)
 	{
 		return result;
 	}
+
 	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = node_cfg.node_url;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	// clear last data
@@ -250,6 +254,15 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 
 	result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 	tx_reponse = common__tx_response__unpack(NULL, parsePtr->httpResLen-5, parsePtr->http2Res+5);
+
+	printf("htpp response start\n");
+
+	for (i = 0; i < parsePtr->httpResLen-5; i++)
+	{
+		printf("%02x\n", (parsePtr->http2Res+5)[i]);
+	}
+
+	common__contract_result__free_unpacked(NULL, tx_reponse->contract_result);
 	if (tx_reponse == NULL)
 	{
 		printf("tx_reponse.message NULL\n");
@@ -269,7 +282,56 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxExec(BoatHlchainmakerNode node_cfg, B
 	return result;
 }
 
-BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, BoatTransactionPara *transaction_para, char* method)
+BOAT_RESULT BoatHlchainmaker(BoatHlchainmakerTx *tx_ptr, char* key_str, char* value_str)
+{
+	if ((tx_ptr == NULL) || (key_str == NULL) || ((value_str == NULL)))
+	{
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
+
+	if ((tx_ptr->trans_para.n_parameters < 1) || (tx_ptr->trans_para.n_parameters > 10))
+	{
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
+
+	tx_ptr->trans_para.n_parameters -= 1;
+	tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].key   = key_str;
+	tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].value = value_str;
+
+	return BOAT_SUCCESS;
+}
+
+// BOAT_RESULT BoatHlchainmaker(BoatHlchainmakerTx *tx_ptr, char* key_str, char* value_str)
+// {
+// 	static bool first_malloc = true;
+// 	if (first_malloc) 
+// 	{
+// 		tx_ptr->trans_para.parameters = BoatMalloc(tx_ptr->trans_para.n_parameters* sizeof(BoatKeyValuePair));
+// 	}
+
+// 	if ((tx_ptr->trans_para.parameters == NULL) || (tx_ptr->trans_para.n_parameters < 1))
+// 	{	
+// 		first_malloc = true;
+// 		return BOAT_ERROR;
+// 	}
+
+// 	tx_ptr->trans_para.n_parameters -= 1;
+	
+// 	transaction_para.parameters[tx_ptr->trans_para.n_parameters].key   = key_str;
+// 	transaction_para.parameters[tx_ptr->trans_para.n_parameters].value = value_str;
+// 	if (tx_ptr->trans_para.n_parameters == 0)
+// 	{
+// 		first_malloc = true;
+// 	}
+// 	else
+// 	{
+// 		first_malloc = false;
+// 	}
+// 	return BOAT_SUCCESS;
+// }
+
+
+BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, char* method)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	TxType tx_type = TxType_INVOKE_USER_CONTRACT;
@@ -281,7 +343,7 @@ BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, Boat
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
-	result = BoatHlchainmakerTxExec(tx_ptr->wallet_ptr->node_info, tx_ptr, transaction_para, method, tx_type);
+	result = BoatHlchainmakerTxExec(tx_ptr->wallet_ptr->node_info, tx_ptr, method, tx_type);
 	if (result != BOAT_SUCCESS)
 	{
 		return BOAT_ERROR;
@@ -290,7 +352,7 @@ BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, Boat
 }
 
 
-BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, BoatTransactionPara *transaction_para, char* method)
+BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, char* method)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	TxType tx_type = TxType_QUERY_USER_CONTRACT;
@@ -302,7 +364,7 @@ BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, BoatT
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
-	result = BoatHlchainmakerTxExec(tx_ptr->wallet_ptr->node_info, tx_ptr, transaction_para, method, tx_type);
+	result = BoatHlchainmakerTxExec(tx_ptr->wallet_ptr->node_info, tx_ptr, method, tx_type);
 	if (result != BOAT_SUCCESS)
 	{
 		return BOAT_ERROR;
