@@ -28,10 +28,11 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 /*! @defgroup eth-api boat chainmaker-API
  * @{
  */
-#define BOAT_HLFABRIC_TLS_SUPPORT                1 //!< If need client support TLS, set it to 1.
-#define BOAT_CHAINMAKER_CERT_MAX_LEN 1024
-#define BOAT_CHAINMAKER_ROOTCA_MAX_NUM 3
-#define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN     8192 //!< The maximum length of HTTP2 send buffer
+#define BOAT_HLFABRIC_TLS_SUPPORT                 1 //!< If need client support TLS, set it to 1.
+#define BOAT_CHAINMAKER_CERT_MAX_LEN              1024
+#define BOAT_CHAINMAKER_ROOTCA_MAX_NUM            3
+#define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN  8192 //!< The maximum length of HTTP2 send buffer
+#define BOAT_HLCHAINMAKER_ARGS_MAX_NUM            10
 
 // call a pre created user contract, tx included in block
 // query a pre-created user contract, tx not included in block
@@ -57,7 +58,7 @@ typedef struct  TBoatKeyValuePair {
 typedef struct TBoatTransactionPara {
 	
 	BUINT32 n_parameters;
-	BoatKeyValuePair *parameters; 
+	BoatKeyValuePair parameters[BOAT_HLCHAINMAKER_ARGS_MAX_NUM]; 
 } BoatTransactionPara;
 
 typedef struct TBoatHlchainmakerNode{
@@ -123,16 +124,18 @@ typedef struct TBoatHlchainamkerTx {
 
 	BoatHlchainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet
 	BoatHlchainmakerResponse    tx_reponse;   
-	BoatHlchainamkerClient      client_info;
+	BoatTransactionPara         trans_para;
+	BoatHlchainamkerClient      client_info;     
 }BoatHlchainmakerTx;
 
+BOAT_RESULT BoatHlchainmaker(BoatHlchainmakerTx *tx_ptr, char* key_str, char* value_str);
 BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletConfig *config_ptr,
 										   BUINT32 config_size);
 BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr,const BCHAR* chain_id, const BCHAR* org_id,
 								                   const BCHAR* contract_name, BoatHlchainmakerTx* tx_ptr);
 void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr);
-BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr,  BoatTransactionPara *transaction_para, char* method);
-BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr,  BoatTransactionPara *transaction_para, char* method);
+BOAT_RESULT BoatHlchainmakerContractClaimInvoke(BoatHlchainmakerTx *tx_ptr, char* method);
+BOAT_RESULT BoatHlchainmakerContractClaimQuery(BoatHlchainmakerTx *tx_ptr, char* method);
 
 
 /*! @}*/
