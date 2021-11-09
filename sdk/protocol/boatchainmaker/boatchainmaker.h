@@ -25,7 +25,7 @@ boatchainamaker.h is header file for RAW transaction construction and performing
 
 #include "boatconfig.h"
 #include "boatinternal.h"
-BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* method,BoatTransactionPara *transaction_para, TxType tx_type);
+BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* method, TxType tx_type);
 void get_time_string(char* time_buf);
 void array_to_str(char* array, char *str, char lenth);
 

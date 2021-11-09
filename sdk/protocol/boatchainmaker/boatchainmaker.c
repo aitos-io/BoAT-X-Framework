@@ -33,8 +33,6 @@ wait for its receipt.
 #include "common/common.pb-c.h"
 #include <time.h>
 
-const char* chainmaker_chainId = "chain1";
-const BCHAR *org_id = "wx-org1.chainmaker.org";
 char txid_array[65] = {0};
 
 void array_to_str(char* array, char *str, char lenth)
@@ -74,53 +72,42 @@ void array_to_str(char* array, char *str, char lenth)
 }
 
 
-BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, BoatTransactionPara *transaction_para, BoatFieldVariable *output_ptr)
+BOAT_RESULT generateTxRequestPack(BoatHlchainmakerTx *tx_ptr, char *method, BoatFieldVariable *output_ptr)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 
 	BUINT32 packed_length_payload;
 	Common__TransactPayload transactPayload = COMMON__TRANSACT_PAYLOAD__INIT;
 	Common__KeyValuePair keyValuePair       = COMMON__KEY_VALUE_PAIR__INIT;
-	transactPayload.contract_name           = tx_ptr->wallet_ptr->node_info.claim_contract_name;
+	transactPayload.contract_name           = tx_ptr->client_info.contract_name;
 	transactPayload.method                  = method;
 
-	transactPayload.parameters = (Common__KeyValuePair**)BoatMalloc(sizeof(Common__KeyValuePair*) * transaction_para->n_parameters);
+	transactPayload.parameters = (Common__KeyValuePair**)BoatMalloc(sizeof(Common__KeyValuePair*) * tx_ptr->trans_para.n_parameters);
 	
 	int i;
-	for (i = 0; i < transaction_para->n_parameters; i++)
+	for (i = 0; i < tx_ptr->trans_para.n_parameters; i++)
 	{
 		Common__KeyValuePair* tkvp = BoatMalloc(sizeof(Common__KeyValuePair));
 		memcpy(tkvp, &keyValuePair, sizeof(Common__KeyValuePair));
-		tkvp->key   = transaction_para->parameters[i].key;
-		tkvp->value = transaction_para->parameters[i].value;
+		tkvp->key   = tx_ptr->trans_para.parameters[i].key;
+		tkvp->value = tx_ptr->trans_para.parameters[i].value;
 
 		transactPayload.parameters[i] = tkvp;
 	}	
-	transactPayload.n_parameters  = transaction_para->n_parameters;
-
-	/* pack the Common__TransactPayload */
-	packed_length_payload = common__transact_payload__get_packed_size(&transactPayload);
-	
-	output_ptr->field_ptr = BoatMalloc(packed_length_payload);
-	common__transact_payload__pack(&transactPayload, output_ptr->field_ptr);
-	output_ptr->field_len = packed_length_payload;
-//liuzhenhe
-	printf("payload contract_name contract_name = %s\n",transactPayload.contract_name );
-	printf("payload contract_name method = %s\n",transactPayload.method);
+	transactPayload.n_parameters  = tx_ptr->trans_para.n_parameters;
 	for(i = 0; i < transactPayload.n_parameters; i++)
 	{
 		printf("payloadpara = %s\n",transactPayload.parameters[i]->key);
 		printf("payloadpara = %s\n",transactPayload.parameters[i]->value);
 	}
 
-	printf("payload to proto= %d\n", output_ptr->field_len);
-	for (i = 0; i < output_ptr->field_len; i++)
-	{
-		printf("%02x",output_ptr->field_ptr[i]);
-	}
-	printf("payload to proto\n");
+	/* pack the Common__TransactPayload */
+	packed_length_payload = common__transact_payload__get_packed_size(&transactPayload);
+	output_ptr->field_ptr = BoatMalloc(packed_length_payload);
+	common__transact_payload__pack(&transactPayload, output_ptr->field_ptr);
+	output_ptr->field_len = packed_length_payload;
 
-	for (i = 0; i < transaction_para->n_parameters; i++)
+	for (i = 0; i < transactPayload.n_parameters; i++)
 	{	
 		BoatFree(transactPayload.parameters[i]);
 	}	
@@ -139,14 +126,14 @@ void get_tx_header_data(BoatHlchainmakerTx *tx_ptr, TxType tx_type, Accesscontro
 	BoatRandom(random_data.field, random_data.field_len, NULL);
 	array_to_str(random_data.field, txid_array, random_data.field_len );
 
-	tx_header->chain_id        = chainmaker_chainId;
+	tx_header->chain_id        = tx_ptr->client_info.chain_id;
 	tx_header->tx_type         = tx_type;
 	tx_header->tx_id           = txid_array;
 	tx_header->timestamp       = timesec;
 	tx_header->sender          = sender;
 }
 
-BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* method, BoatTransactionPara *transaction_para, TxType tx_type)
+BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* method, TxType tx_type)
 {
 	Common__TxRequest  tx_request  = COMMON__TX_REQUEST__INIT;
 	Common__TxHeader   tx_header   = COMMON__TX_HEADER__INIT;
@@ -173,7 +160,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 		return BOAT_ERROR;
 	}
 
-	sender.org_id             = org_id;
+	sender.org_id             = tx_ptr->client_info.org_id;
 	sender.member_info.len    = tx_ptr->wallet_ptr->user_client_info.cert.field_len;
 	sender.member_info.data   = tx_ptr->wallet_ptr->user_client_info.cert.field_ptr;
 	sender.is_full_cert       = true;
@@ -188,8 +175,9 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	printf("get_tx_header_data timestamp  = %d\n",tx_header.timestamp);
 	printf("get_tx_header_data tx_type  = %d\n",tx_header.tx_type);
 	/* step-1: compute payload packed length */
-	result = generateTxRequestPack(tx_ptr,method,transaction_para, &payloadPacked);
-
+		printf("hlchainmakerTransactionPacked 9999999999999999\n");
+	result = generateTxRequestPack(tx_ptr,method, &payloadPacked);
+	printf("hlchainmakerTransactionPacked 888888888888888888\n");
 	/* step-2: compute payload packed length */
 	packedHeaderLength = common__tx_header__get_packed_size(&tx_header);
 	packedLength = packedHeaderLength + payloadPacked.field_len;
