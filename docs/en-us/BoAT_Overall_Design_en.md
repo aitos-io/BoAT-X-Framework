@@ -51,7 +51,7 @@ Figure 4-1 BoAT Overall Framework
 ### Interface Layer
 
 #### Overview
-The interface layer is located at the top layer of BoAT and provides IoT applications with access to each blockchain. The interface layer consists of two parts:  
+The interface layer is located at the top layer of BoAT and provides IoT applications with the access to each blockchain. The interface layer consists of two parts:  
 + Wallet interface
    * The wallet interface is the entrance to the BoAT SDK, and different blockchains have a common wallet entrance.
 + Transaction interface
