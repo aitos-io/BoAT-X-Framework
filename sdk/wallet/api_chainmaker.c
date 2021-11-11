@@ -27,7 +27,8 @@ api_chainmaker.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "common/result.pb-c.h"
 #include "common/transaction.pb-c.h"
 
-#define RETRYCNT 10
+#define BOAT_RETRY_CNT 10
+#define BOAT_TXID_LEN 64
 
 BUINT8 get_fibon_data(BUINT8 n)
 {
@@ -200,15 +201,30 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 		return;
 	}
 	/* account_info DeInit */
-	BoatFree(wallet_ptr->user_client_info.cert.field_ptr);
+
+	if (wallet_ptr->user_client_info.cert.field_ptr != NULL)
+	{
+		BoatFree(wallet_ptr->user_client_info.cert.field_ptr);
+	}
+	
 	wallet_ptr->user_client_info.cert.field_len = 0;
 	
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	/* tlsClinet_info DeInit */
     wallet_ptr->tls_client_info.cert.field_ptr == NULL;
 	wallet_ptr->tls_client_info.cert.field_len = 0;
-#endif
 
+	if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain != NULL)
+	{
+		BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain);
+	}
+
+	if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL)
+	{
+		BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr);
+	}
+	
+#endif
 	wallet_ptr->node_info.host_name = NULL;
 	wallet_ptr->node_info.node_url  = NULL;
 	/* http2Context DeInit */
@@ -374,7 +390,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-	invoke_tx_id = BoatMalloc(64);
+	invoke_tx_id = BoatMalloc(BOAT_TXID_LEN);
 	get_tx_id(invoke_tx_id);
 
 	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type,invoke_tx_id);
@@ -391,9 +407,9 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
     if (tx_reponse->code == COMMON__TX_STATUS_CODE__SUCCESS )
     {
     	invoke_reponse->code  = tx_reponse->code;
-    	if (strlen(tx_reponse->message) < 10)
+    	if (strlen(tx_reponse->message) < BOAT_RESPONSE_MESSAGE_MAX_LEN)
     	{
-    		memset(invoke_reponse->message, 0, 10);
+    		memset(invoke_reponse->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
     		memcpy(invoke_reponse->message, tx_reponse->message, strlen(tx_reponse->message));
     	}
 		if (sync_result) 
@@ -407,7 +423,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 			}
 
 			int i;
-			for (i = 0; i < RETRYCNT; i++)
+			for (i = 0; i < BOAT_RETRY_CNT; i++)
 			{
 				sleep_second = get_fibon_data(i + 1);
 				BoatSleep(sleep_second);
@@ -448,7 +464,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
-	query_tx_id = BoatMalloc(64);
+	query_tx_id = BoatMalloc(BOAT_TXID_LEN);
 	get_tx_id(query_tx_id);
 
 	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, query_tx_id);
@@ -467,14 +483,14 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	{
 		printf("tx_reponse.message NULL\n");
 	}
-	if (strlen(tx_reponse->message) > 10)
+	if (strlen(tx_reponse->message) > BOAT_RESPONSE_MESSAGE_MAX_LEN)
 	{
 		return;
 	}
 	memset(query_reponse->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
 	memcpy(query_reponse->message, tx_reponse->message, strlen(tx_reponse->message));
 
-	if (strlen(tx_reponse->contract_result->result.data) > 100)
+	if (strlen(tx_reponse->contract_result->result.data) > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN)
 	{
 		return;
 	}
@@ -483,8 +499,10 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	memcpy(query_reponse->contract_result, tx_reponse->contract_result->result.data, strlen(tx_reponse->contract_result->result.data));
 
 	query_reponse->gas_used = tx_reponse->contract_result->gas_used;
-	printf("tx_reponse.message =%s\n", tx_reponse->message);
-	printf("tx_reponse.message =%s\n", tx_reponse->contract_result->result.data);
-	printf("tx_reponse.gas_used =%d\n", tx_reponse->contract_result->gas_used);
+
+	if (query_tx_id != NULL)
+	{
+		BoatFree(query_tx_id);
+	}
 	return result;
 }	
