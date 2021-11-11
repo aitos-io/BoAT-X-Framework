@@ -80,7 +80,6 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	Accesscontrol__SerializedMember sender = ACCESSCONTROL__SERIALIZED_MEMBER__INIT;
 	long int timesec = 0;
 	
-
 	BoatFieldVariable payloadPacked = {NULL, 0};
 	BoatFieldVariable hash_data = {NULL, 0};
 	BoatSignatureResult signatureResult;
@@ -126,21 +125,6 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	hash_data.field_ptr += packedHeaderLength;
 	memcpy(hash_data.field_ptr, payloadPacked.field_ptr, payloadPacked.field_len);
 	hash_data.field_ptr -= packedHeaderLength;
-
-
-	// int i = 0;
-	// printf("protobuf header  start\n");
-	// for (i = 0; i < packedHeaderLength; i++)
-	// {
-	// 	printf("%02x", hash_data.field_ptr[i]);
-	// }
-
-	// printf("protobuf start\n");
-	// for (i = 0; i < hash_data.field_len; i++)
-	// {
-	// 	printf("%02x", hash_data.field_ptr[i]);
-	// }
-	
 
 	/* step-3: compute hash */
 	result = BoatHash(BOAT_HASH_SHA256,hash_data.field_ptr, 
@@ -202,7 +186,16 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
         result = boat_exception;
      }
 	/* free malloc */
-	BoatFree(payloadPacked.field_ptr);
+    if (payloadPacked.field_ptr != NULL)
+    {
+    	BoatFree(payloadPacked.field_ptr);
+    }
+
+    if (hash_data.field_ptr != NULL)
+    {
+    	BoatFree(hash_data.field_ptr);
+    }
+	
 	return result;
 }
 
