@@ -28,25 +28,82 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 /*! @defgroup eth-api boat chainmaker-API
  * @{
  */
-#define BOAT_HLFABRIC_TLS_SUPPORT                 1 //!< If need client support TLS, set it to 1.
+#define BOAT_HLFABRIC_TLS_SUPPORT                 0 //!< If need client support TLS, set it to 1.
 #define BOAT_CHAINMAKER_CERT_MAX_LEN              1024
 #define BOAT_CHAINMAKER_ROOTCA_MAX_NUM            3
 #define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN  8192 //!< The maximum length of HTTP2 send buffer
 #define BOAT_HLCHAINMAKER_ARGS_MAX_NUM            10
-
+#define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN     100
+#define BOAT_RESPONSE_MESSAGE_MAX_LEN             10
 // call a pre created user contract, tx included in block
 // query a pre-created user contract, tx not included in block
 typedef enum {
 
-	TXTYPE_INVOKE_USER_CONTRACT = 0,
-	TXTYPE_QUERY_USER_CONTRACT
+	TXTYPE_INVOKE_USER_CONTRACT  = 0,
+	TXTYPE_QUERY_USER_CONTRACT   = 1,
+	TxType_QUERY_SYSTEM_CONTRACT = 3
 } TxType;
+
+typedef enum TBoatReponseCode {
+
+	SUCCESS                                = 0,
+	TIMEOUT                                = 1,
+	INVALIDPARAMETER                       = 2,
+	NOPERMISSION                           = 3,
+	CONTRACTFAIL                           = 4,
+	INTERNALERROR                          = 5,
+	INVALIDCONTRACTTRANSACTIONTYPE         = 10,
+	INVALIDCONTRACTPARAMETERCONTRACTNAME   = 11,
+	INVALIDCONTRACTPARAMETERMETHOD         = 12,
+	INVALIDCONTRACTPARAMETERINITMETHOD     = 13,
+	INVALIDCONTRACTPARAMETERUPGRADEMETHOD  = 14,
+	INVALIDCONTRACTPARAMETERBYTECODE       = 15,
+	INVALIDCONTRACTPARAMETERRUNTIMETYPE    = 16,
+	INVALIDCONTRACTPARAMETERVERSION        = 17,
+	GETFROMTXCONTEXTFAILED                 = 20,
+	PUTINTOTXCONTEXTFAILED                 = 21,
+	CONTRACTVERSIONEXISTFAILED             = 22,
+	CONTRACTVERSIONNOTEXISTFAILED          = 23,
+	CONTRACTBYTECODENOTEXISTFAILED         = 24,
+	MARSHALSENDERFAILED                    = 25,
+	INVOKEINITMETHODFAILED                 = 26,
+	INVOKEUPGRADEMETHODFAILED              = 27,
+	CREATERUNTIMEINSTANCEFAILED            = 28,
+	UNMARSHALCREATORFAILED                 = 29,
+	UNMARSHALSENDERFAILED                  = 30,
+	GETSENDERPKFAILED                      = 31,
+	GETCREATORPKFAILED                     = 32,
+	GETCREATORFAILED                       = 33,
+	GETCREATORCERTFAILED                   = 34,
+	GETSENDERCERTFAILED                    = 35,
+	CONTRACTFREEZEFAILED                   = 36,
+	CONTRACTTOODEEPFAILED                  = 37,
+	CONTRACTREVOKEFAILED                   = 38,
+	CONTRACTINVOKEMETHODFAILED             = 39,
+	ARCHIVEDTX                             = 40,
+	ARCHIVEDBLOCK                          = 41
+} BoatReponseCode;
+
+
+typedef struct TBoatInvokeReponse {	
+
+		BoatReponseCode code;
+		char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
+		BUINT32 gas_used;
+} BoatInvokeReponse;
+
+typedef struct TBoatQueryReponse {	
+
+		char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
+		char contract_result[BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN];
+		BUINT32 gas_used;
+} BoatQueryReponse;
 
 //! chainmaker certificate information config structure
 typedef struct TBoatHlchainmakerCertInfoCfg {
 
-	BUINT32  length;                                //!< length of certificate content, this length contains the terminator '\0'.
-	BCHAR    content[BOAT_CHAINMAKER_CERT_MAX_LEN]; //!< content of certificate.
+	BUINT32  length;                             
+	BCHAR    content[BOAT_CHAINMAKER_CERT_MAX_LEN]; 
 } BoatHlchainmakerCertInfoCfg;
 
 typedef struct  TBoatKeyValuePair {
@@ -61,7 +118,7 @@ typedef struct TBoatTransactionPara {
 	BoatKeyValuePair parameters[BOAT_HLCHAINMAKER_ARGS_MAX_NUM]; 
 } BoatTransactionPara;
 
-typedef struct TBoatHlchainmakerNode{
+typedef struct TBoatHlchainmakerNode {
 
 	bool   use_tls;
 	BCHAR  *node_url;
@@ -73,7 +130,6 @@ typedef struct TBoatHlchainamkerClient {
 
 	BCHAR* chain_id;
 	BCHAR* org_id;
-	BCHAR* contract_name;
 } BoatHlchainamkerClient;
 
 typedef struct TBoatHlchainamkerResult {
@@ -128,14 +184,141 @@ typedef struct TBoatHlchainamkerTx {
 	BoatHlchainamkerClient      client_info;     
 }BoatHlchainmakerTx;
 
-BOAT_RESULT BoatHlchainmaker(BoatHlchainmakerTx *tx_ptr, char* key_str, char* value_str);
-BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletConfig *config_ptr,
-										   BUINT32 config_size);
-BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr,const BCHAR* chain_id, const BCHAR* org_id,
-								                   const BCHAR* contract_name, BoatHlchainmakerTx* tx_ptr);
-void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr);
-BOAT_RESULT BoatHlchainmakerContractClaimOperate(BoatHlchainmakerTx *tx_ptr, char* method);
 
+/*!****************************************************************************
+ * @brief 
+ *   chainmaker wallet initinal.
+ *
+ * @details
+ *   This function used to initinal chainmaker wallet, include alloc wallet structrue
+ *   memory, setup chainmaker account information, TLS information and network information.
+ *
+ * @param config_ptr
+ *   The chainmaker wallet configuration structure pointer.
+ *
+ * @param config_size 
+ *   The chainmaker wallet configuration structure size.
+ *
+ * @return
+ *   If initinal success, return chainmaker wallet pointer, otherwise return \c NULL.
+ ******************************************************************************/
+BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletConfig *config_ptr,BUINT32 config_size);
+
+
+/*!****************************************************************************
+ * @brief 
+ *   chainmaker transaction initinal.
+ * @details
+ *   This function used to Initialize fabric transaction.
+ * 
+ * @param wallet_ptr 
+ *   Fabric wallet structure pointer to be initialized.
+ * 
+ * @param chain_id 
+ *   Channel identification to be initialized.
+ * 
+ * @param org_id 
+ *   Channel Organization id to be initialized.
+ *  
+ * @param tx_ptr
+ *   chainmaker transaction structure pointer to be initialized.
+ * 
+ * @return 
+ *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
+ ******************************************************************************/
+BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr,const BCHAR* chain_id, const BCHAR* org_id,
+								                   BoatHlchainmakerTx* tx_ptr);
+
+/*!****************************************************************************
+ * @brief 
+ *   Set transaction datatime.
+ *   
+ * @details
+ *   This function used to set transaction occurred datatime.
+ *
+ * @param tx_ptr 
+ *   Chainmaker transaction structure pointer.
+ *
+ * @param sec
+ *   Passing seconds from 1970-01-01 00:00:00.
+ *
+ * @param nanos
+ *   Non-negative fractions of a second at nanosecond resolution.
+ *   Must be from 0 to 999,999,999.
+ *
+ * @return  
+ *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
+ ******************************************************************************/
+void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr);
+
+
+/*!****************************************************************************
+ * @brief 
+ *   Set transaction command arguments.
+ *
+ * @details
+ *   This function used to set transaction command arguments.
+ *
+ * @param tx_ptr 
+ *   Chainmaker transaction structure pointer.
+ *
+ * @param arg1
+ *   The first argument of command to be settings.
+ *
+ * @param ...
+ *   Remaining arguments, last argument must be NULL.
+ *
+ * @return 
+ *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
+ ******************************************************************************/
+BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, const BCHAR *arg, ...);
+
+
+/*!****************************************************************************
+ * @brief 
+ *   Invoke transaction.
+ *
+ * @details
+ *  This function used to excute invoke process.
+ * 
+ * @param method 
+ *   Chainmaker transaction structure pointer.
+ * 
+ * @param contract_name 
+ *   Chainmaker contarct name.
+ * 
+ * @param sync_result 
+ *   Get invoke gas.
+ * 
+ * @param invoke_reponse 
+ *   Node response data.
+ *
+ * @return 
+ *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
+ ******************************************************************************/
+BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatInvokeReponse *invoke_reponse);
+
+
+/*!****************************************************************************
+ * @brief 
+ *   Invoke transaction.
+ *
+ * @details
+ *  This function used to excute invoke process.
+ * 
+ * @param method 
+ *   Chainmaker transaction structure pointer.
+ * 
+ * @param contract_name 
+ *   Chainmaker contarct name.
+ * 
+ * @param invoke_reponse 
+ *   Node response data.
+ *
+ * @return 
+ *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
+ ******************************************************************************/
+BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatQueryReponse *query_reponse);
 
 /*! @}*/
 

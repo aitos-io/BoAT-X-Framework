@@ -24,10 +24,8 @@ wait for its receipt.
 /* self-header include */
 #include "boatconfig.h"
 #include "boatchainmaker.h"
-
 #include "http2intf.h"
 #include "boatplatform_internal.h"
-
 #include "common/request.pb-c.h"
 #include "common/transaction.pb-c.h"
 #include "common/common.pb-c.h"
@@ -36,6 +34,7 @@ wait for its receipt.
 BOAT_RESULT generateTxRequestPayloadPack(BoatHlchainmakerTx *tx_ptr, char *method, char* contract_name, BoatFieldVariable *output_ptr)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
+	int i;
 
 	BUINT32 packed_length_payload;
 	Common__TransactPayload transactPayload = COMMON__TRANSACT_PAYLOAD__INIT;
@@ -44,19 +43,16 @@ BOAT_RESULT generateTxRequestPayloadPack(BoatHlchainmakerTx *tx_ptr, char *metho
 	transactPayload.method                  = method;
 
 	transactPayload.parameters = (Common__KeyValuePair**)BoatMalloc(sizeof(Common__KeyValuePair*) * tx_ptr->trans_para.n_parameters);
-	
-	int i;
 	for (i = 0; i < tx_ptr->trans_para.n_parameters; i++)
 	{
-		Common__KeyValuePair* tkvp = BoatMalloc(sizeof(Common__KeyValuePair));
-		memcpy(tkvp, &keyValuePair, sizeof(Common__KeyValuePair));
-		tkvp->key   = tx_ptr->trans_para.parameters[i].key;
-		tkvp->value = tx_ptr->trans_para.parameters[i].value;
-
-		transactPayload.parameters[i] = tkvp;
+		Common__KeyValuePair* key_value_pair = BoatMalloc(sizeof(Common__KeyValuePair));
+		memcpy(key_value_pair, &keyValuePair, sizeof(Common__KeyValuePair));
+		key_value_pair->key   = tx_ptr->trans_para.parameters[i].key;
+		key_value_pair->value = tx_ptr->trans_para.parameters[i].value;
+		transactPayload.parameters[i] = key_value_pair;
 	}	
-	transactPayload.n_parameters  = tx_ptr->trans_para.n_parameters;
 
+	transactPayload.n_parameters  = tx_ptr->trans_para.n_parameters;
 	/* pack the Common__TransactPayload */
 	packed_length_payload = common__transact_payload__get_packed_size(&transactPayload);
 	output_ptr->field_ptr = BoatMalloc(packed_length_payload);
@@ -67,8 +63,8 @@ BOAT_RESULT generateTxRequestPayloadPack(BoatHlchainmakerTx *tx_ptr, char *metho
 	{	
 		BoatFree(transactPayload.parameters[i]);
 	}	
-
 	BoatFree(transactPayload.parameters);	
+
 	return result;
 }
 
@@ -94,26 +90,26 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	boat_try_declare;
 		
 	/* step-0: param in check */
-	if( ( tx_ptr == NULL ) || ( tx_ptr->wallet_ptr == NULL ) || \
-		( tx_ptr->wallet_ptr->http2Context_ptr == NULL ) )
+	if ((tx_ptr == NULL ) || (tx_ptr->wallet_ptr == NULL) || \
+		(tx_ptr->wallet_ptr->http2Context_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
 		return BOAT_ERROR;
 	}
 
+	time(&timesec);
 	sender.org_id             = tx_ptr->client_info.org_id;
 	sender.member_info.len    = tx_ptr->wallet_ptr->user_client_info.cert.field_len;
 	sender.member_info.data   = tx_ptr->wallet_ptr->user_client_info.cert.field_ptr;
 	sender.is_full_cert       = true;
 
-	time(&timesec);
 	tx_header.chain_id        = tx_ptr->client_info.chain_id;
 	tx_header.tx_type         = tx_type;
 	tx_header.tx_id           = tx_id;
 	tx_header.timestamp       = timesec;
 	tx_header.sender          = &sender;
-		
-	result = generateTxRequestPayloadPack(tx_ptr,method, contract_name, &payloadPacked);
+	result = generateTxRequestPayloadPack(tx_ptr, method, contract_name, &payloadPacked);
+
 	/* step-2: compute payload packed length */
 	packedHeaderLength = common__tx_header__get_packed_size(&tx_header);
 	packedLength = packedHeaderLength + payloadPacked.field_len;
@@ -121,33 +117,31 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	hash_data.field_ptr = BoatMalloc(packedLength);
 	hash_data.field_len = packedLength;
 	common__tx_header__pack(&tx_header, hash_data.field_ptr);
-
 	hash_data.field_ptr += packedHeaderLength;
 	memcpy(hash_data.field_ptr, payloadPacked.field_ptr, payloadPacked.field_len);
 	hash_data.field_ptr -= packedHeaderLength;
 
 	/* step-3: compute hash */
 	result = BoatHash(BOAT_HASH_SHA256,hash_data.field_ptr, 
-					   hash_data.field_len, hash, NULL, NULL );
+					   hash_data.field_len, hash, NULL, NULL);
 
-	if (result != BOAT_SUCCESS)
-	{
+	if (result != BOAT_SUCCESS) {
+
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatHash.");
 		boat_throw(result, chainmakerProposalTransactionPacked_exception);
 	}
 
 	/* step-4: signature */
-	result = BoatSignature(tx_ptr->wallet_ptr->user_client_info.prikeyCtx,
-							hash, sizeof(hash), &signatureResult, NULL );
+	result = BoatSignature(tx_ptr->wallet_ptr->user_client_info.prikeyCtx, hash, sizeof(hash), &signatureResult, NULL );
 
-	if( result != BOAT_SUCCESS )
-	{
+	if( result != BOAT_SUCCESS ) {
+
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
 		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, chainmakerProposalTransactionPacked_exception);
 	}
 
-	if (!signatureResult.pkcs_format_used)
-	{
+	if (!signatureResult.pkcs_format_used) {
+
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
 		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, chainmakerProposalTransactionPacked_exception);
 	}
@@ -170,10 +164,11 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	/* step-7: packed data assignment */
 	/* ---grpcHeader compute */
 	grpcHeader[0] = 0x00;//uncompressed
-	for(int i = 0 ; i < 4; i++)
+	for (int i = 0 ; i < 4; i++)
 	{
 		grpcHeader[i + 1] = (packedLength >> (32 - 8*(i+1)))&0xFF;
 	}
+
 	/* ---generate packed data */
 	packedData = tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr;
 	memcpy(packedData, grpcHeader, sizeof(grpcHeader));
@@ -185,14 +180,15 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
      }
+
 	/* free malloc */
-    if (payloadPacked.field_ptr != NULL)
-    {
+    if (payloadPacked.field_ptr != NULL) {
+
     	BoatFree(payloadPacked.field_ptr);
     }
 
-    if (hash_data.field_ptr != NULL)
-    {
+    if (hash_data.field_ptr != NULL) {
+    	
     	BoatFree(hash_data.field_ptr);
     }
 	

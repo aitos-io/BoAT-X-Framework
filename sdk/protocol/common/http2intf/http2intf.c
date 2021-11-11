@@ -291,7 +291,7 @@ void http2DeInit(http2IntfContext *http2Context)
 
 BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 {
-	printf("http2SubmitRequest start\n");
+
 	nghttp2_data_provider data_prd;
 	nghttp2_session_callbacks *callbacks;
 	char *pathTmp = NULL;
@@ -341,18 +341,18 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 						MAKE_NV("user-agent", "grpc-go/1.15.0"),
 						MAKE_NV("Accept-Encoding", "gzip, deflate"),
 						MAKE_NV("te", "trailers")};
-printf("http2SubmitRequest 222222222222\n");
+
 	parsePtr = (BoatHlchainmakerResponse *)context->parseDataPtr;
-	printf("http2SubmitRequest 44444444444444\n");
+
 	if (parsePtr->httpResLen != 0)
 	{
-			printf("http2SubmitRequest 55555555555555\n");
+
 		printf("parsePtr->httpResLen = %d\n", parsePtr->httpResLen);
 		BoatFree(parsePtr->http2Res);
 		parsePtr->http2Res = NULL;
 	}
 	parsePtr->httpResLen = 0;
-printf("http2SubmitRequest start1111111\n");
+
 	/* connection establishment */
 	context->sockfd = BoatConnect(context->nodeUrl, NULL);
 	if (context->sockfd < 0)
@@ -360,11 +360,10 @@ printf("http2SubmitRequest start1111111\n");
 		BoatLog(BOAT_LOG_CRITICAL, "BoatConnect failed.");
 		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, http2SubmitRequest_exception);
 	}
-	printf("BoatTlsInit start1111111111\n");
+
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
-	printf("BoatTlsInit start\n");
+
 	result = BoatTlsInit(context->hostName, context->tlsCAchain, context->sockfd, context->tlsContext, NULL);
-	printf("BoatTlsInit end\n");
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatTlsInit failed.");

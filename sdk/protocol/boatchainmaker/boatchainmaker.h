@@ -25,6 +25,28 @@ boatchainamaker.h is header file for RAW transaction construction and performing
 
 #include "boatconfig.h"
 #include "boatinternal.h"
+/*!****************************************************************************
+ * @brief 
+ *   proposal or transaction top level packed
+ * 
+ * @param tx_ptr 
+ *   chainmaker transaction structure pointer
+ * 
+ * @param method 
+ *   chainmaker invoke or save
+ * 
+ * @param contract_name 
+ *   chainmaker contract_name
+ * 
+ * @param tx_type 
+ *   chainmaker user system invoke and query
+ * 
+ * @param tx_id 
+ *   chainmaker 64 bit random
+ *
+ * @return 
+ *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code.
+ ******************************************************************************/
 BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, TxType tx_type, char* tx_id);
 
 #ifdef __cplusplus
