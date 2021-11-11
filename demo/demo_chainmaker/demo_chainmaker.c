@@ -16,48 +16,50 @@
 
 #include "boatconfig.h"
 #include "boatiotsdk.h"
+#include "boatlog.h"
 #include <time.h>
 
-#define USE_LOAD_PERSIST_WALLET
+#define USE_ONETIME_WALLET
 const BCHAR* chainmaker_user_key = "-----BEGIN EC PRIVATE KEY-----\n"
-								   "MHcCAQEEIGAsHq9vdQSPywbdy0vBEzWexkMwjtO0jjn7aiSoPZZKoAoGCCqGSM49\n"
-								   "AwEHoUQDQgAE5lSVTF90J60bc8U2MNyYzmS1f7Ez1jOUXNXrakbHU6ZRWmZpAswb\n"
-								   "mhWkOfpEWBoegtGdPgIeIJX8z8KT7RL1YQ==\n"
-								   "-----END EC PRIVATE KEY-----\n";
+									"MHcCAQEEICVQ1L+mTE+Fg96tJHRyBSSJF/i0Na2EIdeO0I7MlIWKoAoGCCqGSM49\n"
+									"AwEHoUQDQgAEnGbBhx8ZWXYQjgqUeMppwa3Af/bqKDzSLPnG7F2mfVtlCPSQEcrz\n"
+									"hp1G2d1CZbGvOWilZmkOf1azKJ596NXAfg==\n"
+									"-----END EC PRIVATE KEY-----\n";
 
 const BCHAR* chainmaker_user_cert = "-----BEGIN CERTIFICATE-----\n"
-									"MIICaDCCAg6gAwIBAgIDCK2ZMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+									"MIICZzCCAg6gAwIBAgIDCQiPMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
 									"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
 									"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-									"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTEwNzE1MzE0NloXDTI2\n"
-									"MTEwNjE1MzE0NlowgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+									"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTExMDAxMTUzMVoXDTI2\n"
+									"MTEwOTAxMTUzMVowgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
 									"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
 									"MQ8wDQYDVQQLEwZjbGllbnQxLDAqBgNVBAMTI2NsaWVudDEuc2lnbi53eC1vcmcx\n"
-									"LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE5lSVTF90\n"
-									"J60bc8U2MNyYzmS1f7Ez1jOUXNXrakbHU6ZRWmZpAswbmhWkOfpEWBoegtGdPgIe\n"
-									"IJX8z8KT7RL1YaNaMFgwKQYDVR0OBCIEIP4DgiyLenX5yCWNDAby3VDxjQ1Cha/R\n"
-									"f8oU/WORTOagMCsGA1UdIwQkMCKAIKHQDgYZIdDzDcmdr5v7yrR52mzecWHmdaWm\n"
-									"UVerWnaVMAoGCCqGSM49BAMCA0gAMEUCIEneyi79s4M5VjZ6gw4jxHhs8M5h3QAn\n"
-									"PndVTWzaoaVHAiEAvVmqpu11y7jYpgflziCtU80ujlLs8XHDqSet+l+5oiw=\n"
+									"LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEnGbBhx8Z\n"
+									"WXYQjgqUeMppwa3Af/bqKDzSLPnG7F2mfVtlCPSQEcrzhp1G2d1CZbGvOWilZmkO\n"
+									"f1azKJ596NXAfqNaMFgwKQYDVR0OBCIEINpgpwouzzNuvpVcqSJG2yEK/1Nsc+ee\n"
+									"Hehc0CliS29kMCsGA1UdIwQkMCKAIBkZhvRKkDvOx6VhFkEggPTtjdMUnlIWesaS\n"
+									"YmxKHzYpMAoGCCqGSM49BAMCA0cAMEQCIGLGlVFpj7vKin86DtSYbDJOfS9hjscJ\n"
+									"+iM4rl+XUKyUAiAFZbcDM2bCvLALprWzi0kNQ6VkYP2BSGn/1niDcGZK1Q==\n"
 									"-----END CERTIFICATE-----\n";
 
-const BCHAR* chainmaker_tls_ca_cert =   "-----BEGIN CERTIFICATE-----\n"
-										"MIICnTCCAkOgAwIBAgICafcwCgYIKoZIzj0EAwIwgYoxCzAJBgNVBAYTAkNOMRAw\n"
-										"DgYDVQQIEwdCZWlqaW5nMRAwDgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1v\n"
-										"cmcxLmNoYWlubWFrZXIub3JnMRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMT\n"
-										"GWNhLnd4LW9yZzEuY2hhaW5tYWtlci5vcmcwHhcNMjExMTA3MTUzMTQ2WhcNMzEx\n"
-										"MTA1MTUzMTQ2WjCBijELMAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaWppbmcxEDAO\n"
-										"BgNVBAcTB0JlaWppbmcxHzAdBgNVBAoTFnd4LW9yZzEuY2hhaW5tYWtlci5vcmcx\n"
-										"EjAQBgNVBAsTCXJvb3QtY2VydDEiMCAGA1UEAxMZY2Eud3gtb3JnMS5jaGFpbm1h\n"
-										"a2VyLm9yZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABMRD6zki7fZP1BiGj0g+\n"
-										"A94SbxIkDvntlRSO6HLqvJMG8jn4Ur4RwplvOkVz1jbD9WVRVPY7O91XiyU5ov+t\n"
-										"f0WjgZYwgZMwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wKQYDVR0O\n"
-										"BCIEIKHQDgYZIdDzDcmdr5v7yrR52mzecWHmdaWmUVerWnaVMEUGA1UdEQQ+MDyC\n"
-										"DmNoYWlubWFrZXIub3Jngglsb2NhbGhvc3SCGWNhLnd4LW9yZzEuY2hhaW5tYWtl\n"
-										"ci5vcmeHBH8AAAEwCgYIKoZIzj0EAwIDSAAwRQIgXeECA7tcPFd9BpkcSCGelV25\n"
-										"5fJDVQiRTGyg79MfxncCIQDTP3z3L84lrwe+YxppKyFS9ISSOA0EUc4o+/RdoGi8\n"
-										"aQ==\n"
-										"-----END CERTIFICATE-----\n";
+
+const BCHAR* chainmaker_tls_ca_cert = "-----BEGIN CERTIFICATE-----\n"
+									  "MIICnTCCAkOgAwIBAgICafcwCgYIKoZIzj0EAwIwgYoxCzAJBgNVBAYTAkNOMRAw\n"
+									  "DgYDVQQIEwdCZWlqaW5nMRAwDgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1v\n"
+									  "cmcxLmNoYWlubWFrZXIub3JnMRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMT\n"
+									  "GWNhLnd4LW9yZzEuY2hhaW5tYWtlci5vcmcwHhcNMjExMTA3MTUzMTQ2WhcNMzEx\n"
+									  "MTA1MTUzMTQ2WjCBijELMAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaWppbmcxEDAO\n"
+									  "BgNVBAcTB0JlaWppbmcxHzAdBgNVBAoTFnd4LW9yZzEuY2hhaW5tYWtlci5vcmcx\n"
+									  "EjAQBgNVBAsTCXJvb3QtY2VydDEiMCAGA1UEAxMZY2Eud3gtb3JnMS5jaGFpbm1h\n"
+									  "a2VyLm9yZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABMRD6zki7fZP1BiGj0g+\n"
+									  "A94SbxIkDvntlRSO6HLqvJMG8jn4Ur4RwplvOkVz1jbD9WVRVPY7O91XiyU5ov+t\n"
+									  "f0WjgZYwgZMwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wKQYDVR0O\n"
+									  "BCIEIKHQDgYZIdDzDcmdr5v7yrR52mzecWHmdaWmUVerWnaVMEUGA1UdEQQ+MDyC\n"
+									  "DmNoYWlubWFrZXIub3Jngglsb2NhbGhvc3SCGWNhLnd4LW9yZzEuY2hhaW5tYWtl\n"
+									  "ci5vcmeHBH8AAAEwCgYIKoZIzj0EAwIDSAAwRQIgXeECA7tcPFd9BpkcSCGelV25\n"
+									  "5fJDVQiRTGyg79MfxncCIQDTP3z3L84lrwe+YxppKyFS9ISSOA0EUc4o+/RdoGi8\n"
+									  "aQ==\n"
+									  "-----END CERTIFICATE-----\n";
 //wallet para
 BCHAR *chainmaker_node_url   = "127.0.0.1:12301";
 BCHAR *chainmaker_host_name  = "chainmaker.org";
@@ -65,83 +67,9 @@ BCHAR *chainmaker_host_name  = "chainmaker.org";
 //client para
 BCHAR *chain_id              = "chain1";
 BCHAR *org_id                = "wx-org1.chainmaker.org";
-BCHAR *contract_name         = "fact";
-
-//method query invoke
-BCHAR *invoke_metod          = "save";
-BCHAR *query_metod           = "find_by_file_hash"; 
-
-//key value para
-BCHAR *key1 = "time";
-BCHAR *key2 = "file_hash";
-BCHAR *key3 = "file_name";
-
-BCHAR *file_name_header = "file_";
-
-#define TIME_LEN        20
-#define FILE_HASH_LEN   32
-#define FILE_NAME_LEN   25
 
 BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
 BoatHlchainmakerWalletConfig wallet_config = {0};
-
-__BOATSTATIC BOAT_RESULT get_file_name_str(char** file_name_str, char* time_buf)
-{
-	if (time_buf == NULL)
-	{
-		return BOAT_ERROR_INVALID_ARGUMENT;
-	}
-
-	char* file_name_buf = BoatMalloc(FILE_NAME_LEN);
-	if (file_name_buf == NULL)
-	{
-		return BOAT_ERROR;
-	}
-
-	memset(file_name_buf, 0, FILE_NAME_LEN);
-	memcpy(file_name_buf, file_name_header, 5);
-	strncat(file_name_buf, time_buf, TIME_LEN);
-	*file_name_str = file_name_buf;
-
-	return BOAT_SUCCESS;
-}
-
-__BOATSTATIC BOAT_RESULT  get_file_hash_str(char** file_hash_str)
-{
-	char* file_hash_buf = BoatMalloc(FILE_HASH_LEN);
-	if (file_hash_buf == NULL)
-	{
-		return BOAT_ERROR;
-	}
-
-	//randrom generate
-	BoatFieldMax16B  random_data;
-	random_data.field_len = 16;
-	BoatRandom(random_data.field, random_data.field_len, NULL);
-	array_to_str(random_data.field ,file_hash_buf, 16);
-	*file_hash_str = file_hash_buf;
-
-	return BOAT_SUCCESS;
-}
-
-__BOATSTATIC BOAT_RESULT get_time_string(char** time_str)
-{
-	time_t rawtime;
-	struct tm *info;
-	char* time_buf = NULL;
-
-	time(&rawtime);
-	info = localtime(&rawtime);
-	time_buf = BoatMalloc(TIME_LEN);
-	strftime(time_buf, TIME_LEN, "%Y-%m-%d %H:%M:%S", info);
-	if (time_buf == NULL) 
-	{
-		return BOAT_ERROR;
-	}
-	*time_str = time_buf;	
-
-	return BOAT_SUCCESS;
-} 
 
 
 __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
@@ -191,17 +119,12 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	return BOAT_SUCCESS;
 }
 
-
-
 int main(int argc, char *argv[])
 {
 	BOAT_RESULT           result  = BOAT_SUCCESS;
 	BoatHlchainmakerTx    tx_ptr;
-	BoatTransactionPara   *inovke_transaction_para;
-	BoatTransactionPara   query_transaction_para;
-	char* time_str       = NULL;
-	char* file_hash_str  = NULL;
-	char* file_name_str  = NULL;
+	BoatInvokeReponse     invoke_reponse;
+	BoatQueryReponse      query_reponse;
 
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
@@ -214,7 +137,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* step-3: Chainmaker transaction structure initialization */
-	result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, contract_name, &tx_ptr);
+	result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, &tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
@@ -223,52 +146,30 @@ int main(int argc, char *argv[])
 	tx_ptr.wallet_ptr->node_info.node_url  = chainmaker_node_url;
 	tx_ptr.wallet_ptr->node_info.host_name = chainmaker_host_name;
 
-	tx_ptr.trans_para.n_parameters = 3;
-	get_time_string(&time_str);
-	get_file_hash_str(&file_hash_str);
-	get_file_name_str(&file_name_str, time_str);
-	BoatHlchainmaker(&tx_ptr, key1, time_str);
-	BoatHlchainmaker(&tx_ptr, key2, file_hash_str);
-	BoatHlchainmaker(&tx_ptr, key3, file_name_str);
-
+	BoatHlchainmakerAddTxParam(&tx_ptr, "time", "6543234", "file_hash", "ab3456df5799b87c77e7f88", "file_name", "name007", NULL);
 	/* step-4: set transaction 'invoke' command */
-	result = BoatHlchainmakerContractClaimInvoke(&tx_ptr, invoke_metod); 
+	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", true, &invoke_reponse); 
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
 	}
+	BoatLog( BOAT_LOG_CRITICAL, "reponse code = %d, message = %s, gas_used = %d\n", invoke_reponse.code, invoke_reponse.message, invoke_reponse.gas_used);
 
-	/* step-5: wait seconds and 'query' the tansaction */
-	BoatSleep(3);
 
-	tx_ptr.trans_para.n_parameters = 1;
-	BoatHlchainmaker(&tx_ptr, key2, file_hash_str);
-	result = BoatHlchainmakerContractClaimQuery(&tx_ptr , query_metod);
+	/* step-5: wait seconds and 'query' the gas */
+	BoatSleep(2);
+	BoatHlchainmakerAddTxParam(&tx_ptr, "file_hash", "ab3456df5799b87c77e7f88");
+	result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &query_reponse);
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
 	}
-
+	BoatLog( BOAT_LOG_CRITICAL, "reponse message = %s,  contract_result = %s, gas_used = %d\n", query_reponse.message, query_reponse.contract_result, query_reponse.gas_used);
 	/* step-6: chainmaker transaction structure Deinitialization */
 	BoatHlchainmakerTxDeInit(&tx_ptr);
 	
 	/* step-7: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
-
-    if (time_str != NULL) 
-    {
-    	BoatFree(time_str);
-    }
-
-    if (file_hash_str != NULL) 
-    {
-    	BoatFree(file_hash_str);
-    }
-
-    if (file_name_str != NULL) 
-    {
-    	BoatFree(file_name_str);
-    }
 
     return 0;
 }
