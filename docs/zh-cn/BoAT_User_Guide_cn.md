@@ -294,8 +294,8 @@ ${AR} -v
 有些OpenCPU模组在其所提供的开发环境中，已经整合了配套的交叉编译环境，使得客户无需另行在Linux系统中安装交叉编译器。这尤其便于在一台host电脑上，开发多个不同型号模组上的应用软件，而无需反复切换交叉编译环境。
 
 
-###### 模组开发环境以GNU make为编译工程
-若模组开发环境以GNU make为编译工程（各级源码目录内有Makefile），可以对BoAT IoT Framework SDK调整编译配置，将其纳入整合的模组开发环境中编译。
+###### 模组开发环境以GNU make为编译工具
+若模组开发环境以GNU make为编译工具（各级源码目录内有Makefile），可以对BoAT IoT Framework SDK调整编译配置，将其纳入整合的模组开发环境中编译。
 
 通常，模组开发环境中会提供客户代码的Example，并在编译体系中包含对客户示例代码Example的编译配置。首先将\<SDKRoot\>目录（以下例子中以boatiotsdk为目录名）复制到模组开发环境中的客户代码Example目录，然后修改针对客户代码Example的Makefile，增加一个编译BoAT IoT Framework SDK的target。
 
