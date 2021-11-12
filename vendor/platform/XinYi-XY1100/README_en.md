@@ -18,7 +18,7 @@ Assuming `<XY1100 Root>` to be the root directory of XinYi-XY1100 platform SDK:
 
 4. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.h into `<XY1100 Root>/userapp/demo/boat_demo`.
 
-5. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/vendor/Makefile into `<XY1100 Root>/userapp/BoAT-X-Framework/vendor`.
+5. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/vendor/Makefile into /userapp/BoAT-X-Framework/vendor and overwrite the original file.
 
 6. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/storage/persiststore.c into `<XY1100 Root>/userapp/BoAT-X-Framework/vendor/common/storage`.
 
