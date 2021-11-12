@@ -68,9 +68,8 @@ openssl         |1.1.1d is tested
 For embedded devices, the exact configuration depends on the development toolchain of the underlying device.  
 Linux-based embedded devices are similar to that on x86_64, except for the exact compiler and dependent library version may be device-specific. Meanwhile, RTOS-based embedded devices are much diverse.
 
-
 ### Before building the demo
-As BoAT is a client for blockchain, some environment must be prepared before build the demo.
+As BoAT is a client for blockchain, some environments must be prepared before building the demo.
 
 #### Make use of a deployed blockchain or deploy your own blockchain
 For public blockchain, you must prepare some gas for transaction fee in advance. If a simulator is available for that blockchain, it's a better choice.
