@@ -196,7 +196,8 @@ BOAT_PROTOCOL_USE_HWBCS     ?= 1
 ````
 
 As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or while compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.  
-***Note：Since the PlatON, PlatONE, and FISCOBCOS blockchain wallet codes reuse the Ethereum wallet code in large numbers, it is necessary to enable Ethereum for any one of these three to be enabled***  
+***Note：Since the PlatON, PlatONE, and FISCOBCOS blockchain wallet codes reuse the Ethereum wallet code in large numbers, it is necessary to enable Ethereum for any one of these three to be enabled.***  
+***Note：Since the hw_bcs blockchain wallet codes reuse the fabric wallet code in large numbers, it is necessary to enable fabric for hw_bcs to be enabled.*** 
 - Log printing level adjustment
 If necessary, adjust the value of `BOAT_LOG_LEVEL` in the path \<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h to adjust the printer type of the log.
 
@@ -237,8 +238,8 @@ Host compilation means that the compilation environment is consistent with the t
 Compile Host based on Linux distribution (such as Ubuntu). Generally, there is no need to configure the compilation environment, just make sure that the dependent software has been installed.  
 Follow the steps below to compile:
 
-1. Store the SDK source code in a path that meets the requirements of [SDK source code path](#SDK-Source-Code-Path)
-2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/demo/demo_\<protocol\>/demo_contract (see section 3.3)
+1. Store the SDK source code in a path that meets the requirements of [SDK source code path](#SDK-Source-Code-Path).
+2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/demo/demo_\<protocol\>/demo_contract (see section 3.3).
 3. In the \<SDKRoot\> directory, execute the following command:  
 ````
 $make boatlibs
