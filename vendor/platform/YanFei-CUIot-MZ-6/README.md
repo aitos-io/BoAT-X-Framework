@@ -96,9 +96,7 @@
    打开Linux终端进入Yanfei根目录
    ```
    cd Yanfei代码根目录
-   cd out
-   rm -r appimage_debug//需要先删除本地之前生成的文件
-   cd ..
+   rm -r out//需要先删除本地之前生成的文件
    . tools/core_launch.sh
    cout
    cmake ../.. -G Ninja
