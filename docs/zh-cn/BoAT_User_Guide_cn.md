@@ -230,8 +230,8 @@ Host编译指编译环境与目标环境一致，例如，在x86上编译x86程�
 基于Linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。
 
 编译遵照如下步骤:
-1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中  
-2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见[合约C接口代码自动生成](###合约C接口代码自动生成)章节）  
+1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中。  
+2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见[合约C接口代码自动生成](###合约C接口代码自动生成)章节）。  
 3. 在\<SDKRoot\>目录下，执行以下命令:  
 ```
 $make boatlibs
