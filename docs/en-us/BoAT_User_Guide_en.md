@@ -197,6 +197,7 @@ BOAT_PROTOCOL_USE_HWBCS     ?= 1
 
 As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or while compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.  
 ***Note：Since the PlatON, PlatONE, and FISCOBCOS blockchain wallet codes reuse the Ethereum wallet code in large numbers, it is necessary to enable Ethereum for any one of these three to be enabled***  
+***Note：Since the hw_bcs blockchain wallet codes reuse the fabric wallet code in large numbers, it is necessary to enable fabric for hw_bcs to be enabled*** 
 - Log printing level adjustment
 If necessary, adjust the value of `BOAT_LOG_LEVEL` in the path \<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h to adjust the printer type of the log.
 
