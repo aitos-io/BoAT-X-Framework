@@ -238,8 +238,8 @@ Host compilation means that the compilation environment is consistent with the t
 Compile Host based on Linux distribution (such as Ubuntu). Generally, there is no need to configure the compilation environment, just make sure that the dependent software has been installed.  
 Follow the steps below to compile:
 
-1. Store the SDK source code in a path that meets the requirements of [SDK source code path](#SDK-Source-Code-Path)
-2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/demo/demo_\<protocol\>/demo_contract (see section 3.3)
+1. Store the SDK source code in a path that meets the requirements of [SDK source code path](#SDK-Source-Code-Path).
+2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/demo/demo_\<protocol\>/demo_contract (see section 3.3).
 3. In the \<SDKRoot\> directory, execute the following command:  
 ````
 $make boatlibs
