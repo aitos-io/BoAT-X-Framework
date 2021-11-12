@@ -39,12 +39,12 @@ const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+const BCHAR *native_demoKey = "0xf1395a1fc3f74f0c867b61292e28e0f6cc98a095535fd6bf04e4169ebc047e61";
 
 /**
  * test node url
  */
-const BCHAR * demoUrl = "http://192.168.132.190:7545";
+const BCHAR * demoUrl = "http://127.0.0.1:7545";
 
 
 /**
@@ -206,7 +206,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
     {
         result_str = StoreRead_readListLength(&tx_ctx);
         result = BoatEthPraseRpcResponseStringResult(result_str, &prase_result);
-        if(result == BOAT_SUCCESS && result_str != NULL )
+        if (result == BOAT_SUCCESS && result_str != NULL)
         {
             //BoatLog(BOAT_LOG_NORMAL, "readListLength returns: %s", result_str);
             
@@ -222,7 +222,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
                 {
                     //BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", prase_result.field_ptr);
                 }
-                else
+                else 
                 {
                     return BOAT_ERROR;
                 }
