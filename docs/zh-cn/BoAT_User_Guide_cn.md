@@ -186,8 +186,8 @@ BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
 BOAT_PROTOCOL_USE_HWBCS     ?= 1
 ```
 根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁用相应的区块链协议。  
-***注：由于PlatON，PlatONE和FISCO BCOS三个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能***  
-***注：由于hw_bcs区块链钱包代码大量复用fabric的钱包代码，所以使能hw_bcs时，都需要把fabric使能*** 
+***注：由于PlatON，PlatONE和FISCO BCOS三个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能。***  
+***注：由于hw_bcs区块链钱包代码大量复用fabric的钱包代码，所以使能hw_bcs时，都需要把fabric使能。*** 
 - 日志打印级别调整  
 根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
 
