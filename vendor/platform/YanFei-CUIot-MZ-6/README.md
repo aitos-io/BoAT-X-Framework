@@ -8,7 +8,7 @@
 
 ## 二、拷贝文件
 
-1、拷贝 BoAT代码，BoAT-X-Framework 整个文件夹放在Yanfei平台代码根目录下，即与主CMakeLists.txt平级。
+1、拷贝 BoAT代码，BoAT-X-Framework 整个文件夹放在YanFei平台代码根目录下，即与主CMakeLists.txt平级。
 
 2、拷贝 BoAT-X-Framework\vendor\platform\YanFei-CUIot-MZ-6\YanfeiRootDirCode\app\demo\src到Yanfei平台代码根目录\app\demo\src\下。
 
