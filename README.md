@@ -64,10 +64,9 @@ libcurl         |7.55.1 is tested
 openssl         |1.1.1d is tested
 
 
-#### For embedded device
-For embedded device, the exact configuration depends on the development tool chain of the underlying device.
-
-Among them, linux-based embedded devices are basically similar to that on x86_64, except for the exact compiler and dependent library version may be device-specific. Meanwhile RTOS-based embedded devices are much diverse.
+#### Embedded devices
+For embedded devices, the exact configuration depends on the development toolchain of the underlying device.  
+Linux-based embedded devices are similar to that on x86_64, except for the exact compiler and dependent library version may be device-specific. Meanwhile, RTOS-based embedded devices are much diverse.
 
 
 ### Before building the demo
