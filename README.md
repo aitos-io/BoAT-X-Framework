@@ -8,7 +8,7 @@
 ## Introduction
 Welcome to the official implementation of BoAT Framework! 
 
-**BoAT** blockchain application framework is an IoT-device-oriented lightweight blockchain client SDK written in C language. **BoAT** stands for *Blockchain of AI Things* and also depicts the vision that a boat transfers trustworthy information from the data source through to the data lake.
+**BoAT** blockchain application framework is an IoT-device-oriented lightweight blockchain client SDK written in C language. **BoAT** stands for *Blockchain of AI Things* and  depicts the vision that a boat transfers trustworthy information from the data source through to the data lake.
 
 
 ### The Pain Point
