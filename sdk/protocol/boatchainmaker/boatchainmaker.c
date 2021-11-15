@@ -29,7 +29,6 @@ wait for its receipt.
 #include "common/request.pb-c.h"
 #include "common/transaction.pb-c.h"
 #include "common/common.pb-c.h"
-#include <time.h>
 
 BOAT_RESULT generateTxRequestPayloadPack(BoatHlchainmakerTx *tx_ptr, char *method, char* contract_name, BoatFieldVariable *output_ptr)
 {
@@ -74,7 +73,6 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	Common__TxRequest  tx_request  = COMMON__TX_REQUEST__INIT;
 	Common__TxHeader   tx_header   = COMMON__TX_HEADER__INIT;
 	Accesscontrol__SerializedMember sender = ACCESSCONTROL__SERIALIZED_MEMBER__INIT;
-	long int timesec = 0;
 	
 	BoatFieldVariable payloadPacked = {NULL, 0};
 	BoatFieldVariable hash_data = {NULL, 0};
@@ -97,7 +95,6 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 		return BOAT_ERROR;
 	}
 
-	time(&timesec);
 	sender.org_id             = tx_ptr->client_info.org_id;
 	sender.member_info.len    = tx_ptr->wallet_ptr->user_client_info.cert.field_len;
 	sender.member_info.data   = tx_ptr->wallet_ptr->user_client_info.cert.field_ptr;
@@ -106,7 +103,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	tx_header.chain_id        = tx_ptr->client_info.chain_id;
 	tx_header.tx_type         = tx_type;
 	tx_header.tx_id           = tx_id;
-	tx_header.timestamp       = timesec;
+	tx_header.timestamp       = BoatGetTimes();
 	tx_header.sender          = &sender;
 	result = generateTxRequestPayloadPack(tx_ptr, method, contract_name, &payloadPacked);
 
