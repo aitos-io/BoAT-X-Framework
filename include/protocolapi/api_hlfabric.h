@@ -24,6 +24,7 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 #define __API_HLFABRIC_H__
 
 #include "boatiotsdk.h"
+#include "http2intf.h"
 // #include "protocolapi/api_hlfabric_discovery.h"
 
 /*! @defgroup fabric-api boat fabric-API 
@@ -39,8 +40,8 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 #define BOAT_HLFABRIC_ENDORSER_MAX_NUM           10  //!< Support endorser max number
 #define BOAT_HLFABRIC_ORDERER_MAX_NUM            4   //!< Support orderer max number
 
-#define BOAT_HLFABRIC_TLS_SUPPORT                1 //!< If need client support TLS, set it to 1.
-#define BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT        0 //!< If server need identify client, set it to 1.
+#define BOAT_HLFABRIC_TLS_SUPPORT                BOAT_TLS_SUPPORT //!< If need client support TLS, set it to 1.
+#define BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT        BOAT_TLS_IDENTIFY_CLIENT //!< If server need identify client, set it to 1.
 
                                                    //!< This macro valid only BOAT_HLFABRIC_TLS_SUPPORT has
                                                    //!< set to 1. 
@@ -223,8 +224,6 @@ typedef struct TBoatHlfabricProposalResponseArray
 {
 	BUINT16                            responseCount;
 	BoatHlfabricSingleEndorserResponse response[BOAT_HLFABRIC_ENDORSER_MAX_NUM];
-	BUINT32								httpResLen;
-	BUINT8 								*http2Res;
 }BoatHlfabricEndorserResponse;
 
 
@@ -252,6 +251,7 @@ typedef struct TBoatHlfabricTx
 	BoatHlfabricWallet*          wallet_ptr;       //!< Pointer of the transaction wallet
 	BoatHlfabricVariable         var;              //!< Necessary variable in transaction
 	BoatHlfabricEndorserResponse endorserResponse; //!< Endorser respond contents
+	Http2Response                evaluateRes;
 }BoatHlfabricTx;
 
 
