@@ -80,7 +80,7 @@ BOAT_RESULT array_to_str(char* array, char *str, char lenth)
 }
 
 
-BOAT_RESULT get_tx_id(char* tx_id_ptr)
+BOAT_RESULT get_tx_id(BUINT8* tx_id_ptr)
 {
 	//32 byte randrom generate
 	BoatFieldMax32B  random_data;
@@ -458,57 +458,62 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 
 BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatQueryReponse *query_reponse)
 {
-	BOAT_RESULT result             = BOAT_SUCCESS;
 	TxType tx_type                 = TXTYPE_QUERY_USER_CONTRACT;
 	Common__TxResponse *tx_reponse = NULL;
 	BUINT8* query_tx_id            = NULL;
 
+	BOAT_RESULT result = BOAT_SUCCESS;
+	boat_try_declare;
+
 	if ((tx_ptr == NULL) || (method == NULL)) {
 
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
 	}
-
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
 	query_tx_id = BoatMalloc(BOAT_TXID_LEN);
 	get_tx_id(query_tx_id);
 
-	do {
-		result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, query_tx_id);
-		if (result != BOAT_SUCCESS) {
-
-			break;
-		}
+	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, query_tx_id);
+	if (result != BOAT_SUCCESS) {
+		BoatLog(BOAT_LOG_CRITICAL, "hlchainmakerTransactionPacked failed");
+		boat_throw(result, BoatHlchainmakerContractQuery_exception);
+	}
 	
-		result = BoatHlchainmakerTxRequest(tx_ptr, &tx_reponse);
-		if (result != BOAT_SUCCESS) {
+	result = BoatHlchainmakerTxRequest(tx_ptr, &tx_reponse);
+	if (result != BOAT_SUCCESS) {
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerTxRequest failed");
+		boat_throw(result, BoatHlchainmakerContractQuery_exception);
+	}
 
-			result = BOAT_ERROR;
-			break;
-		}
+	if (tx_reponse == NULL) {
+		BoatLog(BOAT_LOG_CRITICAL, "tx_reponse is NULL");
+		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
+	}
 
-		if (tx_reponse == NULL) {
+	if (strlen(tx_reponse->message) > BOAT_RESPONSE_MESSAGE_MAX_LEN) {
+		BoatLog(BOAT_LOG_CRITICAL, "tx_reponse->message is too long");
+		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
+	}
 
-			result = BOAT_ERROR;
-			break;
-		}
+	memset(query_reponse->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
+	memcpy(query_reponse->message, tx_reponse->message, strlen(tx_reponse->message));
 
-		if (strlen(tx_reponse->message) > BOAT_RESPONSE_MESSAGE_MAX_LEN) {
-			result = BOAT_ERROR;
-			break;
-		}
+	if (strlen(tx_reponse->contract_result->result.data) > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN) {
+		BoatLog(BOAT_LOG_CRITICAL, "tx_reponse->contract_result->result.datais too long");
+		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
+	}
 
-		memset(query_reponse->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
-		memcpy(query_reponse->message, tx_reponse->message, strlen(tx_reponse->message));
-		if (strlen(tx_reponse->contract_result->result.data) > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN) {
-			result = BOAT_ERROR;
-			break;
-		}
+	memset(query_reponse->contract_result, 0, BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN);
+	memcpy(query_reponse->contract_result, tx_reponse->contract_result->result.data, strlen(tx_reponse->contract_result->result.data));
+	query_reponse->gas_used = tx_reponse->contract_result->gas_used;
 
-		memset(query_reponse->contract_result, 0, BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN);
-		memcpy(query_reponse->contract_result, tx_reponse->contract_result->result.data, strlen(tx_reponse->contract_result->result.data));
-		query_reponse->gas_used = tx_reponse->contract_result->gas_used;
-	} while(false);
+		/* boat catch handle */
+	boat_catch(BoatHlchainmakerContractQuery_exception)
+	{
+        BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+        result = boat_exception;
+    	}
 
 	if (query_tx_id != NULL)
 	{
