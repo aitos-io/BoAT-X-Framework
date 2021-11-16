@@ -17,7 +17,6 @@
 #include "boatconfig.h"
 #include "boatiotsdk.h"
 #include "boatlog.h"
-#include <time.h>
 
 #define USE_ONETIME_WALLET
 const BCHAR* chainmaker_user_key = "-----BEGIN EC PRIVATE KEY-----\n"
@@ -70,7 +69,6 @@ BCHAR *org_id                = "wx-org1.chainmaker.org";
 
 BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
 BoatHlchainmakerWalletConfig wallet_config = {0};
-
 
 __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 {
@@ -145,8 +143,8 @@ int main(int argc, char *argv[])
 
 	tx_ptr.wallet_ptr->node_info.node_url  = chainmaker_node_url;
 	tx_ptr.wallet_ptr->node_info.host_name = chainmaker_host_name;
-
 	BoatHlchainmakerAddTxParam(&tx_ptr, "time", "6543234", "file_hash", "ab3456df5799b87c77e7f88", "file_name", "name007", NULL);
+	
 	/* step-4: set transaction 'invoke' command */
 	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", true, &invoke_reponse); 
 	if (result != BOAT_SUCCESS)
@@ -154,7 +152,6 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 	BoatLog( BOAT_LOG_CRITICAL, "reponse code = %d, message = %s, gas_used = %d\n", invoke_reponse.code, invoke_reponse.message, invoke_reponse.gas_used);
-
 
 	/* step-5: wait seconds and 'query' the gas */
 	BoatSleep(2);
@@ -165,6 +162,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 	BoatLog( BOAT_LOG_CRITICAL, "reponse message = %s,  contract_result = %s, gas_used = %d\n", query_reponse.message, query_reponse.contract_result, query_reponse.gas_used);
+	
 	/* step-6: chainmaker transaction structure Deinitialization */
 	BoatHlchainmakerTxDeInit(&tx_ptr);
 	
