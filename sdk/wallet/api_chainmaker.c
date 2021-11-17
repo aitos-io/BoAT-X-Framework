@@ -217,17 +217,19 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	/* tlsClinet_info DeInit */
-    wallet_ptr->tls_client_info.cert.field_ptr == NULL;
+     wallet_ptr->tls_client_info.cert.field_ptr == NULL;
 	wallet_ptr->tls_client_info.cert.field_len = 0;
 
-	if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain != NULL) {
+	if (wallet_ptr->http2Context_ptr->tlsCAchain != NULL) {
 
-		BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain);
-	}
+		if (wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL) {
 
-	if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL) {
-
-		BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr);
+			BoatFree(wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr);
+			wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = NULL;
+		}
+	
+		BoatFree(wallet_ptr->http2Context_ptr->tlsCAchain);
+		wallet_ptr->http2Context_ptr->tlsCAchain = NULL;
 	}
 	
 #endif
