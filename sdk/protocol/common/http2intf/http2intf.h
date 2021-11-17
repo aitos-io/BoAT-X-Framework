@@ -72,7 +72,6 @@ typedef struct Thttp2IntfContext{
 	BSINT32             sockfd;       //!< network connection file desc
 
 	BUINT8                type;   //!< this field will determine http2 head content
-	BUINT8				chainType; //chaincode fabric /hwbcs 
 	BCHAR               *pathTmp; 
 	void*               parseDataPtr; //!< the http2 parsed data structure
 }http2IntfContext;
