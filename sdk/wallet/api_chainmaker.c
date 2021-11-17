@@ -304,9 +304,11 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 		if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL) {
 
 			BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr);
+			tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = NULL;
 		}
 		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = 0;
 		BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain);
+		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain == NULL;
 	}
 
 	tx_ptr->wallet_ptr->http2Context_ptr->hostName                = tx_ptr->wallet_ptr->node_info.host_name;
