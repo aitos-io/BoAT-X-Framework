@@ -313,6 +313,7 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain == NULL;
 	}
 
+	tx_ptr->wallet_ptr->http2Context_ptr->pathTmp                 = "/api.RpcNode/SendRequest";
 	tx_ptr->wallet_ptr->http2Context_ptr->hostName                = tx_ptr->wallet_ptr->node_info.host_name;
 	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain              = BoatMalloc(sizeof(BoatFieldVariable));
 	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = tx_ptr->wallet_ptr->node_info.org_tls_ca_cert.length + 1;
@@ -320,21 +321,18 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 	memset(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, 0x00, tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 	memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, tx_ptr->wallet_ptr->node_info.org_tls_ca_cert.content, tx_ptr->wallet_ptr->node_info.org_tls_ca_cert.length);
 #endif
-	
-	tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->tx_reponse;
-	parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
-	tx_ptr->wallet_ptr->http2Context_ptr->chainType = 2;
 
+	tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &http2_response;
 	result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
-	tx_reponse_ptr = common__tx_response__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
+	tx_reponse_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
 	*tx_reponse = tx_reponse_ptr;
 
-	if(parsePtr->httpResLen != 0) {
+	if (http2_response.httpResLen != 0) {
 
-		BoatFree(parsePtr->http2Res);
+		BoatFree(http2_response.http2Res);
 	}
 	
-	parsePtr->httpResLen = 0;
+	http2_response.httpResLen = 0;
 	if (tx_reponse != NULL) {
 		BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
 	}
@@ -449,8 +447,8 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
         result = boat_exception;
     	}
 
-	if (invoke_tx_id != NULL)
-	{
+	if (invoke_tx_id != NULL) {
+
 		BoatFree(invoke_tx_id);
 	}
 	return result;
