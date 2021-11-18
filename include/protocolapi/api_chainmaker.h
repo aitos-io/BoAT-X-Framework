@@ -138,13 +138,6 @@ typedef struct TBoatHlchainamkerResult {
 
 } BoatHlchainamkerResult;
 
-typedef struct TBoatHlchainmakerResponse {
-
-	BoatHlchainamkerResult   http_result;
-	BUINT32			         httpResLen;
-	BUINT8 			         *http2Res;
-}BoatHlchainmakerResponse;
-
 // chainmaker wallet config structure
 typedef struct TBoatHlchainmakerWalletConfig {
 
@@ -177,8 +170,7 @@ typedef struct TBoatHlchainmakerWallet {
 
 typedef struct TBoatHlchainamkerTx {
 
-	BoatHlchainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet
-	BoatHlchainmakerResponse    tx_reponse;   
+	BoatHlchainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet 
 	BoatTransactionPara         trans_para;
 	BoatHlchainamkerClient      client_info;     
 }BoatHlchainmakerTx;
