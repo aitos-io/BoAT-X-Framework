@@ -30,7 +30,6 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
  */
 #define BOAT_CHAINMAKER_TLS_SUPPORT               1 //!< If need client support TLS, set it to 1.
 #define BOAT_CHAINMAKER_CERT_MAX_LEN              1024
-#define BOAT_CHAINMAKER_ROOTCA_MAX_NUM            3
 #define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN  8192 //!< The maximum length of HTTP2 send buffer
 #define BOAT_HLCHAINMAKER_ARGS_MAX_NUM            10
 #define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN     100
