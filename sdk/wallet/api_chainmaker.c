@@ -280,7 +280,6 @@ void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr)
 __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, Common__TxResponse** tx_reponse)
 {
 	BOAT_RESULT result                 = BOAT_SUCCESS;
-	BoatHlchainmakerResponse *parsePtr = NULL;
 	Common__TxResponse* tx_reponse_ptr = NULL;
 	Http2Response http2_response       = {0,NULL};
 
