@@ -187,8 +187,8 @@ BOAT_RESULT BoatPlatONTxSetNonce(BoatPlatONTx *tx_ptr, BUINT64 nonce)
 		tx_count_str = web3_getTransactionCount(tx_ptr->wallet_ptr->web3intf_context_ptr,
 												tx_ptr->wallet_ptr->network_info.node_url_ptr,
 												&param_platon_getTransactionCount);
-		result = BoatPlatONPraseRpcResponseResult(tx_count_str, "", 
-												  &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+		result = BoatPlatONPraseRpcResponseStringResult(tx_count_str, 
+												        &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS)
         { 
             BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
@@ -239,8 +239,8 @@ BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_p
             return BOAT_ERROR_RPC_FAILED;
         }
 
-        result = BoatPlatONPraseRpcResponseResult(gas_price_from_net_str, "", 
-											      &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+        result = BoatPlatONPraseRpcResponseStringResult(gas_price_from_net_str, 
+											            &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result == BOAT_SUCCESS)
         {
             // Set transaction gasPrice with the one got from network
@@ -498,11 +498,21 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
     return result;
 }
 
-BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
-                                             const BCHAR *child_name, 
-                                             BoatFieldVariable *result_out)
+BOAT_RESULT BoatPlatONPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return web3_parse_json_result(json_string, child_name, result_out);
+    return web3_parse_json_result(json_string, "", result_out);
+}
+
+BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
+										  	 const BCHAR *child_name, 
+										  	 BoatFieldVariable *result_out)
+{
+    if (child_name == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+	return web3_parse_json_result(json_string, child_name, result_out);
 }
 
 #endif /* end of PROTOCOL_USE_PLATON */

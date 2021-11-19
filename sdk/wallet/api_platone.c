@@ -270,7 +270,6 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
     }
     
-
     return return_value_ptr;
 }
 
