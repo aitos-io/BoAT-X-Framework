@@ -262,7 +262,7 @@ void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr);
  * @return 
  *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, const BCHAR *arg, ...);
+BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length, const BCHAR *arg, ...);
 
 
 /*!****************************************************************************
