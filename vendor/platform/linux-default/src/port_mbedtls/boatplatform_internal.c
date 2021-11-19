@@ -51,7 +51,7 @@
 
 #include <sys/time.h>
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+#if (PROTOCOL_USE_HLFABRIC == 1)
 // for TTLSContext structure
 #include "http2intf.h"
 #endif
@@ -548,6 +548,7 @@ BOAT_RESULT  BoatRemoveFile(const BCHAR *fileName, void *rsvd)
     }
 }
 
+#if (PROTOCOL_USE_HLFABRIC == 1)
 
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
@@ -621,7 +622,7 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 }
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
+#if (BOAT_TLS_SUPPORT == 1)	
 BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 						BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
@@ -751,7 +752,7 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 
 BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+#if (BOAT_TLS_SUPPORT == 1) 
 	if ((tlsContext == NULL) || (((TTLSContext*)tlsContext)->ssl == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "tlsContext or tlsContext->ssl can't be NULL.");
@@ -766,7 +767,7 @@ BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, 
 
 BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+#if (BOAT_TLS_SUPPORT == 1) 
 	if ((tlsContext == NULL) || (((TTLSContext*)tlsContext)->ssl == NULL))
 	{
 		//! @todo still receive a unknown data after Boatclose(...)
@@ -782,7 +783,7 @@ BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *
 void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 {
 	close(sockfd);
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1)
 	// free tls releated
 	if(tlsContext != NULL)
 	{
@@ -805,6 +806,7 @@ void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 #endif
 }
 
+#endif
 
 
 /******************************************************************************
