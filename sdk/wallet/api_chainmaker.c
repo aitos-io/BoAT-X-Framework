@@ -32,10 +32,13 @@ api_chainmaker.c defines the Ethereum wallet API for BoAT IoT SDK.
 
 BUINT8 get_fibon_data(BUINT8 n) {
 
-	if ((n == 1) || (n == 2) || (n == 0)) {
+	if ((n == 1) || (n == 2) || (n == 0)) 
+	{
 		return 1;
 	}
-	else {
+
+	else 
+	{
 		return get_fibon_data(n - 1) + get_fibon_data(n - 2);
 	}
 }
@@ -54,24 +57,28 @@ BOAT_RESULT array_to_str(char* array, char *str, char lenth)
 
     for (i = 0; i < lenth; i++)
     {
-    	//up data 
+    	   //up data 
         value_up = (array[i] & 0xf0) >> 4;
-        if ((value_up >= 0) && (value_up <= 9)) {
+        if ((value_up >= 0) && (value_up <= 9)) 
+        {
 
              str[n++] = value_up + 0x30;
         }
-        else if ((value_up >= 0xA) && (value_up <= 0xF)) {
+        else if ((value_up >= 0xA) && (value_up <= 0xF)) 
+        {
 
              str[n++] = value_up + 0x57;
         }
 
         //low data
         value_down = array[i] & 0x0f;
-        if ((value_down >= 0) && (value_down <= 9)) {  
+        if ((value_down >= 0) && (value_down <= 9)) 
+        {  
 
              str[n++] = value_down + 0x30;
         }
-        else if ((value_down >= 0xA) && (value_down <= 0xF)) {
+        else if ((value_down >= 0xA) && (value_down <= 0xF)) 
+        {
              str[n++] = value_down + 0x57;
         }
     }
@@ -86,8 +93,8 @@ BOAT_RESULT get_tx_id(BUINT8* tx_id_ptr)
 	random_data.field_len = 32;
 
 	BoatRandom(random_data.field, random_data.field_len, NULL);
-	if (random_data.field == NULL) {
-
+	if (random_data.field == NULL) 
+	{
 		return BOAT_ERROR;
 	}
 
@@ -103,8 +110,8 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
 
-	if (wallet_ptr == NULL) {
-
+	if (wallet_ptr == NULL) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
@@ -115,9 +122,10 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 	wallet_ptr->user_client_info.cert.field_len = 0;
 	
 	/* prikey context assignment */
-	if (prikeyCtx_config.prikey_content.field_ptr != NULL) {
-
-		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->user_client_info.prikeyCtx)) {
+	if (prikeyCtx_config.prikey_content.field_ptr != NULL) 
+	{
+		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->user_client_info.prikeyCtx)) 
+		{
 			BoatLog(BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate.");
 			return BOAT_ERROR_INVALID_ARGUMENT;
 		}
@@ -125,8 +133,8 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 
 	/* cert assignment */
 	wallet_ptr->user_client_info.cert.field_ptr = BoatMalloc(certContent.length);
-	if (wallet_ptr->user_client_info.cert.field_ptr == NULL) {
-
+	if (wallet_ptr->user_client_info.cert.field_ptr == NULL) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
 	}
@@ -134,8 +142,8 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 	wallet_ptr->user_client_info.cert.field_len = certContent.length;
 
 	/* boat catch handle */
-	boat_catch(BoatChainmakerWalletSetAccountInfo_exception) {
-
+	boat_catch(BoatChainmakerWalletSetAccountInfo_exception) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
 		result = boat_exception;
 		/* free malloc param Deinit */
@@ -151,22 +159,22 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT8 i = 0;
 
-	if ((config_ptr == NULL) || (config_size == 0)) {
-
+	if ((config_ptr == NULL) || (config_size == 0)) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "config_ptr cannot be NULL or config_size cannot be zero.");
 		return NULL;
 	}
 
 	/* allocate wallet memory */
 	wallet_ptr = BoatMalloc(sizeof(BoatHlchainmakerWallet));
-	if (wallet_ptr == NULL) {
-
+	if (wallet_ptr == NULL) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to malloc wallet memory.");
 		return NULL;
 	}
 
-	if (sizeof(BoatHlchainmakerWalletConfig) != config_size) {
-
+	if (sizeof(BoatHlchainmakerWalletConfig) != config_size) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "Incorrect configuration size.");
 		return NULL;
 	}
@@ -193,8 +201,8 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	
 	/* http2Context_ptr assignment */
 	wallet_ptr->http2Context_ptr = http2Init();
-	if (result != BOAT_SUCCESS) {
-
+	if (result != BOAT_SUCCESS) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to set accountInfo|TlsUInfo|networkInfo.");
 		return NULL;
 	}
@@ -203,15 +211,15 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 
 void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 {
-	if (NULL == wallet_ptr) {
-
+	if (NULL == wallet_ptr) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr needn't DeInit: wallet_ptr is NULL.");
 		return;
 	}
 	/* account_info DeInit */
 
-	if (wallet_ptr->user_client_info.cert.field_ptr != NULL) {
-
+	if (wallet_ptr->user_client_info.cert.field_ptr != NULL) 
+	{
 		BoatFree(wallet_ptr->user_client_info.cert.field_ptr);
 	}
 	wallet_ptr->user_client_info.cert.field_len = 0;
@@ -221,10 +229,10 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
      wallet_ptr->tls_client_info.cert.field_ptr == NULL;
 	wallet_ptr->tls_client_info.cert.field_len = 0;
 
-	if (wallet_ptr->http2Context_ptr->tlsCAchain != NULL) {
-
-		if (wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL) {
-
+	if (wallet_ptr->http2Context_ptr->tlsCAchain != NULL) 
+	{
+		if (wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL) 
+		{
 			BoatFree(wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr);
 			wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = NULL;
 		}
@@ -254,8 +262,8 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr,cons
 
 	boat_try_declare;
 
-	if ((tx_ptr == NULL) || (wallet_ptr == NULL)) {
-
+	if ((tx_ptr == NULL) || (wallet_ptr == NULL)) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments 'tx_ptr' or 'wallet_ptr' cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
@@ -271,7 +279,8 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr,cons
 
 void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr)
 {
-	if (tx_ptr == NULL) {
+	if (tx_ptr == NULL) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "Tx argument cannot be nULL.");
 		return;
 	}
@@ -283,7 +292,8 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 	Common__TxResponse* tx_reponse_ptr = NULL;
 	Http2Response http2_response       = {0,NULL};
 
-	if (tx_ptr == NULL) {
+	if (tx_ptr == NULL) 
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
@@ -293,10 +303,10 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
 	// clear last data
-	if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain != NULL) {
-
-		if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL) {
-
+	if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain != NULL) 
+	{
+		if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL) 
+		{
 			BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr);
 			tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = NULL;
 		}
@@ -319,20 +329,21 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 	tx_reponse_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
 	*tx_reponse = tx_reponse_ptr;
 
-	if (http2_response.httpResLen != 0) {
-
+	if (http2_response.httpResLen != 0) 
+	{
 		BoatFree(http2_response.http2Res);
 	}
 	
 	http2_response.httpResLen = 0;
-	if (tx_reponse != NULL) {
+	if (tx_reponse != NULL) 
+	{
 		BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
 	}
 
 	return result;
 }
 
-BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, const BCHAR *arg, ...)						  
+BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length, const BCHAR *arg, ...)						  
 {
 	va_list ap;
 	
@@ -340,8 +351,8 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, const BCHAR *
 	BCHAR *args        = NULL;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
-	if (tx_ptr == NULL) {
-
+	if ((tx_ptr == NULL) || (length > BOAT_HLCHAINMAKER_ARGS_MAX_NUM) || (length & 0x01 == 0))
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
@@ -349,29 +360,25 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, const BCHAR *
 	tx_ptr->trans_para.n_parameters = 0;
 	va_start(ap, arg);
 	tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].key = (BCHAR *)arg;
-	
-	while (NULL != (args = va_arg(ap, BCHAR *))) {
-		index++;
-		if (index & 0x01) {
 
+	for (int i = 1; i < length; i++)
+	{
+		args = va_arg(ap, BCHAR*);
+		if (i & 0x01) 
+		{
 			tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].value = (BCHAR *)args;
 			tx_ptr->trans_para.n_parameters++;
 		}
-		else {
-
+		else 
+		{
 			tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].key = (BCHAR *)args;
-		}
-		
-		if (tx_ptr->trans_para.n_parameters > BOAT_HLCHAINMAKER_ARGS_MAX_NUM) {
-
-			result = BOAT_ERROR_OUT_OF_MEMORY;
-			break;
 		}
 	}
 
 	va_end(ap);
 	return result;
 }
+		
 
 BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatInvokeReponse *invoke_reponse)
 {
@@ -415,7 +422,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 
 	if (sync_result) {
 
-		BoatHlchainmakerAddTxParam(tx_ptr, "txId",invoke_tx_id);
+		BoatHlchainmakerAddTxParam(tx_ptr, 2, "txId",invoke_tx_id);
 		result = hlchainmakerTransactionPacked(tx_ptr, "GET_TX_BY_TX_ID", "SYSTEM_CONTRACT_QUERY", TxType_QUERY_SYSTEM_CONTRACT, invoke_tx_id);
 		if (result == BOAT_SUCCESS) {
 
