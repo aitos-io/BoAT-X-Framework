@@ -143,9 +143,10 @@ int main(int argc, char *argv[])
 
 	tx_ptr.wallet_ptr->node_info.node_url  = chainmaker_node_url;
 	tx_ptr.wallet_ptr->node_info.host_name = chainmaker_host_name;
-	result = BoatHlchainmakerAddTxParam(&tx_ptr, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f88", "file_name", "name002", NULL);
+	result = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005");
    	if (result != BOAT_SUCCESS)
 	{
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
 		return -1;
 	}
 
@@ -155,11 +156,12 @@ int main(int argc, char *argv[])
 	{
 		return -1;
 	}
+	printf("BoatHlchainmakerContractInvoke\n");
 	BoatLog( BOAT_LOG_CRITICAL, "reponse code = %d, message = %s, gas_used = %d\n", invoke_reponse.code, invoke_reponse.message, invoke_reponse.gas_used);
 
 	/* step-5: wait seconds and 'query' the gas */
 	BoatSleep(2);
-	result = BoatHlchainmakerAddTxParam(&tx_ptr, "file_hash", "ab3456df5799b87c77e7f88");
+	result = BoatHlchainmakerAddTxParam(&tx_ptr, 2, "file_hash", "ab3456df5799b87c77e7f85");
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
