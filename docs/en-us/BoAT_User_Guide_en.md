@@ -427,6 +427,8 @@ The Demo C code that calls the smart contract is placed in:
 |\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         |PLATON transfer demo use case   |
 |\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     |PLATONE demo use case           |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c |FISCO-BCOS demo use case        |
+|\<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             |FABRIC demo use case            |
+|\<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  |HW-BCS demo use case            |
 
 Before compiling the Demo, you need to modify the following parts of the Demo C code:  
 - For ETHEREUM, PLATON, FISCO-BCOS, PLATONE:  
