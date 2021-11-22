@@ -15,7 +15,7 @@ PROTOBUF_C__BEGIN_DECLS
 #endif
 
 #include "common/contract.pb-c.h"
-#include "accesscontrol/member.pb-c.h"
+#include "common/member.pb-c.h"
 
 typedef struct _Common__TxRequest Common__TxRequest;
 typedef struct _Common__TxHeader Common__TxHeader;

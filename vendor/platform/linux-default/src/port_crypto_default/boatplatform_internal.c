@@ -33,7 +33,6 @@
 #include "bignum.h"
 
 /* net releated include */
-#if (PROTOCOL_USE_HLFABRIC == 1)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -41,7 +40,6 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <sys/time.h>
-#endif
 
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 // for TTLSContext structure

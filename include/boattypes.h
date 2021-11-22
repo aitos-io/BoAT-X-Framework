@@ -59,9 +59,9 @@ typedef enum
     BOAT_PROTOCOL_HLFABRIC,        //!< HyperLedger Fabric
     BOAT_PROTOCOL_PLATON,          //!< PlatON
     BOAT_PROTOCOL_PLATONE,         //!< PlatONE Enterprise consortium chain
-	BOAT_PROTOCOL_FISCOBCOS,        //!< FISCOBCOS Enterprise consortium chain
-	BOAT_PROTOCOL_CHAINMAKER        //!< chainmaker
-	
+	BOAT_PROTOCOL_FISCOBCOS,       //!< FISCOBCOS Enterprise consortium chain
+    BOAT_PROTOCOL_CHAINMAKER       //!< chainmaker
+
 }BoatProtocolType;
 
 //!@brief Blockchain hash algorithm
@@ -116,6 +116,12 @@ typedef struct TBoatFieldMax8B
     BUINT8 field[8];     //!< Field storage
     BUINT32 field_len;   //!< The effective length of the field in byte
 }BoatFieldMax8B;      
+//!@brief common struct for 8-byte (64-bit) length transaction fields
+typedef struct TBoatFieldMax16B
+{
+    BUINT8 field[16];     //!< Field storage
+    BUINT32 field_len;   //!< The effective length of the field in byte
+}BoatFieldMax16B;   
 
 //!@brief common struct for 24-byte (192-bit) length transaction fields
 typedef struct TBoatFieldMax24B

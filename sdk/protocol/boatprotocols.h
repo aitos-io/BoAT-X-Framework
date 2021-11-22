@@ -46,4 +46,8 @@ boatprotocols.h is a wrapper header file for protocols.
 #include "boathlhuawei/boathlhuawei.h"
 #endif
 
+#if PROTOCOL_USE_CHAINMAKER
+#include "boatchainmaker/boatchainmaker.h"
+#endif
+
 #endif
