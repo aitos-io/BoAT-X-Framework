@@ -28,30 +28,26 @@ api_platon.c defines the PlatON wallet API for BoAT IoT SDK.
 #include "rpcintf.h"
 #include "cJSON.h"
 
-BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_address_str)
+BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, const BCHAR *hrp_str)
 {
     Param_eth_getBalance param_platon_getBalance;
     BCHAR *tx_balance_str;
     BCHAR *address_ptr;
 
-    if (wallet_ptr == NULL)
+    if (wallet_ptr == NULL || hrp_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return NULL;
     }
 
-    if (alt_address_str == NULL)
+    address_ptr = BoatMalloc(50);
+    if (address_ptr == NULL)
     {
-        //***************************************
-        //需要将钱包地址转换为bech32格式的字符串
-        //address_ptr = wallet_ptr->account_info.address;
-        address_ptr = BoatMalloc(50);
-        BoatPlatONBech32Encode(alt_address_str, strlen(alt_address_str), address_ptr, "lax", 3);
+        BoatLog(BOAT_LOG_CRITICAL, "Malloc memory failed.");
+        return NULL;
     }
-    else
-    {
-        address_ptr = alt_address_str;
-    }
+    BoatPlatONBech32Encode(wallet_ptr->account_info.address, BOAT_PLATON_ADDRESS_SIZE, 
+                           address_ptr, hrp_str, strlen(hrp_str));
     
     // Get balance from network
     // Return value of web3_getBalance() is balance in von
@@ -67,10 +63,8 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, BCHAR *alt_addre
         BoatLog(BOAT_LOG_CRITICAL, "Fail to get balance from network.");
         return NULL;
     }
-    if (alt_address_str == NULL)
-    {
-        BoatFree(address_ptr);
-    }
+
+    BoatFree(address_ptr);
 
     return tx_balance_str;
 }
@@ -193,8 +187,8 @@ BOAT_RESULT BoatPlatONTxSetNonce(BoatPlatONTx *tx_ptr, BUINT64 nonce)
 		tx_count_str = web3_getTransactionCount(tx_ptr->wallet_ptr->web3intf_context_ptr,
 												tx_ptr->wallet_ptr->network_info.node_url_ptr,
 												&param_platon_getTransactionCount);
-		result = BoatPlatONPraseRpcResponseResult(tx_count_str, "", 
-												  &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+		result = BoatPlatONPraseRpcResponseStringResult(tx_count_str, 
+												        &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS)
         { 
             BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
@@ -245,8 +239,8 @@ BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_p
             return BOAT_ERROR_RPC_FAILED;
         }
 
-        result = BoatPlatONPraseRpcResponseResult(gas_price_from_net_str, "", 
-											      &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+        result = BoatPlatONPraseRpcResponseStringResult(gas_price_from_net_str, 
+											            &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result == BOAT_SUCCESS)
         {
             // Set transaction gasPrice with the one got from network
@@ -285,6 +279,24 @@ BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BUINT8 address[BOAT_P
     return BOAT_SUCCESS;    
 }
 
+BOAT_RESULT BoatPlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr)
+{
+    BOAT_RESULT result = BOAT_ERROR;
+
+    result = PlatONSendRawtx(tx_ptr);
+
+    if (result == BOAT_SUCCESS)
+    {
+        result = BoatPlatONGetTransactionReceipt(tx_ptr);
+    }
+	else
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "PlatONSendRawtx failed.");
+	}
+
+    return result;
+}
+
 BOAT_RESULT BoatPlatONTxSend(BoatPlatONTx *tx_ptr)
 {
     BOAT_RESULT result;
@@ -301,7 +313,7 @@ BOAT_RESULT BoatPlatONTxSend(BoatPlatONTx *tx_ptr)
     }
     else
     {
-        result = PlatONSendRawtxWithReceipt(tx_ptr);
+        result = BoatPlatONSendRawtxWithReceipt(tx_ptr);
     }
     
     return result;
@@ -486,11 +498,21 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
     return result;
 }
 
-BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
-                                             const BCHAR *child_name, 
-                                             BoatFieldVariable *result_out)
+BOAT_RESULT BoatPlatONPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return web3_parse_json_result(json_string, child_name, result_out);
+    return web3_parse_json_result(json_string, "", result_out);
+}
+
+BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
+										  	 const BCHAR *child_name, 
+										  	 BoatFieldVariable *result_out)
+{
+    if (child_name == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+	return web3_parse_json_result(json_string, child_name, result_out);
 }
 
 #endif /* end of PROTOCOL_USE_PLATON */

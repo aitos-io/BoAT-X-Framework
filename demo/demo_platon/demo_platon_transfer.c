@@ -192,8 +192,8 @@ BOAT_RESULT platonGetBalance(BoatPlatONWallet *wallet_ptr)
     BOAT_RESULT result;
     BoatFieldVariable prase_result = {NULL, 0};
 
-    cur_balance_von = BoatPlatONWalletGetBalance(wallet_ptr, "lat1utcm54t2x6c5z9e6mm7menauuqtmzl68hdm3nr");
-	result          = BoatPlatONPraseRpcResponseResult(cur_balance_von, "", &prase_result);
+    cur_balance_von = BoatPlatONWalletGetBalance(wallet_ptr, "lat");
+	result          = BoatPlatONPraseRpcResponseStringResult(cur_balance_von, &prase_result);
 	if (result == BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_NORMAL, "BoatPlatONWalletGetBalance returns: %s", prase_result.field_ptr);
