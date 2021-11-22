@@ -51,7 +51,7 @@ Figure 4-1 BoAT Overall Framework
 ### Interface Layer
 
 #### Overview
-The interface layer is located at the top layer of BoAT and provides IoT applications with access to each blockchain. The interface layer consists of two parts:  
+The interface layer is located at the top layer of BoAT and provides IoT applications with the access to each blockchain. The interface layer consists of two parts:  
 + Wallet interface
    * The wallet interface is the entrance to the BoAT SDK, and different blockchains have a common wallet entrance.
 + Transaction interface
@@ -63,9 +63,9 @@ The transaction interface of the interface layer is supported by the protocol la
 #### Wallet Interface
 
 ##### The Data Structure and Function Implementation List of The Wallet
-The wallet is a container. In addition to storing the information necessary to access the blockchain, the container also contains a key management system, which corresponds to the data structure and implementation method of the wallet.
+The wallet is a container responsible for storing the information necessary to access the blockchain. It also contains a key management system corresponding to the wallet's data structure and implementation method.
 
-When the BoAT SDK runs on the application processor of the cellular module, which can only provide resource-constrained operating environment. For example, some cellular modules may not provide non-volatile memory access interfaces; on the other hand, from the user's point of view, some users may just want to create a temporary wallet for testing, but don't want to store it for a long time. In view of this, in the design of BoAT SDK, wallets are divided into two categories: persistent wallets and one-time wallets. Persistent wallets are stored in the non-volatile memory of the operating environment and will not be lost when power is off; one-time wallets are stored in the RAM of the operating environment and will be lost when power is off.  
+When the BoAT SDK runs on the application processor of the cellular module, which can only provide a resource-constrained operating environment. For example, some cellular modules may not provide non-volatile memory access interfaces; on the other hand, from the user's point of view, some users may want to create a temporary wallet for testing but don't want to store it for a long time. In view of this, in the design of BoAT SDK, wallets are divided into two categories: persistent wallets and one-time wallets. Persistent wallets are stored in the non-volatile memory of the operating environment and will not be lost when power is off. One-time wallets are stored in the RAM of the operating environment and will be lost when power is off.  
   
 In the data structure of the wallet, It should contain at least the following elements:  
   + Account private key

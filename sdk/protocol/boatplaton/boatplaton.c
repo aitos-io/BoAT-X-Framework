@@ -475,8 +475,8 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
         BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
 		boat_throw(BOAT_ERROR_RPC_FAILED, PlatONSendRawtx_cleanup);
     }
-    result = BoatPlatONPraseRpcResponseResult(tx_hash_str, "", 
-										      &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    result = BoatPlatONPraseRpcResponseStringResult(tx_hash_str,
+										            &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");
@@ -509,21 +509,4 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
 }
 
 
-BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr)
-{
-    BOAT_RESULT result = BOAT_ERROR;
-
-    result = PlatONSendRawtx(tx_ptr);
-
-    if (result == BOAT_SUCCESS)
-    {
-        result = BoatPlatONGetTransactionReceipt(tx_ptr);
-    }
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "PlatONSendRawtx failed.");
-	}
-
-    return result;
-}
 #endif /* end of PROTOCOL_USE_PLATON */

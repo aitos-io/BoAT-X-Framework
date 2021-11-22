@@ -270,17 +270,11 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
     }
     
-
     return return_value_ptr;
 }
 
-
-
-
-
 BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
 								   BUINT32 rlp_param_len)
-
 {
     // *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
     BCHAR data_str[rlp_param_len*2 + 3]; // Compiler MUST support C99 to allow variable-size local array
@@ -425,6 +419,19 @@ BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out)
 
 }
 
+BOAT_RESULT BoatPlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr)
+{
+    BOAT_RESULT result = BOAT_ERROR;
+
+    result = PlatoneSendRawtx(tx_ptr);
+
+    if (result == BOAT_SUCCESS)
+    {
+        result = BoatPlatoneGetTransactionReceipt(tx_ptr);
+    }
+
+    return result;
+}
 
 BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
 {
@@ -442,7 +449,7 @@ BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
     }
     else
     {
-        result = PlatoneSendRawtxWithReceipt(tx_ptr);
+        result = BoatPlatoneSendRawtxWithReceipt(tx_ptr);
     }
     
     return result;
@@ -500,10 +507,20 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR *json_string, 
-                                              const BCHAR *child_name, 
-                                              BoatFieldVariable *result_out)
+BOAT_RESULT BoatPlatonePraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return web3_parse_json_result(json_string, child_name, result_out);
+    return web3_parse_json_result(json_string, "", result_out);
+}
+
+BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR *json_string, 
+										  	  const BCHAR *child_name, 
+										  	  BoatFieldVariable *result_out)
+{
+    if (child_name == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+	return web3_parse_json_result(json_string, child_name, result_out);
 }
 #endif /* end of PROTOCOL_USE_PLATONE */

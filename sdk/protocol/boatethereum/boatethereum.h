@@ -103,23 +103,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr);
 
 
 
-/*!****************************************************************************
- * @brief Construct a raw ethereum transaction synchronously.
- *
- * @details
- *   This function is similar to EthSendRawtx except that it waits for the
- *   transaction being mined.
- *   
- * @param[in] tx_ptr
- *   A pointer to the context of the transaction.
- *
- * @return
- *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
- *   of the error codes.
- *	
- * @see EthSendRawtx() BoatEthGetTransactionReceipt() 
-*******************************************************************************/
-BOAT_RESULT EthSendRawtxWithReceipt(BOAT_INOUT BoatEthTx *tx_ptr);
+
 
 /*! @}*/
 

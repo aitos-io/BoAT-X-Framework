@@ -17,9 +17,9 @@
 #include "check.h"
 
 /* extern suite declaration */
-extern  Suite * make_wallet_suite(void);
-extern  Suite * make_ethereum_suite(void);
-extern  Suite * make_utility_suite(void);
+extern Suite *make_wallet_suite(void);
+extern Suite *make_ethereum_suite(void);
+extern Suite *make_utility_suite(void);
 
 int main(int argc, char *argv[])
 {
@@ -27,9 +27,9 @@ int main(int argc, char *argv[])
     int failed_number = 0;
     
     /* new adding test suite should create in here */
-    Suite*  suite_wallet   = make_wallet_suite();
-    Suite*  suite_ethereum = make_ethereum_suite();
-    Suite*  suite_utility  = make_utility_suite();
+    Suite *suite_wallet   = make_wallet_suite();
+    Suite *suite_ethereum = make_ethereum_suite();
+    Suite *suite_utility  = make_utility_suite();
 
      /* create srunner and add first suite to it.
         The first suite in a suite runner is always added in function srunner_create,

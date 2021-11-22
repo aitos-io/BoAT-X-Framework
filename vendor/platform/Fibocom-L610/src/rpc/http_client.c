@@ -16,7 +16,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "httpclient.h"
+#include "http_client.h"
 #include "lwip/sockets.h"
 #include "stdio.h"
 #include "lwip/netdb.h"
@@ -891,7 +891,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
     int count = 0;
     int templen = 0;
     int crlf_pos;
-    //?aá?·?°ü???ó     
+    //?a谩?路?掳眉???贸     
 	static char remain_buf[512] = {0};
 	static int remain_len = 0;
 	if (remain_len > 0 && remain_len < 512)
@@ -1042,14 +1042,14 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
                 memcpy(client_data->response_buf + count, data, client_data->response_buf_len - 1 - count);
                 client_data->response_buf[client_data->response_buf_len - 1] = '\0';
                 client_data->retrieve_len -= (client_data->response_buf_len - 1 - count);
-				//?aá?·?°ü???ó
+				//?a谩?路?掳眉???贸
 				remain_len = templen - (client_data->response_buf_len - 1 - count);
 				if(remain_len)
 				{
 					memcpy(remain_buf,data + client_data->response_buf_len - 1 - count,remain_len);
 					DBG("data is larger than response_buf_len,remain_len:%d",remain_len);
 				}
-				//?aá?·?°ü???ó
+				//?a谩?路?掳眉???贸
                 if (readLen > len || remain_len) 
                 {
                     client_data->content_block_len = client_data->response_buf_len - 1;

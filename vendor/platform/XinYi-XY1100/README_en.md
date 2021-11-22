@@ -12,13 +12,13 @@ Assuming `<XY1100 Root>` to be the root directory of XinYi-XY1100 platform SDK:
 
 1. Copy the entire BoAT-X-Framework directory into `<XY1100 Root>/userapp`.
 
-2. Create a new folder `boat_demo` under `<XY1100 Root>/userapp/demo`,copy  BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/boat_demo.c into `<XY1100 Root>/userapp/demo/boat_dem/`.
+2. Create a new folder `boat_demo` under `<XY1100 Root>/userapp/demo`, copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/boat_demo.c into `<XY1100 Root>/userapp/demo/boat_dem/`.
 
 3. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.c into `<XY1100 Root>/userapp/demo/boat_demo`.
 
 4. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.h into `<XY1100 Root>/userapp/demo/boat_demo`.
 
-5. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/vendor/Makefile into `<XY1100 Root>/userapp/BoAT-X-Framework/vendor`.
+5. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/vendor/Makefile into /userapp/BoAT-X-Framework/vendor and overwrite the original file.
 
 6. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/storage/persiststore.c into `<XY1100 Root>/userapp/BoAT-X-Framework/vendor/common/storage`.
 
@@ -91,7 +91,7 @@ Configure the actual path of the local cross compiler after `CC` and `AR`
 
 ### 5. Configure the cross-compilation environment of XinYi-XY1100 platform
 Open `<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/makefile`
-Configure the path of the local cross compiler into the environment variable at the beginning of the file,such as:
+Configure the path of the local cross compiler into the environment variable at the beginning of the file, such as:
 ```
 PATH := $(PATH):/home/tools/xinyigcc/gcc-arm-none-eabi-9-2019-q4-major/bin
 ```
@@ -161,7 +161,7 @@ Add the following:
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<XY1100 Root>/userapp/BoAT-X-Framework/lib` directory.
 
 
-### 2. Build demo program，generate .bin file for download
+### 2. Build demo program, generate. bin file for download
 
    Demo code for accessing blockchain through BoAT-X Framework is in `<XY1100 Root>/userapp/demo/boat_demo/boat_demo.c`
 
