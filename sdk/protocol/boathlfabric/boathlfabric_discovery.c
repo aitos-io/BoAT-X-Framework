@@ -612,11 +612,10 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoveryExec(BoatHlfabricTx *tx_ptr,
 				// BoatLog(BOAT_LOG_CRITICAL, "hostname : %s ", tx_ptr->wallet_ptr->http2Context_ptr->hostName);
 #endif
 				tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
-				tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
+				tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->evaluateRes;
 				// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest  :",
 				// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 				// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
-				tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_FABRIC;
 				tx_ptr->wallet_ptr->http2Context_ptr->pathTmp = "/discovery.Discovery/Discover";
 				result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 				if(result == BOAT_SUCCESS)
@@ -648,9 +647,7 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	DiscoverRes discoverResult;
 	BUINT32 len = 0, offset = 0;
 	BCHAR *port;
-	BCHAR *IP = "192.168.132.190";
 	int i,j,k,l,m;
-	// BCHAR *IP2 = "192.168.132.190:";
 	// boat_try_declare;
 
 	if (tx_ptr == NULL)
@@ -666,12 +663,17 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	result = BoatHlfabricDiscoveryExec(tx_ptr, endorserInfo_ptr);
 
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invoke result",
-						 tx_ptr->endorserResponse.http2Res,
-						 tx_ptr->endorserResponse.httpResLen);
+						 tx_ptr->evaluateRes.http2Res,
+						 tx_ptr->evaluateRes.httpResLen);
 	// http2ResData = tx_ptr->endorserResponse.response[0].payload.field_ptr;
 	// http2Reslen = tx_ptr->endorserResponse.response[0].payload.field_len;
 
-	discoveryResponse = discovery__response__unpack(NULL, tx_ptr->endorserResponse.httpResLen - 5, tx_ptr->endorserResponse.http2Res + 5);
+	discoveryResponse = discovery__response__unpack(NULL, tx_ptr->evaluateRes.httpResLen - 5, tx_ptr->evaluateRes.http2Res + 5);
+	if (tx_ptr->evaluateRes.http2Res != NULL)
+	{
+		BoatFree(tx_ptr->evaluateRes.http2Res);
+	}
+	tx_ptr->evaluateRes.httpResLen =0;
 	if (discoveryResponse == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack failed, maybe a invalid endorser.");
@@ -829,9 +831,9 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 				len = strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint);
 				tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = BoatMalloc(len);
 
-				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, IP, strlen(IP));
-				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl + strlen(IP), port, strlen(port));
-				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
+				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, IP, strlen(IP));
+				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl + strlen(IP), port, strlen(port));
+				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
 
 				for ( l = 0; l < discoverResult.discoverConfig.discoverMsps.num; l++)
 				{
@@ -851,10 +853,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		len = sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port) + strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host) + 1;
 		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(len);
 		offset = 0;
-		// memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host, strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host));
-		// offset += strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host);
-		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, IP, strlen(IP));
-		offset += strlen(IP);
+		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host, strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host));
+		offset += strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host);
+		// memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, IP, strlen(IP));
+		// offset += strlen(IP);
 		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl[offset++] = ':';
 		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port, sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port));
 
@@ -870,12 +872,6 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	tx_ptr->endorserResponse.responseCount = 0;
 	DiscoveryResFree(discoverResult);
 
-	// /* boat catch handle */
-	if (tx_ptr->endorserResponse.http2Res != NULL)
-	{
-		BoatFree(tx_ptr->endorserResponse.http2Res);
-	}
-	tx_ptr->endorserResponse.httpResLen =0;
 	return result;
 }
 

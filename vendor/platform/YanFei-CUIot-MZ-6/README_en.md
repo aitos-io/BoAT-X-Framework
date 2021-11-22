@@ -95,10 +95,8 @@ add_appimg(${target} ${flash_ldscript} ${target_file_path}/${target_file}.c ${ta
 
    Open a Linux shell and build the demo:
    ```
-   cd  <YanFei Root>
-   cd out
-   rm -r appimage_debug
-   cd ..
+   cd <YanFei Root>
+   rm -r out
    . tools/core_launch.sh
    cout
    cmake ../.. -G Ninja

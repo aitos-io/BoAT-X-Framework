@@ -23,13 +23,15 @@
 #include "check.h"
 
 
-START_TEST(test_utility_xxxxx) {
+START_TEST(test_utility_xxxxx) 
+{
     ck_assert(1);
 }
 END_TEST
 
 
-Suite * make_utility_suite(void) {
+Suite *make_utility_suite(void) 
+{
     /* Create Suite */
     Suite *s_utility = suite_create("utility");
     /* Create test cases */

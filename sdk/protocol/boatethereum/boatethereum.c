@@ -507,21 +507,3 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     return result;
 }
 
-
-BOAT_RESULT EthSendRawtxWithReceipt(BOAT_INOUT BoatEthTx *tx_ptr)
-{
-    BOAT_RESULT result = BOAT_ERROR;
-
-    result = EthSendRawtx(tx_ptr);
-
-    if (result == BOAT_SUCCESS)
-    {
-        result = BoatEthGetTransactionReceipt(tx_ptr);
-    }
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "EthSendRawtx failed.");
-	}
-
-    return result;
-}

@@ -31,8 +31,19 @@ http2intf.h is the header file for http2 interface.
  * @{
  */
 
+#define BOAT_TLS_SUPPORT                1 //!< If need client support TLS, set it to 1.
+#define BOAT_TLS_IDENTIFY_CLIENT        0 //!< If server need identify client, set it to 1.
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 	
+#define BOAT_HTTP2_SEND_BUF_MAX_LEN     8192 //!< The maximum length of HTTP2 send buffer
+
+typedef struct Thttp2Response
+{
+	BUINT32								httpResLen;
+	BUINT8 								*http2Res;
+}Http2Response;
+
+
+#if (BOAT_TLS_SUPPORT == 1) 	
 //!@brief TLS releated structure 
 //!@note this structure only suitable for mbedtls, if use other TLS libiary,
 //! please modify this specific structure
@@ -48,7 +59,7 @@ http2intf.h is the header file for http2 interface.
 typedef struct Thttp2IntfContext{
 	nghttp2_session     *session;     //!< nghttp2 session
 	BCHAR               *nodeUrl;     //!< example: orderer.example.com:7050
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1)
 	BCHAR               *hostName;    //!< CN field in remote certificate. example: orderer.example.com
 	BoatFieldVariable   *tlsCAchain;  //!< rootCA certificate content list
 	
@@ -61,7 +72,6 @@ typedef struct Thttp2IntfContext{
 	BSINT32             sockfd;       //!< network connection file desc
 
 	BUINT8                type;   //!< this field will determine http2 head content
-	BUINT8				chainType; //chaincode fabric /hwbcs 
 	BCHAR               *pathTmp; 
 	void*               parseDataPtr; //!< the http2 parsed data structure
 }http2IntfContext;

@@ -39,12 +39,12 @@ const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+const BCHAR *native_demoKey = "0xf1395a1fc3f74f0c867b61292e28e0f6cc98a095535fd6bf04e4169ebc047e61";
 
 /**
  * test node url
  */
-const BCHAR * demoUrl = "http://192.168.132.190:7545";
+const BCHAR * demoUrl = "http://127.0.0.1:7545";
 
 
 /**
@@ -205,8 +205,8 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
     if (result_str != NULL)
     {
         result_str = StoreRead_readListLength(&tx_ctx);
-        result = BoatEthPraseRpcResponseResult(result_str, "", &prase_result);
-        if(result == BOAT_SUCCESS && result_str != NULL )
+        result = BoatEthPraseRpcResponseStringResult(result_str, &prase_result);
+        if (result == BOAT_SUCCESS && result_str != NULL)
         {
             //BoatLog(BOAT_LOG_NORMAL, "readListLength returns: %s", result_str);
             
@@ -217,12 +217,12 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
             for (index = 0; index < list_len; index++)
             {
                 result_str = StoreRead_readListByIndex(&tx_ctx, index);
-                result     = BoatEthPraseRpcResponseResult(result_str, "", &prase_result);
+                result     = BoatEthPraseRpcResponseStringResult(result_str, &prase_result);
                 if (result == BOAT_SUCCESS && result_str != NULL)
                 {
                     //BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", prase_result.field_ptr);
                 }
-                else
+                else 
                 {
                     return BOAT_ERROR;
                 }
@@ -235,7 +235,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
 
 int main(int argc, char *argv[])
 {
-    BOAT_RESULT  result  = BOAT_SUCCESS;
+    BOAT_RESULT result = BOAT_SUCCESS;
 
     /* step-1: Boat SDK initialization */
     BoatIotSdkInit();

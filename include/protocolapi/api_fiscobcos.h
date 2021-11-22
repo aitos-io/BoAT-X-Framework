@@ -118,6 +118,24 @@ BOAT_RESULT BoatFiscobcosTxSetNonce(BoatFiscobcosTx *tx_ptr, BUINT64 nonce);
 
 
 /*!****************************************************************************
+ * @brief Construct a raw FISCO BCOS transaction synchronously.
+ *
+ * @details
+ *   This function is similar to FiscobcosSendRawtx except that it waits for the
+ *   transaction being mined.
+ *	 
+ * @param[in] tx_ptr
+ *   A pointer to the context of the transaction.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
+ *   of the error codes.
+ *	 
+ * @see FiscobcosSendRawtx()
+ ******************************************************************************/
+BOAT_RESULT BoatFiscobcosSendRawtxWithReceipt(BOAT_INOUT BoatFiscobcosTx *tx_ptr);
+
+/*!****************************************************************************
  * @brief Sign and send a transaction. Also call a stateful contract function.
  *
  * @details
@@ -266,6 +284,11 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx
     return BoatEthTxSetData((BoatEthTx *)tx_ptr, data_ptr);
 }
 
+/*!****************************************************************************
+ * @brief Prase RPC method RESPONSE.
+ * @see web3_parse_json_result()
+ ******************************************************************************/
+BOAT_RESULT BoatFiscobcosPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.

@@ -457,8 +457,8 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
 		boat_throw(BOAT_ERROR_RPC_FAILED, FiscobcosSendRawtx_cleanup);
     }
 
-    result = BoatFiscobcosPraseRpcResponseResult(tx_hash_str, "", 
-											&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    result = BoatFiscobcosPraseRpcResponseStringResult(tx_hash_str,
+											           &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
     if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");
@@ -490,18 +490,4 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     return result;
 }
 
-
-BOAT_RESULT FiscobcosSendRawtxWithReceipt(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
-{
-    BOAT_RESULT result = BOAT_ERROR;
-
-    result = FiscobcosSendRawtx(tx_ptr);
-
-    if (result == BOAT_SUCCESS)
-    {
-        result = BoatFiscobcosGetTransactionReceipt(tx_ptr);
-    }
-
-    return result;
-}
 #endif /* end of PROTOCOL_USE_FISCOBCOS */

@@ -52,9 +52,9 @@ Function: RpcInit()
 @param This function doesn't take any argument.
 
 *******************************************************************************/
-void * RpcInit(void)
+void *RpcInit(void)
 {
-    void * rpc_context_ptr;
+    void *rpc_context_ptr = NULL;
 
 #if RPC_USE_LIBCURL == 1
     rpc_context_ptr = CurlPortInit();
@@ -65,7 +65,6 @@ void * RpcInit(void)
 
 
     return rpc_context_ptr;
-
 }
 
 
@@ -90,7 +89,7 @@ Function: RpcDeinit()
 *******************************************************************************/
 void RpcDeinit(void *rpc_context_ptr)
 {
-    if( rpc_context_ptr == NULL )
+    if (rpc_context_ptr == NULL)
     {
         return;
     }
@@ -111,11 +110,11 @@ BOAT_RESULT RpcRequestSet(void *rpc_context_ptr, BCHAR *remote_url_str)
     BOAT_RESULT result = BOAT_ERROR;
 
 #if RPC_USE_LIBCURL == 1    
-    return CurlPortSetOpt( (CurlPortContext*)rpc_context_ptr, remote_url_str);
+    return CurlPortSetOpt((CurlPortContext*)rpc_context_ptr, remote_url_str);
 #elif RPC_USE_MBEDHTTPPORT == 1
     BoatLog(BOAT_LOG_VERBOSE, "RPC_USE_MBEDHTTPPORT,rpc_context_ptr=>%x",rpc_context_ptr);
     BoatLog(BOAT_LOG_VERBOSE, "RPC_USE_MBEDHTTPPORT,remote_url_str=>%s",remote_url_str);
-	return MbedHttpPortSetOpt( (MbedHttpPortContext*)rpc_context_ptr, remote_url_str);
+	return MbedHttpPortSetOpt((MbedHttpPortContext*)rpc_context_ptr, remote_url_str);
 #endif
     return result;
 }
@@ -171,12 +170,12 @@ Function: RpcRequestSync()
         
 *******************************************************************************/
 BOAT_RESULT RpcRequestSync(void *rpc_context_ptr,
-                          BUINT8 *request_ptr,
-                          BUINT32 request_len,
-                          BOAT_OUT BUINT8 **response_pptr,
-                          BOAT_OUT BUINT32 *response_len_ptr)
+                           BUINT8 *request_ptr,
+                           BUINT32 request_len,
+                           BOAT_OUT BUINT8 **response_pptr,
+                           BOAT_OUT BUINT32 *response_len_ptr)
 {
-    BOAT_RESULT result;
+    BOAT_RESULT result = BOAT_ERROR;
     
 #if RPC_USE_LIBCURL == 1
     result = CurlPortRequestSync(rpc_context_ptr, (const BCHAR *)request_ptr, request_len, (BOAT_OUT BCHAR **)response_pptr, response_len_ptr);
