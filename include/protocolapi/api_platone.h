@@ -437,7 +437,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneGetTransactionReceipt(BoatPlato
  * @brief Prase RPC method RESPONSE.
  * @see web3_parse_json_result()
  ******************************************************************************/
-BOAT_RESULT BoatPlatonePraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
+BOAT_RESULT BoatPlatonePraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out);
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.
