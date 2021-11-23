@@ -54,8 +54,7 @@ const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
 
 
 BoatPlatoneWallet *g_platone_wallet_ptr;
-#define USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS
-#define USE_ONETIME_WALLET
+
 
 #if defined(USE_ONETIME_WALLET)
 __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
@@ -150,7 +149,7 @@ __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, &wallet_config, sizeof(BoatPlatoneWalletConfig));
-    if(index == BOAT_ERROR)
+    if (index == BOAT_ERROR)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR;
@@ -199,7 +198,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
         return BOAT_ERROR;
     }
     result_str = BoatPlatoneGetNodesInfo(&tx_ctx,&result_out);
-    for (size_t i = 0; i < result_out.num; i++)
+    for (BSINT32 i = 0; i < result_out.num; i++)
     {
         /* code */
         printf( "node[%d] : IP[%s],port[%d]. \n",i,result_out.nodeInfo[i].IP,result_out.nodeInfo[i].rpcPort);

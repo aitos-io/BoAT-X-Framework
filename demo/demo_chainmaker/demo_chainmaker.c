@@ -18,8 +18,6 @@
 #include "boatiotsdk.h"
 #include "boatlog.h"
 
-#define USE_ONETIME_WALLET
-
 const BCHAR* chainmaker_user_key =  "-----BEGIN EC PRIVATE KEY-----\n"
 									"MHcCAQEEIAGYWRJdL9VqEUGXYApXWxGfrwmUc07XqcAAuQA18G/6oAoGCCqGSM49\n"
 									"AwEHoUQDQgAElZkz2g5CwCOr857LVVM4/zL3ftAkoVh/l+HvF03+HMczm946AX7/\n"
