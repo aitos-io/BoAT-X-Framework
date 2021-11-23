@@ -51,7 +51,7 @@
 
 #include <sys/time.h>
 
-#if (PROTOCOL_USE_HLFABRIC == 1)
+#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER == 1))
 // for TTLSContext structure
 #include "http2intf.h"
 #endif
@@ -548,7 +548,7 @@ BOAT_RESULT  BoatRemoveFile(const BCHAR *fileName, void *rsvd)
     }
 }
 
-#if (PROTOCOL_USE_HLFABRIC == 1)
+#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER == 1))
 
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
