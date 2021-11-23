@@ -4,32 +4,32 @@
 ## Introduction
 
 ### Overview
-In this article, we discribe system requirements for BoAT Framework (C language version) on cellular modules. BoAT is an SDK that runs on the module's application processor. For the cellular module with an OpenCPU, BoAT is linked and called by the application as a library. For cellular modules without OpenCPU,BoAT APIs will be wrapped into AT commands to works fine in host MCUs.
+This article describes the system requirements for BoAT Framework (C language version) on cellular modules. BoAT is an SDK that runs on the module's application processor. For the cellular module with an OpenCPU, BoAT is linked and called by the application as a library. For cellular modules without OpenCPU,BoAT APIs will be wrapped into AT commands to works fine in host MCUs.
 
 ### Abbreviated Terms
-|Term   |Explanation                  |
-|:----- |:--------------------------- |
-|BoAT|Blockchain of AI Things|
-|SDK|Software Development Kit|
-|API|Application Programming Interface|
-|MCU|Microcontroller Unit|
-|RTOS|Real Time Operating System|
-|TRNG|True Random Number Generator|
-|CSPRNG|Cryptographically Secure Pseudo-Random Number Generator|
-|RTC|Real Time Clock|
-|NTP|Network Time Protocol|
-|HTTP|Hyper Text Transfer Protocol|
-|HTTPs|Hyper Text Transfer Protocol Secure|
-|CoAP|Constrained Application Protocol|
-|MQTT|Message Queuing Telemetry Transport|
-|TCP|Transmission Control Protocol|
-|TEE|Trusted Execution Environment|
-|TA|Trusted Application|
-|ECDSA|Elliptic Curve Digital Signature Algorithm|
-|SHA2|Secure Hash Algorithm 2|
+|Term   |Explanation                                            |
+|:----- |:----------------------------------------------------- |
+|BoAT   |Blockchain of AI Things                                |
+|SDK    |Software Development Kit                               |
+|API    |Application Programming Interface                      |
+|MCU    |Microcontroller Unit                                   |
+|RTOS   |Real Time Operating System                             |
+|TRNG   |True Random Number Generator                           |
+|CSPRNG |Cryptographically Secure Pseudo-Random Number Generator|
+|RTC    |Real Time Clock                                        |
+|NTP    |Network Time Protocol                                  |
+|HTTP   |Hyper Text Transfer Protocol                           |
+|HTTPs  |Hyper Text Transfer Protocol Secure                    |
+|CoAP   |Constrained Application Protocol                       |
+|MQTT   |Message Queuing Telemetry Transport                    |
+|TCP    |Transmission Control Protocol                          |
+|TEE    |Trusted Execution Environment                          |
+|TA     |Trusted Application                                    |
+|ECDSA  |Elliptic Curve Digital Signature Algorithm             |
+|SHA2   |Secure Hash Algorithm 2                                |
 
 
-## Part 1 Storage Requirements
+## Part 1- Storage Requirements
 
 To enable Ethereum/PlatONE/FISCO BCOS capabilities, the storage requirements of the C-language BoAT Framework (excluding static or shared dependent libraries such as the C library) are:
 - Flash (code and read-only data): about 210kB
@@ -44,27 +44,27 @@ To enable HyperLedger Fabric capability, the storage requirements of the C-langu
 
 The above does not include the system libraries that the BoAT Framework (C language version) depends on. The exact values may vary with different blockchain protocols.
 
-## Part 2 Process Capacity Requirements
+## Part 2- Process Capacity Requirements
 
-In Ethereum blockchain, the BoAT Framework (C language version) takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, running on an ARM Cortex M4 at around 100MHz. The exact time can vary with different blockchain protocols.
+In the Ethereum blockchain, the BoAT Framework (C language version) takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, running on an ARM Cortex M4 at around 100MHz. The exact time can vary with different blockchain protocols.
 
-The exact computing performance requirements depend on the power consumption and latency requirements of the application calling (porting in) the BoAT Framework SDK. BoAT itself has no special requirements.
+The exact computing performance requirements depend on the application's power consumption and latency requirements calling (porting in) the BoAT Framework SDK. BoAT itself has no special requirements.
 
-## Part 3 Operating System and Communication Requirements 
+## Part 3- Operating System and Communication Requirements 
 
-There really are no special requirements for the operating system. Generally BoAT Framework (C language version) can be ported over most operating systems (e.g. Linux, various RTOS), as long as the following capabilities (below) are supported: 
+There are no special requirements concerning the operating system. Generally, BoAT Framework (C language version) can be ported over most operating systems (e.g., Linux, various RTOS), as long as the following capabilities (below) are supported: 
 
-1. Support dynamic memory allocation / release. 
-2. Support mutual exclusion (mutex) protection mechanism.
-3. Supports thread suspension for a specified duration (optional). BoAT cannot support "timeout" or "polling" functions without support of "thread suspension" function, while other funtioncs have no such dependency. 
+1. Supports dynamic memory allocation/release. 
+2. Supports mutual exclusion (mutex) protection mechanism.
+3. Supports thread suspension for a specified duration (optional). BoAT cannot support "timeout" or "polling" functions without the support of the "thread suspension" function, while other funtioncs have no such dependency. 
 4. From the candidate random number generators list, select to support at least one type in the order of priority: <br>
    (1) TRNG, true random number generator (requires hardware support) <br>
    (2) CSPRNG, a cryptographically secure pseudo-random number generator. For Linux, this capability can be provided by the OpenSSL library <br>
    (3) PRNG, a (non-cryptographically secure) pseudo-random number generator <br>
 
 5. Depending on a high to low minimum priority, at least one of the following types of times below is supported (for the pseudo-random number seed and the time in the data and log): <br>
-   (1) RTC time, and can be consistent with the real time through protocols such as NTP <br>
-   (2) RTC time, needs to set the time manually <br>
+   (1) RTC time that can be consistent with the real-time through protocols such as NTP <br>
+   (2) RTC time needs to be set manually <br>
    (3) Tick since power on <br>
 
 6. According to priority from high to low, at least one of the following communication protocols is supported: <br>
@@ -73,13 +73,13 @@ There really are no special requirements for the operating system. Generally BoA
    (3) MQTT <br>
    (4) TCP <br>
 
-If the device can only connect to the IoT platform of a specific operator or service provider (such as OneNET, OceanConnect), the communication protocol follows the operator's requirements.
+The communication protocol follows the operator's requirements if the device can only connect to a specific operator or service provider (such as OneNET, OceanConnect).
 
 7. Supports commonly used standard C library functions such as memcpy(), strcpy(), snprintf()(optional for I/O-related functions such as printf()).
 
 8. If the cellular IoT Module utilizes a Linux operating system, it should support adb or similar login mechanism and have root privileges during debugging.
 
-## Part 4 TEE and Remote Attestation (optional)
+## Part 4- TEE and Remote Attestation (optional)
 
 ### TEE
 
@@ -97,7 +97,7 @@ Remote attestation is a mechanism that uses the Root of Trust embedded in the ch
 2. If the TEE is supported, the data should be signed in TEE (optional)
 
 
-## Part 5 Cryptography Hardware Acceleration (optional)
+## Part 5- Cryptography Hardware Acceleration (optional)
 
 If the hardware supports cryptographic hardware acceleration, utilizing this technology will improve the performance of cryptographic operations.
 
