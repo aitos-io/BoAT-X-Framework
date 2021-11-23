@@ -107,7 +107,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 								BCHAR *gaslimit_str,
 								BCHAR *recipient_str,
 								BCHAR *chainid_str,
-								BCHAR *groupid_str );
+								BCHAR *groupid_str);
 
 
 /*!****************************************************************************
@@ -116,6 +116,24 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
  ******************************************************************************/
 BOAT_RESULT BoatFiscobcosTxSetNonce(BoatFiscobcosTx *tx_ptr, BUINT64 nonce);
 
+
+/*!****************************************************************************
+ * @brief Construct a raw FISCO BCOS transaction synchronously.
+ *
+ * @details
+ *   This function is similar to FiscobcosSendRawtx except that it waits for the
+ *   transaction being mined.
+ *	 
+ * @param[in] tx_ptr
+ *   A pointer to the context of the transaction.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
+ *   of the error codes.
+ *	 
+ * @see FiscobcosSendRawtx()
+ ******************************************************************************/
+BOAT_RESULT BoatFiscobcosSendRawtxWithReceipt(BOAT_INOUT BoatFiscobcosTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief Sign and send a transaction. Also call a stateful contract function.
@@ -269,15 +287,11 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.
- * @see BoatEthPraseRpcResponseResult()
+ * @see web3_parse_json_result()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
-                                                                          const BCHAR *child_name, 
-                                                                          BoatFieldVariable *result_out)
-{
-    return BoatEthPraseRpcResponseResult(json_string, child_name, result_out);
-}
-
+BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
+                                                const BCHAR *child_name, 
+                                                BoatFieldVariable *result_out);
 
 /*! @}*/
 

@@ -101,6 +101,7 @@ typedef struct TBoatWalletPriKeyCtx_config
 	                                                //!< free it after BoatWalletCreate invoked. 
 													//!< @note For content of type string, such as PEM format data, the length includes 
                                                     //!< the terminating null byte.
+    BBOOL                    load_existed_wallet;    //false : need creat key by boat ; true : not need creat key
 }BoatWalletPriKeyCtx_config;
 
 

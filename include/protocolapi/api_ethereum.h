@@ -97,6 +97,7 @@ typedef struct TBoatEthWalletConfig
     BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
     BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatEthNetworkInfo
     BCHAR    node_url_str[BOAT_ETH_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
+    BBOOL    load_existed_wallet;   //false: need creat key by Boat , true: not need creat key
 }BoatEthWalletConfig;
 
 
@@ -179,9 +180,9 @@ extern "C" {
  *   @verbatim
      BoatEthWalletConfig eth_config = {...};
      BSINT32 wallet_index;
-     wallet_index = BoatWalletCreate( BOAT_PROTOCOL_ETHEREUM,
-                                      &eth_config,
-                                      sizeof(BoatEthWalletConfig)
+     wallet_index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM,
+                                     &eth_config,
+                                     sizeof(BoatEthWalletConfig)
                                     );
      @endverbatim
  *   \n BoatEthWalletInit() MUST be called before any use of Boat Ethereum Wallet.
@@ -309,15 +310,34 @@ BOAT_RESULT BoatEthWalletSetChainId(BoatEthWallet *wallet_ptr, BUINT32 chain_id)
  *   i.e. 1e-18 ETH) of the account.\n
  *   If any error occurs, it returns NULL.
  ******************************************************************************/
-BCHAR * BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_ptr);
-
+BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_ptr);
 
 /*!*****************************************************************************
 @brief Prase RPC method RESPONSE
 
    This function Prase "result" segment.
-   If "result" object is string, this function will returns contents of "result" . 
-   If "result" object is still json object, the parameter named "child_name" will actived,
+   "result" object must be cjson_string, this function will returns contents of "result" . 
+
+@param[in] json_string
+	 The json to be parsed.
+
+@param[out] result_out
+	 The buffer to store prase result.
+	 Caller can allocate memory for this param, or can initial it with {NULL, 0},
+	 this function will expand the memory if it too small to store prase result.
+	 
+@return
+    This function returns BOAT_SUCCESS if prase successed. Otherwise
+    it returns an error code.
+*******************************************************************************/
+BOAT_RESULT BoatEthPraseRpcResponseStringResult(const BCHAR *json_string, 
+										        BoatFieldVariable *result_out);
+
+/*!*****************************************************************************
+@brief Prase RPC method RESPONSE
+
+   This function Prase "result" segment.
+   If "result" object must be json object, the parameter named "child_name" will actived,
    if "child_name" object is string, this function will returns contents of "child_name"; 
    if "child_name" object is other types, his function will prompt "un-implemention yet".
    For other types of "result" this function is not support yet.
@@ -326,7 +346,7 @@ BCHAR * BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_pt
 	 The json to be parsed.
 
 @param[in] child_name
-	 if "result" item is json object, this param will actived.
+	 This parameter is mandatory.
 
 @param[out] result_out
 	 The buffer to store prase result.
@@ -471,6 +491,23 @@ BOAT_RESULT BoatEthTxSetGasLimit(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_limit_p
  ******************************************************************************/
 BOAT_RESULT BoatEthTxSetRecipient(BoatEthTx *tx_ptr, BUINT8 address[BOAT_ETH_ADDRESS_SIZE]);
 
+/*!****************************************************************************
+ * @brief Construct a raw ethereum transaction synchronously.
+ *
+ * @details
+ *   This function is similar to EthSendRawtx except that it waits for the
+ *   transaction being mined.
+ *   
+ * @param[in] tx_ptr
+ *   A pointer to the context of the transaction.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
+ *   of the error codes.
+ *	
+ * @see EthSendRawtx() BoatEthGetTransactionReceipt() 
+*******************************************************************************/
+BOAT_RESULT BoatEthSendRawtxWithReceipt(BOAT_INOUT BoatEthTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief Set Transaction Parameter: Value
@@ -598,7 +635,7 @@ BOAT_RESULT BoatEthTxSend(BoatEthTx *tx_ptr);
  *
  * @see BoatEthTxSend()
  ******************************************************************************/
-BCHAR * BoatEthCallContractFunc(BoatEthTx *tx_ptr,
+BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr,
 								BCHAR *func_proto_str,
 								BUINT8 *func_param_ptr,
 								BUINT32 func_param_len);

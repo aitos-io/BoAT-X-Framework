@@ -24,8 +24,9 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 #define __API_HLFABRIC_DISCOVER_H__
 
 #if( DISCOVERY_PEER_QUERY == 1)
-
+#include "boatiotsdk.h"
 #include "boattypes.h"
+
 
 typedef struct PeerInfo
 {
@@ -119,9 +120,24 @@ typedef struct T_DiscoverRes
 
 
 
-
-
-void DiscoverResFree(DiscoverRes discoverResult);
+/*!****************************************************************************
+ * @brief 
+ *   Submit transaction.
+ *
+ * @details
+ *   This function should be invoked after BoatHlfabricTxSetTimestamp() and
+ *   BoatHlfabricTxSetArgs() had excuted.When you need to set states to
+ *   Hlfabric,use this function.
+ * @param tx_ptr 
+ *   Fabric transaction structure pointer.
+ *
+ * @return 
+ *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
+ ******************************************************************************/
+BOAT_RESULT BoatHlfabricDiscoverySubmit( BoatHlfabricTx *tx_ptr,const BoatHlfabricNodesCfg endorserInfo_ptr );
+/*! @}*/
+void DiscoveryResInit(DiscoverRes *discoverResult);
+void DiscoveryResFree(DiscoverRes discoverResult);
 
 #endif
 /*! @}*/
