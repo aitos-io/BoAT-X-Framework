@@ -6,7 +6,7 @@
 #define PROTOBUF_C__NO_DEPRECATED
 #endif
 
-#include "common/rwset.pb-c.h"
+#include "rwset.pb-c.h"
 void   common__key_version__init
                      (Common__KeyVersion         *message)
 {

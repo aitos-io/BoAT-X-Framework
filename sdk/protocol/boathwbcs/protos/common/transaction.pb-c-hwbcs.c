@@ -6,7 +6,7 @@
 #define PROTOBUF_C__NO_DEPRECATED
 #endif
 
-#include "transaction.pb-c-huawei.h"
+#include "transaction.pb-c-hwbcs.h"
 void   common__tx_result__init
                      (Common__TxResult         *message)
 {
@@ -1314,7 +1314,7 @@ static const ProtobufCFieldDescriptor common__invocation_response__field_descrip
     PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
     offsetof(Common__InvocationResponse, status),
-    &common__status__huawei__descriptor,
+    &common__status__hwbcs__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */

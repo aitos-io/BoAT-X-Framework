@@ -6,7 +6,7 @@
 #define PROTOBUF_C__NO_DEPRECATED
 #endif
 
-#include "common/transaction.pb-c.h"
+#include "transaction.pb-c.h"
 void   common__transaction__init
                      (Common__Transaction         *message)
 {

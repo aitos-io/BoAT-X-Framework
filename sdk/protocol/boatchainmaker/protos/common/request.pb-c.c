@@ -6,7 +6,7 @@
 #define PROTOBUF_C__NO_DEPRECATED
 #endif
 
-#include "common/request.pb-c.h"
+#include "request.pb-c.h"
 void   common__tx_request__init
                      (Common__TxRequest         *message)
 {

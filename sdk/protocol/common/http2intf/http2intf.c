@@ -138,11 +138,11 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
 											 size_t len, void *user_data)
 {
 	http2IntfContext *http2Context = (http2IntfContext *)user_data;
-
+	// Protos__ProposalResponse *proposalResponse = NULL;
+	// Orderer__SubmitResponse *submitResponse = NULL;
 	Http2Response *parsePtr = NULL;
 	uint8_t *temp = NULL;
 	parsePtr = (Http2Response *)http2Context->parseDataPtr;
-
 	if (parsePtr == NULL)
 	{
 		parsePtr = BoatMalloc(sizeof(Http2Response));
@@ -157,17 +157,14 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
 			BoatFree(parsePtr->http2Res);
 		}
 	}
-
 	parsePtr->http2Res = BoatMalloc(parsePtr->httpResLen + len);
 	if (parsePtr->httpResLen != 0)
 	{
 		memcpy(parsePtr->http2Res, temp, parsePtr->httpResLen);
 		BoatFree(temp);
 	}
-
 	memcpy(parsePtr->http2Res + parsePtr->httpResLen, data, len);
 	parsePtr->httpResLen += len;
-
 	return 0;
 }
 
@@ -292,10 +289,10 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 {
 	nghttp2_data_provider data_prd;
 	nghttp2_session_callbacks *callbacks;
-
+	// char *pathTmp = NULL;
+	// Http2Response *parsePtr = NULL;
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
-
 	nghttp2_nv nva[] = {MAKE_NV(":method", "POST"),
 						MAKE_NV(":scheme", "http"),
 						MAKE_NV(":path", context->pathTmp),
@@ -305,6 +302,17 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 						MAKE_NV("Accept-Encoding", "gzip, deflate"),
 						MAKE_NV("te", "trailers")};
 
+	// parsePtr = (Http2Response *)context->parseDataPtr;
+	// if ((parsePtr != NULL) && (parsePtr->httpResLen != 0))
+	// {
+	// 	if(parsePtr->http2Res != NULL){
+	// 		BoatFree(parsePtr->http2Res);
+	// 	}
+
+	// 	parsePtr->http2Res = NULL;
+	// 	parsePtr->httpResLen = 0;
+	// }
+	/* connection establishment */
 	context->sockfd = BoatConnect(context->nodeUrl, NULL);
 	if (context->sockfd < 0)
 	{

@@ -6,7 +6,7 @@
 #define PROTOBUF_C__NO_DEPRECATED
 #endif
 
-#include "common/policy.pb-c.h"
+#include "policy.pb-c.h"
 void   accesscontrol__policy__init
                      (Accesscontrol__Policy         *message)
 {

@@ -1,7 +1,7 @@
 # Source and Objects
 
 SOURCES = $(wildcard *.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol/boathlhuawei/protos/common
+OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol/boathwbcs/protos/common
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 

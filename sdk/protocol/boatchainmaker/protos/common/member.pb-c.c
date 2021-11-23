@@ -6,7 +6,7 @@
 #define PROTOBUF_C__NO_DEPRECATED
 #endif
 
-#include "common/member.pb-c.h"
+#include "member.pb-c.h"
 void   accesscontrol__serialized_member__init
                      (Accesscontrol__SerializedMember         *message)
 {

@@ -37,7 +37,7 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "peer/proposal_response.pb-c.h"
 #include "discovery/protocol.pb-c.h"
 
-BUINT32 getURL(BUINT8 *data, BUINT32 datalen, BUINT32 *outOffset)
+BUINT32 hlfabricDiscoveryGetURL(BUINT8 *data, BUINT32 datalen, BUINT32 *outOffset)
 {
 	BUINT32 len = 0;
 	BUINT32 offset = 0;
@@ -80,41 +80,6 @@ BUINT32 getURL(BUINT8 *data, BUINT32 datalen, BUINT32 *outOffset)
 	return len;
 }
 
-char *itoa(int num, char *str, int radix)
-{ /*索引表*/
-	char index[] = "0123456789ABCDEF";
-	unsigned unum; /*中间变量*/
-	int i = 0, j, k;
-	/*确定unum的值*/
-	if (radix == 10 && num < 0) /*十进制负数*/
-	{
-		unum = (unsigned)-num;
-		str[i++] = '-';
-	}
-	else
-		unum = (unsigned)num; /*其他情况*/
-	/*转换*/
-	do
-	{
-		str[i++] = index[unum % (unsigned)radix];
-		unum /= radix;
-	} while (unum);
-	str[i] = '\0';
-	/*逆序*/
-	if (str[0] == '-')
-		k = 1; /*十进制负数*/
-	else
-		k = 0;
-
-	for (j = k; j <= (i - 1) / 2; j++)
-	{
-		char temp;
-		temp = str[j];
-		str[j] = str[i - 1 + k - j];
-		str[i - 1 + k - j] = temp;
-	}
-	return str;
-}
 
 /*!****************************************************************************
  * @brief signature header packed
@@ -144,7 +109,7 @@ char *itoa(int num, char *str, int radix)
  *
  * @see hlfabricChannelHeaderPacked
  ******************************************************************************/
-__BOATSTATIC BOAT_RESULT hlfabricDiscoverSignatureHeaderPacked(const BoatHlfabricTx *tx_ptr,
+__BOATSTATIC BOAT_RESULT hlfabricDiscoverySignatureHeaderPacked(const BoatHlfabricTx *tx_ptr,
 															   BUINT8 *txIdBin,
 															   BoatFieldVariable *output_ptr)
 {
@@ -208,8 +173,8 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverSignatureHeaderPacked(const BoatHlfabri
 		boat_throw(result, hlfabricSignatureHeaderPacked_exception);
 	};
 	/* pack the signatureHeader */
-	if (tx_ptr->var.type == HLFABRIC_TYPE_DISCOVER)
-	{
+	// if (tx_ptr->var.type == HLFABRIC_TYPE_DISCOVER)
+	// {
 		packedLength = common__signature_header__get_packed_size(&signatureHeader);
 		output_ptr->field_ptr = BoatMalloc(packedLength + 3);
 		output_ptr->field_len = packedLength + 3;
@@ -217,14 +182,14 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverSignatureHeaderPacked(const BoatHlfabri
 		output_ptr->field_ptr[0] = 0x0A;
 		output_ptr->field_ptr[1] = (packedLength & 0xFF) | 0x80;
 		output_ptr->field_ptr[2] = packedLength >> 7;
-	}
-	else
-	{
-		packedLength = common__signature_header__get_packed_size(&signatureHeader);
-		output_ptr->field_ptr = BoatMalloc(packedLength);
-		output_ptr->field_len = packedLength;
-		common__signature_header__pack(&signatureHeader, output_ptr->field_ptr);
-	}
+	// }
+	// else
+	// {
+	// 	packedLength = common__signature_header__get_packed_size(&signatureHeader);
+	// 	output_ptr->field_ptr = BoatMalloc(packedLength);
+	// 	output_ptr->field_len = packedLength;
+	// 	common__signature_header__pack(&signatureHeader, output_ptr->field_ptr);
+	// }
 
 	/* boat catch handle */
 	boat_catch(hlfabricSignatureHeaderPacked_exception)
@@ -261,7 +226,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverSignatureHeaderPacked(const BoatHlfabri
  ******************************************************************************/
 
 
-__BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadDataPacked(BoatHlfabricTx *tx_ptr,
+__BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_ptr,
 														   BoatFieldVariable *output_ptr)
 {
 
@@ -400,7 +365,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadDataPacked(BoatHlfabricTx *tx_pt
  *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
  ******************************************************************************/
 
-__BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
+__BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadPacked(BoatHlfabricTx *tx_ptr,
 													   BoatFieldVariable *output_ptr)
 {
 	Common__Header header = COMMON__HEADER__INIT;
@@ -418,7 +383,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
 	payload.header = &header;
 	/* ------>signature header */
 	header.has_signature_header = true;
-	result = hlfabricDiscoverSignatureHeaderPacked(tx_ptr, txIdBin, &signatureHeaderPacked);
+	result = hlfabricDiscoverySignatureHeaderPacked(tx_ptr, txIdBin, &signatureHeaderPacked);
 	header.signature_header.len = signatureHeaderPacked.field_len;
 	header.signature_header.data = signatureHeaderPacked.field_ptr;
 	if (result != BOAT_SUCCESS)
@@ -434,7 +399,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
 
 	/* payload.data */
 	payload.has_data = true;
-	result = hlfabricDiscoverPayloadDataPacked(tx_ptr, &payloadDataPacked);
+	result = hlfabricDiscoveryPayloadDataPacked(tx_ptr, &payloadDataPacked);
 	payload.data.len = payloadDataPacked.field_len;
 	payload.data.data = payloadDataPacked.field_ptr;
 
@@ -493,7 +458,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverPayloadPacked(BoatHlfabricTx *tx_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
  ******************************************************************************/
-BOAT_RESULT hlfabricProposalDiscoverTransactionPacked(BoatHlfabricTx *tx_ptr)
+BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
 {
 	// Common__Envelope envelope = COMMON__ENVELOPE__INIT;
 	BoatFieldVariable payloadPacked = {NULL, 0};
@@ -516,7 +481,7 @@ BOAT_RESULT hlfabricProposalDiscoverTransactionPacked(BoatHlfabricTx *tx_ptr)
 		return BOAT_ERROR;
 	}
 	/* step-2: compute payload packed length */
-	result = hlfabricDiscoverPayloadPacked(tx_ptr, &payloadPacked);
+	result = hlfabricDiscoveryPayloadPacked(tx_ptr, &payloadPacked);
 	/* step-3: compute hash */
 	result = BoatHash(BOAT_HASH_SHA256, payloadPacked.field_ptr,
 					  payloadPacked.field_len, hash, NULL, NULL);
@@ -599,7 +564,7 @@ BOAT_RESULT hlfabricProposalDiscoverTransactionPacked(BoatHlfabricTx *tx_ptr)
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a failed code.
  ******************************************************************************/
-__BOATSTATIC BOAT_RESULT BoatHlfabricDiscoverExec(BoatHlfabricTx *tx_ptr,
+__BOATSTATIC BOAT_RESULT BoatHlfabricDiscoveryExec(BoatHlfabricTx *tx_ptr,
 												  BoatHlfabricNodesCfg nodeCfg)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -612,7 +577,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoverExec(BoatHlfabricTx *tx_ptr,
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
-	result = hlfabricProposalDiscoverTransactionPacked(tx_ptr);
+	result = hlfabricProposalDiscoveryTransactionPacked(tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
@@ -647,11 +612,11 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoverExec(BoatHlfabricTx *tx_ptr,
 				// BoatLog(BOAT_LOG_CRITICAL, "hostname : %s ", tx_ptr->wallet_ptr->http2Context_ptr->hostName);
 #endif
 				tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
-				tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
+				tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->evaluateRes;
 				// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest  :",
 				// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 				// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
-				tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_FABRIC;
+				tx_ptr->wallet_ptr->http2Context_ptr->pathTmp = "/discovery.Discovery/Discover";
 				result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 				if(result == BOAT_SUCCESS)
 				{
@@ -672,7 +637,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoverExec(BoatHlfabricTx *tx_ptr,
 	return result;
 }
 
-BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabricNodesCfg endorserInfo_ptr)
+BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabricNodesCfg endorserInfo_ptr)
 {
 	// BoatHlfabricNodeInfo urlTmp[2] = {{NULL, NULL}, {NULL, NULL}};
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -682,9 +647,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	DiscoverRes discoverResult;
 	BUINT32 len = 0, offset = 0;
 	BCHAR *port;
-	BCHAR *IP = "192.168.132.190";
 	int i,j,k,l,m;
-	// BCHAR *IP2 = "192.168.132.190:";
 	// boat_try_declare;
 
 	if (tx_ptr == NULL)
@@ -694,18 +657,23 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute... [%d] " ,endorserInfo_ptr.endorserLayoutNum);
-
+	DiscoveryResInit(&discoverResult);
 	/* invoke-step1: submit proposal to endorer */
 	tx_ptr->var.type = HLFABRIC_TYPE_DISCOVER;
-	result = BoatHlfabricDiscoverExec(tx_ptr, endorserInfo_ptr);
+	result = BoatHlfabricDiscoveryExec(tx_ptr, endorserInfo_ptr);
 
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invoke result",
-						 tx_ptr->endorserResponse.http2Res,
-						 tx_ptr->endorserResponse.httpResLen);
+						 tx_ptr->evaluateRes.http2Res,
+						 tx_ptr->evaluateRes.httpResLen);
 	// http2ResData = tx_ptr->endorserResponse.response[0].payload.field_ptr;
 	// http2Reslen = tx_ptr->endorserResponse.response[0].payload.field_len;
 
-	discoveryResponse = discovery__response__unpack(NULL, tx_ptr->endorserResponse.httpResLen - 5, tx_ptr->endorserResponse.http2Res + 5);
+	discoveryResponse = discovery__response__unpack(NULL, tx_ptr->evaluateRes.httpResLen - 5, tx_ptr->evaluateRes.http2Res + 5);
+	if (tx_ptr->evaluateRes.http2Res != NULL)
+	{
+		BoatFree(tx_ptr->evaluateRes.http2Res);
+	}
+	tx_ptr->evaluateRes.httpResLen =0;
 	if (discoveryResponse == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[http2] discovery__response__unpack failed, maybe a invalid endorser.");
@@ -778,7 +746,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID = BoatMalloc(strlen(msp_serializedIdentity->mspid));
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID, msp_serializedIdentity->mspid, strlen(msp_serializedIdentity->mspid));
 							// BoatLog(BOAT_LOG_CRITICAL, " endorsers[%d].MSPID  : %s ", l, discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID);
-							len = getURL(cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.len, &offset);
+							len = hlfabricDiscoveryGetURL(cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.len, &offset);
 
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint = BoatMalloc(len);
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data + offset, len);
@@ -819,7 +787,7 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host = BoatMalloc(strlen(config_result->orderers[i]->value->endpoint[j]->host));
 			memcpy(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host, config_result->orderers[i]->value->endpoint[j]->host, strlen(config_result->orderers[i]->value->endpoint[j]->host));
 			// discoverResult->discoverConfig.discoverOrders.discoverOrderinfo[k].port = config_result->orderers[i]->value->endpoint[j]->port;
-			itoa(config_result->orderers[i]->value->endpoint[j]->port, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].port, 10);
+			Utility_itoa(config_result->orderers[i]->value->endpoint[j]->port, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].port, 10);
 			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].name = BoatMalloc(strlen(config_result->orderers[i]->key));
 			memcpy(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k++].name, config_result->orderers[i]->key, strlen(config_result->orderers[i]->key));
 		}
@@ -863,9 +831,9 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 				len = strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint);
 				tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = BoatMalloc(len);
 
-				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, IP, strlen(IP));
-				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl + strlen(IP), port, strlen(port));
-				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
+				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, IP, strlen(IP));
+				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl + strlen(IP), port, strlen(port));
+				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
 
 				for ( l = 0; l < discoverResult.discoverConfig.discoverMsps.num; l++)
 				{
@@ -885,10 +853,10 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 		len = sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port) + strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host) + 1;
 		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(len);
 		offset = 0;
-		// memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host, strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host));
-		// offset += strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host);
-		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, IP, strlen(IP));
-		offset += strlen(IP);
+		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host, strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host));
+		offset += strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host);
+		// memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, IP, strlen(IP));
+		// offset += strlen(IP);
 		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl[offset++] = ':';
 		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port, sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port));
 
@@ -902,18 +870,22 @@ BOAT_RESULT BoatHlfabricDiscoverSubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabri
 		}
 	}
 	tx_ptr->endorserResponse.responseCount = 0;
-	DiscoverResFree(discoverResult);
+	DiscoveryResFree(discoverResult);
 
-	// /* boat catch handle */
-	if (tx_ptr->endorserResponse.http2Res != NULL)
-	{
-		BoatFree(tx_ptr->endorserResponse.http2Res);
-	}
-	tx_ptr->endorserResponse.httpResLen =0;
 	return result;
 }
 
-void DiscoverResFree(DiscoverRes discoverResult)
+void DiscoveryResInit(DiscoverRes *discoverResult)
+{
+	discoverResult->cc_res.num = 0;
+	discoverResult->cc_res.layouts = NULL;
+	discoverResult->discoverConfig.discoverMsps.num = 0;
+	discoverResult->discoverConfig.discoverMsps.discoverMspInfo = NULL;
+	discoverResult->discoverConfig.discoverOrders.num = 0;
+	discoverResult->discoverConfig.discoverOrders.discoverOrderinfo = NULL;
+}
+
+void DiscoveryResFree(DiscoverRes discoverResult)
 {
 	int i,j;
 	for ( i = 0; i < discoverResult.cc_res.num; i++)

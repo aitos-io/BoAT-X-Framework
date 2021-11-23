@@ -6,7 +6,7 @@
 #define PROTOBUF_C__NO_DEPRECATED
 #endif
 
-#include "common/contract.pb-c.h"
+#include "contract.pb-c.h"
 void   common__contract_id__init
                      (Common__ContractId         *message)
 {

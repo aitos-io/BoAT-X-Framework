@@ -51,7 +51,8 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 											BoatHlfabricNodesCfg nodeCfg, BoatHlfabricFunType funType)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-	BoatHlfabricEndorserResponse *parsePtr = NULL;
+	BoatHlfabricEndorserResponse *parsePtr = NULL ;
+	Http2Response fabricHttp2res = {0,NULL};
 	Protos__ProposalResponse *proposalResponse = NULL;
 	Orderer__SubmitResponse *submitResponse = NULL;
 	Protos__ProposalResponsePayload *proposalResPayload = NULL;
@@ -66,6 +67,12 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
+	if(tx_ptr->evaluateRes.httpResLen != 0){
+		if(tx_ptr->evaluateRes.http2Res != NULL){
+			BoatFree(tx_ptr->evaluateRes.http2Res);
+		}
+		tx_ptr->evaluateRes.httpResLen = 0;
+	}
 
 	result = hlfabricProposalTransactionPacked(tx_ptr);
 	if (result != BOAT_SUCCESS)
@@ -73,6 +80,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);
 	}
+
 	if (tx_ptr->var.type == HLFABRIC_TYPE_PROPOSAL)
 	{
 		for (i = 0; i < nodeCfg.endorserLayoutNum; i++)
@@ -101,36 +109,33 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 					tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = BoatMalloc(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 					memset(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, 0x00, tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 					memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
-// tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content;
-// BoatLog(BOAT_LOG_CRITICAL, "hostname : %s ", tx_ptr->wallet_ptr->http2Context_ptr->hostName);
-// 			BoatLog_hexasciidump(BOAT_LOG_NORMAL, "tlsCAchain  :",
-// 			 tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr,
-// 			 tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
+
 #endif
 
 					// if (((nodeInfo + i)->hostName != NULL) && (strlen((nodeInfo + i)->hostName) > 0))
 
 					tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
 
-					tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
-
-					parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
+					// tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
+					tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &(fabricHttp2res ) ;
 
 									// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest  :",
 									//  tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 									//  tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
-					tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_FABRIC;
+					tx_ptr->wallet_ptr->http2Context_ptr->pathTmp = "/protos.Endorser/ProcessProposal";
 					result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 					if(result != BOAT_SUCCESS)
 					{
 						continue;
 					}
-					proposalResponse = protos__proposal_response__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
-					if(parsePtr->httpResLen != 0)
+					BoatLog(BOAT_LOG_CRITICAL, "http2SubmitRequest ok \n ");
+					proposalResponse = protos__proposal_response__unpack(NULL, fabricHttp2res.httpResLen  - 5, fabricHttp2res.http2Res + 5);
+					if(fabricHttp2res.httpResLen != 0)
 					{
-						BoatFree(parsePtr->http2Res);
+						BoatFree(fabricHttp2res.http2Res);
+						fabricHttp2res.httpResLen = 0;
 					}
-					parsePtr->httpResLen = 0;
+					parsePtr = &(tx_ptr->endorserResponse) ;
 					if ((proposalResponse != NULL) && (proposalResponse->endorsement != NULL))
 					{
 						BoatLog(BOAT_LOG_NORMAL, "[http2]endorser respond received.");
@@ -166,9 +171,9 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 								BoatLog(BOAT_LOG_CRITICAL, "protos__chaincode_action__unpack failed.");
 								continue;
 							}
-							parsePtr->httpResLen = chaincodeEvent->response->payload.len;
-							parsePtr->http2Res = BoatMalloc(parsePtr->httpResLen);
-							memcpy(parsePtr->http2Res,chaincodeEvent->response->payload.data,chaincodeEvent->response->payload.len);
+							tx_ptr->evaluateRes.httpResLen = chaincodeEvent->response->payload.len;
+							tx_ptr->evaluateRes.http2Res = BoatMalloc(tx_ptr->evaluateRes.httpResLen);
+							memcpy(tx_ptr->evaluateRes.http2Res,chaincodeEvent->response->payload.data,chaincodeEvent->response->payload.len);
 							protos__chaincode_action__free_unpacked(chaincodeEvent,NULL);
 
 						}
@@ -221,21 +226,23 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 
 			tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
 
-			tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
+			// tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
 
 			// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest 111 send :",
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
-			parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
 
-			tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_FABRIC;
+			tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &(fabricHttp2res);
+
+			tx_ptr->wallet_ptr->http2Context_ptr->pathTmp = "/orderer.AtomicBroadcast/Broadcast";
 			result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 			if(result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "[http2]http2SubmitRequest failed.");
 				continue;
 			}
-			submitResponse = orderer__submit_response__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
+			parsePtr = &(tx_ptr->endorserResponse) ;
+			submitResponse = orderer__submit_response__unpack(NULL, fabricHttp2res.httpResLen - 5, fabricHttp2res.http2Res + 5);
 			if (submitResponse != NULL && submitResponse->status == COMMON__STATUS__SUCCESS)
 			{
 				BoatLog(BOAT_LOG_NORMAL, "[http2]orderer respond received.%d", submitResponse->status);
@@ -316,7 +323,8 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr,
 	wallet_ptr->account_info.cert.field_len = 0;
 
 	/* prikey context assignment */
-	if (prikeyCtx_config.prikey_content.field_ptr != NULL)
+	// if (prikeyCtx_config.prikey_content.field_ptr != NULL)
+	if(prikeyCtx_config.load_existed_wallet == false)
 	{
 		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
 		{
@@ -544,8 +552,10 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 			memcpy(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, endorserInfo_ptr.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, endorserInfo_ptr.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
 			for (k = 0; k < endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorserNumber; k++)
 			{
-				wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = BoatMalloc(strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].hostName));
-				wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = BoatMalloc(strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl));
+				wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = BoatMalloc(strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].hostName)+1);
+				wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = BoatMalloc(strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl)+1);
+				memset(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName,0x00, strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].hostName)+1);
+				memset(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl,0x00,strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl)+1);
 				memcpy(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName, endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].hostName, strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].hostName));
 				memcpy(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, strlen(endorserInfo_ptr.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl));
 			}
@@ -611,8 +621,10 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 	wallet_ptr->network_info.orderCfg.endorser = BoatMalloc(wallet_ptr->network_info.orderCfg.endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
 	for (i = 0; i < wallet_ptr->network_info.orderCfg.endorserNumber; i++)
 	{
-		wallet_ptr->network_info.orderCfg.endorser[i].hostName = BoatMalloc(strlen(endorserInfo_ptr.orderCfg.endorser[i].hostName));
-		wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(strlen(endorserInfo_ptr.orderCfg.endorser[i].nodeUrl));
+		wallet_ptr->network_info.orderCfg.endorser[i].hostName = BoatMalloc(strlen(endorserInfo_ptr.orderCfg.endorser[i].hostName)+1);
+		wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(strlen(endorserInfo_ptr.orderCfg.endorser[i].nodeUrl)+1);
+		memset(wallet_ptr->network_info.orderCfg.endorser[i].hostName,0x00,strlen(endorserInfo_ptr.orderCfg.endorser[i].hostName)+1);
+		memset(wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl,0x00,strlen(endorserInfo_ptr.orderCfg.endorser[i].nodeUrl)+1);
 		memcpy(wallet_ptr->network_info.orderCfg.endorser[i].hostName, endorserInfo_ptr.orderCfg.endorser[i].hostName, strlen(endorserInfo_ptr.orderCfg.endorser[i].hostName));
 		memcpy(wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl, endorserInfo_ptr.orderCfg.endorser[i].nodeUrl, strlen(endorserInfo_ptr.orderCfg.endorser[i].nodeUrl));
 	}
@@ -750,6 +762,10 @@ BoatHlfabricWallet *BoatHlfabricWalletInit(const BoatHlfabricWalletConfig *confi
 	/* initialization */
 	wallet_ptr->account_info.cert.field_ptr = NULL;
 	wallet_ptr->account_info.cert.field_len = 0;
+	wallet_ptr->network_info.endorserLayoutNum = 0;
+	wallet_ptr->network_info.orderCfg.endorserNumber = 0;
+	wallet_ptr->network_info.layoutCfg = NULL;
+	// wallet_ptr->network_info.layoutCfg->endorserGroupNum = 0;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 #if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
 	wallet_ptr->tlsClinet_info.cert.field_ptr = NULL;
@@ -771,9 +787,7 @@ BoatHlfabricWallet *BoatHlfabricWalletInit(const BoatHlfabricWalletConfig *confi
 	// 	wallet_ptr->network_info.endorser[i].nodeUrl = NULL;
 	// 	wallet_ptr->network_info.endorser[i].hostName = NULL;
 	// }
-
 	wallet_ptr->http2Context_ptr = NULL;
-
 	/* account_info assignment */
 	result += BoatHlfabricWalletSetAccountInfo(wallet_ptr, config_ptr->accountPriKey_config,
 											   config_ptr->accountCertContent);
@@ -784,7 +798,7 @@ BoatHlfabricWallet *BoatHlfabricWalletInit(const BoatHlfabricWalletConfig *confi
 												 config_ptr->tlsClientCertContent);
 #endif
 	/* tlsRootCa_info assignment */
-	BoatHlfabricWalletSetRootCaInfo(wallet_ptr, config_ptr->rootCaContent, config_ptr->rootCaNumber);
+	//BoatHlfabricWalletSetRootCaInfo(wallet_ptr, config_ptr->rootCaContent, config_ptr->rootCaNumber);
 #endif
 	/* network_info assignment */
 	// result += BoatHlfabricWalletSetNetworkInfo(wallet_ptr, config_ptr->nodesCfg);
@@ -888,13 +902,11 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 							   const BCHAR *chaincodeId_name_str,
 							   const BCHAR *chaincodeId_version_str,
 							   const BCHAR *channelId_str,
-							   const BCHAR *orgName_str,
-							   const BCHAR *contract_name,
-							   const BCHAR *creator_id)
+							   const BCHAR *orgName_str)
 {
 	BUINT32 stringLen;
-	BCHAR *paramSrcList[7];
-	BCHAR **paramDstList[7];
+	BCHAR *paramSrcList[5];
+	BCHAR **paramDstList[5];
 	BUINT16 i = 0;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -930,6 +942,7 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 	tx_ptr->var.orgName = NULL;
 	/* ----->tx_ptr->endorserResponse reset */
 	tx_ptr->endorserResponse.responseCount = 0;
+	tx_ptr->evaluateRes.httpResLen = 0;
 	for (i = 0; i < BOAT_HLFABRIC_ENDORSER_MAX_NUM; i++)
 	{
 		tx_ptr->endorserResponse.response[i].contentPtr = NULL;
@@ -951,15 +964,11 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 	paramSrcList[2] = (BCHAR *)chaincodeId_version_str;
 	paramSrcList[3] = (BCHAR *)channelId_str;
 	paramSrcList[4] = (BCHAR *)orgName_str;
-	paramSrcList[5] = (BCHAR *)contract_name;
-	paramSrcList[6] = (BCHAR *)creator_id;
 	paramDstList[0] = &tx_ptr->var.chaincodeId.path;
 	paramDstList[1] = &tx_ptr->var.chaincodeId.name;
 	paramDstList[2] = &tx_ptr->var.chaincodeId.version;
 	paramDstList[3] = &tx_ptr->var.channelId;
 	paramDstList[4] = &tx_ptr->var.orgName;
-	paramDstList[5] = &tx_ptr->var.contract_name;
-	paramDstList[6] = &tx_ptr->var.creator_id;
 
 	for (i = 0; i < sizeof(paramSrcList) / sizeof(paramSrcList[0]); i++)
 	{
@@ -1027,9 +1036,9 @@ void BoatHlfabricTxDeInit(BoatHlfabricTx *tx_ptr)
 	/* -----var.orgName */
 	BoatFree(tx_ptr->var.orgName);
 	tx_ptr->var.orgName = NULL;
-	if(tx_ptr->endorserResponse.httpResLen != 0)
+	if(tx_ptr->evaluateRes.httpResLen != 0)
 	{
-		BoatFree(tx_ptr->endorserResponse.http2Res);
+		BoatFree(tx_ptr->evaluateRes.http2Res);
 	}
 
 	/* endorserResponse DeInit */

@@ -33,29 +33,29 @@ boatPlatonewallet.c defines the Platone wallet API for BoAT IoT SDK.
 // re-use a lot of Ethereum's data structure and API. APIs not listed 
 // here are compatible with Ethereum.
 
-BOAT_RESULT BoatPlatoneTxInit( BoatPlatoneWallet *wallet_ptr,
-							   BoatPlatoneTx *tx_ptr,
-							   BBOOL is_sync_tx,
-							   BCHAR *gasprice_str,
-							   BCHAR *gaslimit_str,
-							   BCHAR *recipient_str,
-							   BoatPlatoneTxtype txtype)
+BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
+							  BoatPlatoneTx *tx_ptr,
+							  BBOOL is_sync_tx,
+							  BCHAR *gasprice_str,
+							  BCHAR *gaslimit_str,
+							  BCHAR *recipient_str,
+							  BoatPlatoneTxtype txtype)
 {
     BOAT_RESULT result;
 
-    if( (wallet_ptr == NULL) || (tx_ptr == NULL) || (recipient_str == NULL) )
+    if ((wallet_ptr == NULL) || (tx_ptr == NULL) || (recipient_str == NULL))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
     tx_ptr->wallet_ptr = wallet_ptr;
-    memset( &tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields) );
+    memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
 
     // Re-use Ethereum transaction initialization
-    result = BoatEthTxInit( (BoatEthWallet *)wallet_ptr, (BoatEthTx *)tx_ptr,
-                            is_sync_tx, gasprice_str, gaslimit_str, recipient_str );
-    if( result != BOAT_SUCCESS )
+    result = BoatEthTxInit((BoatEthWallet *)wallet_ptr, (BoatEthTx *)tx_ptr,
+                           is_sync_tx, gasprice_str, gaslimit_str, recipient_str);
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "platone Tx init failed.");
         return result;
@@ -64,7 +64,7 @@ BOAT_RESULT BoatPlatoneTxInit( BoatPlatoneWallet *wallet_ptr,
     // Set transaction type
     result = BoatPlatoneTxSetTxtype(tx_ptr, txtype);
 
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "platone set Tx type failed.");
         return result;
@@ -76,7 +76,7 @@ BOAT_RESULT BoatPlatoneTxInit( BoatPlatoneWallet *wallet_ptr,
 
 BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txtype)
 {
-    if( tx_ptr == NULL )
+    if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
@@ -87,23 +87,7 @@ BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txty
     return BOAT_SUCCESS;
 }
 
- void hex2array(BUINT8* in, int inlen, BUINT8* out)
-{
-	int i;
-	unsigned char r;
-	for (i = 0; i < inlen; i += 2)
-	{
-		r = in[i] - '0';
-		if (r > 9) r += '0' + 10 - 'a';
-		//printf("%c(%x): %x\n", in[i], in[i], r);
-		out[i / 2] = r << 4;
-		r = in[i + 1] - '0';
-		if (r > 9) r += '0' + 10 - 'a';
-		out[i / 2] += r;
- 
-		//printf("%c(%x): %x <%x>\n", in[i+1], in[i+1], r, out[i/2]);
-	}
-}
+
 
 void nodeResFree(nodesResult *result_out)
 {
@@ -208,7 +192,8 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     web3_parse_json_result(rpc_response_str, "result", &prase_result);
     nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr))/2);
     memset(nodeManagerAddr,0x00,strlen((BCHAR*)(prase_result.field_ptr))/2);
-    hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
+    // hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
+    UtilityHexToBin(nodeManagerAddr,strlen((BCHAR*)(prase_result.field_ptr))/2,prase_result.field_ptr,TRIMBIN_TRIM_NO,BOAT_FALSE);
  // Construct the REQUEST
 	do{
 		malloc_size_expand_flag = false;
@@ -268,12 +253,13 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
 
     nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr))/2);
     memset(nodeManagerAddr,0x00,strlen((BCHAR*)(prase_result.field_ptr))/2);
-    hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
+    // hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
+    UtilityHexToBin(nodeManagerAddr,strlen((BCHAR*)(prase_result.field_ptr))/2,prase_result.field_ptr,TRIMBIN_TRIM_NO,BOAT_FALSE);
  // Construct the REQUEST
     
     // web3_parse_fatherNamejson_result(nodeManagerAddr,"data", "externalIP", &prase_result);
     nodeResFree(result_out);
-    supports_full_hd(nodeManagerAddr,result_out);
+    Platone_get_Nodeinfo(nodeManagerAddr,result_out);
 
 
 
@@ -291,8 +277,10 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
 
 
 
-BCHAR *BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
-									 BUINT32 rlp_param_len )
+
+BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
+								   BUINT32 rlp_param_len)
+
 {
     // *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
     BCHAR data_str[rlp_param_len*2 + 3]; // Compiler MUST support C99 to allow variable-size local array
@@ -300,7 +288,7 @@ BCHAR *BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr
     Param_eth_call param_eth_call;
     BCHAR *retval_str;
 
-    if( rlp_param_ptr == NULL && rlp_param_len != 0 )
+    if (rlp_param_ptr == NULL && rlp_param_len != 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
@@ -320,8 +308,8 @@ BCHAR *BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr
 
     BCHAR recipient_hexstr[BOAT_PLATONE_ADDRESS_SIZE*2+3];
     
-    UtilityBinToHex( recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_PLATONE_ADDRESS_SIZE,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE );
+    UtilityBinToHex(recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_PLATONE_ADDRESS_SIZE,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     param_eth_call.to = recipient_hexstr;
 
     // Function call consumes zero gas but gasLimit and gasPrice must be specified.
@@ -339,7 +327,6 @@ BCHAR *BoatPlatoneCallContractFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr
                            &param_eth_call);
 
     return retval_str;
-
 }
 
 BCHAR *BoatPlatoneCallContractGetNodesInfoFunc( BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
@@ -438,25 +425,37 @@ BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out)
 
 }
 
+BOAT_RESULT BoatPlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr)
+{
+    BOAT_RESULT result = BOAT_ERROR;
+
+    result = PlatoneSendRawtx(tx_ptr);
+
+    if (result == BOAT_SUCCESS)
+    {
+        result = BoatPlatoneGetTransactionReceipt(tx_ptr);
+    }
+
+    return result;
+}
 
 BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
 {
     BOAT_RESULT result;
 
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
-
-    if( tx_ptr->is_sync_tx == BOAT_FALSE )
+    if (tx_ptr->is_sync_tx == BOAT_FALSE)
     {
         result = PlatoneSendRawtx(tx_ptr);
     }
     else
     {
-        result = PlatoneSendRawtxWithReceipt(tx_ptr);
+        result = BoatPlatoneSendRawtxWithReceipt(tx_ptr);
     }
     
     return result;
@@ -470,7 +469,7 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
     BUINT64           tx_type_big;
     BOAT_RESULT       result;
    
-    if( tx_ptr == NULL || tx_ptr->wallet_ptr == NULL || value_hex_str == NULL )
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL || value_hex_str == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Argument cannot be NULL.");
         return BOAT_ERROR_INVALID_ARGUMENT;
@@ -478,39 +477,46 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
     
     // Set nonce
     result = BoatPlatoneTxSetNonce(tx_ptr, BOAT_PLATONE_NONCE_AUTO);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
-         return result;
+        return result;
     }
     
     // Set value
-    value.field_len = UtilityHexToBin( value.field, 32, value_hex_str,
-									  TRIMBIN_LEFTTRIM, BOAT_TRUE  );
+    value.field_len = UtilityHexToBin(value.field, 32, value_hex_str,
+									  TRIMBIN_LEFTTRIM, BOAT_TRUE);
     result = BoatPlatoneTxSetValue(tx_ptr, &value);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
-         return result;
+        return result;
     }
 	
     // Set data (contains txtype only)
-    UtilityUint64ToBigend( (BUINT8*)&tx_type_big, 0,  TRIMBIN_TRIM_NO );
+    UtilityUint64ToBigend((BUINT8*)&tx_type_big, 0,  TRIMBIN_TRIM_NO);
     data.field_ptr = (BUINT8*)&tx_type_big;
     data.field_len = sizeof(BUINT64);
     
     result = BoatPlatoneTxSetData(tx_ptr, &data);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
     {
-         return result;
+        return result;
     }
     
     // Perform the transaction
     // NOTE: Field v,r,s are calculated automatically
-    result = BoatPlatoneTxSend( tx_ptr );
-    if( result != BOAT_SUCCESS )
+    result = BoatPlatoneTxSend(tx_ptr);
+    if (result != BOAT_SUCCESS)
     {
          return result;
     }
 
     return BOAT_SUCCESS;
+}
+
+BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR *json_string, 
+                                              const BCHAR *child_name, 
+                                              BoatFieldVariable *result_out)
+{
+    return web3_parse_json_result(json_string, child_name, result_out);
 }
 #endif /* end of PROTOCOL_USE_PLATONE */

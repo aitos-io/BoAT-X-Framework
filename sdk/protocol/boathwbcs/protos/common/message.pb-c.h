@@ -33,23 +33,23 @@ typedef enum _Common__RawMessage__Type {
   COMMON__RAW_MESSAGE__TYPE__PROXY = 1
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(COMMON__RAW_MESSAGE__TYPE)
 } Common__RawMessage__Type;
-typedef enum _Common__Status_huawei {
-  COMMON__STATUS__HUAWEI__UNKNOWN = 0,
-  COMMON__STATUS__HUAWEI__SUCCESS = 200,
-  COMMON__STATUS__HUAWEI__HASH = 201,
-  COMMON__STATUS__HUAWEI__BAD_REQUEST = 400,
-  COMMON__STATUS__HUAWEI__FORBIDDEN = 403,
-  COMMON__STATUS__HUAWEI__NOT_FOUND = 404,
-  COMMON__STATUS__HUAWEI__CONTRACT_NOT_READY = 405,
-  COMMON__STATUS__HUAWEI__CONTRACT_LAUNCHING = 406,
-  COMMON__STATUS__HUAWEI__CONTRACT_LAUNCH_ERR = 407,
-  COMMON__STATUS__HUAWEI__CONTRACT_RUNTIME_ERR = 408,
-  COMMON__STATUS__HUAWEI__REQUEST_ENTITY_TOO_LARGE = 413,
-  COMMON__STATUS__HUAWEI__INTERNAL_SERVER_ERROR = 500,
-  COMMON__STATUS__HUAWEI__NOT_IMPLEMENTED = 501,
-  COMMON__STATUS__HUAWEI__SERVICE_UNAVAILABLE = 503
-     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(COMMON__STATUS_HUAWEI)
-} Common__Status_huawei;
+typedef enum _Common__Status_hwbcs {
+  COMMON__STATUS__HWBCS__UNKNOWN = 0,
+  COMMON__STATUS__HWBCS__SUCCESS = 200,
+  COMMON__STATUS__HWBCS__HASH = 201,
+  COMMON__STATUS__HWBCS__BAD_REQUEST = 400,
+  COMMON__STATUS__HWBCS__FORBIDDEN = 403,
+  COMMON__STATUS__HWBCS__NOT_FOUND = 404,
+  COMMON__STATUS__HWBCS__CONTRACT_NOT_READY = 405,
+  COMMON__STATUS__HWBCS__CONTRACT_LAUNCHING = 406,
+  COMMON__STATUS__HWBCS__CONTRACT_LAUNCH_ERR = 407,
+  COMMON__STATUS__HWBCS__CONTRACT_RUNTIME_ERR = 408,
+  COMMON__STATUS__HWBCS__REQUEST_ENTITY_TOO_LARGE = 413,
+  COMMON__STATUS__HWBCS__INTERNAL_SERVER_ERROR = 500,
+  COMMON__STATUS__HWBCS__NOT_IMPLEMENTED = 501,
+  COMMON__STATUS__HWBCS__SERVICE_UNAVAILABLE = 503
+     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(COMMON__STATUS_HWBCS)
+} Common__Status_hwbcs;
 
 /* --- messages --- */
 
@@ -88,13 +88,13 @@ struct  Common__RawMessage
 struct  Common__Response
 {
   ProtobufCMessage base;
-  Common__Status_huawei status;
+  Common__Status_hwbcs status;
   char *status_info;
   ProtobufCBinaryData payload;
 };
 #define COMMON__RESPONSE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&common__response__descriptor) \
-    , COMMON__STATUS__HUAWEI__UNKNOWN, (char *)protobuf_c_empty_string, {0,NULL} }
+    , COMMON__STATUS__HWBCS__UNKNOWN, (char *)protobuf_c_empty_string, {0,NULL} }
 
 
 /* Common__RawMessage__Signature methods */
@@ -155,7 +155,7 @@ typedef void (*Common__Response_Closure)
 
 /* --- descriptors --- */
 
-extern const ProtobufCEnumDescriptor    common__status__huawei__descriptor;
+extern const ProtobufCEnumDescriptor    common__status__hwbcs__descriptor;
 extern const ProtobufCMessageDescriptor common__raw_message__descriptor;
 extern const ProtobufCMessageDescriptor common__raw_message__signature__descriptor;
 extern const ProtobufCEnumDescriptor    common__raw_message__type__descriptor;

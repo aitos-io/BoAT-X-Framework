@@ -55,7 +55,7 @@ extern "C" {
  *       7. data;
  *       8. chainid(record the chain/business information to which the transaction belongs);
  *       9. groupid(group to which this transaction belongs);
- *      11. extraData(reserved segment);
+ *      10. extraData(reserved segment);
  *      11. v;
  *      12. signature.r;
  *      13. signature.s;
@@ -71,12 +71,12 @@ extern "C" {
  *
  *   <b>[HOW TO CONSTRUCT A RAW TRANSACTION]</b>
  *   A RAW transaction is constructed in 4 steps in different ways according to
- *   the blockchain network's EIP-155 compatibility. 
+ *   Specifies the blockchain ID. 
  *
  *   See following article for details about EIP-155: 
  *   https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
  *
- *   <I>CASE 1: If the blockchain network does NOT support EIP-155:</I>
+ *   <I>CASE 1: If the data encoding is not specifying the chain ID:</I>
  *   
  *       \n - Step 1: Encode a LIST containing only the first 7 fields.
  *       \n - Step 2: Calculate SHA3 hash of the encoded stream in Step 1.
@@ -86,7 +86,7 @@ extern "C" {
  *               v = parity + 27, where parity is given in Step 3;
  *               r and s are given in Step 3.
  *
- *   <I>CASE 2: If the blockchain network DOES support EIP-155:</I>
+ *   <I>CASE 2: If the data encoding is specifying the chain ID:</I>
  *       \n - Step 1: Encode all 10 fields (a LIST containing all 10 fields), where
  *               First 7 fields are same as what they are;
  *               v = Chain ID;
@@ -108,25 +108,6 @@ extern "C" {
  *   of the error codes.
  ******************************************************************************/
 BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr);
-
-
-/*!****************************************************************************
- * @brief Construct a raw FISCO BCOS transaction synchronously.
- *
- * @details
- *   This function is similar to FiscobcosSendRawtx except that it waits for the
- *   transaction being mined.
- *	 
- * @param[in] tx_ptr
- *   A pointer to the context of the transaction.
- *
- * @return
- *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
- *   of the error codes.
- *	 
- * @see FiscobcosSendRawtx()
- ******************************************************************************/
-BOAT_RESULT FiscobcosSendRawtxWithReceipt(BOAT_INOUT BoatFiscobcosTx *tx_ptr);
 
 /*! @}*/
 

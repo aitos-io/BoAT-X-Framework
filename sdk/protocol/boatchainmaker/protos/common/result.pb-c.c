@@ -6,7 +6,7 @@
 #define PROTOBUF_C__NO_DEPRECATED
 #endif
 
-#include "common/result.pb-c.h"
+#include "result.pb-c.h"
 void   common__tx_response__init
                      (Common__TxResponse         *message)
 {

@@ -10,8 +10,7 @@ SUBDIRS := $(filter-out $(EXCLUDE_DIRS),$(ALLSUBDIRS))
 # Add _clean_ prefix to avoid clean subdir target names being confused with compile subdir targets
 CLEAN_SUBDIRS := $(addprefix _clean_,$(SUBDIRS) )
 
-OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/cJSON/*.o) \
-		  $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/nghttp2/*.o) \
+OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/nghttp2/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/protobuf-c/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/protos/*/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/protos/*/*/*.o) \
@@ -21,8 +20,8 @@ OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/cJSON/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatfiscobcos/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/platform/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/*.o) \
-		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlhuawei/*.o) \
-		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlhuawei/protos/*/*.o) \
+		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathwbcs/*.o) \
+		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathwbcs/protos/*/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker/protos/*/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/common/http2intf/*.o) \
@@ -31,6 +30,10 @@ OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/cJSON/*.o) \
           $(wildcard $(BOAT_BUILD_DIR)/sdk/rlp/*.o) \
           $(wildcard $(BOAT_BUILD_DIR)/sdk/utilities/*.o) \
           $(wildcard $(BOAT_BUILD_DIR)/sdk/wallet/*.o)
+
+ifeq ($(CJSON_LIBRARY), CJSON_DEFAULT)
+    OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/cJSON/*.o)
+endif
 
 LIBNAME = $(BOAT_LIB_DIR)/libboatwallet.a
 
