@@ -8,7 +8,7 @@
 ## Introduction
 Welcome to the official implementation of BoAT Framework! 
 
-**BoAT** blockchain application framework is an IoT-device-oriented lightweight blockchain client SDK written in C language. **BoAT** stands for *Blockchain of AI Things* and also depicts the vision that a boat transfers trustworthy information from the data source through to the data lake.
+**BoAT** blockchain application framework is an IoT-device-oriented lightweight blockchain client SDK written in C language. **BoAT** stands for *Blockchain of AI Things* and  depicts the vision that a boat transfers trustworthy information from the data source to the data lake.
 
 
 ### The Pain Point
@@ -64,19 +64,17 @@ libcurl         |7.55.1 is tested
 openssl         |1.1.1d is tested
 
 
-#### For embedded device
-For embedded device, the exact configuration depends on the development tool chain of the underlying device.
-
-Among them, linux-based embedded devices are basically similar to that on x86_64, except for the exact compiler and dependent library version may be device-specific. Meanwhile RTOS-based embedded devices are much diverse.
-
+#### Embedded devices
+For embedded devices, the exact configuration depends on the development toolchain of the underlying device.  
+Linux-based embedded devices are similar to that on x86_64, except for the exact compiler and dependent library version may be device-specific. Meanwhile, RTOS-based embedded devices are much diverse.
 
 ### Before building the demo
-As BoAT is a client for blockchain, some environment must be prepared before build the demo.
+As BoAT is a client for blockchain, some environments must be prepared before building the demo.
 
 #### Make use of a deployed blockchain or deploy your own blockchain
 For public blockchain, you must prepare some gas for transaction fee in advance. If a simulator is available for that blockchain, it's a better choice.
 
-For consortium blockchain , you must consult the administrator to give you access permission on the blockchain. Or you may deploy your own consortium blockchain node for test purpose.
+For consortium blockchain, you must consult the administrator to give you access permission on the blockchain. Or you may deploy your own consortium blockchain node for test purpose.
 
 See blockchain official website for details:
 + [Ethereum](https://ethereum.org/)
@@ -158,7 +156,7 @@ real node of an Ethereum compatible blockchain network must be available.
 $chmod a+x ./build/demo/demo_<protocol>/<demo_name>
 $./build/demo/demo_<protocol>/<demo_name>
 ```
-< protocol> can be `ethereum` `fiscobcos` `platone` `fabric`.
+\<protocol\> can be `ethereum` `fiscobcos` `platone` `fabric` `platon` `hw_bcs`.  
 Make sure the network connection to the blockchain node (or blockchain simulator) is available.
 
 
