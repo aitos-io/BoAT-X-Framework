@@ -115,7 +115,7 @@ typedef struct TBoatWalletList
 }BoatWalletList;
 
 
-#define BOAT_MAX_WALLET_NUM 5
+#define BOAT_MAX_WALLET_NUM 6
 //!@brief BoAT IoT SDK Context
 typedef struct TBoatIotSdkContext
 {

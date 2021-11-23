@@ -21,6 +21,7 @@
 
 //! self header include
 #include <stdlib.h>
+#include <time.h>
 #include "boatplatform.h"
 #include "boattypes.h"
 #include "boatutility.h"
@@ -112,4 +113,11 @@ void BoatFree(void *mem_ptr)
 void BoatSleep(BUINT32 second)
 {
     sleep(second);
+}
+
+BUINT64 BoatGetTimes()
+{
+	BUINT64 timesec = 0;
+	time(&timesec);
+	return timesec;
 }
