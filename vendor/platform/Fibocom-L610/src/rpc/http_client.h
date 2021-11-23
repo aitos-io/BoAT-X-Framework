@@ -24,8 +24,8 @@
 #include <sys/time.h>
 #include "lwip/sockets.h"
 
-//#define ONEMO_HTTPCLIENT_SSL_ENABLE
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
+//#define BOAT_HTTPCLIENT_SSL_ENABLE
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
 #include "wolfssl/openssl/crypto.h"
 #include "wolfssl/openssl/ssl.h"
 #include "wolfssl/openssl/err.h"
@@ -59,7 +59,7 @@ typedef struct WOLFSSL_CTX WOLFSSL_CTX;
 
 
 
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
 
 #endif
 
@@ -350,7 +350,7 @@ int httpclient_get_response_header_value(char *header_buf, char *name, int *val_
 #define HTTPCLIENT_DEBUG 0
 #endif
 
-#ifdef ONEMO_HTTPCLIENT_SSL_ENABLE
+#ifdef BOAT_HTTPCLIENT_SSL_ENABLE
 
 #endif
 

@@ -53,7 +53,7 @@ Add the following two lines as below:
 Open `<L610 Root>/CMakeLists.txt`.  
 Find include_directories(xxx), add the following content in the last new line:
 
-    include_directories(BoAT-X-Frameworkt/include BoAT-X-Frameworkt/include/protocolapi)
+    include_directories(BoAT-X-Frameworkt/include BoAT-X-Frameworkt/include/protocolapi BoAT-X-Framework/vendor/platform/include)
 
 
 ### 3. Add the link to the BoAT-X-Framework libs
@@ -79,8 +79,11 @@ In curly braces below `if(CONFIG_APPIMG_LOAD_FLASH)`,find `add_appimg(${target} 
    
       PLATFORM_TARGET ?= Fibocom-L610
    
+   #### b. Disable the Fabric Macro Switch  
+   
+   The platform does not support the FABRIC chain for the time being due to resource constraints. So, open the main makefile, find `BOAT_PROTOCOL_USE_HLFABRIC` and change the parameter to 0, which is` BOAT_PROTOCOL_USE_HLFABRIC?  = 0`.
 
-   #### b. Open a Linux shell, enter `<L610 Root>/BoAT-X-Framework` directory and compile BoAT static library
+   #### c. Open a Linux shell, enter `<L610 Root>/BoAT-X-Framework` directory and compile BoAT static library
 
       cd <L610 Root>/BoAT-X-Framework
       make clean
@@ -97,9 +100,7 @@ In curly braces below `if(CONFIG_APPIMG_LOAD_FLASH)`,find `add_appimg(${target} 
    Open a Linux shell and build the demo:
 
       cd <L610 Root>
-      cd out
-      rm -r appimage_release//The files generated on the local PC must be deleted first
-      cd ..
+      rm -r out//The files generated on the local PC must be deleted first
       . tools/core_launch.sh
       cout
       cmake ../.. -G Ninja

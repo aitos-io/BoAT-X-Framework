@@ -33,12 +33,14 @@
 #include <string.h>
 
 /* net releated include */
+#if (PROTOCOL_USE_HLFABRIC == 1)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 
+#endif
 #include <sys/time.h>
 
 #if (PROTOCOL_USE_HLFABRIC == 1)
@@ -50,6 +52,7 @@
 
 #include "fibo_opencpu.h"
 
+#define GENERATE_KEY_REPEAT_TIMES	100
 
 uint32_t random32(void)
 {
@@ -62,22 +65,25 @@ uint32_t random32(void)
 }
 
 
-BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd )
+BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 {	
-	BOAT_RESULT result = BOAT_SUCCESS;
+	/* param check */
+	if (output == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
 
 	(void)rsvd;
 
-	random_buffer(output, outputLen);
-	
-	return result;
+	random_buffer(output, outputLen)
+
+	return BOAT_SUCCESS;
 }
 
-
-
 BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
-						  const BUINT8* digest, BUINT32 digestLen, 
-						  BoatSignatureResult* signatureResult, void *rsvd)
+						  const BUINT8 *digest, BUINT32 digestLen, 
+						  BoatSignatureResult *signatureResult, void *rsvd)
 {
 	BUINT8 signatureTmp[64];
 	BUINT8 ecdsPrefix = 0;
@@ -140,7 +146,7 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 #if BOAT_USE_FIBO_FILESYSTEM == 1
 	BSINT32 file_fd = -1;
 #else
-	FILE   *file_ptr;
+	FILE *file_ptr;
 #endif
 	
 	(void)rsvd;
@@ -161,7 +167,7 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 	}
 	
 	fseek(file_ptr, 0, SEEK_END);
-	*size   = ftell(file_ptr);
+	*size = ftell(file_ptr);
 	fclose(file_ptr);
 #endif
 
@@ -175,13 +181,11 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 #if BOAT_USE_FIBO_FILESYSTEM == 1
 	BSINT32 file_fd = -1;
 #else
-	FILE         *file_ptr;
+	FILE *file_ptr;
 #endif
-	BSINT32      count = 0;
-	BOAT_RESULT  result = BOAT_SUCCESS;
+	BSINT32 count = 0;
 	
 	(void)rsvd;
-	result = result;
 	
 	if ((fileName == NULL) || (writeBuf == NULL))
 	{
@@ -230,13 +234,11 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 #if BOAT_USE_FIBO_FILESYSTEM == 1
 	BSINT32 file_fd = -1;
 #else
-	FILE         *file_ptr;
+	FILE *file_ptr;
 #endif
-	BSINT32      count = 0;
-	BOAT_RESULT  result = BOAT_SUCCESS;
+	BSINT32 count = 0;
 	
 	(void)rsvd;
-	result = result;
 	
 	if ((fileName == NULL) || (readBuf == NULL))
 	{
@@ -272,7 +274,7 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 
 	if (count != readLen)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName );
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName);
 		return BOAT_ERROR;
 	}
 	
@@ -286,7 +288,7 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 		
 	if (fileName == NULL)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL." );
+		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 #if BOAT_USE_FIBO_FILESYSTEM == 1
@@ -310,15 +312,15 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 *******************************************************************************/
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
-    int                 connectfd;
-    char                ip[64];
-    char                port[8];
-    char                *ptr = NULL;
-    struct hostent      *he; 
-    struct sockaddr_in  server;
-    struct sockaddr     localaddr;
-    struct sockaddr_in  *localaddr_ptr;
-    socklen_t           addrlen = sizeof(struct sockaddr);
+    int                connectfd;
+    char               ip[64];
+    char               port[8];
+    char               *ptr = NULL;
+    struct hostent     *he; 
+    struct sockaddr_in server;
+    struct sockaddr    localaddr;
+    struct sockaddr_in *localaddr_ptr;
+    socklen_t          addrlen = sizeof(struct sockaddr);
 
     (void)rsvd;
 
@@ -440,14 +442,13 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 	BUINT32     key_try_count;
     BOAT_RESULT result = BOAT_SUCCESS;
 
-	/* Convert private key from UINT256 to Bignum256 format */
-    bn_read_le(prikeyTmp, &priv_key_bn256);
 
 	/* Convert priv_key_max_u256 from UINT256 to Bignum256 format */
     bn_read_le((const uint8_t *)priv_key_max_u256, &priv_key_max_bn256);
 
+	// 1- update private key
 	/* generate native private key loop */
-	for (key_try_count = 0; key_try_count < 100; key_try_count++)
+	for (key_try_count = 0; key_try_count < GENERATE_KEY_REPEAT_TIMES; key_try_count++)
     {
 		/* generate native private key */
         result = BoatRandom(prikeyTmp, 32, NULL);
@@ -455,39 +456,44 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
         {
             BoatLog(BOAT_LOG_CRITICAL, "Fail to generate private key.");
             break;
-        }        
+        } 
+
+		/* Convert private key from UINT256 to Bignum256 format */
+    	bn_read_le(prikeyTmp, &priv_key_bn256);       
 
 		/* check the generated private key is valid or not */
 		if ((bn_is_zero(&priv_key_bn256) == 0) && \
-		   (bn_is_less(&priv_key_bn256, &priv_key_max_bn256) != 0 ))
+		   (bn_is_less(&priv_key_bn256, &priv_key_max_bn256) != 0))
 		{
 			/* key is valid */
 			memcpy(pkCtx->extra_data.value, prikeyTmp, 32);
+			pkCtx->extra_data.value_len = 32;
 			result = BOAT_SUCCESS;
 			break;
-
 		}
-		else
+		else if (key_try_count == GENERATE_KEY_REPEAT_TIMES - 1)
 		{
 			result = BOAT_ERROR;
 		}          
     }
 
-	// 1- update private key
-	memcpy(pkCtx->extra_data.value, prikeyTmp, 32);
-	pkCtx->extra_data.value_len = 32;
+	if (result == BOAT_ERROR)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "generate private key failed.");
+		return result;
+	}
 
 	// 2- update private key format
 	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
 	
 	// 3- update private key type
-	pkCtx->prikey_type   = config->prikey_type;
+	pkCtx->prikey_type = config->prikey_type;
 
 	// 4- update private key index
 	// This field should update by 'key secure storage'(such as TE/SE).
 	// When algorithms are implemented by software, this field is default to 0, means
 	// that ignore this field.
-	pkCtx->prikey_index  = 0; 
+	pkCtx->prikey_index = 0; 
 
 	// 5- update public key
 	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
@@ -512,10 +518,10 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 }
 
 static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalletPriKeyCtx_config *config, 
-													             BoatWalletPriKeyCtx *pkCtx )
+													             BoatWalletPriKeyCtx *pkCtx)
 {
-	BUINT8       pubKey65[65] = {0};
-	BOAT_RESULT  result = BOAT_SUCCESS;
+	BUINT8      pubKey65[65] = {0};
+	BOAT_RESULT result = BOAT_SUCCESS;
 
 	// 0- check input parameter
 	if ((config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL))
@@ -538,13 +544,13 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalle
 	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
 	
 	// 3- update private key type
-	pkCtx->prikey_type   = config->prikey_type;
+	pkCtx->prikey_type = config->prikey_type;
 
 	// 4- update private key index
 	// This field should update by 'key secure storage'(such as TE/SE).
 	// When algorithms are implemented by software, this field is default to 0, means
 	// that ignore this field.
-	pkCtx->prikey_index  = 0; 
+	pkCtx->prikey_index = 0; 
 
 	// 5- update public key
 	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
@@ -552,7 +558,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalle
 	if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
 	{
 		ecdsa_get_public_key65(&secp256k1, pkCtx->extra_data.value, pubKey65);
-		memcpy( pkCtx->pubkey_content, &pubKey65[1], 64 );
+		memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
 	}
 	else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
 	{
@@ -569,13 +575,13 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalle
 }
 
 
-BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config* config, BoatWalletPriKeyCtx* pkCtx)
+BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
 	if ((config == NULL) || (pkCtx == NULL))
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "parameter can't be NULL." );
+		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 	

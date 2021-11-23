@@ -53,7 +53,7 @@
   
   找到include_directories(xxx ), 在最后添加以下BoAT-X-Framework内容：
   ```
-  include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
+  include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi BoAT-X-Framework/vendor/platform/include)
   ```
 
 ### 3、添加BoAT-X-Framework lib文件到target_link_libraries
@@ -82,8 +82,12 @@
    ```
    PLATFORM_TARGET ?= Fibocom-L610
    ```
+
+   #### b、关闭FABRIC链宏开关  
+
+   由于资源限制，该平台暂时不支持FABRIC链。所以，需要打开主makefile，找到`BOAT_PROTOCOL_USE_HLFABRIC`,将后面参数改为0，即`BOAT_PROTOCOL_USE_HLFABRIC  ?= 0`。
    
-   #### b、打开Linux终端进入BoAT-X-Framework目录编译BoAT静态库
+   #### c、打开Linux终端进入BoAT-X-Framework目录编译BoAT静态库
    ```
    cd BoAT-X-Framework
    make clean
@@ -95,17 +99,15 @@
 
 ### 2、编译L610演示demo程序，生成.pac下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在L610平台代码根目录下的demo.c
+   通过BoAT-X-Framework访问区块链的演示代码，在L610平台代码根目录下的demo.c。
    
-   打开Linux终端进入L610根目录
+   打开Linux终端进入L610根目录。
    ```
    cd L610代码根目录
-   cd out
-   rm -r appimage_release//需要先删除本地之前生成的文件
-   cd ..
+   rm -r out//需要先删除本地之前生成的文件
    . tools/core_launch.sh
    cout
    cmake ../.. -G Ninja
    ninja
    ```
-   编译成功会在out/appimage_debug/hex/下生成.pac文件	
+   编译成功会在out/appimage_debug/hex/下生成.pac文件。	

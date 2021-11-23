@@ -26,7 +26,8 @@
 #include "boattypes.h"
 #include "boatutility.h"
 
-#include "sha3.h"
+#include "sha2.h"
+#include "keccak.h"
 
 /* net releated include */
 #include <sys/types.h>
@@ -54,7 +55,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
 	}
 	else if( type == BOAT_HASH_SHA256 )
 	{
-		sha3_256( input, inputLen, hashed );
+		sha256_Raw( input, inputLen, hashed );
 		if( hashedLen != NULL )
 		{
 			*hashedLen = 32;
