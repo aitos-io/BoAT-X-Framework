@@ -154,7 +154,10 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
 		{
 			temp = BoatMalloc(parsePtr->httpResLen);
 			memcpy(temp, parsePtr->http2Res, parsePtr->httpResLen);
+			if(parsePtr->http2Res != NULL){
 			BoatFree(parsePtr->http2Res);
+			}
+
 		}
 	}
 	parsePtr->http2Res = BoatMalloc(parsePtr->httpResLen + len);

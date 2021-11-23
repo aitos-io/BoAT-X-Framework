@@ -128,20 +128,6 @@ void BoatFree(void *mem_ptr);
  ******************************************************************************/
 void BoatSleep(BUINT32 second);
 
-/*!****************************************************************************
- * @brief Wrapper function for sleep (thread suspension)
- *
- * @details
- *   This function is a wrapper for sleep (thread suspension).
- *   \n It typically wraps sleep() or usleep() in a linux or Windows system.
- *   \n For RTOS it depends on the specification of the RTOS.
- *
- * @return
- *   This function returns the time second
- ******************************************************************************/
-BUINT64 BoatGetTimes(void);
-
-
 /*! @}*/
 
 #ifdef __cplusplus

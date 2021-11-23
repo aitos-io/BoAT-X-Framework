@@ -193,7 +193,7 @@ BOAT_RESULT platonGetBalance(BoatPlatONWallet *wallet_ptr)
     BoatFieldVariable prase_result = {NULL, 0};
 
     cur_balance_von = BoatPlatONWalletGetBalance(wallet_ptr, "lat");
-	result          = BoatPlatONPraseRpcResponseResult(cur_balance_von, "", &prase_result);
+	result          = BoatPlatONPraseRpcResponseStringResult(cur_balance_von, &prase_result);
 	if (result == BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_NORMAL, "BoatPlatONWalletGetBalance returns: %s", prase_result.field_ptr);
