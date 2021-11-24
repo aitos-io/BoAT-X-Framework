@@ -710,7 +710,7 @@ typedef void (*Common__RestoreBlockPayload_Closure)
 
 /* --- descriptors --- */
 
-extern const ProtobufCEnumDescriptor    common__tx_type__descriptor;
+extern const ProtobufCEnumDescriptor    common__tx_type__descriptor__chainmaker;
 extern const ProtobufCMessageDescriptor common__tx_request__descriptor;
 extern const ProtobufCMessageDescriptor common__tx_header__descriptor__chainmaker;
 extern const ProtobufCMessageDescriptor common__query_payload__descriptor;

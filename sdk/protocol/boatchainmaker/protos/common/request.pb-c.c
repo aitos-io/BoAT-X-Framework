@@ -689,7 +689,7 @@ static const ProtobufCFieldDescriptor common__tx_header__field_descriptors[6] =
     PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
     offsetof(Common__TxHeader, tx_type),
-    &common__tx_type__descriptor,
+    &common__tx_type__descriptor__chainmaker,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -1343,7 +1343,7 @@ static const ProtobufCFieldDescriptor common__subscribe_tx_payload__field_descri
     PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
     offsetof(Common__SubscribeTxPayload, tx_type),
-    &common__tx_type__descriptor,
+    &common__tx_type__descriptor__chainmaker,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -1494,7 +1494,7 @@ static const ProtobufCEnumValueIndex common__tx_type__enum_values_by_name[11] =
   { "SUBSCRIBE_TX_INFO", 6 },
   { "UPDATE_CHAIN_CONFIG", 4 },
 };
-const ProtobufCEnumDescriptor common__tx_type__descriptor =
+const ProtobufCEnumDescriptor common__tx_type__descriptor__chainmaker =
 {
   PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
   "common.TxType",
