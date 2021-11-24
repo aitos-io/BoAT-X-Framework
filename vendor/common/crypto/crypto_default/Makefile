@@ -18,9 +18,9 @@ CRYPTO_CFLAGS   =  $(BOAT_CFLAGS) \
             -Winit-self \
             -Wuninitialized \
             -Wformat-security \
-            -Werror \
             -Wno-error=missing-braces \
-            -Wno-error=missing-field-initializers 
+            -Wno-error=missing-field-initializers \
+#            -Werror \
 #            $(OPTFLAGS) \
 #            -std=gnu99 \
 

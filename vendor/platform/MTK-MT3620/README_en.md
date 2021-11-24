@@ -1,130 +1,71 @@
-# BoAT-X Framework for Neoway N58 Integration Guideline
+# BoAT-X Framework for MTK-MT3620 Integration Guideline
 
 
 ## About This Guideline
 
-This guide describes how to integrate BoAT-X Framework source code into N58 OpenCPU SDK, compile BoAT-X Framework static library and build the demo program under Linux environment.
+This guide describes how to integrate BoAT-X Framework source code into MTK-MT3620 SDK, compile BoAT-X Framework static library and build the demo program.
 
-The paths in the document are in Linux and Cygwin，if the files need to be copied in Windows，please change character `/` to character `\` in the path.
 
 ## Copy files
 
-Assuming `<N58 Root>` to be the root directory of N58 OpenCPU SDK:
+Assuming `<MT3620 Root>` to be the root directory of MTK-MT3620 platform SDK:
 
-1. Copy the entire BoAT-X-Framework directory into `<N58 Root>`, on the same level where N58 SDK's top CMakeLists.txt locates.
+1. Copy the entire BoAT-X-Framework directory into `<MT3620 Root>`.
 
-2. Copy `BoAT-X-Framework/vendor/platform/Neoway-N58/N58RootDirCode/demo_entry.c` into `<N58 Root>`.
+2. Delete `<MT3620 Root>/BoAT-X-Framework/CMakeLists.txt`.
 
-3. Copy `BoAT-X-Framework/vendor/platform/Neoway-N58/N58RootDirCode/my_contract.cpp.abi.c` into `<N58 Root>`.
+3. Copy `<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/CMakeLists-lib.txt` into `<MT3620 Root>/BoAT-X-Framework/`, rename `CMakeLists-lib.txt` to `CMakeLists.txt`.
 
-3. Copy `BoAT-X-Framework/vendor/platform/Neoway-N58/N58RootDirCode/my_contract.cpp.abi.h` into `<N58 Root>`.
+4. Copy `<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/CMakeSettings.json` into `<MT3620 Root>/BoAT-X-Framework/`.
 
+5. Create new folders `boat_demo` and `boatiotsdk` under `<MT3620 Root>/customer`.
+
+6. Copy `<MT3620 Root>/BoAT-X-Framework/include` into `<MT3620 Root>/customer/boatiotsdk`.
+
+7. Copy `<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/HelloWorld.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/HelloWorld.h`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/my_contract.cpp.abi.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/my_contract.cpp.abi.h`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/StoreRead.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/StoreRead.h` into `<MT3620 Root>/customer/boat_demo`. 
+
+8. Copy `<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/app_manifest.json`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/applibs_versions.h`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/CMakeLists.txt`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/CMakeSettings.json`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/launch.vs.json`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main.h`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main-ethereum.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main-fiscobcos.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main-fiscobcos.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main-platon.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main-platone.c` into `<MT3620 Root>/customer`.
 
 After copying these files, the directory structure should look like:
 
 ```
-<N58 Root>
-|  
-+---BoAT-X-Framework  
-+---cmake  
-|   \---toolchain-gcc.cmake  
-+---components  
-+---ldscripts  
-+---prebuilts  
-+---tools  
-\---boatentry.c  
-\---CMakeLists.txt  
-\---my_contract.cpp.abi.c  
-\---my_contract.cpp.abi.h  
+<MT3620 Root>
+|
+|-- BoAT-X-Framework
+|-- customer
+    |-- boat_demo
+    |-- boatiotsdk
+        |-- include
+|-- Hardware
+|-- tools
 ```
 
 
-## File Modification
-
-### 1. Add BoAT-X Framework libraries path
-
-   Open `<N58 Root>/cmake/toolchain-gcc.cmake`.  
-   Add the following two lines as below before `set(libc_file_name ${CMAKE_CURRENT_SOURCE_DIR}/components/newlib/armca5/libc.a)`:
-
-      set(libboatwallet_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatwallet.a)
-      set(libboatvendor_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatvendor.a)
-
-
-### 2. Add the BoAT-X Framework header files
-   Open `<N58 Root>/cmake/CMakeLists.txt`.  
-   Find include_directories(xxx), add the following content in the last new line:
-
-      include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
-
-
-### 3. Add the link to the BoAT-X-Framework libs
-
-   Open `<N58 Root>/cmake/CMakeLists.txt`.  
-   Find `target_link_libraries(XXX ${libc_file_name})` and add `${libbw_file_name} ${libbv_file_name}` before `${libc_file_name}`, such as:
-
-      target_link_libraries(${target} PRIVATE ${libbw_file_name} ${libbv_file_name} ${libc_file_name} ${libm_file_name} ${libgcc_file_name})
-
-
-### 4. Add demo and smart contract files of BoAT-X-Framework
-   Open `<N58 Root>/cmake/CMakeLists.txt`. 
-   Find `add_appimg(${target} xxx)` and add `demo_entry.c my_contract.cpp.abi.c` at the end, such as:
-
-      add_appimg(${target} ${file_ldscript} nwy_drv_lcd_st7735.c demo_entry.c my_contract.cpp.abi.c) 
-
-Note:  
-#### 4.1 demo_entry.c includes main entry, network initialization, and calling the contract chain.  
-   If it conflicts with the current application entry, comment out appimg_Enter () and appimg_exit() in demo_entry.c, and just call boat_demo_entry().  
-   If it is only used to run through the demo, you can delete the current application entry file and only keep boat_entry.c.  
-#### 4.2 my_contract.cpp.abi.c my_contract.cpp.abi.h Is the contract automatically generated by boat2.0 `make all`.  
-   For details on smart contract generation, see Boat-X-Framework/readme.md
-
-### 5. Modify the boat-X-Framework to specify the compilation platform
-
-   Open `<N58 Root>/BoAT-X-Framework/Makefile`.  
-   Find `PLATFORM_TARGET ?= XXX` and change the value to Neoway-N58, such as：  
-  	
-	PLATFORM_TARGET ?= Neoway-N58  
-
-
-Note: The following two steps 6 and 7 change the boat-X-Framework compilation environment from Linux to Cygwin under Windows. If the compiling is under Linux, the steps 6 and 7 can be skipped.
-
-
-### 6. Change the boat-X-Framework compilation command to the Cygwin command
-
-   Open `<N58 Root>/BoAT-X-Framework/Makefile`. Assuming Cygwin is installed under `C:\cygwin64`, change to the following variate: 
-  	
-      CYGWIN_BASE := C:/cygwin64 //Change the value based on the actual Cygwin installation path   
-      BOAT_RM := $(CYGWIN_BASE)/bin/rm -rf  
-      BOAT_MKDIR := $(CYGWIN_BASE)/bin/mkdir  
-      BOAT_FIND := $(CYGWIN_BASE)/bin/find  
-
-### 7. Modify the Boat-X-Framework specified compiler
-
-   Open `<N58 Root>/BoAT-X-Framework/vendor/platform/Neoway-N58/external.env`. Change CC and AR to the following variate：
-
-      CC := $(CURDIR)/../prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-gcc  
-  	   AR := $(CURDIR)/../prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ar  
-
 ## Compile BoAT-X Framework Static library
 
-### 1. Compile BoAT-X Framework static library
+1. Open `Visual Studio 2019`.
 
-      a、Open the Cygwin terminal in Windows, or open the shell in Linux 
-      b、cd <N58 Root>/BoAT-X-Framework  
-      c、make clean  
-      d、make all  
-      e、ls -l lib 
+2. Click on `Open a local folder`.
 
-   After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<L610 Root>/BoAT-X-Framework/lib` directory.
+3. Select `MT3620 Root`. 
 
+4. Double-click`<MT3620 Root>/BoAT-X-Framework/CMakeLists.txt`.
 
-### 2. Build demo program，generate .pac file for download
+5. Click on `down-arrow`on the right of `Slect Startup Item `, select `Current Document`.
 
-      a、Open the Cygwin terminal in Windows, or open the shell in Linux 
-      b、cd <N58 Root>  
-      c、cd out  
-      d、rm -r appimage_release  
-      e、cd .. //back to <N58 Root> 
-      f、./nwy_opencpu.bat //The download image xxx_flash.pac will be generated if building is successful.
+6. Click on `Build`,click on `Build All`.
+
+   After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<MT3620 Root>/BoAT-X-Framework/lib` directory.
 
 
+### 2. Debug demo program
+
+1. Copy`<MT3620 Root>/BoAT-X-Framework/lib` into `<MT3620 Root>/customer/boatiotsdk`.
+
+2. Double-click `<MT3620 Root>/customer/CMakeLists.txt`。
+
+3. Click on `down-arrow`on the right of `Slect Startup Item `, select `Current Document`.
+
+4. Click on `Build`,click on `Build All`.
+
+5. After compiling, Click the small green arrow `Current Document(CMakeLists.txt)` in the toolbar ,demo will run on the board.
