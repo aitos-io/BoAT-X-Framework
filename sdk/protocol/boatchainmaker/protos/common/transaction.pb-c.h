@@ -90,7 +90,7 @@ size_t common__transaction__get_packed_size
 size_t common__transaction__pack
                      (const Common__Transaction   *message,
                       uint8_t             *out);
-size_t common__transaction__pack_to_buffer
+size_t common__transaction__pack_to_buffer__chainmaker
                      (const Common__Transaction   *message,
                       ProtobufCBuffer     *buffer);
 Common__Transaction *

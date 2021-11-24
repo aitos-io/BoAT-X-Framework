@@ -26,7 +26,7 @@ size_t common__transaction__pack
   assert(message->base.descriptor == &common__transaction__descriptor__chainmaker);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t common__transaction__pack_to_buffer
+size_t common__transaction__pack_to_buffer__chainmaker
                      (const Common__Transaction *message,
                       ProtobufCBuffer *buffer)
 {
