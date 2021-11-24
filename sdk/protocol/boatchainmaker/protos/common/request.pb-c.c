@@ -52,7 +52,7 @@ void   common__tx_request__free_unpacked
   assert(message->base.descriptor == &common__tx_request__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-void   common__tx_header__init
+void   common__tx_header__init__chainmaker
                      (Common__TxHeader         *message)
 {
   static const Common__TxHeader init_value = COMMON__TX_HEADER__INIT;
@@ -756,7 +756,7 @@ const ProtobufCMessageDescriptor common__tx_header__descriptor =
   common__tx_header__field_descriptors,
   common__tx_header__field_indices_by_name,
   1,  common__tx_header__number_ranges,
-  (ProtobufCMessageInit) common__tx_header__init,
+  (ProtobufCMessageInit) common__tx_header__init__chainmaker,
   NULL,NULL,NULL    /* reserved[123] */
 };
 static const ProtobufCFieldDescriptor common__query_payload__field_descriptors[3] =
