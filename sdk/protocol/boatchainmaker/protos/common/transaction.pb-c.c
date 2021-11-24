@@ -13,7 +13,7 @@ void   common__transaction__init
   static const Common__Transaction init_value = COMMON__TRANSACTION__INIT;
   *message = init_value;
 }
-size_t common__transaction__get_packed_size
+size_t common__transaction__get_packed_size__chainmaker
                      (const Common__Transaction *message)
 {
   assert(message->base.descriptor == &common__transaction__descriptor__chainmaker);

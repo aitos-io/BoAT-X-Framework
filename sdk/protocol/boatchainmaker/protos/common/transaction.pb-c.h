@@ -85,7 +85,7 @@ struct  _Common__TransactionInfo
 /* Common__Transaction methods */
 void   common__transaction__init
                      (Common__Transaction         *message);
-size_t common__transaction__get_packed_size
+size_t common__transaction__get_packed_size__chainmaker
                      (const Common__Transaction   *message);
 size_t common__transaction__pack__chainmaker
                      (const Common__Transaction   *message,
