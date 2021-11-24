@@ -451,7 +451,7 @@ Common__TxHeader *
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   common__tx_header__free_unpacked
+void   common__tx_header__free_unpacked__chainmaker
                      (Common__TxHeader *message,
                       ProtobufCAllocator *allocator);
 /* Common__QueryPayload methods */

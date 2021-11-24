@@ -88,7 +88,7 @@ Common__TxHeader *
      protobuf_c_message_unpack (&common__tx_header__descriptor__chainmaker,
                                 allocator, len, data);
 }
-void   common__tx_header__free_unpacked
+void   common__tx_header__free_unpacked__chainmaker
                      (Common__TxHeader *message,
                       ProtobufCAllocator *allocator)
 {
