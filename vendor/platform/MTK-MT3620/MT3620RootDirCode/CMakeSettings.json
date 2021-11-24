@@ -14,7 +14,7 @@
       "variables": [
         {
           "name": "AZURE_SPHERE_TARGET_API_SET",
-          "value": "7",
+          "value": "10",
           "type": "STRING"
         }
       ]
@@ -32,7 +32,7 @@
       "variables": [
         {
           "name": "AZURE_SPHERE_TARGET_API_SET",
-          "value": "7",
+          "value": "10",
           "type": "STRING"
         }
       ]
