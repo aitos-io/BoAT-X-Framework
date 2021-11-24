@@ -34,7 +34,7 @@ size_t common__transaction__pack_to_buffer
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
 Common__Transaction *
-       common__transaction__unpack
+       common__transaction__unpack__chainmaker
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
