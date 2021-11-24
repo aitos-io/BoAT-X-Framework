@@ -19,7 +19,7 @@ size_t common__transaction__get_packed_size
   assert(message->base.descriptor == &common__transaction__descriptor__chainmaker);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t common__transaction__pack
+size_t common__transaction__pack__chainmaker
                      (const Common__Transaction *message,
                       uint8_t       *out)
 {

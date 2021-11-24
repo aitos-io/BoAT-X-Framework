@@ -87,7 +87,7 @@ void   common__transaction__init
                      (Common__Transaction         *message);
 size_t common__transaction__get_packed_size
                      (const Common__Transaction   *message);
-size_t common__transaction__pack
+size_t common__transaction__pack__chainmaker
                      (const Common__Transaction   *message,
                       uint8_t             *out);
 size_t common__transaction__pack_to_buffer__chainmaker
