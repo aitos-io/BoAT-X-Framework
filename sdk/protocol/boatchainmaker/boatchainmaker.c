@@ -68,7 +68,7 @@ BOAT_RESULT generateTxRequestPayloadPack(BoatHlchainmakerTx *tx_ptr, char *metho
 }
 
 
-BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, TxType tx_type, char* tx_id)
+BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* method, BCHAR* contract_name, TxType tx_type, char* tx_id)
 {
 	Common__TxRequest  tx_request  = COMMON__TX_REQUEST__INIT;
 	Common__TxHeader   tx_header   = COMMON__TX_HEADER__INIT;
@@ -81,7 +81,6 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	BUINT8   hash[32];
 	BUINT32  packedLength;
 	BUINT32  packedHeaderLength;
-	BUINT32  packedPayloadLength;
 	BUINT8  *packedData = NULL;
 	
 	BOAT_RESULT result = BOAT_SUCCESS;

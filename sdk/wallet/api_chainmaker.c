@@ -44,7 +44,7 @@ BUINT8 get_fibon_data(BUINT8 n) {
 	}
 }
 
-BOAT_RESULT array_to_str(char* array, char *str, char lenth)
+BOAT_RESULT array_to_str(BUINT8* array, BUINT8* str, char lenth)
 {
     char value_up;
     char value_down;
@@ -158,7 +158,6 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 {
 	BoatHlchainmakerWallet *wallet_ptr = NULL;
 	BOAT_RESULT result = BOAT_SUCCESS;
-	BUINT8 i = 0;
 
 	if ((config_ptr == NULL) || (config_size == 0)) 
 	{
@@ -227,7 +226,7 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
 	/* tlsClinet_info DeInit */
-     wallet_ptr->tls_client_info.cert.field_ptr == NULL;
+     wallet_ptr->tls_client_info.cert.field_ptr = NULL;
 	wallet_ptr->tls_client_info.cert.field_len = 0;
 
 	if (wallet_ptr->http2Context_ptr->tlsCAchain != NULL) 
@@ -255,13 +254,11 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	wallet_ptr = NULL;
 }
 
-BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr,const BCHAR* chain_id, const BCHAR* org_id,
+BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BCHAR* chain_id, BCHAR* org_id,
 								   BoatHlchainmakerTx* tx_ptr)
 {
 	BUINT32 stringLen;
 	BOAT_RESULT result = BOAT_SUCCESS;
-
-	boat_try_declare;
 
 	if ((tx_ptr == NULL) || (wallet_ptr == NULL)) 
 	{
@@ -299,7 +296,6 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
-	boat_try_declare;
 	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = tx_ptr->wallet_ptr->node_info.node_url;
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
@@ -313,7 +309,7 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 		}
 		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = 0;
 		BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain);
-		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain == NULL;
+		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain = NULL;
 	}
 
 	tx_ptr->wallet_ptr->http2Context_ptr->pathTmp                 = "/api.RpcNode/SendRequest";
@@ -348,11 +344,10 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length
 {
 	va_list ap;
 	
-	BUINT8 index       = 0;
 	BCHAR *args        = NULL;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
-	if ((tx_ptr == NULL) || (length > BOAT_HLCHAINMAKER_ARGS_MAX_NUM) || (length & 0x01 == 0))
+	if ((tx_ptr == NULL) || (length > BOAT_HLCHAINMAKER_ARGS_MAX_NUM) || ((length & 0x01) == 1))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
@@ -502,13 +497,13 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	memset(query_reponse->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
 	memcpy(query_reponse->message, tx_reponse->message, strlen(tx_reponse->message));
 
-	if (strlen(tx_reponse->contract_result->result.data) > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN) {
+	if (strlen((BCHAR*)tx_reponse->contract_result->result.data) > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN) {
 		BoatLog(BOAT_LOG_CRITICAL, "tx_reponse->contract_result->result.datais too long");
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
 	}
 
 	memset(query_reponse->contract_result, 0, BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN);
-	memcpy(query_reponse->contract_result, tx_reponse->contract_result->result.data, strlen(tx_reponse->contract_result->result.data));
+	memcpy(query_reponse->contract_result, tx_reponse->contract_result->result.data, strlen((BCHAR*)tx_reponse->contract_result->result.data));
 	query_reponse->gas_used = tx_reponse->contract_result->gas_used;
 
 	/* boat catch handle */
