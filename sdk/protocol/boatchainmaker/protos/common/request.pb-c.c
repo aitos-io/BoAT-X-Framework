@@ -58,7 +58,7 @@ void   common__tx_header__init__chainmaker
   static const Common__TxHeader init_value = COMMON__TX_HEADER__INIT;
   *message = init_value;
 }
-size_t common__tx_header__get_packed_size
+size_t ommon__tx_header__get_packed_size__chainmaker
                      (const Common__TxHeader *message)
 {
   assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);

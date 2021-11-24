@@ -438,7 +438,7 @@ void   common__tx_request__free_unpacked
 /* Common__TxHeader methods */
 void   common__tx_header__init__chainmaker
                      (Common__TxHeader         *message);
-size_t common__tx_header__get_packed_size
+size_t common__tx_header__get_packed_size__chainmaker
                      (const Common__TxHeader   *message);
 size_t common__tx_header__pack__chainmaker
                      (const Common__TxHeader   *message,
