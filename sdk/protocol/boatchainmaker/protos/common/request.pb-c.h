@@ -447,7 +447,7 @@ size_t common__tx_header__pack_to_buffer__chainmaker
                      (const Common__TxHeader   *message,
                       ProtobufCBuffer     *buffer);
 Common__TxHeader *
-       common__tx_header__unpack
+       common__tx_header__unpack__chainmaker
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);

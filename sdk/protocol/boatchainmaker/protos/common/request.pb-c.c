@@ -79,7 +79,7 @@ size_t common__tx_header__pack_to_buffer__chainmaker
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
 Common__TxHeader *
-       common__tx_header__unpack
+       common__tx_header__unpack__chainmaker
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
