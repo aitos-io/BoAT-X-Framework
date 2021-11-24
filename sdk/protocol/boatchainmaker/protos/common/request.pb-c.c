@@ -71,7 +71,7 @@ size_t common__tx_header__pack
   assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t common__tx_header__pack_to_buffer
+size_t common__tx_header__pack_to_buffer__chainmaker
                      (const Common__TxHeader *message,
                       ProtobufCBuffer *buffer)
 {

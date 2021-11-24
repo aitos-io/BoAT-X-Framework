@@ -443,7 +443,7 @@ size_t common__tx_header__get_packed_size
 size_t common__tx_header__pack
                      (const Common__TxHeader   *message,
                       uint8_t             *out);
-size_t common__tx_header__pack_to_buffer
+size_t common__tx_header__pack_to_buffer__chainmaker
                      (const Common__TxHeader   *message,
                       ProtobufCBuffer     *buffer);
 Common__TxHeader *
