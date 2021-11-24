@@ -16,21 +16,21 @@ void   common__transaction__init
 size_t common__transaction__get_packed_size
                      (const Common__Transaction *message)
 {
-  assert(message->base.descriptor == &common__transaction__descriptor);
+  assert(message->base.descriptor == &common__transaction__descriptor__chainmaker);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
 size_t common__transaction__pack
                      (const Common__Transaction *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &common__transaction__descriptor);
+  assert(message->base.descriptor == &common__transaction__descriptor__chainmaker);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
 size_t common__transaction__pack_to_buffer
                      (const Common__Transaction *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &common__transaction__descriptor);
+  assert(message->base.descriptor == &common__transaction__descriptor__chainmaker);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
 Common__Transaction *
@@ -40,7 +40,7 @@ Common__Transaction *
                       const uint8_t       *data)
 {
   return (Common__Transaction *)
-     protobuf_c_message_unpack (&common__transaction__descriptor,
+     protobuf_c_message_unpack (&common__transaction__descriptor__chainmaker,
                                 allocator, len, data);
 }
 void   common__transaction__free_unpacked
@@ -49,7 +49,7 @@ void   common__transaction__free_unpacked
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &common__transaction__descriptor);
+  assert(message->base.descriptor == &common__transaction__descriptor__chainmaker);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 void   common__transaction_info__init
@@ -159,7 +159,7 @@ static const ProtobufCIntRange common__transaction__number_ranges[1 + 1] =
   { 1, 0 },
   { 0, 4 }
 };
-const ProtobufCMessageDescriptor common__transaction__descriptor =
+const ProtobufCMessageDescriptor common__transaction__descriptor__chainmaker =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
   "common.Transaction",
@@ -183,7 +183,7 @@ static const ProtobufCFieldDescriptor common__transaction_info__field_descriptor
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
     offsetof(Common__TransactionInfo, transaction),
-    &common__transaction__descriptor,
+    &common__transaction__descriptor__chainmaker,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */

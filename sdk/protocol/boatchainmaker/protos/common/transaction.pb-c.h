@@ -50,7 +50,7 @@ struct  _Common__Transaction
   Common__Result *result;
 };
 #define COMMON__TRANSACTION__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&common__transaction__descriptor) \
+ { PROTOBUF_C_MESSAGE_INIT (&common__transaction__descriptor__chainmaker) \
     , NULL, {0,NULL}, {0,NULL}, NULL }
 
 
@@ -134,7 +134,7 @@ typedef void (*Common__TransactionInfo_Closure)
 
 /* --- descriptors --- */
 
-extern const ProtobufCMessageDescriptor common__transaction__descriptor;
+extern const ProtobufCMessageDescriptor common__transaction__descriptor__chainmaker;
 extern const ProtobufCMessageDescriptor common__transaction_info__descriptor;
 
 PROTOBUF_C__END_DECLS
