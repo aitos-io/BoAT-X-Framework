@@ -47,7 +47,7 @@ boatchainamaker.h is header file for RAW transaction construction and performing
  * @return 
  *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code.
  ******************************************************************************/
-BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, TxType tx_type, char* tx_id);
+BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* method, BCHAR* contract_name, TxType tx_type, char* tx_id);
 
 #ifdef __cplusplus
 extern "C" {

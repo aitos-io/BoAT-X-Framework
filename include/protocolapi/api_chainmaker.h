@@ -217,7 +217,7 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr,const BCHAR* chain_id, const BCHAR* org_id,
+BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BCHAR* chain_id, BCHAR* org_id,
 								                   BoatHlchainmakerTx* tx_ptr);
 
 /*!****************************************************************************
@@ -310,7 +310,16 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
 BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatQueryReponse *query_reponse);
-
+/*!****************************************************************************
+ * @brief 
+ *   chainmaker wallet de-initialize.
+ * @details
+ *   De-initialize chainmaker wallet, include free alloc memory and reset releated pointer
+ *   to NULL.
+ *
+ * @param wallet_ptr 
+ *   To be de-initialized chainmaker wallet pointer.
+ ******************************************************************************/
 void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr);
 /*! @}*/
 

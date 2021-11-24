@@ -144,7 +144,7 @@ struct  _Common__TxHeader
   int64_t expiration_time;
 };
 #define COMMON__TX_HEADER__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&common__tx_header__descriptor) \
+ { PROTOBUF_C_MESSAGE_INIT (&common__tx_header__descriptor__chainmaker) \
     , (char *)protobuf_c_empty_string, NULL, COMMON__TX_TYPE__INVOKE_USER_CONTRACT, (char *)protobuf_c_empty_string, 0, 0 }
 
 
@@ -436,22 +436,22 @@ void   common__tx_request__free_unpacked
                      (Common__TxRequest *message,
                       ProtobufCAllocator *allocator);
 /* Common__TxHeader methods */
-void   common__tx_header__init
+void   common__tx_header__init__chainmaker
                      (Common__TxHeader         *message);
-size_t common__tx_header__get_packed_size
+size_t common__tx_header__get_packed_size__chainmaker
                      (const Common__TxHeader   *message);
-size_t common__tx_header__pack
+size_t common__tx_header__pack__chainmaker
                      (const Common__TxHeader   *message,
                       uint8_t             *out);
-size_t common__tx_header__pack_to_buffer
+size_t common__tx_header__pack_to_buffer__chainmaker
                      (const Common__TxHeader   *message,
                       ProtobufCBuffer     *buffer);
 Common__TxHeader *
-       common__tx_header__unpack
+       common__tx_header__unpack__chainmaker
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   common__tx_header__free_unpacked
+void   common__tx_header__free_unpacked__chainmaker
                      (Common__TxHeader *message,
                       ProtobufCAllocator *allocator);
 /* Common__QueryPayload methods */
@@ -710,9 +710,9 @@ typedef void (*Common__RestoreBlockPayload_Closure)
 
 /* --- descriptors --- */
 
-extern const ProtobufCEnumDescriptor    common__tx_type__descriptor;
+extern const ProtobufCEnumDescriptor    common__tx_type__descriptor__chainmaker;
 extern const ProtobufCMessageDescriptor common__tx_request__descriptor;
-extern const ProtobufCMessageDescriptor common__tx_header__descriptor;
+extern const ProtobufCMessageDescriptor common__tx_header__descriptor__chainmaker;
 extern const ProtobufCMessageDescriptor common__query_payload__descriptor;
 extern const ProtobufCMessageDescriptor common__transact_payload__descriptor;
 extern const ProtobufCMessageDescriptor common__system_contract_payload__descriptor;

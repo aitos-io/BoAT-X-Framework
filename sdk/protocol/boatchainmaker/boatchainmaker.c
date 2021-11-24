@@ -68,7 +68,7 @@ BOAT_RESULT generateTxRequestPayloadPack(BoatHlchainmakerTx *tx_ptr, char *metho
 }
 
 
-BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, TxType tx_type, char* tx_id)
+BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* method, BCHAR* contract_name, TxType tx_type, char* tx_id)
 {
 	Common__TxRequest  tx_request  = COMMON__TX_REQUEST__INIT;
 	Common__TxHeader   tx_header   = COMMON__TX_HEADER__INIT;
@@ -81,7 +81,6 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	BUINT8   hash[32];
 	BUINT32  packedLength;
 	BUINT32  packedHeaderLength;
-	BUINT32  packedPayloadLength;
 	BUINT8  *packedData = NULL;
 	
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -108,12 +107,12 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	result = generateTxRequestPayloadPack(tx_ptr, method, contract_name, &payloadPacked);
 
 	/* step-2: compute payload packed length */
-	packedHeaderLength = common__tx_header__get_packed_size(&tx_header);
+	packedHeaderLength = common__tx_header__get_packed_size__chainmaker(&tx_header);
 	packedLength = packedHeaderLength + payloadPacked.field_len;
 
 	hash_data.field_ptr = BoatMalloc(packedLength);
 	hash_data.field_len = packedLength;
-	common__tx_header__pack(&tx_header, hash_data.field_ptr);
+	common__tx_header__pack__chainmaker(&tx_header, hash_data.field_ptr);
 	hash_data.field_ptr += packedHeaderLength;
 	memcpy(hash_data.field_ptr, payloadPacked.field_ptr, payloadPacked.field_len);
 	hash_data.field_ptr -= packedHeaderLength;

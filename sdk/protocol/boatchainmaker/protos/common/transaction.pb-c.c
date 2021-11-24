@@ -106,7 +106,7 @@ static const ProtobufCFieldDescriptor common__transaction__field_descriptors[4] 
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
     offsetof(Common__Transaction, header),
-    &common__tx_header__descriptor,
+    &common__tx_header__descriptor__chainmaker,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */

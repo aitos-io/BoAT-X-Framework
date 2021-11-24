@@ -52,49 +52,49 @@ void   common__tx_request__free_unpacked
   assert(message->base.descriptor == &common__tx_request__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-void   common__tx_header__init
+void   common__tx_header__init__chainmaker
                      (Common__TxHeader         *message)
 {
   static const Common__TxHeader init_value = COMMON__TX_HEADER__INIT;
   *message = init_value;
 }
-size_t common__tx_header__get_packed_size
+size_t common__tx_header__get_packed_size__chainmaker
                      (const Common__TxHeader *message)
 {
-  assert(message->base.descriptor == &common__tx_header__descriptor);
+  assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t common__tx_header__pack
+size_t common__tx_header__pack__chainmaker
                      (const Common__TxHeader *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &common__tx_header__descriptor);
+  assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t common__tx_header__pack_to_buffer
+size_t common__tx_header__pack_to_buffer__chainmaker
                      (const Common__TxHeader *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &common__tx_header__descriptor);
+  assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
 Common__TxHeader *
-       common__tx_header__unpack
+       common__tx_header__unpack__chainmaker
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
   return (Common__TxHeader *)
-     protobuf_c_message_unpack (&common__tx_header__descriptor,
+     protobuf_c_message_unpack (&common__tx_header__descriptor__chainmaker,
                                 allocator, len, data);
 }
-void   common__tx_header__free_unpacked
+void   common__tx_header__free_unpacked__chainmaker
                      (Common__TxHeader *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &common__tx_header__descriptor);
+  assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 void   common__query_payload__init
@@ -601,7 +601,7 @@ static const ProtobufCFieldDescriptor common__tx_request__field_descriptors[3] =
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
     offsetof(Common__TxRequest, header),
-    &common__tx_header__descriptor,
+    &common__tx_header__descriptor__chainmaker,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -689,7 +689,7 @@ static const ProtobufCFieldDescriptor common__tx_header__field_descriptors[6] =
     PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
     offsetof(Common__TxHeader, tx_type),
-    &common__tx_type__descriptor,
+    &common__tx_type__descriptor__chainmaker,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -744,7 +744,7 @@ static const ProtobufCIntRange common__tx_header__number_ranges[1 + 1] =
   { 1, 0 },
   { 0, 6 }
 };
-const ProtobufCMessageDescriptor common__tx_header__descriptor =
+const ProtobufCMessageDescriptor common__tx_header__descriptor__chainmaker =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
   "common.TxHeader",
@@ -756,7 +756,7 @@ const ProtobufCMessageDescriptor common__tx_header__descriptor =
   common__tx_header__field_descriptors,
   common__tx_header__field_indices_by_name,
   1,  common__tx_header__number_ranges,
-  (ProtobufCMessageInit) common__tx_header__init,
+  (ProtobufCMessageInit) common__tx_header__init__chainmaker,
   NULL,NULL,NULL    /* reserved[123] */
 };
 static const ProtobufCFieldDescriptor common__query_payload__field_descriptors[3] =
@@ -1343,7 +1343,7 @@ static const ProtobufCFieldDescriptor common__subscribe_tx_payload__field_descri
     PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
     offsetof(Common__SubscribeTxPayload, tx_type),
-    &common__tx_type__descriptor,
+    &common__tx_type__descriptor__chainmaker,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -1494,7 +1494,7 @@ static const ProtobufCEnumValueIndex common__tx_type__enum_values_by_name[11] =
   { "SUBSCRIBE_TX_INFO", 6 },
   { "UPDATE_CHAIN_CONFIG", 4 },
 };
-const ProtobufCEnumDescriptor common__tx_type__descriptor =
+const ProtobufCEnumDescriptor common__tx_type__descriptor__chainmaker =
 {
   PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
   "common.TxType",
