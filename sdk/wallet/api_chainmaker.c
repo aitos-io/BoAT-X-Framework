@@ -26,6 +26,7 @@ api_chainmaker.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "http2intf.h"
 #include "common/result.pb-c.h"
 #include "common/transaction.pb-c.h"
+#include "boatchainmaker/boatchainmaker.h"
 
 #define BOAT_RETRY_CNT 10
 #define BOAT_TXID_LEN 64

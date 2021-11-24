@@ -311,6 +311,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
  ******************************************************************************/
 BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatQueryReponse *query_reponse);
 
+void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr);
 /*! @}*/
 
 #ifdef __cplusplus
