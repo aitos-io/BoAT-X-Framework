@@ -108,7 +108,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 	result = generateTxRequestPayloadPack(tx_ptr, method, contract_name, &payloadPacked);
 
 	/* step-2: compute payload packed length */
-	packedHeaderLength = ommon__tx_header__get_packed_size__chainmaker(&tx_header);
+	packedHeaderLength = common__tx_header__get_packed_size__chainmaker(&tx_header);
 	packedLength = packedHeaderLength + payloadPacked.field_len;
 
 	hash_data.field_ptr = BoatMalloc(packedLength);
