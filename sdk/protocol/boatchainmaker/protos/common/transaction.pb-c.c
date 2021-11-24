@@ -43,7 +43,7 @@ Common__Transaction *
      protobuf_c_message_unpack (&common__transaction__descriptor__chainmaker,
                                 allocator, len, data);
 }
-void   common__transaction__free_unpacked
+void   common__transaction__free_unpacked__chainmaker
                      (Common__Transaction *message,
                       ProtobufCAllocator *allocator)
 {
