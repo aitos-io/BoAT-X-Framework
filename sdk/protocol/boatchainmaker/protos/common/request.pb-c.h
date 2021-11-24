@@ -144,7 +144,7 @@ struct  _Common__TxHeader
   int64_t expiration_time;
 };
 #define COMMON__TX_HEADER__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&common__tx_header__descriptor) \
+ { PROTOBUF_C_MESSAGE_INIT (&common__tx_header__descriptor__chainmaker) \
     , (char *)protobuf_c_empty_string, NULL, COMMON__TX_TYPE__INVOKE_USER_CONTRACT, (char *)protobuf_c_empty_string, 0, 0 }
 
 
@@ -712,7 +712,7 @@ typedef void (*Common__RestoreBlockPayload_Closure)
 
 extern const ProtobufCEnumDescriptor    common__tx_type__descriptor;
 extern const ProtobufCMessageDescriptor common__tx_request__descriptor;
-extern const ProtobufCMessageDescriptor common__tx_header__descriptor;
+extern const ProtobufCMessageDescriptor common__tx_header__descriptor__chainmaker;
 extern const ProtobufCMessageDescriptor common__query_payload__descriptor;
 extern const ProtobufCMessageDescriptor common__transact_payload__descriptor;
 extern const ProtobufCMessageDescriptor common__system_contract_payload__descriptor;

@@ -61,21 +61,21 @@ void   common__tx_header__init__chainmaker
 size_t common__tx_header__get_packed_size
                      (const Common__TxHeader *message)
 {
-  assert(message->base.descriptor == &common__tx_header__descriptor);
+  assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
 size_t common__tx_header__pack
                      (const Common__TxHeader *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &common__tx_header__descriptor);
+  assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
 size_t common__tx_header__pack_to_buffer
                      (const Common__TxHeader *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &common__tx_header__descriptor);
+  assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
 Common__TxHeader *
@@ -85,7 +85,7 @@ Common__TxHeader *
                       const uint8_t       *data)
 {
   return (Common__TxHeader *)
-     protobuf_c_message_unpack (&common__tx_header__descriptor,
+     protobuf_c_message_unpack (&common__tx_header__descriptor__chainmaker,
                                 allocator, len, data);
 }
 void   common__tx_header__free_unpacked
@@ -94,7 +94,7 @@ void   common__tx_header__free_unpacked
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &common__tx_header__descriptor);
+  assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 void   common__query_payload__init
@@ -601,7 +601,7 @@ static const ProtobufCFieldDescriptor common__tx_request__field_descriptors[3] =
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
     offsetof(Common__TxRequest, header),
-    &common__tx_header__descriptor,
+    &common__tx_header__descriptor__chainmaker,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -744,7 +744,7 @@ static const ProtobufCIntRange common__tx_header__number_ranges[1 + 1] =
   { 1, 0 },
   { 0, 6 }
 };
-const ProtobufCMessageDescriptor common__tx_header__descriptor =
+const ProtobufCMessageDescriptor common__tx_header__descriptor__chainmaker =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
   "common.TxHeader",
