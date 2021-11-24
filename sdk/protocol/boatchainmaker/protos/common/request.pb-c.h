@@ -440,7 +440,7 @@ void   common__tx_header__init__chainmaker
                      (Common__TxHeader         *message);
 size_t common__tx_header__get_packed_size
                      (const Common__TxHeader   *message);
-size_t common__tx_header__pack
+size_t common__tx_header__pack__chainmaker
                      (const Common__TxHeader   *message,
                       uint8_t             *out);
 size_t common__tx_header__pack_to_buffer__chainmaker

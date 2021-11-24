@@ -64,7 +64,7 @@ size_t common__tx_header__get_packed_size
   assert(message->base.descriptor == &common__tx_header__descriptor__chainmaker);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t common__tx_header__pack
+size_t common__tx_header__pack__chainmaker
                      (const Common__TxHeader *message,
                       uint8_t       *out)
 {

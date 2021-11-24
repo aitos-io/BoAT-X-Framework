@@ -113,7 +113,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, char* meth
 
 	hash_data.field_ptr = BoatMalloc(packedLength);
 	hash_data.field_len = packedLength;
-	common__tx_header__pack(&tx_header, hash_data.field_ptr);
+	common__tx_header__pack__chainmaker(&tx_header, hash_data.field_ptr);
 	hash_data.field_ptr += packedHeaderLength;
 	memcpy(hash_data.field_ptr, payloadPacked.field_ptr, payloadPacked.field_len);
 	hash_data.field_ptr -= packedHeaderLength;
