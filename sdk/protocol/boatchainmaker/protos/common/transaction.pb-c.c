@@ -7,7 +7,7 @@
 #endif
 
 #include "transaction.pb-c.h"
-void   common__transaction__init
+void   common__transaction__init__chainmaker
                      (Common__Transaction         *message)
 {
   static const Common__Transaction init_value = COMMON__TRANSACTION__INIT;
@@ -171,7 +171,7 @@ const ProtobufCMessageDescriptor common__transaction__descriptor__chainmaker =
   common__transaction__field_descriptors,
   common__transaction__field_indices_by_name,
   1,  common__transaction__number_ranges,
-  (ProtobufCMessageInit) common__transaction__init,
+  (ProtobufCMessageInit) common__transaction__init__chainmaker,
   NULL,NULL,NULL    /* reserved[123] */
 };
 static const ProtobufCFieldDescriptor common__transaction_info__field_descriptors[4] =

@@ -83,7 +83,7 @@ struct  _Common__TransactionInfo
 
 
 /* Common__Transaction methods */
-void   common__transaction__init
+void   common__transaction__init__chainmaker
                      (Common__Transaction         *message);
 size_t common__transaction__get_packed_size__chainmaker
                      (const Common__Transaction   *message);
