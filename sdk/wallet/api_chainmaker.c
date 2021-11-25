@@ -139,6 +139,12 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
 	}
+	
+	if (certContent.length > BOAT_CHAINMAKER_CERT_MAX_LEN)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "certContent length invalid");
+		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
+	}
 	memcpy(wallet_ptr->user_client_info.cert.field_ptr, certContent.content, certContent.length);
 	wallet_ptr->user_client_info.cert.field_len = certContent.length;
 
