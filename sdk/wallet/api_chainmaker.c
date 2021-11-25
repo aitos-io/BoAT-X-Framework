@@ -266,7 +266,7 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BCH
 	BUINT32 stringLen;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
-	if ((tx_ptr == NULL) || (wallet_ptr == NULL)) 
+	if ((tx_ptr == NULL) || (wallet_ptr == NULL) || (chain_id == NULL) || (org_id == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments 'tx_ptr' or 'wallet_ptr' cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
