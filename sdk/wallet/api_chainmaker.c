@@ -268,7 +268,7 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BCH
 
 	if ((tx_ptr == NULL) || (wallet_ptr == NULL) || (chain_id == NULL) || (org_id == NULL))
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Arguments 'tx_ptr' or 'wallet_ptr' cannot be NULL.");
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlChainmakerTxInit paramters cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
@@ -277,6 +277,11 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BCH
 
      tx_ptr->wallet_ptr = (BoatHlchainmakerWallet *)wallet_ptr;
 	stringLen          = wallet_ptr->node_info.org_tls_ca_cert.length;
+	if (stringLen > BOAT_CHAINMAKER_CERT_MAX_LEN)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "org_tls_ca_cert length is too long");
+		return BOAT_ERROR_INVALID_ARGUMENT;
+	}
 	memcpy(tx_ptr->wallet_ptr->node_info.org_tls_ca_cert.content, wallet_ptr->node_info.org_tls_ca_cert.content, stringLen);
 	return result;
 }
