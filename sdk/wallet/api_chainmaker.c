@@ -332,9 +332,13 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 #endif
 	tx_ptr->wallet_ptr->http2Context_ptr->pathTmp      = "/api.RpcNode/SendRequest";
 	tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &http2_response;
+
 	result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
-	tx_reponse_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
-	*tx_reponse = tx_reponse_ptr;
+	if (result == BOAT_SUCCESS)
+	{
+		tx_reponse_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
+		*tx_reponse = tx_reponse_ptr;
+	}
 
 	if (http2_response.httpResLen != 0) 
 	{
@@ -365,7 +369,7 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length
 
 	tx_ptr->trans_para.n_parameters = 0;
 	va_start(ap, arg);
-	if (arg =! NULL)
+	if (arg != NULL)
 	{
 		tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].key = (BCHAR *)arg;
 	}
