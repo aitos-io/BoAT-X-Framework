@@ -365,11 +365,19 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length
 
 	tx_ptr->trans_para.n_parameters = 0;
 	va_start(ap, arg);
-	tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].key = (BCHAR *)arg;
+	if (arg =! NULL)
+	{
+		tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].key = (BCHAR *)arg;
+	}
 
 	for (int i = 1; i < length; i++)
 	{
 		args = va_arg(ap, BCHAR*);
+		if (args == NULL)
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "variable parameter cannot be NULL.");
+			return BOAT_ERROR_INVALID_ARGUMENT;
+		}
 		if (i & 0x01) 
 		{
 			tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].value = (BCHAR *)args;
