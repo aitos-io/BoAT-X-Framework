@@ -59,7 +59,7 @@ BOAT_RESULT BoatIotSdkInit(void)
 
 	// For Multi-Thread Support: CreateMutex Here
 
-    for(i = 0; i < BOAT_MAX_WALLET_NUM; i++)
+    for (i = 0; i < BOAT_MAX_WALLET_NUM; i++)
     {
         g_boat_iot_sdk_context.wallet_list[i].is_used = BOAT_FALSE;
         g_boat_iot_sdk_context.wallet_list[i].wallet_ptr = NULL;
@@ -83,7 +83,7 @@ void BoatIotSdkDeInit(void)
 {
     BUINT32 i;
     
-    for(i = 0; i < BOAT_MAX_WALLET_NUM; i++)
+    for (i = 0; i < BOAT_MAX_WALLET_NUM; i++)
     {
         BoatWalletUnload(i);
     }
@@ -123,7 +123,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
     memset(boatwalletStore_ptr, 0, wallet_config_size + sizeof(BoatWalletPriKeyCtx));
     
     /* For Multi-Thread Support: ObtainMutex Here */
-    for(i = 0; i < BOAT_MAX_WALLET_NUM; i++)
+    for (i = 0; i < BOAT_MAX_WALLET_NUM; i++)
     {
         if (g_boat_iot_sdk_context.wallet_list[i].is_used == BOAT_FALSE)
         {
@@ -142,7 +142,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
     /* Check protocol type */
     g_boat_iot_sdk_context.wallet_list[i].protocol_type = protocol_type;
 
-    switch(protocol_type)
+    switch (protocol_type)
     {
         #if PROTOCOL_USE_ETHEREUM == 1
         case BOAT_PROTOCOL_ETHEREUM:
@@ -210,7 +210,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
                 ((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.load_existed_wallet = false;
                 wallet_ptr = BoatHlfabricWalletInit((BoatHlfabricWalletConfig*)wallet_config_ptr, wallet_config_size);
-                if(wallet_ptr != NULL)
+                if (wallet_ptr != NULL)
                 {
                     memcpy(boatwalletStore_ptr + wallet_config_size, &((BoatHlfabricWallet*)wallet_ptr)->account_info.prikeyCtx, sizeof(BoatWalletPriKeyCtx));
                     if (wallet_name_str != NULL)
@@ -372,7 +372,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
 		
 	    #if PROTOCOL_USE_FISCOBCOS == 1
 		case BOAT_PROTOCOL_FISCOBCOS:
-            if(wallet_config_ptr != NULL)
+            if (wallet_config_ptr != NULL)
             {
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
                 ((BoatEthWalletConfig*)wallet_config_ptr)->load_existed_wallet = false;
@@ -425,6 +425,57 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
             g_boat_iot_sdk_context.wallet_list[i].wallet_ptr = wallet_ptr;
 			break;
 	    #endif
+
+         #if PROTOCOL_USE_CHAINMAKER == 1
+        case BOAT_PROTOCOL_CHAINMAKER:
+            if (wallet_config_ptr != NULL)
+            {
+                memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
+                wallet_ptr = BoatHlchainmakerWalletInit((BoatHlchainmakerWalletConfig*)wallet_config_ptr, wallet_config_size);
+
+                if (wallet_ptr != NULL)
+                {
+                    memcpy(boatwalletStore_ptr + wallet_config_size, &((BoatHlchainmakerWallet*)wallet_ptr)->user_client_info.prikeyCtx, sizeof(BoatWalletPriKeyCtx));
+                    if (wallet_name_str != NULL)
+                    {
+                        /* create persistent wallet / Overwrite existed configuration */
+                        if (BOAT_SUCCESS != BoatPersistStore(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)))
+                        {
+                            BoatLog(BOAT_LOG_NORMAL, "persistent wallet create failed.");
+                            BoatFree(boatwalletStore_ptr);
+                            return BOAT_ERROR;
+                        }
+                    }
+                    else
+                    {
+                        /* create one-time wallet */
+                        // nothing to do
+                    } 
+                }   
+            }
+            else
+            {
+                /* Load persistent wallet */
+                if (BOAT_SUCCESS != BoatPersistRead(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)))
+                {
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
+                    BoatFree(boatwalletStore_ptr);
+                    return BOAT_ERROR;
+                }
+                BoatHlchainmakerWalletConfig *load_wallet_config_ptr = (BoatHlchainmakerWalletConfig*)boatwalletStore_ptr; 
+                load_wallet_config_ptr->user_prikey_config.prikey_content.field_ptr = NULL;
+                load_wallet_config_ptr->user_prikey_config.prikey_content.field_len = 0;
+                wallet_ptr = BoatHlchainmakerWalletInit(load_wallet_config_ptr, wallet_config_size);
+                if (wallet_ptr != NULL)
+                {
+                    // re-assign private key context
+                    memcpy(&((BoatHlchainmakerWallet*)wallet_ptr)->user_client_info.prikeyCtx, boatwalletStore_ptr + wallet_config_size, sizeof(BoatWalletPriKeyCtx));                
+                }
+            }
+            g_boat_iot_sdk_context.wallet_list[i].wallet_ptr = wallet_ptr;
+            
+            break;
+        #endif
     
         default:
             g_boat_iot_sdk_context.wallet_list[i].wallet_ptr = NULL;
@@ -456,7 +507,7 @@ void BoatWalletUnload(BSINT32 wallet_index)
     {
         protocol = g_boat_iot_sdk_context.wallet_list[wallet_index].protocol_type;
 
-        switch(protocol)
+        switch (protocol)
         {
 
             #if PROTOCOL_USE_ETHEREUM == 1
@@ -486,6 +537,12 @@ void BoatWalletUnload(BSINT32 wallet_index)
 		    #if PROTOCOL_USE_FISCOBCOS == 1
 		    case BOAT_PROTOCOL_FISCOBCOS:
 				BoatFiscobcosWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
+            break;
+            #endif
+
+            #if PROTOCOL_USE_CHAINMAKER == 1
+            case BOAT_PROTOCOL_CHAINMAKER:
+                BoatHlchainmakerWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
             break;
             #endif
 			
@@ -518,7 +575,7 @@ void *BoatGetWalletByIndex(BSINT32 wallet_index)
         if (g_boat_iot_sdk_context.wallet_list[wallet_index].is_used != BOAT_FALSE &&
             g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr != NULL)
         {
-            return(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
+            return (g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
         }
     }
 

@@ -22,6 +22,9 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
 	SOURCES += api_hw_bcs.c
 endif
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
+	SOURCES += api_chainmaker.c
+endif
 
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/wallet
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))

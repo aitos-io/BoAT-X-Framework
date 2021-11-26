@@ -41,12 +41,13 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <sys/time.h>
-#endif
-
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
-// for TTLSContext structure
 #include "http2intf.h"
 #endif
+
+// #if (PROTOCOL_USE_HLFABRIC == 1)
+// // for TTLSContext structure
+// #include "http2intf.h"
+// #endif
 
 #define GENERATE_KEY_REPEAT_TIMES	100
 
@@ -334,7 +335,7 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 }
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
+#if (BOAT_TLS_SUPPORT == 1)	
 BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 						BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
@@ -347,8 +348,8 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 
 BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
-	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
+#if (BOAT_TLS_SUPPORT == 1) 
+	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
 	return -1;
 #else
 	return send(sockfd, buf, len, 0);	
@@ -358,8 +359,8 @@ BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, 
 
 BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
-	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
+#if (BOAT_TLS_SUPPORT == 1) 
+	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
 	return -1;
 #else
 	return recv(sockfd, buf, len, 0);
@@ -370,9 +371,9 @@ BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *
 void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 {
 	close(sockfd);
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+#if (BOAT_TLS_SUPPORT == 1) 
 	// free tls releated
-	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
+	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
 #endif
 }
 #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */

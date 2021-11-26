@@ -128,6 +128,17 @@ void BoatFree(void *mem_ptr);
  ******************************************************************************/
 void BoatSleep(BUINT32 second);
 
+/*!****************************************************************************
+ * @brief Wrapper function for gettimes 
+ *
+ * @details
+ *   This function is a wrapper for gettimes
+ *   \n It typically wraps time() in a linux or Windows system.
+ *   \n For RTOS it depends on the specification of the RTOS.
+ *
+ ******************************************************************************/
+BUINT64 BoatGetTimes();
+
 /*! @}*/
 
 #ifdef __cplusplus

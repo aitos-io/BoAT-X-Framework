@@ -311,7 +311,7 @@ class CFunctionGen():
         else:
             return False
 
-    def is_right_aligned_type(self,abitype):
+    def is_right_aligned_type(self, abitype):
         types_of_left_aligned = {
             'address'   :'BoatAddress',
             'bool'      :'BUINT8',
@@ -351,6 +351,29 @@ class CFunctionGen():
         }
 
         if abitype in types_of_left_aligned.keys():
+            return True
+        else:
+            return False
+
+    def is_signed_value_type(self, abitype):
+        types_of_signed_value = {
+            'int8'      :'BSINT8',
+            'int16'     :'BSINT16',
+            'int32'     :'BSINT32',
+            'int64'     :'BSINT64',
+            'int128'    :'BSINT128',
+            'int256'    :'BSINT256',
+
+            'int8[]'      :'BSINT8 *',
+            'int16[]'     :'BSINT16 *',
+            'int32[]'     :'BSINT32 *',
+            'int64[]'     :'BSINT64 *',
+            'int128[]'    :'BSINT128 *',
+
+            'int256[]'    :'BSINT256 *'
+        }
+
+        if abitype in types_of_signed_value.keys():
             return True
         else:
             return False
@@ -613,7 +636,7 @@ class CFunctionGen():
                 vaules_str += '    BUINT32 ' + inputName + '_filled_length[' + inputName + 'Len];\n'
                 vaules_str += '    BUINT32 ' + inputName + '_actual_length[' + inputName + 'Len];\n'
                 if self.is_FixedSizeNonFixedArray_type(inputType) == True:
-                    vaules_str += '    ' + self.get_FixedArray_type(inputType) + ' * ' + inputName + '_ptr;\n'
+                    vaules_str += '    ' + self.get_FixedArray_type(inputType) + ' *' + inputName + '_ptr;\n'
                 else:
                     vaules_str += '    BoatFieldVariable *' + inputName + '_ptr;\n'
                 
@@ -755,6 +778,8 @@ class CFunctionGen():
                 input_str += 'BoatFieldVariable *' + inputName_str
             elif self.is_FixedSizeFixedArray_type(input['type']) == True:
                 input_str += type_mapping[inputType] + ' ' + inputName_str + '[' + str(self.get_FixedArray_length(input['type'])) + ']'
+            elif type_mapping[inputType].endswith('*'):
+                input_str += type_mapping[inputType] + inputName_str
             else:
                 input_str += type_mapping[inputType] + ' ' + inputName_str
 
@@ -770,6 +795,7 @@ class CFunctionGen():
         # Generate function prototype
         self.c_file_content += retval_str + func_name_str + input_str + '\n'
         self.h_file_content += retval_str + func_name_str + input_str + ';\n'
+
 
     def generate_func_body(self, abi_item):
     
@@ -806,7 +832,6 @@ class CFunctionGen():
         inputs_param     = abi_item['inputs']
         inputs_param_len = len(inputs_param)
         inputs_param_body_str_tmp = ''
-
         if inputs_param_len != 0:
             i = 0
             while  i < inputs_param_len:
@@ -901,17 +926,31 @@ class CFunctionGen():
                 func_body_str += '    for(i = 0; i < ' + str(self.get_FixedArray_length(input['type'])) + '; i++)\n'
                 func_body_str += '    {\n'
                 func_body_str += '        memcpy(fixedsize_bytes32, ' + c_address_sign + inputName_str + '[i], ' + param_size_str + ');\n'
-                func_body_str += '        if (' + inputName_str + '[i] >= 0)\n'
-                func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
-                func_body_str += '        else\n'
-                func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
+                if self.is_signed_value_type(input['type']) == True:
+                    func_body_str += '        if (' + inputName_str + '[i] >= 0)\n'
+                    func_body_str += '        {\n'
+                    func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
+                    func_body_str += '        }\n'
+                    func_body_str += '        else\n'
+                    func_body_str += '        {\n'
+                    func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
+                    func_body_str += '        }\n'
+                else:
+                    func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
                 func_body_str += self.add_FixedSize_String(inputType, c_address_sign,'fixedsize_bytes32',param_size_str, 2)
                 func_body_str += '    }\n\n'
             else:
-                func_body_str += '    if (' + inputName_str + ' >= 0)\n'
-                func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
-                func_body_str += '    else\n'
-                func_body_str += '        memset(data_offset_ptr, 0xFF, 32);\n'
+                if self.is_signed_value_type(input['type']) == True:
+                    func_body_str += '    if (' + inputName_str + ' >= 0)\n'
+                    func_body_str += '    {\n'
+                    func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
+                    func_body_str += '    }\n'
+                    func_body_str += '    else\n'
+                    func_body_str += '    {\n'
+                    func_body_str += '        memset(data_offset_ptr, 0xFF, 32);\n'
+                    func_body_str += '    }\n'
+                else:
+                    func_body_str += '    memset(data_offset_ptr, 0x00, 32);\n'    
                 func_body_str += self.add_FixedSize_String(inputType, c_address_sign, inputName_str, param_size_str, 1)
 
         #non-fixed data fill
@@ -1003,14 +1042,17 @@ class CFunctionGen():
                 func_body_str += '    for(i = 0; i < ' + inputName_str + 'Len; i++)\n'
                 func_body_str += '    {\n'
                 func_body_str += '        memcpy(fixedsize_bytes32, ' + inputName_str + '_ptr, ' + param_size_str + ');\n'
-                func_body_str += '        if (*' + inputName_str + '_ptr >= 0)\n'
-                func_body_str += '        {\n'
-                func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
-                func_body_str += '        }\n'
-                func_body_str += '        else\n'
-                func_body_str += '        {\n'
-                func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
-                func_body_str += '        }\n'
+                if self.is_signed_value_type(input['type']) == True:
+                    func_body_str += '        if (*' + inputName_str + '_ptr >= 0)\n'
+                    func_body_str += '        {\n'
+                    func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
+                    func_body_str += '        }\n'
+                    func_body_str += '        else\n'
+                    func_body_str += '        {\n'
+                    func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
+                    func_body_str += '        }\n'
+                else:
+                    func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
                 func_body_str += self.add_FixedSize_String(inputType, '','fixedsize_bytes32',param_size_str, 2)
                 func_body_str += '        ' + inputName_str + '_ptr++;\n'
                 func_body_str += '    }\n\n'
@@ -1024,8 +1066,7 @@ class CFunctionGen():
             func_body_str += '    boat_try(BoatFiscobcosTxSetData(tx_ptr, &data_field));\n\n'
             func_body_str += '    boat_try(BoatFiscobcosTxSend(tx_ptr));\n\n'
             func_body_str += '    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
-         
-        
+
         # Cleanup Label
         func_body_str += '''
     boat_catch(cleanup)

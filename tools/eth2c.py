@@ -636,7 +636,7 @@ class CFunctionGen():
                 vaules_str += '    BUINT32 ' + inputName + '_filled_length[' + inputName + 'Len];\n'
                 vaules_str += '    BUINT32 ' + inputName + '_actual_length[' + inputName + 'Len];\n'
                 if self.is_FixedSizeNonFixedArray_type(inputType) == True:
-                    vaules_str += '    ' + self.get_FixedArray_type(inputType) + ' * ' + inputName + '_ptr;\n'
+                    vaules_str += '    ' + self.get_FixedArray_type(inputType) + ' *' + inputName + '_ptr;\n'
                 else:
                     vaules_str += '    BoatFieldVariable *' + inputName + '_ptr;\n'
                 
@@ -778,6 +778,8 @@ class CFunctionGen():
                 input_str += 'BoatFieldVariable *' + inputName_str
             elif self.is_FixedSizeFixedArray_type(input['type']) == True:
                 input_str += type_mapping[inputType] + ' ' + inputName_str + '[' + str(self.get_FixedArray_length(input['type'])) + ']'
+            elif type_mapping[inputType].endswith('*'):
+                input_str += type_mapping[inputType] + inputName_str
             else:
                 input_str += type_mapping[inputType] + ' ' + inputName_str
 

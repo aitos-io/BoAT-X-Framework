@@ -118,8 +118,8 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	// blocklimit should be greater than current blocknumber, 
 	// and less than current blocknumber plus 1000.
 	retval_str = BoatFiscobcosGetBlockNumber(tx_ptr);
-	result     = BoatFiscobcosPraseRpcResponseResult(retval_str, "", 
-											    	 &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+	result     = BoatFiscobcosPraseRpcResponseStringResult(retval_str, 
+											    	 	   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosGetBlockNumber failed.");
@@ -440,10 +440,20 @@ BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr)
     return retval_str;
 }
 
-BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
-                                                const BCHAR *child_name, 
-                                                BoatFieldVariable *result_out)
+BOAT_RESULT BoatFiscobcosPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return web3_parse_json_result(json_string, child_name, result_out);
+    return web3_parse_json_result(json_string, "", result_out);
+}
+
+BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
+										  		const BCHAR *child_name, 
+										  		BoatFieldVariable *result_out)
+{
+    if (child_name == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+	return web3_parse_json_result(json_string, child_name, result_out);
 }
 #endif /* end of PROTOCOL_USE_FISCOBCOS */

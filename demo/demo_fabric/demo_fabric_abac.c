@@ -388,8 +388,8 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 		BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
-						 tx_ptr.endorserResponse.http2Res,
-						 tx_ptr.endorserResponse.httpResLen);
+						 tx_ptr.evaluateRes.http2Res,
+						 tx_ptr.evaluateRes.httpResLen);
 	
 	/* step-7: fabric transaction structure Deinitialization */
 	BoatHlfabricTxDeInit(&tx_ptr);

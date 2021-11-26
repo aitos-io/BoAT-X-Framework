@@ -509,8 +509,8 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
 		boat_throw(BOAT_ERROR_RPC_FAILED, PlatoneSendRawtx_cleanup);
     }
 
-    result = BoatPlatonePraseRpcResponseResult(tx_hash_str, "", 
-											   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    result = BoatPlatonePraseRpcResponseStringResult(tx_hash_str,
+											         &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");

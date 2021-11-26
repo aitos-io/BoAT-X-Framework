@@ -52,10 +52,10 @@ void RpcDeinit(void *rpc_context_ptr);
 BOAT_RESULT RpcRequestSet(void *rpc_context_ptr, BCHAR *remote_url_str);
 
 BOAT_RESULT RpcRequestSync(void *rpc_context_ptr,
-                          BUINT8 *request_ptr,
-                          BUINT32 request_len,
-                          BOAT_OUT BUINT8 **response_pptr,
-                          BOAT_OUT BUINT32 *response_len_ptr);
+                           BUINT8 *request_ptr,
+                           BUINT32 request_len,
+                           BOAT_OUT BUINT8 **response_pptr,
+                           BOAT_OUT BUINT32 *response_len_ptr);
 
 #ifdef __cplusplus
 }
