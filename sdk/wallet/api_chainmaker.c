@@ -511,26 +511,35 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
 	}
 
-	if (strlen(tx_reponse->message) > BOAT_RESPONSE_MESSAGE_MAX_LEN) {
-		BoatLog(BOAT_LOG_CRITICAL, "tx_reponse->message is too long");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
-	}
-
+	query_reponse->gas_used = 0;
+	query_reponse->code     = tx_reponse->code;
 	memset(query_reponse->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
-	memcpy(query_reponse->message, tx_reponse->message, strlen(tx_reponse->message));
 	memset(query_reponse->contract_result, 0, BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN);
 
-	if (tx_reponse->contract_result->result.len != 0)
+	if (query_reponse->code == BOAT_SUCCESS)
 	{
-		if (tx_reponse->contract_result->result.len > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN) 
+		if (strlen(tx_reponse->message) > BOAT_RESPONSE_MESSAGE_MAX_LEN) 
 		{
-			BoatLog(BOAT_LOG_CRITICAL, "tx_reponse->contract_result->result.datais too long");
+			BoatLog(BOAT_LOG_CRITICAL, "tx_reponse->message is too long");
 			boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
 		}
-		memcpy(query_reponse->contract_result, tx_reponse->contract_result->result.data, strlen((BCHAR*)tx_reponse->contract_result->result.data));
-	}
+
+		memcpy(query_reponse->message, tx_reponse->message, strlen(tx_reponse->message));
 	
-	query_reponse->gas_used = tx_reponse->contract_result->gas_used;
+		if (tx_reponse->contract_result->code == BOAT_SUCCESS)
+		{
+			if (tx_reponse->contract_result->result.len != 0)
+			{
+				if (tx_reponse->contract_result->result.len > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN) 
+				{
+					BoatLog(BOAT_LOG_CRITICAL, "tx_reponse->contract_result->result.datais too long");
+					boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
+				}
+				memcpy(query_reponse->contract_result, tx_reponse->contract_result->result.data, strlen((BCHAR*)tx_reponse->contract_result->result.data));
+			}
+			query_reponse->gas_used = tx_reponse->contract_result->gas_used;
+		}
+	}
 
 	/* boat catch handle */
 	boat_catch(BoatHlchainmakerContractQuery_exception)
