@@ -518,14 +518,18 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 
 	memset(query_reponse->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
 	memcpy(query_reponse->message, tx_reponse->message, strlen(tx_reponse->message));
-
-	if (strlen((BCHAR*)tx_reponse->contract_result->result.data) > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN) {
-		BoatLog(BOAT_LOG_CRITICAL, "tx_reponse->contract_result->result.datais too long");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
-	}
-
 	memset(query_reponse->contract_result, 0, BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN);
-	memcpy(query_reponse->contract_result, tx_reponse->contract_result->result.data, strlen((BCHAR*)tx_reponse->contract_result->result.data));
+
+	if (tx_reponse->contract_result->result.len != 0)
+	{
+		if (tx_reponse->contract_result->result.len > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN) 
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "tx_reponse->contract_result->result.datais too long");
+			boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
+		}
+		memcpy(query_reponse->contract_result, tx_reponse->contract_result->result.data, strlen((BCHAR*)tx_reponse->contract_result->result.data));
+	}
+	
 	query_reponse->gas_used = tx_reponse->contract_result->gas_used;
 
 	/* boat catch handle */
