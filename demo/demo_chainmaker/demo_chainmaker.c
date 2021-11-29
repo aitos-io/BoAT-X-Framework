@@ -170,8 +170,8 @@ int main(int argc, char *argv[])
 	{
 		return -1;
 	}
-	BoatLog( BOAT_LOG_CRITICAL, "reponse message = %s,  contract_result = %s, gas_used = %d\n", query_reponse.message, query_reponse.contract_result, query_reponse.gas_used);
-
+	BoatLog( BOAT_LOG_CRITICAL, "reponse code = %d, reponse message = %s,  contract_result = %s, gas_used = %d\n", 
+			query_reponse.code, query_reponse.message, query_reponse.contract_result, query_reponse.gas_used);
 	/* step-6: chainmaker transaction structure Deinitialization */
 	BoatHlchainmakerTxDeInit(&tx_ptr);
 
