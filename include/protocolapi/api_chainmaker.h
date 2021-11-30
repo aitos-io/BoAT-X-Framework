@@ -34,6 +34,7 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 #define BOAT_HLCHAINMAKER_ARGS_MAX_NUM            10
 #define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN     100
 #define BOAT_RESPONSE_MESSAGE_MAX_LEN             10
+#define BAOT_CHAINMAKER_URL_HOSTNAME_LEN          127
 // call a pre created user contract, tx included in block
 // query a pre-created user contract, tx not included in block
 typedef enum {
@@ -148,7 +149,9 @@ typedef struct TBoatHlchainmakerWalletConfig {
 	BoatWalletPriKeyCtx_config    tls_PriKey_config;
 	BoatHlchainmakerCertInfoCfg   tls_cert_content;
 
-	BoatHlchainmakerNode          node_cfg;
+	BCHAR  node_url_arry[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BCHAR  host_name_arry[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
 }BoatHlchainmakerWalletConfig;
 
 //!chainmaker key pairs structure
@@ -163,7 +166,10 @@ typedef struct TBoatHlchainmakerWallet {
 
 	BoatHlchainmakerKeyPair   user_client_info; //!< user information
 	BoatHlchainmakerKeyPair   tls_client_info;  //!< tls information
-	BoatHlchainmakerNode      node_info;        //!< node information
+	
+  BCHAR*  node_url;
+  BCHAR*  host_name;
+  BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
 	
 	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
 } BoatHlchainmakerWallet;
