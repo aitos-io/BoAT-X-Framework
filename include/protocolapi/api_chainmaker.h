@@ -327,6 +327,26 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
  *   To be de-initialized chainmaker wallet pointer.
  ******************************************************************************/
 void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr);
+
+/*!****************************************************************************
+ * @brief Set BoatHlchainmakerWallet: URL of blockchain node
+ *
+ * @details
+ *   This function sets the URL of the blockchain node to connect to.
+ *   \n A URL is composed of protocol, IP address/name and port, in a form:
+ *   http://a.b.com:8545
+ *
+ * @param[in] wallet_ptr
+ *   Wallet context pointer.    
+ *
+ * @param[in] node_url_ptr
+ *   A string indicating the URL of blockchain node to connect to.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if setting is successful.\n
+ *   Otherwise it returns one of the error codes.        
+ ******************************************************************************/
+BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *node_url_ptr);
 /*! @}*/
 
 #ifdef __cplusplus

@@ -554,3 +554,33 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	}
 	return result;
 }	
+
+
+BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *node_url_ptr)
+{
+    BOAT_RESULT result;
+    
+    if ((wallet_ptr == NULL) || (node_url_ptr == NULL))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or node_url_ptr cannot be NULL.");
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+
+	if (strchr(node_url_ptr, ':') == NULL)
+	{
+	    BoatLog(BOAT_LOG_CRITICAL, "node URL has a invalid format: %s.", node_url_ptr);
+        return BOAT_ERROR_INVALID_ARGUMENT;
+	}
+
+    // string length check
+    if (BOAT_SUCCESS != UtilityStringLenCheck(node_url_ptr))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "node URL length out of limit: %s.", node_url_ptr);
+        return BOAT_ERROR_INVALID_ARGUMENT;
+    }
+
+	wallet_ptr->node_url = node_url_ptr;
+	result = BOAT_SUCCESS;
+
+    return result;
+}
