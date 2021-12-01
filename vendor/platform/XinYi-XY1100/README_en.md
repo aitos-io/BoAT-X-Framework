@@ -53,7 +53,7 @@ After copying these files, the directory structure should look like:
 
 ## Files Modification
 
-### 1. Add demo source files that need to participate in compilation in module.mk
+### 1. Specify demo source files as inputs of Compilation in module.mk
 
 Open `<XY1100 Root>/userapp/module.mk` 
 Add the following two lines as below:
