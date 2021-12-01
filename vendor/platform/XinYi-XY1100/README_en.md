@@ -51,7 +51,7 @@ After copying these files, the directory structure should look like:
 ```
 
 
-## File Modification
+## Files Modification
 
 ### 1. Add demo source files that need to participate in compilation in module.mk
 
