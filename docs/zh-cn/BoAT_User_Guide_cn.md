@@ -880,6 +880,14 @@ result = BoatEthTxInit(
 BCHAR *result_str;
 result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ```
+#### 自动生成合约的常见问题
+**Q：编译时报如下错误**
+```
+    for abi_item in self.abi_object['abi']:
+TypeError: list indices must be integers, not str
+```
+A：产生该问题的原因是使用了错误的输入文件。自动生成合约需要的JSON文件为编译器生成的完整JSON文件，如果仅仅拷贝ABI部分的内容自己创建一个JSON的话，需要在最外层增加ABI。具体格式可以参考：  
+https://github.com/aitos-io/BoAT-X-Framework/issues/355
 
 ### 手动构造合约调用
 如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。另外，因为Fabric/hwbcs的调用本身就非常便捷，不需要自动生成合约调用接口的工具，所以需要手动调用合约。
