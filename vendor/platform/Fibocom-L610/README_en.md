@@ -40,7 +40,7 @@ After copying these files, the directory structure should look like:
 
 ## File Modification
 
-### 1. Add BoAT-X Framework libraries path
+### 1. Add BoAT-X Framework static libraries .a files onto L610 platform
 
 Open `<L610 Root>/cmake/toolchain-gcc.cmake`.  
 Add the following two lines as below:
