@@ -74,7 +74,7 @@ static BOAT_RESULT chainmakerWalletPrepare(void)
     return BOAT_SUCCESS;
 }
 
-START_TEST(test_01InitParameters_0001TxinitSuccess) 
+START_TEST(test_02InitParameters_0001TxinitSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -83,6 +83,27 @@ START_TEST(test_01InitParameters_0001TxinitSuccess)
 
     rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, &tx_ptr);
     ck_assert(rtnVal == 0);
+}
+END_TEST
+
+START_TEST(test_02InitParameters_0002TxinitxFailureNullpara) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerTx    tx_ptr;
+    rtnVal = chainmakerWalletPrepare();
+    ck_assert_int_eq(rtnVal, 0);
+
+    rtnVal = BoatHlChainmakerTxInit(NULL, chain_id, org_id, &tx_ptr);
+    ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
+
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, NULL, org_id, &tx_ptr);
+    ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
+
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, NULL, &tx_ptr);
+    ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
+
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, NULL);
+    ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -97,7 +118,8 @@ Suite *make_parameters_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_paramters, tc_paramters_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_paramters_api, test_01InitParameters_0001TxinitSuccess);  
+    tcase_add_test(tc_paramters_api, test_02InitParameters_0001TxinitSuccess);  
+    tcase_add_test(tc_paramters_api, test_02InitParameters_0002TxinitxFailureNullpara);  
 
     return s_paramters;
 }
