@@ -130,6 +130,19 @@ START_TEST(test_02InitSetTxParam_0004setTxParamFailureShortParam)
 }
 END_TEST
 
+START_TEST(test_02InitSetTxParam_0005setTxParamFailureLongParam) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerTx tx_ptr;
+
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 12, "key1", "vlaue1", "key2", "vlaue2", "key3", "vlaue3", 
+                                                     "key4", "vlaue4", "key5", "vlaue5", "key6", "vlaue6");
+    ck_assert_int_eq(rtnVal, -100);
+}
+END_TEST
+
+
+
 Suite *make_parameters_suite(void) 
 {
     /* Create Suite */
@@ -145,6 +158,7 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0002TxinitxFailureNullpara);  
     tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0003SetTxParamSuccess);  
     tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0004setTxParamFailureShortParam);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0005setTxParamFailureLongParam);  
 
     return s_paramters;
 }
