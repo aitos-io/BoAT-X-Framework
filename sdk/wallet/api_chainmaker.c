@@ -272,17 +272,10 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BCH
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
-     tx_ptr->client_info.chain_id  = chain_id;
-     tx_ptr->client_info.org_id    = org_id;
+	tx_ptr->client_info.chain_id  = chain_id;
+	tx_ptr->client_info.org_id    = org_id;
 
-     tx_ptr->wallet_ptr = (BoatHlchainmakerWallet *)wallet_ptr;
-	stringLen          = wallet_ptr->org_tls_ca_cert.length;
-	if (stringLen > BOAT_CHAINMAKER_CERT_MAX_LEN)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "org_tls_ca_cert length is too long");
-		return BOAT_ERROR_INVALID_ARGUMENT;
-	}
-	memcpy(tx_ptr->wallet_ptr->org_tls_ca_cert.content, wallet_ptr->org_tls_ca_cert.content, stringLen);
+	tx_ptr->wallet_ptr = (BoatHlchainmakerWallet *)wallet_ptr;
 	return result;
 }
 
