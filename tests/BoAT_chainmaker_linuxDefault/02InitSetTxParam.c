@@ -79,10 +79,10 @@ START_TEST(test_02InitSetTxParam_0001TxinitSuccess)
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
     rtnVal = chainmakerWalletPrepare();
-    ck_assert_int_eq(rtnVal, 0);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
     rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, &tx_ptr);
-    ck_assert(rtnVal == 0);
+    ck_assert(rtnVal == BOAT_SUCCESS);
 }
 END_TEST
 
@@ -91,7 +91,7 @@ START_TEST(test_02InitSetTxParam_0002TxinitxFailureNullpara)
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
     rtnVal = chainmakerWalletPrepare();
-    ck_assert_int_eq(rtnVal, 0);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
     rtnVal = BoatHlChainmakerTxInit(NULL, chain_id, org_id, &tx_ptr);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
@@ -115,7 +115,7 @@ START_TEST(test_02InitSetTxParam_0003SetTxParamSuccess)
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "vlaue1", "key2", "vlaue2", 
                                                     "key3", "vlaue3");
-    ck_assert_int_eq(rtnVal, 0);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 }
 END_TEST
 
@@ -126,7 +126,7 @@ START_TEST(test_02InitSetTxParam_0004setTxParamFailureShortParam)
     BoatHlchainmakerTx tx_ptr;
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "vlaue1", "key2", "vlaue2", "key3");
-    ck_assert_int_eq(rtnVal, -100);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -137,7 +137,7 @@ START_TEST(test_02InitSetTxParam_0005setTxParamFailureLongParam)
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 12, "key1", "vlaue1", "key2", "vlaue2", "key3", "vlaue3", 
                                                      "key4", "vlaue4", "key5", "vlaue5", "key6", "vlaue6");
-    ck_assert_int_eq(rtnVal, -100);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -148,17 +148,27 @@ START_TEST(test_02InitSetTxParam_0006setTxParamFailureOddParam)
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 9, "key1", "vlaue1", "key2", "vlaue2", "key3", "vlaue3", 
                                                      "key4", "vlaue4", "key5");
-    ck_assert_int_eq(rtnVal, -100);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
 
-START_TEST(test_02InitSetTxParam_0007setTxParamSucessNULLParam) 
+START_TEST(test_02InitSetTxParam_0007setTxParamSucessNumberNULLParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 0, NULL);
-    ck_assert_int_eq(rtnVal, 0);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+}
+END_TEST
+
+START_TEST(test_02InitSetTxParam_0008setTxParamFailureTxNULLParam) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerTx    tx_ptr;
+
+    rtnVal = BoatHlchainmakerAddTxParam(NULL, 6, "key1", "vlaue1", "key2", "vlaue2", "key3", "value3");
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -180,7 +190,8 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0004setTxParamFailureShortParam);  
     tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0005setTxParamFailureLongParam); 
     tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0006setTxParamFailureOddParam);   
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0007setTxParamSucessNULLParam);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0007setTxParamSucessNumberNULLParam);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0008setTxParamFailureTxNULLParam);  
 
     return s_paramters;
 }
