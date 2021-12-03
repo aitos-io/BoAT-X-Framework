@@ -93,6 +93,7 @@ END_TEST
 START_TEST(test_01CreateWallet_0003CreatePersistWalletSuccess) 
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
