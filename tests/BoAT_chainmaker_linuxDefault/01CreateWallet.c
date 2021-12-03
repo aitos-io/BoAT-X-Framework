@@ -47,7 +47,7 @@ static BoatHlchainmakerWalletConfig get_chainmaker_wallet_settings()
     return wallet_config;
 }
 
-START_TEST(test_BoAT_chainmaker_linuxDefault_01CreateWallet_test_0001CreateOneTimeWalletSuccess) 
+START_TEST(test_01CreateWallet_0001CreateOneTimeWalletSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
@@ -77,6 +77,23 @@ START_TEST(test_BoAT_chainmaker_linuxDefault_01CreateWallet_test_0001CreateOneTi
 }
 END_TEST
 
+START_TEST(test_01CreateWallet_0002CreateOneTimeWalletFailureNullConfig) 
+{
+    BSINT32 rtnVal;
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, NULL, sizeof(BoatHlchainmakerWalletConfig));
+    
+    /* 3. verify test result */
+    /* 3-1. verify the return value */
+    ck_assert_int_eq(rtnVal, -1);
+
+    /* 3-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+}
+END_TEST
+
 
 
 Suite *make_wallet_suite(void) 
@@ -90,7 +107,8 @@ Suite *make_wallet_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_wallet, tc_wallet_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_wallet_api, test_BoAT_chainmaker_linuxDefault_01CreateWallet_test_0001CreateOneTimeWalletSuccess);  
+    tcase_add_test(tc_wallet_api, test_01CreateWallet_0001CreateOneTimeWalletSuccess);  
+    tcase_add_test(tc_wallet_api, test_01CreateWallet_0002CreateOneTimeWalletFailureNullConfig); 
     return s_wallet;
 }
 
