@@ -74,7 +74,7 @@ static BOAT_RESULT chainmakerWalletPrepare(void)
     return BOAT_SUCCESS;
 }
 
-START_TEST(test_02InitTxParam_0001TxinitSuccess) 
+START_TEST(test_02InitSetTxParam_0001TxinitSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -86,7 +86,7 @@ START_TEST(test_02InitTxParam_0001TxinitSuccess)
 }
 END_TEST
 
-START_TEST(test_02InitTxParam_0002TxinitxFailureNullpara) 
+START_TEST(test_02InitSetTxParam_0002TxinitxFailureNullpara) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -108,7 +108,7 @@ START_TEST(test_02InitTxParam_0002TxinitxFailureNullpara)
 END_TEST
 
 
-START_TEST(test_02InitTxParam_0003SetTxParamSuccess) 
+START_TEST(test_02InitSetTxParam_0003SetTxParamSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -116,6 +116,17 @@ START_TEST(test_02InitTxParam_0003SetTxParamSuccess)
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "vlaue1", "key2", "vlaue2", 
                                                     "key3", "vlaue3");
     ck_assert_int_eq(rtnVal, 0);
+}
+END_TEST
+
+
+START_TEST(test_02InitSetTxParam_0004setTxParamFailureShortParam) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerTx tx_ptr;
+
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "vlaue1", "key2", "vlaue2", "key3");
+    ck_assert_int_eq(rtnVal, -100);
 }
 END_TEST
 
@@ -130,9 +141,10 @@ Suite *make_parameters_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_paramters, tc_paramters_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_paramters_api, test_02InitTxParam_0001TxinitSuccess);  
-    tcase_add_test(tc_paramters_api, test_02InitTxParam_0002TxinitxFailureNullpara);  
-    tcase_add_test(tc_paramters_api, test_02InitTxParam_0003SetTxParamSuccess);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0001TxinitSuccess);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0002TxinitxFailureNullpara);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0003SetTxParamSuccess);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0004setTxParamFailureShortParam);  
 
     return s_paramters;
 }
