@@ -53,10 +53,6 @@ START_TEST(test_01CreateWallet_0001CreateOneTimeWalletSuccess)
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
-     /* 1. prepare test conditions*/
-    wallet_config.user_prikey_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-    wallet_config.user_prikey_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
-
     /* 1. execute unit test */
     rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
     
@@ -94,7 +90,31 @@ START_TEST(test_01CreateWallet_0002CreateOneTimeWalletFailureNullConfig)
 }
 END_TEST
 
+START_TEST(test_01CreateWallet_0003CreatePersistWalletSuccess) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
 
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, "chainmaker", &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
+
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 0);
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, "chainmaker", &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
+    
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 1);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == true);
+}
+END_TEST
 
 Suite *make_wallet_suite(void) 
 {
@@ -109,6 +129,7 @@ Suite *make_wallet_suite(void)
     /* Test cases are added to the test set */
     tcase_add_test(tc_wallet_api, test_01CreateWallet_0001CreateOneTimeWalletSuccess);  
     tcase_add_test(tc_wallet_api, test_01CreateWallet_0002CreateOneTimeWalletFailureNullConfig); 
+    tcase_add_test(tc_wallet_api, test_01CreateWallet_0003CreatePersistWalletSuccess);
     return s_wallet;
 }
 
