@@ -83,8 +83,8 @@ See blockchain official website for details:
 + [PlatON Enterprise](https://github.com/PlatONEnterprise/)
 
 #### Deploy the smart contract
-The smart contracts used in the demo locate in ./contract.
-Follow blockchain official website for details on how to compile and deploy the contract.
+The smart contracts used in the demo locate in ./contract.  
+Follow the blockchain's official website for details on how to compile and deploy the contract.
 
 #### Modify the demo code
 Modify the demo code in ./demo:
