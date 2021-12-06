@@ -168,7 +168,7 @@ Make sure the network connection to the blockchain node (or blockchain simulator
 
 The smart contract is the code running on the blockchain virtual machine. Smart contracts run like remote API calls. Though the programming language of smart contracts is not C, it has defined ABI (Application Binary Interface). Therefore, remote calls to the contract must follow the ABI.
 
-However manually applying the rule of ABI is quite complex for embedded C programmers. BoAT IoT Framework SDK provides some tools to generate C interface codes from the ABI. The generated C API can be called from other part within the C project. Though not all contract ABI can be converted to C interface due to lack of object-oriented programming capability, the tools could ease a lot of works.
+However, manually applying the rule of ABI is quite complex for embedded C programmers. BoAT IoT Framework SDK provides some tools to generate C interface codes from the ABI. The generated C API can be called from other parts within the C project. Though not all contract ABI can be converted to a C interface due to a lack of object-oriented programming capability, the tools could ease many obligations.
 
 The generation tools are written in Python and lie in ./tools.
 
