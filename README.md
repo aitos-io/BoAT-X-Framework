@@ -13,7 +13,7 @@ Welcome to the official implementation of BoAT Framework!
 
 ### The Pain Point
 
-Most blockchain or BaaS (Blockchain as a Service) variants bring node or client/wallet software. However, these software are designed for personal computers, cloud servers or smartphones and are usually written in high-level languages like Go, Java, JavaScript, Python, etc. Some of them require cumbersome virtual machine or interpreter to execute and some even have to download code dynamically at runtime. Meanwhile IoT devices are not as powerful and typically run RTOS or lightweight linux. Due to constrained resources, most IoT devices could only support native C language applications and thus can hardly access blockchain directly.
+Most blockchain or BaaS (Blockchain as a Service) variants bring node or client/wallet software. However, these software are designed for personal computers, cloud servers or smartphones and are usually written in high-level languages like Go, Java, JavaScript, Python, etc. Some require a cumbersome virtual machine or interpreter to execute, and some even have to download code dynamically at runtime. Meanwhile, IoT devices are not as powerful and typically run RTOS or lightweight Linux. Due to constrained resources, most IoT devices could only support native C language applications and thus can hardly access blockchain directly.
 
 
 ### The Solution
