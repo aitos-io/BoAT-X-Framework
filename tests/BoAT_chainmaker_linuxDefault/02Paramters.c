@@ -74,7 +74,7 @@ static BOAT_RESULT chainmakerWalletPrepare(void)
     return BOAT_SUCCESS;
 }
 
-START_TEST(test_02InitSetTxParam_0001TxinitSuccess) 
+START_TEST(test_02Param_0001TxinitSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -86,7 +86,7 @@ START_TEST(test_02InitSetTxParam_0001TxinitSuccess)
 }
 END_TEST
 
-START_TEST(test_02InitSetTxParam_0002TxinitxFailureNullpara) 
+START_TEST(test_02Param_0002TxinitxFailureNullpara) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -108,7 +108,7 @@ START_TEST(test_02InitSetTxParam_0002TxinitxFailureNullpara)
 END_TEST
 
 
-START_TEST(test_02InitSetTxParam_0003AddTxParamSuccess) 
+START_TEST(test_02Param_0003AddTxParamSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -120,7 +120,7 @@ START_TEST(test_02InitSetTxParam_0003AddTxParamSuccess)
 END_TEST
 
 
-START_TEST(test_02InitSetTxParam_0004AddTxParamFailureShortParam) 
+START_TEST(test_02Param_0004AddTxParamFailureShortParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -130,7 +130,7 @@ START_TEST(test_02InitSetTxParam_0004AddTxParamFailureShortParam)
 }
 END_TEST
 
-START_TEST(test_02InitSetTxParam_0005AddTxParamFailureLongParam) 
+START_TEST(test_02Param_0005AddTxParamFailureLongParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -141,7 +141,7 @@ START_TEST(test_02InitSetTxParam_0005AddTxParamFailureLongParam)
 }
 END_TEST
 
-START_TEST(test_02InitSetTxParam_0006AddTxParamFailureOddParam) 
+START_TEST(test_02Param_0006AddTxParamFailureOddParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -152,7 +152,7 @@ START_TEST(test_02InitSetTxParam_0006AddTxParamFailureOddParam)
 }
 END_TEST
 
-START_TEST(test_02InitSetTxParam_0007AddTxParamSucessNumberNULLParam) 
+START_TEST(test_02Param_0007AddTxParamSucessNumberNULLParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -162,7 +162,7 @@ START_TEST(test_02InitSetTxParam_0007AddTxParamSucessNumberNULLParam)
 }
 END_TEST
 
-START_TEST(test_02InitSetTxParam_0008AddTxParamFailureTxNULLParam) 
+START_TEST(test_02Param_0008AddTxParamFailureTxNULLParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -176,23 +176,23 @@ END_TEST
 Suite *make_parameters_suite(void) 
 {
     /* Create Suite */
-    Suite *s_paramters = suite_create("paramters");
+    Suite *s_param = suite_create("param");
 
     /* Create test cases */
-    TCase *tc_paramters_api = tcase_create("paramters_api");
+    TCase *tc_param_api = tcase_create("param_api");
 
     /* Add a test case to the Suite */
-    suite_add_tcase(s_paramters, tc_paramters_api);       
+    suite_add_tcase(s_param, tc_param_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0001TxinitSuccess);  
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0002TxinitxFailureNullpara);  
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0003AddTxParamSuccess);  
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0004AddTxParamFailureShortParam);  
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0005AddTxParamFailureLongParam); 
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0006AddTxParamFailureOddParam);   
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0007AddTxParamSucessNumberNULLParam);  
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0008AddTxParamFailureTxNULLParam);  
+    tcase_add_test(tc_param_api, test_02Param_0001TxinitSuccess);  
+    tcase_add_test(tc_param_api, test_02Param_0002TxinitxFailureNullpara);  
+    tcase_add_test(tc_param_api, test_02Param_0003AddTxParamSuccess);  
+    tcase_add_test(tc_param_api, test_02Param_0004AddTxParamFailureShortParam);  
+    tcase_add_test(tc_param_api, test_02Param_0005AddTxParamFailureLongParam); 
+    tcase_add_test(tc_param_api, test_02Param_0006AddTxParamFailureOddParam);   
+    tcase_add_test(tc_param_api, test_02Param_0007AddTxParamSucessNumberNULLParam);  
+    tcase_add_test(tc_param_api, test_02Param_0008AddTxParamFailureTxNULLParam);  
 
-    return s_paramters;
+    return s_param;
 }
 
