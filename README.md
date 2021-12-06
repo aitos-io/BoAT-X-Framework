@@ -88,7 +88,7 @@ Follow the blockchain's official website for details on how to compile and deplo
 
 #### Modify the demo code
 Modify the demo code in ./demo:
-+ Replace the private key and account address (if necessary) with a appropriate one
++ Replace the private key and account address (if necessary) with an appropriate one
 + Replace the smart contract address with the one you got when deploying the contract
 + Replace the URL of the blockchain node with the real one
 
