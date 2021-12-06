@@ -73,9 +73,9 @@ Linux-based embedded devices are similar to that on x86_64, except for the exact
 As BoAT is a client for blockchain, some environments must be prepared before building the demo.
 
 #### Make use of a deployed blockchain or deploy your own blockchain
-For public blockchain, you must prepare some gas for transaction fee in advance. If a simulator is available for that blockchain, it's a better choice.
+For public blockchains, you must prepare some gas for transaction fees in advance. If a simulator is available for that blockchain, it's a better choice.
 
-For consortium blockchain, you must consult the administrator to give you access permission on the blockchain. Or you may deploy your own consortium blockchain node for test purpose.
+For consortium blockchains, you must consult the administrator to give you access permission on the blockchains. Or you may deploy your own consortium blockchains node for test purposes.
 
 See blockchain official website for details:
 + [Ethereum](https://ethereum.org/)
