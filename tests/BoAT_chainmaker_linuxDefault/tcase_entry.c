@@ -21,6 +21,7 @@
 /* extern suite declaration */
 extern Suite *make_wallet_suite(void);
 extern Suite *make_parameters_suite(void);
+extern Suite *make_contract_suite(void);
 
 
 int main(int argc, char *argv[])
@@ -31,6 +32,7 @@ int main(int argc, char *argv[])
    /* new adding test suite should create in here */
    Suite *suite_wallet    = make_wallet_suite();
    Suite *suite_paramters = make_parameters_suite();
+   Suite *suite_contract  = make_contract_suite();
 
    /* create srunner and add first suite to it.
     The first suite in a suite runner is always added in function srunner_create,
@@ -40,6 +42,7 @@ int main(int argc, char *argv[])
    srunner_set_log(sr, "log.txt");
    /* add other suite to srunner, more test suite should be add in here */
    srunner_add_suite(sr, suite_paramters);
+   srunner_add_suite(sr, suite_contract);
 
    /* start to run all test case */
    srunner_run_all(sr, CK_NORMAL);
