@@ -77,11 +77,6 @@ For public blockchains, you must prepare some gas for transaction fees in advanc
 
 For consortium blockchains, you must consult the administrator to give you access permission on the blockchains. Or you may deploy your own consortium blockchains node for test purposes.
 
-See blockchain official website for details:
-+ [Ethereum](https://ethereum.org/)
-+ [Ganache: an Ethereum Simulator](https://www.trufflesuite.com/truffle/)
-+ [PlatON Enterprise](https://github.com/PlatONEnterprise/)
-
 #### Deploy the smart contract
 The smart contracts used in the demo locate in ./contract.  
 Follow the blockchain's official website for details on how to compile and deploy the contract.
