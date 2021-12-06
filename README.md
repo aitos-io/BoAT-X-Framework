@@ -42,7 +42,8 @@ For project status update, please visit [BoAT Project Status Update Reports](htt
 
 ### Dependencies 
 
-BoAT is tested with following dependencies. The dependent softwares with lower version probably work well but are not tested.
+BoAT is tested with the following dependencies:  
+(The dependent software with a lower version will most likely work well but are not tested).
 
 #### General
 In general, following dependencies are required:
