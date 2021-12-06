@@ -20,9 +20,9 @@ Most blockchain or BaaS (Blockchain as a Service) variants bring node or client/
 
 There are two methods to resolve the problem. First, the IoT devices send data to a traditional centralized cloud server, the data hub, and then relay the data to the blockchain. This method resolves the problem with some trade-off of higher single-point failure probability at the data hub.
 
-The other method is, the IoT devices directly invoke on-chain smart contract via a blockchain client that meets the device environment and the blockchain. This method allows every IoT device to access blockchain in an independent and distributed way with the trade-off that a C-language blockchain client SDK has to be developed and ported to various device hardware and software environments.
+The other method is, the IoT devices directly invoke on-chain smart contracts via a blockchain client that meets the device environment and the blockchain. This method allows every IoT device to access blockchain in an independent and distributed way with the trade-off that a C-language blockchain client SDK has to be developed and ported to various device hardware and software environments.
 
-The latter is the way **BoAT** is walking on. To ease off the effort that IoT device manufacturers have to take, *aitos.io* initiates and contributes to **BoAT**, the C-language blockchain application framework, enabling IoT device to easily access the blockchain. 
+The latter is the way **BoAT** is walking on. To ease off the effort that IoT device manufacturers have to take, *aitos.io* initiates and contributes to **BoAT**, the C-language blockchain application framework, enabling IoT devices to access the blockchain easily. 
 
 
 ### Supported Blockchains and IoT Modules
