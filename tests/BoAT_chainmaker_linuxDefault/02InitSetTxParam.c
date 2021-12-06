@@ -108,7 +108,7 @@ START_TEST(test_02InitSetTxParam_0002TxinitxFailureNullpara)
 END_TEST
 
 
-START_TEST(test_02InitSetTxParam_0003SetTxParamSuccess) 
+START_TEST(test_02InitSetTxParam_0003AddTxParamSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -120,7 +120,7 @@ START_TEST(test_02InitSetTxParam_0003SetTxParamSuccess)
 END_TEST
 
 
-START_TEST(test_02InitSetTxParam_0004setTxParamFailureShortParam) 
+START_TEST(test_02InitSetTxParam_0004AddTxParamFailureShortParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -130,7 +130,7 @@ START_TEST(test_02InitSetTxParam_0004setTxParamFailureShortParam)
 }
 END_TEST
 
-START_TEST(test_02InitSetTxParam_0005setTxParamFailureLongParam) 
+START_TEST(test_02InitSetTxParam_0005AddTxParamFailureLongParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -141,7 +141,7 @@ START_TEST(test_02InitSetTxParam_0005setTxParamFailureLongParam)
 }
 END_TEST
 
-START_TEST(test_02InitSetTxParam_0006setTxParamFailureOddParam) 
+START_TEST(test_02InitSetTxParam_0006AddTxParamFailureOddParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -152,7 +152,7 @@ START_TEST(test_02InitSetTxParam_0006setTxParamFailureOddParam)
 }
 END_TEST
 
-START_TEST(test_02InitSetTxParam_0007setTxParamSucessNumberNULLParam) 
+START_TEST(test_02InitSetTxParam_0007AddTxParamSucessNumberNULLParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -162,7 +162,7 @@ START_TEST(test_02InitSetTxParam_0007setTxParamSucessNumberNULLParam)
 }
 END_TEST
 
-START_TEST(test_02InitSetTxParam_0008setTxParamFailureTxNULLParam) 
+START_TEST(test_02InitSetTxParam_0008AddTxParamFailureTxNULLParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -186,12 +186,12 @@ Suite *make_parameters_suite(void)
     /* Test cases are added to the test set */
     tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0001TxinitSuccess);  
     tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0002TxinitxFailureNullpara);  
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0003SetTxParamSuccess);  
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0004setTxParamFailureShortParam);  
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0005setTxParamFailureLongParam); 
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0006setTxParamFailureOddParam);   
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0007setTxParamSucessNumberNULLParam);  
-    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0008setTxParamFailureTxNULLParam);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0003AddTxParamSuccess);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0004AddTxParamFailureShortParam);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0005AddTxParamFailureLongParam); 
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0006AddTxParamFailureOddParam);   
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0007AddTxParamSucessNumberNULLParam);  
+    tcase_add_test(tc_paramters_api, test_02InitSetTxParam_0008AddTxParamFailureTxNULLParam);  
 
     return s_paramters;
 }
