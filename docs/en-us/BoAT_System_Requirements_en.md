@@ -85,7 +85,7 @@ The communication protocol follows the operator's requirements if the device can
 
 If the application processor of the cellular module supports the TEE (Trusted Execution Environment), the TEE can be used to protect sensitive data such as keys, signatures as well as sensitive processes like encryption. The TEE should support at least the following capabilities:
 
-1. Allowing customers to develop a TA (Trusted Application) . For example, some necessary keys are offered.
+1. Allowing customers to develop a TA (Trusted Application). For example, some necessary keys are offered.
 2. Supporting Secure Boot, fuse, etc.
 3. Support for secure storage
 
