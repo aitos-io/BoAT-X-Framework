@@ -318,6 +318,25 @@ START_TEST(test_03Contract_00012InvokeFailureResponseNull)
 }
 END_TEST
 
+START_TEST(test_03Contract_00013InvokeSucess) 
+{
+   BOAT_RESULT        result;
+    BoatHlchainmakerTx tx_ptr;
+    BoatQueryReponse  query_reponse;
+
+    result = test_contrct_query_prepara(&tx_ptr);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", &query_reponse); ;
+    ck_assert(result == BOAT_SUCCESS);
+    if (result == BOAT_SUCCESS)
+    {
+        ck_assert(query_reponse.code == BOAT_SUCCESS);
+        ck_assert(query_reponse.gas_used != 0);
+    }
+}
+END_TEST
+
 
 Suite *make_contract_suite(void) 
 {
@@ -343,8 +362,7 @@ Suite *make_contract_suite(void)
     tcase_add_test(tc_contract_api, test_03Contract_00010QueryFailureContractNull); 
     tcase_add_test(tc_contract_api, test_03Contract_00011QueryFailureContractNoExist);
     tcase_add_test(tc_contract_api, test_03Contract_00012InvokeFailureResponseNull);
-    
-    
+    tcase_add_test(tc_contract_api, test_03Contract_00013InvokeSucess);
  
     return s_contract;
 }
