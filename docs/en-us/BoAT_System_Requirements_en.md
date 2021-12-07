@@ -56,7 +56,7 @@ There are no special requirements concerning the operating system. Generally, Bo
 
 1. Supports dynamic memory allocation/release. 
 2. Supports mutual exclusion (mutex) protection mechanism.
-3. Supports thread suspension for a specified duration (optional). BoAT cannot support "timeout" or "polling" functions without the support of the "thread suspension" function, while other funtioncs have no such dependency. 
+3. Supports thread suspension for a specified duration (optional). BoAT cannot support "timeout" or "polling" functions without the support of the "thread suspension" function, while other functions have no such dependency. 
 4. From the candidate random number generators list, select to support at least one type in the order of priority: <br>
    (1) TRNG, true random number generator (requires hardware support) <br>
    (2) CSPRNG, a cryptographically secure pseudo-random number generator. For Linux, this capability can be provided by the OpenSSL library <br>
