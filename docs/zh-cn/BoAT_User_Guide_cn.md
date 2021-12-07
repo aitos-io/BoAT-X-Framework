@@ -536,7 +536,7 @@ BoAT IoT Framework SDK编译完成后，应用可以通过SDK头文件和库，�
 ### SDK初始化和销毁
 在调用SDK之前，必须调用BoatIotSdkInit()对SDK的全局资源进行初始化:
 ```
-BOAT_RESULT BoatIotSdktInit(void);
+BOAT_RESULT BoatIotSdkInit(void);
 ```
 在使用结束后，应调用BoatIotSdkDeInit()释放资源:
 ```
