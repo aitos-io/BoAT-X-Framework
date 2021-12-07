@@ -74,7 +74,7 @@ static BOAT_RESULT ChainmakerWalletPrepare(void)
     return BOAT_SUCCESS;
 }
 
-static BOAT_RESULT test_contrct_invoke_prepara(BoatHlchainmakerTx  tx_ptr)
+static BOAT_RESULT test_contrct_invoke_prepara(BoatHlchainmakerTx  *tx_ptr)
 {
     BOAT_RESULT  result  = BOAT_SUCCESS;
     /* step-1: Boat SDK initialization */
@@ -89,14 +89,14 @@ static BOAT_RESULT test_contrct_invoke_prepara(BoatHlchainmakerTx  tx_ptr)
     }
 
     /* step-3: Chainmaker transaction structure initialization */
-    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, &tx_ptr);
+    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, tx_ptr);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "BoatHlChainmakerTxInit() failed.");
         return -1;
     }
 
-    result = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005");
+    result = BoatHlchainmakerAddTxParam(tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005");
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
@@ -123,10 +123,25 @@ START_TEST(test_03Contract_0002InvokeFailureMethodNull)
     BoatHlchainmakerTx tx_ptr;
     BoatInvokeReponse  invoke_reponse;
 
-    test_contrct_invoke_prepara(tx_ptr);
+    result = test_contrct_invoke_prepara(&tx_ptr);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, NULL, "fact", true, &invoke_reponse); ;
     ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+}
+END_TEST
+
+START_TEST(test_03Contract_0003InvokeFailureContractNull) 
+{
+    BOAT_RESULT        result;
+    BoatHlchainmakerTx tx_ptr;
+    BoatInvokeReponse  invoke_reponse;
+
+    result = test_contrct_invoke_prepara(&tx_ptr);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", NULL, true, &invoke_reponse); ;
+    ck_assert(result == 0);
 }
 END_TEST
 
@@ -143,7 +158,9 @@ Suite *make_contract_suite(void)
     suite_add_tcase(s_contract, tc_contract_api);       
     /* Test cases are added to the test set */
     tcase_add_test(tc_contract_api, test_03Contract_0001InvokeFailureTxNull); 
-    tcase_add_test(tc_contract_api, test_03Contract_0002InvokeFailureMethodNull);   
+    tcase_add_test(tc_contract_api, test_03Contract_0002InvokeFailureMethodNull);  
+    tcase_add_test(tc_contract_api, test_03Contract_0003InvokeFailureContractNull);  
+     
     return s_contract;
 }
 
