@@ -141,12 +141,7 @@ START_TEST(test_03Contract_0003InvokeFailureContractNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", NULL, true, &invoke_reponse); ;
-    ck_assert(result == BOAT_SUCCESS);
-    if (result == BOAT_SUCCESS)
-    {
-        ck_assert(invoke_reponse.code == BOAT_SUCCESS);
-        ck_assert(invoke_reponse.gas_used == 0);
-    }
+    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -221,6 +216,17 @@ START_TEST(test_03Contract_0007InvokeSucessSyncOff)
 }
 END_TEST
 
+START_TEST(test_03Contract_0008QueryFailureTxNull) 
+{
+    BOAT_RESULT        result;
+    BoatHlchainmakerTx tx_ptr;
+    BoatInvokeReponse  invoke_reponse;
+
+    result = BoatHlchainmakerContractInvoke(NULL, "save", "fact", true, &invoke_reponse); ;
+    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+}
+END_TEST
+
 Suite *make_contract_suite(void) 
 {
     /* Create Suite */
@@ -239,6 +245,9 @@ Suite *make_contract_suite(void)
     tcase_add_test(tc_contract_api, test_03Contract_0005InvokeFailureReponseNull);  
     tcase_add_test(tc_contract_api, test_03Contract_0006InvokeSucessSyncOn); 
     tcase_add_test(tc_contract_api, test_03Contract_0007InvokeSucessSyncOff); 
+
+    tcase_add_test(tc_contract_api, test_03Contract_0008QueryFailureTxNull); 
+    
      
     
      
