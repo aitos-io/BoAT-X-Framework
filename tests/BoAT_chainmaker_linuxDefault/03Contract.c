@@ -104,12 +104,42 @@ static BOAT_RESULT test_contrct_invoke_prepara(BoatHlchainmakerTx  *tx_ptr)
     }
     return result;
 }
+
+static BOAT_RESULT test_contrct_query_prepara(BoatHlchainmakerTx  *tx_ptr)
+{
+    BOAT_RESULT  result  = BOAT_SUCCESS;
+    /* step-1: Boat SDK initialization */
+    BoatIotSdkInit();
+
+    /* step-2: prepare wallet */
+    result = ChainmakerWalletPrepare();
+    if (result != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "ChainmakerWalletPrepare() failed.");
+        return -1;
+    }
+
+    /* step-3: Chainmaker transaction structure initialization */
+    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, tx_ptr);
+    if (result != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "BoatHlChainmakerTxInit() failed.");
+        return -1;
+    }
+
+    result = BoatHlchainmakerAddTxParam(tx_ptr, 2, "file_hash", "ab3456df5799b87c77e7f85");
+    if (result != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
+        return -1;
+    }
+    return result;
+}
     
 
 START_TEST(test_03Contract_0001InvokeFailureTxNull) 
 {
     BOAT_RESULT        result;
-    BoatHlchainmakerTx tx_ptr;
     BoatInvokeReponse  invoke_reponse;
 
     result = BoatHlchainmakerContractInvoke(NULL, "save", "fact", true, &invoke_reponse); ;
@@ -168,7 +198,6 @@ START_TEST(test_03Contract_0005InvokeFailureReponseNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeReponse  invoke_reponse;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -220,9 +249,9 @@ START_TEST(test_03Contract_0008QueryFailureTxNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeReponse  invoke_reponse;
+    BoatQueryReponse  query_reponse;
 
-    result = BoatHlchainmakerContractInvoke(NULL, "save", "fact", true, &invoke_reponse); ;
+    result = BoatHlchainmakerContractQuery(NULL, "save", "fact", &query_reponse); ;
     ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -231,12 +260,12 @@ START_TEST(test_03Contract_0009QueryFailureMethodNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeReponse  invoke_reponse;
+    BoatQueryReponse  query_reponse;
 
-    result = test_contrct_invoke_prepara(&tx_ptr);
+    result = test_contrct_query_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractInvoke(&tx_ptr, NULL, "fact", true, &invoke_reponse); ;
+    result = BoatHlchainmakerContractQuery(&tx_ptr, NULL, "fact", &query_reponse); ;
     ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -246,13 +275,32 @@ START_TEST(test_03Contract_00010QueryFailureContractNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeReponse  invoke_reponse;
+    BoatQueryReponse   query_reponse;
 
-    result = test_contrct_invoke_prepara(&tx_ptr);
+    result = test_contrct_query_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", NULL, true, &invoke_reponse); ;
+    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", NULL, &query_reponse); ;
     ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+}
+END_TEST
+
+START_TEST(test_03Contract_00011QueryFailureContractNoExist) 
+{
+    BOAT_RESULT        result;
+    BoatHlchainmakerTx tx_ptr;
+    BoatQueryReponse  query_reponse;
+
+    result = test_contrct_query_prepara(&tx_ptr);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "test", &query_reponse); ;
+    ck_assert(result == BOAT_SUCCESS);
+    if (result == BOAT_SUCCESS)
+    {
+        ck_assert(query_reponse.code != BOAT_SUCCESS);
+        ck_assert(query_reponse.gas_used == 0);
+    }
 }
 END_TEST
 
@@ -279,6 +327,8 @@ Suite *make_contract_suite(void)
     tcase_add_test(tc_contract_api, test_03Contract_0008QueryFailureTxNull); 
     tcase_add_test(tc_contract_api, test_03Contract_0009QueryFailureMethodNull); 
     tcase_add_test(tc_contract_api, test_03Contract_00010QueryFailureContractNull); 
+    tcase_add_test(tc_contract_api, test_03Contract_00011QueryFailureContractNoExist);
+    
     
  
     return s_contract;
