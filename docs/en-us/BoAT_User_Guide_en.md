@@ -537,7 +537,7 @@ For cross-compilation, you should ensure that the curl versions in the developme
 Before calling the SDK, you must call BoatIotSdkInit() to initialize the global resources of the SDK:
 
 ````
-BOAT_RESULT BoatIotSdktInit(void);
+BOAT_RESULT BoatIotSdkInit(void);
 ````
 
 If the SDK is no longer needed, call BoatIotSdkDeInit() to release resources:
