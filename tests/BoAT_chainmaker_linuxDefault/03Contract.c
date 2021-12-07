@@ -304,6 +304,20 @@ START_TEST(test_03Contract_00011QueryFailureContractNoExist)
 }
 END_TEST
 
+START_TEST(test_03Contract_00012InvokeFailureResponseNull) 
+{
+    BOAT_RESULT        result;
+    BoatHlchainmakerTx tx_ptr;
+
+
+    result = test_contrct_query_prepara(&tx_ptr);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", NULL); 
+    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+}
+END_TEST
+
 
 Suite *make_contract_suite(void) 
 {
@@ -328,6 +342,7 @@ Suite *make_contract_suite(void)
     tcase_add_test(tc_contract_api, test_03Contract_0009QueryFailureMethodNull); 
     tcase_add_test(tc_contract_api, test_03Contract_00010QueryFailureContractNull); 
     tcase_add_test(tc_contract_api, test_03Contract_00011QueryFailureContractNoExist);
+    tcase_add_test(tc_contract_api, test_03Contract_00012InvokeFailureResponseNull);
     
     
  
