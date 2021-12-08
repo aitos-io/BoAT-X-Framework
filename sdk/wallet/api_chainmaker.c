@@ -402,7 +402,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	boat_try_declare;
 
 	TxType tx_type = TXTYPE_INVOKE_USER_CONTRACT; 
-	if ((tx_ptr == NULL) || (method == NULL)) {
+	if ((tx_ptr == NULL) || (method == NULL) || (contract_name == NULL) || (invoke_reponse == NULL)){
 
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
