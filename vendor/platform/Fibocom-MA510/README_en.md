@@ -1,14 +1,13 @@
-# BoAT-X-Framework for 广和通Fibocom-MA510整合说明
+# BoAT-X-Framework for Fibocom-MA510 Integration Guideline
 
 
-## 一、前言
+## 一、About This Guideline
 
-本文档说明如何在Fibocom-MA510开发环境中整合BoAT-X-Framework，编译BoAT-X-Framework静态库，以及生成demo程序。
+This guide describes how to integrate BoAT-X Framework source code into Fibocom-MA510 SDK, compile BoAT-X Framework static library and build the demo program.
 
+## 二、Copy files
 
-## 二、拷贝文件
-
-约定`<MA510 Root>`是Fibocom-MA510平台SDK的根目录：
+Assuming `<MA510 Root>` to be the root directory of Fibocom-MA510 platform SDK:
 
 1、拷贝 BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<MA510 Root>/fibocom/example`下。
 
