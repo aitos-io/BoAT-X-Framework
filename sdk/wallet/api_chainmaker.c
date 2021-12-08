@@ -424,6 +424,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		boat_throw(result, BoatHlchainmakerContractInvoke);
 	}
 
+	invoke_reponse->gas_used = 0;
      invoke_reponse->code  = tx_reponse->code;
 	if (strlen(tx_reponse->message) < BOAT_RESPONSE_MESSAGE_MAX_LEN) {
 
