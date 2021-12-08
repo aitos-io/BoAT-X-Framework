@@ -44,7 +44,7 @@ typedef enum {
 	TxType_QUERY_SYSTEM_CONTRACT = 3
 } TxType;
 
-typedef enum TBoatReponseCode {
+typedef enum TBoatresponseCode {
 
 	SUCCESS                                = 0,
 	TIMEOUT                                = 1,
@@ -82,22 +82,22 @@ typedef enum TBoatReponseCode {
 	CONTRACTINVOKEMETHODFAILED             = 39,
 	ARCHIVEDTX                             = 40,
 	ARCHIVEDBLOCK                          = 41
-} BoatReponseCode;
+} BoatresponseCode;
 
 
-typedef struct TBoatInvokeReponse {	
+typedef struct TBoatInvokeResponse {	
 
-		BoatReponseCode code;
+		BoatresponseCode code;
 		char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
 		BUINT32 gas_used;
-} BoatInvokeReponse;
+} BoatInvokeResponse;
 
-typedef struct TBoatQueryReponse {	
-    BoatReponseCode code;
+typedef struct TBoatQueryResponse {	
+    BoatresponseCode code;
 		char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
 		char contract_result[BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN];
 		BUINT32 gas_used;
-} BoatQueryReponse;
+} BoatQueryResponse;
 
 //! chainmaker certificate information config structure
 typedef struct TBoatHlchainmakerCertInfoCfg {
@@ -287,13 +287,13 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length
  * @param sync_result 
  *   Get invoke gas.
  * 
- * @param invoke_reponse 
+ * @param invoke_response 
  *   Node response data.
  *
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatInvokeReponse *invoke_reponse);
+BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatInvokeResponse *invoke_response);
 
 
 /*!****************************************************************************
@@ -309,13 +309,13 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
  * @param contract_name 
  *   Chainmaker contarct name.
  * 
- * @param invoke_reponse 
+ * @param invoke_response 
  *   Node response data.
  *
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatQueryReponse *query_reponse);
+BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatQueryResponse *query_response);
 /*!****************************************************************************
  * @brief 
  *   chainmaker wallet de-initialize.

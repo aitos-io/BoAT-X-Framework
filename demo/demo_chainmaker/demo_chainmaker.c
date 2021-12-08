@@ -19,25 +19,26 @@
 #include "boatlog.h"
 
 const BCHAR* chainmaker_user_key =  "-----BEGIN EC PRIVATE KEY-----\n"
-									"MHcCAQEEIAGYWRJdL9VqEUGXYApXWxGfrwmUc07XqcAAuQA18G/6oAoGCCqGSM49\n"
-									"AwEHoUQDQgAElZkz2g5CwCOr857LVVM4/zL3ftAkoVh/l+HvF03+HMczm946AX7/\n"
-									"k71Bd9BJxz0asSCZ4HdQqTgQCu5pL1F//A==\n"
-									"-----END EC PRIVATE KEY-----\n";
+										"MHcCAQEEIIs0ji2f0MlhKy6eOPSqknaqzXaL/qErwHyuoYnafy5XoAoGCCqGSM49\n"
+										"AwEHoUQDQgAEH4eVrcpsx+G7cCVUHZlTnYQfx1IEfbQxHEsk16MqM/M32cB9fhCo\n"
+										"SlqdJUQGYYYLH5hKscO0u0IwFg4THl2bAA==\n"
+										"-----END EC PRIVATE KEY-----\n";
+
 
 const BCHAR* chainmaker_user_cert =	"-----BEGIN CERTIFICATE-----\n"
-									"MIICaDCCAg6gAwIBAgIDAIdOMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+									"MIICaDCCAg6gAwIBAgIDDmQsMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
 									"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
 									"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-									"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTExNzAxNTAxOVoXDTI2\n"
-									"MTExNjAxNTAxOVowgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+									"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTEyNDA4NTQzN1oXDTI2\n"
+									"MTEyMzA4NTQzN1owgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
 									"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
 									"MQ8wDQYDVQQLEwZjbGllbnQxLDAqBgNVBAMTI2NsaWVudDEuc2lnbi53eC1vcmcx\n"
-									"LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElZkz2g5C\n"
-									"wCOr857LVVM4/zL3ftAkoVh/l+HvF03+HMczm946AX7/k71Bd9BJxz0asSCZ4HdQ\n"
-									"qTgQCu5pL1F//KNaMFgwKQYDVR0OBCIEIPY5hXPDLG+mONhC7QnIapV5DDP50jEU\n"
-									"oxHnpn+BYl4+MCsGA1UdIwQkMCKAIKsQREhdNfQU/TkPwqoQe0mTuHDGCX0ayS+7\n"
-									"C390a93xMAoGCCqGSM49BAMCA0gAMEUCIQDXccYdq3KaM9ilX9Jzs9SCNv69nmUd\n"
-									"P0Lhsl/OcsFTYwIgSpgE5TcKh0JHg6dF1ILf81KxZWTyy6EhTQpd9lvSf+8=\n"
+									"LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEH4eVrcps\n"
+									"x+G7cCVUHZlTnYQfx1IEfbQxHEsk16MqM/M32cB9fhCoSlqdJUQGYYYLH5hKscO0\n"
+									"u0IwFg4THl2bAKNaMFgwKQYDVR0OBCIEICvG9W6tuYgKgbK5HmSFOPNBcL2m8soF\n"
+									"MS1MJjTAgpPvMCsGA1UdIwQkMCKAIPR0GEcka6b/PSqJJ7A3SNvNvNIQkQXhofjh\n"
+									"iwjmGTxoMAoGCCqGSM49BAMCA0gAMEUCIQCE8S4SiRCbdvgGpDOXDUICH7WUlXOo\n"
+									"N3IHTSI1T2dBRwIgL1CHwXjwM8TtsDA2HPa/U6ad6fe/aHacroEW9OWO3IY=\n"
 									"-----END CERTIFICATE-----\n";
 
 const BCHAR* chainmaker_tls_ca_cert =   "-----BEGIN CERTIFICATE-----\n"
@@ -124,8 +125,8 @@ int main(int argc, char *argv[])
 {
 	BOAT_RESULT           result  = BOAT_SUCCESS;
 	BoatHlchainmakerTx    tx_ptr;
-	BoatInvokeReponse     invoke_reponse;
-	BoatQueryReponse      query_reponse;
+	BoatInvokeResponse     invoke_response;
+	BoatQueryResponse      query_response;
 
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
@@ -152,13 +153,13 @@ int main(int argc, char *argv[])
 	}
 
 	/* step-4: set transaction 'invoke' command */
-	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", true, &invoke_reponse); 
+	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", true, &invoke_response); 
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
 	}
 	printf("BoatHlchainmakerContractInvoke\n");
-	BoatLog( BOAT_LOG_CRITICAL, "reponse code = %d, message = %s, gas_used = %d\n", invoke_reponse.code, invoke_reponse.message, invoke_reponse.gas_used);
+	BoatLog( BOAT_LOG_CRITICAL, "response code = %d, message = %s, gas_used = %d\n", invoke_response.code, invoke_response.message, invoke_response.gas_used);
 
 	/* step-5: wait seconds and 'query' the gas */
 	BoatSleep(2);
@@ -168,13 +169,13 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &query_reponse);
+	result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &query_response);
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
 	}
-	BoatLog( BOAT_LOG_CRITICAL, "reponse code = %d, reponse message = %s,  contract_result = %s, gas_used = %d\n", 
-			query_reponse.code, query_reponse.message, query_reponse.contract_result, query_reponse.gas_used);
+	BoatLog( BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, gas_used = %d\n", 
+			query_response.code, query_response.message, query_response.contract_result, query_response.gas_used);
 	/* step-6: chainmaker transaction structure Deinitialization */
 	BoatHlchainmakerTxDeInit(&tx_ptr);
 

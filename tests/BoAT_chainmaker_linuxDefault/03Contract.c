@@ -140,9 +140,9 @@ static BOAT_RESULT test_contrct_query_prepara(BoatHlchainmakerTx  *tx_ptr)
 START_TEST(test_03Contract_0001InvokeFailureTxNull) 
 {
     BOAT_RESULT        result;
-    BoatInvokeReponse  invoke_reponse;
+    BoatInvokeResponse  invoke_response;
 
-    result = BoatHlchainmakerContractInvoke(NULL, "save", "fact", true, &invoke_reponse); ;
+    result = BoatHlchainmakerContractInvoke(NULL, "save", "fact", true, &invoke_response); ;
     ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -151,12 +151,12 @@ START_TEST(test_03Contract_0002InvokeFailureMethodNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeReponse  invoke_reponse;
+    BoatInvokeResponse  invoke_response;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractInvoke(&tx_ptr, NULL, "fact", true, &invoke_reponse); ;
+    result = BoatHlchainmakerContractInvoke(&tx_ptr, NULL, "fact", true, &invoke_response); ;
     ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -165,12 +165,12 @@ START_TEST(test_03Contract_0003InvokeFailureContractNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeReponse  invoke_reponse;
+    BoatInvokeResponse  invoke_response;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", NULL, true, &invoke_reponse); ;
+    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", NULL, true, &invoke_response); ;
     ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -179,22 +179,22 @@ START_TEST(test_03Contract_0004InvokeFailureContractNoExist)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeReponse  invoke_reponse;
+    BoatInvokeResponse  invoke_response;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "test", true, &invoke_reponse); ;
+    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "test", true, &invoke_response); ;
     ck_assert(result == BOAT_SUCCESS);
     if (result == BOAT_SUCCESS)
     {
-        ck_assert(invoke_reponse.code == BOAT_SUCCESS);
-        ck_assert(invoke_reponse.gas_used == 0);
+        ck_assert(invoke_response.code == BOAT_SUCCESS);
+        ck_assert(invoke_response.gas_used == 0);
     }
 }
 END_TEST
 
-START_TEST(test_03Contract_0005InvokeFailureReponseNull) 
+START_TEST(test_03Contract_0005InvokeFailureresponseNull) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -211,17 +211,17 @@ START_TEST(test_03Contract_0006InvokeSucessSyncOn)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeReponse  invoke_reponse;
+    BoatInvokeResponse  invoke_response;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "fact", true, &invoke_reponse); ;
+    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "fact", true, &invoke_response); ;
     ck_assert(result == BOAT_SUCCESS);
     if (result == BOAT_SUCCESS)
     {
-        ck_assert(invoke_reponse.code == BOAT_SUCCESS);
-        ck_assert(invoke_reponse.gas_used != 0);
+        ck_assert(invoke_response.code == BOAT_SUCCESS);
+        ck_assert(invoke_response.gas_used != 0);
     }
 }
 END_TEST
@@ -230,17 +230,17 @@ START_TEST(test_03Contract_0007InvokeSucessSyncOff)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeReponse  invoke_reponse;
+    BoatInvokeResponse  invoke_response;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "fact", false, &invoke_reponse); ;
+    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "fact", false, &invoke_response); ;
     ck_assert(result == BOAT_SUCCESS);
     if (result == BOAT_SUCCESS)
     {
-        ck_assert(invoke_reponse.code == BOAT_SUCCESS);
-        ck_assert(invoke_reponse.gas_used == 0);
+        ck_assert(invoke_response.code == BOAT_SUCCESS);
+        ck_assert(invoke_response.gas_used == 0);
     }
 }
 END_TEST
@@ -249,9 +249,9 @@ START_TEST(test_03Contract_0008QueryFailureTxNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryReponse  query_reponse;
+    BoatQueryResponse  query_response;
 
-    result = BoatHlchainmakerContractQuery(NULL, "save", "fact", &query_reponse); ;
+    result = BoatHlchainmakerContractQuery(NULL, "save", "fact", &query_response); ;
     ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -260,12 +260,12 @@ START_TEST(test_03Contract_0009QueryFailureMethodNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryReponse  query_reponse;
+    BoatQueryResponse  query_response;
 
     result = test_contrct_query_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractQuery(&tx_ptr, NULL, "fact", &query_reponse); ;
+    result = BoatHlchainmakerContractQuery(&tx_ptr, NULL, "fact", &query_response); ;
     ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -275,12 +275,12 @@ START_TEST(test_03Contract_00010QueryFailureContractNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryReponse   query_reponse;
+    BoatQueryResponse   query_response;
 
     result = test_contrct_query_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", NULL, &query_reponse); ;
+    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", NULL, &query_response); ;
     ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -289,17 +289,17 @@ START_TEST(test_03Contract_00011QueryFailureContractNoExist)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryReponse  query_reponse;
+    BoatQueryResponse  query_response;
 
     result = test_contrct_query_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "test", &query_reponse); ;
+    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "test", &query_response); ;
     ck_assert(result == BOAT_SUCCESS);
     if (result == BOAT_SUCCESS)
     {
-        ck_assert(query_reponse.code != BOAT_SUCCESS);
-        ck_assert(query_reponse.gas_used == 0);
+        ck_assert(query_response.code != BOAT_SUCCESS);
+        ck_assert(query_response.gas_used == 0);
     }
 }
 END_TEST
@@ -322,17 +322,17 @@ START_TEST(test_03Contract_00013InvokeSucess)
 {
    BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryReponse  query_reponse;
+    BoatQueryResponse  query_response;
 
     result = test_contrct_query_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", &query_reponse); ;
+    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", &query_response); ;
     ck_assert(result == BOAT_SUCCESS);
     if (result == BOAT_SUCCESS)
     {
-        ck_assert(query_reponse.code == BOAT_SUCCESS);
-        ck_assert(query_reponse.gas_used != 0);
+        ck_assert(query_response.code == BOAT_SUCCESS);
+        ck_assert(query_response.gas_used != 0);
     }
 }
 END_TEST
@@ -353,7 +353,7 @@ Suite *make_contract_suite(void)
     tcase_add_test(tc_contract_api, test_03Contract_0002InvokeFailureMethodNull);  
     tcase_add_test(tc_contract_api, test_03Contract_0003InvokeFailureContractNull);  
     tcase_add_test(tc_contract_api, test_03Contract_0004InvokeFailureContractNoExist);  
-    tcase_add_test(tc_contract_api, test_03Contract_0005InvokeFailureReponseNull);  
+    tcase_add_test(tc_contract_api, test_03Contract_0005InvokeFailureresponseNull);  
     tcase_add_test(tc_contract_api, test_03Contract_0006InvokeSucessSyncOn); 
     tcase_add_test(tc_contract_api, test_03Contract_0007InvokeSucessSyncOff); 
 
