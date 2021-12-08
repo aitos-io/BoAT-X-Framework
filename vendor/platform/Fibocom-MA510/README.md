@@ -122,10 +122,10 @@ EXTERNAL_CFLAGS := -marm -target armv7m-none-musleabi -mfloat-abi=softfp -mfpu=n
 
    通过BoAT-X-Framework访问区块链的演示代码，在`<MA510 Root>/fibocom/example/boat_demo/src/boat_demo.c`
    
-   打开Linux终端并进入`<XY1100 Root>`
+   打开Linux终端并进入`<MA510 Root>`
    ```
-   cd <XY1100 Root>
+   cd <MA510 Root>
    ./build_all.sh llvm -c
    ./build_all.sh llvm boat_demo
    ```
-   编译成功会在`<XY1100 Root>/bin`下生成oem_app_path.ini、boat_demo_dam_demo.map、boat_demo_dam_demo.elf、boat_demo_dam_demo.bin文件	
+   编译成功会在`<MA510 Root>/bin`下生成oem_app_path.ini、boat_demo_dam_demo.map、boat_demo_dam_demo.elf、boat_demo_dam_demo.bin文件	
