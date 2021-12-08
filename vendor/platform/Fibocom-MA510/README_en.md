@@ -30,22 +30,22 @@ After copying these files, the directory structure should look like:
 ```
 
 
-## 三、文件修改
+## 三、File Modification
 
-### 1、在example.txt中添加支持编译的demo
+### 1、Add a demo supporting compilation in example.txt
 
-  打开`<MA510 Root>/example.txt`文件
+  Open `<MA510 Root>/example.txt`
   
-  在文件结尾处新添以下内容：
+  Add the following at the end of the file:
   ```
 boat_demo      -__EXAMPLE_BOATDEMO__ -NO -NO
   ```
 
-### 2、在build_all.sh中添加需要引用的BoAT相关头文件路径和生成的静态库路径
+### 2、In build_all.sh, add the BoAT related header file path and the generated static library path that need to be referenced
 
-打开`<MA510 Root>/build_all.sh`文件
+Open `<MA510 Root>/build_all.sh`
 
-在引用文件路径添加处新添以下内容：
+Add the following content at the place where the reference file path is added:
 ```
 BOAT_INC_PATH="fibocom/example/BoAT-X-Framework/include"
 BOAT_PROTOCOL_INC_PATH="fibocom/example/BoAT-X-Framework/include/protocolapi"
@@ -53,32 +53,32 @@ BOAT_LOG_INC_PATH="fibocom/example/BoAT-X-Framework/vendor/platform/Fibocom-MA51
 BOAT_LIB_PATH="fibocom/example/BoAT-X-Framework/lib"
 ```
 
-### 3、添加BoAT-X-Framework编译生成的静态库.a文件路径到Fibocom-MA510平台
+### 3、Add the static library file path to Fibocom-MA510 platform
 
-打开`<MA510 Root>/build_all.sh`文件
+Open `<MA510 Root>/build_all.sh`
   
-在链接lib库的位置添加BoAT的静态库，例如：
+Add the static library of BoAT at the location of the link lib library, for example:
   ```
 $TOOLCHAIN_PATH/clang++ -d -o $DEMO_ELF_OUTPUT_PATH/$DAM_ELF_NAME -target armv7m-none-musleabi -fuse-ld=qcld -lc++ -Wl,-mno-unaligned-access -fuse-baremetal-sysroot -fno-use-baremetal-crt -Wl,-entry=$DAM_RO_BASE $DEMO_APP_OUTPUT_PATH/txm_module_preamble_llvm.o -Wl,-T$DAM_SRC_PATH/../app_dam_demo.ld -Wl,-Map,$DEMO_ELF_OUTPUT_PATH/$DAM_MAP_NAME,-gc-sections -Wl,-gc-sections $DEMO_APP_OUTPUT_PATH/*.o  -L $BOAT_LIB_PATH -lboatwallet -L $BOAT_LIB_PATH -lboatvendor $DAM_LIB_PATH/*.lib
   ```
-需要注意所链接的库顺序，因为BoAT的静态库调用了MA510平台的接口，所以应该先链接MA510平台的库，之后再链接BoAT的库
+Need to pay attention to the order of the linked libraries, because the static library of BoAT calls the interface of the MA510 platform, so you should link the library of the MA510 platform first, and then link the library of BoAT.
 
-### 4、配置BoAT-X-Framework的交叉编译环境
+### 4、Configure the cross-compilation environment of BoAT-X-Framework
 
-  打开`<MA510 Root>/fibocom/example/BoAT-X-Framework/vendor/platform/Fibocom-MA510/external.env`文件
+  Open `<MA510 Root>/fibocom/example/BoAT-X-Framework/vendor/platform/Fibocom-MA510/external.env`
   
-  在`CC`和`AR`后面配置本地交叉编译器的实际路径,例如：
+  Configure the actual path of the local cross compiler after `CC` and `AR`, for example:
   ```
 CC := $(BOAT_BASE_DIR)/../../../llvmtools/4.0.3/bin/clang
 AR := $(BOAT_BASE_DIR)/../../../llvmtools/4.0.3/tools/bin/arm-ar
   ```
   
 
-### 5、添加编译BoAT-X-Framework中需要的头文件路径
+### 5、Add the path of the header files needed to compile BoAT-X-Framework
 
-打开`<MA510 Root>/fibocom/example/BoAT-X-Framework/vendor/platform/Fibocom-MA510/external.env`文件
+Open `<MA510 Root>/fibocom/example/BoAT-X-Framework/vendor/platform/Fibocom-MA510/external.env`
 
-添加以下内容：
+Add the following content:
 ```
 EXTERNAL_INC := -I$(BOAT_BASE_DIR)/../../../common/include/qapi \
                 -I$(BOAT_BASE_DIR)/../../../common/include/threadx_api \
@@ -86,11 +86,11 @@ EXTERNAL_INC := -I$(BOAT_BASE_DIR)/../../../common/include/qapi \
                 -I$(BOAT_BASE_DIR)/../../../llvmtools/4.0.3/armv7m-none-eabi/libc/include \
 ```
 
-### 6、添加编译BoAT-X-Framework中需要的编译参数
+### 6、Increase the compilation parameters of BoAT-X-Framework in Fibocom-MA510 platform
 
-打开`<MA510 Root>/fibocom/example/BoAT-X-Framework/vendor/platform/Fibocom-MA510/external.env`文件
+Open `<MA510 Root>/fibocom/example/BoAT-X-Framework/vendor/platform/Fibocom-MA510/external.env`
 
-添加以下内容：
+Add the following content:
 ```
 EXTERNAL_CFLAGS := -marm -target armv7m-none-musleabi -mfloat-abi=softfp -mfpu=none -mcpu=cortex-a7 -mno-unaligned-access  -fms-extensions -Osize -fshort-enums -Wbuiltin-macro-redefined \
                 -DQAPI_TXM_MODULE -DTXM_MODULE -DTX_DAM_QC_CUSTOMIZATIONS -DTX_ENABLE_PROFILING -DTX_ENABLE_EVENT_TRACE -DTX_DISABLE_NOTIFY_CALLBACKS  -DFX_FILEX_PRESENT -DTX_ENABLE_IRQ_NESTING  -DTX3_CHANGES
