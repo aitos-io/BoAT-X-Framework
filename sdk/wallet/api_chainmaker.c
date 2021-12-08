@@ -478,7 +478,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
 
-	if ((tx_ptr == NULL) || (method == NULL)) {
+	if ((tx_ptr == NULL) || (method == NULL) || (contract_name == NULL) || (query_reponse == NULL))  {
 
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
