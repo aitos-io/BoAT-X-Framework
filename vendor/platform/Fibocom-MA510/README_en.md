@@ -97,33 +97,36 @@ EXTERNAL_CFLAGS := -marm -target armv7m-none-musleabi -mfloat-abi=softfp -mfpu=n
 ```
 
 
-## 四、编译BoAT-X-Framework静态库
+## 四、Compile BoAT-X Framework Static library
 
-### 1、在Linux下编译BoAT-X-Framework静态库.a文件
+### 1、Compile BoAT-X Framework static library (under Linux)
    
-   #### a、修改`<MA510 Root>/fibocom/example/BoAT-X-Framework/Makefile`中的target
+   #### a、Configure the target platform in directory BoAT-X-Framework/Makefile
+
+   Open `<MA510 Root>/fibocom/example/BoAT-X-Framework/Makefile`,Set PLATFORM_TARGET:
    ```
    PLATFORM_TARGET ?= Fibocom-MA510
    ```
    
-   #### b、打开Linux终端并进入BoAT-X-Framework目录编译BoAT静态库
+   #### b、Open a Linux shell, enter `<MA510 Root>/userapp/BoAT-X-Framework` directory and compile BoAT static library
+
    ```
    cd <MA510 Root>/fibocom/example/BoAT-X-Framework
    make clean
    make all
    ```
    
-   编译成功后，在`<MA510 Root>/fibocom/example/BoAT-X-Framework/lib`下会生成静态库libboatvendor.a、libboatwallet.a。
+   After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<MA510 Root>/userapp/BoAT-X-Framework/lib` directory.
    
 
-### 2、编译MA510演示demo程序，生成镜像下载文件
+### 2、Compile MA510 demo program and generate mirror download files
 
-   通过BoAT-X-Framework访问区块链的演示代码，在`<MA510 Root>/fibocom/example/boat_demo/src/boat_demo.c`
+   Demo code for accessing blockchain through BoAT-X Framework is in`<MA510 Root>/fibocom/example/boat_demo/src/boat_demo.c`
    
-   打开Linux终端并进入`<XY1100 Root>`
+   Open a Linux shell and build the demo: 
    ```
-   cd <XY1100 Root>
+   cd <MA510 Root>
    ./build_all.sh llvm -c
    ./build_all.sh llvm boat_demo
    ```
-   编译成功会在`<XY1100 Root>/bin`下生成oem_app_path.ini、boat_demo_dam_demo.map、boat_demo_dam_demo.elf、boat_demo_dam_demo.bin文件	
+   The mirror download files oem_app_path.ini、boat_demo_dam_demo.map、boat_demo_dam_demo.elf and boat_demo_dam_demo.bin will be generated in `<MA510 Root>/bin` if building is successful.
