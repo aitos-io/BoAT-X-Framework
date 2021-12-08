@@ -9,12 +9,11 @@ This guide describes how to integrate BoAT-X Framework source code into Fibocom-
 
 Assuming `<MA510 Root>` to be the root directory of Fibocom-MA510 platform SDK:
 
-1、拷贝 BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<MA510 Root>/fibocom/example`下。
+1、Copy the entire BoAT-X-Framework directory into `<MA510 Root>/fibocom/example`.
 
-2、在`<MA510 Root>/fibocom/example`下新建文件夹`boat_demo`,拷贝 BoAT-X-Framework/vendor/platform/Fibocom-MA510/MA510RootDirCode/demo下所有内容到`<MA510 Root>/fibocom/example/boat_demo`下。
+2、Create a new folder `boat_demo` under `<MA510 Root>/fibocom/example`,copy all the contents under BoAT-X-Framework/vendor/platform/Fibocom-MA510/MA510RootDirCode/demo to `<MA510 Root>/fibocom/example/boat_demo`.
 
-
-拷贝后的目录和文件结构如下：
+After copying these files, the directory structure should look like:
 ```
 <MA510 Root>
 |
