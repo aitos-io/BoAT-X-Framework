@@ -14,14 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include "boattypes.h"
-#include "boatwallet.h"
-#include "protocolapi/api_chainmaker.h"
+// #include <stdio.h>
+// #include <stdbool.h>
+// #include <stdlib.h>
+// #include "boattypes.h"
+// #include "boatwallet.h"
+// #include "protocolapi/api_chainmaker.h"
 #include "tcase_common.h"
-#include "check.h"
+//#include "check.h"
 
 BoatHlchainmakerWalletConfig get_chainmaker_wallet_settings()
 {
@@ -36,9 +36,12 @@ BoatHlchainmakerWalletConfig get_chainmaker_wallet_settings()
     //set user cert context
     wallet_config.user_cert_content.length = strlen(chainmaker_user_cert);
     memcpy(wallet_config.user_cert_content.content, chainmaker_user_cert, wallet_config.user_cert_content.length);
-    
-    //set url and name
-    strncpy(wallet_config.node_url_arry, test_chainmaker_node_url,   strlen(test_chainmaker_node_url));
+
+#ifdef TEST_CHAINMAKER__NODE_URL
+    strncpy(wallet_config.node_url_arry, TEST_CHAINMAKER__NODE_URL, strlen(TEST_CHAINMAKER__NODE_URL));
+#else 
+    strncpy(wallet_config.node_url_arry, test_chainmaker_node_url, strlen(test_chainmaker_node_url));
+#endif
     strncpy(wallet_config.host_name_arry, test_chainmaker_host_name, strlen(test_chainmaker_host_name));
 
     //tls ca cert

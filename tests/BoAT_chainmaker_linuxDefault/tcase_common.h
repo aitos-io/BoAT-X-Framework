@@ -13,6 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include "check.h"
+#include "boatlog.h"
+#include "boattypes.h"
+#include "boatwallet.h"
+#include "protocolapi/api_chainmaker.h"
 #define     chainmaker_user_key     "-----BEGIN EC PRIVATE KEY-----\n"\
                                     "MHcCAQEEIIs0ji2f0MlhKy6eOPSqknaqzXaL/qErwHyuoYnafy5XoAoGCCqGSM49\n"\
                                     "AwEHoUQDQgAEH4eVrcpsx+G7cCVUHZlTnYQfx1IEfbQxHEsk16MqM/M32cB9fhCo\n"\
@@ -54,8 +63,8 @@
                                         "Fqdj\n"\
                                         "-----END CERTIFICATE-----\n"
 //wallet para
-#define test_chainmaker_node_url    "127.0.0.1:12301"
-#define test_chainmaker_host_name   "chainmaker.org"
+#define test_chainmaker_node_url "127.0.0.1:12301"
+#define test_chainmaker_host_name "chainmaker.org"
 
 //client para
 #define chain_id   "chain1"

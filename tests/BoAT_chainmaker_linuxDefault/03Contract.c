@@ -13,15 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include "boattypes.h"
-#include "boatwallet.h"
-#include "protocolapi/api_chainmaker.h"
 #include "tcase_common.h"
-#include "check.h"
 
 static BoatHlchainmakerWallet* g_chaninmaker_wallet_ptr;
 static BoatHlchainmakerWalletConfig wallet_config = {0};
@@ -43,7 +35,11 @@ static BOAT_RESULT ChainmakerWalletPrepare(void)
     memcpy(wallet_config.user_cert_content.content, chainmaker_user_cert, wallet_config.user_cert_content.length);
     
     //set url and name
-    strncpy(wallet_config.node_url_arry, test_chainmaker_node_url,   strlen(test_chainmaker_node_url));
+#ifdef TEST_CHAINMAKER__NODE_URL
+    strncpy(wallet_config.node_url_arry, TEST_CHAINMAKER__NODE_URL, strlen(TEST_CHAINMAKER__NODE_URL));
+#else 
+    strncpy(wallet_config.node_url_arry, test_chainmaker_node_url, strlen(test_chainmaker_node_url));
+#endif
     strncpy(wallet_config.host_name_arry, test_chainmaker_host_name, strlen(test_chainmaker_host_name));
 
     //tls ca cert
@@ -84,7 +80,7 @@ static BOAT_RESULT test_contrct_invoke_prepara(BoatHlchainmakerTx  *tx_ptr)
     result = ChainmakerWalletPrepare();
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "ChainmakerWalletPrepare() failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "test ChainmakerWalletPrepare() failed.");
         return -1;
     }
 
@@ -92,14 +88,14 @@ static BOAT_RESULT test_contrct_invoke_prepara(BoatHlchainmakerTx  *tx_ptr)
     result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, tx_ptr);
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatHlChainmakerTxInit() failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "test BoatHlChainmakerTxInit() failed.");
         return -1;
     }
 
     result = BoatHlchainmakerAddTxParam(tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005");
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "test BoatHlchainmakerAddTxParam() failed.");
         return -1;
     }
     return result;
@@ -115,7 +111,7 @@ static BOAT_RESULT test_contrct_query_prepara(BoatHlchainmakerTx  *tx_ptr)
     result = ChainmakerWalletPrepare();
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "ChainmakerWalletPrepare() failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "test ChainmakerWalletPrepare() failed.");
         return -1;
     }
 
@@ -123,14 +119,14 @@ static BOAT_RESULT test_contrct_query_prepara(BoatHlchainmakerTx  *tx_ptr)
     result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, tx_ptr);
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatHlChainmakerTxInit() failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "test BoatHlChainmakerTxInit() failed.");
         return -1;
     }
 
     result = BoatHlchainmakerAddTxParam(tx_ptr, 2, "file_hash", "ab3456df5799b87c77e7f85");
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "test BoatHlchainmakerAddTxParam() failed.");
         return -1;
     }
     return result;
@@ -304,7 +300,7 @@ START_TEST(test_03Contract_00011QueryFailureContractNoExist)
 }
 END_TEST
 
-START_TEST(test_03Contract_00012InvokeFailureResponseNull) 
+START_TEST(test_03Contract_00012QueryFailureResponseNull) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -318,7 +314,7 @@ START_TEST(test_03Contract_00012InvokeFailureResponseNull)
 }
 END_TEST
 
-START_TEST(test_03Contract_00013InvokeSucess) 
+START_TEST(test_03Contract_00013QuerySucess) 
 {
    BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -361,8 +357,8 @@ Suite *make_contract_suite(void)
     tcase_add_test(tc_contract_api, test_03Contract_0009QueryFailureMethodNull); 
     tcase_add_test(tc_contract_api, test_03Contract_00010QueryFailureContractNull); 
     tcase_add_test(tc_contract_api, test_03Contract_00011QueryFailureContractNoExist);
-    tcase_add_test(tc_contract_api, test_03Contract_00012InvokeFailureResponseNull);
-    tcase_add_test(tc_contract_api, test_03Contract_00013InvokeSucess);
+    tcase_add_test(tc_contract_api, test_03Contract_00012QueryFailureResponseNull);
+    tcase_add_test(tc_contract_api, test_03Contract_00013QuerySucess);
  
     return s_contract;
 }
