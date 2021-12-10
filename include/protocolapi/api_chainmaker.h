@@ -28,12 +28,13 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 /*! @defgroup eth-api boat chainmaker-API
  * @{
  */
-#define BOAT_CHAINMAKER_TLS_SUPPORT               1 //!< If need client support TLS, set it to 1.
+#define BOAT_CHAINMAKER_TLS_SUPPORT               0 //!< If need client support TLS, set it to 1.
 #define BOAT_CHAINMAKER_CERT_MAX_LEN              1024
 #define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN  8192 //!< The maximum length of HTTP2 send buffer
 #define BOAT_HLCHAINMAKER_ARGS_MAX_NUM            10
 #define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN     100
 #define BOAT_RESPONSE_MESSAGE_MAX_LEN             10
+#define BAOT_CHAINMAKER_URL_HOSTNAME_LEN          127
 // call a pre created user contract, tx included in block
 // query a pre-created user contract, tx not included in block
 typedef enum {
@@ -92,7 +93,7 @@ typedef struct TBoatInvokeReponse {
 } BoatInvokeReponse;
 
 typedef struct TBoatQueryReponse {	
-
+    BoatReponseCode code;
 		char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
 		char contract_result[BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN];
 		BUINT32 gas_used;
@@ -148,7 +149,9 @@ typedef struct TBoatHlchainmakerWalletConfig {
 	BoatWalletPriKeyCtx_config    tls_PriKey_config;
 	BoatHlchainmakerCertInfoCfg   tls_cert_content;
 
-	BoatHlchainmakerNode          node_cfg;
+	BCHAR  node_url_arry[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BCHAR  host_name_arry[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
 }BoatHlchainmakerWalletConfig;
 
 //!chainmaker key pairs structure
@@ -163,7 +166,10 @@ typedef struct TBoatHlchainmakerWallet {
 
 	BoatHlchainmakerKeyPair   user_client_info; //!< user information
 	BoatHlchainmakerKeyPair   tls_client_info;  //!< tls information
-	BoatHlchainmakerNode      node_info;        //!< node information
+	
+  BCHAR*  node_url;
+  BCHAR*  host_name;
+  BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
 	
 	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
 } BoatHlchainmakerWallet;
@@ -321,6 +327,47 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
  *   To be de-initialized chainmaker wallet pointer.
  ******************************************************************************/
 void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr);
+
+/*!****************************************************************************
+ * @brief Set BoatHlchainmakerWallet: URL of blockchain node
+ *
+ * @details
+ *   This function sets the URL of the blockchain node to connect to.
+ *   \n A URL is composed of protocol, IP address/name and port, in a form:
+ *   http://a.b.com:8545
+ *
+ * @param[in] wallet_ptr
+ *   Wallet context pointer.    
+ *
+ * @param[in] node_url_ptr
+ *   A string indicating the URL of blockchain node to connect to.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if setting is successful.\n
+ *   Otherwise it returns one of the error codes.        
+ ******************************************************************************/
+BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *node_url_ptr);
+
+/*!****************************************************************************
+ * @brief Set BoatHlchainmakerWallet: host name of blockchain node
+ *
+ * @details
+ *   This function sets the URL of the blockchain node to connect to.
+ *   \n A URL is composed of protocol, IP address/name and port, in a form:
+ *   http://a.b.com:8545
+ *
+ * @param[in] wallet_ptr
+ *   Wallet context pointer.    
+ *
+ * @param[in] host_name_ptr
+ *   A string indicating the URL of blockchain node to connect to.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if setting is successful.\n
+ *   Otherwise it returns one of the error codes.        
+ ******************************************************************************/
+BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *host_name_ptr);
+
 /*! @}*/
 
 #ifdef __cplusplus

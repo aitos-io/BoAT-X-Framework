@@ -13,16 +13,16 @@ Welcome to the official implementation of BoAT Framework!
 
 ### The Pain Point
 
-Most blockchain or BaaS (Blockchain as a Service) variants bring with either node or client/wallet software. However these softwares are basically designed for personal computer, cloud server or smart phone and usually written in high-level languages such as Go, Java, JavaScript, Python etc. Some of them require cumbersome virtual machine or interpreter to execute and some even have to download code dynamically at runtime. Meanwhile IoT devices are not as powerful and typically run RTOS or lightweight linux. Due to constrained resources, most IoT devices could only support native C language applications and thus can hardly access blockchain directly.
+Most blockchain or BaaS (Blockchain as a Service) variants bring node or client/wallet software. However, these software are designed for personal computers, cloud servers or smartphones and are usually written in high-level languages like Go, Java, JavaScript, Python, etc. Some require a cumbersome virtual machine or interpreter to execute, and some even have to download code dynamically at runtime. Meanwhile, IoT devices are not as powerful and typically run RTOS or lightweight Linux. Due to constrained resources, most IoT devices could only support native C language applications and thus can hardly access blockchain directly.
 
 
 ### The Solution
 
-There are basically two methods to resolve the problem. One is, the IoT devices send data to a traditional centralized cloud server which is the data hub and then the hub relays the data to blockchain. This method resolves the problem with some trade-off of higher single point failure probability at the data hub.
+There are two methods to resolve the problem. First, the IoT devices send data to a traditional centralized cloud server, the data hub, and then relay the data to the blockchain. This method resolves the problem with some trade-off of higher single-point failure probability at the data hub.
 
-The other method is, the IoT devices directly invoke on-chain smart contract via a blockchain client that meets the device environment and the blockchain. This method allows every IoT device to access blockchain in an independent and distributed way with the trade-off that a C-language blockchain client SDK has to be developed and ported to various device hardware and software environments.
+The other method is, the IoT devices directly invoke on-chain smart contracts via a blockchain client that meets the device environment and the blockchain. This method allows every IoT device to access blockchain in an independent and distributed way with the trade-off that a C-language blockchain client SDK has to be developed and ported to various device hardware and software environments.
 
-The latter is the way **BoAT** is walking on. To ease off the effort that IoT device manufacturers have to take, *aitos.io* initiates and contributes to **BoAT**, the C-language blockchain application framework, enabling IoT device to easily access the blockchain. 
+The latter is the way **BoAT** is walking on. To ease off the effort that IoT device manufacturers have to take, *aitos.io* initiates and contributes to **BoAT**, the C-language blockchain application framework, enabling IoT devices to access the blockchain easily. 
 
 
 ### Supported Blockchains and IoT Modules
@@ -42,7 +42,8 @@ For project status update, please visit [BoAT Project Status Update Reports](htt
 
 ### Dependencies 
 
-BoAT is tested with following dependencies. The dependent softwares with lower version probably work well but are not tested.
+BoAT is tested with the following dependencies:  
+(The dependent software with a lower version will most likely work well but are not tested).
 
 #### General
 In general, following dependencies are required:
@@ -72,22 +73,17 @@ Linux-based embedded devices are similar to that on x86_64, except for the exact
 As BoAT is a client for blockchain, some environments must be prepared before building the demo.
 
 #### Make use of a deployed blockchain or deploy your own blockchain
-For public blockchain, you must prepare some gas for transaction fee in advance. If a simulator is available for that blockchain, it's a better choice.
+For public blockchains, you must prepare some gas for transaction fees in advance. If a simulator is available for that blockchain, it's a better choice.
 
-For consortium blockchain, you must consult the administrator to give you access permission on the blockchain. Or you may deploy your own consortium blockchain node for test purpose.
-
-See blockchain official website for details:
-+ [Ethereum](https://ethereum.org/)
-+ [Ganache: an Ethereum Simulator](https://www.trufflesuite.com/truffle/)
-+ [PlatON Enterprise](https://github.com/PlatONEnterprise/)
+For consortium blockchains, you must consult the administrator to give you access permission on the blockchains. Or you may deploy your own consortium blockchains node for test purposes.
 
 #### Deploy the smart contract
-The smart contracts used in the demo locate in ./contract.
-Follow blockchain official website for details on how to compile and deploy the contract.
+The smart contracts used in the demo locate in ./contract.  
+Follow the blockchain's official website for details on how to compile and deploy the contract.
 
 #### Modify the demo code
 Modify the demo code in ./demo:
-+ Replace the private key and account address (if necessary) with a appropriate one
++ Replace the private key and account address (if necessary) with an appropriate one
 + Replace the smart contract address with the one you got when deploying the contract
 + Replace the URL of the blockchain node with the real one
 
@@ -160,19 +156,17 @@ $./build/demo/demo_<protocol>/<demo_name>
 Make sure the network connection to the blockchain node (or blockchain simulator) is available.
 
 
-
 ## Using BoAT in Your Code
 
 ### Contract C Interface Generation
 
-Smart contract is the code running on the blockchain virtual machine. Smart contract runs like remote API calls. Though the programming language of smart contract is not C, it has defined ABI (Application Binary Interface). Remote call to the contract must follow the ABI.
+The smart contract is the code running on the blockchain virtual machine. Smart contracts run like remote API calls. Though the programming language of smart contracts is not C, it has defined ABI (Application Binary Interface). Therefore, remote calls to the contract must follow the ABI.
 
-However manually applying the rule of ABI is quite complex for embedded C programmers. BoAT IoT Framework SDK provides some tools to generate C interface codes from the ABI. The generated C API can be called from other part within the C project. Though not all contract ABI can be converted to C interface due to lack of object-oriented programming capability, the tools could ease a lot of works.
+However, manually applying the rule of ABI is quite complex for embedded C programmers. BoAT IoT Framework SDK provides some tools to generate C interface codes from the ABI. The generated C API can be called from other parts within the C project. Though not all contract ABI can be converted to a C interface due to a lack of object-oriented programming capability, the tools could ease many obligations.
 
 The generation tools are written in Python and lie in ./tools.
 
-Copy the ABI json file generated by truffle or ctool during contract compilation, to the corresponding directory in ./contract. The generation tool will be called against the ABI file during make. You can include generated head files (./contract/generated) in your C code to call the APIs.
-
+Copy the ABI json file generated by truffle or C-tool during contract compilation, to the corresponding directory in ./contract. The generation tool will be called against the ABI file during the making. You can include generated head files (./contract/generated) in your C code to call the APIs.
 
 
 ### How to Call a Contract in Your C code

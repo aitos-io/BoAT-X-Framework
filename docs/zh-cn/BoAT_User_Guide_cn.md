@@ -433,12 +433,12 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 编译Demo之前，需要修改Demo的C代码中以下部分：
 - 对于ETHEREUM、PLATON、FISCO-BCOS、PLATONE:
   1.	搜索`demoUrl`，将节点URL（含端口）填写为实际部署的节点或模拟器的IP地址和RPC端口
-  2.	如果demo需使用原生私钥, 则搜索`native_demoKey`，并将客户端私钥设置为：  
+  2.	如果demo需使用原生私钥，则搜索`native_demoKey`，并将客户端私钥设置为：  
         -	对于ETHEREUM，设置为ganache生成的任意一个账户的私钥  
         - 对于PlatON，无需修改Demo中的私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥对应的原生格式私钥
-  3.	如果demo需使用原生私钥, 则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
+  3.	如果demo需使用原生私钥，则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
         - 对于以太坊，设置为ganache生成的任意一个账户的私钥对应的PKCS格式私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥
@@ -448,7 +448,7 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
   2. 搜索`fabric_client_democert`，设置客户端私钥对应的证书
   3. 如果demo启用TLS，则搜索`fabric_org1_tlsCert`、`fabric_org2_tlsCert`、`fabric_order_tlsCert`，设置CA证书链
   4. 搜索`fabric_demo_endorser_peer0Org1_url`、`fabric_demo_endorser_peer1Org1_url`、`fabric_demo_endorser_peer0Org2_url`、`fabric_demo_endorser_peer1Org2_url`，设置背书节点、排序节点的url地址
-  5. 如果demo启用TLS,则搜索`fabric_demo_endorser_peer0Org1_hostName`、`fabric_demo_endorser_peer1Org1_hostName`、`fabric_demo_endorser_peer0Org2_hostName`、`fabric_demo_endorser_peer1Org2_hostName`，设置节点的主机名称
+  5. 如果demo启用TLS，则搜索`fabric_demo_endorser_peer0Org1_hostName`、`fabric_demo_endorser_peer1Org1_hostName`、`fabric_demo_endorser_peer0Org2_hostName`、`fabric_demo_endorser_peer1Org2_hostName`，设置节点的主机名称
 - 对于HW-BCS:  
   1. 搜索`hw_bcs_client_demokey`，设置客户端使用的私钥
   2. 搜索`hw_bcs_client_democert`，设置客户端私钥对应的证书
@@ -694,7 +694,7 @@ Otherwise it returns one of the error codes.
   - bytes32
   - bytes
   - string
-  - T[N] : N > 0, N是整数, T是上面已支持的任意类型.
+  - T[N] : N > 0，N是整数，T是上面已支持的任意类型.
   - T[]  : T是上面已支持的任意类型，除了T[N].
 
 对于C++编写的WASM合约，工具支持以下参数类型:
@@ -880,6 +880,14 @@ result = BoatEthTxInit(
 BCHAR *result_str;
 result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ```
+#### 自动生成合约的常见问题
+**Q：编译时报如下错误**
+```
+    for abi_item in self.abi_object['abi']:
+TypeError: list indices must be integers, not str
+```
+A：产生该问题的原因是使用了错误的输入文件。自动生成合约需要的JSON文件为编译器生成的完整JSON文件，如果仅仅拷贝ABI部分的内容自己创建一个JSON的话，需要在最外层增加ABI。具体格式可以参考：  
+https://github.com/aitos-io/BoAT-X-Framework/issues/355
 
 ### 手动构造合约调用
 如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。另外，因为Fabric/hwbcs的调用本身就非常便捷，不需要自动生成合约调用接口的工具，所以需要手动调用合约。

@@ -87,3 +87,10 @@ void BoatSleep(BUINT32 second)
 {
     sleep(second);
 }
+
+BUINT64 BoatGetTimes()
+{
+	BUINT64 timesec = 0;
+	time(&timesec);
+	return timesec;
+}

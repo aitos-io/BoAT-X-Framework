@@ -84,12 +84,17 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	memcpy(wallet_config.user_cert_content.content, chainmaker_user_cert, wallet_config.user_cert_content.length);
 	
 	//set url and name
-    wallet_config.node_cfg.node_url  = chainmaker_node_url;
-    wallet_config.node_cfg.host_name = chainmaker_host_name;
+	if (((strlen(chainmaker_node_url) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN) || 
+		  strlen(chainmaker_host_name) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN))
+	{
+		return BOAT_ERROR;
+	}
+	strncpy(wallet_config.node_url_arry, chainmaker_node_url,   strlen(chainmaker_node_url));
+	strncpy(wallet_config.host_name_arry, chainmaker_host_name, strlen(chainmaker_host_name));
 
 	//tls ca cert
-	wallet_config.node_cfg.org_tls_ca_cert.length = strlen(chainmaker_tls_ca_cert);
-	memcpy(wallet_config.node_cfg.org_tls_ca_cert.content, chainmaker_tls_ca_cert, wallet_config.node_cfg.org_tls_ca_cert.length);
+	wallet_config.org_tls_ca_cert.length = strlen(chainmaker_tls_ca_cert);
+	memcpy(wallet_config.org_tls_ca_cert.content, chainmaker_tls_ca_cert, wallet_config.org_tls_ca_cert.length);
 
 	// create wallet
 #if defined(USE_ONETIME_WALLET)
@@ -139,8 +144,6 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	tx_ptr.wallet_ptr->node_info.node_url  = chainmaker_node_url;
-	tx_ptr.wallet_ptr->node_info.host_name = chainmaker_host_name;
 	result = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005");
    	if (result != BOAT_SUCCESS)
 	{
@@ -170,8 +173,8 @@ int main(int argc, char *argv[])
 	{
 		return -1;
 	}
-	BoatLog( BOAT_LOG_CRITICAL, "reponse message = %s,  contract_result = %s, gas_used = %d\n", query_reponse.message, query_reponse.contract_result, query_reponse.gas_used);
-
+	BoatLog( BOAT_LOG_CRITICAL, "reponse code = %d, reponse message = %s,  contract_result = %s, gas_used = %d\n", 
+			query_reponse.code, query_reponse.message, query_reponse.contract_result, query_reponse.gas_used);
 	/* step-6: chainmaker transaction structure Deinitialization */
 	BoatHlchainmakerTxDeInit(&tx_ptr);
 

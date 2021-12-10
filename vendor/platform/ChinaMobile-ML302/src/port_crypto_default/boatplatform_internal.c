@@ -176,10 +176,8 @@ BOAT_RESULT  BoatWriteFile(const BCHAR *fileName,
 {
 	FILE         *file_ptr;
 	BSINT32      count = 0;
-	BOAT_RESULT  result = BOAT_SUCCESS;
 	
 	(void)rsvd;
-	result = result;
 	
 	if ((fileName == NULL) || (writeBuf == NULL))
 	{
@@ -212,10 +210,8 @@ BOAT_RESULT  BoatReadFile(const BCHAR *fileName,
 {
 	FILE         *file_ptr;
 	BSINT32      count = 0;
-	BOAT_RESULT  result = BOAT_SUCCESS;
 	
 	(void)rsvd;
-	result = result;
 	
 	if ((fileName == NULL) || (readBuf == NULL))
 	{

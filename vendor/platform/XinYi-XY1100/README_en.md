@@ -51,9 +51,9 @@ After copying these files, the directory structure should look like:
 ```
 
 
-## File Modification
+## Files Modification
 
-### 1. Add demo source files that need to participate in compilation in module.mk
+### 1. Specify demo source files as inputs of Compilation in module.mk
 
 Open `<XY1100 Root>/userapp/module.mk` 
 Add the following two lines as below:
@@ -161,7 +161,7 @@ Add the following:
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<XY1100 Root>/userapp/BoAT-X-Framework/lib` directory.
 
 
-### 2. Build demo program, generate. bin file for download
+### 2. Build the demo program of XY1100, generate. bin file for download
 
    Demo code for accessing blockchain through BoAT-X Framework is in `<XY1100 Root>/userapp/demo/boat_demo/boat_demo.c`
 
