@@ -58,7 +58,7 @@ After these files copied, the directory structure should look like:
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<MT3620 Root>/BoAT-X-Framework/lib` directory.
 
 
-### 2. Debug demo program
+## Debug demo program
 
 1. Copy`<MT3620 Root>/BoAT-X-Framework/lib` into `<MT3620 Root>/customer/boatiotsdk`.
 
