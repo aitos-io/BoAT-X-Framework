@@ -118,13 +118,6 @@ typedef struct TBoatTransactionPara {
 	BoatKeyValuePair parameters[BOAT_HLCHAINMAKER_ARGS_MAX_NUM]; 
 } BoatTransactionPara;
 
-typedef struct TBoatHlchainmakerNode {
-
-	bool   use_tls;
-	BCHAR  *node_url;
-	BCHAR  *host_name;
-	BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
-} BoatHlchainmakerNode;
 
 typedef struct TBoatHlchainamkerClient {
 
@@ -143,15 +136,12 @@ typedef struct TBoatHlchainamkerResult {
 typedef struct TBoatHlchainmakerWalletConfig {
 
 	//usr private key
-	BoatWalletPriKeyCtx_config    user_prikey_config;
-	BoatHlchainmakerCertInfoCfg   user_cert_content;   
+	BoatWalletPriKeyCtx_config    user_prikey_cfg;
+	BoatHlchainmakerCertInfoCfg   user_cert_cfg;   
 
-	BoatWalletPriKeyCtx_config    tls_PriKey_config;
-	BoatHlchainmakerCertInfoCfg   tls_cert_content;
-
-	BCHAR  node_url_arry[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-  BCHAR  host_name_arry[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-  BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
+	BCHAR  node_url_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BCHAR  host_name_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BoatHlchainmakerCertInfoCfg   tls_ca_cert_cfg;
 }BoatHlchainmakerWalletConfig;
 
 //!chainmaker key pairs structure
@@ -164,13 +154,11 @@ typedef struct TBoatHlchainmakerKeyPair {
 //chainmaker wallet structure
 typedef struct TBoatHlchainmakerWallet {
 
-	BoatHlchainmakerKeyPair   user_client_info; //!< user information
-	BoatHlchainmakerKeyPair   tls_client_info;  //!< tls information
+	BoatHlchainmakerKeyPair   user_cert_info; //!< user information
 	
-  BCHAR*  node_url;
-  BCHAR*  host_name;
-  BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
-	
+  BCHAR*  node_url_info;
+  BCHAR*  host_name_info;
+  BoatFieldVariable          tls_ca_cert_info;
 	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
 } BoatHlchainmakerWallet;
 
@@ -178,7 +166,7 @@ typedef struct TBoatHlchainamkerTx {
 
 	BoatHlchainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet 
 	BoatTransactionPara         trans_para;
-	BoatHlchainamkerClient      client_info;     
+	BoatHlchainamkerClient      client_para;     
 }BoatHlchainmakerTx;
 
 

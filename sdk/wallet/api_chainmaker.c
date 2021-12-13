@@ -118,14 +118,14 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 	}
 
 	/* initialization */
-	memset(&wallet_ptr->user_client_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx));
-	wallet_ptr->user_client_info.cert.field_ptr = NULL;
-	wallet_ptr->user_client_info.cert.field_len = 0;
+	memset(&wallet_ptr->user_cert_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx));
+	wallet_ptr->user_cert_info.cert.field_ptr = NULL;
+	wallet_ptr->user_cert_info.cert.field_len = 0;
 	
 	/* prikey context assignment */
 	if (prikeyCtx_config.prikey_content.field_ptr != NULL) 
 	{
-		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->user_client_info.prikeyCtx)) 
+		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->user_cert_info.prikeyCtx)) 
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate.");
 			return BOAT_ERROR_INVALID_ARGUMENT;
@@ -133,8 +133,8 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 	}
 
 	/* cert assignment */
-	wallet_ptr->user_client_info.cert.field_ptr = BoatMalloc(certContent.length);
-	if (wallet_ptr->user_client_info.cert.field_ptr == NULL) 
+	wallet_ptr->user_cert_info.cert.field_ptr = BoatMalloc(certContent.length);
+	if (wallet_ptr->user_cert_info.cert.field_ptr == NULL) 
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
@@ -145,8 +145,8 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 		BoatLog(BOAT_LOG_CRITICAL, "certContent length invalid");
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
 	}
-	memcpy(wallet_ptr->user_client_info.cert.field_ptr, certContent.content, certContent.length);
-	wallet_ptr->user_client_info.cert.field_len = certContent.length;
+	memcpy(wallet_ptr->user_cert_info.cert.field_ptr, certContent.content, certContent.length);
+	wallet_ptr->user_cert_info.cert.field_len = certContent.length;
 
 	/* boat catch handle */
 	boat_catch(BoatChainmakerWalletSetAccountInfo_exception) 
@@ -154,8 +154,8 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
 		result = boat_exception;
 		/* free malloc param Deinit */
-		BoatFree(wallet_ptr->user_client_info.cert.field_ptr);
-		wallet_ptr->user_client_info.cert.field_len = 0;
+		BoatFree(wallet_ptr->user_cert_info.cert.field_ptr);
+		wallet_ptr->user_cert_info.cert.field_len = 0;
 	}
 	return result;
 }
@@ -186,24 +186,30 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	}
 
 	/* initialization */
-	wallet_ptr->user_client_info.cert.field_ptr  = NULL;
-	wallet_ptr->user_client_info.cert.field_len  = 0;	
-	wallet_ptr->tls_client_info.cert.field_ptr   = NULL;
-	wallet_ptr->tls_client_info.cert.field_len   = 0;
-	wallet_ptr->org_tls_ca_cert.length           = 0;
-	wallet_ptr->http2Context_ptr                 = NULL;
-	wallet_ptr->host_name                        = config_ptr->host_name_arry;
-	wallet_ptr->node_url                         = config_ptr->node_url_arry;
+	wallet_ptr->user_cert_info.cert.field_ptr  = NULL;
+	wallet_ptr->user_cert_info.cert.field_len  = 0;	
+	wallet_ptr->tls_ca_cert_info.field_ptr     = NULL;
+	wallet_ptr->tls_ca_cert_info.field_len     = 0;
+	wallet_ptr->http2Context_ptr               = NULL;
+	wallet_ptr->host_name_info                 = config_ptr->host_name_cfg;
+	wallet_ptr->node_url_info                  = config_ptr->node_url_cfg;
 
 	/* assignment */
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
-	wallet_ptr->org_tls_ca_cert.length = config_ptr->org_tls_ca_cert.length;
-	memset(wallet_ptr->org_tls_ca_cert.content, 0, BOAT_CHAINMAKER_CERT_MAX_LEN);
-	memcpy(wallet_ptr->org_tls_ca_cert.content, config_ptr->org_tls_ca_cert.content, wallet_ptr->org_tls_ca_cert.length);
+	wallet_ptr->tls_ca_cert_info.field_len = config_ptr->org_tls_ca_cfg.length;
+	wallet_ptr->tls_ca_cert_info.field_ptr = BoatMalloc(wallet_ptr->tls_ca_cert_info.field_len);
+	if (wallet_ptr->tls_ca_cert_info.field_ptr == NULL) 
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to malloc tls_ca_cert_info memory.");
+		return NULL;
+	}
+
+	memset(wallet_ptr->tls_ca_cert_info.field_ptr, 0, BOAT_CHAINMAKER_CERT_MAX_LEN);
+	memcpy(wallet_ptr->tls_ca_cert_info.field_ptr, config_ptr->org_tls_ca_cfg.content, wallet_ptr->tls_ca_cert_info.field_len);
 #endif
 
 	/* account_info assignment */
-	result = BoatHlchainmakerWalletSetUserClientInfo(wallet_ptr, config_ptr->user_prikey_config, config_ptr->user_cert_content);
+	result = BoatHlchainmakerWalletSetUserClientInfo(wallet_ptr, config_ptr->user_prikey_cfg, config_ptr->user_cert_cfg);
 	
 	/* http2Context_ptr assignment */
 	wallet_ptr->http2Context_ptr = http2Init();
@@ -224,11 +230,11 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	}
 	/* account_info DeInit */
 
-	if (wallet_ptr->user_client_info.cert.field_ptr != NULL) 
+	if (wallet_ptr->user_cert_info.cert.field_ptr != NULL) 
 	{
-		BoatFree(wallet_ptr->user_client_info.cert.field_ptr);
+		BoatFree(wallet_ptr->user_cert_info.cert.field_ptr);
 	}
-	wallet_ptr->user_client_info.cert.field_len = 0;
+	wallet_ptr->user_cert_info.cert.field_len = 0;
 	
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
 	/* tlsClinet_info DeInit */
@@ -247,8 +253,8 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 		wallet_ptr->http2Context_ptr->tlsCAchain = NULL;
 	}
 #endif
-	wallet_ptr->host_name = NULL;
-	wallet_ptr->node_url  = NULL;
+	wallet_ptr->host_name_info = NULL;
+	wallet_ptr->node_url_info  = NULL;
 
 	/* http2Context DeInit */
 	http2DeInit(wallet_ptr->http2Context_ptr);
@@ -272,8 +278,8 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BCH
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
-	tx_ptr->client_info.chain_id  = chain_id;
-	tx_ptr->client_info.org_id    = org_id;
+	tx_ptr->client_para.chain_id  = chain_id;
+	tx_ptr->client_para.org_id    = org_id;
 
 	tx_ptr->wallet_ptr = (BoatHlchainmakerWallet *)wallet_ptr;
 	return result;
@@ -300,7 +306,7 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
-	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = tx_ptr->wallet_ptr->node_url;
+	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = tx_ptr->wallet_ptr->node_url_info;
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
 	// clear last data
@@ -318,10 +324,10 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 
 	tx_ptr->wallet_ptr->http2Context_ptr->hostName                = tx_ptr->wallet_ptr->host_name;
 	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain              = BoatMalloc(sizeof(BoatFieldVariable));
-	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = tx_ptr->wallet_ptr->org_tls_ca_cert.length + 1;
+	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = tx_ptr->wallet_ptr->org_tls_ca_info.field_len + 1;
 	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = BoatMalloc(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 	memset(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, 0x00, tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
-	memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, tx_ptr->wallet_ptr->org_tls_ca_cert.content, tx_ptr->wallet_ptr->org_tls_ca_cert.length);
+	memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, tx_ptr->wallet_ptr->org_tls_ca_info.field_ptr, tx_ptr->wallet_ptr->org_tls_ca_info.field_len);
 #endif
 	tx_ptr->wallet_ptr->http2Context_ptr->pathTmp      = "/api.RpcNode/SendRequest";
 	tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &http2_response;
@@ -573,7 +579,7 @@ BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, c
         return BOAT_ERROR_INVALID_ARGUMENT;
     }
 
-	wallet_ptr->node_url = node_url_ptr;
+	wallet_ptr->node_url_info = node_url_ptr;
 	result = BOAT_SUCCESS;
 
     return result;
@@ -596,7 +602,7 @@ BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, 
 	   return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
-	wallet_ptr->host_name = host_name_ptr;
+	wallet_ptr->host_name_info = host_name_ptr;
 	result = BOAT_SUCCESS;
 
 	return result;
