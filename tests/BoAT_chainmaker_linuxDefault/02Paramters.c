@@ -70,6 +70,37 @@ static BOAT_RESULT chainmakerWalletPrepare(void)
     return BOAT_SUCCESS;
 }
 
+
+static BOAT_RESULT param_init_check(BoatHlchainmakerTx* tx_ptr)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+
+    if (tx_ptr == NULL)
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->client_para.chain_id, chain_id_str, strlen(chain_id_str));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->client_para.org_id, org_id_str, strlen(org_id_str));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    if (tx_ptr->wallet_ptr != g_chaninmaker_wallet_ptr)
+    {
+         return BOAT_ERROR;
+    }
+
+    return result;
+}
+
+
 START_TEST(test_002Param_0001TxinitSuccess) 
 {
     BSINT32 rtnVal;
@@ -77,8 +108,10 @@ START_TEST(test_002Param_0001TxinitSuccess)
     rtnVal = chainmakerWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, &tx_ptr);
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id_str, org_id_str, &tx_ptr);
     ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
+
 }
 END_TEST
 
@@ -89,16 +122,16 @@ START_TEST(test_002Param_0002TxinitxFailureNullpara)
     rtnVal = chainmakerWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
-    rtnVal = BoatHlChainmakerTxInit(NULL, chain_id, org_id, &tx_ptr);
+    rtnVal = BoatHlChainmakerTxInit(NULL, chain_id_str, org_id_str, &tx_ptr);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, NULL, org_id, &tx_ptr);
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, NULL, org_id_str, &tx_ptr);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, NULL, &tx_ptr);
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id_str, NULL, &tx_ptr);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, NULL);
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id_str, org_id_str, NULL);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST

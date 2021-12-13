@@ -67,5 +67,5 @@
 #define test_chainmaker_host_name "chainmaker.org"
 
 //client para
-#define chain_id   "chain1"
-#define org_id     "wx-org1.chainmaker.org"
+#define chain_id_str   "chain1"
+#define org_id_str     "wx-org1.chainmaker.org"
