@@ -101,6 +101,54 @@ static BOAT_RESULT param_init_check(BoatHlchainmakerTx* tx_ptr)
 }
 
 
+static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+
+    if (tx_ptr->trans_para.n_parameters != 3)
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[0].key, "key1", strlen("key1"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[0].value, "value1", strlen("value1"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[1].key, "key2", strlen("key2"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[1].value, "value2", strlen("value2"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[2].key, "key3", strlen("key3"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[2].value, "value3", strlen("value3"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    return result;
+}
+
 START_TEST(test_002Param_0001TxinitSuccess) 
 {
     BSINT32 rtnVal;
@@ -142,9 +190,10 @@ START_TEST(test_002Param_0003AddTxParamSuccess)
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "vlaue1", "key2", "vlaue2", 
-                                                    "key3", "vlaue3");
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "value1", "key2", "value2", 
+                                                    "key3", "value3");
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    ck_assert_int_eq(param_add_check(&tx_ptr), BOAT_SUCCESS);
 }
 END_TEST
 
@@ -154,7 +203,7 @@ START_TEST(test_002Param_0004AddTxParamFailureShortParam)
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "vlaue1", "key2", "vlaue2", "key3");
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "value1", "key2", "value2", "key3");
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -164,9 +213,10 @@ START_TEST(test_002Param_0005AddTxParamFailureLongParam)
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 12, "key1", "vlaue1", "key2", "vlaue2", "key3", "vlaue3", 
-                                                     "key4", "vlaue4", "key5", "vlaue5", "key6", "vlaue6");
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 12, "key1", "value1", "key2", "value2", "key3", "value3", 
+                                                     "key4", "value4", "key5", "value5", "key6", "value6");
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
+
 }
 END_TEST
 
@@ -175,8 +225,8 @@ START_TEST(test_002Param_0006AddTxParamFailureOddParam)
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 9, "key1", "vlaue1", "key2", "vlaue2", "key3", "vlaue3", 
-                                                     "key4", "vlaue4", "key5");
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 9, "key1", "value1", "key2", "value2", "key3", "value3", 
+                                                     "key4", "value4", "key5");
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -188,6 +238,7 @@ START_TEST(test_002Param_0007AddTxParamSucessNumberNULLParam)
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 0, NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    ck_assert_int_eq(tx_ptr.trans_para.n_parameters, 0);
 }
 END_TEST
 
