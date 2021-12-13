@@ -135,6 +135,7 @@ extern "C" {
  * @details
  *   This function initialize global context of Boat IoT SDK.
  *   \n BoatIotSdkInit() MUST be called before any use of BoAT IoT SDK per process.
+ *   BoatIotSdkInit() MUST be called only once unless BoatIotSdkDeInit() is called.
  *   BoatIotSdkDeInit() MUST be called after use of BoAT IoT SDK.
  *
  * @param This function doesn't take any argument.
