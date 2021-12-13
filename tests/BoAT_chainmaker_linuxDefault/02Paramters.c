@@ -24,27 +24,27 @@ static BOAT_RESULT chainmakerWalletPrepare(void)
     BOAT_RESULT index;
 
     //set user private key context
-    wallet_config.user_prikey_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-    wallet_config.user_prikey_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
-    wallet_config.user_prikey_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-    wallet_config.user_prikey_config.prikey_content.field_ptr = (BUINT8 *)chainmaker_user_key;
-    wallet_config.user_prikey_config.prikey_content.field_len = strlen(chainmaker_user_key) + 1; 
+    wallet_config.user_prikey_cfg.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+    wallet_config.user_prikey_cfg.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
+    wallet_config.user_prikey_cfg.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+    wallet_config.user_prikey_cfg.prikey_content.field_ptr = (BUINT8 *)chainmaker_user_key;
+    wallet_config.user_prikey_cfg.prikey_content.field_len = strlen(chainmaker_user_key) + 1; 
 
     //set user cert context
-    wallet_config.user_cert_content.length = strlen(chainmaker_user_cert);
-    memcpy(wallet_config.user_cert_content.content, chainmaker_user_cert, wallet_config.user_cert_content.length);
+    wallet_config.user_cert_cfg.length = strlen(chainmaker_user_cert);
+    memcpy(wallet_config.user_cert_cfg.content, chainmaker_user_cert, wallet_config.user_cert_cfg.length);
     
     //set url and name
 #ifdef TEST_CHAINMAKER__NODE_URL
-    strncpy(wallet_config.node_url_arry, TEST_CHAINMAKER__NODE_URL, strlen(TEST_CHAINMAKER__NODE_URL));
+    strncpy(wallet_config.node_url_cfg, TEST_CHAINMAKER__NODE_URL, strlen(TEST_CHAINMAKER__NODE_URL));
 #else 
-    strncpy(wallet_config.node_url_arry, test_chainmaker_node_url, strlen(test_chainmaker_node_url));
+    strncpy(wallet_config.node_url_cfg, test_chainmaker_node_url, strlen(test_chainmaker_node_url));
 #endif
-    strncpy(wallet_config.host_name_arry, test_chainmaker_host_name, strlen(test_chainmaker_host_name));
+    strncpy(wallet_config.host_name_cfg, test_chainmaker_host_name, strlen(test_chainmaker_host_name));
 
     //tls ca cert
-    wallet_config.org_tls_ca_cert.length = strlen(chainmaker_tls_ca_cert);
-    memcpy(wallet_config.org_tls_ca_cert.content, chainmaker_tls_ca_cert, wallet_config.org_tls_ca_cert.length);
+    wallet_config.tls_ca_cert_cfg.length = strlen(chainmaker_tls_ca_cert);
+    memcpy(wallet_config.tls_ca_cert_cfg.content, chainmaker_tls_ca_cert, wallet_config.tls_ca_cert_cfg.length);
 
     // create wallet
 #if defined(USE_ONETIME_WALLET)
