@@ -61,7 +61,7 @@ Add the static library of BoAT at the location of the link lib library, for exam
   ```
 $TOOLCHAIN_PATH/clang++ -d -o $DEMO_ELF_OUTPUT_PATH/$DAM_ELF_NAME -target armv7m-none-musleabi -fuse-ld=qcld -lc++ -Wl,-mno-unaligned-access -fuse-baremetal-sysroot -fno-use-baremetal-crt -Wl,-entry=$DAM_RO_BASE $DEMO_APP_OUTPUT_PATH/txm_module_preamble_llvm.o -Wl,-T$DAM_SRC_PATH/../app_dam_demo.ld -Wl,-Map,$DEMO_ELF_OUTPUT_PATH/$DAM_MAP_NAME,-gc-sections -Wl,-gc-sections $DEMO_APP_OUTPUT_PATH/*.o  -L $BOAT_LIB_PATH -lboatwallet -L $BOAT_LIB_PATH -lboatvendor $DAM_LIB_PATH/*.lib
   ```
-Need to pay attention to the order of the linked libraries, because the static library of BoAT calls the interface of the MA510 platform, so you should link the library of the MA510 platform first, and then link the library of BoAT.
+Need to pay attention to the order of the linked libraries, because the static library of BoAT calls the interface of the MA510 platform, so you should link the library of the MA510 platform first, and then link two static libraries related to BoAT.
 
 ### 4、Configure the cross-compilation environment of BoAT-X-Framework
 
