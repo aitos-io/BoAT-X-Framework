@@ -200,6 +200,7 @@ endif
 ifeq ($(BOAT_TEST), TEST_MODE)
 BOAT_TEST_FLAG = -fprofile-arcs\
                  -ftest-coverage
+endif
 # Combine FLAGS
 BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \
                $(BOAT_INCLUDE) \
@@ -209,17 +210,6 @@ BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \
                $(BOAT_DEFINED_MACROS) \
                $(EXTERNAL_CFLAGS) \
                $(BOAT_TEST_FLAG)
-else
-# Combine FLAGS
-BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \
-               $(BOAT_INCLUDE) \
-               $(BOAT_CSTD_FLAGS) \
-               $(BOAT_OPTIMIZATION_FLAGS) \
-               $(BOAT_WARNING_FLAGS) \
-               $(BOAT_DEFINED_MACROS) \
-               $(EXTERNAL_CFLAGS) 
-endif
-
 
 BOAT_LFLAGS := $(BOAT_COMMON_LINK_FLAGS) $(TARGET_SPEC_LINK_FLAGS)
 LINK_LIBS := $(EXTERNAL_LIBS) $(TARGET_SPEC_LIBS)
