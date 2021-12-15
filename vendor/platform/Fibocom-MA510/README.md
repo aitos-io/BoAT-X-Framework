@@ -3,14 +3,14 @@
 
 ## 一、前言
 
-本文档说明如何在Fibocom-MA510开发环境中整合BoAT-X-Framework，编译BoAT-X-Framework静态库，以及生成demo程序。
+本文档说明如何在Fibocom-MA510开发环境中整合BoAT-X-Framework，编译BoAT-X-Framework的静态库，以及生成demo程序。
 
 
 ## 二、拷贝文件
 
 约定`<MA510 Root>`是Fibocom-MA510平台SDK的根目录：
 
-1、拷贝 BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<MA510 Root>/fibocom/example`下。
+1、拷贝BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<MA510 Root>/fibocom/example`下。
 
 2、在`<MA510 Root>/fibocom/example`下新建文件夹`boat_demo`,拷贝 BoAT-X-Framework/vendor/platform/Fibocom-MA510/MA510RootDirCode/demo下所有内容到`<MA510 Root>/fibocom/example/boat_demo`下。
 
@@ -115,7 +115,7 @@ EXTERNAL_CFLAGS := -marm -target armv7m-none-musleabi -mfloat-abi=softfp -mfpu=n
    make all
    ```
    
-   编译成功后，在`<MA510 Root>/fibocom/example/BoAT-X-Framework/lib`下会生成静态库libboatvendor.a、libboatwallet.a。
+   编译成功后，在`<MA510 Root>/fibocom/example/BoAT-X-Framework/lib`下会生成静态库libboatvendor.a和libboatwallet.a。
    
 
 ### 2、编译MA510演示demo程序，生成镜像下载文件
