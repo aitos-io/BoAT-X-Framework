@@ -63,7 +63,7 @@ BOAT_LIB_PATH="fibocom/example/BoAT-X-Framework/lib"
   ```
 $TOOLCHAIN_PATH/clang++ -d -o $DEMO_ELF_OUTPUT_PATH/$DAM_ELF_NAME -target armv7m-none-musleabi -fuse-ld=qcld -lc++ -Wl,-mno-unaligned-access -fuse-baremetal-sysroot -fno-use-baremetal-crt -Wl,-entry=$DAM_RO_BASE $DEMO_APP_OUTPUT_PATH/txm_module_preamble_llvm.o -Wl,-T$DAM_SRC_PATH/../app_dam_demo.ld -Wl,-Map,$DEMO_ELF_OUTPUT_PATH/$DAM_MAP_NAME,-gc-sections -Wl,-gc-sections $DEMO_APP_OUTPUT_PATH/*.o  -L $BOAT_LIB_PATH -lboatwallet -L $BOAT_LIB_PATH -lboatvendor $DAM_LIB_PATH/*.lib
   ```
-需要注意所链接的库顺序，因为BoAT的静态库调用了MA510平台的接口，所以应该先链接MA510平台的库，之后再链接BoAT的库
+需要注意所链接的库顺序，因为BoAT的静态库调用了MA510平台的接口，所以应该先链接MA510平台的库，之后再链接BoAT相关的两个静态库
 
 ### 4、配置BoAT-X-Framework的交叉编译环境
 
