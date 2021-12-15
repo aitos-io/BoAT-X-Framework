@@ -12,6 +12,7 @@
 + [Ethereum](https://ethereum.org/)
 + [Ganache: an Ethereum Simulator](https://www.trufflesuite.com/truffle/)
 + [PlatON Enterprise](https://github.com/PlatONEnterprise/)
++ [Hyperledger Fabric](https://www.hyperledger.org/use/fabric)
 + [Hyperledger Fabric Docs](https://hyperledger-fabric.readthedocs.io/)
 
 # Supported Module List
