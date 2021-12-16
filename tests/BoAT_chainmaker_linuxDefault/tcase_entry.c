@@ -34,14 +34,14 @@ int read_key_cert_content(char* key_ptr, char* cert_ptr)
 {       
    int fd = 0;
 
-   fd = open("../../../tests/BoAT_chainmaker_linuxDefault/client1.sign.key", O_RDONLY);
+   fd = open("../../../tests/BoAT_chainmaker_linuxDefault/cert_key/client1.sign.key", O_RDONLY);
    if (fd < 0)
    {
       return -1;
    }
    read(fd, key_ptr, 1024);
 
-   fd = open("../../../tests/BoAT_chainmaker_linuxDefault/client1.sign.crt", O_RDONLY);
+   fd = open("../../../tests/BoAT_chainmaker_linuxDefault/cert_key/client1.sign.crt", O_RDONLY);
    if (fd < 0)
    {
       return -1;
