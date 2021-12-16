@@ -18,30 +18,20 @@
 BOAT_RESULT check_chainmaker_wallet(BoatHlchainmakerWallet *wallet_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-#ifdef TEST_CHAINMAKER__NODE_URL
-    result = strncmp(wallet_ptr->node_url_info, TEST_CHAINMAKER__NODE_URL, strlen(TEST_CHAINMAKER__NODE_URL));
-#else 
-    result = strncmp(wallet_ptr->node_url_info, test_chainmaker_node_url, strlen(test_chainmaker_node_url));
-#endif
+    result = strncmp(wallet_ptr->node_url_info, TEST_CHAINMAKER_NODE_URL, strlen(TEST_CHAINMAKER_NODE_URL));
 
     if (result != 0)
     {
         return result;
     }
 
-    result = strncmp(wallet_ptr->host_name_info, test_chainmaker_host_name, strlen(test_chainmaker_host_name));
+    result = strncmp(wallet_ptr->user_cert_info.prikeyCtx.extra_data.value, chainmaker_key_ptr_buf, strlen(chainmaker_key_ptr_buf));
     if (result != 0) 
     {
         return result;
     }
 
-    result = strncmp(wallet_ptr->user_cert_info.prikeyCtx.extra_data.value, chainmaker_user_key, strlen(chainmaker_user_key));
-    if (result != 0) 
-    {
-        return result;
-    }
-
-    result = strncmp(wallet_ptr->user_cert_info.cert.field_ptr, chainmaker_user_cert, strlen(chainmaker_user_cert));
+    result = strncmp(wallet_ptr->user_cert_info.cert.field_ptr, chainmaker_cert_ptr_buf, strlen(chainmaker_cert_ptr_buf));
     if (result != 0) 
     {
         return result;
@@ -57,23 +47,15 @@ BoatHlchainmakerWalletConfig get_chainmaker_wallet_settings()
     wallet_config.user_prikey_cfg.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     wallet_config.user_prikey_cfg.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
     wallet_config.user_prikey_cfg.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-    wallet_config.user_prikey_cfg.prikey_content.field_ptr = (BUINT8 *)chainmaker_user_key;
-    wallet_config.user_prikey_cfg.prikey_content.field_len = strlen(chainmaker_user_key) + 1; 
+
+    wallet_config.user_prikey_cfg.prikey_content.field_ptr = (BUINT8 *)chainmaker_key_ptr_buf;
+    wallet_config.user_prikey_cfg.prikey_content.field_len = strlen(chainmaker_key_ptr_buf) + 1; 
 
     //set user cert context
-    wallet_config.user_cert_cfg.length = strlen(chainmaker_user_cert);
-    memcpy(wallet_config.user_cert_cfg.content, chainmaker_user_cert, wallet_config.user_cert_cfg.length);
+    wallet_config.user_cert_cfg.length = strlen(chainmaker_cert_ptr_buf);
+    memcpy(wallet_config.user_cert_cfg.content, chainmaker_cert_ptr_buf, wallet_config.user_cert_cfg.length);
+    strncpy(wallet_config.node_url_cfg, TEST_CHAINMAKER_NODE_URL, strlen(TEST_CHAINMAKER_NODE_URL));
 
-#ifdef TEST_CHAINMAKER__NODE_URL
-    strncpy(wallet_config.node_url_cfg, TEST_CHAINMAKER__NODE_URL, strlen(TEST_CHAINMAKER__NODE_URL));
-#else 
-    strncpy(wallet_config.node_url_cfg, test_chainmaker_node_url, strlen(test_chainmaker_node_url));
-#endif
-    strncpy(wallet_config.host_name_cfg, test_chainmaker_host_name, strlen(test_chainmaker_host_name));
-
-    //tls ca cert
-    wallet_config.tls_ca_cert_cfg.length = strlen(chainmaker_tls_ca_cert);
-    memcpy(wallet_config.tls_ca_cert_cfg.content, chainmaker_tls_ca_cert, wallet_config.tls_ca_cert_cfg.length);
     return wallet_config;
 }
 

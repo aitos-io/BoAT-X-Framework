@@ -27,24 +27,14 @@ static BOAT_RESULT ChainmakerWalletPrepare(void)
     wallet_config.user_prikey_cfg.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     wallet_config.user_prikey_cfg.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
     wallet_config.user_prikey_cfg.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-    wallet_config.user_prikey_cfg.prikey_content.field_ptr = (BUINT8 *)chainmaker_user_key;
-    wallet_config.user_prikey_cfg.prikey_content.field_len = strlen(chainmaker_user_key) + 1; 
+    wallet_config.user_prikey_cfg.prikey_content.field_ptr = (BUINT8 *)chainmaker_key_ptr_buf;
+    wallet_config.user_prikey_cfg.prikey_content.field_len = strlen(chainmaker_key_ptr_buf) + 1; 
 
     //set user cert context
-    wallet_config.user_cert_cfg.length = strlen(chainmaker_user_cert);
-    memcpy(wallet_config.user_cert_cfg.content, chainmaker_user_cert, wallet_config.user_cert_cfg.length);
-    
-    //set url and name
-#ifdef TEST_CHAINMAKER__NODE_URL
-    strncpy(wallet_config.node_url_cfg, TEST_CHAINMAKER__NODE_URL, strlen(TEST_CHAINMAKER__NODE_URL));
-#else 
-    strncpy(wallet_config.node_url_cfg, test_chainmaker_node_url, strlen(test_chainmaker_node_url));
-#endif
-    strncpy(wallet_config.host_name_cfg, test_chainmaker_host_name, strlen(test_chainmaker_host_name));
+    wallet_config.user_cert_cfg.length = strlen(chainmaker_cert_ptr_buf);
+    memcpy(wallet_config.user_cert_cfg.content, chainmaker_cert_ptr_buf, wallet_config.user_cert_cfg.length);
+    strncpy(wallet_config.node_url_cfg, TEST_CHAINMAKER_NODE_URL, strlen(TEST_CHAINMAKER_NODE_URL));
 
-    //tls ca cert
-    wallet_config.tls_ca_cert_cfg.length = strlen(chainmaker_tls_ca_cert);
-    memcpy(wallet_config.tls_ca_cert_cfg.content, chainmaker_tls_ca_cert, wallet_config.tls_ca_cert_cfg.length);
 
     // create wallet
 #if defined(USE_ONETIME_WALLET)
@@ -85,7 +75,7 @@ static BOAT_RESULT test_contrct_invoke_prepara(BoatHlchainmakerTx  *tx_ptr)
     }
 
     /* step-3: Chainmaker transaction structure initialization */
-    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id_str, org_id_str, tx_ptr);
+    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, tx_ptr);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "test BoatHlChainmakerTxInit() failed.");
@@ -116,7 +106,7 @@ static BOAT_RESULT test_contrct_query_prepara(BoatHlchainmakerTx  *tx_ptr)
     }
 
     /* step-3: Chainmaker transaction structure initialization */
-    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id_str, org_id_str, tx_ptr);
+    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, tx_ptr);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "test BoatHlChainmakerTxInit() failed.");
