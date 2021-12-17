@@ -33,20 +33,31 @@ char chainmaker_cert_ptr_buf[1024];
 int read_key_cert_content(char* key_ptr, char* cert_ptr)
 {       
    int fd = 0;
+   int len;
 
    fd = open("../../../tests/BoAT_chainmaker_linuxDefault/cert_key/client1.sign.key", O_RDONLY);
    if (fd < 0)
    {
       return -1;
    }
-   read(fd, key_ptr, 1024);
+
+   len = read(fd, key_ptr, 1024);
+   if (len < 0)
+   {
+       return -1;
+   }
 
    fd = open("../../../tests/BoAT_chainmaker_linuxDefault/cert_key/client1.sign.crt", O_RDONLY);
    if (fd < 0)
    {
       return -1;
    }
-   read(fd, cert_ptr, 1024);
+   fd = read(fd, cert_ptr, 1024);
+   if (len < 0)
+   {
+       return -1;
+   }
+   return 0;
 }
 
 int main(int argc, char *argv[])
