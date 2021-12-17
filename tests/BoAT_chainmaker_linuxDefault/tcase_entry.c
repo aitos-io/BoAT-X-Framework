@@ -35,6 +35,11 @@ int read_key_cert_content(char* key_ptr, char* cert_ptr)
    int fd = 0;
    int len;
 
+   if ((key_ptr == NULL) || (cert_ptr == NULL))
+   {
+      return -1;
+   }
+
    fd = open("../../../tests/BoAT_chainmaker_linuxDefault/cert_key/client1.sign.key", O_RDONLY);
    if (fd < 0)
    {
