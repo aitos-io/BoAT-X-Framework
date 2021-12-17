@@ -181,7 +181,7 @@ START_TEST(test_002Param_0003AddTxParamSuccess)
     BoatHlchainmakerTx tx_ptr;
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "value1", "key2", "value2", 
-                                                    "key3", "value3");
+                                                    "key3", "value3", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     ck_assert_int_eq(param_add_check(&tx_ptr), BOAT_SUCCESS);
 }
@@ -193,7 +193,7 @@ START_TEST(test_002Param_0004AddTxParamFailureShortParam)
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "value1", "key2", "value2", "key3");
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "value1", "key2", "value2", "key3", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -204,7 +204,7 @@ START_TEST(test_002Param_0005AddTxParamFailureLongParam)
     BoatHlchainmakerTx tx_ptr;
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 12, "key1", "value1", "key2", "value2", "key3", "value3", 
-                                                     "key4", "value4", "key5", "value5", "key6", "value6");
+                                                     "key4", "value4", "key5", "value5", "key6", "value6", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 
 }
@@ -216,7 +216,7 @@ START_TEST(test_002Param_0006AddTxParamFailureOddParam)
     BoatHlchainmakerTx tx_ptr;
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 9, "key1", "value1", "key2", "value2", "key3", "value3", 
-                                                     "key4", "value4", "key5");
+                                                     "key4", "value4", "key5", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -237,7 +237,7 @@ START_TEST(test_002Param_0008AddTxParamFailureTxNULLParam)
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(NULL, 6, "key1", "vlaue1", "key2", "vlaue2", "key3", "value3");
+    rtnVal = BoatHlchainmakerAddTxParam(NULL, 6, "key1", "vlaue1", "key2", "vlaue2", "key3", "value3", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
