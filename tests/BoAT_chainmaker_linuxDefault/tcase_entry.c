@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     here set suite_wallet as first adding suite. */
    sr = srunner_create(suite_wallet);
    /* set generate test log in running path */
-   srunner_set_log(sr, "log.txt");
+   srunner_set_log(sr, "ccheck_log.txt");
    /* add other suite to srunner, more test suite should be add in here */
    srunner_add_suite(sr, suite_paramters);
    srunner_add_suite(sr, suite_contract);
