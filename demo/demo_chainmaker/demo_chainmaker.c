@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	result = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005");
+	result = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005", NULL);
    	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
 
 	/* step-5: wait seconds and 'query' the gas */
 	BoatSleep(2);
-	result = BoatHlchainmakerAddTxParam(&tx_ptr, 2, "file_hash", "ab3456df5799b87c77e7f85");
+	result = BoatHlchainmakerAddTxParam(&tx_ptr, 2, "file_hash", "ab3456df5799b87c77e7f85", NULL);
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
