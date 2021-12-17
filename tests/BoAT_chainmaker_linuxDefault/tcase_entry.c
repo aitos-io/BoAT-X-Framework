@@ -19,8 +19,6 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <errno.h>
-
 
 /* extern suite declaration */
 extern Suite *make_wallet_suite(void);
