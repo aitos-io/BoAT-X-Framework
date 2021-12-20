@@ -142,7 +142,7 @@ sudo apt-get install libcurl4-openssl-dev
 ![image](https://user-images.githubusercontent.com/81662688/130744541-7645fe99-9c21-44e0-a3cc-fe84b102d0cf.png)
 ![image](https://user-images.githubusercontent.com/81662688/130744556-163fb5e4-0260-42d8-b8c1-4c78052bd7d1.png)
 
-在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](####以Windows为编译环境)章节对编译文件进行调整。
+在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](####以windows为编译环境)章节对编译文件进行调整。
 
 在RTOS上移植SDK时，应对libcurl依赖进行移植或将RPC方法重写。  
 
@@ -287,7 +287,7 @@ ${CC} -v
 ${AR} -v
 ```
 
-以上配置完成后，遵照[以Linux为编译环境](####以Linux为编译环境)章节的步骤进行编译。
+以上配置完成后，遵照[以Linux为编译环境](####以linux为编译环境)章节的步骤进行编译。
 
 
 ##### 与模组开发环境整合的交叉编译环境
@@ -493,7 +493,7 @@ mkdir… 命令语法不正确。
 FIND: 参数格式不正确  
 
 
-该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[以Windows为编译环境](####以Windows为编译环境)章节安装Cygwin和配置Makefile。
+该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[以Windows为编译环境](####以windows为编译环境)章节安装Cygwin和配置Makefile。
 
 
 ## 编程模型
