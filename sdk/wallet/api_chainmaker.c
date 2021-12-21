@@ -554,27 +554,3 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	}
 	return result;
 }	
-
-
-BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *host_name_ptr)
-{
-	BOAT_RESULT result;
-
-	if ((wallet_ptr == NULL) || (host_name_ptr == NULL))
-	{
-	   BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or node_url_ptr cannot be NULL.");
-	   return BOAT_ERROR_INVALID_ARGUMENT;
-	}
-
-	// string length check
-	if (BOAT_SUCCESS != UtilityStringLenCheck(host_name_ptr))
-	{
-	   BoatLog(BOAT_LOG_CRITICAL, "host name length out of limit: %s.", host_name_ptr);
-	   return BOAT_ERROR_INVALID_ARGUMENT;
-	}
-
-	wallet_ptr->host_name_info = host_name_ptr;
-	result = BOAT_SUCCESS;
-
-	return result;
-}
