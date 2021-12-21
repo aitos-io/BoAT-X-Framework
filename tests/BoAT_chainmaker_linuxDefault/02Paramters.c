@@ -268,6 +268,18 @@ START_TEST(test_002Param_0008AddTxParamFailureTxNULLParam)
 }
 END_TEST
 
+START_TEST(test_002Param_0009AddTxParamSucessTxLessMaxEvenParam) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerTx    tx_ptr;
+
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 8, "key1", "value1", "key2", "value2", "key3", "value3", 
+                                                    "key4", "value4",  NULL);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    ck_assert_int_eq(param_add_check(&tx_ptr, 4), BOAT_SUCCESS);
+}
+END_TEST
+
 Suite *make_parameters_suite(void) 
 {
     /* Create Suite */
@@ -286,7 +298,8 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_param_api, test_002Param_0005AddTxParamFailureLongParam); 
     tcase_add_test(tc_param_api, test_002Param_0006AddTxParamFailureOddParam);   
     tcase_add_test(tc_param_api, test_002Param_0007AddTxParamSucessNumberNULLParam);  
-    tcase_add_test(tc_param_api, test_002Param_0008AddTxParamFailureTxNULLParam);  
+    tcase_add_test(tc_param_api, test_002Param_0008AddTxParamFailureTxNULLParam); 
+    tcase_add_test(tc_param_api, test_002Param_0009AddTxParamSucessTxLessMaxEvenParam);  
 
     return s_param;
 }
