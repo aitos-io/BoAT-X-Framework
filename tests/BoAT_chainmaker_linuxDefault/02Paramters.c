@@ -91,7 +91,7 @@ static BOAT_RESULT param_init_check(BoatHlchainmakerTx* tx_ptr)
 }
 
 
-static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr)
+static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr, int num)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -112,6 +112,11 @@ static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr)
         return BOAT_ERROR;
     }
 
+    if (num == 1)
+    {
+        return result;
+    }
+
     result = strncmp(tx_ptr->trans_para.parameters[1].key, "key2", strlen("key2"));
     if (result != 0) 
     {
@@ -122,6 +127,11 @@ static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr)
     if (result != 0) 
     {
         return BOAT_ERROR;
+    }
+
+    if (num == 2)
+    {
+        return result;
     }
 
     result = strncmp(tx_ptr->trans_para.parameters[2].key, "key3", strlen("key3"));
@@ -135,7 +145,22 @@ static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr)
     {
         return BOAT_ERROR;
     }
+    if (num == 3)
+    {
+        return result;
+    }
 
+    result = strncmp(tx_ptr->trans_para.parameters[2].key, "key4", strlen("key4"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[2].value, "value4", strlen("value4"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
     return result;
 }
 
@@ -183,7 +208,7 @@ START_TEST(test_002Param_0003AddTxParamSuccess)
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "value1", "key2", "value2", 
                                                     "key3", "value3", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    ck_assert_int_eq(param_add_check(&tx_ptr), BOAT_SUCCESS);
+    ck_assert_int_eq(param_add_check(&tx_ptr, 3), BOAT_SUCCESS);
 }
 END_TEST
 
@@ -242,7 +267,6 @@ START_TEST(test_002Param_0008AddTxParamFailureTxNULLParam)
 }
 END_TEST
 
-
 Suite *make_parameters_suite(void) 
 {
     /* Create Suite */
@@ -262,7 +286,6 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_param_api, test_002Param_0006AddTxParamFailureOddParam);   
     tcase_add_test(tc_param_api, test_002Param_0007AddTxParamSucessNumberNULLParam);  
     tcase_add_test(tc_param_api, test_002Param_0008AddTxParamFailureTxNULLParam);  
-
     return s_param;
 }
 
