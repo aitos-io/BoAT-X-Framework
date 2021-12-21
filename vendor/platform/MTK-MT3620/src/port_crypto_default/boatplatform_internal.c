@@ -59,9 +59,9 @@ BUINT32 random32(void)
 	memset(nonce, 0, sizeof(nonce));
 	rng = wc_rng_new(nonce, (word32)sizeof(nonce), NULL);
 
-	if (0 == wc_RNG_GenerateBlock(rng, &u_int_value, sizeof(u_int_value)))
+	if (0 != wc_RNG_GenerateBlock(rng, &u_int_value, sizeof(u_int_value)))
 	{
-		return u_int_value;
+		 u_int_value = 0;
 	}
 
 	if (rng != NULL)
@@ -69,7 +69,7 @@ BUINT32 random32(void)
 		wc_rng_free(rng);
 	}
 
-	return 0;
+	return u_int_value;
 }
 
 BOAT_RESULT random_stream(BUINT8* buf, BUINT16 len)
