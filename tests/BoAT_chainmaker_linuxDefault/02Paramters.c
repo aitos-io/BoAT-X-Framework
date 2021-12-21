@@ -95,7 +95,7 @@ static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr, int num)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
 
-    if (tx_ptr->trans_para.n_parameters != 3)
+    if ((tx_ptr->trans_para.n_parameters != num) || (num > 4))
     {
         return BOAT_ERROR;
     }
@@ -138,7 +138,7 @@ static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr, int num)
     if (result != 0) 
     {
         return BOAT_ERROR;
-    }
+    }  
 
     result = strncmp(tx_ptr->trans_para.parameters[2].value, "value3", strlen("value3"));
     if (result != 0) 
@@ -150,17 +150,18 @@ static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr, int num)
         return result;
     }
 
-    result = strncmp(tx_ptr->trans_para.parameters[2].key, "key4", strlen("key4"));
+    result = strncmp(tx_ptr->trans_para.parameters[3].key, "key4", strlen("key4"));
     if (result != 0) 
     {
         return BOAT_ERROR;
     }
 
-    result = strncmp(tx_ptr->trans_para.parameters[2].value, "value4", strlen("value4"));
+    result = strncmp(tx_ptr->trans_para.parameters[3].value, "value4", strlen("value4"));
     if (result != 0) 
     {
         return BOAT_ERROR;
     }
+
     return result;
 }
 
@@ -286,6 +287,7 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_param_api, test_002Param_0006AddTxParamFailureOddParam);   
     tcase_add_test(tc_param_api, test_002Param_0007AddTxParamSucessNumberNULLParam);  
     tcase_add_test(tc_param_api, test_002Param_0008AddTxParamFailureTxNULLParam);  
+
     return s_param;
 }
 
