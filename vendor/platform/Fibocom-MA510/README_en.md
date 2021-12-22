@@ -30,7 +30,7 @@ After copying these files, the directory structure should look like:
 ```
 
 
-## File Modification
+## Files Modification
 
 ### 1、Add a demo supporting compilation in example.txt
 
