@@ -5,7 +5,7 @@
 
 This guide describes how to integrate BoAT-X Framework source code into Fibocom-MA510 SDK, compile BoAT-X Framework static library and build the demo program.
 
-## Copy files
+## Copy Files
 
 Assuming `<MA510 Root>` to be the root directory of Fibocom-MA510 platform SDK:
 
@@ -97,7 +97,7 @@ EXTERNAL_CFLAGS := -marm -target armv7m-none-musleabi -mfloat-abi=softfp -mfpu=n
 ```
 
 
-## Compile BoAT-X Framework Static library
+## Compile BoAT-X Framework Static Library
 
 ### 1、Compile BoAT-X Framework static library (under Linux)
    
