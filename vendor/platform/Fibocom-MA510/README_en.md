@@ -45,7 +45,7 @@ boat_demo      -__EXAMPLE_BOATDEMO__ -NO -NO
 
 Open `<MA510 Root>/build_all.sh`
 
-Add the following content at the place where the reference file path is added:
+Update the reference files path to add the following new contents:
 ```
 BOAT_INC_PATH="fibocom/example/BoAT-X-Framework/include"
 BOAT_PROTOCOL_INC_PATH="fibocom/example/BoAT-X-Framework/include/protocolapi"
