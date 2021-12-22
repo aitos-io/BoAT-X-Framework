@@ -165,7 +165,7 @@ static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr, int num)
     return result;
 }
 
-START_TEST(test_002Param_0001TxinitSuccess) 
+START_TEST(test_002Parameters_0001TxinitSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -179,7 +179,7 @@ START_TEST(test_002Param_0001TxinitSuccess)
 }
 END_TEST
 
-START_TEST(test_002Param_0002TxinitxFailureNullpara) 
+START_TEST(test_002Parameters_0002TxinitxFailureNullpara) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -201,7 +201,7 @@ START_TEST(test_002Param_0002TxinitxFailureNullpara)
 END_TEST
 
 
-START_TEST(test_002Param_0003AddTxParamSuccess) 
+START_TEST(test_002Parameters_0003AddTxParamSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -214,7 +214,7 @@ START_TEST(test_002Param_0003AddTxParamSuccess)
 END_TEST
 
 
-START_TEST(test_002Param_0004AddTxParamFailureShortParam) 
+START_TEST(test_002Parameters_0004AddTxParamFailureShortParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -224,7 +224,7 @@ START_TEST(test_002Param_0004AddTxParamFailureShortParam)
 }
 END_TEST
 
-START_TEST(test_002Param_0005AddTxParamFailureLongParam) 
+START_TEST(test_002Parameters_0005AddTxParamFailureLongParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -236,7 +236,7 @@ START_TEST(test_002Param_0005AddTxParamFailureLongParam)
 }
 END_TEST
 
-START_TEST(test_002Param_0006AddTxParamFailureOddParam) 
+START_TEST(test_002Parameters_0006AddTxParamFailureOddParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
@@ -247,7 +247,7 @@ START_TEST(test_002Param_0006AddTxParamFailureOddParam)
 }
 END_TEST
 
-START_TEST(test_002Param_0007AddTxParamSucessNumberNULLParam) 
+START_TEST(test_002Parameters_0007AddTxParamSucessNumberNULLParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -258,7 +258,7 @@ START_TEST(test_002Param_0007AddTxParamSucessNumberNULLParam)
 }
 END_TEST
 
-START_TEST(test_002Param_0008AddTxParamFailureTxNULLParam) 
+START_TEST(test_002Parameters_0008AddTxParamFailureTxNULLParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -268,7 +268,7 @@ START_TEST(test_002Param_0008AddTxParamFailureTxNULLParam)
 }
 END_TEST
 
-START_TEST(test_002Param_0009AddTxParamSucessTxLessMaxEvenParam) 
+START_TEST(test_002Parameters_0009AddTxParamSucessTxLessMaxEvenParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -280,7 +280,7 @@ START_TEST(test_002Param_0009AddTxParamSucessTxLessMaxEvenParam)
 }
 END_TEST
 
-START_TEST(test_002Param_0010AddTxParamFailureMoreMaxOddParam) 
+START_TEST(test_002Parameters_0010AddTxParamFailureMoreMaxOddParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
@@ -303,16 +303,16 @@ Suite *make_parameters_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_param, tc_param_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_param_api, test_002Param_0001TxinitSuccess);  
-    tcase_add_test(tc_param_api, test_002Param_0002TxinitxFailureNullpara);  
-    tcase_add_test(tc_param_api, test_002Param_0003AddTxParamSuccess);  
-    tcase_add_test(tc_param_api, test_002Param_0004AddTxParamFailureShortParam);  
-    tcase_add_test(tc_param_api, test_002Param_0005AddTxParamFailureLongParam); 
-    tcase_add_test(tc_param_api, test_002Param_0006AddTxParamFailureOddParam);   
-    tcase_add_test(tc_param_api, test_002Param_0007AddTxParamSucessNumberNULLParam);  
-    tcase_add_test(tc_param_api, test_002Param_0008AddTxParamFailureTxNULLParam); 
-    tcase_add_test(tc_param_api, test_002Param_0009AddTxParamSucessTxLessMaxEvenParam);  
-    tcase_add_test(tc_param_api, test_002Param_0010AddTxParamFailureMoreMaxOddParam);  
+    tcase_add_test(tc_param_api, test_002Parameters_0001TxinitSuccess);  
+    tcase_add_test(tc_param_api, test_002Parameters_0002TxinitxFailureNullpara);  
+    tcase_add_test(tc_param_api, test_002Parameters_0003AddTxParamSuccess);  
+    tcase_add_test(tc_param_api, test_002Parameters_0004AddTxParamFailureShortParam);  
+    tcase_add_test(tc_param_api, test_002Parameters_0005AddTxParamFailureLongParam); 
+    tcase_add_test(tc_param_api, test_002Parameters_0006AddTxParamFailureOddParam);   
+    tcase_add_test(tc_param_api, test_002Parameters_0007AddTxParamSucessNumberNULLParam);  
+    tcase_add_test(tc_param_api, test_002Parameters_0008AddTxParamFailureTxNULLParam); 
+    tcase_add_test(tc_param_api, test_002Parameters_0009AddTxParamSucessTxLessMaxEvenParam);  
+    tcase_add_test(tc_param_api, test_002Parameters_0010AddTxParamFailureMoreMaxOddParam);  
 
     return s_param;
 }
