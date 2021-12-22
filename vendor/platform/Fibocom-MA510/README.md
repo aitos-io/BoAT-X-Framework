@@ -47,7 +47,7 @@ boat_demo      -__EXAMPLE_BOATDEMO__ -NO -NO
 
 打开`<MA510 Root>/build_all.sh`文件
 
-在引用文件路径添加处新添以下内容：
+添加BoAT和MA510引用文件的路径：
 ```
 BOAT_INC_PATH="fibocom/example/BoAT-X-Framework/include"
 BOAT_PROTOCOL_INC_PATH="fibocom/example/BoAT-X-Framework/include/protocolapi"
