@@ -118,13 +118,6 @@ typedef struct TBoatTransactionPara {
 	BoatKeyValuePair parameters[BOAT_HLCHAINMAKER_ARGS_MAX_NUM]; 
 } BoatTransactionPara;
 
-
-typedef struct TBoatHlchainamkerClient {
-
-	BCHAR* chain_id;
-	BCHAR* org_id;
-} BoatHlchainamkerClient;
-
 typedef struct TBoatHlchainamkerResult {
 	BUINT32             code;
 	char*               message;
@@ -141,6 +134,8 @@ typedef struct TBoatHlchainmakerWalletConfig {
 
 	BCHAR  node_url_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
   BCHAR  host_name_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BCHAR  chain_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BCHAR  org_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
   BoatHlchainmakerCertInfoCfg   tls_ca_cert_cfg;
 }BoatHlchainmakerWalletConfig;
 
@@ -151,22 +146,27 @@ typedef struct TBoatHlchainmakerKeyPair {
 	BoatFieldVariable    cert;      //!< client certificate content
 } BoatHlchainmakerKeyPair;
 
+typedef struct BoatChainmakerNodeInfo
+{
+    BCHAR*  node_url_info;
+    BCHAR*  host_name_info;
+    BCHAR*  chain_id_info;
+    BCHAR*  org_id_info;
+}BoatChainmakerNodeInfo;
+
 //chainmaker wallet structure
 typedef struct TBoatHlchainmakerWallet {
 
 	BoatHlchainmakerKeyPair   user_cert_info; //!< user information
-	
-  BCHAR*  node_url_info;
-  BCHAR*  host_name_info;
-  BoatFieldVariable          tls_ca_cert_info;
+  BoatFieldVariable         tls_ca_cert_info;
+  BoatChainmakerNodeInfo    node_info;
 	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
 } BoatHlchainmakerWallet;
 
 typedef struct TBoatHlchainamkerTx {
 
 	BoatHlchainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet 
-	BoatTransactionPara         trans_para;
-	BoatHlchainamkerClient      client_para;     
+	BoatTransactionPara         trans_para; 
 }BoatHlchainmakerTx;
 
 
@@ -197,13 +197,7 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
  *   This function used to Initialize fabric transaction.
  * 
  * @param wallet_ptr 
- *   Fabric wallet structure pointer to be initialized.
- * 
- * @param chain_id 
- *   Channel identification to be initialized.
- * 
- * @param org_id 
- *   Channel Organization id to be initialized.
+ *   Chainmaker wallet structure pointer to be initialized.
  *  
  * @param tx_ptr
  *   chainmaker transaction structure pointer to be initialized.
@@ -211,8 +205,7 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BCHAR* chain_id, BCHAR* org_id,
-								                   BoatHlchainmakerTx* tx_ptr);
+BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BoatHlchainmakerTx* tx_ptr);
 
 /*!****************************************************************************
  * @brief 

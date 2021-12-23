@@ -94,12 +94,12 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 		return BOAT_ERROR;
 	}
 
-	sender.org_id             = tx_ptr->client_para.org_id;
+	sender.org_id             = tx_ptr->wallet_ptr->node_info.org_id_info;
 	sender.member_info.len    = tx_ptr->wallet_ptr->user_cert_info.cert.field_len;
 	sender.member_info.data   = tx_ptr->wallet_ptr->user_cert_info.cert.field_ptr;
 	sender.is_full_cert       = true;
 
-	tx_header.chain_id        = tx_ptr->client_para.chain_id;
+	tx_header.chain_id        = tx_ptr->wallet_ptr->node_info.chain_id_info;
 	tx_header.tx_type         = tx_type;
 	tx_header.tx_id           = tx_id;
 	tx_header.timestamp       = BoatGetTimes();

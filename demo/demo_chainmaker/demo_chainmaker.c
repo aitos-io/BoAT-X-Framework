@@ -61,10 +61,8 @@ const BCHAR* chainmaker_tls_ca_cert =   "-----BEGIN CERTIFICATE-----\n"
 //wallet para
 BCHAR *chainmaker_node_url   = "127.0.0.1:12301";
 BCHAR *chainmaker_host_name  = "chainmaker.org";
-
-//client para
-BCHAR *chain_id              = "chain1";
-BCHAR *org_id                = "wx-org1.chainmaker.org";
+BCHAR *chainmaker_chain_id   = "chain1";
+BCHAR *chainmaker_org_id      = "wx-org1.chainmaker.org";
 
 BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
 BoatHlchainmakerWalletConfig wallet_config = {0};
@@ -85,13 +83,17 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	memcpy(wallet_config.user_cert_cfg.content, chainmaker_user_cert, wallet_config.user_cert_cfg.length);
 	
 	//set url and name
-	if (((strlen(chainmaker_node_url) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN) || 
-		  strlen(chainmaker_host_name) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN))
+	if ((strlen(chainmaker_node_url) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN) || 
+		 (strlen(chainmaker_host_name) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
+		 (strlen(chainmaker_chain_id) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
+		 (strlen(chainmaker_org_id) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN))
 	{
 		return BOAT_ERROR;
 	}
-	strncpy(wallet_config.node_url_cfg, chainmaker_node_url,   strlen(chainmaker_node_url));
+	strncpy(wallet_config.node_url_cfg,  chainmaker_node_url,  strlen(chainmaker_node_url));
 	strncpy(wallet_config.host_name_cfg, chainmaker_host_name, strlen(chainmaker_host_name));
+	strncpy(wallet_config.chain_id_cfg,  chainmaker_chain_id,  strlen(chainmaker_chain_id));
+	strncpy(wallet_config.org_id_cfg,    chainmaker_org_id,    strlen(chainmaker_org_id));
 
 	//tls ca cert
 	wallet_config.tls_ca_cert_cfg.length = strlen(chainmaker_tls_ca_cert);
@@ -139,7 +141,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* step-3: Chainmaker transaction structure initialization */
-	result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, &tx_ptr);
+	result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, &tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
 		return -1;
