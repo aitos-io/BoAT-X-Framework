@@ -233,7 +233,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet* wallet_ptr)
         /* code */
         printf("node[%d] : IP[%s],port[%d]. \n", i, result_out.nodeInfo[i].IP, result_out.nodeInfo[i].rpcPort);
     }
-
+    nodeResFree(&result_out);
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "HelloWorld");
     if (result_str == NULL)
     {
