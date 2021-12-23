@@ -269,6 +269,13 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
     }
+    if(nodeManagerAddr != NULL){
+        BoatFree(nodeManagerAddr);
+    }
+    if(prase_result.field_ptr != NULL){
+        BoatFree(prase_result.field_ptr);
+        prase_result.field_len = 0;
+    }
     
     return return_value_ptr;
 }
