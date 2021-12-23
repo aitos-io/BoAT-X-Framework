@@ -257,6 +257,8 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 #endif
 	wallet_ptr->node_info.host_name_info = NULL;
 	wallet_ptr->node_info.node_url_info  = NULL;
+	wallet_ptr->node_info.chain_id_info  = NULL;
+	wallet_ptr->node_info.org_id_info    = NULL;
 
 	/* http2Context DeInit */
 	http2DeInit(wallet_ptr->http2Context_ptr);
