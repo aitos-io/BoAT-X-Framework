@@ -135,7 +135,7 @@ typedef struct TBoatHlchainmakerWalletConfig {
 	BCHAR  node_url_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
   BCHAR  host_name_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
   BCHAR  chain_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-  BCHAR  orh_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BCHAR  org_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
   BoatHlchainmakerCertInfoCfg   tls_ca_cert_cfg;
 }BoatHlchainmakerWalletConfig;
 

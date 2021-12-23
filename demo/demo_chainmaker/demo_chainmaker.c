@@ -90,8 +90,10 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	{
 		return BOAT_ERROR;
 	}
-	strncpy(wallet_config.node_url_cfg, chainmaker_node_url,   strlen(chainmaker_node_url));
+	strncpy(wallet_config.node_url_cfg,  chainmaker_node_url,  strlen(chainmaker_node_url));
 	strncpy(wallet_config.host_name_cfg, chainmaker_host_name, strlen(chainmaker_host_name));
+	strncpy(wallet_config.chain_id_cfg,  chainmaker_chain_id,  strlen(chainmaker_chain_id));
+	strncpy(wallet_config.org_id_cfg,    chainmaker_org_id,    strlen(chainmaker_org_id));
 
 	//tls ca cert
 	wallet_config.tls_ca_cert_cfg.length = strlen(chainmaker_tls_ca_cert);
