@@ -455,6 +455,8 @@ BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out);
 
 /*! @}*/
 
+void nodeResFree(nodesResult *result_out);
+
 #ifdef __cplusplus
 }
 #endif /* end of __cplusplus */
