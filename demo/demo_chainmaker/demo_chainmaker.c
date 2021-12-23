@@ -61,10 +61,8 @@ const BCHAR* chainmaker_tls_ca_cert =   "-----BEGIN CERTIFICATE-----\n"
 //wallet para
 BCHAR *chainmaker_node_url   = "127.0.0.1:12301";
 BCHAR *chainmaker_host_name  = "chainmaker.org";
-
-//client para
-BCHAR *chain_id              = "chain1";
-BCHAR *org_id                = "wx-org1.chainmaker.org";
+BCHAR *chainmaker_chain_id   = "chain1";
+BCHAR *chainmaker_org_id      = "wx-org1.chainmaker.org";
 
 BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
 BoatHlchainmakerWalletConfig wallet_config = {0};
@@ -85,8 +83,10 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	memcpy(wallet_config.user_cert_cfg.content, chainmaker_user_cert, wallet_config.user_cert_cfg.length);
 	
 	//set url and name
-	if (((strlen(chainmaker_node_url) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN) || 
-		  strlen(chainmaker_host_name) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN))
+	if ((strlen(chainmaker_node_url) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN) || 
+		 (strlen(chainmaker_host_name) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
+		 (strlen(chainmaker_chain_id) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
+		 (strlen(chainmaker_org_id) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN))
 	{
 		return BOAT_ERROR;
 	}
