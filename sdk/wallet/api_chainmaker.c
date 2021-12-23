@@ -191,8 +191,10 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	wallet_ptr->tls_ca_cert_info.field_ptr     = NULL;
 	wallet_ptr->tls_ca_cert_info.field_len     = 0;
 	wallet_ptr->http2Context_ptr               = NULL;
-	wallet_ptr->host_name_info                 = config_ptr->host_name_cfg;
-	wallet_ptr->node_url_info                  = config_ptr->node_url_cfg;
+	wallet_ptr->node_info.host_name_info       = config_ptr->host_name_cfg;
+	wallet_ptr->node_info.node_url_info        = config_ptr->node_url_cfg;
+	wallet_ptr->node_info.chain_id_info        = config_ptr->chain_id_cfg;
+	wallet_ptr->node_info.org_id_info          = config_ptr->org_id_cfg;
 
 	/* assignment */
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
@@ -253,8 +255,8 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 		wallet_ptr->http2Context_ptr->tlsCAchain = NULL;
 	}
 #endif
-	wallet_ptr->host_name_info = NULL;
-	wallet_ptr->node_url_info  = NULL;
+	wallet_ptr->node_info.host_name_info = NULL;
+	wallet_ptr->node_info.node_url_info  = NULL;
 
 	/* http2Context DeInit */
 	http2DeInit(wallet_ptr->http2Context_ptr);
@@ -302,7 +304,7 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
 
-	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = tx_ptr->wallet_ptr->node_url_info;
+	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = tx_ptr->wallet_ptr->node_info.node_url_info;
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
 	// clear last data
