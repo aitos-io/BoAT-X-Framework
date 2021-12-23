@@ -199,7 +199,9 @@ BOAT_RESULT ethereumGetBalance(BoatEthWallet *wallet_ptr)
 	}
 
     //BoatLog(BOAT_LOG_NORMAL, "Balance: %s wei", prase_result.field_ptr);
-
+    if(prase_result.field_ptr != NULL){
+        BoatFree(prase_result.field_ptr);
+    }
     return BOAT_SUCCESS;
 }
 
