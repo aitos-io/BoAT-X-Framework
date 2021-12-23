@@ -429,6 +429,9 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
 	mbedtls_pk_free(&mbedtls_pkCtx);
+	if(ecPrikey != NULL){
+		BoatFree(ecPrikey);
+	}
 
 	return result;
 }
