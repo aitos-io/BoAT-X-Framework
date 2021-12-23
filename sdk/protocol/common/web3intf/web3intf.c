@@ -162,7 +162,10 @@ BOAT_RESULT web3_parse_json_result(const BCHAR *json_string,
 		BoatLog(BOAT_LOG_CRITICAL, "Un-expect object type.");
 		boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
 	}
-	
+	if (cjson_string_ptr != NULL)
+    {
+        cJSON_Delete(cjson_string_ptr);
+    }
 	
 	// Exceptional Clean Up
     boat_catch(web3_parse_json_result_cleanup)
