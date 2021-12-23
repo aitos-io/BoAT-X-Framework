@@ -266,20 +266,16 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	wallet_ptr = NULL;
 }
 
-BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BCHAR* chain_id, BCHAR* org_id,
-								   BoatHlchainmakerTx* tx_ptr)
+BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BoatHlchainmakerTx* tx_ptr)
 {
 	BUINT32 stringLen;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
-	if ((tx_ptr == NULL) || (wallet_ptr == NULL) || (chain_id == NULL) || (org_id == NULL))
+	if ((tx_ptr == NULL) || (wallet_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlChainmakerTxInit paramters cannot be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
-
-	tx_ptr->client_para.chain_id  = chain_id;
-	tx_ptr->client_para.org_id    = org_id;
 
 	tx_ptr->wallet_ptr = (BoatHlchainmakerWallet *)wallet_ptr;
 	return result;

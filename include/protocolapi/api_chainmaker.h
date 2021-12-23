@@ -197,13 +197,7 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
  *   This function used to Initialize fabric transaction.
  * 
  * @param wallet_ptr 
- *   Fabric wallet structure pointer to be initialized.
- * 
- * @param chain_id 
- *   Channel identification to be initialized.
- * 
- * @param org_id 
- *   Channel Organization id to be initialized.
+ *   Chainmaker wallet structure pointer to be initialized.
  *  
  * @param tx_ptr
  *   chainmaker transaction structure pointer to be initialized.
@@ -211,8 +205,7 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BCHAR* chain_id, BCHAR* org_id,
-								                   BoatHlchainmakerTx* tx_ptr);
+BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BoatHlchainmakerTx* tx_ptr);
 
 /*!****************************************************************************
  * @brief 
