@@ -134,6 +134,8 @@ typedef struct TBoatHlchainmakerWalletConfig {
 
 	BCHAR  node_url_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
   BCHAR  host_name_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BCHAR  chain_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BCHAR  orh_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
   BoatHlchainmakerCertInfoCfg   tls_ca_cert_cfg;
 }BoatHlchainmakerWalletConfig;
 
@@ -156,11 +158,8 @@ typedef struct BoatChainmakerNodeInfo
 typedef struct TBoatHlchainmakerWallet {
 
 	BoatHlchainmakerKeyPair   user_cert_info; //!< user information
-	
-  BCHAR*  node_url_info;
-  BCHAR*  host_name_info;
-
-  BoatFieldVariable          tls_ca_cert_info;
+  BoatFieldVariable         tls_ca_cert_info;
+  BoatChainmakerNodeInfo    node_info;
 	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
 } BoatHlchainmakerWallet;
 
