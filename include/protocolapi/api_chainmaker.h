@@ -118,13 +118,6 @@ typedef struct TBoatTransactionPara {
 	BoatKeyValuePair parameters[BOAT_HLCHAINMAKER_ARGS_MAX_NUM]; 
 } BoatTransactionPara;
 
-
-typedef struct TBoatHlchainamkerClient {
-
-	BCHAR* chain_id;
-	BCHAR* org_id;
-} BoatHlchainamkerClient;
-
 typedef struct TBoatHlchainamkerResult {
 	BUINT32             code;
 	char*               message;
@@ -165,8 +158,7 @@ typedef struct TBoatHlchainmakerWallet {
 typedef struct TBoatHlchainamkerTx {
 
 	BoatHlchainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet 
-	BoatTransactionPara         trans_para;
-	BoatHlchainamkerClient      client_para;     
+	BoatTransactionPara         trans_para; 
 }BoatHlchainmakerTx;
 
 
