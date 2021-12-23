@@ -144,6 +144,14 @@ typedef struct TBoatHlchainmakerKeyPair {
 	BoatFieldVariable    cert;      //!< client certificate content
 } BoatHlchainmakerKeyPair;
 
+typedef struct BoatChainmakerNodeInfo
+{
+    BCHAR*  node_url_info;
+    BCHAR*  host_name_info;
+    BCHAR*  chain_id_info;
+    BCHAR*  org_id_info;
+}BoatChainmakerNodeInfo;
+
 //chainmaker wallet structure
 typedef struct TBoatHlchainmakerWallet {
 
@@ -151,6 +159,7 @@ typedef struct TBoatHlchainmakerWallet {
 	
   BCHAR*  node_url_info;
   BCHAR*  host_name_info;
+
   BoatFieldVariable          tls_ca_cert_info;
 	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
 } BoatHlchainmakerWallet;
