@@ -70,13 +70,13 @@ static BOAT_RESULT param_init_check(BoatHlchainmakerTx* tx_ptr)
         return BOAT_ERROR;
     }
 
-    result = strncmp(tx_ptr->client_para.chain_id, TEST_CHAINMAKER_CHAIN_ID, strlen(TEST_CHAINMAKER_CHAIN_ID));
+    result = strncmp(tx_ptr->wallet_ptr->node_info.chain_id_info, TEST_CHAINMAKER_CHAIN_ID, strlen(TEST_CHAINMAKER_CHAIN_ID));
     if (result != 0) 
     {
         return BOAT_ERROR;
     }
 
-    result = strncmp(tx_ptr->client_para.org_id, TEST_CHAINMAKER_ORG_ID, strlen(TEST_CHAINMAKER_ORG_ID));
+    result = strncmp(tx_ptr->wallet_ptr->node_info.org_id_info, TEST_CHAINMAKER_ORG_ID, strlen(TEST_CHAINMAKER_ORG_ID));
     if (result != 0) 
     {
         return BOAT_ERROR;
@@ -172,7 +172,7 @@ START_TEST(test_002Parameters_0001TxinitSuccess)
     rtnVal = chainmakerWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, &tx_ptr);
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, &tx_ptr);
     ck_assert(rtnVal == BOAT_SUCCESS);
     ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
 
@@ -186,16 +186,10 @@ START_TEST(test_002Parameters_0002TxinitxFailureNullpara)
     rtnVal = chainmakerWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
-    rtnVal = BoatHlChainmakerTxInit(NULL, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, &tx_ptr);
+    rtnVal = BoatHlChainmakerTxInit(NULL, &tx_ptr);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, NULL, TEST_CHAINMAKER_ORG_ID, &tx_ptr);
-    ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
-
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, NULL, &tx_ptr);
-    ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
-
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, NULL);
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, NULL);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST

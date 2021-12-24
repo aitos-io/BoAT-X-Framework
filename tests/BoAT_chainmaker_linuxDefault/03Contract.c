@@ -75,7 +75,7 @@ static BOAT_RESULT test_contrct_invoke_prepara(BoatHlchainmakerTx  *tx_ptr)
     }
 
     /* step-3: Chainmaker transaction structure initialization */
-    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, tx_ptr);
+    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, tx_ptr);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "test BoatHlChainmakerTxInit() failed.");
@@ -106,7 +106,7 @@ static BOAT_RESULT test_contrct_query_prepara(BoatHlchainmakerTx  *tx_ptr)
     }
 
     /* step-3: Chainmaker transaction structure initialization */
-    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, tx_ptr);
+    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, tx_ptr);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "test BoatHlChainmakerTxInit() failed.");
