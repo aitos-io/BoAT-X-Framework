@@ -661,7 +661,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	/* invoke-step1: submit proposal to endorer */
 	tx_ptr->var.type = HLFABRIC_TYPE_DISCOVER;
 	result = BoatHlfabricDiscoveryExec(tx_ptr, endorserInfo_ptr);
-
+	
+	if(tx_ptr->evaluateRes.httpResLen == 0){
+		return BOAT_ERROR;
+	}
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invoke result",
 						 tx_ptr->evaluateRes.http2Res,
 						 tx_ptr->evaluateRes.httpResLen);
