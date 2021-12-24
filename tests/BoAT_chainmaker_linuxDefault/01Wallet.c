@@ -18,7 +18,7 @@
 BOAT_RESULT check_chainmaker_wallet(BoatHlchainmakerWallet *wallet_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-    result = strncmp(wallet_ptr->node_url_info, TEST_CHAINMAKER_NODE_URL, strlen(TEST_CHAINMAKER_NODE_URL));
+    result = strncmp(wallet_ptr->node_info.node_url_info, TEST_CHAINMAKER_NODE_URL, strlen(TEST_CHAINMAKER_NODE_URL));
 
     if (result != 0)
     {
