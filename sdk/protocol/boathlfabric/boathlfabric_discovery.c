@@ -877,7 +877,7 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	}
 	tx_ptr->endorserResponse.responseCount = 0;
 	DiscoveryResFree(discoverResult);
-
+	discovery__response__free_unpacked(discoveryResponse,NULL);
 	return result;
 }
 
