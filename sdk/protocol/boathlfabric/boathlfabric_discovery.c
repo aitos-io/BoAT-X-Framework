@@ -338,6 +338,8 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 		BoatFree(ccQueryData);
 	}
 
+	protos__chaincode_input__free_unpacked(&message,NULL);
+
 	return result;
 }
 
