@@ -13,6 +13,10 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 				  -lm\
 				  -lrt\
 				  -lsubunit
+                                
+BOAT_CFLAGS +=  -DTEST_CHAINMAKER_NODE_URL=\"$(CHAINMKER_NODE_URL)\"\
+				-DTEST_CHAINMAKER_CHAIN_ID=\"$(CHAINMKER_CHAIN_ID)\"\
+				-DTEST_CHAINMAKER_ORG_ID=\"$(CHAINMKER_ORG_ID)\"
 				  
 all: $(OBJECTS_DIR) $(OBJECTS)	
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(OBJECTS) $(DEPENDENCE_LIBS) -o $(EXECUTABLE_DIR)/boattest

@@ -26,7 +26,7 @@ Assuming `<MT3620 Root>` to be the root directory of MTK-MT3620 platform SDK:
 
 8. Copy `<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/app_manifest.json`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/applibs_versions.h`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/CMakeLists.txt`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/CMakeSettings.json`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/launch.vs.json`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main.h`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main-ethereum.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main-fiscobcos.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main-fiscobcos.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main-platon.c`、`<MT3620 Root>/BoAT-X-Framework/vendor/platform/MTK-MT3620/MT3620RootDirCode/main-platone.c` into `<MT3620 Root>/customer`.
 
-After copying these files, the directory structure should look like:
+After these files copied, the directory structure should look like:
 
 ```
 <MT3620 Root>
@@ -58,7 +58,7 @@ After copying these files, the directory structure should look like:
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<MT3620 Root>/BoAT-X-Framework/lib` directory.
 
 
-### 2. Debug demo program
+## Debug demo program
 
 1. Copy`<MT3620 Root>/BoAT-X-Framework/lib` into `<MT3620 Root>/customer/boatiotsdk`.
 

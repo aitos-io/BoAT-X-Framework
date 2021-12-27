@@ -15,14 +15,53 @@
  *****************************************************************************/
 
 #include "check.h"
+#include "tcase_common.h"
 #include <stdio.h>
-
+#include <fcntl.h>
+#include <stdio.h>
 
 /* extern suite declaration */
 extern Suite *make_wallet_suite(void);
 extern Suite *make_parameters_suite(void);
 extern Suite *make_contract_suite(void);
 
+char chainmaker_key_ptr_buf[1024];
+char chainmaker_cert_ptr_buf[1024];
+
+int read_key_cert_content(char* key_ptr, char* cert_ptr)
+{       
+   int fd = 0;
+   int len;
+
+   if ((key_ptr == NULL) || (cert_ptr == NULL))
+   {
+      return -1;
+   }
+
+   fd = open("../../../tests/BoAT_chainmaker_linuxDefault/cert_key/client1.sign.key", O_RDONLY);
+   if (fd < 0)
+   {
+      return -1;
+   }
+
+   len = read(fd, key_ptr, 1024);
+   if (len < 0)
+   {
+       return -1;
+   }
+
+   fd = open("../../../tests/BoAT_chainmaker_linuxDefault/cert_key/client1.sign.crt", O_RDONLY);
+   if (fd < 0)
+   {
+      return -1;
+   }
+   fd = read(fd, cert_ptr, 1024);
+   if (len < 0)
+   {
+       return -1;
+   }
+   return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -33,13 +72,14 @@ int main(int argc, char *argv[])
    Suite *suite_wallet    = make_wallet_suite();
    Suite *suite_paramters = make_parameters_suite();
    Suite *suite_contract  = make_contract_suite();
+   read_key_cert_content(chainmaker_key_ptr_buf, chainmaker_cert_ptr_buf);
 
    /* create srunner and add first suite to it.
     The first suite in a suite runner is always added in function srunner_create,
     here set suite_wallet as first adding suite. */
    sr = srunner_create(suite_wallet);
    /* set generate test log in running path */
-   srunner_set_log(sr, "log.txt");
+   srunner_set_log(sr, "ccheck_log.txt");
    /* add other suite to srunner, more test suite should be add in here */
    srunner_add_suite(sr, suite_paramters);
    srunner_add_suite(sr, suite_contract);

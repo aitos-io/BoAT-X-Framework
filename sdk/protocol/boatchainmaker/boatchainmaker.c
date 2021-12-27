@@ -94,12 +94,12 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 		return BOAT_ERROR;
 	}
 
-	sender.org_id             = tx_ptr->client_info.org_id;
-	sender.member_info.len    = tx_ptr->wallet_ptr->user_client_info.cert.field_len;
-	sender.member_info.data   = tx_ptr->wallet_ptr->user_client_info.cert.field_ptr;
+	sender.org_id             = tx_ptr->client_para.org_id;
+	sender.member_info.len    = tx_ptr->wallet_ptr->user_cert_info.cert.field_len;
+	sender.member_info.data   = tx_ptr->wallet_ptr->user_cert_info.cert.field_ptr;
 	sender.is_full_cert       = true;
 
-	tx_header.chain_id        = tx_ptr->client_info.chain_id;
+	tx_header.chain_id        = tx_ptr->client_para.chain_id;
 	tx_header.tx_type         = tx_type;
 	tx_header.tx_id           = tx_id;
 	tx_header.timestamp       = BoatGetTimes();
@@ -128,7 +128,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 	}
 
 	/* step-4: signature */
-	result = BoatSignature(tx_ptr->wallet_ptr->user_client_info.prikeyCtx, hash, sizeof(hash), &signatureResult, NULL );
+	result = BoatSignature(tx_ptr->wallet_ptr->user_cert_info.prikeyCtx, hash, sizeof(hash), &signatureResult, NULL );
 
 	if( result != BOAT_SUCCESS ) {
 

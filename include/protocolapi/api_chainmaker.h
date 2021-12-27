@@ -44,7 +44,7 @@ typedef enum {
 	TxType_QUERY_SYSTEM_CONTRACT = 3
 } TxType;
 
-typedef enum TBoatReponseCode {
+typedef enum TBoatresponseCode {
 
 	SUCCESS                                = 0,
 	TIMEOUT                                = 1,
@@ -82,22 +82,22 @@ typedef enum TBoatReponseCode {
 	CONTRACTINVOKEMETHODFAILED             = 39,
 	ARCHIVEDTX                             = 40,
 	ARCHIVEDBLOCK                          = 41
-} BoatReponseCode;
+} BoatresponseCode;
 
 
-typedef struct TBoatInvokeReponse {	
+typedef struct TBoatInvokeResponse {	
 
-		BoatReponseCode code;
+		BoatresponseCode code;
 		char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
 		BUINT32 gas_used;
-} BoatInvokeReponse;
+} BoatInvokeResponse;
 
-typedef struct TBoatQueryReponse {	
-    BoatReponseCode code;
+typedef struct TBoatQueryResponse {	
+    BoatresponseCode code;
 		char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
 		char contract_result[BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN];
 		BUINT32 gas_used;
-} BoatQueryReponse;
+} BoatQueryResponse;
 
 //! chainmaker certificate information config structure
 typedef struct TBoatHlchainmakerCertInfoCfg {
@@ -118,13 +118,6 @@ typedef struct TBoatTransactionPara {
 	BoatKeyValuePair parameters[BOAT_HLCHAINMAKER_ARGS_MAX_NUM]; 
 } BoatTransactionPara;
 
-typedef struct TBoatHlchainmakerNode {
-
-	bool   use_tls;
-	BCHAR  *node_url;
-	BCHAR  *host_name;
-	BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
-} BoatHlchainmakerNode;
 
 typedef struct TBoatHlchainamkerClient {
 
@@ -143,15 +136,12 @@ typedef struct TBoatHlchainamkerResult {
 typedef struct TBoatHlchainmakerWalletConfig {
 
 	//usr private key
-	BoatWalletPriKeyCtx_config    user_prikey_config;
-	BoatHlchainmakerCertInfoCfg   user_cert_content;   
+	BoatWalletPriKeyCtx_config    user_prikey_cfg;
+	BoatHlchainmakerCertInfoCfg   user_cert_cfg;   
 
-	BoatWalletPriKeyCtx_config    tls_PriKey_config;
-	BoatHlchainmakerCertInfoCfg   tls_cert_content;
-
-	BCHAR  node_url_arry[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-  BCHAR  host_name_arry[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-  BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
+	BCHAR  node_url_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BCHAR  host_name_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+  BoatHlchainmakerCertInfoCfg   tls_ca_cert_cfg;
 }BoatHlchainmakerWalletConfig;
 
 //!chainmaker key pairs structure
@@ -164,13 +154,11 @@ typedef struct TBoatHlchainmakerKeyPair {
 //chainmaker wallet structure
 typedef struct TBoatHlchainmakerWallet {
 
-	BoatHlchainmakerKeyPair   user_client_info; //!< user information
-	BoatHlchainmakerKeyPair   tls_client_info;  //!< tls information
+	BoatHlchainmakerKeyPair   user_cert_info; //!< user information
 	
-  BCHAR*  node_url;
-  BCHAR*  host_name;
-  BoatHlchainmakerCertInfoCfg org_tls_ca_cert;
-	
+  BCHAR*  node_url_info;
+  BCHAR*  host_name_info;
+  BoatFieldVariable          tls_ca_cert_info;
 	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
 } BoatHlchainmakerWallet;
 
@@ -178,7 +166,7 @@ typedef struct TBoatHlchainamkerTx {
 
 	BoatHlchainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet 
 	BoatTransactionPara         trans_para;
-	BoatHlchainamkerClient      client_info;     
+	BoatHlchainamkerClient      client_para;     
 }BoatHlchainmakerTx;
 
 
@@ -287,13 +275,13 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length
  * @param sync_result 
  *   Get invoke gas.
  * 
- * @param invoke_reponse 
+ * @param invoke_response 
  *   Node response data.
  *
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatInvokeReponse *invoke_reponse);
+BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatInvokeResponse *invoke_response);
 
 
 /*!****************************************************************************
@@ -309,13 +297,13 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
  * @param contract_name 
  *   Chainmaker contarct name.
  * 
- * @param invoke_reponse 
+ * @param invoke_response 
  *   Node response data.
  *
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatQueryReponse *query_reponse);
+BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatQueryResponse *query_response);
 /*!****************************************************************************
  * @brief 
  *   chainmaker wallet de-initialize.

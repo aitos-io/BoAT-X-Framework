@@ -13,15 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include "boattypes.h"
-#include "boatwallet.h"
-#include "protocolapi/api_chainmaker.h"
 #include "tcase_common.h"
-#include "check.h"
 
 static BoatHlchainmakerWallet* g_chaninmaker_wallet_ptr;
 static BoatHlchainmakerWalletConfig wallet_config = {0};
@@ -32,23 +24,17 @@ static BOAT_RESULT chainmakerWalletPrepare(void)
     BOAT_RESULT index;
 
     //set user private key context
-    wallet_config.user_prikey_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-    wallet_config.user_prikey_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
-    wallet_config.user_prikey_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-    wallet_config.user_prikey_config.prikey_content.field_ptr = (BUINT8 *)chainmaker_user_key;
-    wallet_config.user_prikey_config.prikey_content.field_len = strlen(chainmaker_user_key) + 1; 
+    wallet_config.user_prikey_cfg.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+    wallet_config.user_prikey_cfg.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
+    wallet_config.user_prikey_cfg.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+    wallet_config.user_prikey_cfg.prikey_content.field_ptr = (BUINT8 *)chainmaker_key_ptr_buf;
+    wallet_config.user_prikey_cfg.prikey_content.field_len = strlen(chainmaker_key_ptr_buf) + 1; 
 
     //set user cert context
-    wallet_config.user_cert_content.length = strlen(chainmaker_user_cert);
-    memcpy(wallet_config.user_cert_content.content, chainmaker_user_cert, wallet_config.user_cert_content.length);
-    
-    //set url and name
-    strncpy(wallet_config.node_url_arry, test_chainmaker_node_url,   strlen(test_chainmaker_node_url));
-    strncpy(wallet_config.host_name_arry, test_chainmaker_host_name, strlen(test_chainmaker_host_name));
+    wallet_config.user_cert_cfg.length = strlen(chainmaker_cert_ptr_buf);
+    memcpy(wallet_config.user_cert_cfg.content, chainmaker_cert_ptr_buf, wallet_config.user_cert_cfg.length);
+    strncpy(wallet_config.node_url_cfg, TEST_CHAINMAKER_NODE_URL, strlen(TEST_CHAINMAKER_NODE_URL));
 
-    //tls ca cert
-    wallet_config.org_tls_ca_cert.length = strlen(chainmaker_tls_ca_cert);
-    memcpy(wallet_config.org_tls_ca_cert.content, chainmaker_tls_ca_cert, wallet_config.org_tls_ca_cert.length);
 
     // create wallet
 #if defined(USE_ONETIME_WALLET)
@@ -74,100 +60,184 @@ static BOAT_RESULT chainmakerWalletPrepare(void)
     return BOAT_SUCCESS;
 }
 
-START_TEST(test_02Param_0001TxinitSuccess) 
+
+static BOAT_RESULT param_init_check(BoatHlchainmakerTx* tx_ptr)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+
+    if (tx_ptr == NULL)
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->client_para.chain_id, TEST_CHAINMAKER_CHAIN_ID, strlen(TEST_CHAINMAKER_CHAIN_ID));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->client_para.org_id, TEST_CHAINMAKER_ORG_ID, strlen(TEST_CHAINMAKER_ORG_ID));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    if (tx_ptr->wallet_ptr != g_chaninmaker_wallet_ptr)
+    {
+         return BOAT_ERROR;
+    }
+
+    return result;
+}
+
+
+static BOAT_RESULT param_add_check(BoatHlchainmakerTx* tx_ptr)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+
+    if (tx_ptr->trans_para.n_parameters != 3)
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[0].key, "key1", strlen("key1"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[0].value, "value1", strlen("value1"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[1].key, "key2", strlen("key2"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[1].value, "value2", strlen("value2"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[2].key, "key3", strlen("key3"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    result = strncmp(tx_ptr->trans_para.parameters[2].value, "value3", strlen("value3"));
+    if (result != 0) 
+    {
+        return BOAT_ERROR;
+    }
+
+    return result;
+}
+
+START_TEST(test_002Param_0001TxinitSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
     rtnVal = chainmakerWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, &tx_ptr);
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, &tx_ptr);
     ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
+
 }
 END_TEST
 
-START_TEST(test_02Param_0002TxinitxFailureNullpara) 
+START_TEST(test_002Param_0002TxinitxFailureNullpara) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
     rtnVal = chainmakerWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
-    rtnVal = BoatHlChainmakerTxInit(NULL, chain_id, org_id, &tx_ptr);
+    rtnVal = BoatHlChainmakerTxInit(NULL, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, &tx_ptr);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, NULL, org_id, &tx_ptr);
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, NULL, TEST_CHAINMAKER_ORG_ID, &tx_ptr);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, NULL, &tx_ptr);
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, NULL, &tx_ptr);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 
-    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, chain_id, org_id, NULL);
+    rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, NULL);
     ck_assert(rtnVal == BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
 
 
-START_TEST(test_02Param_0003AddTxParamSuccess) 
+START_TEST(test_002Param_0003AddTxParamSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "vlaue1", "key2", "vlaue2", 
-                                                    "key3", "vlaue3");
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "value1", "key2", "value2", 
+                                                    "key3", "value3", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    ck_assert_int_eq(param_add_check(&tx_ptr), BOAT_SUCCESS);
 }
 END_TEST
 
 
-START_TEST(test_02Param_0004AddTxParamFailureShortParam) 
+START_TEST(test_002Param_0004AddTxParamFailureShortParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "vlaue1", "key2", "vlaue2", "key3");
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "value1", "key2", "value2", "key3", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
 
-START_TEST(test_02Param_0005AddTxParamFailureLongParam) 
+START_TEST(test_002Param_0005AddTxParamFailureLongParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 12, "key1", "vlaue1", "key2", "vlaue2", "key3", "vlaue3", 
-                                                     "key4", "vlaue4", "key5", "vlaue5", "key6", "vlaue6");
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 12, "key1", "value1", "key2", "value2", "key3", "value3", 
+                                                     "key4", "value4", "key5", "value5", "key6", "value6", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
+
 }
 END_TEST
 
-START_TEST(test_02Param_0006AddTxParamFailureOddParam) 
+START_TEST(test_002Param_0006AddTxParamFailureOddParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 9, "key1", "vlaue1", "key2", "vlaue2", "key3", "vlaue3", 
-                                                     "key4", "vlaue4", "key5");
+    rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 9, "key1", "value1", "key2", "value2", "key3", "value3", 
+                                                     "key4", "value4", "key5", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
 
-START_TEST(test_02Param_0007AddTxParamSucessNumberNULLParam) 
+START_TEST(test_002Param_0007AddTxParamSucessNumberNULLParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 0, NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    ck_assert_int_eq(tx_ptr.trans_para.n_parameters, 0);
 }
 END_TEST
 
-START_TEST(test_02Param_0008AddTxParamFailureTxNULLParam) 
+START_TEST(test_002Param_0008AddTxParamFailureTxNULLParam) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerTx    tx_ptr;
 
-    rtnVal = BoatHlchainmakerAddTxParam(NULL, 6, "key1", "vlaue1", "key2", "vlaue2", "key3", "value3");
+    rtnVal = BoatHlchainmakerAddTxParam(NULL, 6, "key1", "vlaue1", "key2", "vlaue2", "key3", "value3", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_INVALID_ARGUMENT);
 }
 END_TEST
@@ -184,14 +254,14 @@ Suite *make_parameters_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_param, tc_param_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_param_api, test_02Param_0001TxinitSuccess);  
-    tcase_add_test(tc_param_api, test_02Param_0002TxinitxFailureNullpara);  
-    tcase_add_test(tc_param_api, test_02Param_0003AddTxParamSuccess);  
-    tcase_add_test(tc_param_api, test_02Param_0004AddTxParamFailureShortParam);  
-    tcase_add_test(tc_param_api, test_02Param_0005AddTxParamFailureLongParam); 
-    tcase_add_test(tc_param_api, test_02Param_0006AddTxParamFailureOddParam);   
-    tcase_add_test(tc_param_api, test_02Param_0007AddTxParamSucessNumberNULLParam);  
-    tcase_add_test(tc_param_api, test_02Param_0008AddTxParamFailureTxNULLParam);  
+    tcase_add_test(tc_param_api, test_002Param_0001TxinitSuccess);  
+    tcase_add_test(tc_param_api, test_002Param_0002TxinitxFailureNullpara);  
+    tcase_add_test(tc_param_api, test_002Param_0003AddTxParamSuccess);  
+    tcase_add_test(tc_param_api, test_002Param_0004AddTxParamFailureShortParam);  
+    tcase_add_test(tc_param_api, test_002Param_0005AddTxParamFailureLongParam); 
+    tcase_add_test(tc_param_api, test_002Param_0006AddTxParamFailureOddParam);   
+    tcase_add_test(tc_param_api, test_002Param_0007AddTxParamSucessNumberNULLParam);  
+    tcase_add_test(tc_param_api, test_002Param_0008AddTxParamFailureTxNULLParam);  
 
     return s_param;
 }
