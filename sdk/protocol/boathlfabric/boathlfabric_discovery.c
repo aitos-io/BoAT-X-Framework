@@ -755,6 +755,7 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint = BoatMalloc(len);
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data + offset, len);
+							msp__serialized_identity__free_unpacked(msp_serializedIdentity,NULL);
 						}
 					}
 				}
