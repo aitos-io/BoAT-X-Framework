@@ -241,8 +241,13 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 				BoatLog(BOAT_LOG_CRITICAL, "[http2]http2SubmitRequest failed.");
 				continue;
 			}
+			if(fabricHttp2res.httpResLen < 5){
+				BoatLog(BOAT_LOG_CRITICAL, "[http2]http2SubmitRequest failed.");
+				continue;
+			}
 			parsePtr = &(tx_ptr->endorserResponse) ;
 			submitResponse = orderer__submit_response__unpack(NULL, fabricHttp2res.httpResLen - 5, fabricHttp2res.http2Res + 5);
+			BoatFree(fabricHttp2res.http2Res);
 			if (submitResponse != NULL && submitResponse->status == COMMON__STATUS__SUCCESS)
 			{
 				BoatLog(BOAT_LOG_NORMAL, "[http2]orderer respond received.%d", submitResponse->status);
