@@ -1201,4 +1201,62 @@ BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr)
 
 	return result;
 }
+
+void fabricWalletConfigFree(BoatHlfabricWalletConfig wallet_config){
+	for (size_t i = 0; i < wallet_config.nodesCfg.endorserLayoutNum; i++)
+	{
+		for (size_t j = 0; j < wallet_config.nodesCfg.layoutCfg[i].endorserGroupNum; j++)
+		{
+			/* code */
+			for (size_t k = 0; k < wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber; k++)
+			{
+				/* code */
+				if(wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].hostName != NULL){
+					BoatFree(wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].hostName);
+					wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].hostName = NULL;
+				}
+				if(wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl != NULL){
+					BoatFree(wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl);
+					wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = NULL;
+				}
+				
+			}
+			if(wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorser != NULL){
+				BoatFree(wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorser);
+				wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorser = NULL;
+			}
+			wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].quantities = 0;
+			wallet_config.nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber = 0;
+		}
+		if(wallet_config.nodesCfg.layoutCfg[i].groupCfg != NULL){
+			BoatFree(wallet_config.nodesCfg.layoutCfg[i].groupCfg);
+		}
+		wallet_config.nodesCfg.layoutCfg[i].endorserGroupNum = 0;
+		
+	}
+	if(wallet_config.nodesCfg.layoutCfg != NULL){
+		BoatFree(wallet_config.nodesCfg.layoutCfg);
+		wallet_config.nodesCfg.layoutCfg = NULL;
+	}
+	for (size_t i = 0; i < wallet_config.nodesCfg.orderCfg.endorserNumber; i++)
+	{
+		/* code */
+		if(wallet_config.nodesCfg.orderCfg.endorser[i].hostName != NULL){
+			BoatFree(wallet_config.nodesCfg.orderCfg.endorser[i].hostName);
+			wallet_config.nodesCfg.orderCfg.endorser[i].hostName = NULL;
+		}
+		if(wallet_config.nodesCfg.orderCfg.endorser[i].nodeUrl != NULL){
+			BoatFree(wallet_config.nodesCfg.orderCfg.endorser[i].nodeUrl);
+			wallet_config.nodesCfg.orderCfg.endorser[i].nodeUrl = NULL;
+		}
+	}
+	wallet_config.nodesCfg.orderCfg.endorserNumber = 0;
+	if(wallet_config.nodesCfg.orderCfg.endorser != NULL){
+		BoatFree(wallet_config.nodesCfg.orderCfg.endorser);
+		wallet_config.nodesCfg.orderCfg.endorser = NULL;
+	}
+
+	
+	
+}
 #endif /* end of PROTOCOL_USE_HLFABRIC */
