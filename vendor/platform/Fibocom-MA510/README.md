@@ -128,4 +128,4 @@ EXTERNAL_CFLAGS := -marm -target armv7m-none-musleabi -mfloat-abi=softfp -mfpu=n
    ./build_all.sh llvm -c
    ./build_all.sh llvm boat_demo
    ```
-   编译成功会在`<MA510 Root>/bin`下生成oem_app_path.ini、boat_demo_dam_demo.map、boat_demo_dam_demo.elf、boat_demo_dam_demo.bin文件	
+   编译成功会在`<MA510 Root>/bin`下生成oem_app_path.ini、boat_demo_dam_demo.map、boat_demo_dam_demo.elf、boat_demo_dam_demo.bin文件。	
