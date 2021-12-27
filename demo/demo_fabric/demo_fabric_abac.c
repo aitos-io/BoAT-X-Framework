@@ -400,6 +400,7 @@ int main(int argc, char *argv[])
 	
 	/* step-8: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
+	fabricWalletConfigFree(wallet_config);
     
     return result;
 }
