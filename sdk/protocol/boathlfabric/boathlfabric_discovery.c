@@ -902,7 +902,31 @@ void DiscoveryResFree(DiscoverRes discoverResult)
 			{
 				BoatFree(discoverResult.cc_res.layouts[i].groups[j].key);
 			}
+			for (size_t k = 0; k < discoverResult.cc_res.layouts[i].groups[j].numEndorsers; k++)
+			{
+				/* code */
+				BoatFree(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint);
+				if(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].MSPID != NULL){
+					BoatFree(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].MSPID);
+					discoverResult.cc_res.layouts[i].groups[j].endorsers[k].MSPID = NULL;
+				}
+			}
+			
+			if(discoverResult.cc_res.layouts[i].groups[j].endorsers != NULL){
+				BoatFree(discoverResult.cc_res.layouts[i].groups[j].endorsers);
+			}
+
+			
+			
 		}
+		if(discoverResult.cc_res.layouts[i].groups != NULL){
+			BoatFree(discoverResult.cc_res.layouts[i].groups);
+			discoverResult.cc_res.layouts[i].groups = NULL;
+		}
+	}
+	if(discoverResult.cc_res.layouts != NULL){
+			BoatFree(discoverResult.cc_res.layouts);
+			discoverResult.cc_res.layouts = NULL;
 	}
 	for ( i = 0; i < discoverResult.discoverConfig.discoverMsps.num; i++)
 	{
@@ -914,7 +938,12 @@ void DiscoveryResFree(DiscoverRes discoverResult)
 		{
 			BoatFree(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert);
 		}
+
 	}
+	if(discoverResult.discoverConfig.discoverMsps.discoverMspInfo != NULL){
+			BoatFree(discoverResult.discoverConfig.discoverMsps.discoverMspInfo);
+			discoverResult.discoverConfig.discoverMsps.discoverMspInfo = NULL;
+		}
 
 	for ( i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
 	{
@@ -926,6 +955,10 @@ void DiscoveryResFree(DiscoverRes discoverResult)
 		{
 			BoatFree(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].name);
 		}
+	}
+	if(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo != NULL){
+		BoatFree(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo);
+		discoverResult.discoverConfig.discoverOrders.discoverOrderinfo = NULL;
 	}
 }
 
