@@ -282,6 +282,12 @@ void http2DeInit(http2IntfContext *http2Context)
 #if (BOAT_TLS_SUPPORT == 1)
 		BoatFree(http2Context->tlsContext);
 		http2Context->tlsContext = NULL;
+		if(http2Context->tlsCAchain != NULL){
+			http2Context->tlsCAchain[0].field_len = 0;
+			BoatFree(http2Context->tlsCAchain[0].field_ptr);
+			BoatFree(http2Context->tlsCAchain);
+			
+		}
 #endif
 		BoatFree(http2Context);
 		http2Context = NULL;
