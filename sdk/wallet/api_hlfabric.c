@@ -877,7 +877,17 @@ void BoatHlfabricWalletDeInit(BoatHlfabricWallet *wallet_ptr)
 					BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl);
 				}
 			}
+			if(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser != NULL){
+				BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser);
+				wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser = NULL;
+			}
 		}
+		if(wallet_ptr->network_info.layoutCfg[i].groupCfg != NULL){
+				BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg);
+			}
+	}
+	if(wallet_ptr->network_info.layoutCfg != NULL){
+		BoatFree(wallet_ptr->network_info.layoutCfg);
 	}
 	for (i = 0; i < wallet_ptr->network_info.orderCfg.endorserNumber; i++)
 	{
@@ -889,6 +899,9 @@ void BoatHlfabricWalletDeInit(BoatHlfabricWallet *wallet_ptr)
 		{
 			BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl);
 		}
+	}
+	if(wallet_ptr->network_info.orderCfg.endorser != NULL){
+		BoatFree(wallet_ptr->network_info.orderCfg.endorser);
 	}
 
 	/* http2Context DeInit */
