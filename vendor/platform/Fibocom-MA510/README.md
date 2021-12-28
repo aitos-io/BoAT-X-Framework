@@ -83,6 +83,7 @@ AR := $(BOAT_BASE_DIR)/../../../llvmtools/4.0.3/tools/bin/arm-ar
 添加以下内容：
 ```
 EXTERNAL_INC := -I$(BOAT_BASE_DIR)/../../../common/include/qapi \
+                -I$(BOAT_BASE_DIR)/../../../common/include/log/inc \
                 -I$(BOAT_BASE_DIR)/../../../common/include/threadx_api \
                 -I$(BOAT_BASE_DIR)/../../../llvmtools/4.0.3/armv7m-none-eabi/libc \
                 -I$(BOAT_BASE_DIR)/../../../llvmtools/4.0.3/armv7m-none-eabi/libc/include \
