@@ -26,6 +26,9 @@ boatLogConfig.h defines options for compiling.
 #include "boattypes.h"
 #include "qflog_utils.h"
 
+/* MA510 log function Include ----------------------------------------------------------*/
+#include "odm_ght_log.h"
+
 //! BOAT LOG LEVEL DEFINITION
 //! Log level is used to control the detail of log output.
 //! 3 types of detail level can be specified in BoatLog():
