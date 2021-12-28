@@ -6,10 +6,8 @@ DESCRIPTION
 ===========================================================================*/
 
 /* MA510 Includes ---------------------------------------------------------*/
-//#include "test_app_module.h"
 #include "test_utils.h"
 #include "qflog_utils.h"
-#include "odm_ght_log.h"
 #include "qapi_uart.h"
 #include "qapi_timer.h"
 
