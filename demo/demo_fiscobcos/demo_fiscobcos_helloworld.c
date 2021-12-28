@@ -219,7 +219,7 @@ BOAT_RESULT fiscobcos_helloworld(BoatFiscobcosWallet *wallet_ptr)
 int main(int argc, char *argv[])
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-
+    boat_try_declare;
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     
@@ -235,12 +235,14 @@ int main(int argc, char *argv[])
 	result = fiscobcos_loadPersistWallet("fiscobcos.cfg");
 #else
 	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
-	return -1;
+	//return -1;
+    result = BOAT_ERROR;
 #endif	
     if (result != BOAT_SUCCESS)
 	{
 		 //BoatLog(BOAT_LOG_CRITICAL, "fiscobcosWalletPrepare_create failed : %d.", result);
-		return -1;
+		//return -1;
+        boat_throw(result, fiscobcos_demo_catch);
 	}
     
 	/* step-3: execute 'fiscobcos_call_helloworld' */
@@ -253,7 +255,9 @@ int main(int argc, char *argv[])
 	{
         //BoatLog(BOAT_LOG_NORMAL, "fiscobcos helloworld access Passed.");
     }
-	
+	boat_catch(fiscobcos_demo_catch)
+    {
+    }
 	/* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
     
