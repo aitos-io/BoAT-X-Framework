@@ -81,6 +81,7 @@ Open `<MA510 Root>/fibocom/example/BoAT-X-Framework/vendor/platform/Fibocom-MA51
 Add the following content:
 ```
 EXTERNAL_INC := -I$(BOAT_BASE_DIR)/../../../common/include/qapi \
+                -I$(BOAT_BASE_DIR)/../../../common/include/log/inc \
                 -I$(BOAT_BASE_DIR)/../../../common/include/threadx_api \
                 -I$(BOAT_BASE_DIR)/../../../llvmtools/4.0.3/armv7m-none-eabi/libc \
                 -I$(BOAT_BASE_DIR)/../../../llvmtools/4.0.3/armv7m-none-eabi/libc/include \
