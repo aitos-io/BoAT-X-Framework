@@ -91,6 +91,7 @@ BUINT8 *BoatExpandHrp(const BCHAR *hrp, BUINT8 hrplen, BUINT8 *out)
         *(out + i) = (BUINT8)((c >> 5) & 0x07);
         *(out + i + hrplen + 1) = (BUINT8)(c & 0x1f);
     }
+    *(out + hrplen) = 0;
     return out;
 }
 
