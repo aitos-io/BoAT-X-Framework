@@ -317,9 +317,11 @@ end:
 int fibocom_task_entry(void)
 {
 
-   qapi_Timer_Sleep(3, QAPI_TIMER_UNIT_SEC, true);
+  qapi_Timer_Sleep(3, QAPI_TIMER_UNIT_SEC, true);
   
-   qapi_UART_Open_Config_t open_properties;
+  debug_uart_init(&debug_uart_context_D);
+
+  qapi_UART_Open_Config_t open_properties;
 
    memset (&open_properties, 0, sizeof (open_properties));
    open_properties.parity_Mode = QAPI_UART_NO_PARITY_E;

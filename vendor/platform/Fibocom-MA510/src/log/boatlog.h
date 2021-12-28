@@ -60,9 +60,15 @@ extern const BCHAR * const g_log_level_name_str[];
 #if BOAT_LOG_LEVEL == BOAT_LOG_NONE
 #define BoatLog(level, format,...)
 #else
+/*
 #define BoatLog(level, format,...)\
     do{\
         if( level <= BOAT_LOG_LEVEL ) {QFLOG_MSG(MSG_SSID_DFLT, MSG_MASK_2,format,##__VA_ARGS__ );}\
+    }while(0)
+*/
+#define BoatLog(level, format,...)\
+    do{\
+        if( level <= BOAT_LOG_LEVEL ) {odm_ght_printf(debug_uart_context_D.uart_handle,format,##__VA_ARGS__ );}\
     }while(0)
 #endif
 
