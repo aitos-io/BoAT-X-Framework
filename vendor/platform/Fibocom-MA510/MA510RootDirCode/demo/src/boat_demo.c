@@ -20,48 +20,6 @@ DESCRIPTION
 #include "my_contract.cpp.abi.h"
 
 
-#define DEBUG_ENTER_CRITICAL()                            do { __asm("cpsid i"); } while(0)
-#define DEBUG_EXIT_CRITICAL()                             do { __asm("cpsie i"); } while(0)
-#define DEBUG_RECEIVE_EVENT_MASK                          (0x00000001)
-extern debug_uart_context_t debug_uart_context_D;
-static void dam_cli_rx_cb(uint32_t num_bytes, void *cb_data)
-{
-
-  int Length = num_bytes;
-  debug_uart_context_t *debug_uart_context_D = (debug_uart_context_t *)cb_data;
-  if(debug_uart_context_D->Rx_Buffers_Free != 0)
-  {
-      /* See how much data can be read. */
-      if(Length > debug_uart_context_D->Rx_Buffers_Free)
-      {
-         Length = debug_uart_context_D->Rx_Buffers_Free;
-      }
-      debug_uart_context_D->Rx_In_Index += Length;
-      if(debug_uart_context_D->Rx_In_Index == 128)
-      {
-         debug_uart_context_D->Rx_In_Index = 0;
-      }
-      DEBUG_ENTER_CRITICAL();
-      debug_uart_context_D->Rx_Buffers_Free -= Length;
-      DEBUG_EXIT_CRITICAL();
-      if(Length > 0)
-      {
-         /* Signal the event that data was received.                       */
-          tx_event_flags_set((debug_uart_context_D->Rx_Event), DEBUG_RECEIVE_EVENT_MASK, TX_OR);
-      }
-
-  }
-}
-
-static void dam_cli_tx_cb(uint32_t num_bytes, void *cb_data)
-{
-
-/* This is a dummy callback as now UART QAPI's has made it mandatory to have a TX callback
-*/
-}
-
-
-
 BoatPlatoneWallet *g_platone_wallet_ptr;
 
 #define USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE
@@ -321,34 +279,13 @@ int fibocom_task_entry(void)
   
   debug_uart_init(&debug_uart_context_D);
 
-  qapi_UART_Open_Config_t open_properties;
-
-   memset (&open_properties, 0, sizeof (open_properties));
-   open_properties.parity_Mode = QAPI_UART_NO_PARITY_E;
-   open_properties.num_Stop_Bits = QAPI_UART_1_0_STOP_BITS_E;
-   open_properties.baud_Rate   = 115200;
-
-   open_properties.bits_Per_Char = QAPI_UART_8_BITS_PER_CHAR_E;
-   open_properties.rx_CB_ISR = dam_cli_rx_cb;
-   open_properties.tx_CB_ISR = dam_cli_tx_cb;
-
-   open_properties.enable_Flow_Ctrl = false;
-   open_properties.enable_Loopback= false;
-
-  if(qapi_UART_Open(debug_uart_context_D.uart_handle, QAPI_UART_PORT_012_E, &open_properties) != QAPI_OK)
-  {
-       return -1;
-  }
-
-
   /* BoAT demo task ----------------------------------------------------------*/
   boat_platone_entry();
 
 
   while(1){
-    QFLOG_MSG(MSG_SSID_DFLT,MSG_MASK_2,"123_QFLOG_MSG");
-    qapi_UART_Transmit(debug_uart_context_D.uart_handle, "123", strlen("123"), NULL);
-    qapi_UART_Transmit(debug_uart_context_D.uart_handle, "\r\n", strlen("\r\n"), NULL);
+
+    BoatLog(BOAT_LOG_NORMAL,"123\n\r");
 
     qapi_Timer_Sleep(1, QAPI_TIMER_UNIT_SEC, true);
   }
