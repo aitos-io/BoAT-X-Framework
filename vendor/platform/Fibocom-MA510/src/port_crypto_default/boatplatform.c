@@ -40,6 +40,11 @@
 
 #include "qapi_fibocom.h"
 
+
+#define TEST_BYTE_POOL_SIZE 30720*8 
+
+uint32 free_memory_test[TEST_BYTE_POOL_SIZE/4];
+
 TX_BYTE_POOL *byte_pool_test;
 
 
@@ -81,6 +86,32 @@ BOAT_RESULT  BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 i
 }
 
 
+qapi_Status_t dam_byte_pool_init(void)
+{
+  int ret;
+
+  do
+  {
+    /* Allocate byte_pool_dam (memory heap) */
+    ret = txm_module_object_allocate(&byte_pool_test, sizeof(TX_BYTE_POOL));
+    if(ret != TX_SUCCESS)
+    {
+      LOG_ERROR("DAM_APP:Allocate byte_pool_dam fail \n");
+      break;
+    }
+
+    /* Create byte_pool_dam */
+    ret = tx_byte_pool_create(byte_pool_test, "Test application pool", free_memory_test, TEST_BYTE_POOL_SIZE);
+    if(ret != TX_SUCCESS)
+    {
+      LOG_ERROR("DAM_APP:Create byte_pool_dam fail \n");
+      break;
+    }
+    
+  }while(0);
+
+  return ret;
+}
 
 
 void *data_malloc(uint32_t size)
