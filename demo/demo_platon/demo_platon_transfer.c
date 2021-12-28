@@ -240,7 +240,7 @@ BOAT_RESULT platonTransfer(BoatPlatONWallet *wallet_ptr)
 int main(int argc, char *argv[])
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-	
+	boat_try_declare;
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     
@@ -256,12 +256,14 @@ int main(int argc, char *argv[])
 	result = platon_loadPersistWallet("platon.cfg");
 #else
 	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>> none wallet type selected.");
-	return -1;
+	//return -1;
+    result = BOAT_ERROR;
 #endif	
     if (result != BOAT_SUCCESS)
 	{
 		 //BoatLog(BOAT_LOG_CRITICAL, "platonWalletPrepare_create failed : %d.", result);
-		return -1;
+		//return -1;
+        boat_throw(result, platon_demo_catch);
 	}
     
 	/* step-3: execute balance transfer */
@@ -269,20 +271,14 @@ int main(int argc, char *argv[])
     if (result != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "PlatON get balance Failed: %d.", result);
-    }
-	else
-	{
-        //BoatLog(BOAT_LOG_NORMAL, "PlatON get balance success.");
+        boat_throw(result, platon_demo_catch);
     }
 
 	result = platonTransfer(g_platon_wallet_ptr);
     if (result != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "PlatON get balance Failed: %d.", result);
-    }
-	else
-	{
-        //BoatLog(BOAT_LOG_NORMAL, "PlatON get balance success.");
+        boat_throw(result, platon_demo_catch);
     }
 
 
@@ -295,7 +291,9 @@ int main(int argc, char *argv[])
 	{
         //BoatLog(BOAT_LOG_NORMAL, "PlatON get balance success.");
     }
-    
+    boat_catch(platon_demo_catch)
+    {
+    }
 	/* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
     
