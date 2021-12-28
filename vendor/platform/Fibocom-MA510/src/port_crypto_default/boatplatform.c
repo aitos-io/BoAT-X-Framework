@@ -41,11 +41,11 @@
 #include "qapi_fibocom.h"
 
 
-#define TEST_BYTE_POOL_SIZE 30720*8 
+#define BoAT_BYTE_POOL_SIZE 30720*12 
 
-uint32 free_memory_test[TEST_BYTE_POOL_SIZE/4];
+uint32 free_memory_boat[BoAT_BYTE_POOL_SIZE];
 
-TX_BYTE_POOL *byte_pool_test;
+TX_BYTE_POOL *byte_pool_boat;
 
 
 BOAT_RESULT  BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 inputLen, 
@@ -93,7 +93,7 @@ qapi_Status_t dam_byte_pool_init(void)
   do
   {
     /* Allocate byte_pool_dam (memory heap) */
-    ret = txm_module_object_allocate(&byte_pool_test, sizeof(TX_BYTE_POOL));
+    ret = txm_module_object_allocate(&byte_pool_boat, sizeof(TX_BYTE_POOL));
     if(ret != TX_SUCCESS)
     {
       BoatLog(BOAT_LOG_CRITICAL,"DAM_APP:Allocate byte_pool_dam fail,ret=%d",ret);
@@ -101,7 +101,7 @@ qapi_Status_t dam_byte_pool_init(void)
     }
 
     /* Create byte_pool_dam */
-    ret = tx_byte_pool_create(byte_pool_test, "Test application pool", free_memory_test, TEST_BYTE_POOL_SIZE);
+    ret = tx_byte_pool_create(byte_pool_boat, "boat application pool", free_memory_boat, BoAT_BYTE_POOL_SIZE);
     if(ret != TX_SUCCESS)
     {
       BoatLog(BOAT_LOG_CRITICAL,"DAM_APP:Create byte_pool_dam fail,ret=%d",ret);
@@ -124,7 +124,7 @@ void *data_malloc(uint32_t size)
     return NULL;
   }
 
-  status = tx_byte_allocate(byte_pool_test, (VOID **)&data, size, TX_NO_WAIT);
+  status = tx_byte_allocate(byte_pool_boat, (VOID **)&data, size, TX_NO_WAIT);
 
   if (TX_SUCCESS != status)
   {
