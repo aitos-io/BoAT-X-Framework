@@ -197,7 +197,7 @@ BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BUINT8 *out)
 {
     BSINT32 separatorOffset = 0;
     BSINT32 i;
-    BSINT32 hrplen, datalen;
+    BSINT32 hrplen, datalen,outlen;
     const BCHAR *hrp;
     BUINT8 *data, *chksum, *expandHRPData;
     if (in == NULL || out == NULL)
@@ -252,12 +252,17 @@ BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BUINT8 *out)
         {
             BoatLog(BOAT_LOG_NORMAL, "PlatON address checksum is incorrect.");
             BoatFree(chksum);
+            if (data != NULL)
+            {
+                BoatFree(data);
+            }
             return -1;
         }
     }
     BoatFree(chksum);
-
-    return BoatConvertBits(data, datalen, (BUINT8 *)out, 5, 8);
+    outlen = BoatConvertBits(data, datalen, (BUINT8 *)out, 5, 8);
+    BoatFree(data);
+    return outlen;
 }
 
 #endif /* end of PROTOCOL_USE_PLATON */
