@@ -34,9 +34,9 @@
  * "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
  */
 const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
-                             "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
-                             "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
-                             "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
+                             "MHQCAQEEIKCZUqej4lfP1a+MhE+M139WgJzymsUYk0UKffOqwUbDoAcGBSuBBAAK\n"
+                             "oUQDQgAEzwOizQ0JTLu25FDpsqsY6D08bLC2qd3D81rGFnnxT4BBLRtKrhOquITJ\n"
+                             "AabGZ+8FMprcN70skT0gQ2GjQ6aQ9Q==\n"
                              "-----END EC PRIVATE KEY-----\n";
 /**
  * native demo key
@@ -202,7 +202,11 @@ BOAT_RESULT platonGetBalance(BoatPlatONWallet *wallet_ptr)
 	{
 		return BOAT_ERROR;
 	}
-
+    if(prase_result.field_ptr != NULL){
+        BoatFree(prase_result.field_ptr);
+        prase_result.field_ptr = NULL;
+        prase_result.field_len = 0;
+    }
     //BoatLog(BOAT_LOG_NORMAL, "Balance: %s von", prase_result.field_ptr);
 
     return BOAT_SUCCESS;
