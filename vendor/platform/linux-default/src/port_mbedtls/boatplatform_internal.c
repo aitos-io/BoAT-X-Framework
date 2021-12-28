@@ -431,6 +431,9 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	mbedtls_pk_free(&mbedtls_pkCtx);
 	if (prikeyCtx.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_PKCS){
 		mbedtls_ecp_keypair_free(ecPrikey);
+		if(ecPrikey != NULL){
+			BoatFree(ecPrikey);
+		}
 	}
 
 	return result;
@@ -988,9 +991,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 			// boat_throw(BOAT_ERROR, BoatSignature_exception);
 		}
 
-		BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key 000 ");
 		mbedtls_ecp_mul( mbedtls_pk_ec(mbedtls_pkCtx), &mbedtls_pk_ec(mbedtls_pkCtx)->Q, &mbedtls_pk_ec(mbedtls_pkCtx)->d, &mbedtls_pk_ec(mbedtls_pkCtx)->grp.G, mbedtls_ctr_drbg_random, &ctr_drbg );
-		BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key 111 ");
 		mbedtls_ctr_drbg_free(&ctr_drbg);
 		mbedtls_entropy_free(&entropy);
 
