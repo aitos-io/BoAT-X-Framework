@@ -227,7 +227,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 int main(int argc, char *argv[])
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-
+    boat_try_declare;
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     
@@ -243,12 +243,14 @@ int main(int argc, char *argv[])
 	result = platone_loadPersistWallet("platone.cfg");
 #else
 	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
-	return -1;
+	//return -1;
+    result = BOAT_ERROR;
 #endif	
     if (result != BOAT_SUCCESS)
 	{
 		 //BoatLog(BOAT_LOG_CRITICAL, "platoneWalletPrepare_create failed : %d.", result);
-		return -1;
+		//return -1;
+        boat_throw(result, platone_demo_catch);
 	}
     
 	/* step-3: execute 'platone_call_mycontract' */
@@ -261,7 +263,9 @@ int main(int argc, char *argv[])
 	{
         //BoatLog(BOAT_LOG_NORMAL, "platone mycontract access Passed.");
     }
-	
+	boat_catch(platone_demo_catch)
+    {
+    }
 	/* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
     
