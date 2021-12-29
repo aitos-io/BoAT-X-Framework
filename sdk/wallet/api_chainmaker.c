@@ -139,7 +139,7 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
 		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
 	}
-	
+
 	if (certContent.length > BOAT_CHAINMAKER_CERT_MAX_LEN)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "certContent length invalid");
@@ -198,7 +198,8 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 
 	/* assignment */
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
-	wallet_ptr->tls_ca_cert_info.field_len = config_ptr->org_tls_ca_cfg.length;
+	wallet_ptr->tls_ca_cert_info.field_len = config_ptr->tls_ca_cert_cfg.length;
+
 	wallet_ptr->tls_ca_cert_info.field_ptr = BoatMalloc(wallet_ptr->tls_ca_cert_info.field_len);
 	if (wallet_ptr->tls_ca_cert_info.field_ptr == NULL) 
 	{
@@ -207,12 +208,12 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	}
 
 	memset(wallet_ptr->tls_ca_cert_info.field_ptr, 0, BOAT_CHAINMAKER_CERT_MAX_LEN);
-	memcpy(wallet_ptr->tls_ca_cert_info.field_ptr, config_ptr->org_tls_ca_cfg.content, wallet_ptr->tls_ca_cert_info.field_len);
+	memcpy(wallet_ptr->tls_ca_cert_info.field_ptr, config_ptr->tls_ca_cert_cfg.content, wallet_ptr->tls_ca_cert_info.field_len);
 #endif
 
 	/* account_info assignment */
 	result = BoatHlchainmakerWalletSetUserClientInfo(wallet_ptr, config_ptr->user_prikey_cfg, config_ptr->user_cert_cfg);
-	
+
 	/* http2Context_ptr assignment */
 	wallet_ptr->http2Context_ptr = http2Init();
 	if (result != BOAT_SUCCESS) 
@@ -240,8 +241,8 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
 	/* tlsClinet_info DeInit */
-     wallet_ptr->tls_client_info.cert.field_ptr = NULL;
-	wallet_ptr->tls_client_info.cert.field_len = 0;
+     wallet_ptr->tls_ca_cert_info.field_ptr = NULL;
+	wallet_ptr->tls_ca_cert_info.field_len = 0;
 
 	if (wallet_ptr->http2Context_ptr->tlsCAchain != NULL) 
 	{
@@ -322,12 +323,12 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain = NULL;
 	}
 
-	tx_ptr->wallet_ptr->http2Context_ptr->hostName                = tx_ptr->wallet_ptr->host_name;
+	tx_ptr->wallet_ptr->http2Context_ptr->hostName                = tx_ptr->wallet_ptr->node_info.host_name_info;
 	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain              = BoatMalloc(sizeof(BoatFieldVariable));
-	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = tx_ptr->wallet_ptr->org_tls_ca_info.field_len + 1;
+	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = tx_ptr->wallet_ptr->tls_ca_cert_info.field_len + 1;
 	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = BoatMalloc(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
 	memset(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, 0x00, tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
-	memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, tx_ptr->wallet_ptr->org_tls_ca_info.field_ptr, tx_ptr->wallet_ptr->org_tls_ca_info.field_len);
+	memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, tx_ptr->wallet_ptr->tls_ca_cert_info.field_ptr, tx_ptr->wallet_ptr->tls_ca_cert_info.field_len);
 #endif
 	tx_ptr->wallet_ptr->http2Context_ptr->pathTmp      = "/api.RpcNode/SendRequest";
 	tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &http2_response;
