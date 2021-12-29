@@ -28,7 +28,7 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 /*! @defgroup eth-api boat chainmaker-API
  * @{
  */
-#define BOAT_CHAINMAKER_TLS_SUPPORT               0 //!< If need client support TLS, set it to 1.
+#define BOAT_CHAINMAKER_TLS_SUPPORT               1 //!< If need client support TLS, set it to 1.
 #define BOAT_CHAINMAKER_CERT_MAX_LEN              1024
 #define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN  8192 //!< The maximum length of HTTP2 send buffer
 #define BOAT_HLCHAINMAKER_ARGS_MAX_NUM            10
@@ -128,16 +128,16 @@ typedef struct TBoatHlchainamkerResult {
 // chainmaker wallet config structure
 typedef struct TBoatHlchainmakerWalletConfig {
 
-	//usr private key
-	BoatWalletPriKeyCtx_config    user_prikey_cfg;
-	BoatHlchainmakerCertInfoCfg   user_cert_cfg;   
+    //usr private key
+    BoatWalletPriKeyCtx_config    user_prikey_cfg;
+    BoatHlchainmakerCertInfoCfg   user_cert_cfg;   
 
-	BCHAR  node_url_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-  BCHAR  host_name_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-  BCHAR  chain_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-  BCHAR  org_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-  BoatHlchainmakerCertInfoCfg   tls_ca_cert_cfg;
-}BoatHlchainmakerWalletConfig;
+    BCHAR  node_url_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+    BCHAR  host_name_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+    BCHAR  chain_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+    BCHAR  org_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+    BoatHlchainmakerCertInfoCfg   tls_ca_cert_cfg;
+} BoatHlchainmakerWalletConfig;
 
 //!chainmaker key pairs structure
 typedef struct TBoatHlchainmakerKeyPair {
