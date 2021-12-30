@@ -207,7 +207,6 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 		return NULL;
 	}
 
-	memset(wallet_ptr->tls_ca_cert_info.field_ptr, 0, BOAT_CHAINMAKER_CERT_MAX_LEN);
 	memcpy(wallet_ptr->tls_ca_cert_info.field_ptr, config_ptr->tls_ca_cert_cfg.content, wallet_ptr->tls_ca_cert_info.field_len);
 #endif
 
