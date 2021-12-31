@@ -25,12 +25,12 @@
 #include "qapi.h"
 #include "qflog_utils.h"
 #include "qapi_timer.h"
+#include "odm_ght_log.h"
 
 
-
-#define DBG(x, arg...)  QFLOG_MSG(MSG_SSID_DFLT,MSG_MASK_2,"[DBG_http:]"x,##arg)
-#define WARN(x, arg...) QFLOG_MSG(MSG_SSID_DFLT,MSG_MASK_2,"[WARN_http:]"x,##arg)
-#define ERR(x, arg...)  QFLOG_MSG(MSG_SSID_DFLT,MSG_MASK_2,"[ERR_http:]"x,##arg)
+#define DBG(x, arg...)  odm_ght_printf(debug_uart_context_D.uart_handle,"[DBG_http:]"x,##arg)
+#define WARN(x, arg...) odm_ght_printf(debug_uart_context_D.uart_handle,"[WARN_http:]"x,##arg)
+#define ERR(x, arg...)  odm_ght_printf(debug_uart_context_D.uart_handle,"[ERR_http:]"x,##arg)
 
 #define boat_sys_log DBG
 
