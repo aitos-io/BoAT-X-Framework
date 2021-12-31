@@ -83,27 +83,43 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 {	
 	BOAT_RESULT result = BOAT_SUCCESS;
 	qapi_Status_t status;
-	uint16 *randBuf = NULL;
+	
 	(void)rsvd;
-	randBuf=BoatMalloc(outputLen);
-	if(randBuf == NULL)
+
+	if(outputLen <= 20u)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate random buffer.");
-		return BOAT_ERROR_OUT_OF_MEMORY;
+		uint16 randBuf[20]={0};
+		status = qapi_fibo_random_data_get((uint16)outputLen,randBuf);
+		if(status != QAPI_OK)
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to get random data.");
+			result=BOAT_ERROR;
+			goto end;
+		}
+		memcpy(output,randBuf,outputLen);
 	}
-
-	status = qapi_fibo_random_data_get((uint16)outputLen,randBuf);
-	if(status != QAPI_OK)
+	else
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to get random data.");
-		result=BOAT_ERROR;
-		goto end;
-	}
+		uint16 *randHeapBuf = NULL;
+		randHeapBuf=BoatMalloc(outputLen);
+		if(randHeapBuf == NULL)
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate random buffer.");
+			return BOAT_ERROR_OUT_OF_MEMORY;
+		}
+		status = qapi_fibo_random_data_get((uint16)outputLen,randHeapBuf);
+		if(status != QAPI_OK)
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to get random data.");
+			result=BOAT_ERROR;
+			BoatFree(randHeapBuf);
+			goto end;
+		}
+		memcpy(output,randHeapBuf,outputLen);
+		BoatFree(randHeapBuf);
+	}	
 
-	memcpy(output,randBuf,outputLen);
-
-end:
-	BoatFree(randBuf);	
+end:	
 	return result;
 }
 
