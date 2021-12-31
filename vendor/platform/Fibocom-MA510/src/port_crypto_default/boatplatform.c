@@ -41,9 +41,9 @@
 #include "qapi_fibocom.h"
 
 
-#define BoAT_BYTE_POOL_SIZE 30720*12 
+#define BoAT_BYTE_POOL_SIZE 30720*8 
 
-uint32 free_memory_boat[BoAT_BYTE_POOL_SIZE];
+uint32 free_memory_boat[BoAT_BYTE_POOL_SIZE/4];
 
 TX_BYTE_POOL *byte_pool_boat;
 
