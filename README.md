@@ -37,6 +37,8 @@ For full list of new features, please read [aitos.io Release Notes](https://gith
 ### Project Status Report
 For project status update, please visit [BoAT Project Status Update Reports](https://github.com/aitos-io/project-status-update).
 
+### Whitepaper
+Please see [BoAT Blockchain IoT Module Product White Paper](./docs/en-us/BoAT_Blockchain_IoT_Module_Product_White_Paper_EN.pdf).
 
 ## Quick Start
 
