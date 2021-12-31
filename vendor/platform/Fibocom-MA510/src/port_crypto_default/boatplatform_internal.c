@@ -82,11 +82,28 @@ uint32_t random32(void)
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 {	
 	BOAT_RESULT result = BOAT_SUCCESS;
-
+	qapi_Status_t status;
+	uint16 *randBuf = NULL;
 	(void)rsvd;
+	randBuf=BoatMalloc(outputLen);
+	if(randBuf == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate random buffer.");
+		return BOAT_ERROR_OUT_OF_MEMORY;
+	}
 
-	qapi_fibo_random_data_get(outputLen,output);
-	
+	status = qapi_fibo_random_data_get((uint16)outputLen,randBuf);
+	if(status != QAPI_OK)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to get random data.");
+		result=BOAT_ERROR;
+		goto end;
+	}
+
+	memcpy(output,randBuf,outputLen);
+
+end:
+	BoatFree(randBuf);	
 	return result;
 }
 
