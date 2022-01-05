@@ -90,7 +90,7 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 		 (strlen(chainmaker_chain_id) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
 		 (strlen(chainmaker_org_id) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN))
 	{
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT ;
 	}
 	strncpy(wallet_config.node_url_cfg,  chainmaker_node_url,  strlen(chainmaker_node_url));
 	strncpy(wallet_config.host_name_cfg, chainmaker_host_name, strlen(chainmaker_host_name));
@@ -111,9 +111,9 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 #else
 	return BOAT_ERROR;
 #endif
-	if (index == BOAT_ERROR)
+	if (index < BOAT_SUCCESS)
 	{
-		return BOAT_ERROR;
+		return BOAT_ERROR_WALLET_CREATE_FAIL;
 	}
 	
 	g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(index);
