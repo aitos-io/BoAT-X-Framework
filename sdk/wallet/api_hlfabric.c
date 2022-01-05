@@ -65,7 +65,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	if(tx_ptr->evaluateRes.httpResLen != 0){
 		if(tx_ptr->evaluateRes.http2Res != NULL){
@@ -78,7 +78,7 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, BoatHlfabricTxProposal_exception);
 	}
 
 	if (tx_ptr->var.type == HLFABRIC_TYPE_PROPOSAL)
@@ -319,7 +319,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr,
 	if (wallet_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* initialization */
@@ -334,7 +334,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr,
 		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate.");
-			return BOAT_ERROR_INVALID_ARGUMENT;
+			return BOAT_ERROR_WALLET_KEY_CREAT_FAIL;
 		}
 	}
 
@@ -343,7 +343,7 @@ BOAT_RESULT BoatHlfabricWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr,
 	if (wallet_ptr->account_info.cert.field_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetAccountInfo_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetAccountInfo_exception);
 	}
 	memcpy(wallet_ptr->account_info.cert.field_ptr, certContent.content, certContent.length);
 	wallet_ptr->account_info.cert.field_len = certContent.length;
@@ -372,7 +372,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo(BoatHlfabricWallet *wallet_ptr,
 	if (wallet_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* initialization */
@@ -389,7 +389,7 @@ BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo(BoatHlfabricWallet *wallet_ptr,
 	if (wallet_ptr->tlsClinet_info.cert.field_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetTlsInfo_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetTlsInfo_exception);
 	}
 	memcpy(wallet_ptr->tlsClinet_info.cert.field_ptr, certContent.content, certContent.length);
 	wallet_ptr->tlsClinet_info.cert.field_len = certContent.length;
@@ -421,12 +421,12 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr,
 	if (rootCaContent == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	if ((rootCaNumber == 0) || (rootCaNumber > BOAT_HLFABRIC_ROOTCA_MAX_NUM))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter rootCaNumber out of limit.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* initialization */
@@ -446,7 +446,7 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr,
 		if (wallet_ptr->tlsCAchain.ca[i].field_ptr == NULL)
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-			boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetRootCaInfo_exception);
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetRootCaInfo_exception);
 		}
 		memset(wallet_ptr->tlsCAchain.ca[i].field_ptr, 0, wallet_ptr->tlsCAchain.ca[i].field_len);
 		memcpy(wallet_ptr->tlsCAchain.ca[i].field_ptr, (rootCaContent + i)->content, wallet_ptr->tlsCAchain.ca[i].field_len);
@@ -485,20 +485,17 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 	if (wallet_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		// return BOAT_ERROR_INVALID_ARGUMENT;
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlfabricWalletSetNetworkInfo_exception);
+		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlfabricWalletSetNetworkInfo_exception);
 	}
 	if (endorserInfo_ptr.endorserLayoutNum == 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter endorserNumber out of limit.");
-		// return BOAT_ERROR_INVALID_ARGUMENT;
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlfabricWalletSetNetworkInfo_exception);
+		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlfabricWalletSetNetworkInfo_exception);
 	}
 	if (endorserInfo_ptr.orderCfg.endorserNumber == 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter ordererNumber out of limit.");
-		// return BOAT_ERROR_INVALID_ARGUMENT;
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlfabricWalletSetNetworkInfo_exception);
+		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlfabricWalletSetNetworkInfo_exception);
 	}
 
 	/* initialization */
@@ -578,7 +575,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 			if (BOAT_SUCCESS != UtilityStringLenCheck((endorserInfo_ptr + i)->nodeUrl))
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "ERROR: length of endorser->nodeUrl out of limit..");
-				boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
 			}
 
 			// nodeURL assignment
@@ -586,7 +583,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 			if (wallet_ptr->network_info.endorser[i].nodeUrl == NULL)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-				boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
 			}
 			memcpy(wallet_ptr->network_info.endorser[i].nodeUrl, (endorserInfo_ptr + i)->nodeUrl, stringLen + 1);
 
@@ -599,7 +596,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 				if (BOAT_SUCCESS != UtilityStringLenCheck((endorserInfo_ptr + i)->hostName))
 				{
 					BoatLog(BOAT_LOG_CRITICAL, "ERROR: length of endorser->hostName out of limit..");
-					boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
 				}
 
 				// hostName assignment
@@ -607,7 +604,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 				if (wallet_ptr->network_info.endorser[i].hostName == NULL)
 				{
 					BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-					boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
 				}
 				memcpy(wallet_ptr->network_info.endorser[i].hostName, (endorserInfo_ptr + i)->hostName, stringLen + 1);
 			}
@@ -647,7 +644,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 			if (BOAT_SUCCESS != UtilityStringLenCheck((endorserInfo_ptr + i)->nodeUrl))
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "ERROR: length of orderer->nodeUrl out of limit..");
-				boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
 			}
 
 			// nodeURL assignment
@@ -655,7 +652,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 			if (wallet_ptr->network_info.orderer[i].nodeUrl == NULL)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-				boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
 			}
 			memcpy(wallet_ptr->network_info.orderer[i].nodeUrl, (ordererInfo_ptr + i)->nodeUrl, stringLen + 1);
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
@@ -667,7 +664,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 				if (BOAT_SUCCESS != UtilityStringLenCheck((endorserInfo_ptr + i)->hostName))
 				{
 					BoatLog(BOAT_LOG_CRITICAL, "ERROR: length of orderer->hostName out of limit..");
-					boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
 				}
 
 				// hostName assignment
@@ -675,7 +672,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 				if (wallet_ptr->network_info.orderer[i].hostName == NULL)
 				{
 					BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-					boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetNetworkInfo_exception);
 				}
 				memcpy(wallet_ptr->network_info.orderer[i].hostName, (ordererInfo_ptr + i)->hostName, stringLen + 1);
 			}
@@ -933,7 +930,7 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 	if ((tx_ptr == NULL) || (wallet_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments 'tx_ptr' or 'wallet_ptr' cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* tx_ptr instance reset */
@@ -996,7 +993,7 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 			if (*paramDstList[i] == NULL)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-				boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricTxInit_exception);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxInit_exception);
 			}
 			memcpy(*paramDstList[i], paramSrcList[i], stringLen + 1);
 		}
@@ -1070,7 +1067,7 @@ BOAT_RESULT BoatHlfabricTxSetTimestamp(BoatHlfabricTx *tx_ptr,
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	tx_ptr->var.timestamp.sec = sec;
@@ -1090,7 +1087,7 @@ BOAT_RESULT BoatHlfabricTxSetArgs(BoatHlfabricTx *tx_ptr,
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	tx_ptr->var.args.nArgs = 0;
@@ -1106,7 +1103,7 @@ BOAT_RESULT BoatHlfabricTxSetArgs(BoatHlfabricTx *tx_ptr,
 		tx_ptr->var.args.nArgs++;
 		if (tx_ptr->var.args.nArgs > BOAT_HLFABRIC_ARGS_MAX_NUM)
 		{
-			result = BOAT_ERROR_OUT_OF_MEMORY;
+			result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 			break;
 		}
 	}
@@ -1124,12 +1121,12 @@ BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr)
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	if (tx_ptr->var.args.args[0] == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments args[0] cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Evaluate will execute...");
@@ -1171,12 +1168,12 @@ BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr)
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	if (tx_ptr->var.args.args[0] == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments args[0] cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
@@ -1186,7 +1183,7 @@ BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr)
 	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
-		return BOAT_ERROR;
+		return result;
 	}
 
 	/* invoke-step2: submit transaction to orderer */
@@ -1194,7 +1191,7 @@ BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr)
 	result = BoatHlfabricTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HLFABRIC_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
-		return BOAT_ERROR;
+		return result;
 	}
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
