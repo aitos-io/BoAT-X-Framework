@@ -518,10 +518,12 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 				if (wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName != NULL)
 				{
 					BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName);
+					wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = NULL;
 				}
 				if (wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl != NULL)
 				{
 					BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl);
+					wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = NULL;
 				}
 			}
 		}
@@ -531,10 +533,12 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 		if (wallet_ptr->network_info.orderCfg.endorser[i].hostName != NULL)
 		{
 			BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].hostName);
+			wallet_ptr->network_info.orderCfg.endorser[i].hostName = NULL;
 		}
 		if (wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl != NULL)
 		{
 			BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl);
+			wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = NULL;
 		}
 	}
 
@@ -712,10 +716,12 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 					if (wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName != NULL)
 					{
 						BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName);
+						wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = NULL;
 					}
 					if (wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl != NULL)
 					{
 						BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl);
+						wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = NULL;
 					}
 				}
 			}
@@ -725,10 +731,12 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 			if (wallet_ptr->network_info.orderCfg.endorser[i].hostName != NULL)
 			{
 				BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].hostName);
+				wallet_ptr->network_info.orderCfg.endorser[i].hostName = NULL;
 			}
 			if (wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl != NULL)
 			{
 				BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl);
+				wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = NULL;
 			}
 		}
 	}
@@ -890,7 +898,7 @@ void BoatHlfabricWalletDeInit(BoatHlfabricWallet *wallet_ptr)
 	{
 		if (wallet_ptr->network_info.orderCfg.endorser[i].hostName != NULL)
 		{
-			BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].hostName);
+			//BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].hostName);
 		}
 		if (wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl != NULL)
 		{
@@ -1033,12 +1041,19 @@ void BoatHlfabricTxDeInit(BoatHlfabricTx *tx_ptr)
 	/* -----var.nonce */
 	//DO NOTHING
 	/* -----var.chaincodeId */
-	BoatFree(tx_ptr->var.chaincodeId.path);
-	tx_ptr->var.chaincodeId.path = NULL;
-	BoatFree(tx_ptr->var.chaincodeId.name);
-	tx_ptr->var.chaincodeId.name = NULL;
-	BoatFree(tx_ptr->var.chaincodeId.version);
-	tx_ptr->var.chaincodeId.version = NULL;
+	if(tx_ptr->var.chaincodeId.path != NULL){
+		BoatFree(tx_ptr->var.chaincodeId.path);
+		tx_ptr->var.chaincodeId.path = NULL;
+	}
+	if(tx_ptr->var.chaincodeId.name != NULL){
+		BoatFree(tx_ptr->var.chaincodeId.name);
+		tx_ptr->var.chaincodeId.name = NULL;
+	}
+	if(tx_ptr->var.chaincodeId.version != NULL){
+		BoatFree(tx_ptr->var.chaincodeId.version);
+		tx_ptr->var.chaincodeId.version = NULL;
+	}
+
 	/* -----var.args */
 	tx_ptr->var.args.nArgs = 0;
 	for (int i = 0; i < BOAT_HLFABRIC_ARGS_MAX_NUM; i++)
@@ -1046,11 +1061,22 @@ void BoatHlfabricTxDeInit(BoatHlfabricTx *tx_ptr)
 		tx_ptr->var.args.args[i] = NULL;
 	}
 	/* -----var.channelId */
-	BoatFree(tx_ptr->var.channelId);
-	tx_ptr->var.channelId = NULL;
-	/* -----var.orgName */
-	BoatFree(tx_ptr->var.orgName);
-	tx_ptr->var.orgName = NULL;
+	if(tx_ptr->var.channelId != NULL){
+		BoatFree(tx_ptr->var.channelId);
+		tx_ptr->var.channelId = NULL;
+	}
+	if(tx_ptr->var.contract_name != NULL){
+		BoatFree(tx_ptr->var.contract_name);
+		tx_ptr->var.contract_name = NULL;
+	}
+	if(tx_ptr->var.creator_id != NULL){
+		BoatFree(tx_ptr->var.creator_id);
+		tx_ptr->var.creator_id = NULL;
+	}
+	if(tx_ptr->var.orgName != NULL){
+		BoatFree(tx_ptr->var.orgName);
+		tx_ptr->var.orgName = NULL;
+	}
 	if(tx_ptr->evaluateRes.httpResLen != 0)
 	{
 		BoatFree(tx_ptr->evaluateRes.http2Res);
