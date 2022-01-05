@@ -103,10 +103,10 @@ __BOATSTATIC BOAT_RESULT platon_createOnetimeWallet()
 
 	/* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, NULL, &wallet_config, sizeof(BoatPlatONWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_platon_wallet_ptr = BoatGetWalletByIndex(index);
     
@@ -155,10 +155,10 @@ __BOATSTATIC BOAT_RESULT platon_createPersistWallet(BCHAR *wallet_name)
 
 	/* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, wallet_name, &wallet_config, sizeof(BoatPlatONWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
 
     g_platon_wallet_ptr = BoatGetWalletByIndex(index);
@@ -174,10 +174,10 @@ __BOATSTATIC BOAT_RESULT platon_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, wallet_name, NULL, sizeof(BoatPlatONWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_platon_wallet_ptr = BoatGetWalletByIndex(index);
 
@@ -194,6 +194,12 @@ BOAT_RESULT platonGetBalance(BoatPlatONWallet *wallet_ptr)
 
     cur_balance_von = BoatPlatONWalletGetBalance(wallet_ptr, "lat");
 	result          = BoatPlatONPraseRpcResponseStringResult(cur_balance_von, &prase_result);
+    if(prase_result.field_ptr != NULL){
+        BoatFree(prase_result.field_ptr);
+        prase_result.field_ptr = NULL;
+        prase_result.field_len = 0;
+    }
+    //BoatLog(BOAT_LOG_NORMAL, "Balance: %s von", prase_result.field_ptr);
 	if (result == BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_NORMAL, "BoatPlatONWalletGetBalance returns: %s", prase_result.field_ptr);
@@ -202,12 +208,7 @@ BOAT_RESULT platonGetBalance(BoatPlatONWallet *wallet_ptr)
 	{
 		return BOAT_ERROR;
 	}
-    if(prase_result.field_ptr != NULL){
-        BoatFree(prase_result.field_ptr);
-        prase_result.field_ptr = NULL;
-        prase_result.field_len = 0;
-    }
-    //BoatLog(BOAT_LOG_NORMAL, "Balance: %s von", prase_result.field_ptr);
+
 
     return BOAT_SUCCESS;
 }
@@ -227,7 +228,7 @@ BOAT_RESULT platonTransfer(BoatPlatONWallet *wallet_ptr)
     if (result != BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "BoatPlatONTxInit failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_INIT_FAIL;
     }
     
 	/* 0xDE0B6B3A7640000: 1ETH or 1e18 wei, value */

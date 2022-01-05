@@ -199,10 +199,10 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 #else
 	return BOAT_ERROR;
 #endif
-	if (index == BOAT_ERROR)
+	if (index < BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_WALLET_CREATE_FAIL;
 	}
 	g_fabric_wallet_ptr = BoatGetWalletByIndex(index);
 	
