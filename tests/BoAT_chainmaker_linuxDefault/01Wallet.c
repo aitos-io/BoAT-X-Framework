@@ -107,7 +107,7 @@ START_TEST(test_001Wallet_0002CreateOneTimeWalletFailureNullConfig)
     
     /* 3. verify test result */
     /* 3-1. verify the return value */
-    ck_assert_int_eq(rtnVal, -1);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
     /* 3-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
