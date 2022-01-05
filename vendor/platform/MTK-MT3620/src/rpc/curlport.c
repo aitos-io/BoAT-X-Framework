@@ -179,7 +179,7 @@ BOAT_RESULT CurlPortSetOpt(CurlPortContext * curlport_context_ptr, BCHAR *remote
 {
     if( curlport_context_ptr == NULL || remote_url_str == NULL)
     {
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     curlport_context_ptr->remote_url_str = remote_url_str;
@@ -209,8 +209,7 @@ BOAT_RESULT CurlPortRequestSync( CurlPortContext * curlport_context_ptr,
        || response_len_ptr == NULL )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        result = BOAT_ERROR;
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, CurlPortRequestSync_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, CurlPortRequestSync_cleanup);
     }
 
     curl_ctx_ptr = curl_easy_init();
@@ -218,8 +217,7 @@ BOAT_RESULT CurlPortRequestSync( CurlPortContext * curlport_context_ptr,
     if(curl_ctx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "curl_easy_init() fails.");
-        result = BOAT_ERROR_EXT_MODULE_OPERATION_FAIL;
-        boat_throw(BOAT_ERROR_EXT_MODULE_OPERATION_FAIL, CurlPortRequestSync_cleanup);
+        boat_throw(BOAT_ERROR_CURL_INIT_FAIL, CurlPortRequestSync_cleanup);
     }
     
     // Set RPC URL in format "<protocol>://<target name or IP>:<port>". e.g. "http://192.168.56.1:7545"
@@ -227,7 +225,7 @@ BOAT_RESULT CurlPortRequestSync( CurlPortContext * curlport_context_ptr,
     if( curl_result != CURLE_OK )
     {
         BoatLog(BOAT_LOG_NORMAL, "Unknown URL: %s", curlport_context_ptr->remote_url_str);
-        boat_throw(BOAT_ERROR_EXT_MODULE_OPERATION_FAIL, CurlPortRequestSync_cleanup);
+        boat_throw(BOAT_ERROR_CURL_SETOPT_FAIL, CurlPortRequestSync_cleanup);
     }
 
     // Configure all protocols to be supported
@@ -264,13 +262,13 @@ BOAT_RESULT CurlPortRequestSync( CurlPortContext * curlport_context_ptr,
 
     // Set HTTP HEADER Options
     curl_opt_list_ptr = curl_slist_append(curl_opt_list_ptr,"Content-Type:application/json;charset=UTF-8");
-    if( curl_opt_list_ptr == NULL ) boat_throw(BOAT_ERROR_EXT_MODULE_OPERATION_FAIL, CurlPortRequestSync_cleanup);
+    if( curl_opt_list_ptr == NULL ) boat_throw(BOAT_ERROR_CURL_SLIST_APPEND_FAIL, CurlPortRequestSync_cleanup);
     
     curl_opt_list_ptr = curl_slist_append(curl_opt_list_ptr,"Accept:application/json, text/javascript, */*;q=0.01");
-    if( curl_opt_list_ptr == NULL ) boat_throw(BOAT_ERROR_EXT_MODULE_OPERATION_FAIL, CurlPortRequestSync_cleanup);
+    if( curl_opt_list_ptr == NULL ) boat_throw(BOAT_ERROR_CURL_SLIST_APPEND_FAIL, CurlPortRequestSync_cleanup);
 
     curl_opt_list_ptr = curl_slist_append(curl_opt_list_ptr,"Accept-Language:zh-CN,zh;q=0.8");
-    if( curl_opt_list_ptr == NULL ) boat_throw(BOAT_ERROR_EXT_MODULE_OPERATION_FAIL, CurlPortRequestSync_cleanup);
+    if( curl_opt_list_ptr == NULL ) boat_throw(BOAT_ERROR_CURL_SLIST_APPEND_FAIL, CurlPortRequestSync_cleanup);
 
     curl_easy_setopt(curl_ctx_ptr, CURLOPT_HTTPHEADER, curl_opt_list_ptr);
 
@@ -291,7 +289,7 @@ BOAT_RESULT CurlPortRequestSync( CurlPortContext * curlport_context_ptr,
     if( curl_result != CURLE_OK )
     {
         BoatLog(BOAT_LOG_NORMAL, "curl_easy_perform fails with CURLcode: %d.", curl_result);
-        boat_throw(BOAT_ERROR_EXT_MODULE_OPERATION_FAIL, CurlPortRequestSync_cleanup);
+        boat_throw(BOAT_ERROR_CURL_CODE_FAIL - curl_result, CurlPortRequestSync_cleanup);
     }
     
     curl_result = curl_easy_getinfo(curl_ctx_ptr, CURLINFO_RESPONSE_CODE, &info);
@@ -308,7 +306,7 @@ BOAT_RESULT CurlPortRequestSync( CurlPortContext * curlport_context_ptr,
     else
     {
         BoatLog(BOAT_LOG_NORMAL, "curl_easy_getinfo fails with CURLcode: %d, HTTP response code %ld.", curl_result, info);
-        boat_throw(BOAT_ERROR_EXT_MODULE_OPERATION_FAIL, CurlPortRequestSync_cleanup);
+        boat_throw(BOAT_ERROR_CURL_INFO_FAIL - info, CurlPortRequestSync_cleanup);
     }    
 
     // Clean Up
