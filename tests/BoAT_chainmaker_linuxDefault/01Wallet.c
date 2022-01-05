@@ -180,7 +180,7 @@ START_TEST(test_001Wallet_0005CreateLoadWalletFailureNoExist)
     
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_int_eq(rtnVal, -1);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_PERSISTER_READ_FAIL);
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
