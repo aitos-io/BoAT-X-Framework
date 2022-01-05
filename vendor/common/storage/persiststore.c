@@ -58,13 +58,13 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
     if( (storage_name_str == NULL) || (data_ptr == NULL) || (data_len == 0) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "storage_name or data cannot be NULL, data_len cannot be zero.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     if ( (BOAT_SUCCESS != UtilityStringLenCheck(storage_name_str)) )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 	
 	/* prepare encrypt raw data */
@@ -122,13 +122,13 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
     if( (storage_name_str == NULL) || (data_ptr == NULL) || (len_to_read == 0) )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "storage_name or data cannot be NULL, data_len cannot be zero.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     if ( (BOAT_SUCCESS != UtilityStringLenCheck(storage_name_str)) )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
 	result += BoatGetFileSize( storage_name_str, &fileSize, NULL );
@@ -176,7 +176,7 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file or the file size error.");
-		result = BOAT_ERROR;
+		result = BOAT_ERROR_STORAGE_FILE_READ_FAIL;
 	}
 	
     return result;
