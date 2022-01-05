@@ -161,7 +161,7 @@ Add the following:
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<XY1100 Root>/userapp/BoAT-X-Framework/lib` directory.
 
 
-### 2. Build the demo program of XY1100, generate. bin file for download
+### 2. Build the demo program of XY1100, generate .bin file for download
 
    Demo code for accessing blockchain through BoAT-X Framework is in `<XY1100 Root>/userapp/demo/boat_demo/boat_demo.c`
 
