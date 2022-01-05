@@ -137,7 +137,7 @@ START_TEST(test_003Contract_0001InvokeFailureTxNull)
     BoatInvokeResponse  invoke_response;
 
     result = BoatHlchainmakerContractInvoke(NULL, "save", "fact", true, &invoke_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -151,7 +151,7 @@ START_TEST(test_003Contract_0002InvokeFailureMethodNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, NULL, "fact", true, &invoke_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -165,7 +165,7 @@ START_TEST(test_003Contract_0003InvokeFailureContractNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", NULL, true, &invoke_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -197,7 +197,7 @@ START_TEST(test_003Contract_0005InvokeFailureresponseNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "test", true, NULL); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -246,7 +246,7 @@ START_TEST(test_003Contract_0008QueryFailureTxNull)
     BoatQueryResponse  query_response;
 
     result = BoatHlchainmakerContractQuery(NULL, "save", "fact", &query_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -260,7 +260,7 @@ START_TEST(test_003Contract_0009QueryFailureMethodNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractQuery(&tx_ptr, NULL, "fact", &query_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -275,7 +275,7 @@ START_TEST(test_003Contract_00010QueryFailureContractNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractQuery(&tx_ptr, "save", NULL, &query_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -308,7 +308,7 @@ START_TEST(test_003Contract_00012QueryFailureResponseNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", NULL); 
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
