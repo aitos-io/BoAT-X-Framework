@@ -33,6 +33,7 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, const BCHAR *hrp
     Param_eth_getBalance param_platon_getBalance;
     BCHAR *tx_balance_str;
     BCHAR *address_ptr;
+    BOAT_RESULT result = BOAT_SUCCESS;
 
     if (wallet_ptr == NULL || hrp_str == NULL)
     {
@@ -56,11 +57,11 @@ BCHAR *BoatPlatONWalletGetBalance(BoatPlatONWallet *wallet_ptr, const BCHAR *hrp
     param_platon_getBalance.block_num_str   = "latest";
     tx_balance_str = web3_getBalance(wallet_ptr->web3intf_context_ptr,
 									 wallet_ptr->network_info.node_url_ptr,
-									 &param_platon_getBalance);
+									 &param_platon_getBalance,&result);
 
     if (tx_balance_str == NULL)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "Fail to get balance from network.");
+        BoatLog(BOAT_LOG_CRITICAL, "Fail to get balance from network, result = %d ",result);
         return NULL;
     }
 
@@ -82,7 +83,7 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
     if (wallet_ptr == NULL || tx_ptr == NULL || recipient_str == NULL || hrp_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     tx_ptr->wallet_ptr = wallet_ptr;
@@ -139,7 +140,7 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
     if (converted_len == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "recipient Initialize failed.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     result = BoatPlatONTxSetRecipient(tx_ptr, recipient);
@@ -174,7 +175,7 @@ BOAT_RESULT BoatPlatONTxSetNonce(BoatPlatONTx *tx_ptr, BUINT64 nonce)
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
 	if (nonce == BOAT_PLATON_NONCE_AUTO)
@@ -186,7 +187,12 @@ BOAT_RESULT BoatPlatONTxSetNonce(BoatPlatONTx *tx_ptr, BUINT64 nonce)
 		param_platon_getTransactionCount.block_num_str   = "latest";
 		tx_count_str = web3_getTransactionCount(tx_ptr->wallet_ptr->web3intf_context_ptr,
 												tx_ptr->wallet_ptr->network_info.node_url_ptr,
-												&param_platon_getTransactionCount);
+												&param_platon_getTransactionCount,&result);
+        if (tx_count_str == NULL)
+        { 
+            BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
+            return result;
+        }
 		result = BoatPlatONPraseRpcResponseStringResult(tx_count_str, 
 												        &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS)
@@ -218,7 +224,7 @@ BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_p
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     // If gas price is specified, use it
@@ -233,10 +239,11 @@ BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_p
         // Return value of platon_gasPrice is in von
         gas_price_from_net_str = web3_gasPrice(tx_ptr->wallet_ptr->web3intf_context_ptr, 
 											   tx_ptr->wallet_ptr->network_info.node_url_ptr,
-                                               "platon_gasPrice");
+                                               "platon_gasPrice",&result);
 		if (gas_price_from_net_str == NULL)
         {
-            return BOAT_ERROR_RPC_FAILED;
+            BoatLog(BOAT_LOG_CRITICAL, "get gas price fail, result = %d.",result);
+            return BOAT_ERROR_WEB3_GET_GASPRICE_FAIL;
         }
 
         result = BoatPlatONPraseRpcResponseStringResult(gas_price_from_net_str, 
@@ -269,7 +276,7 @@ BOAT_RESULT BoatPlatONTxSetRecipient(BoatPlatONTx *tx_ptr, BUINT8 address[BOAT_P
     if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
     
     // Set recipient's address
@@ -304,7 +311,7 @@ BOAT_RESULT BoatPlatONTxSend(BoatPlatONTx *tx_ptr)
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     if (tx_ptr->is_sync_tx == BOAT_FALSE)
@@ -330,6 +337,7 @@ BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr, BCHAR *func_proto_str,
     BCHAR data_str[(func_param_len + 4) * 2 + 3]; // Compiler MUST support C99 to allow variable-size local array
  
     Param_eth_call param_platon_call;
+    BOAT_RESULT result = BOAT_SUCCESS;
     BCHAR *retval_str;
 
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
@@ -380,8 +388,10 @@ BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr, BCHAR *func_proto_str,
     param_platon_call.block_num_str   = "latest";
     retval_str = web3_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
                            tx_ptr->wallet_ptr->network_info.node_url_ptr,
-                           &param_platon_call);
-
+                           &param_platon_call,&result);
+    if(retval_str == NULL){
+        BoatLog(BOAT_LOG_CRITICAL, "web3 call fail, result = %d ",result);
+    }
     return retval_str;
 }
 
@@ -393,7 +403,7 @@ BOAT_RESULT BoatPlatONTransfer(BoatPlatONTx *tx_ptr, BCHAR * value_hex_str)
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL|| value_hex_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
     
     // Set nonce
@@ -454,13 +464,17 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
         BoatSleep(BOAT_PLATON_MINE_INTERVAL); // Sleep waiting for the block being mined 
         tx_status_str = web3_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 														 tx_ptr->wallet_ptr->network_info.node_url_ptr,
-														 &param_platon_getTransactionReceipt);
+														 &param_platon_getTransactionReceipt,&result);
+        if(tx_status_str == NULL){
+            BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
+            break;
+        }
 		result = BoatPlatONPraseRpcResponseResult(tx_status_str, "status", 
 											      &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
-            result = BOAT_ERROR_RPC_FAILED;
+            result = BOAT_ERROR_WALLET_RESULT_PRASE_FAIL;
             break;
         }
         else
@@ -492,7 +506,7 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
     if (tx_mined_timeout <= 0)
     {
         BoatLog(BOAT_LOG_NORMAL, "Wait for pending transaction timeout. This does not mean the transaction fails.");
-        result = BOAT_ERROR_TX_PENDING;
+        result = BOAT_ERROR_COMMON_TX_PENDING;
     }
 
     return result;
@@ -510,7 +524,7 @@ BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string,
     if (child_name == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 	return web3_parse_json_result(json_string, child_name, result_out);
 }
