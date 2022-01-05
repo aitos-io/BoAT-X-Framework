@@ -126,7 +126,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverySignatureHeaderPacked(const BoatHlfabr
 	if (tx_ptr->wallet_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr cannot be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* step-1: signatureHeader packed */
@@ -143,7 +143,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverySignatureHeaderPacked(const BoatHlfabr
 	if (NULL == serializedIdentityBuffer)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate serializedIdentityBuffer.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
 	}
 	msp__serialized_identity__pack(&serializedIdentity, serializedIdentityBuffer);
 	/* -------->creator value assignment */
@@ -161,7 +161,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverySignatureHeaderPacked(const BoatHlfabr
 	if (NULL == txIdRawMaterial.field_ptr)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate txIdRawMaterial buffer.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
 	}
 
 	memcpy(txIdRawMaterial.field_ptr, signatureHeader.nonce.data, signatureHeader.nonce.len);
@@ -391,7 +391,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadPacked(BoatHlfabricTx *tx_ptr,
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec hlfabricSignatureHeaderPacked.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricPayloadPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, hlfabricPayloadPacked_exception);
 	}
 
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "signatureHeaderPacked result",
@@ -409,7 +409,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadPacked(BoatHlfabricTx *tx_ptr,
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec hlfabricChannelHeaderPacked[data].");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricPayloadPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, hlfabricPayloadPacked_exception);
 	}
 
 	/* pack the payload */
@@ -480,7 +480,7 @@ BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
 		(tx_ptr->wallet_ptr->http2Context_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	/* step-2: compute payload packed length */
 	result = hlfabricDiscoveryPayloadPacked(tx_ptr, &payloadPacked);
@@ -499,13 +499,13 @@ BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
-		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, hlfabricProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, hlfabricProposalTransactionPacked_exception);
 	}
 
 	if (!signatureResult.pkcs_format_used)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
-		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, hlfabricProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, hlfabricProposalTransactionPacked_exception);
 	}
 
 	message.has_payload = true;
@@ -521,7 +521,7 @@ BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
 	if (tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "packed length out of sendbuffer size limit.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricProposalTransactionPacked_exception);
 	}
 
 	/* step-7: packed data assignment */
@@ -576,14 +576,14 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoveryExec(BoatHlfabricTx *tx_ptr,
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	result = hlfabricProposalDiscoveryTransactionPacked(tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, BoatHlfabricTxProposal_exception);
 	}
 	for (i = 0; i < nodeCfg.endorserLayoutNum; i++)
 	{
@@ -655,7 +655,7 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute... [%d] " ,endorserInfo_ptr.endorserLayoutNum);
