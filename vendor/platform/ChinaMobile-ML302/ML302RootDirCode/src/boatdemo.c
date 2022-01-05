@@ -122,10 +122,10 @@ __BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, NULL, sizeof(BoatPlatoneWalletConfig));
-    if( index == BOAT_ERROR )
+    if( index < BOAT_SUCCESS )
 	{
         onemo_sys_log("load wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_platone_wallet_ptr = BoatGetWalletByIndex( index );
 
@@ -158,10 +158,10 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 	/* create platone wallet */
     index = BoatWalletCreate( BOAT_PROTOCOL_PLATONE, PERSIST_WALLET_NAME, &wallet_config, sizeof(BoatPlatoneWalletConfig) ); // "/nvm/test.txt"
 
-    if( index == BOAT_ERROR )
+    if( index < BOAT_SUCCESS )
 	{
         onemo_sys_log("create one-time wallet failed." );
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_platone_wallet_ptr = BoatGetWalletByIndex( index );
     
@@ -185,7 +185,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     if( result != BOAT_SUCCESS )
 	{
         onemo_sys_log("BoatPlatoneTxInit fails.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_INIT_FAIL;
     }
 
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "ML302 HelloWorld 0519");
