@@ -53,7 +53,7 @@ BOAT_RESULT array_to_str(BUINT8* array, BUINT8* str, char lenth)
 
     if ((array == NULL) || (str == NULL))
     {
-    		return BOAT_ERROR_INVALID_ARGUMENT;
+    		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     for (i = 0; i < lenth; i++)
@@ -114,7 +114,7 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 	if (wallet_ptr == NULL) 
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* initialization */
@@ -128,7 +128,7 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 		if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->user_cert_info.prikeyCtx)) 
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate.");
-			return BOAT_ERROR_INVALID_ARGUMENT;
+			return BOAT_ERROR_WALLET_KEY_CREAT_FAIL;
 		}
 	}
 
@@ -137,13 +137,13 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 	if (wallet_ptr->user_cert_info.cert.field_ptr == NULL) 
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
 	}
 
 	if (certContent.length > BOAT_CHAINMAKER_CERT_MAX_LEN)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "certContent length invalid");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
 	}
 	memcpy(wallet_ptr->user_cert_info.cert.field_ptr, certContent.content, certContent.length);
 	wallet_ptr->user_cert_info.cert.field_len = certContent.length;
@@ -278,7 +278,7 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, Boa
 	if ((tx_ptr == NULL) || (wallet_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlChainmakerTxInit paramters cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	tx_ptr->wallet_ptr = (BoatHlchainmakerWallet *)wallet_ptr;
@@ -303,7 +303,7 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 	if (tx_ptr == NULL) 
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = tx_ptr->wallet_ptr->node_info.node_url_info;
@@ -363,7 +363,7 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length
 	if ((tx_ptr == NULL) || (length > BOAT_HLCHAINMAKER_ARGS_MAX_NUM) || ((length & 0x01) == 1))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	tx_ptr->trans_para.n_parameters = 0;
@@ -379,7 +379,7 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length
 		if (args == NULL)
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "variable parameter cannot be NULL.");
-			return BOAT_ERROR_INVALID_ARGUMENT;
+			return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 		}
 		if (i & 0x01) 
 		{
@@ -411,7 +411,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	if ((tx_ptr == NULL) || (method == NULL) || (contract_name == NULL) || (invoke_response == NULL)){
 
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
+		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
 	}
 
 	invoke_tx_id = BoatMalloc(BOAT_TXID_LEN);
@@ -488,7 +488,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	if ((tx_ptr == NULL) || (method == NULL) || (contract_name == NULL) || (query_response == NULL))  {
 
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
+		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
 	}
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
 	query_tx_id = BoatMalloc(BOAT_TXID_LEN);
@@ -508,7 +508,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 
 	if (tx_response == NULL) {
 		BoatLog(BOAT_LOG_CRITICAL, "tx_response is NULL");
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
+		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
 	}
 
 	query_response->gas_used = 0;
@@ -521,7 +521,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 		if (strlen(tx_response->message) > BOAT_RESPONSE_MESSAGE_MAX_LEN) 
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "tx_response->message is too long");
-			boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
 		}
 
 		memcpy(query_response->message, tx_response->message, strlen(tx_response->message));
@@ -533,7 +533,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 				if (tx_response->contract_result->result.len > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN) 
 				{
 					BoatLog(BOAT_LOG_CRITICAL, "tx_response->contract_result->result.datais too long");
-					boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
 				}
 				memcpy(query_response->contract_result, tx_response->contract_result->result.data, strlen((BCHAR*)tx_response->contract_result->result.data));
 			}
