@@ -96,7 +96,7 @@ Configure the path of the local cross compiler into the environment variable at 
 PATH := $(PATH):/home/tools/xinyigcc/gcc-arm-none-eabi-9-2019-q4-major/bin
 ```
 
-### 6. Increase the function support option of BoAT-X-Framework in XinYi-XY1100 platform
+### 6. Add a funtion option to support BoAT-X-Framework in XinYi-XY1100 platform
 Open `<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/feature.mk`
 Add the following at the end of the file:
 ```
