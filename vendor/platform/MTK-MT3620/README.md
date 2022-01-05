@@ -52,7 +52,7 @@
 
 5、点击`选择启动项`右侧向下箭头，选择`当前文件`。
 
-6、点击`生成`,点击`全部生成`。
+6、点击`生成`，点击`全部生成`。
 
    编译成功后，在`<MT3620 Root>/BoAT-X-Framework/lib`下会生成静态库libboatvendor.a、libboatwallet.a。
    
