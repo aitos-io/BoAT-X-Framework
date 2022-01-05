@@ -74,7 +74,7 @@ MbedHttpPortContext *MbedHttpPortInit(void)
     else
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate mbed HTTP RPC Context.");
-        result = BOAT_ERROR;
+        result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
     }
     
     if (result == BOAT_SUCCESS)
@@ -89,7 +89,7 @@ MbedHttpPortContext *MbedHttpPortInit(void)
         else
         {
             BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate mbed HTTP RESPONSE head buffer.");
-            result = BOAT_ERROR;
+            result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
         }
     }
     
@@ -105,7 +105,7 @@ MbedHttpPortContext *MbedHttpPortInit(void)
         else
         {
             BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate mbed HTTP RESPONSE body buffer.");
-            result = BOAT_ERROR;
+            result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
         }
     }
     
@@ -212,7 +212,7 @@ BOAT_RESULT MbedHttpPortSetOpt(MbedHttpPortContext *mbedhttpport_context_ptr, BC
 {
     if (mbedhttpport_context_ptr == NULL || remote_url_str == NULL)
     {
-        return BOAT_ERROR;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     mbedhttpport_context_ptr->remote_url_str = remote_url_str;
@@ -282,8 +282,7 @@ BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_pt
        || response_len_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        result = BOAT_ERROR;
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, cleanup);
     }
 
     memset(&client, 0x00, sizeof(client));
@@ -312,6 +311,7 @@ BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_pt
     if (ret < 0)
     {
         BoatLog(BOAT_LOG_VERBOSE, "[HTTP]POST Failed:%d\n", ret);
+        result = BOAT_ERROR_HTTP_POST_FAIL;
     }
     else
     {
@@ -335,6 +335,7 @@ BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_pt
         else
         {
             BoatLog(BOAT_LOG_NORMAL, "HTTP POST fails with response code %d.", response_code);
+            result = BOAT_ERROR_HTTP_POST_FAIL - response_code;
         }  
         
     }
