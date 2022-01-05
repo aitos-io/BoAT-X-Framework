@@ -78,10 +78,10 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 
 	/* create platone wallet */
     index = BoatWalletCreate( BOAT_PROTOCOL_PLATONE, "platone.cfg", &wallet_config, sizeof(BoatPlatoneWalletConfig) );
-    if( index == BOAT_ERROR )
+    if( index < BOAT_SUCCESS )
 	{
         boat_nwy_ext_echo("create one-time wallet failed." );
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_platone_wallet_ptr = BoatGetWalletByIndex( index );
     
@@ -103,7 +103,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     if( result != BOAT_SUCCESS )
 	{
         boat_nwy_ext_echo("BoatPlatoneTxInit fails.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_INIT_FAIL;
     }
     boat_nwy_ext_echo("N58 HelloWorld 0408");
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "N58 HelloWorld 0430");
