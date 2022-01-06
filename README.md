@@ -40,6 +40,9 @@ For project status update, please visit [BoAT Project Status Update Reports](htt
 ### Whitepaper
 Please see [BoAT Blockchain IoT Module Product White Paper](./docs/en-us/BoAT_Blockchain_IoT_Module_Product_White_Paper_EN.pdf).
 
+### Blockchain Module Technology and Application
+Please see [BoAT Blockchain IoT Module Technology and Application](./docs/en-us/BoAT_Blockchain_IoT_Module_Technology_and_Application_en.pdf).
+
 ## Quick Start
 
 ### Dependencies 
