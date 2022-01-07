@@ -342,4 +342,4 @@ BOAT_RESULT FibocomHttpPortRequestSync(FibocomHttpPortContext *fibocomhttpport_c
 }
 
 
-#endif // end of #if RPC_USE_MBEDHTTPPORT == 1
+#endif // end of #if RPC_USE_FIBOCOMHTTPPORT == 1
