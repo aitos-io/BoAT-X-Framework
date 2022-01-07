@@ -16,6 +16,7 @@ DESCRIPTION
 #include "boatconfig.h"
 #include "boatlog.h"
 #include "my_contract.cpp.abi.h"
+#include "web3intf.h"
 
 
 BoatPlatoneWallet *g_platone_wallet_ptr;
@@ -183,7 +184,8 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
   BCHAR *result_str;
   BoatPlatoneTx tx_ctx;
   BOAT_RESULT result;
-    
+  BoatLog(BOAT_LOG_NORMAL, "1111111111\n");
+
   /* Set Contract Address */
   result = BoatPlatoneTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
 							   "0x333333",
@@ -221,6 +223,8 @@ void boat_platone_entry(void)
   BOAT_RESULT  result  = BOAT_SUCCESS;
   int ret=0;
   BoatLog(BOAT_LOG_NORMAL,"======= Ready to INIT BoatIotSdk ======\n");
+
+  
 	/* step-1: Boat SDK initialization */
   result = BoatIotSdkInit();
   if(result != BOAT_SUCCESS)
@@ -249,7 +253,6 @@ void boat_platone_entry(void)
 		goto end;
 	}
   BoatLog(BOAT_LOG_NORMAL,"=== platone create Wallet run success ===");
-
 	/* step-3: execute 'platone_call_mycontract' */
 	result = platone_call_mycontract( g_platone_wallet_ptr );
   if( result != BOAT_SUCCESS )
@@ -272,21 +275,20 @@ end:
 
 int fibocom_task_entry(void)
 {
-
+  int ret=0;
   qapi_Timer_Sleep(3, QAPI_TIMER_UNIT_SEC, true);
   
   debug_uart_init(&debug_uart_context_D);
 
+  ret = dam_byte_pool_init();
+  if(ret != TX_SUCCESS)
+  {
+    BoatLog(BOAT_LOG_CRITICAL,"DAM_APP:Create DAM byte pool fail \n");
+    return ret;
+  }
+
   /* BoAT demo task ----------------------------------------------------------*/
   boat_platone_entry();
-
-
-  while(1){
-
-    BoatLog(BOAT_LOG_NORMAL,"123\n\r");
-
-    qapi_Timer_Sleep(1, QAPI_TIMER_UNIT_SEC, true);
-  }
 
    return 0;
 }
