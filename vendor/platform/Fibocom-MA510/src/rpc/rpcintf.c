@@ -24,7 +24,7 @@ RPC_USE_XXX macros.
 
 #include "boatconfig.h"
 #include "boatinternal.h"
-#include "mbedhttpport.h"
+#include "fibocomhttpport.h"
 
 void *RpcInit(void)
 {
@@ -32,8 +32,8 @@ void *RpcInit(void)
 
 #if RPC_USE_LIBCURL == 1
     rpc_context_ptr = CurlPortInit();
-#elif RPC_USE_MBEDHTTPPORT == 1
-    rpc_context_ptr = MbedHttpPortInit();
+#elif RPC_USE_FIBOCOMHTTPPORT == 1
+    rpc_context_ptr = FibocomHttpPortInit();
 #endif
 
     return rpc_context_ptr;
@@ -49,8 +49,8 @@ void RpcDeinit(void *rpc_context_ptr)
     
 #if RPC_USE_LIBCURL == 1
     CurlPortDeinit(rpc_context_ptr);
-#elif RPC_USE_MBEDHTTPPORT == 1
-    MbedHttpPortDeinit(rpc_context_ptr);
+#elif RPC_USE_FIBOCOMHTTPPORT == 1
+    FibocomHttpPortDeinit(rpc_context_ptr);
 #endif
 }
 
@@ -61,8 +61,8 @@ BOAT_RESULT RpcRequestSet(void *rpc_context_ptr, BCHAR *remote_url_str)
 
 #if RPC_USE_LIBCURL == 1    
     return CurlPortSetOpt((CurlPortContext*)rpc_context_ptr, remote_url_str);
-#elif RPC_USE_MBEDHTTPPORT == 1
-	return MbedHttpPortSetOpt((MbedHttpPortContext*)rpc_context_ptr, remote_url_str);
+#elif RPC_USE_FIBOCOMHTTPPORT == 1
+	return FibocomHttpPortSetOpt((FibocomHttpPortContext *)rpc_context_ptr, remote_url_str);
 #endif
     return result;
 }
@@ -79,8 +79,8 @@ BOAT_RESULT RpcRequestSync(void *rpc_context_ptr,
 #if RPC_USE_LIBCURL == 1
     result = CurlPortRequestSync(rpc_context_ptr, (const BCHAR *)request_ptr, request_len, 
 								 (BOAT_OUT BCHAR **)response_pptr, response_len_ptr);
-#elif RPC_USE_MBEDHTTPPORT == 1
-    result = MbedHttpPortRequestSync(rpc_context_ptr, (const BCHAR *)request_ptr, request_len, (BOAT_OUT BCHAR **)response_pptr, response_len_ptr);
+#elif RPC_USE_FIBOCOMHTTPPORT == 1
+    result = FibocomHttpPortRequestSync(rpc_context_ptr, (const BCHAR *)request_ptr, request_len, (BOAT_OUT BCHAR **)response_pptr, response_len_ptr);
 #endif
 
     return result;
