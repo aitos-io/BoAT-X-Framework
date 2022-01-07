@@ -47,6 +47,7 @@
 // fibocom include
 #include "qapi_fibocom.h"
 #include "qapi_fs.h"
+#include "locale.h"
 
 #if (PROTOCOL_USE_HLFABRIC == 1)
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
@@ -58,6 +59,8 @@
 
 
 #define GENERATE_KEY_REPEAT_TIMES	100
+
+#define BoAT_DIR_PATH_ROOT		"/datatx/dir_boat"
 
 
 uint32_t random32(void)
@@ -184,13 +187,83 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 /******************************************************************************
                               BOAT FILE OPERATION WARPPER
 *******************************************************************************/
+#define S_IFDIR        	0040000 	/**< Directory */
+#define S_IFMT          0170000		/**< Mask of all values */
+#define S_ISDIR(m)     	(((m) & S_IFMT) == S_IFDIR)
+
+/*
+@func
+  fibocom_efs_is_dir_exists
+@brief
+  find the path is a directory or directory is exist 
+*/
+int fibocom_efs_is_dir_exists(const char *path)
+{
+     int result, ret_val = 0;
+     struct qapi_FS_Stat_Type_s sbuf;
+
+     memset (&sbuf, 0, sizeof (sbuf));
+
+     result = qapi_FS_Stat(path, &sbuf);
+
+     if (result != 0)
+          goto End;
+
+     if (S_ISDIR (sbuf.st_Mode) == 1)
+          ret_val = 1;
+
+     End:
+          return ret_val;
+}
+
+
 BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 {
 	qapi_FS_Status_t status = QAPI_OK;
   	int    fd = -1;
 	qapi_FS_Offset_t seek_status = 0;
 
-	status = qapi_FS_Open(fileName, QAPI_FS_O_RDONLY_E, &fd);
+	int fNameLen = 0;
+	int fullPathNameLen = 0;
+	BCHAR *fullFilePath = NULL;
+
+	fNameLen = strlen(fileName);
+	fullPathNameLen = strlen((char *)BoAT_DIR_PATH_ROOT)+1+fNameLen;
+
+	/// MUST SETTING
+	setlocale(LC_ALL, "C");	/// <locale.h>
+
+	if(fullPathNameLen < 200)
+	{
+		BCHAR fullFileName[200]={0};
+
+		strcat(fullFileName,BoAT_DIR_PATH_ROOT);
+		strcat(fullFileName,"/");
+		strcat(fullFileName,fileName);
+
+		status = qapi_FS_Open(fullFileName, QAPI_FS_O_RDONLY_E, &fd);
+	}
+	else
+	{
+		fullFilePath=BoatMalloc(fullPathNameLen+1);
+		if(fullFilePath == NULL)
+		{
+			BoatLog(BOAT_LOG_CRITICAL,"BoatMalloc ERROR!");
+			return BOAT_ERROR_OUT_OF_MEMORY;
+		}
+
+		strcat(fullFilePath,BoAT_DIR_PATH_ROOT);
+		strcat(fullFilePath,"/");
+		strcat(fullFilePath,fileName);
+
+		status = qapi_FS_Open(fullFilePath, QAPI_FS_O_RDONLY_E, &fd);
+	}
+
+	if(fullFilePath)
+	{
+		BoatFree(fullFilePath);
+	}
+
 	if((status != QAPI_OK) && (-1 == fd))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
@@ -219,7 +292,52 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
   	int    fd = -1;
 	int   wr_bytes = 0;
 	(void)rsvd;
-	status = qapi_FS_Open(fileName, QAPI_FS_O_WRONLY_E, &fd);
+	int fNameLen=0;
+	int fullPathNamelen=0;
+	BCHAR *fullFilePath=NULL;
+
+	/// MUST SETTING
+	setlocale(LC_ALL, "C");	/// <locale.h>
+
+	///create boat dir;
+	if(fibocom_efs_is_dir_exists(BoAT_DIR_PATH_ROOT) != 1)
+	{
+		status = qapi_FS_Mk_Dir(BoAT_DIR_PATH_ROOT, 0677);
+		BoatLog(BOAT_LOG_CRITICAL,"qapi_FS_Mk_Dir %d", status);
+	}
+
+	fNameLen = strlen(fileName);
+	fullPathNamelen = strlen((char *)BoAT_DIR_PATH_ROOT)+1+fNameLen;
+	
+	if(fullPathNamelen < 200)
+	{
+		BCHAR fullFileName[200]={0};
+
+		strcat(fullFileName,BoAT_DIR_PATH_ROOT);
+		strcat(fullFileName,"/");
+		strcat(fullFileName,fileName);
+
+		status = qapi_FS_Open(fullFileName, QAPI_FS_O_RDWR_E | QAPI_FS_O_CREAT_E, &fd);
+	}
+	else
+	{
+		fullFilePath=BoatMalloc(fullPathNamelen+1);
+		if(fullFilePath == NULL)
+		{
+			BoatLog(BOAT_LOG_CRITICAL,"BoatMalloc ERROR!");
+			return BOAT_ERROR_OUT_OF_MEMORY;
+		}
+
+		strcat(fullFilePath,BoAT_DIR_PATH_ROOT);
+		strcat(fullFilePath,"/");
+		strcat(fullFilePath,fileName);
+
+		status = qapi_FS_Open(fullFilePath, QAPI_FS_O_RDWR_E | QAPI_FS_O_CREAT_E, &fd);
+	}
+	if(fullFilePath)
+	{
+		BoatFree(fullFilePath);
+	}
 	if((status != QAPI_OK) && (-1 == fd))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
@@ -240,7 +358,7 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to write file: %s.", fileName);
 		return BOAT_ERROR;
 	}
-	
+
 	return BOAT_SUCCESS;
 }
 
@@ -252,7 +370,47 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
   	int    fd = -1;
 	int   rd_bytes = 0;
 	(void)rsvd;
-	status = qapi_FS_Open(fileName, QAPI_FS_O_RDONLY_E, &fd);
+	int fNameLen = 0;
+	int fullPathNameLen = 0;
+	BCHAR *fullFilePath = NULL;
+
+	fNameLen = strlen(fileName);
+	fullPathNameLen = strlen((char *)BoAT_DIR_PATH_ROOT)+1+fNameLen;
+	
+	/// MUST SETTING
+	setlocale(LC_ALL, "C");	/// <locale.h>
+
+	if(fullPathNameLen < 200)
+	{
+		BCHAR fullFileName[200]={0};
+
+		strcat(fullFileName,BoAT_DIR_PATH_ROOT);
+		strcat(fullFileName,"/");
+		strcat(fullFileName,fileName);
+
+		status = qapi_FS_Open(fullFileName, QAPI_FS_O_RDONLY_E, &fd);
+	}
+	else
+	{
+		fullFilePath=BoatMalloc(fullPathNameLen+1);
+		if(fullFilePath == NULL)
+		{
+			BoatLog(BOAT_LOG_CRITICAL,"BoatMalloc ERROR!");
+			return BOAT_ERROR_OUT_OF_MEMORY;
+		}
+
+		strcat(fullFilePath,BoAT_DIR_PATH_ROOT);
+		strcat(fullFilePath,"/");
+		strcat(fullFilePath,fileName);
+
+		status = qapi_FS_Open(fullFilePath, QAPI_FS_O_RDONLY_E, &fd);
+	}
+
+	if(fullFilePath)
+	{
+		BoatFree(fullFilePath);
+	}
+
 	if((status != QAPI_OK) && (-1 == fd))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
@@ -287,13 +445,56 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL.");
 		return BOAT_ERROR_INVALID_ARGUMENT;
 	}
+	int status = 0;
+	int fNameLen = 0;
+	int fullPathNameLen = 0;
+	BCHAR *fullFilePath = NULL;
 
-	if(QAPI_OK != qapi_FS_Unlink(fileName))
+	fNameLen = strlen(fileName);
+	fullPathNameLen = strlen((char *)BoAT_DIR_PATH_ROOT)+1+fNameLen;
+	
+
+	/// MUST SETTING
+	setlocale(LC_ALL, "C");	/// <locale.h>
+
+	if(fullPathNameLen < 200)
+	{
+		BCHAR fullFileName[200]={0};
+
+		strcat(fullFileName,BoAT_DIR_PATH_ROOT);
+		strcat(fullFileName,"/");
+		strcat(fullFileName,fileName);
+
+		status=qapi_FS_Unlink(fullFileName);
+	}
+	else
+	{
+		fullFilePath=BoatMalloc(fullPathNameLen+1);
+		if(fullFilePath == NULL)
+		{
+			BoatLog(BOAT_LOG_CRITICAL,"BoatMalloc ERROR!");
+			return BOAT_ERROR_OUT_OF_MEMORY;
+		}
+		
+		strcat(fullFilePath,BoAT_DIR_PATH_ROOT);
+		strcat(fullFilePath,"/");
+		strcat(fullFilePath,fileName);
+
+		status=qapi_FS_Unlink(fullFilePath);
+	}
+
+	if(fullFilePath)
+	{
+		BoatFree(fullFilePath);
+	
+	}
+	if(QAPI_OK != status)
     {
+
         return BOAT_ERROR;
     }
     else
-    {
+    {	
         return BOAT_SUCCESS;
     }
 }
