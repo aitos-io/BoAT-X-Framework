@@ -6,7 +6,6 @@ DESCRIPTION
 ===========================================================================*/
 
 /* MA510 Includes ---------------------------------------------------------*/
-#include "test_utils.h"
 #include "qflog_utils.h"
 #include "qapi_uart.h"
 #include "qapi_timer.h"
@@ -16,7 +15,6 @@ DESCRIPTION
 #include "boatconfig.h"
 #include "boatlog.h"
 #include "my_contract.cpp.abi.h"
-//#include "web3intf.h"
 
 
 BoatPlatoneWallet *g_platone_wallet_ptr;
@@ -282,7 +280,7 @@ int fibocom_task_entry(void)
   ret = dam_byte_pool_init();
   if(ret != TX_SUCCESS)
   {
-    BoatLog(BOAT_LOG_CRITICAL,"DAM_APP:Create DAM byte pool fail \n");
+    BoatLog(BOAT_LOG_CRITICAL,"Create DAM byte pool fail!\n");
     return ret;
   }
 
