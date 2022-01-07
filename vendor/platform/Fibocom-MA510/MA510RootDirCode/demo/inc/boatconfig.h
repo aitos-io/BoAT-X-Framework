@@ -32,7 +32,7 @@
 #define  PROTOCOL_USE_HWBCS     0
 #define  DISCOVERY_PEER_QUERY     0
 
-#define  RPC_USE_MBEDHTTPPORT     1
+#define  RPC_USE_FIBOCOMHTTPPORT     1
 
 
 #endif

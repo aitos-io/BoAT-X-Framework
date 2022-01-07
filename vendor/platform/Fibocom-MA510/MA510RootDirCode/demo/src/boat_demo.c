@@ -16,7 +16,7 @@ DESCRIPTION
 #include "boatconfig.h"
 #include "boatlog.h"
 #include "my_contract.cpp.abi.h"
-#include "web3intf.h"
+//#include "web3intf.h"
 
 
 BoatPlatoneWallet *g_platone_wallet_ptr;
@@ -60,9 +60,8 @@ const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
 #ifdef BOAT_TEST
 BOAT_RESULT platone_createOnetimeWallet()
 {
-    BoatLog(BOAT_LOG_NORMAL,"Ready to run platone_createOnetimeWallet1.\n");
-    BoatLog(BOAT_LOG_NORMAL,"Ready to run platone_createOnetimeWallet2.\n");
-    BoatLog(BOAT_LOG_NORMAL,"Ready to run platone_createOnetimeWallet3.\n");
+    BoatLog(BOAT_LOG_NORMAL,"Ready to run platone_createOnetimeWallet\n");
+
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]               = {0};
@@ -184,7 +183,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
   BCHAR *result_str;
   BoatPlatoneTx tx_ctx;
   BOAT_RESULT result;
-  BoatLog(BOAT_LOG_NORMAL, "1111111111\n");
+  BoatLog(BOAT_LOG_NORMAL, "Ready to call contract!\n");
 
   /* Set Contract Address */
   result = BoatPlatoneTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
@@ -198,7 +197,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     return BOAT_ERROR;
   }
 
-  result_str = my_contract_cpp_abi_setName(&tx_ctx, "zzq_HelloWorld");
+  result_str = my_contract_cpp_abi_setName(&tx_ctx, "HelloWorld");
   if (result_str == NULL)
 	{
     BoatLog(BOAT_LOG_CRITICAL,"my_contract_cpp_abi_setName failed: %s.\n", result_str);
