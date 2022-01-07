@@ -866,12 +866,12 @@ void http_netctrl_stop(void)
         stat = qapi_DSS_Stop_Data_Call(http_dss_handle);
         if (QAPI_OK == stat)
         {
-            odm_ght_printf(debug_uart_context_D.uart_handle,"Stop data call success\n");
+            BoatLog(BOAT_LOG_CRITICAL,"Stop data call success\n");
         }
         stat = qapi_DSS_Rel_Data_Srvc_Hndl(http_dss_handle);
         if (QAPI_OK != stat)
         {
-            odm_ght_printf(debug_uart_context_D.uart_handle,"Release data service handle failed:%d\n", stat);
+            BoatLog(BOAT_LOG_CRITICAL,"Release data service handle failed:%d\n", stat);
         }
         http_dss_handle = NULL;
     }
