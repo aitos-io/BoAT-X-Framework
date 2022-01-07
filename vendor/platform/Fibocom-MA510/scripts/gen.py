@@ -52,7 +52,7 @@ class ConfigContentGen():
     
     def gen_config_content(self):
         self.config_content += '\n'
-        self.config_content += '#define  RPC_USE_MBEDHTTPPORT     1'
+        self.config_content += '#define  RPC_USE_FIBOCOMHTTPPORT     1'
         self.config_content += '\n'
 
     def gen_config_tips(self, platform):
