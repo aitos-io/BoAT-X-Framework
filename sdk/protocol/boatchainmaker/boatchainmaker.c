@@ -91,15 +91,15 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 		(tx_ptr->wallet_ptr->http2Context_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
-	sender.org_id             = tx_ptr->client_para.org_id;
+	sender.org_id             = tx_ptr->wallet_ptr->node_info.org_id_info;
 	sender.member_info.len    = tx_ptr->wallet_ptr->user_cert_info.cert.field_len;
 	sender.member_info.data   = tx_ptr->wallet_ptr->user_cert_info.cert.field_ptr;
 	sender.is_full_cert       = true;
 
-	tx_header.chain_id        = tx_ptr->client_para.chain_id;
+	tx_header.chain_id        = tx_ptr->wallet_ptr->node_info.chain_id_info;
 	tx_header.tx_type         = tx_type;
 	tx_header.tx_id           = tx_id;
 	tx_header.timestamp       = BoatGetTimes();
@@ -133,13 +133,13 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 	if( result != BOAT_SUCCESS ) {
 
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
-		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, chainmakerProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, chainmakerProposalTransactionPacked_exception);
 	}
 
 	if (!signatureResult.pkcs_format_used) {
 
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
-		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, chainmakerProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, chainmakerProposalTransactionPacked_exception);
 	}
 
 	/* step-5: pack the envelope */

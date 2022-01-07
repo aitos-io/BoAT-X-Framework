@@ -572,6 +572,7 @@ BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr);
 BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr);
 
 
+void fabricWalletConfigFree(BoatHlfabricWalletConfig wallet_config);
 
 #ifdef __cplusplus
 }

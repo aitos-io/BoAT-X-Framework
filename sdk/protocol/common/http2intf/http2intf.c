@@ -228,7 +228,7 @@ http2IntfContext *http2Init(void)
 	if (NULL == http2Context)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, http2Init_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, http2Init_exception);
 	}
 	http2Context->session = NULL;
 	http2Context->nodeUrl = NULL;
@@ -239,7 +239,7 @@ http2IntfContext *http2Init(void)
 	if (http2Context->tlsContext == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to allocate TTLSContext.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, http2Init_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, http2Init_exception);
 	}
 #endif
 	http2Context->sendBuf.field_len = 0;
@@ -256,7 +256,7 @@ http2IntfContext *http2Init(void)
 	if (NULL == http2Context->sendBuf.field_ptr)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, http2Init_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, http2Init_exception);
 	}
 
 	/* boat catch handle */
@@ -282,6 +282,12 @@ void http2DeInit(http2IntfContext *http2Context)
 #if (BOAT_TLS_SUPPORT == 1)
 		BoatFree(http2Context->tlsContext);
 		http2Context->tlsContext = NULL;
+		if(http2Context->tlsCAchain != NULL){
+			http2Context->tlsCAchain[0].field_len = 0;
+			BoatFree(http2Context->tlsCAchain[0].field_ptr);
+			BoatFree(http2Context->tlsCAchain);
+			
+		}
 #endif
 		BoatFree(http2Context);
 		http2Context = NULL;
@@ -320,14 +326,14 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	if (context->sockfd < 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatConnect failed.");
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_CONNECT_FAIL, http2SubmitRequest_exception);
 	}
 #if (BOAT_TLS_SUPPORT == 1)
 	result = BoatTlsInit(context->hostName, context->tlsCAchain, context->sockfd, context->tlsContext, NULL);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatTlsInit failed.");
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_TLS_INIT_FAIL, http2SubmitRequest_exception);
 	}
 #endif
 	if (context->session != NULL)
@@ -348,26 +354,26 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "submit settings failed.");
-		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_INTERNAL + result, http2SubmitRequest_exception);
 	}
 	data_prd.read_callback = data_source_read_callback;
 	result = nghttp2_submit_request(context->session, NULL, nva, sizeof(nva) / sizeof(nva[0]), &data_prd, NULL);
 	if (result < BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
-		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_INTERNAL + result, http2SubmitRequest_exception);
 	}
 	result = nghttp2_session_send(context->session);
 	if (result < BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
-		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_INTERNAL + result, http2SubmitRequest_exception);
 	}
 	result = nghttp2_session_recv(context->session);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
-		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_INTERNAL + result, http2SubmitRequest_exception);
 	}
 	result = BOAT_SUCCESS;
 	boat_catch(http2SubmitRequest_exception)

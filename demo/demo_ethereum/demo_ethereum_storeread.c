@@ -96,10 +96,10 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
 
 	/* create ethereum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(index);
     
@@ -148,10 +148,10 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
 
 	/* create ethereum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, wallet_name, &wallet_config, sizeof(BoatEthWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
 
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(index);
@@ -167,10 +167,10 @@ __BOATSTATIC BOAT_RESULT ethereum_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create ethereum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, wallet_name, NULL, sizeof(BoatEthWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(index);
 
@@ -196,7 +196,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
     if (result != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "BoatEthTxInit fails.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_INIT_FAIL;
     }
     
     result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
@@ -236,7 +236,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
 int main(int argc, char *argv[])
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-
+    boat_try_declare;
     /* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     
@@ -252,12 +252,14 @@ int main(int argc, char *argv[])
     result = ethereum_loadPersistWallet("eth.cfg");
 #else
     //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
-    return -1;
+    //return -1;
+    result = BOAT_ERROR;
 #endif
     if (result != BOAT_SUCCESS)
 	{
 		 //BoatLog(BOAT_LOG_CRITICAL, "ethereumWalletPrepare_create failed: %d.", result);
-		return -1;
+		//return -1;
+        boat_throw(result, ethereum_storeread_demo_catch);
 	}
     
     /* step-3: execute 'ethereum_call_ReadStore' */
@@ -270,9 +272,11 @@ int main(int argc, char *argv[])
     {
         //BoatLog(BOAT_LOG_NORMAL, "ethereum readStore access Passed.");
     }
-
+    boat_catch(ethereum_storeread_demo_catch)
+    {
+    }
 	/* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
     
-    return 0;
+    return result;
 }

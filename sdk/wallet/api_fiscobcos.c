@@ -49,7 +49,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
     if ((wallet_ptr == NULL) || (tx_ptr == NULL) || (gasprice_str == NULL) || (recipient_str == NULL))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     tx_ptr->wallet_ptr = wallet_ptr;
@@ -86,7 +86,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
     if (converted_len == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "recipient Initialize failed.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_UTILITY;
     }
 
     result = BoatFiscobcosTxSetRecipient(tx_ptr, recipient);
@@ -102,7 +102,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	if (tx_ptr->rawtx_fields.chainid.field_len == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "chainid Initialize failed.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_UTILITY;
     }
 	
 	//groupid
@@ -111,7 +111,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	if (tx_ptr->rawtx_fields.groupid.field_len == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "groupid Initialize failed.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_UTILITY;
     }
 	
 	// Initialize blocklimit
@@ -134,7 +134,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	if (tx_ptr->rawtx_fields.blocklimit.field_len == 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "blocklimit Initialize failed.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_UTILITY;
 	}
 
 	//convert to bigendian uint256
@@ -199,7 +199,7 @@ BOAT_RESULT BoatFiscobcosTxSetNonce(BoatFiscobcosTx *tx_ptr, BUINT64 nonce)
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
 	if (nonce == BOAT_FISCOBCOS_NONCE_AUTO)
@@ -222,7 +222,7 @@ BOAT_RESULT BoatFiscobcosTxSetGasPrice(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B 
     if ((tx_ptr == NULL) || (gas_price_ptr == NULL))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     // Set gasprice
@@ -253,7 +253,7 @@ BOAT_RESULT BoatFiscobcosTxSend(BoatFiscobcosTx *tx_ptr)
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
 
@@ -282,6 +282,7 @@ BCHAR *BoatFiscobcosCallContractFunc(BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_
     BCHAR  data_hexstr[(func_param_len + 4) * 2 + 3]; /* +4 for function selector, *2 for bin to HEX, 
 	                                                   +3 for "0x" prefix and NULL terminator Compiler 
 												       MUST support C99 to allow variable-size local array */
+	BOAT_RESULT result = BOAT_SUCCESS;
     BCHAR  *retval_str;
 
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
@@ -338,7 +339,10 @@ BCHAR *BoatFiscobcosCallContractFunc(BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_
 
     retval_str = web3_fiscobcos_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
 									 tx_ptr->wallet_ptr->network_info.node_url_ptr,
-									 &param_fiscobcos_call);
+									 &param_fiscobcos_call,&result);
+	if(retval_str == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "web3 fiscobcos call fail ,result = %d .",result);
+	}
 
     return retval_str;
 }
@@ -370,7 +374,11 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
         BoatSleep(BOAT_FISCOBCOS_MINE_INTERVAL); // Sleep waiting for the block being mined 
         tx_status_str = web3_fiscobcos_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 						tx_ptr->wallet_ptr->network_info.node_url_ptr,
-						&param_fiscobcos_getTransactionReceipt);
+						&param_fiscobcos_getTransactionReceipt,&result);
+		if(tx_status_str == NULL){
+			BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
+            break;
+		}
 		// "status" == null : the transaction is pending, the result is BOAT_ERROR
 		// todo: need to change web3_parse_json_result() 
 		result = BoatFiscobcosPraseRpcResponseResult(tx_status_str, "status", 
@@ -379,7 +387,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
         if (result != BOAT_SUCCESS)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
-            result = BOAT_ERROR_RPC_FAILED;
+            result = BOAT_ERROR_WALLET_RESULT_PRASE_FAIL;
             break;
         }
         else
@@ -408,7 +416,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
     if (tx_mined_timeout <= 0)
     {
         BoatLog(BOAT_LOG_NORMAL, "Wait for pending transaction timeout. This does not mean the transaction fails.");
-        result = BOAT_ERROR_TX_PENDING;
+        result = BOAT_ERROR_COMMON_TX_PENDING;
     }
 
     return result;
@@ -419,6 +427,7 @@ BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr)
 {
     Param_fiscobcos_getBlockNumber param_fiscobcos_getBlockNumber;
 	BCHAR groupid_hexstr[67];
+	BOAT_RESULT result = BOAT_SUCCESS;
     BCHAR *retval_str;
 
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
@@ -435,8 +444,10 @@ BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr)
 
     retval_str = web3_fiscobcos_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
 											   tx_ptr->wallet_ptr->network_info.node_url_ptr,
-											   &param_fiscobcos_getBlockNumber);
-
+											   &param_fiscobcos_getBlockNumber,&result);
+	if(retval_str == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "web3 fiscobcos get blocknumber fail ,result = %d .",result);
+	}
     return retval_str;
 }
 
@@ -452,7 +463,7 @@ BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string,
     if (child_name == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 	return web3_parse_json_result(json_string, child_name, result_out);
 }

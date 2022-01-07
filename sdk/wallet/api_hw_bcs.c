@@ -74,7 +74,7 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	if(tx_ptr->evaluateRes.httpResLen != 0){
 		if(tx_ptr->evaluateRes.http2Res != NULL){
@@ -88,7 +88,7 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, BoatHwbcsTxProposal_exception);
 	}
 	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL)
 	{
@@ -302,7 +302,7 @@ BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo(BoatHwbcsWallet *wallet_ptr,
 	if (wallet_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* initialization */
@@ -319,7 +319,7 @@ BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo(BoatHwbcsWallet *wallet_ptr,
 	if (wallet_ptr->tlsClinet_info.cert.field_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHwbcsWalletSetTlsInfo_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsWalletSetTlsInfo_exception);
 	}
 	memcpy(wallet_ptr->tlsClinet_info.cert.field_ptr, certContent.content, certContent.length);
 	wallet_ptr->tlsClinet_info.cert.field_len = certContent.length;
@@ -385,7 +385,7 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 	if ((tx_ptr == NULL) || (wallet_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments 'tx_ptr' or 'wallet_ptr' cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* tx_ptr instance reset */
@@ -449,7 +449,7 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 			if (*paramDstList[i] == NULL)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-				boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricTxInit_exception);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxInit_exception);
 			}
 			memcpy(*paramDstList[i], paramSrcList[i], stringLen + 1);
 		}
@@ -509,12 +509,12 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr)
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	if (tx_ptr->var.args.args[0] == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments args[0] cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Evaluate will execute...");
@@ -550,12 +550,12 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	if (tx_ptr->var.args.args[0] == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments args[0] cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
@@ -565,7 +565,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
-		return BOAT_ERROR;
+		return result;
 	}
 	BoatLog(BOAT_LOG_NORMAL, "Submit proposal OK ...");
 	/* invoke-step2: submit transaction to orderer */
@@ -573,7 +573,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
-		return BOAT_ERROR;
+		return result;
 	}
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)

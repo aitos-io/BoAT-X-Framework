@@ -27,13 +27,21 @@ static BOAT_RESULT ChainmakerWalletPrepare(void)
     wallet_config.user_prikey_cfg.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     wallet_config.user_prikey_cfg.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
     wallet_config.user_prikey_cfg.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-    wallet_config.user_prikey_cfg.prikey_content.field_ptr = (BUINT8 *)chainmaker_key_ptr_buf;
-    wallet_config.user_prikey_cfg.prikey_content.field_len = strlen(chainmaker_key_ptr_buf) + 1; 
+    wallet_config.user_prikey_cfg.prikey_content.field_ptr = (BUINT8 *)chainmaker_sign_key_buf;
+    wallet_config.user_prikey_cfg.prikey_content.field_len = strlen(chainmaker_sign_key_buf) + 1; 
 
     //set user cert context
-    wallet_config.user_cert_cfg.length = strlen(chainmaker_cert_ptr_buf);
-    memcpy(wallet_config.user_cert_cfg.content, chainmaker_cert_ptr_buf, wallet_config.user_cert_cfg.length);
-    strncpy(wallet_config.node_url_cfg, TEST_CHAINMAKER_NODE_URL, strlen(TEST_CHAINMAKER_NODE_URL));
+    wallet_config.user_cert_cfg.length = strlen(chainmaker_sign_cert_buf);
+    memcpy(wallet_config.user_cert_cfg.content, chainmaker_sign_cert_buf, wallet_config.user_cert_cfg.length);
+
+    //tls ca cert
+    wallet_config.tls_ca_cert_cfg.length = strlen(chainmaker_ca_cert_buf) + 1;
+    memcpy(wallet_config.tls_ca_cert_cfg.content, chainmaker_ca_cert_buf, wallet_config.tls_ca_cert_cfg.length);
+
+    strncpy(wallet_config.node_url_cfg,  TEST_CHAINMAKER_NODE_URL,  strlen(TEST_CHAINMAKER_NODE_URL));
+    strncpy(wallet_config.host_name_cfg, TEST_CHAINMAKER_HOST_NAME, strlen(TEST_CHAINMAKER_HOST_NAME));
+    strncpy(wallet_config.chain_id_cfg,  TEST_CHAINMAKER_CHAIN_ID,  strlen(TEST_CHAINMAKER_CHAIN_ID));
+    strncpy(wallet_config.org_id_cfg,    TEST_CHAINMAKER_ORG_ID,    strlen(TEST_CHAINMAKER_ORG_ID));
 
 
     // create wallet
@@ -75,7 +83,7 @@ static BOAT_RESULT test_contrct_invoke_prepara(BoatHlchainmakerTx  *tx_ptr)
     }
 
     /* step-3: Chainmaker transaction structure initialization */
-    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, tx_ptr);
+    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, tx_ptr);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "test BoatHlChainmakerTxInit() failed.");
@@ -106,7 +114,7 @@ static BOAT_RESULT test_contrct_query_prepara(BoatHlchainmakerTx  *tx_ptr)
     }
 
     /* step-3: Chainmaker transaction structure initialization */
-    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, TEST_CHAINMAKER_CHAIN_ID, TEST_CHAINMAKER_ORG_ID, tx_ptr);
+    result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, tx_ptr);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "test BoatHlChainmakerTxInit() failed.");
@@ -129,7 +137,7 @@ START_TEST(test_003Contract_0001InvokeFailureTxNull)
     BoatInvokeResponse  invoke_response;
 
     result = BoatHlchainmakerContractInvoke(NULL, "save", "fact", true, &invoke_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -143,7 +151,7 @@ START_TEST(test_003Contract_0002InvokeFailureMethodNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, NULL, "fact", true, &invoke_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -157,7 +165,7 @@ START_TEST(test_003Contract_0003InvokeFailureContractNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", NULL, true, &invoke_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -189,7 +197,7 @@ START_TEST(test_003Contract_0005InvokeFailureresponseNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "test", true, NULL); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -238,7 +246,7 @@ START_TEST(test_003Contract_0008QueryFailureTxNull)
     BoatQueryResponse  query_response;
 
     result = BoatHlchainmakerContractQuery(NULL, "save", "fact", &query_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -252,7 +260,7 @@ START_TEST(test_003Contract_0009QueryFailureMethodNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractQuery(&tx_ptr, NULL, "fact", &query_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -267,7 +275,7 @@ START_TEST(test_003Contract_00010QueryFailureContractNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractQuery(&tx_ptr, "save", NULL, &query_response); ;
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
@@ -300,7 +308,7 @@ START_TEST(test_003Contract_00012QueryFailureResponseNull)
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", NULL); 
-    ck_assert(result == BOAT_ERROR_INVALID_ARGUMENT);
+    ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 

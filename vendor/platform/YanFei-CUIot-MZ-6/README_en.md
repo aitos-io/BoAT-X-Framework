@@ -39,14 +39,14 @@ After copying these files, the directory structure should look like:
 ### 1. Add BoAT-X Framework libraries path
 
 Open `<YanFei Root>/cmake/toolchain-gcc.cmake` 
-Add the following two lines as below:
+Add the following two lines of code as below:
 ```
 set(libbw_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Frameworkt/lib/libboatwallet.a)
 set(libbv_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Frameworkt/lib/libboatvendor.a)
 ```
 
 
-### 2. Add the link to the BoAT-X-Framework libs
+### 2. Add BoAT-X-Framework lib files to "target_link_libraries"
 
 Open `<YanFei Root>/app/demo/CMakeList.txt` 
 Find target_link_libraries(XXX ${libc_file_name}) and add ${libbw_file_name} ${libbv_file_name} before ${libc_file_name}, such as:

@@ -182,4 +182,4 @@
    make clean
    make all
    ```
-   编译成功会在`<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/xinyiNBSoc_M3`下生成ram.bin和flash.bin文件	
+   编译成功会在`<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/xinyiNBSoc_M3`下生成ram.bin和flash.bin文件。

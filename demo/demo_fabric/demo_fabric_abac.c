@@ -25,72 +25,72 @@
 
 
 const BCHAR *fabric_client_demokey = "-----BEGIN PRIVATE KEY-----\n"
-"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgRo7NTfu+hstvPUD2\n"
-"5GzWT5iIzReYMy3zk5k1jMFRbvWhRANCAASsOILY3M96tu+5uVA0drU3oH/U/sYp\n"
-"8Up42NA0KZOfcrUQqHGEs5rOBSrLvqXTV4bgD6xeWCEaqmbwO5NdlwzL\n"
+"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgC7i8hacnI2wqQwk7\n"
+"VdgA/o8v2QtsXqbahPi69og5tZShRANCAAS7Ml9eVj84iFqapPim8w/HWdg0mQJe\n"
+"TEnR3lnc9HYpX9kKFv2fqr7jSjEgHnkl8b2jAhnxT5xdoR2oVXDzcwli\n"
 									 "-----END PRIVATE KEY-----\n";
 
 const BCHAR *fabric_client_democert = "-----BEGIN CERTIFICATE-----\n"
-"MIICKjCCAdGgAwIBAgIRANxVVKQKNFaIMd1gLYrMMqkwCgYIKoZIzj0EAwIwczEL\n"
+"MIICKjCCAdGgAwIBAgIRAI0L3xoUFFr70L1cOulWdKMwCgYIKoZIzj0EAwIwczEL\n"
 "MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\n"
 "cmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2Nh\n"
-"Lm9yZzEuZXhhbXBsZS5jb20wHhcNMjExMDE4MDczNDAwWhcNMzExMDE2MDczNDAw\n"
+"Lm9yZzEuZXhhbXBsZS5jb20wHhcNMjExMjI0MDI1ODAwWhcNMzExMjIyMDI1ODAw\n"
 "WjBsMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMN\n"
 "U2FuIEZyYW5jaXNjbzEPMA0GA1UECxMGY2xpZW50MR8wHQYDVQQDDBZVc2VyMUBv\n"
-"cmcxLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAErDiC2NzP\n"
-"erbvublQNHa1N6B/1P7GKfFKeNjQNCmTn3K1EKhxhLOazgUqy76l01eG4A+sXlgh\n"
-"Gqpm8DuTXZcMy6NNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYD\n"
-"VR0jBCQwIoAgxfbo49aqjtj8mmA5NaPbmnQG0rjg3dXs/rGZcggYTdswCgYIKoZI\n"
-"zj0EAwIDRwAwRAIgAkLbCpnTVmaexbtmRoW4POSXFH8f0HnuIvWsgiiOR7ICIB29\n"
-"GRvXfWzNs13j4r2io6cSyqeCYmCegtfvkHDB/64G\n"
+"cmcxLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEuzJfXlY/\n"
+"OIhamqT4pvMPx1nYNJkCXkxJ0d5Z3PR2KV/ZChb9n6q+40oxIB55JfG9owIZ8U+c\n"
+"XaEdqFVw83MJYqNNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYD\n"
+"VR0jBCQwIoAgI+E696/ogzYugT7xV3JcmrPctsc+cn+bIaonLnqfMW0wCgYIKoZI\n"
+"zj0EAwIDRwAwRAIgeBdvFkP2EDUZ+vCK4M7I439moFgCvT40V4rOiM7pGLQCIGmz\n"
+"wQKqZqrS+jyM1rv6dhaf0K0fz3CMvXrfKlf0NG89\n"
 									  "-----END CERTIFICATE-----\n";
 
 const BCHAR *fabric_org1_tlsCert = "-----BEGIN CERTIFICATE-----\n"
-"MIICWDCCAf6gAwIBAgIRALavTC3eN2nrCKme6Xcww0kwCgYIKoZIzj0EAwIwdjEL\n"
+"MIICVzCCAf6gAwIBAgIRAKTtoztI4X22hzMVl9iX4XIwCgYIKoZIzj0EAwIwdjEL\n"
 "MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\n"
 "cmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHzAdBgNVBAMTFnRs\n"
-"c2NhLm9yZzEuZXhhbXBsZS5jb20wHhcNMjExMDE4MDczNDAwWhcNMzExMDE2MDcz\n"
-"NDAwWjB2MQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UE\n"
+"c2NhLm9yZzEuZXhhbXBsZS5jb20wHhcNMjExMjI0MDI1ODAwWhcNMzExMjIyMDI1\n"
+"ODAwWjB2MQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UE\n"
 "BxMNU2FuIEZyYW5jaXNjbzEZMBcGA1UEChMQb3JnMS5leGFtcGxlLmNvbTEfMB0G\n"
 "A1UEAxMWdGxzY2Eub3JnMS5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49\n"
-"AwEHA0IABG2qqN+yTP+lybXy8w57n/xXluvV3V3mBgfxOaAXY7eHKsxFrmotmycJ\n"
-"/iVB4qZvCJsN4Gc0ZfiHdmCWfxMG53CjbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNV\n"
+"AwEHA0IABL3qQfhWhTm7RleBJGlhJEAKl2qhaQ09yEw9NWfOEndyZxJBIXBjrieV\n"
+"tbQqf1Mb1e/QmPm/G7+6xB7QH8TGsUijbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNV\n"
 "HSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwDwYDVR0TAQH/BAUwAwEB/zApBgNV\n"
-"HQ4EIgQg4UXq2eXIK607YxT11FuZ/KvQMWPJfXYYBBpKiyvapPEwCgYIKoZIzj0E\n"
-"AwIDSAAwRQIhAMJSbkX0/VJJYjOCaBbIiO5737ypVjJCMxpATMAgHbIBAiASL7jB\n"
-"9YhVBBkfKXDJeyFLZRBiZvbZRe6XriSaGk7Olg==\n"
+"HQ4EIgQg5MQFxUeKY3+lv9Lf2XZYwTD+IRH9pEUEpQN5B3odpN8wCgYIKoZIzj0E\n"
+"AwIDRwAwRAIgZxj4KIa/okvdnr3Vx8fFlCMsVY5MA96oDQoAxrluIBMCIGsp/zjG\n"
+"AFzgDUuOCXh1pq3fkKvSipwtbL8FX/QKmfHD\n"
 								   "-----END CERTIFICATE-----\n";
 
 const BCHAR *fabric_org2_tlsCert = "-----BEGIN CERTIFICATE-----\n"
-"MIICWDCCAf6gAwIBAgIRAPIYbekJM20WSWo6WtKJTwIwCgYIKoZIzj0EAwIwdjEL\n"
-"MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\n"
-"cmFuY2lzY28xGTAXBgNVBAoTEG9yZzIuZXhhbXBsZS5jb20xHzAdBgNVBAMTFnRs\n"
-"c2NhLm9yZzIuZXhhbXBsZS5jb20wHhcNMjExMDE4MDczNDAwWhcNMzExMDE2MDcz\n"
-"NDAwWjB2MQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UE\n"
-"BxMNU2FuIEZyYW5jaXNjbzEZMBcGA1UEChMQb3JnMi5leGFtcGxlLmNvbTEfMB0G\n"
-"A1UEAxMWdGxzY2Eub3JnMi5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49\n"
-"AwEHA0IABE1BVJL8TtT1/0yq7/6m6xfH+3M05LrNnOWGIS+jESAObzufayctNtHr\n"
-"dI+3Pc+EZlU1fInmaB0T4Z6l88SQHp+jbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNV\n"
-"HSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwDwYDVR0TAQH/BAUwAwEB/zApBgNV\n"
-"HQ4EIgQg+KemF/ny1HXUk2PyArZVealsefPrb18DGVO/uPyeW+4wCgYIKoZIzj0E\n"
-"AwIDSAAwRQIhAKv3XfoMbucEuvmE/TkYe6zldnBj5BxWS2hfNOwMMBfFAiAnRoBG\n"
-"HEA7sDYxLdt9tFSUgxNlz/apvkDOmyHcD+DLrg==\n"
+"MIICVzCCAf2gAwIBAgIQJ8qLnN5Lzk9LWwIVSJVMJjAKBggqhkjOPQQDAjB2MQsw\n"
+"CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\n"
+"YW5jaXNjbzEZMBcGA1UEChMQb3JnMi5leGFtcGxlLmNvbTEfMB0GA1UEAxMWdGxz\n"
+"Y2Eub3JnMi5leGFtcGxlLmNvbTAeFw0yMTEyMjQwMjU4MDBaFw0zMTEyMjIwMjU4\n"
+"MDBaMHYxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH\n"
+"Ew1TYW4gRnJhbmNpc2NvMRkwFwYDVQQKExBvcmcyLmV4YW1wbGUuY29tMR8wHQYD\n"
+"VQQDExZ0bHNjYS5vcmcyLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0D\n"
+"AQcDQgAEJh9kb3uL2rJ5QDjNN1nlVWDVRqBYIw2Rz7wPT2UBBkZQK3+wm3fvFVYN\n"
+"/yIRDUXxTHOMdVMFGWhtvYvD0n+0JKNtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1Ud\n"
+"JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud\n"
+"DgQiBCBPIsOtEM4aVcN6ZQ69ePg1wVpOdunnuOxeaNDElaMBkjAKBggqhkjOPQQD\n"
+"AgNIADBFAiEAzwwSpX2yvzLI9WDxBmEMRqCaFP2tWSdWfbuCjGuIONACIH2atidq\n"
+"eUkmzUD2rlmbSLfTX3HS6WGheYACFd0MDWlW\n"
 								   "-----END CERTIFICATE-----\n";
 							   													
 const BCHAR *fabric_order_tlsCert = "-----BEGIN CERTIFICATE-----\n"
-"MIICQzCCAeqgAwIBAgIRAKfIsEodsIVIcEP6/UyeQxswCgYIKoZIzj0EAwIwbDEL\n"
+"MIICQzCCAeqgAwIBAgIRAIarlRJamkgzt7h+aLZ4J7gwCgYIKoZIzj0EAwIwbDEL\n"
 "MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\n"
 "cmFuY2lzY28xFDASBgNVBAoTC2V4YW1wbGUuY29tMRowGAYDVQQDExF0bHNjYS5l\n"
-"eGFtcGxlLmNvbTAeFw0yMTEwMTgwNzM0MDBaFw0zMTEwMTYwNzM0MDBaMGwxCzAJ\n"
+"eGFtcGxlLmNvbTAeFw0yMTEyMjQwMjU4MDBaFw0zMTEyMjIwMjU4MDBaMGwxCzAJ\n"
 "BgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TYW4gRnJh\n"
 "bmNpc2NvMRQwEgYDVQQKEwtleGFtcGxlLmNvbTEaMBgGA1UEAxMRdGxzY2EuZXhh\n"
-"bXBsZS5jb20wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASZrTs7XIY3vC0nJ4XN\n"
-"vwy8mVEhY1Yf3L9LgUNRRcX/HKRCXZmov02YJ9i35vbhyI4UMV5rniAZ8T6sSdsS\n"
-"JV85o20wazAOBgNVHQ8BAf8EBAMCAaYwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsG\n"
-"AQUFBwMBMA8GA1UdEwEB/wQFMAMBAf8wKQYDVR0OBCIEILh4pUZHxoGSuxuQcZVf\n"
-"+gVoJlWQyUJjwVAyJYDmgDtgMAoGCCqGSM49BAMCA0cAMEQCIBEyiUrBGqHa/cnP\n"
-"d/F4N97iyxJmCCGYW2w9Q6546gvHAiAmLA+pzfCmUzQlZ1vBXUWHnSiCMEVHmLmX\n"
-"H9kXw3RJnw==\n"
+"bXBsZS5jb20wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQRS02uAjXsGSbYCNmw\n"
+"Roi1NA1S8a/Tg2Q9N7RKSx6N05kIXKGXUZCGzv2cPrjzaxp3RYEfV3lgTw2OgCy7\n"
+"Imleo20wazAOBgNVHQ8BAf8EBAMCAaYwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsG\n"
+"AQUFBwMBMA8GA1UdEwEB/wQFMAMBAf8wKQYDVR0OBCIEIAYq5WJ5DZlLLWSA8OLT\n"
+"tJBl6ys9Nex8wDNnceJPx3O+MAoGCCqGSM49BAMCA0cAMEQCIGoaWICEuKYQTBjA\n"
+"I74fTLgEzbphv7d2wWKc20dvTBc+AiBjKPXwCXmYSZ27zzPD4kAfDfACAyhYVX68\n"
+"WLpF8/G5cg==\n"
 								   "-----END CERTIFICATE-----\n";	
 
 
@@ -199,10 +199,10 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 #else
 	return BOAT_ERROR;
 #endif
-	if (index == BOAT_ERROR)
+	if (index < BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_WALLET_CREATE_FAIL;
 	}
 	g_fabric_wallet_ptr = BoatGetWalletByIndex(index);
 	
@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BoatHlfabricTx tx_ptr;
-	
+	boat_try_declare;
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
 	
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 
 	/* step-3: fabric transaction structure initialization */
@@ -230,14 +230,14 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 #if(DISCOVERY_PEER_QUERY != 1 )
 	result = BoatHlfabricWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed." );
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 #endif
 	/* step-4: set transaction timestamp */
@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 
 /*
@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
 		if (result != BOAT_SUCCESS)
 		{
 			//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(query) failed." );
-			return -1;
+			boat_throw(result, fabric_demo_catch);
 		}
 		// discoverResult = tx_ptr.discooverRes;
 		BoatHlfabricNodesCfg network_info = tx_ptr.wallet_ptr->network_info;
@@ -371,7 +371,7 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 	/* step-6: wait seconds and 'query' the tansaction */
 	BoatSleep(3);
@@ -379,23 +379,28 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 	result = BoatHlfabricTxEvaluate(&tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxEvaluate() failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 		BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
 						 tx_ptr.evaluateRes.http2Res,
 						 tx_ptr.evaluateRes.httpResLen);
 	
+    boat_catch(fabric_demo_catch)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
+    }	
 	/* step-7: fabric transaction structure Deinitialization */
 	BoatHlfabricTxDeInit(&tx_ptr);
 	
 	/* step-8: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
+	fabricWalletConfigFree(wallet_config);
     
-    return 0;
+    return result;
 }

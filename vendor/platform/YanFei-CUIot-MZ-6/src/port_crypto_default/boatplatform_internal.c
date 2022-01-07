@@ -70,7 +70,7 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 	if (output == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	(void)rsvd;
@@ -96,7 +96,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	if ((digest == NULL) || (signatureResult == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
@@ -120,7 +120,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Unkown private key type.");
-		return  BOAT_ERROR;
+		return  BOAT_ERROR_WALLET_KEY_TYPE_ERR;
 	}
 
 	// signature result assign
@@ -150,7 +150,7 @@ BOAT_RESULT  BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 	if ((fileName == NULL) || (size == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'size' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
 	file_fd = vfs_open(fileName, O_RDONLY);
@@ -163,7 +163,7 @@ BOAT_RESULT  BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 	
 	return BOAT_SUCCESS;
@@ -182,7 +182,7 @@ BOAT_RESULT  BoatWriteFile(const BCHAR *fileName,
 	if ((fileName == NULL) || (writeBuf == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'writeBuf' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* write to file-system */
@@ -198,12 +198,12 @@ BOAT_RESULT  BoatWriteFile(const BCHAR *fileName,
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to create file: %s.", fileName);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 	if (count != writeLen)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to write file: %s.", fileName);
-		return BOAT_ERROR;
+		return BOAT_ERROR_STORAGE_FILE_WRITE_FAIL;
 	}
 	
 	return BOAT_SUCCESS;
@@ -222,7 +222,7 @@ BOAT_RESULT  BoatReadFile(const BCHAR *fileName,
 	if ((fileName == NULL) || (readBuf == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'readBuf' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* read from file-system */
@@ -236,13 +236,13 @@ BOAT_RESULT  BoatReadFile(const BCHAR *fileName,
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 
 	if (count != readLen)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName);
-		return BOAT_ERROR;
+		return BOAT_ERROR_STORAGE_FILE_READ_FAIL;
 	}
 	
 	return BOAT_SUCCESS;
@@ -256,11 +256,11 @@ BOAT_RESULT  BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 	if (fileName == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	if (0 != vfs_unlink(fileName))
     {
-        return BOAT_ERROR;
+        return BOAT_ERROR_STORAGE_FILE_REMOVE_FAIL;
     }
     else
     {
@@ -439,7 +439,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 		}
     }
 
-	if (result == BOAT_ERROR)
+	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "generate private key failed.");
 		return result;
@@ -473,7 +473,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 	else 
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Invalid private key type.");
-		result = BOAT_ERROR;
+		result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
 	}
 
 	return result;
@@ -489,14 +489,14 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalle
 	if ((config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "input parameter can not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	// 1- update private key
 	if (config->prikey_content.field_len > sizeof(pkCtx->extra_data.value))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Error: length of injection key is too long.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 
 	memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
@@ -530,7 +530,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalle
 	else 
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Invalid private key type.");
-		result = BOAT_ERROR;
+		result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
 	}
 	
     return result;
@@ -544,7 +544,7 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWa
 	if ((config == NULL) || (pkCtx == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
 	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
@@ -558,7 +558,7 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWa
 		{
 			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
 				BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
-				result = BOAT_ERROR;
+				result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
 				BoatLog(BOAT_LOG_VERBOSE, "wallet private key[native] set...");
@@ -566,18 +566,18 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWa
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
 				BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
-				result = BOAT_ERROR;
+				result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
 				break;
 			default:
 				BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
-				result = BOAT_ERROR;
+				result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
 				break;
 		}
 	}
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
-		result = BOAT_ERROR;
+		result = BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
 	}
 
     return result;

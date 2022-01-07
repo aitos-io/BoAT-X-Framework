@@ -126,7 +126,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverySignatureHeaderPacked(const BoatHlfabr
 	if (tx_ptr->wallet_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr cannot be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* step-1: signatureHeader packed */
@@ -143,7 +143,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverySignatureHeaderPacked(const BoatHlfabr
 	if (NULL == serializedIdentityBuffer)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate serializedIdentityBuffer.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
 	}
 	msp__serialized_identity__pack(&serializedIdentity, serializedIdentityBuffer);
 	/* -------->creator value assignment */
@@ -161,7 +161,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverySignatureHeaderPacked(const BoatHlfabr
 	if (NULL == txIdRawMaterial.field_ptr)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate txIdRawMaterial buffer.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
 	}
 
 	memcpy(txIdRawMaterial.field_ptr, signatureHeader.nonce.data, signatureHeader.nonce.len);
@@ -338,6 +338,11 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 		BoatFree(ccQueryData);
 	}
 
+	//protos__chaincode_input__free_unpacked(&message,NULL);
+	if(message.args != NULL){
+		BoatFree(message.args);
+	}
+
 	return result;
 }
 
@@ -389,7 +394,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadPacked(BoatHlfabricTx *tx_ptr,
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec hlfabricSignatureHeaderPacked.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricPayloadPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, hlfabricPayloadPacked_exception);
 	}
 
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "signatureHeaderPacked result",
@@ -407,7 +412,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadPacked(BoatHlfabricTx *tx_ptr,
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec hlfabricChannelHeaderPacked[data].");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricPayloadPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, hlfabricPayloadPacked_exception);
 	}
 
 	/* pack the payload */
@@ -478,7 +483,7 @@ BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
 		(tx_ptr->wallet_ptr->http2Context_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	/* step-2: compute payload packed length */
 	result = hlfabricDiscoveryPayloadPacked(tx_ptr, &payloadPacked);
@@ -497,13 +502,13 @@ BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
-		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, hlfabricProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, hlfabricProposalTransactionPacked_exception);
 	}
 
 	if (!signatureResult.pkcs_format_used)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
-		boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, hlfabricProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, hlfabricProposalTransactionPacked_exception);
 	}
 
 	message.has_payload = true;
@@ -519,7 +524,7 @@ BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
 	if (tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "packed length out of sendbuffer size limit.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, hlfabricProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricProposalTransactionPacked_exception);
 	}
 
 	/* step-7: packed data assignment */
@@ -574,14 +579,14 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoveryExec(BoatHlfabricTx *tx_ptr,
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	result = hlfabricProposalDiscoveryTransactionPacked(tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, BoatHlfabricTxProposal_exception);
 	}
 	for (i = 0; i < nodeCfg.endorserLayoutNum; i++)
 	{
@@ -653,7 +658,7 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute... [%d] " ,endorserInfo_ptr.endorserLayoutNum);
@@ -661,7 +666,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	/* invoke-step1: submit proposal to endorer */
 	tx_ptr->var.type = HLFABRIC_TYPE_DISCOVER;
 	result = BoatHlfabricDiscoveryExec(tx_ptr, endorserInfo_ptr);
-
+	
+	if(tx_ptr->evaluateRes.httpResLen == 0){
+		return BOAT_ERROR;
+	}
 	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invoke result",
 						 tx_ptr->evaluateRes.http2Res,
 						 tx_ptr->evaluateRes.httpResLen);
@@ -698,7 +706,6 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	num = cc_query_res->n_content;
 
 	
-	BoatLog(BOAT_LOG_CRITICAL, "[http2] cc_query_res->n_content  111");
 	BUINT8 n_layouts, n_quantities_by_group;
 	for ( i = 0; i < num; i++)
 	{
@@ -714,11 +721,13 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 			discoverResult.cc_res.layouts[j].groups = BoatMalloc(n_quantities_by_group * sizeof(groupInfo));
 			for ( k = 0; k < n_quantities_by_group; k++)
 			{
+				discoverResult.cc_res.layouts[j].groups[k].numEndorsers = 0;
 				BoatLog(BOAT_LOG_CRITICAL, "[http2] discover layout key  : %s ", cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key);
 				BoatLog(BOAT_LOG_CRITICAL, "[http2] discover layout value: %x ", cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->value);
 				if (cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->has_value == true)
 					discoverResult.cc_res.layouts[j].groups[k].value = cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->value;
-				discoverResult.cc_res.layouts[j].groups[k].key = BoatMalloc(strlen(cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key));
+				discoverResult.cc_res.layouts[j].groups[k].key = BoatMalloc(strlen(cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key)+1);
+				memset(discoverResult.cc_res.layouts[j].groups[k].key,0,strlen(cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key)+1);
 				memcpy(discoverResult.cc_res.layouts[j].groups[k].key, cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key, strlen(cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key));
 			}
 		}
@@ -743,13 +752,16 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 						for ( l = 0; l < n_peers; l++)
 						{
 							msp_serializedIdentity = msp__serialized_identity__unpack(NULL, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->identity.len, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->identity.data);
-							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID = BoatMalloc(strlen(msp_serializedIdentity->mspid));
+							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID = BoatMalloc(strlen(msp_serializedIdentity->mspid)+1);
+							memset(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID,0,strlen(msp_serializedIdentity->mspid)+1);
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID, msp_serializedIdentity->mspid, strlen(msp_serializedIdentity->mspid));
 							// BoatLog(BOAT_LOG_CRITICAL, " endorsers[%d].MSPID  : %s ", l, discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID);
 							len = hlfabricDiscoveryGetURL(cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.len, &offset);
 
-							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint = BoatMalloc(len);
+							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint = BoatMalloc(len+1);
+							memset(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint,0,len+1);
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data + offset, len);
+							msp__serialized_identity__free_unpacked(msp_serializedIdentity,NULL);
 						}
 					}
 				}
@@ -761,12 +773,14 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	discoverResult.discoverConfig.discoverMsps.discoverMspInfo = BoatMalloc(config_result->n_msps * sizeof(mspsInfo));
 	for ( i = 0; i < config_result->n_msps; i++)
 	{
-		discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name = BoatMalloc(strlen(config_result->msps[i]->key));
+		discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name = BoatMalloc(strlen(config_result->msps[i]->key)+1);
+		memset(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name,0,strlen(config_result->msps[i]->key)+1);
 		memcpy(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name, config_result->msps[i]->key, strlen(config_result->msps[i]->key));
 		if (config_result->msps[i]->value->n_tls_root_certs > 0)
 		{
 			discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCertLen = config_result->msps[i]->value->tls_root_certs[0].len;
 			discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert = BoatMalloc(config_result->msps[i]->value->tls_root_certs[0].len);
+			//memset(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert,0,config_result->msps[i]->value->tls_root_certs[0].len+1);
 			memcpy(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert, config_result->msps[i]->value->tls_root_certs[0].data, config_result->msps[i]->value->tls_root_certs[0].len);
 		}
 	}
@@ -784,11 +798,13 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		for ( j = 0; j < config_result->orderers[i]->value->n_endpoint; j++)
 		{
 			/* code */
-			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host = BoatMalloc(strlen(config_result->orderers[i]->value->endpoint[j]->host));
+			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host = BoatMalloc(strlen(config_result->orderers[i]->value->endpoint[j]->host)+1);
+			memset(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host,0,strlen(config_result->orderers[i]->value->endpoint[j]->host)+1);
 			memcpy(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host, config_result->orderers[i]->value->endpoint[j]->host, strlen(config_result->orderers[i]->value->endpoint[j]->host));
 			// discoverResult->discoverConfig.discoverOrders.discoverOrderinfo[k].port = config_result->orderers[i]->value->endpoint[j]->port;
 			Utility_itoa(config_result->orderers[i]->value->endpoint[j]->port, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].port, 10);
-			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].name = BoatMalloc(strlen(config_result->orderers[i]->key));
+			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].name = BoatMalloc(strlen(config_result->orderers[i]->key)+1);
+			memset(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].name,0,strlen(config_result->orderers[i]->key)+1);
 			memcpy(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k++].name, config_result->orderers[i]->key, strlen(config_result->orderers[i]->key));
 		}
 	}
@@ -826,11 +842,12 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 			{
 				port = strchr(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, ':');
 				len = strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint) - strlen(port);
-				tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = BoatMalloc(len);
+				tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = BoatMalloc(len+1);
+				memset(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName,0,len+1);
 				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
 				len = strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint);
-				tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = BoatMalloc(len);
-
+				tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = BoatMalloc(len+1);
+				memset(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl,0,len+1);
 				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, IP, strlen(IP));
 				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl + strlen(IP), port, strlen(port));
 				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
@@ -851,7 +868,8 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	for ( i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
 	{
 		len = sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port) + strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host) + 1;
-		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(len);
+		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(len+1);
+		memset(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl,0,len+1);
 		offset = 0;
 		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host, strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host));
 		offset += strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host);
@@ -871,7 +889,7 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	}
 	tx_ptr->endorserResponse.responseCount = 0;
 	DiscoveryResFree(discoverResult);
-
+	discovery__response__free_unpacked(discoveryResponse,NULL);
 	return result;
 }
 
@@ -896,7 +914,31 @@ void DiscoveryResFree(DiscoverRes discoverResult)
 			{
 				BoatFree(discoverResult.cc_res.layouts[i].groups[j].key);
 			}
+			for (size_t k = 0; k < discoverResult.cc_res.layouts[i].groups[j].numEndorsers; k++)
+			{
+				/* code */
+				BoatFree(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint);
+				if(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].MSPID != NULL){
+					BoatFree(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].MSPID);
+					discoverResult.cc_res.layouts[i].groups[j].endorsers[k].MSPID = NULL;
+				}
+			}
+			
+			if(discoverResult.cc_res.layouts[i].groups[j].endorsers != NULL){
+				BoatFree(discoverResult.cc_res.layouts[i].groups[j].endorsers);
+			}
+
+			
+			
 		}
+		if(discoverResult.cc_res.layouts[i].groups != NULL){
+			BoatFree(discoverResult.cc_res.layouts[i].groups);
+			discoverResult.cc_res.layouts[i].groups = NULL;
+		}
+	}
+	if(discoverResult.cc_res.layouts != NULL){
+			BoatFree(discoverResult.cc_res.layouts);
+			discoverResult.cc_res.layouts = NULL;
 	}
 	for ( i = 0; i < discoverResult.discoverConfig.discoverMsps.num; i++)
 	{
@@ -908,7 +950,12 @@ void DiscoveryResFree(DiscoverRes discoverResult)
 		{
 			BoatFree(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert);
 		}
+
 	}
+	if(discoverResult.discoverConfig.discoverMsps.discoverMspInfo != NULL){
+			BoatFree(discoverResult.discoverConfig.discoverMsps.discoverMspInfo);
+			discoverResult.discoverConfig.discoverMsps.discoverMspInfo = NULL;
+		}
 
 	for ( i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
 	{
@@ -920,6 +967,10 @@ void DiscoveryResFree(DiscoverRes discoverResult)
 		{
 			BoatFree(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].name);
 		}
+	}
+	if(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo != NULL){
+		BoatFree(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo);
+		discoverResult.discoverConfig.discoverOrders.discoverOrderinfo = NULL;
 	}
 }
 

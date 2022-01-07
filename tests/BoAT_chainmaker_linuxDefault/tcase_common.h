@@ -23,5 +23,6 @@
 #include "boatwallet.h"
 #include "protocolapi/api_chainmaker.h"
 
-extern char chainmaker_key_ptr_buf[1024];
-extern char chainmaker_cert_ptr_buf[1024];
+char chainmaker_sign_key_buf[1024];
+char chainmaker_sign_cert_buf[1024];
+char chainmaker_ca_cert_buf[1024];

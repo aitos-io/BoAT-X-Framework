@@ -96,7 +96,7 @@ Configure the path of the local cross compiler into the environment variable at 
 PATH := $(PATH):/home/tools/xinyigcc/gcc-arm-none-eabi-9-2019-q4-major/bin
 ```
 
-### 6. Increase the function support option of BoAT-X-Framework in XinYi-XY1100 platform
+### 6. Add a funtion option to support BoAT-X-Framework in XinYi-XY1100 platform
 Open `<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/feature.mk`
 Add the following at the end of the file:
 ```
@@ -161,7 +161,7 @@ Add the following:
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<XY1100 Root>/userapp/BoAT-X-Framework/lib` directory.
 
 
-### 2. Build the demo program of XY1100, generate. bin file for download
+### 2. Build the demo program of XY1100, generate .bin file for download
 
    Demo code for accessing blockchain through BoAT-X Framework is in `<XY1100 Root>/userapp/demo/boat_demo/boat_demo.c`
 
