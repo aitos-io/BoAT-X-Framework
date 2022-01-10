@@ -84,26 +84,6 @@ extern "C" {
  ******************************************************************************/
 BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr);
 
-
-
-/*!****************************************************************************
- * @brief Construct a raw PlatON transaction synchronously.
- *
- * @details
- *   This function is similar to PlatONSendRawtx except that it waits for the
- *   transaction being mined.
- *   
- * @param[in] tx_ptr
- *   A pointer to the context of the transaction.
- *
- * @return
- *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
- *   of the error codes.
- *	
- * @see PlatONSendRawtx() BoatPlatONGetTransactionReceipt() 
-*******************************************************************************/
-BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr);
-
 /*!****************************************************************************
  * @brief Encode the Bech32 address of PlatON.
  *
@@ -129,7 +109,7 @@ BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr);
  * @return
  *   This function returns the length of out array.
 *******************************************************************************/
-BSINT32 BoatPlatONBech32Encode(const BCHAR *in, BUINT32 inlen, BCHAR *out, const BCHAR *hrp, BUINT8 hrplen);
+BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BCHAR *out, const BCHAR *hrp, BUINT8 hrplen);
 /*! @}*/
 
 
@@ -152,7 +132,7 @@ BSINT32 BoatPlatONBech32Encode(const BCHAR *in, BUINT32 inlen, BCHAR *out, const
  * @return
  *   This function returns the length of out array.
  ******************************************************************************/
-BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BCHAR *out);
+BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BUINT8 *out);
 
 #ifdef __cplusplus
 }

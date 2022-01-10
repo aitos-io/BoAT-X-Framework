@@ -1,23 +1,23 @@
 # Source and Objects
-
 SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/tests
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
-				  $(BOAT_LIB_DIR)/libboatvendor.a \
-				  $(LINK_LIBS) \
-				  -lcheck
+.PHONY: tests_BoAT_chainmaker_linuxDefault
 
-all: $(OBJECTS_DIR) $(OBJECTS)	
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(OBJECTS) $(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/boattest
+all: tests_BoAT_chainmaker_linuxDefault $(OBJECTS_DIR) $(OBJECTS)
+
+tests_BoAT_chainmaker_linuxDefault:
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
+	make -C  BoAT_chainmaker_linuxDefault all
+endif
 
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
 
 $(OBJECTS_DIR)/%.o:%.c
-	$(CC) -c $(BOAT_CFLAGS) $< -o $@
+	$(CC)  -c  $(BOAT_CFLAGS)  $< -o $@
 
 clean:
 	-$(BOAT_RM) $(OBJECTS)
-	-$(BOAT_RM) $(OBJECTS_DIR)
+	make -C BoAT_chainmaker_linuxDefault clean

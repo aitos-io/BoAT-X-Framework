@@ -57,13 +57,11 @@
 
 
 
-BUINT32 UtilityHex2Bin(
-                        BOAT_OUT BUINT8 *to_ptr,
+BUINT32 UtilityHex2Bin(BOAT_OUT BUINT8 *to_ptr,
                         BUINT32 to_size,
                         const BCHAR *from_str,
                         TRIMBIN_TRIM_MODE trim_mode,
-                        BBOOL zero_as_null
-                      )
+                        BBOOL zero_as_null)
 {
     BUINT32 from_offset;
     BUINT32 from_len;
@@ -75,7 +73,7 @@ BUINT32 UtilityHex2Bin(
     char halfbytechar;
     BBOOL bool_trim_done;
      
-    if( to_ptr == NULL || to_size == 0 || from_str == NULL)
+    if(to_ptr == NULL || to_size == 0 || from_str == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "<to_ptr>, <to_size> and <from_str> cannot be 0 or NULL.");
         return 0;
@@ -91,11 +89,10 @@ BUINT32 UtilityHex2Bin(
     // Skip leading "0x" or "0X" if there be.
     // Note: If strlen(from_ptr) <= 2 or <from_up_to_len> <= 2, no "0x" prefix
     //       is allowed in HEX string.
-    if( from_len > 2 )
+    if(from_len > 2)
     {
-        if(     from_str[0] == '0' 
-            && (from_str[1] == 'x' || from_str[1] == 'X')
-           )
+        if(from_str[0] == '0' 
+            && (from_str[1] == 'x' || from_str[1] == 'X'))
         {
             from_offset += 2;
         }
@@ -103,7 +100,7 @@ BUINT32 UtilityHex2Bin(
 
             
     // if HEX length is odd, treat as if it were left filled with one more '0'
-    if( (from_len&0x01) != 0 )
+    if((from_len&0x01) != 0)
     {
         // length is odd 
         odd_flag = 1;
@@ -114,7 +111,7 @@ BUINT32 UtilityHex2Bin(
         odd_flag = 0;
     }
 
-    if( trim_mode == TRIMBIN_TRIM_NO)
+    if(trim_mode == TRIMBIN_TRIM_NO)
     {
         bool_trim_done = BOAT_TRUE;
     }
@@ -124,26 +121,26 @@ BUINT32 UtilityHex2Bin(
     }
     
 
-    while( from_offset < from_len )
+    while(from_offset < from_len)
     {
         halfbytechar = from_str[from_offset];
         
-        if( halfbytechar >= '0' && halfbytechar <= '9')
+        if(halfbytechar >= '0' && halfbytechar <= '9')
         {
             halfbyte = halfbytechar - '0';
         }
-        else if( halfbytechar >= 'A' && halfbytechar <= 'F')
+        else if(halfbytechar >= 'A' && halfbytechar <= 'F')
         {
             halfbyte = halfbytechar - 'A' + 0x0A;
         }
-        else if( halfbytechar >= 'a' && halfbytechar <= 'f')
+        else if(halfbytechar >= 'a' && halfbytechar <= 'f')
         {
             halfbyte = halfbytechar - 'a' + 0x0A;
         }
         else
         {
             BoatLog(BOAT_LOG_NORMAL, "<from_str> contains non-HEX character 0x%02x (%c) at Position %d of \"%s\".\n", halfbytechar, halfbytechar, from_offset, from_str);
-            if( halfbytechar == ' ' || halfbytechar == '\t' )
+            if(halfbytechar == ' ' || halfbytechar == '\t')
             {
                 BoatLog(BOAT_LOG_NORMAL, "There should be no space between HEX codes.");
             }
@@ -155,7 +152,7 @@ BUINT32 UtilityHex2Bin(
         //
         // If from_len is odd, pack 2 half bytes to a byte when from_offset is even.
         // For example, "0x12345" is packed when from_offset points to '1', '3' and '5'.
-        if( (from_offset&0x01) == odd_flag )
+        if( (from_offset&0x01) == odd_flag)
         {
             octet = halfbyte << 4;
             from_offset++;
@@ -165,7 +162,7 @@ BUINT32 UtilityHex2Bin(
         {
             octet |= halfbyte;
         
-            if( bool_trim_done == BOAT_FALSE && octet == 0x00 )
+            if(bool_trim_done == BOAT_FALSE && octet == 0x00)
             {
                 from_offset++;
                 continue;  // Trim leading zeros.
@@ -180,7 +177,7 @@ BUINT32 UtilityHex2Bin(
             from_offset++;
 
             // Check capacity of output buffer
-            if( to_offset >= to_size )
+            if(to_offset >= to_size)
             {
                 break;
             }
@@ -188,7 +185,7 @@ BUINT32 UtilityHex2Bin(
     }
 
     // Special process for trimed all zero HEX string
-    if( to_offset == 0 && zero_as_null == BOAT_FALSE)
+    if(to_offset == 0 && zero_as_null == BOAT_FALSE)
     {
         to_ptr[0] = 0x00;
         to_offset = 1;
@@ -203,38 +200,38 @@ BUINT32 UtilityHex2Bin(
 
 
 
-BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 inputLen,
-				       BUINT8* hashed, BUINT8* hashedLen, void* rsvd )
+BOAT_RESULT  BoatHash(const BoatHashAlgType type, const BUINT8* input, BUINT32 inputLen,
+				       BUINT8* hashed, BUINT8* hashedLen, void* rsvd)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 
 	/* input param check */
-	if( ( hashed == NULL ) )
+	if((hashed == NULL))
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which 'hashed' can't be NULL." );
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		BoatLog( BOAT_LOG_CRITICAL, "param which 'hashed' can't be NULL.");
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
-	if( type == BOAT_HASH_KECCAK256 )
+	if(type == BOAT_HASH_KECCAK256)
 	{
-		keccak_256( input, inputLen, hashed );
-		if( hashedLen != NULL )
+		keccak_256(input, inputLen, hashed);
+		if(hashedLen != NULL)
 		{
 			*hashedLen = 32;
 		}
 	}
-	else if( type == BOAT_HASH_SHA256 )
+	else if(type == BOAT_HASH_SHA256)
 	{
-		mbedtls_sha256( input, inputLen, hashed, 0 );
-		if( hashedLen != NULL )
+		mbedtls_sha256(input, inputLen, hashed, 0);
+		if(hashedLen != NULL)
 		{
 			*hashedLen = 32;
 		}
 	}
 	else
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "unknown boat hash algorithm type." );
-		result = BOAT_ERROR_INVALID_ARGUMENT;
+		BoatLog(BOAT_LOG_CRITICAL, "unknown boat hash algorithm type.");
+		result = BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	return result;

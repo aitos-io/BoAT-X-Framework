@@ -51,7 +51,7 @@
 
 #include <sys/time.h>
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER == 1))
 // for TTLSContext structure
 #include "http2intf.h"
 #endif
@@ -335,7 +335,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	if ((digest == NULL) || (signatureResult == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
     mbedtls_entropy_init(&entropy);
@@ -357,19 +357,42 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 		
 		/* parse is prikey content */
 		result = mbedtls_pk_parse_key(&mbedtls_pkCtx, prikeyCtx.extra_data.value,
-		                              strlen((const char*)prikeyCtx.extra_data.value) + 1, NULL, 0);
+									  strlen((const char *)prikeyCtx.extra_data.value) + 1, NULL, 0);
+		ecPrikey = mbedtls_pk_ec(mbedtls_pkCtx);
 	}
 	else
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
-        boat_throw(BOAT_ERROR, BoatSignature_exception);
+		// BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
+		// boat_throw(BOAT_ERROR, BoatSignature_exception);
+		if (prikeyCtx.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "begin mbedtls_ecp_read_key ");
+			ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
+			if (ecPrikey != NULL)
+				mbedtls_ecp_keypair_init(ecPrikey);
+			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1, ecPrikey, prikeyCtx.extra_data.value, prikeyCtx.extra_data.value_len);
+			BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key result = %x ", result);
+		}
+		else if (prikeyCtx.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+		{
+			ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
+			if (ecPrikey != NULL)
+				mbedtls_ecp_keypair_init(ecPrikey);
+			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256R1, ecPrikey, prikeyCtx.extra_data.value, prikeyCtx.extra_data.value_len);
+			BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key result = %x ", result);
+		}
+		else
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
+			boat_throw(BOAT_ERROR_WALLET_KEY_TYPE_ERR, BoatSignature_exception);
+		}
 	}
     if(result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec mbedtls_pk_parse.");
         boat_throw(result, BoatSignature_exception);
     }
-	ecPrikey = mbedtls_pk_ec(mbedtls_pkCtx);
+	//ecPrikey = mbedtls_pk_ec(mbedtls_pkCtx);
 
 	/* signature process */
 	result = Boat_private_ecdsa_sign(ecPrikey, digest, digestLen, signatureTmp, &signatureTmpLen, raw_r, raw_s, 
@@ -406,6 +429,12 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
 	mbedtls_pk_free(&mbedtls_pkCtx);
+	if (prikeyCtx.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_PKCS){
+		mbedtls_ecp_keypair_free(ecPrikey);
+		if(ecPrikey != NULL){
+			BoatFree(ecPrikey);
+		}
+	}
 
 	return result;
 }
@@ -420,14 +449,14 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 	if ((fileName == NULL) || (size == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'size' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
 	file_ptr = fopen(fileName, "rb");
 	if (file_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 	
 	fseek(file_ptr, 0, SEEK_END);
@@ -449,7 +478,7 @@ BOAT_RESULT  BoatWriteFile(const BCHAR *fileName,
 	if ((fileName == NULL) || (writeBuf == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'writeBuf' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* write to file-system */
@@ -457,7 +486,7 @@ BOAT_RESULT  BoatWriteFile(const BCHAR *fileName,
 	if (file_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to create file: %s.", fileName);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 	
 	count = fwrite(writeBuf, 1, writeLen, file_ptr);
@@ -465,7 +494,7 @@ BOAT_RESULT  BoatWriteFile(const BCHAR *fileName,
 	if (count != writeLen)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to write file: %s.", fileName);
-		return BOAT_ERROR;
+		return BOAT_ERROR_STORAGE_FILE_WRITE_FAIL;
 	}
 	
 	return BOAT_SUCCESS;
@@ -483,7 +512,7 @@ BOAT_RESULT  BoatReadFile(const BCHAR *fileName,
 	if ((fileName == NULL) || (readBuf == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' or 'readBuf' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* read from file-system */
@@ -491,14 +520,14 @@ BOAT_RESULT  BoatReadFile(const BCHAR *fileName,
 	if (file_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 	count = fread(readBuf, 1, readLen, file_ptr);
 	fclose(file_ptr);
 	if (count != readLen)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName);
-		return BOAT_ERROR;
+		return BOAT_ERROR_STORAGE_FILE_READ_FAIL;
 	}
 	
 	return BOAT_SUCCESS;
@@ -512,12 +541,12 @@ BOAT_RESULT  BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 	if (fileName == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
 	if (0 != remove(fileName))
     {
-        return BOAT_ERROR;
+        return BOAT_ERROR_STORAGE_FILE_REMOVE_FAIL;
     }
     else
     {
@@ -525,6 +554,7 @@ BOAT_RESULT  BoatRemoveFile(const BCHAR *fileName, void *rsvd)
     }
 }
 
+#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER == 1))
 
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
@@ -598,7 +628,7 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 }
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
+#if (BOAT_TLS_SUPPORT == 1)	
 BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 						BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
@@ -613,25 +643,25 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 	if (tlsContext_ptr->ssl == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to allocate ssl_context.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 	tlsContext_ptr->ssl_cfg = BoatMalloc(sizeof(mbedtls_ssl_config));
 	if (tlsContext_ptr->ssl_cfg == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to allocate ssl_config.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 	tlsContext_ptr->ssl_crt = BoatMalloc(sizeof(mbedtls_x509_crt));
 	if (tlsContext_ptr->ssl_crt == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to allocate x509_crt.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 	tlsContext_ptr->ssl_net = BoatMalloc(sizeof(mbedtls_net_context));
 	if (tlsContext_ptr->ssl_net == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to allocate net_context.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 	
     mbedtls_entropy_init(&entropy);
@@ -728,7 +758,7 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 
 BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+#if (BOAT_TLS_SUPPORT == 1) 
 	if ((tlsContext == NULL) || (((TTLSContext*)tlsContext)->ssl == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "tlsContext or tlsContext->ssl can't be NULL.");
@@ -743,7 +773,7 @@ BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, 
 
 BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+#if (BOAT_TLS_SUPPORT == 1) 
 	if ((tlsContext == NULL) || (((TTLSContext*)tlsContext)->ssl == NULL))
 	{
 		//! @todo still receive a unknown data after Boatclose(...)
@@ -759,7 +789,7 @@ BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *
 void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 {
 	close(sockfd);
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1)
 	// free tls releated
 	if(tlsContext != NULL)
 	{
@@ -782,6 +812,7 @@ void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 #endif
 }
 
+#endif
 
 
 /******************************************************************************
@@ -798,7 +829,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 	if ((config == NULL) || (pkCtx == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
     mbedtls_entropy_init(&entropy);
@@ -821,18 +852,41 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "unknown private keytype...");
-		result = BOAT_ERROR;
+		result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
 	}
-	
-	// 1- update private key
-	memset(pkCtx->extra_data.value, 0, sizeof(pkCtx->extra_data.value));
-    result += mbedtls_pk_write_key_pem(&key, pkCtx->extra_data.value, sizeof(pkCtx->extra_data.value));
 
-	// 2- update private key format
-	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-	
-	// 3- update private key type
-	pkCtx->prikey_type   = config->prikey_type;
+	if (config->prikey_format == BOAT_WALLET_PRIKEY_FORMAT_PKCS)
+	{
+		// 1- update private key
+		memset(pkCtx->extra_data.value, 0, sizeof(pkCtx->extra_data.value));
+		result += mbedtls_pk_write_key_pem(&key, pkCtx->extra_data.value, sizeof(pkCtx->extra_data.value));
+
+		// 2- update private key format
+		pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+
+		// 3- update private key type
+		pkCtx->prikey_type = config->prikey_type;
+	}
+	else
+	{
+
+		BoatLog(BOAT_LOG_CRITICAL, "sBoatPort_keyCreate_internal_generation 000");
+		// 1- update private key
+		memset(pkCtx->extra_data.value, 0, sizeof(pkCtx->extra_data.value));
+		// result += mbedtls_pk_write_key_pem(&key, pkCtx->extra_data.value, sizeof(pkCtx->extra_data.value));
+		// mbedtls_pk_ec(key)->d.
+
+		// mbedtls_mpi_write_binary(&(mbedtls_pk_ec(key)->d),pkCtx->extra_data.value,sizeof(pkCtx->extra_data.value));
+		// memcpy(pkCtx->extra_data.value, mbedtls_pk_ec(key)->d.p, (mbedtls_pk_ec(key)->d.n) * (sizeof(mbedtls_mpi_uint)));
+		mbedtls_mpi_write_binary(&mbedtls_pk_ec(key)->d, pkCtx->extra_data.value, 32);
+		BoatLog(BOAT_LOG_CRITICAL, "sBoatPort_keyCreate_internal_generation 111");
+		// 2- update private key format
+		pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+
+		// 3- update private key type
+		pkCtx->prikey_type = config->prikey_type;
+		pkCtx->extra_data.value_len = (mbedtls_pk_ec(key)->d.n) * (sizeof(mbedtls_mpi_uint));
+	}
 
 	// 4- update private key index
 	// This field should update by 'key secure storage'(such as TE/SE).
@@ -856,32 +910,36 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletPriKeyCtx_config *config, 
 															   BoatWalletPriKeyCtx *pkCtx)
 {
-	mbedtls_pk_context     mbedtls_pkCtx;
-	BOAT_RESULT            result = BOAT_SUCCESS;
+	mbedtls_ctr_drbg_context ctr_drbg;
+	mbedtls_pk_context mbedtls_pkCtx;
+	// mbedtls_ecdsa_context *ecPrikey = NULL;
+	mbedtls_entropy_context entropy;
+	BOAT_RESULT result = BOAT_SUCCESS;
 
 	// 0- check input parameter
 	if ((config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "input parameter can not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	mbedtls_pk_init(&mbedtls_pkCtx);
-
-	result = mbedtls_pk_parse_key(&mbedtls_pkCtx, config->prikey_content.field_ptr,
-								  config->prikey_content.field_len, NULL, 0);
-	if(result != BOAT_SUCCESS)
+	if (config->prikey_format == BOAT_WALLET_PRIKEY_FORMAT_PKCS)
 	{
-		mbedtls_pk_free(&mbedtls_pkCtx);
-		BoatLog(BOAT_LOG_CRITICAL, "Error: pkcs key prase failed.");
-		return BOAT_ERROR;
-	}
+		result = mbedtls_pk_parse_key(&mbedtls_pkCtx, config->prikey_content.field_ptr,
+									  config->prikey_content.field_len, NULL, 0);
+		if (result != BOAT_SUCCESS)
+		{
+			mbedtls_pk_free(&mbedtls_pkCtx);
+			BoatLog(BOAT_LOG_CRITICAL, "Error: pkcs key prase failed.");
+			return BOAT_ERROR;
+		}
 
 	// 1- update private key
 	if (config->prikey_content.field_len > sizeof(pkCtx->extra_data.value))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Error: length of injection key is too long.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 	memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
 	pkCtx->extra_data.value_len = config->prikey_content.field_len;
@@ -898,11 +956,75 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 	// that ignore this field.
 	pkCtx->prikey_index  = 0; 
 
-	// 5- update public key
-	// Ethereum series need NATIVE public key to calculate account address
-	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
-	mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.X, &pkCtx->pubkey_content[0],  32);
-    mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.Y, &pkCtx->pubkey_content[32], 32);
+		// 5- update public key
+		// Ethereum series need NATIVE public key to calculate account address
+		pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
+		mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.X, &pkCtx->pubkey_content[0], 32);
+		mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.Y, &pkCtx->pubkey_content[32], 32);
+	}else if (config->prikey_format == BOAT_WALLET_PRIKEY_FORMAT_NATIVE){
+		// BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
+		// boat_throw(BOAT_ERROR, BoatSignature_exception);
+		mbedtls_ctr_drbg_init(&ctr_drbg);
+		mbedtls_entropy_init(&entropy);
+		result += mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
+		result += mbedtls_pk_setup(&mbedtls_pkCtx, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
+		if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "begin mbedtls_ecp_read_key ");
+			// ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
+			// if (ecPrikey != NULL)
+			// 	mbedtls_ecp_keypair_init(ecPrikey);
+			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1,  mbedtls_pk_ec(mbedtls_pkCtx), config->prikey_content.field_ptr, config->prikey_content.field_len);
+			BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key result = %x ", result);
+		}
+		else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+		{
+			// ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
+			// if (ecPrikey != NULL)
+			// 	mbedtls_ecp_keypair_init(ecPrikey);
+			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(mbedtls_pkCtx), config->prikey_content.field_ptr, config->prikey_content.field_len);
+			BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key result = %x ", result);
+		}
+		else
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
+			// boat_throw(BOAT_ERROR, BoatSignature_exception);
+		}
+
+		mbedtls_ecp_mul( mbedtls_pk_ec(mbedtls_pkCtx), &mbedtls_pk_ec(mbedtls_pkCtx)->Q, &mbedtls_pk_ec(mbedtls_pkCtx)->d, &mbedtls_pk_ec(mbedtls_pkCtx)->grp.G, mbedtls_ctr_drbg_random, &ctr_drbg );
+		mbedtls_ctr_drbg_free(&ctr_drbg);
+		mbedtls_entropy_free(&entropy);
+
+		// 1- update private key
+		if (config->prikey_content.field_len > sizeof(pkCtx->extra_data.value))
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "Error: length of injection key is too long.");
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+		}
+		memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
+		pkCtx->extra_data.value_len = config->prikey_content.field_len;
+
+		// 2- update private key format
+		pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+
+		// 3- update private key type
+		pkCtx->prikey_type = config->prikey_type;
+
+		// 4- update private key index
+		// This field should update by 'key secure storage'(such as TE/SE).
+		// When algorithms are implemented by software, this field is default to 0, means
+		// that ignore this field.
+		pkCtx->prikey_index = 0;
+
+
+		pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
+		mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.X, &pkCtx->pubkey_content[0], 32);
+		mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.Y, &pkCtx->pubkey_content[32], 32);
+
+	}else{
+		BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
+		// boat_throw(BOAT_ERROR, BoatSignature_exception);
+	}
 
 	/* free */
 	mbedtls_pk_free(&mbedtls_pkCtx);
@@ -918,7 +1040,7 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWa
 	if ((config == NULL) || (pkCtx == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
 	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
@@ -936,19 +1058,22 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWa
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
 			case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
-				BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
-				result = BOAT_ERROR;
+				// BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
+				// result = BOAT_ERROR;
+				BoatLog(BOAT_LOG_VERBOSE, "wallet private key[native] set...");
+				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
+				break;
 				break;
 			default:
 				BoatLog(BOAT_LOG_CRITICAL, "invalid private key format.");
-				result = BOAT_ERROR;
+				result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
 				break;
 		}
 	}
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "invalid private key format.");
-		result = BOAT_ERROR;
+		result = BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
 	}
 
     return result;

@@ -53,7 +53,7 @@
   
   找到include_directories(xxx ), 在最后添加以下BoAT-X-Framework内容：
   ```
-  include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
+  include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi BoAT-X-Framework/vendor/platform/include)
   ```
 
 ### 3、添加BoAT-X-Framework lib文件到target_link_libraries
@@ -104,9 +104,7 @@
    打开Linux终端进入L610根目录。
    ```
    cd L610代码根目录
-   cd out
-   rm -r appimage_release//需要先删除本地之前生成的文件
-   cd ..
+   rm -r out//需要先删除本地之前生成的文件
    . tools/core_launch.sh
    cout
    cmake ../.. -G Ninja

@@ -22,6 +22,7 @@
 #include "boatiotsdk.h"
 #include "boatlog.h"
 #include <time.h>
+#include "boatlog.h"
 
 #define USE_ONETIME_WALLET
 
@@ -170,10 +171,10 @@ __BOATSTATIC BOAT_RESULT hw_bcs_WalletPrepare(void)
 #else
 	return BOAT_ERROR;
 #endif
-	if (index == BOAT_ERROR)
+	if (index < BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "hwbcsWalletPrepare failed.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_WALLET_CREATE_FAIL;
 	}
 	g_hwbcs_wallet_ptr = BoatGetWalletByIndex(index);
 	
@@ -238,10 +239,10 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 	
-	tx_ptr.endorserResponse.http2Res[0] = tx_ptr.endorserResponse.http2Res[0] + 1;
+	tx_ptr.evaluateRes.http2Res[0] = tx_ptr.evaluateRes.http2Res[0] + 1;
 
 	/* step-5: set transaction 'invoke' command */
-	result += BoatHwbcsTxSetArgs(&tx_ptr, "initMarble", "a",(BCHAR*)tx_ptr.endorserResponse.http2Res , NULL, NULL);
+	result += BoatHwbcsTxSetArgs(&tx_ptr, "initMarble", "a",(BCHAR*)tx_ptr.evaluateRes.http2Res , NULL, NULL);
 	result += BoatHwbcsTxSubmit(&tx_ptr); 
 	if (result != BOAT_SUCCESS)
 	{
@@ -262,6 +263,19 @@ int main(int argc, char *argv[])
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHwbcsTxEvaluate() failed.");
 		return -1;
 	}
+		BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
+						 tx_ptr.evaluateRes.http2Res,
+						 tx_ptr.evaluateRes.httpResLen);
+
+	result = BoatHwbcsTxEvaluate(&tx_ptr);
+	if (result != BOAT_SUCCESS)
+	{
+		//BoatLog(BOAT_LOG_CRITICAL, "BoatHwbcsTxEvaluate() failed.");
+		return -1;
+	}
+		BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result 111",
+						 tx_ptr.evaluateRes.http2Res,
+						 tx_ptr.evaluateRes.httpResLen);
 	
 	/* step-7: hwbcs transaction structure Deinitialization */
 	BoatHwbcsTxDeInit(&tx_ptr);

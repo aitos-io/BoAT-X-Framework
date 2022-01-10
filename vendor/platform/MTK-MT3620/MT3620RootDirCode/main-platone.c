@@ -126,10 +126,10 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 
     /* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet_config, sizeof(BoatPlatoneWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_platone_wallet_ptr = BoatGetWalletByIndex(index);
 
@@ -178,10 +178,10 @@ __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR* wallet_name)
 
     /* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, &wallet_config, sizeof(BoatPlatoneWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
 
     g_platone_wallet_ptr = BoatGetWalletByIndex(index);
@@ -197,10 +197,10 @@ __BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR* wallet_name)
 
     /* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, NULL, sizeof(BoatPlatoneWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_platone_wallet_ptr = BoatGetWalletByIndex(index);
 
@@ -224,7 +224,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet* wallet_ptr)
     if (result != BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_NORMAL, "BoatPlatoneTxInit fails.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_INIT_FAIL;
     }
     
     result_str = BoatPlatoneGetNodesInfo(&tx_ctx, &result_out);
@@ -233,7 +233,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet* wallet_ptr)
         /* code */
         printf("node[%d] : IP[%s],port[%d]. \n", i, result_out.nodeInfo[i].IP, result_out.nodeInfo[i].rpcPort);
     }
-
+    nodeResFree(&result_out);
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "HelloWorld");
     if (result_str == NULL)
     {

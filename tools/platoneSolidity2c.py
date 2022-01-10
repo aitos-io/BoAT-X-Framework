@@ -310,7 +310,7 @@ class CFunctionGen():
         else:
             return False
 
-    def is_right_aligned_type(self,abitype):
+    def is_right_aligned_type(self, abitype):
         types_of_left_aligned = {
             'address'   :'BoatAddress',
             'bool'      :'BUINT8',
@@ -350,6 +350,29 @@ class CFunctionGen():
         }
 
         if abitype in types_of_left_aligned.keys():
+            return True
+        else:
+            return False
+
+    def is_signed_value_type(self, abitype):
+        types_of_signed_value = {
+            'int8'      :'BSINT8',
+            'int16'     :'BSINT16',
+            'int32'     :'BSINT32',
+            'int64'     :'BSINT64',
+            'int128'    :'BSINT128',
+            'int256'    :'BSINT256',
+
+            'int8[]'      :'BSINT8 *',
+            'int16[]'     :'BSINT16 *',
+            'int32[]'     :'BSINT32 *',
+            'int64[]'     :'BSINT64 *',
+            'int128[]'    :'BSINT128 *',
+
+            'int256[]'    :'BSINT256 *'
+        }
+
+        if abitype in types_of_signed_value.keys():
             return True
         else:
             return False
@@ -446,6 +469,18 @@ class CFunctionGen():
             i += 1
         
         return False
+    
+    def is_Change_Blockchain_State(self, abi_item):
+        if ('constant' in abi_item):
+            if abi_item['constant'] == True:
+                return True
+            else:
+                return False
+        else:
+            if (abi_item['stateMutability'] == 'nonpayable') or (abi_item['stateMutability'] == 'payable'):
+                return False
+            else:
+                return True
 
     def get_input_type(self, abi_item):
         if abi_item in type_mapping:
@@ -600,7 +635,7 @@ class CFunctionGen():
                 vaules_str += '    BUINT32 ' + inputName + '_filled_length[' + inputName + 'Len];\n'
                 vaules_str += '    BUINT32 ' + inputName + '_actual_length[' + inputName + 'Len];\n'
                 if self.is_FixedSizeNonFixedArray_type(inputType) == True:
-                    vaules_str += '    ' + self.get_FixedArray_type(inputType) + ' * ' + inputName + '_ptr;\n'
+                    vaules_str += '    ' + self.get_FixedArray_type(inputType) + ' *' + inputName + '_ptr;\n'
                 else:
                     vaules_str += '    BoatFieldVariable *' + inputName + '_ptr;\n'
                 
@@ -742,6 +777,8 @@ class CFunctionGen():
                 input_str += 'BoatFieldVariable *' + inputName_str
             elif self.is_FixedSizeFixedArray_type(input['type']) == True:
                 input_str += type_mapping[inputType] + ' ' + inputName_str + '[' + str(self.get_FixedArray_length(input['type'])) + ']'
+            elif type_mapping[inputType].endswith('*'):
+                input_str += type_mapping[inputType] + inputName_str
             else:
                 input_str += type_mapping[inputType] + ' ' + inputName_str
 
@@ -765,7 +802,7 @@ class CFunctionGen():
         inputName_str = ''
 
         # Generate local variables
-        if abi_item['constant'] == True:
+        if self.is_Change_Blockchain_State(abi_item):
             func_body_str += '    BCHAR *call_result_str = NULL;\n'
         else:
             func_body_str += '    static BCHAR tx_hash_str[67] = \"\";\n'
@@ -813,7 +850,7 @@ class CFunctionGen():
         func_body_str     += '    }\n\n'
 
         # Set Nonce
-        if abi_item['constant'] == False:
+        if not self.is_Change_Blockchain_State(abi_item):
             func_body_str += '    boat_try(BoatPlatoneTxSetNonce(tx_ptr, BOAT_PLATONE_NONCE_AUTO));\n\n'
 
 
@@ -888,17 +925,31 @@ class CFunctionGen():
                 func_body_str += '    for(i = 0; i < ' + str(self.get_FixedArray_length(input['type'])) + '; i++)\n'
                 func_body_str += '    {\n'
                 func_body_str += '        memcpy(fixedsize_bytes32, ' + c_address_sign + inputName_str + '[i], ' + param_size_str + ');\n'
-                func_body_str += '        if (' + inputName_str + '[i] >= 0)\n'
-                func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
-                func_body_str += '        else\n'
-                func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
+                if self.is_signed_value_type(input['type']) == True:
+                    func_body_str += '        if (' + inputName_str + '[i] >= 0)\n'
+                    func_body_str += '        {\n'
+                    func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
+                    func_body_str += '        }\n'
+                    func_body_str += '        else\n'
+                    func_body_str += '        {\n'
+                    func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
+                    func_body_str += '        }\n'
+                else:
+                    func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
                 func_body_str += self.add_FixedSize_String(inputType, c_address_sign,'fixedsize_bytes32',param_size_str, 2)
                 func_body_str += '    }\n\n'
             else:
-                func_body_str += '    if (' + inputName_str + ' >= 0)\n'
-                func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
-                func_body_str += '    else\n'
-                func_body_str += '        memset(data_offset_ptr, 0xFF, 32);\n'
+                if self.is_signed_value_type(input['type']) == True:
+                    func_body_str += '    if (' + inputName_str + ' >= 0)\n'
+                    func_body_str += '    {\n'
+                    func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
+                    func_body_str += '    }\n'
+                    func_body_str += '    else\n'
+                    func_body_str += '    {\n'
+                    func_body_str += '        memset(data_offset_ptr, 0xFF, 32);\n'
+                    func_body_str += '    }\n'
+                else:
+                    func_body_str += '    memset(data_offset_ptr, 0x00, 32);\n'    
                 func_body_str += self.add_FixedSize_String(inputType, c_address_sign, inputName_str, param_size_str, 1)
 
         #non-fixed data fill
@@ -990,20 +1041,23 @@ class CFunctionGen():
                 func_body_str += '    for(i = 0; i < ' + inputName_str + 'Len; i++)\n'
                 func_body_str += '    {\n'
                 func_body_str += '        memcpy(fixedsize_bytes32, ' + inputName_str + '_ptr, ' + param_size_str + ');\n'
-                func_body_str += '        if (*' + inputName_str + '_ptr >= 0)\n'
-                func_body_str += '        {\n'
-                func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
-                func_body_str += '        }\n'
-                func_body_str += '        else\n'
-                func_body_str += '        {\n'
-                func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
-                func_body_str += '        }\n'
+                if self.is_signed_value_type(input['type']) == True:
+                    func_body_str += '        if (*' + inputName_str + '_ptr >= 0)\n'
+                    func_body_str += '        {\n'
+                    func_body_str += '            memset(data_offset_ptr, 0x00, 32);\n'
+                    func_body_str += '        }\n'
+                    func_body_str += '        else\n'
+                    func_body_str += '        {\n'
+                    func_body_str += '            memset(data_offset_ptr, 0xFF, 32);\n'
+                    func_body_str += '        }\n'
+                else:
+                    func_body_str += '        memset(data_offset_ptr, 0x00, 32);\n'
                 func_body_str += self.add_FixedSize_String(inputType, '','fixedsize_bytes32',param_size_str, 2)
                 func_body_str += '        ' + inputName_str + '_ptr++;\n'
                 func_body_str += '    }\n\n'
             i = i + 1
 
-        if abi_item['constant'] == True:
+        if self.is_Change_Blockchain_State(abi_item):
             # for state-less funciton call
             func_body_str += '    call_result_str = BoatPlatoneCallContractFunc(tx_ptr, data_field.field_ptr, data_field.field_len);\n\n'
         else:
@@ -1011,8 +1065,7 @@ class CFunctionGen():
             func_body_str += '    boat_try(BoatPlatoneTxSetData(tx_ptr, &data_field));\n\n'
             func_body_str += '    boat_try(BoatPlatoneTxSend(tx_ptr));\n\n'
             func_body_str += '    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
-         
-        
+
         # Cleanup Label
         func_body_str += '''
     boat_catch(cleanup)
@@ -1027,7 +1080,7 @@ class CFunctionGen():
 
         func_body_str += '\n    BoatFree(data_field.field_ptr);\n'
 
-        if abi_item['constant'] == True:
+        if self.is_Change_Blockchain_State(abi_item):
             func_body_str += '    return(call_result_str);\n'
         else:
             func_body_str += '    return(tx_hash_str);\n'

@@ -49,7 +49,7 @@ static BOAT_RESULT web3_malloc_size_expand(BoatFieldVariable *mem, BUINT32 step_
 	{
 		mem->field_len = 0;
 		BoatLog(BOAT_LOG_NORMAL, "web3_malloc_size_expand failed.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}	
 
 	BoatLog(BOAT_LOG_NORMAL, "Excuting %s:[%d].", __func__ , mem->field_len);
@@ -74,7 +74,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR *json_string,
 	if ((json_string == NULL) || (child_name == NULL) || (result_out == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
 	// Convert string to cJSON
@@ -86,7 +86,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR *json_string,
         {
             BoatLog(BOAT_LOG_NORMAL, "Parsing RESPONSE as JSON fails before: %s.", cjson_error_ptr);
         }
-        boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
+        boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
     }
 	
 	// Obtain result object
@@ -94,7 +94,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR *json_string,
 	if (cjson_result_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_NORMAL, "Cannot find \"result\" item in RESPONSE.");
-		boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
+		boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, web3_parse_json_result_cleanup);
 	}
 
 	if (cJSON_IsObject(cjson_result_ptr))
@@ -104,7 +104,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR *json_string,
 		if (cjson_child_name_ptr == NULL)
 		{
 			BoatLog(BOAT_LOG_NORMAL, "Cannot find \"%s\" item in RESPONSE.", child_name);
-			boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
+			boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, web3_parse_json_result_cleanup);
 		}
 	
 		//prase child_name object
@@ -124,7 +124,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR *json_string,
 					if (result != BOAT_SUCCESS)
 					{
 						BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-						boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
+						boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_parse_json_result_cleanup);
 					}
 				}
 				strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
@@ -151,7 +151,7 @@ BOAT_RESULT web3_parse_json_result(const BCHAR *json_string,
 				if (result != BOAT_SUCCESS)
 				{
 					BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-					boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_parse_json_result_cleanup);
 				}
 			}
 			strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
@@ -160,9 +160,12 @@ BOAT_RESULT web3_parse_json_result(const BCHAR *json_string,
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Un-expect object type.");
-		boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
+		boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
 	}
-	
+	if (cjson_string_ptr != NULL)
+    {
+        cJSON_Delete(cjson_string_ptr);
+    }
 	
 	// Exceptional Clean Up
     boat_catch(web3_parse_json_result_cleanup)
@@ -192,7 +195,7 @@ Web3IntfContext *web3_init(void)
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to allocate Web3 Interface context.");
-        boat_throw(BOAT_ERROR_OUT_OF_MEMORY, web3_init_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_init_cleanup);
     }
 
     web3intf_context_ptr->web3_json_string_buf.field_len = WEB3_STRING_BUF_STEP_SIZE;
@@ -201,7 +204,7 @@ Web3IntfContext *web3_init(void)
     if (web3intf_context_ptr->web3_json_string_buf.field_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to allocate Web3 JSON string buffer.");
-        boat_throw(BOAT_ERROR_OUT_OF_MEMORY, web3_init_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_init_cleanup);
     }
 
     web3intf_context_ptr->web3_result_string_buf.field_len = WEB3_STRING_BUF_STEP_SIZE;
@@ -210,7 +213,7 @@ Web3IntfContext *web3_init(void)
     if (web3intf_context_ptr->web3_result_string_buf.field_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to allocate Web3 result string buffer.");
-        boat_throw(BOAT_ERROR_OUT_OF_MEMORY, web3_init_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_init_cleanup);
     }
 
     BoatRandom((BUINT8*)(&web3intf_context_ptr->web3_message_id), 
@@ -222,7 +225,7 @@ Web3IntfContext *web3_init(void)
     if (web3intf_context_ptr->rpc_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to inintialize RPC.");
-        boat_throw(BOAT_ERROR_EXT_MODULE_OPERATION_FAIL, web3_init_cleanup);
+        boat_throw(BOAT_ERROR_WEB3_RPC_INIT_FAIL, web3_init_cleanup);
     }
 
     // Clean Up
@@ -282,7 +285,8 @@ void web3_deinit(Web3IntfContext *web3intf_context_ptr)
 
 BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
                                 BCHAR *node_url_str,
-                                const Param_eth_getTransactionCount *param_ptr)
+                                const Param_eth_getTransactionCount *param_ptr,
+                                BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -297,7 +301,7 @@ BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getTransactionCount_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getTransactionCount_cleanup);
     }
     
     web3intf_context_ptr->web3_message_id++;
@@ -305,7 +309,7 @@ BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
     if (node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getTransactionCount_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getTransactionCount_cleanup);
     }
     
     // Construct the REQUEST
@@ -328,7 +332,7 @@ BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_getTransactionCount_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_getTransactionCount_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -340,7 +344,7 @@ BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getTransactionCount_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getTransactionCount_cleanup);
     }
    
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -365,13 +369,17 @@ BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
+    }
+    if(*web3Result != NULL){
+        *web3Result = result;
     }
 
     return return_value_ptr;
 }
 
 
-BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str, BCHAR *method_name_str)
+BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str, BCHAR *method_name_str,BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -386,7 +394,7 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_gasPrice_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_gasPrice_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -394,7 +402,7 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
     if (node_url_str == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_gasPrice_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_gasPrice_cleanup);
     }
     
     // Construct the REQUEST
@@ -413,7 +421,7 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_gasPrice_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_gasPrice_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -425,7 +433,7 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_gasPrice_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_gasPrice_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -450,15 +458,19 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
     }
-
+    if(*web3Result != NULL){
+        *web3Result = result;
+    }
     return return_value_ptr;
 }
 
 
 BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
                        BCHAR *node_url_str,
-                       const Param_eth_getBalance *param_ptr)
+                       const Param_eth_getBalance *param_ptr,
+                       BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -473,7 +485,7 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getBalance_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getBalance_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -481,7 +493,7 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
     if (node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getBalance_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getBalance_cleanup);
     }
     
     // Construct the REQUEST
@@ -503,7 +515,7 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_getBalance_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_getBalance_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -515,7 +527,7 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getBalance_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getBalance_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -540,15 +552,19 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
     }
-
+    if(*web3Result != NULL){
+        *web3Result = result;
+    }
     return return_value_ptr;
 }
 
 
 BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
                                BCHAR *node_url_str,
-                               const Param_eth_sendRawTransaction *param_ptr)
+                               const Param_eth_sendRawTransaction *param_ptr,
+                               BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -563,7 +579,7 @@ BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_sendRawTransaction_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_sendRawTransaction_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -571,7 +587,7 @@ BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
     if (node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_sendRawTransaction_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_sendRawTransaction_cleanup);
     }
     
     // Construct the REQUEST
@@ -592,7 +608,7 @@ BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_sendRawTransaction_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_sendRawTransaction_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -604,7 +620,7 @@ BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_sendRawTransaction_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_sendRawTransaction_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -629,15 +645,19 @@ BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
     }
-
+    if(*web3Result != NULL){
+        *web3Result = result;
+    }
     return return_value_ptr;
 }
 
 
 BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
 						 BCHAR *node_url_str,
-						 const Param_eth_getStorageAt *param_ptr)
+						 const Param_eth_getStorageAt *param_ptr,
+                         BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -652,7 +672,7 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getStorageAt_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getStorageAt_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -660,7 +680,7 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
     if (node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getStorageAt_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getStorageAt_cleanup);
     }
     
     // Construct the REQUEST
@@ -683,7 +703,7 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_getStorageAt_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_getStorageAt_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -695,7 +715,7 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getStorageAt_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getStorageAt_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -720,6 +740,10 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
+    }
+    if(*web3Result != NULL){
+        *web3Result = result;
     }
 
     return return_value_ptr;
@@ -728,7 +752,8 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
 
 BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
 										BCHAR *node_url_str,
-										const Param_eth_getTransactionReceipt *param_ptr)
+										const Param_eth_getTransactionReceipt *param_ptr,
+                                        BOAT_RESULT *web3Result)
 {
     BCHAR  *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -742,7 +767,7 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getTransactionReceiptStatus_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getTransactionReceiptStatus_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -750,7 +775,7 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
     if (node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getTransactionReceiptStatus_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getTransactionReceiptStatus_cleanup);
     }
     
    
@@ -772,7 +797,7 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_getTransactionReceiptStatus_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_getTransactionReceiptStatus_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -784,7 +809,7 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_getTransactionReceiptStatus_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getTransactionReceiptStatus_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -809,15 +834,19 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
     }
-
+    if(*web3Result != NULL){
+        *web3Result = result;
+    }
     return return_value_ptr;
 }
 
 
 BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
                  BCHAR *node_url_str,
-                 const Param_eth_call *param_ptr)
+                 const Param_eth_call *param_ptr,
+                 BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -832,7 +861,7 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_call_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_call_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -840,7 +869,7 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
     if (node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_call_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_call_cleanup);
     }
     
     // Construct the REQUEST
@@ -865,7 +894,7 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_call_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_call_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -877,7 +906,7 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_call_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_call_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -902,8 +931,11 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
     }
-
+     if(*web3Result != NULL){
+        *web3Result = result;
+    }
     return return_value_ptr;
 }
 
@@ -923,7 +955,8 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
 
 BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
 						   BCHAR *node_url_str,
-						   const Param_fiscobcos_call *param_ptr)
+						   const Param_fiscobcos_call *param_ptr,
+                           BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -938,7 +971,7 @@ BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_call_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_call_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -946,7 +979,7 @@ BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
     if (node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_call_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_call_cleanup);
     }
     
     // Construct the REQUEST
@@ -969,7 +1002,7 @@ BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_fiscobcos_call_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_fiscobcos_call_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -981,7 +1014,7 @@ BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_call_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_call_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -1006,14 +1039,18 @@ BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
     }
-
+    if(*web3Result != NULL){
+        *web3Result = result;
+    }
     return return_value_ptr;
 }
 
 BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
 										 BCHAR *node_url_str,
-										 const Param_fiscobcos_sendRawTransaction *param_ptr)
+										 const Param_fiscobcos_sendRawTransaction *param_ptr,
+                                         BOAT_RESULT *web3Result)
 {
 	BCHAR *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -1028,7 +1065,7 @@ BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_sendRawTransaction_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_sendRawTransaction_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -1036,7 +1073,7 @@ BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
     if (node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_sendRawTransaction_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_sendRawTransaction_cleanup);
     }
     
     // Construct the REQUEST
@@ -1056,7 +1093,7 @@ BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_fiscobcos_sendRawTransaction_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_fiscobcos_sendRawTransaction_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -1068,7 +1105,7 @@ BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_sendRawTransaction_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_sendRawTransaction_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -1093,15 +1130,19 @@ BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
     }
-
+    if(*web3Result != NULL){
+        *web3Result = result;
+    }
     return return_value_ptr;
 }
 
 
 BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
 												  BCHAR *node_url_str,
-												  const Param_fiscobcos_getTransactionReceipt *param_ptr)
+												  const Param_fiscobcos_getTransactionReceipt *param_ptr,
+                                                  BOAT_RESULT *web3Result)
 {
     BCHAR  *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -1116,7 +1157,7 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -1124,7 +1165,7 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
     if (node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
     }
     
 	
@@ -1145,7 +1186,7 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -1157,7 +1198,7 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -1182,15 +1223,19 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
     }
-
+    if(*web3Result != NULL){
+        *web3Result = result;
+    }
     return return_value_ptr;
 }
 
 
 BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
 									 BCHAR *node_url_str,
-									 const Param_fiscobcos_getBlockNumber *param_ptr)
+									 const Param_fiscobcos_getBlockNumber *param_ptr,
+                                     BOAT_RESULT *web3Result)
 {
     BCHAR   *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -1204,7 +1249,7 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
     if (web3intf_context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Web3 Interface context cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getBlockNumber_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_getBlockNumber_cleanup);
     }
 
     web3intf_context_ptr->web3_message_id++;
@@ -1212,7 +1257,7 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
     if (node_url_str == NULL || param_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Arguments cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getBlockNumber_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_getBlockNumber_cleanup);
     }
     
 	
@@ -1233,7 +1278,7 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
 			if (result != BOAT_SUCCESS)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-				boat_throw(BOAT_ERROR_JSON_PARSE_FAIL, web3_fiscobcos_getBlockNumber_cleanup);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_fiscobcos_getBlockNumber_cleanup);
 			}
 			malloc_size_expand_flag = true;
 		}
@@ -1245,7 +1290,7 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, web3_fiscobcos_getBlockNumber_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_fiscobcos_getBlockNumber_cleanup);
     }
     
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
@@ -1270,8 +1315,11 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
+        result = boat_exception;
     }
-
+    if(*web3Result != NULL){
+        *web3Result = result;
+    }
     return return_value_ptr;
 }
 

@@ -39,12 +39,12 @@ const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+const BCHAR *native_demoKey = "0xf1395a1fc3f74f0c867b61292e28e0f6cc98a095535fd6bf04e4169ebc047e61";
 
 /**
  * test node url
  */
-const BCHAR * demoUrl = "http://192.168.132.190:7545";
+const BCHAR * demoUrl = "http://127.0.0.1:7545";
 
 
 /**
@@ -96,10 +96,10 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
 
 	/* create ethereum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(index);
     
@@ -148,10 +148,10 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
 
 	/* create ethereum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, wallet_name, &wallet_config, sizeof(BoatEthWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
 
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(index);
@@ -167,10 +167,10 @@ __BOATSTATIC BOAT_RESULT ethereum_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create ethereum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, wallet_name, NULL, sizeof(BoatEthWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(index);
 
@@ -196,7 +196,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
     if (result != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "BoatEthTxInit fails.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_INIT_FAIL;
     }
     
     result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
@@ -205,8 +205,8 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
     if (result_str != NULL)
     {
         result_str = StoreRead_readListLength(&tx_ctx);
-        result = BoatEthPraseRpcResponseResult(result_str, "", &prase_result);
-        if(result == BOAT_SUCCESS && result_str != NULL )
+        result = BoatEthPraseRpcResponseStringResult(result_str, &prase_result);
+        if (result == BOAT_SUCCESS && result_str != NULL)
         {
             //BoatLog(BOAT_LOG_NORMAL, "readListLength returns: %s", result_str);
             
@@ -217,12 +217,12 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
             for (index = 0; index < list_len; index++)
             {
                 result_str = StoreRead_readListByIndex(&tx_ctx, index);
-                result     = BoatEthPraseRpcResponseResult(result_str, "", &prase_result);
+                result     = BoatEthPraseRpcResponseStringResult(result_str, &prase_result);
                 if (result == BOAT_SUCCESS && result_str != NULL)
                 {
                     //BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", prase_result.field_ptr);
                 }
-                else
+                else 
                 {
                     return BOAT_ERROR;
                 }
@@ -235,8 +235,8 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
 
 int main(int argc, char *argv[])
 {
-    BOAT_RESULT  result  = BOAT_SUCCESS;
-
+    BOAT_RESULT result = BOAT_SUCCESS;
+    boat_try_declare;
     /* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     
@@ -252,12 +252,14 @@ int main(int argc, char *argv[])
     result = ethereum_loadPersistWallet("eth.cfg");
 #else
     //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
-    return -1;
+    //return -1;
+    result = BOAT_ERROR;
 #endif
     if (result != BOAT_SUCCESS)
 	{
 		 //BoatLog(BOAT_LOG_CRITICAL, "ethereumWalletPrepare_create failed: %d.", result);
-		return -1;
+		//return -1;
+        boat_throw(result, ethereum_storeread_demo_catch);
 	}
     
     /* step-3: execute 'ethereum_call_ReadStore' */
@@ -270,9 +272,11 @@ int main(int argc, char *argv[])
     {
         //BoatLog(BOAT_LOG_NORMAL, "ethereum readStore access Passed.");
     }
-
+    boat_catch(ethereum_storeread_demo_catch)
+    {
+    }
 	/* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
     
-    return 0;
+    return result;
 }

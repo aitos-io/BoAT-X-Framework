@@ -134,13 +134,13 @@ class CFunctionGen():
 
             if i != inputs_len -1:
                 input_str += ', '
-            i = i+1
+            i = i + 1
         
         input_str += ')'
 
         # Generate function prototype
-        self.c_file_content += retval_str + ' ' + func_name_str + input_str + '\n'
-        self.h_file_content += retval_str + ' ' + func_name_str + input_str + ';\n'
+        self.c_file_content += retval_str + func_name_str + input_str + '\n'
+        self.h_file_content += retval_str + func_name_str + input_str + ';\n'
 
 
     def generate_func_body(self, abi_item):
@@ -154,7 +154,7 @@ class CFunctionGen():
             func_body_str += '    static BCHAR tx_hash_str[67] = \"\";\n'
             func_body_str += '    BoatFieldVariable data_field;\n'
 
-        func_body_str += '    RlpEncodedStreamObject * rlp_stream_ptr;\n'
+        func_body_str += '    RlpEncodedStreamObject *rlp_stream_ptr;\n'
         func_body_str += '    RlpObject rlp_object_list;\n'
         func_body_str += '    RlpObject rlp_object_txtype;\n'
         func_body_str += '    BUINT64 txtype;\n'

@@ -68,7 +68,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Transaction and wallet pointer cannot be NULL.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, PlatONSendRawtx_cleanup);
     }
 
     // In case the transaction should fail, tx_hash.field_len is initialized to 0
@@ -78,7 +78,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Tx RLP object initialize failed.");
-        boat_throw(BOAT_ERROR_OUT_OF_MEMORY, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_LIST_INIT_FAIL, PlatONSendRawtx_cleanup);
     }
 
     /**************************************************************************
@@ -92,14 +92,14 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Nonce RLP object initialize failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &nonce_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append nonce to Tx RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
     }
 
     // Encode gasprice
@@ -109,14 +109,14 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Gasprice RLP object initialize failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &gasprice_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append gasprice to Tx RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
     }
     
     // Encode gaslimit
@@ -126,14 +126,14 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Gaslimit RLP object initialize failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &gaslimit_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append gaslimit to Tx RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
     }
     
     // Encode recipient
@@ -142,14 +142,14 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Recipient RLP object initialize failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &recipient_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append recipient to Tx RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
     }
 
     // Encode value
@@ -159,14 +159,14 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Value RLP object initialize failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &value_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append value to Tx RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
     }
 
     // Encode data
@@ -176,14 +176,14 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Data RLP object initialize failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &data_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append data to Tx RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
     }
 
     // If EIP-155 is required, encode v = chain id, r = s = NULL in this step
@@ -208,14 +208,14 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
         if (result != BOAT_SUCCESS)
         {
             BoatLog(BOAT_LOG_CRITICAL, "V RLP object initialize failed.");
-            boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+            boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
         }
         
         v_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &v_rlp_object);
         if (v_index < BOAT_SUCCESS)
         {
             BoatLog(BOAT_LOG_CRITICAL, "Append v to Tx RLP object failed.");
-            boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+            boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
         }
 
         // Encode r
@@ -225,14 +225,14 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
         if (result != BOAT_SUCCESS)
         {
             BoatLog(BOAT_LOG_CRITICAL, "R RLP object initialize failed.");
-            boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+            boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
         }
         
         r_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &r_rlp_object);
         if (r_index < BOAT_SUCCESS)
         {
             BoatLog(BOAT_LOG_CRITICAL, "Append r to Tx RLP object failed.");
-            boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+            boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
         }
 
         // Encode s
@@ -242,14 +242,14 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
         if (result != BOAT_SUCCESS)
         {
             BoatLog(BOAT_LOG_CRITICAL, "S RLP object initialize failed.");
-            boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+            boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
         }
         
         s_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &s_rlp_object);
         if (s_index < BOAT_SUCCESS)
         {
             BoatLog(BOAT_LOG_CRITICAL, "Append s to Tx RLP object failed.");
-            boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+            boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
         }
     }
 
@@ -264,7 +264,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     else
     {
         BoatLog(BOAT_LOG_CRITICAL, "Encode Tx failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_FAIL, PlatONSendRawtx_cleanup);
     }
 
     /**************************************************************************
@@ -291,7 +291,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Execute BoatSignature failed.");
-        boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, PlatONSendRawtx_cleanup);
     }
     // assign signature value
     if (signatureResultTmp.native_format_used)
@@ -343,7 +343,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Re-initialize v RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
     }
 
     if (tx_ptr->wallet_ptr->network_info.eip155_compatibility == BOAT_TRUE)
@@ -358,7 +358,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (v_index < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Replace v in Tx RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
     }
 
     // Re-encode r
@@ -368,7 +368,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Re-initialize r RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
     }
     
     if (tx_ptr->wallet_ptr->network_info.eip155_compatibility == BOAT_TRUE)
@@ -383,7 +383,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (r_index < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Replace r in Tx RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
     }
 
     // Re-encode s
@@ -393,7 +393,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if( result != BOAT_SUCCESS )
     {
         BoatLog(BOAT_LOG_CRITICAL, "Re-initialize s RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatONSendRawtx_cleanup);
     }
 
     if (tx_ptr->wallet_ptr->network_info.eip155_compatibility == BOAT_TRUE)
@@ -408,7 +408,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (s_index < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Replace s in Tx RLP object failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatONSendRawtx_cleanup);
     }
 
     // Re-encode Tx RLP LIST
@@ -422,7 +422,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     else
     {
         BoatLog(BOAT_LOG_CRITICAL, "Re-encode Tx failed.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_FAIL, PlatONSendRawtx_cleanup);
     }
     
 
@@ -434,7 +434,7 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     if (rlp_stream_hex_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Unable to dynamically allocate memory to store RLP HEX string.");
-        boat_throw(BOAT_ERROR_OUT_OF_MEMORY, PlatONSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, PlatONSendRawtx_cleanup);
     }
 
     // To save memory, re-use rlp_stream_hex_str to print debug information
@@ -469,14 +469,14 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
     
     tx_hash_str = web3_sendRawTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
                                           tx_ptr->wallet_ptr->network_info.node_url_ptr,
-                                          &param_platon_sendRawTransaction);
+                                          &param_platon_sendRawTransaction,&result);
 	if (tx_hash_str == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
-		boat_throw(BOAT_ERROR_RPC_FAILED, PlatONSendRawtx_cleanup);
+		boat_throw(result, PlatONSendRawtx_cleanup);
     }
-    result = BoatPlatONPraseRpcResponseResult(tx_hash_str, "", 
-										      &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    result = BoatPlatONPraseRpcResponseStringResult(tx_hash_str,
+										            &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");
@@ -509,21 +509,4 @@ BOAT_RESULT PlatONSendRawtx(BOAT_INOUT BoatPlatONTx *tx_ptr)
 }
 
 
-BOAT_RESULT PlatONSendRawtxWithReceipt(BOAT_INOUT BoatPlatONTx *tx_ptr)
-{
-    BOAT_RESULT result = BOAT_ERROR;
-
-    result = PlatONSendRawtx(tx_ptr);
-
-    if (result == BOAT_SUCCESS)
-    {
-        result = BoatPlatONGetTransactionReceipt(tx_ptr);
-    }
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "PlatONSendRawtx failed.");
-	}
-
-    return result;
-}
 #endif /* end of PROTOCOL_USE_PLATON */

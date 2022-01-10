@@ -38,10 +38,10 @@ __BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, NULL, sizeof(BoatPlatoneWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         MG_osiTracePrintf(LOG_TAG,"load wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_platone_wallet_ptr = BoatGetWalletByIndex(index);
 
@@ -75,10 +75,10 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
     //index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, PERSIST_WALLET_NAME, &wallet_config, sizeof(BoatPlatoneWalletConfig)); // "/nvm/test.txt"
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet_config, sizeof(BoatPlatoneWalletConfig)); 
 
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         MG_osiTracePrintf(LOG_TAG, "create one-time wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_platone_wallet_ptr = BoatGetWalletByIndex(index);
     
@@ -105,7 +105,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     if (result != BOAT_SUCCESS)
 	{
         MG_osiTracePrintf(LOG_TAG, "BoatPlatoneTxInit fails.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_INIT_FAIL;
     }
 
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "Yanfei HelloWorld 0520");
@@ -176,10 +176,14 @@ static bool getApn(char name[THE_APN_MAX_LEN])
 
 static void simQuery(int *simStatus, int *registerStatus, char name[THE_APN_MAX_LEN])
 {
-	int len = 8;
-	*simStatus = MG_cfwGetSimStatus(0);
+	//int len = 8;
+	if (simStatus == NULL || registerStatus == NULL) 
+	{
+		return;
+	}
+	
 	MG_osiTracePrintf(LOG_TAG, "==SIM status : %d", *simStatus);
-	if (simStatus == NULL) return;
+	*simStatus = MG_cfwGetSimStatus(0);
 	MG_osiTracePrintf(LOG_TAG, "==SIM status : %d", *simStatus);
 
 	while(getApn(name))

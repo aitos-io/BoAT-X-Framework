@@ -145,10 +145,10 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
 
     /* create ethereum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
     {
         //BoatLog( BOAT_LOG_CRITICAL, "create one-time wallet failed." );
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(index);
 
@@ -197,10 +197,10 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR* wallet_name)
 
     /* create ethereum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, wallet_name, &wallet_config, sizeof(BoatEthWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
 
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(index);
@@ -216,10 +216,10 @@ __BOATSTATIC BOAT_RESULT ethereum_loadPersistWallet(BCHAR* wallet_name)
 
     /* create ethereum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, wallet_name, NULL, sizeof(BoatEthWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(index);
 
@@ -235,7 +235,7 @@ BOAT_RESULT ethereumGetBalance(BoatEthWallet* wallet_ptr)
     BoatFieldVariable prase_result = { NULL, 0 };
 
     cur_balance_wei = BoatEthWalletGetBalance(wallet_ptr, NULL);
-    result = BoatEthPraseRpcResponseResult(cur_balance_wei, "", &prase_result);
+    result = BoatEthPraseRpcResponseStringResult(cur_balance_wei, &prase_result);
     if (result == BOAT_SUCCESS)
     {
         //BoatLog( BOAT_LOG_NORMAL, "BoatEthWalletGetBalance returns: %s", prase_result.field_ptr );
@@ -264,7 +264,7 @@ BOAT_RESULT ethereumTransfer(BoatEthWallet* wallet_ptr)
     if (result != BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxInit failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_INIT_FAIL;
     }
 
     /* 0xDE0B6B3A7640000: 1ETH or 1e18 wei, value */

@@ -34,15 +34,15 @@
  * "78a42562c1d19843fd6f5a0f07de0206fdcf2a682c5e0a9a814019abb531da3a"
  */
 const BCHAR *pkcs_demoKey =  "-----BEGIN PRIVATE KEY-----\n"
-                              "MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQgeKQlYsHRmEP9b1oPB94C\n"
-                              "Bv3PKmgsXgqagUAZq7Ux2jqhRANCAAQc/KEqonVm+mcT4I1Gqz0onHHSXQhqICEG\n"
-                              "1w2bbtfzYbkc7HnkEUyGHBdwus55Js8RoZdxcKjC9OTHsrgvOHts\n"
+"MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQgz3wfbqBIV+8EOR49yA4x\n"
+"4o6uVigkoU+WwaAKdQe2fZahRANCAAQpe8iOa9nDLr9r7/2aokClH7/Gqy7F+ep/\n"
+"SOf94NvnLoQILdWeBzeCotF1BoJyrfnXiMSgDZYexSsFFgNz8dJx\n"
                               "-----END PRIVATE KEY-----\n";
 
 /**
  * native demo key
  */
-const BCHAR *native_demoKey = "0x78a42562c1d19843fd6f5a0f07de0206fdcf2a682c5e0a9a814019abb531da3a";
+const BCHAR *native_demoKey = "0xcf7c1f6ea04857ef04391e3dc80e31e28eae562824a14f96c1a00a7507b67d96";
 
 /**
  * test node url
@@ -52,7 +52,7 @@ const BCHAR *demoUrl = "http://127.0.0.1:8545";
 /**
  * transfer recipient address
  */
-const BCHAR *demoRecipientAddress = "0x706578ff2a43709f92e7b358940ea23b19605f08";
+const BCHAR *demoRecipientAddress = "0xcfafa80763d106702c312ca6719e3f7b6fc8cf1c";
 
 
 BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
@@ -97,10 +97,10 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createOnetimeWallet()
 
 	/* create fiscobcos wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, NULL, &wallet_config, sizeof(BoatFiscobcosWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_fiscobcos_wallet_ptr = BoatGetWalletByIndex(index);
     
@@ -147,10 +147,10 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR *wallet_name)
 
 	/* create fiscobcos wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, wallet_name, &wallet_config, sizeof(BoatFiscobcosWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
 
     g_fiscobcos_wallet_ptr = BoatGetWalletByIndex(index);
@@ -166,10 +166,10 @@ __BOATSTATIC BOAT_RESULT fiscobcos_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create fiscobcos wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, wallet_name, NULL, sizeof(BoatFiscobcosWalletConfig));
-    if (index == BOAT_ERROR)
+    if (index < BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_fiscobcos_wallet_ptr = BoatGetWalletByIndex(index);
 
@@ -194,7 +194,7 @@ BOAT_RESULT fiscobcos_helloworld(BoatFiscobcosWallet *wallet_ptr)
     if (result != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "BoatFiscobcosTxInit fails.");
-        return BOAT_ERROR;
+        return BOAT_ERROR_WALLET_INIT_FAIL;
     }
 
     result_str = HelloWorld_set(&tx_ctx, "HELLO FISCOBCOS!");
@@ -219,7 +219,7 @@ BOAT_RESULT fiscobcos_helloworld(BoatFiscobcosWallet *wallet_ptr)
 int main(int argc, char *argv[])
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-
+    boat_try_declare;
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     
@@ -235,12 +235,14 @@ int main(int argc, char *argv[])
 	result = fiscobcos_loadPersistWallet("fiscobcos.cfg");
 #else
 	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
-	return -1;
+	//return -1;
+    result = BOAT_ERROR;
 #endif	
     if (result != BOAT_SUCCESS)
 	{
 		 //BoatLog(BOAT_LOG_CRITICAL, "fiscobcosWalletPrepare_create failed : %d.", result);
-		return -1;
+		//return -1;
+        boat_throw(result, fiscobcos_demo_catch);
 	}
     
 	/* step-3: execute 'fiscobcos_call_helloworld' */
@@ -253,7 +255,9 @@ int main(int argc, char *argv[])
 	{
         //BoatLog(BOAT_LOG_NORMAL, "fiscobcos helloworld access Passed.");
     }
-	
+	boat_catch(fiscobcos_demo_catch)
+    {
+    }
 	/* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
     

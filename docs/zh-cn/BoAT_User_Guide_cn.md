@@ -32,6 +32,7 @@ PlatON
 PlatONE  
 FISCO-BCOS  
 Hyperledger Fabric  
+Huawei BCS (华为链)  
 
 **支持的Target操作系统：**  
 Linux  
@@ -68,7 +69,7 @@ BoAT IoT Framework SDK如图 2‑2所示，主要包含Wallet API、区块链客
 
 ![BoAT IoT Framework SDK架构](./images/BoAT_User_Guide_cn-F2-2-BoAT_architecture.png)
 图 2-2 BoAT IoT Framework SDK架构
- 
+
 Wallet API是SDK提供给物联网应用调用的接口，具体包括SDK公共接口和针对不同区块链协议的钱包和交易接口。
 区块链客户端接口协议主要实现针对不同区块链的交易接口协议，并通过RPC接口与区块链节点进行交互。
 远程过程调用（RPC）接口实现针对不同通信承载的接口方式。该组件需要根据IoT设备支持的具体通信方式进行移植。
@@ -141,7 +142,7 @@ sudo apt-get install libcurl4-openssl-dev
 ![image](https://user-images.githubusercontent.com/81662688/130744541-7645fe99-9c21-44e0-a3cc-fe84b102d0cf.png)
 ![image](https://user-images.githubusercontent.com/81662688/130744556-163fb5e4-0260-42d8-b8c1-4c78052bd7d1.png)
 
-在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](####以Windows为编译环境)章节对编译文件进行调整。
+在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](####以windows为编译环境)章节对编译文件进行调整。
 
 在RTOS上移植SDK时，应对libcurl依赖进行移植或将RPC方法重写。  
 
@@ -149,17 +150,17 @@ sudo apt-get install libcurl4-openssl-dev
 ### 编译准备
 #### BoAT IoT Framework SDK源码路径
 SDK源码的保存路径中，自根目录起，各级目录名称应由英文字母、数字、下划线或减号组成，不应出现空格、中文以及加号、@、括号等特殊符号。
-  
-  
+
+
 例如，以下为适合的路径：  
 /home/developer/project-blockchain/boatiotsdk  
 C:\Users\developer\Documents\project\boatiotsdk  
-  
+
 
 以下为不适合的路径：  
 /home/developer/project+blockchain/boatiotsdk  
 C:\Documents and Settings\developer\project\boatiotsdk  
- 
+
 
 如果无法避免在路径中出现上述不适字符，请使用以下方法规避：  
 - Linux：在一个没有不适字符的路径中，建立一个指向SDK目录的符号链接：ln -s \<SDKRoot\> boatiotsdk，在该符号链接的路径下进行编译。  
@@ -182,9 +183,11 @@ BOAT_PROTOCOL_USE_PLATON    ?= 1
 BOAT_PROTOCOL_USE_PLATONE   ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
+BOAT_PROTOCOL_USE_HWBCS     ?= 1
 ```
 根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁用相应的区块链协议。  
-***注：由于PlatON，PlatONE和FISCO BCOS三个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能***  
+***注：由于PlatON，PlatONE和FISCO BCOS三个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能。***  
+***注：由于hw_bcs区块链钱包代码大量复用fabric的钱包代码，所以使能hw_bcs时，都需要把fabric使能。*** 
 - 日志打印级别调整  
 根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
 
@@ -227,13 +230,13 @@ Host编译指编译环境与目标环境一致，例如，在x86上编译x86程�
 基于Linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。
 
 编译遵照如下步骤:
-1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中  
-2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见[合约C接口代码自动生成](###合约C接口代码自动生成)章节）  
+1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中。  
+2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见[合约C接口代码自动生成](###合约C接口代码自动生成)章节）。  
 3. 在\<SDKRoot\>目录下，执行以下命令:  
 ```
 $make boatlibs
 ```
-	
+
 编译完成后，生成的库文件在./lib中。应用应当包含./include下的头文件，并链接./lib下的库，实现访问区块链的功能。参见[头文件和库](###头文件和库)章节。
 
 #### 以Cygwin为编译环境
@@ -250,7 +253,7 @@ $make boatlibs
 独立的编译环境是指arm-oe-linux-gnueabi-gcc（或类似交叉编译器）已经安装在Linux系统中，可以独立调用。
 
 SDK要求系统中至少应该设置以下环境变量，使之指向交叉编译环境：
-  
+
 
 |环境变量  |说明                      |
 |:------- |:------------------------ | 
@@ -283,19 +286,19 @@ $export
 ${CC} -v  
 ${AR} -v
 ```
-	
-以上配置完成后，遵照[以Linux为编译环境](####以Linux为编译环境)章节的步骤进行编译。
+
+以上配置完成后，遵照[以Linux为编译环境](####以linux为编译环境)章节的步骤进行编译。
 
 
 ##### 与模组开发环境整合的交叉编译环境
 有些OpenCPU模组在其所提供的开发环境中，已经整合了配套的交叉编译环境，使得客户无需另行在Linux系统中安装交叉编译器。这尤其便于在一台host电脑上，开发多个不同型号模组上的应用软件，而无需反复切换交叉编译环境。
 
 
-###### 模组开发环境以GNU make为编译工程
-若模组开发环境以GNU make为编译工程（各级源码目录内有Makefile），可以对BoAT IoT Framework SDK调整编译配置，将其纳入整合的模组开发环境中编译。
+###### 模组开发环境以GNU make为编译工具
+若模组开发环境以GNU make为编译工具（各级源码目录内有Makefile），可以对BoAT IoT Framework SDK调整编译配置，将其纳入整合的模组开发环境中编译。
 
 通常，模组开发环境中会提供客户代码的Example，并在编译体系中包含对客户示例代码Example的编译配置。首先将\<SDKRoot\>目录（以下例子中以boatiotsdk为目录名）复制到模组开发环境中的客户代码Example目录，然后修改针对客户代码Example的Makefile，增加一个编译BoAT IoT Framework SDK的target。
-  
+
 例如:  
 假设原有编译环境中，客户代码Example的Makefile如下:  
 ```
@@ -330,7 +333,7 @@ boatiotsdkclean:
 以上步骤仅仅是用于执行对SDK库的编译。SDK库编译完成后，还需将编译生成的lib库整合入模组开发环境。详见[头文件和库](###头文件和库)章节。
 
 ###### 模组开发环境采用非GNU Make编译工程
-由于BoAT IoT Framework SDK以GNU make为编译工程，若模组开发环境采用非GNU Make的编译工程（例如Ninja、ant等），或者使用了编译工程的自动生成工具（如automake、CMake），则不能直接在模组开发环境中编译SDK。
+由于BoAT IoT Framework SDK以GNU make为编译工具，若模组开发环境采用非GNU Make的编译工具（例如Ninja、ant等），或者使用了编译工程的自动生成工具（如automake、CMake），则不能直接在模组开发环境中编译SDK。
 
 在此类模组开发环境中编译SDK，需要将模组开发环境中的gcc、binutils编译工具释出，配置[独立的交叉编译环境](#####独立的交叉编译环境)章节所述环境变量，使之可以在系统中调用，等同于独立交叉编译环境，然后编译SDK。
 
@@ -357,7 +360,7 @@ SDK编译工程依赖于一些Cygwin工具，需要安装的工具如下:
 set PATH=%PATH%;\<Path_to_Cygwin\>\bin  
 ```
 其中<Path_to_Cygwin>是Cygwin安装目录的绝对路径，如：C:\Cygwin64  
-  
+
 
 ***注：上述命令可以编写在一个bat批处理文件中，或者直接加入Windows系统环境变量中，方便调用。如果直接加入Windows系统环境变量，不得将Cygwin置于%SystemRoot%\System32路径之前，否则在其他场景中调用Windows的FIND命令时，将错误地调用Cygwin的find版本，这将影响其他场景中使用Windows自带命令。***
 
@@ -388,14 +391,14 @@ f)	在“编辑环境变量”页中点击“新建”，新增Cygwin的安装�
 
 ### 编译和运行Demo
 #### 准备
-SDK提供基于以太坊、PlatON、PlatONE、FISCO-BCOS和fabric的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
+SDK提供基于以太坊、PlatON、PlatONE、FISCO-BCOS、Hyperledger Fabric和HW-BCS的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
 
 Demo所使用的智能合约及其ABI JSON文件放置在：  
 
 |Demo智能合约                                                  |合约ABI JSON文件                                              |用途           |
 |:----------------------------------------------------------- |:------------------------------------------------------------ |:------------ | 
 |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.sol   |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.json   |以太坊演示     |
-|\<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.sol    |\<SDKRoot\>/demo/demo_platone/demo_contract/StoreRead.json    |PlatONE演示    |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/WASM/my_contract.cpp    |\<SDKRoot\>/demo/demo_platone/demo_contract/WASM/my_contract.cpp.abi.json    |PlatONE演示    |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json |FISCO-BCOS演示 |
 
 
@@ -424,16 +427,18 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 |\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         |PLATON转账演示用例      |
 |\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     |PLATONE合约演示用例     |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c |FISCO-BCOS合约演示用例  |
+|\<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             |FABRIC合约演示用例      |
+|\<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  |HW-BCS合约演示用例      |
 
 编译Demo之前，需要修改Demo的C代码中以下部分：
 - 对于ETHEREUM、PLATON、FISCO-BCOS、PLATONE:
   1.	搜索`demoUrl`，将节点URL（含端口）填写为实际部署的节点或模拟器的IP地址和RPC端口
-  2.	如果demo需使用原生私钥, 则搜索`native_demoKey`，并将客户端私钥设置为：  
+  2.	如果demo需使用原生私钥，则搜索`native_demoKey`，并将客户端私钥设置为：  
         -	对于ETHEREUM，设置为ganache生成的任意一个账户的私钥  
         - 对于PlatON，无需修改Demo中的私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥对应的原生格式私钥
-  3.	如果demo需使用原生私钥, 则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
+  3.	如果demo需使用原生私钥，则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
         - 对于以太坊，设置为ganache生成的任意一个账户的私钥对应的PKCS格式私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥
@@ -441,16 +446,22 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 - 对于FABRIC:  
   1. 搜索`fabric_client_demokey`，设置客户端使用的私钥
   2. 搜索`fabric_client_democert`，设置客户端私钥对应的证书
-  3. 如果demo启用TLS，则搜索`fabric_ca1_democert`、`fabric_ca2_democert`、`fabric_ca3_democert`，设置CA证书链
-  4. 搜索`fabric_demo_endorser1_url`、`fabric_demo_endorser2_url`、`fabric_demo_order1_url`，设置背书节点、排序节点的url地址
-  5. 如果demo启用TLS,则搜索`fabric_demo_endorser1_hostName`、`fabric_demo_endorser2_hostName`、`fabric_demo_order1_hostName`，设置节点的主机名称
+  3. 如果demo启用TLS，则搜索`fabric_org1_tlsCert`、`fabric_org2_tlsCert`、`fabric_order_tlsCert`，设置CA证书链
+  4. 搜索`fabric_demo_endorser_peer0Org1_url`、`fabric_demo_endorser_peer1Org1_url`、`fabric_demo_endorser_peer0Org2_url`、`fabric_demo_endorser_peer1Org2_url`，设置背书节点、排序节点的url地址
+  5. 如果demo启用TLS，则搜索`fabric_demo_endorser_peer0Org1_hostName`、`fabric_demo_endorser_peer1Org1_hostName`、`fabric_demo_endorser_peer0Org2_hostName`、`fabric_demo_endorser_peer1Org2_hostName`，设置节点的主机名称
+- 对于HW-BCS:  
+  1. 搜索`hw_bcs_client_demokey`，设置客户端使用的私钥
+  2. 搜索`hw_bcs_client_democert`，设置客户端私钥对应的证书
+  3. 如果demo启用TLS，则搜索`hw_bcs_org1_tlsCert`、`hw_bcs_org2_tlsCert`，设置CA证书链
+  4. 搜索`hw_bcs_demo_endorser_peer0Org1_url`、`hw_bcs_demo_endorser_peer0Org2_url`、`hw_bcs_demo_order_url`，设置背书节点、排序节点的url地址
+  5. 如果demo启用TLS,则搜索`hw_bcs_demo_endorser_peer0Org1_hostName`、`hw_bcs_demo_endorser_peer0Org2_hostName`、`hw_bcs_demo_order_hostName`，设置节点的主机名称
 
 #### 编译Demo
 在\<SDKRoot\>目录下执行以下命令编译SDK的调用Demo：
 ```
 $make demo
 ```
-生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下，< protocol>可以为`ethereum` `platon` `fisco-bcos` `platone` `fabric`。
+生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下，< protocol>可以为`ethereum` `platon` `fisco-bcos` `platone` `fabric` `hwbcs`。
 
 
 
@@ -460,17 +471,17 @@ $make demo
 
 2. 编译中提示“curl/curl.h”找不到  
 该问题是因为系统中未安装curl及其开发文件引起。对于在Linux发行版上做Host编译而言，注意只安装curl包不够，还需要安装其开发文件包。开发文件包在不同的Linux发行版中有不同的名称，通常会命名为类似curl-devel，或者libcurl。具体请参照所使用的Linux发行版的软件包管理工具。    
-  
-  
+
+
 如果curl采用源码编译，且未安装到系统目录，则应在external.env中指定其搜索路径，并在链接时指定curl库所在路径。  
-  
-  
+
+
 在交叉编译中，尤其要注意搜索路径和库应指向交叉编译环境中的头文件和库，而不应指向执行编译的Host上的路径。
 
 3. 交叉编译链接时提示字节序、位宽或ELF格式不匹配  
 该问题通常是因为交叉编译中，部分库引用了Host的库，而Obj文件则是由交叉编译产生，或者，部分库为32位，另一部分为64位。应仔细核查所有库的路径，避免Host与Target的库混合链接，或者不同位宽的库混合链接。
-  
-  
+
+
 可以使用如下命令查看库文件是ARM版本还是x86版本，以及位宽：  
 ```
 $file \<lib或obj文件名\>
@@ -480,9 +491,9 @@ $file \<lib或obj文件名\>
 'make'不是内部或外部命令，也不是可运行的程序或批处理文件。  
 mkdir… 命令语法不正确。  
 FIND: 参数格式不正确  
-  
-  
-该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[以Windows为编译环境](####以Windows为编译环境)章节安装Cygwin和配置Makefile。
+
+
+该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[以Windows为编译环境](####以windows为编译环境)章节安装Cygwin和配置Makefile。
 
 
 ## 编程模型
@@ -525,7 +536,7 @@ BoAT IoT Framework SDK编译完成后，应用可以通过SDK头文件和库，�
 ### SDK初始化和销毁
 在调用SDK之前，必须调用BoatIotSdkInit()对SDK的全局资源进行初始化:
 ```
-BOAT_RESULT BoatIotSdktInit(void);
+BOAT_RESULT BoatIotSdkInit(void);
 ```
 在使用结束后，应调用BoatIotSdkDeInit()释放资源:
 ```
@@ -683,7 +694,7 @@ Otherwise it returns one of the error codes.
   - bytes32
   - bytes
   - string
-  - T[N] : N > 0, N是整数, T是上面已支持的任意类型.
+  - T[N] : N > 0，N是整数，T是上面已支持的任意类型.
   - T[]  : T是上面已支持的任意类型，除了T[N].
 
 对于C++编写的WASM合约，工具支持以下参数类型:
@@ -833,7 +844,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
                           BCHAR *gasprice_str,
                           BCHAR *gaslimit_str,
                           BCHAR *recipient_str)
-```						 
+```
 参数:
 
 |参数名称          |参数描述                                                                                        |
@@ -869,9 +880,17 @@ result = BoatEthTxInit(
 BCHAR *result_str;
 result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 ```
+#### 自动生成合约的常见问题
+**Q：编译时报如下错误**
+```
+    for abi_item in self.abi_object['abi']:
+TypeError: list indices must be integers, not str
+```
+A：产生该问题的原因是使用了错误的输入文件。自动生成合约需要的JSON文件为编译器生成的完整JSON文件，如果仅仅拷贝ABI部分的内容自己创建一个JSON的话，需要在最外层增加ABI。具体格式可以参考：  
+https://github.com/aitos-io/BoAT-X-Framework/issues/355
 
 ### 手动构造合约调用
-如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。另外，因为Fabric的调用本身就非常便捷，不需要自动生成合约调用接口的工具，所以需要手动调用合约。
+如果自动生成工具无法生成C调用接口，则需要手工构造交易报文。另外，因为Fabric/hwbcs的调用本身就非常便捷，不需要自动生成合约调用接口的工具，所以需要手动调用合约。
 
 手工构造交易需要遵循具体区块链协议的ABI接口。
 
@@ -964,14 +983,16 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
 
 **例3：Hyperledger Fabric交易构造**
 - **步骤1** 调用BoatHlfabricTxInit()进行交易初始化，其中参数根据实际使用进行设置。
-- **步骤2** 调用BoatHlfabricTxSetTimestamp()设置时间戳，实时时间通过硬件相应功能获取。
-- **步骤3** 设置交易参数。  
+- **步骤2** 如果节点自动查询功能没有开启，调用BoatHlfabricWalletSetNetworkInfo()进行网络参数设置。
+- **步骤3** 调用BoatHlfabricTxSetTimestamp()设置时间戳，实时时间通过硬件相应功能获取。
+- **步骤4** 如果节点自动查询功能开启，调用BoatHlfabricDiscoverySubmit()获取当前联盟链中所有节点信息。
+- **步骤5** 设置交易参数。  
     使用demo_fabric_abac.c中的代码举例：  
     ```
     result = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
-    ```  
+    ```
     Fabric所有的函数调用输入数据均为string类型。拿上述代码来说，"invoke"是abac链码中的函数名。"a","b","10"均为该函数的相应的三个输入，不论链码中的相应变量是什么类型，均以string的形视作为输入。这也是不需要自动生成合约调用接口工具的原因。  
-- **步骤4** 发送交易。
+- **步骤6** 发送交易。
   - 对于改变区块链状态的合约调用，调用BoatHlfabricTxSubmit函数：
     ```
     BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr);
@@ -981,7 +1002,29 @@ result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
     ```
     BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr);
     ```
-  当返回的结果为BOAT_SUCCESS时，说明调用成功。
+    当返回的结果为BOAT_SUCCESS时，说明调用成功。
+
+**例4：HW-BCS交易构造**
+- **步骤1** BoatHwbcsTxInit()进行交易初始化，其中参数根据实际使用进行设置。
+- **步骤2** 调用BoatHwbcsWalletSetNetworkInfo()进行网络参数设置。
+- **步骤3** 调用BoatHwbcsTxSetTimestamp()设置时间戳，实时时间通过硬件相应功能获取。
+- **步骤4** 设置交易参数。  
+    使用demo_hw_bcs.c中的代码举例：  
+    ```
+    result = BoatHwbcsTxSetArgs(&tx_ptr, "initMarble", "a","1", NULL, NULL);
+    ```
+    hwbcs所有的函数调用输入数据均为string类型。拿上述代码来说，"initMarble"是hw链码中的函数名。"a","1"均为该函数的相应的两个输入，不论链码中的相应变量是什么类型，均以string的形视作为输入。这也是不需要自动生成合约调用接口工具的原因。  
+- **步骤5** 发送交易。
+  - 对于改变区块链状态的合约调用，调用BoatHwbcsTxSubmit函数：
+    ```
+    BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr);
+    ```
+
+  - 对于不改变区块链状态的合约调用，调用BoatHwbcsTxEvaluate合约函数：
+    ```
+    BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr);
+    ```
+    当返回的结果为BOAT_SUCCESS时，说明调用成功。
 
 ## SDK往RTOS移植的建议
 若将SDK移植到RTOS上，一般应遵循以下几点:

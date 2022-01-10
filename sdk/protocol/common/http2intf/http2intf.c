@@ -22,24 +22,9 @@
 /* self header include */
 #include "boatconfig.h"
 
-#if PROTOCOL_USE_HLFABRIC == 1
-
 #include "boatplatform_internal.h"
 #include "http2intf.h"
-#include "protocolapi/api_hlfabric.h"
 /* protos header include */
-#include "common/common.pb-c.h"
-#include "peer/chaincode.pb-c.h"
-#include "peer/proposal.pb-c.h"
-#include "msp/identities.pb-c.h"
-#include "peer/transaction.pb-c.h"
-#include "peer/proposal_response.pb-c.h"
-#include "orderer/cluster.pb-c.h"
-#include "discovery/protocol.pb-c.h"
-
-// BUINT32 http2Reslen = 0;
-// BUINT32 http2Reallen = 0;
-// BUINT8 *http2ResData;
 
 //! xx
 #define MAKE_NV(K, V)                                                                          \
@@ -63,7 +48,7 @@ __BOATSTATIC ssize_t send_callback(nghttp2_session *session, const uint8_t *data
 	BSINT32 sendLen;
 	http2IntfContext *http2Context = (http2IntfContext *)user_data;
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1)
 	sendLen = BoatSend(http2Context->sockfd, http2Context->tlsContext, data, length, NULL);
 #else
 	sendLen = BoatSend(http2Context->sockfd, NULL, data, length, NULL);
@@ -87,7 +72,7 @@ __BOATSTATIC ssize_t recv_callback(nghttp2_session *session, uint8_t *buf,
 	BSINT32 recvLen;
 	http2IntfContext *http2Context = (http2IntfContext *)user_data;
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1)
 	recvLen = BoatRecv(http2Context->sockfd, http2Context->tlsContext, buf, length, NULL);
 #else
 	recvLen = BoatRecv(http2Context->sockfd, NULL, buf, length, NULL);
@@ -155,14 +140,25 @@ __BOATSTATIC int on_data_chunk_recv_callback(nghttp2_session *session, uint8_t f
 	http2IntfContext *http2Context = (http2IntfContext *)user_data;
 	// Protos__ProposalResponse *proposalResponse = NULL;
 	// Orderer__SubmitResponse *submitResponse = NULL;
-	BoatHlfabricEndorserResponse *parsePtr = NULL;
+	Http2Response *parsePtr = NULL;
 	uint8_t *temp = NULL;
-	parsePtr = (BoatHlfabricEndorserResponse *)http2Context->parseDataPtr;
-	if (parsePtr->httpResLen != 0)
+	parsePtr = (Http2Response *)http2Context->parseDataPtr;
+	if (parsePtr == NULL)
 	{
-		temp = BoatMalloc(parsePtr->httpResLen);
-		memcpy(temp, parsePtr->http2Res, parsePtr->httpResLen);
-		BoatFree(parsePtr->http2Res);
+		parsePtr = BoatMalloc(sizeof(Http2Response));
+		parsePtr->httpResLen = 0;
+	}
+	else
+	{
+		if (parsePtr->httpResLen != 0)
+		{
+			temp = BoatMalloc(parsePtr->httpResLen);
+			memcpy(temp, parsePtr->http2Res, parsePtr->httpResLen);
+			if(parsePtr->http2Res != NULL){
+			BoatFree(parsePtr->http2Res);
+			}
+
+		}
 	}
 	parsePtr->http2Res = BoatMalloc(parsePtr->httpResLen + len);
 	if (parsePtr->httpResLen != 0)
@@ -213,7 +209,7 @@ __BOATSTATIC int on_stream_close_callback(nghttp2_session *session, int32_t stre
 {
 	http2IntfContext *http2Context = (http2IntfContext *)user_data;
 	nghttp2_session_terminate_session(session, 0);
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1)
 	BoatClose(http2Context->sockfd, http2Context->tlsContext, NULL);
 #else
 	BoatClose(http2Context->sockfd, NULL, NULL);
@@ -232,35 +228,35 @@ http2IntfContext *http2Init(void)
 	if (NULL == http2Context)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, http2Init_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, http2Init_exception);
 	}
 	http2Context->session = NULL;
 	http2Context->nodeUrl = NULL;
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1)
 	http2Context->hostName = NULL;
 	http2Context->tlsCAchain = NULL;
 	http2Context->tlsContext = BoatMalloc(sizeof(TTLSContext));
 	if (http2Context->tlsContext == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to allocate TTLSContext.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, http2Init_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, http2Init_exception);
 	}
 #endif
 	http2Context->sendBuf.field_len = 0;
 	http2Context->sendBuf.field_ptr = NULL;
 	http2Context->sockfd = 0;
-	http2Context->type = HLFABRIC_TYPE_PROPOSAL;
+	http2Context->type = 0;
 	http2Context->parseDataPtr = NULL;
 
 	/* http2Context->nodeUrl initial */
 	//DO NOTHING
 
 	/* http2Context->sendBuf initial */
-	http2Context->sendBuf.field_ptr = BoatMalloc(BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN);
+	http2Context->sendBuf.field_ptr = BoatMalloc(BOAT_HTTP2_SEND_BUF_MAX_LEN);
 	if (NULL == http2Context->sendBuf.field_ptr)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, http2Init_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, http2Init_exception);
 	}
 
 	/* boat catch handle */
@@ -283,9 +279,15 @@ void http2DeInit(http2IntfContext *http2Context)
 			nghttp2_session_del(http2Context->session);
 			http2Context->session = NULL;
 		}
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1)
 		BoatFree(http2Context->tlsContext);
 		http2Context->tlsContext = NULL;
+		if(http2Context->tlsCAchain != NULL){
+			http2Context->tlsCAchain[0].field_len = 0;
+			BoatFree(http2Context->tlsCAchain[0].field_ptr);
+			BoatFree(http2Context->tlsCAchain);
+			
+		}
 #endif
 		BoatFree(http2Context);
 		http2Context = NULL;
@@ -297,10 +299,9 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	nghttp2_data_provider data_prd;
 	nghttp2_session_callbacks *callbacks;
 	// char *pathTmp = NULL;
-	BoatHlfabricEndorserResponse *parsePtr = NULL;
+	// Http2Response *parsePtr = NULL;
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
-
 	nghttp2_nv nva[] = {MAKE_NV(":method", "POST"),
 						MAKE_NV(":scheme", "http"),
 						MAKE_NV(":path", context->pathTmp),
@@ -310,26 +311,29 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 						MAKE_NV("Accept-Encoding", "gzip, deflate"),
 						MAKE_NV("te", "trailers")};
 
-	parsePtr = (BoatHlfabricEndorserResponse *)context->parseDataPtr;
-	if (parsePtr->httpResLen != 0)
-	{
-		BoatFree(parsePtr->http2Res);
-		parsePtr->http2Res = NULL;
-	}
-	parsePtr->httpResLen = 0;
+	// parsePtr = (Http2Response *)context->parseDataPtr;
+	// if ((parsePtr != NULL) && (parsePtr->httpResLen != 0))
+	// {
+	// 	if(parsePtr->http2Res != NULL){
+	// 		BoatFree(parsePtr->http2Res);
+	// 	}
+
+	// 	parsePtr->http2Res = NULL;
+	// 	parsePtr->httpResLen = 0;
+	// }
 	/* connection establishment */
 	context->sockfd = BoatConnect(context->nodeUrl, NULL);
 	if (context->sockfd < 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatConnect failed.");
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_CONNECT_FAIL, http2SubmitRequest_exception);
 	}
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1)
 	result = BoatTlsInit(context->hostName, context->tlsCAchain, context->sockfd, context->tlsContext, NULL);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatTlsInit failed.");
-		boat_throw(BOAT_ERROR_INVALID_ARGUMENT, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_TLS_INIT_FAIL, http2SubmitRequest_exception);
 	}
 #endif
 	if (context->session != NULL)
@@ -350,26 +354,26 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "submit settings failed.");
-		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_INTERNAL + result, http2SubmitRequest_exception);
 	}
 	data_prd.read_callback = data_source_read_callback;
 	result = nghttp2_submit_request(context->session, NULL, nva, sizeof(nva) / sizeof(nva[0]), &data_prd, NULL);
 	if (result < BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
-		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_INTERNAL + result, http2SubmitRequest_exception);
 	}
 	result = nghttp2_session_send(context->session);
 	if (result < BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
-		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_INTERNAL + result, http2SubmitRequest_exception);
 	}
 	result = nghttp2_session_recv(context->session);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
-		boat_throw(BOAT_ERROR, http2SubmitRequest_exception);
+		boat_throw(BOAT_ERROR_HTTP2_INTERNAL + result, http2SubmitRequest_exception);
 	}
 	result = BOAT_SUCCESS;
 	boat_catch(http2SubmitRequest_exception)
@@ -379,4 +383,3 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	}
 	return result;
 }
-#endif /* end of PROTOCOL_USE_HLFABRIC */

@@ -36,8 +36,8 @@
 
 
 
-BOAT_RESULT  BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 inputLen, 
-				      BUINT8 *hashed, BUINT8 *hashedLen, void *rsvd )
+BOAT_RESULT BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 inputLen, 
+				     BUINT8 *hashed, BUINT8 *hashedLen, void *rsvd)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
@@ -45,7 +45,7 @@ BOAT_RESULT  BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 i
 	if (( hashed == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'hashed' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
 	if (type == BOAT_HASH_KECCAK256)
@@ -67,7 +67,7 @@ BOAT_RESULT  BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 i
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "unknown boat hash algorithm type.");
-		result = BOAT_ERROR_INVALID_ARGUMENT;
+		result = BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	return result;

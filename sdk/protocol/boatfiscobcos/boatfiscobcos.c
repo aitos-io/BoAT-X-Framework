@@ -72,7 +72,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "<tx_ptr> cannot be null.");
-        boat_throw(BOAT_ERROR_INVALID_ARGUMENT, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, FiscobcosSendRawtx_cleanup);
     }
 
     // In case the transaction should fail, tx_hash.field_len is initialized to 0
@@ -82,7 +82,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize Tx RLP objecte.");
-        boat_throw(BOAT_ERROR_OUT_OF_MEMORY, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_LIST_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
     /**************************************************************************
@@ -95,14 +95,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize nonce RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &nonce_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append nonce to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
     // Encode gasprice
@@ -112,14 +112,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize gasprice RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &gasprice_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append gasprice to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     // Encode gaslimit
@@ -129,14 +129,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize gaslimit RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &gaslimit_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append gaslimit to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 	
 	// Encode blocklimit
@@ -146,14 +146,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize blocklimit RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &blocklimit_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append blocklimit to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     // Encode recipient
@@ -163,14 +163,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize recipient RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &recipient_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append recipient to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
 
@@ -181,14 +181,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize value RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &value_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append value to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
     	BoatLog_hexdump( BOAT_LOG_VERBOSE, "tx_ptr->rawtx_fields.data.field :", 
@@ -200,14 +200,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize data RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &data_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append data to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 	
 	// Encode chainid
@@ -217,14 +217,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize chainid RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &chainid_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append chainid to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 	
 	// Encode groupid
@@ -234,14 +234,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize groupid RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &groupid_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append groupid to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 	
 	// Encode extraData
@@ -252,14 +252,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize extraData RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     result = RlpEncoderAppendObjectToList(&tx_rlp_object, &extraData_rlp_object);
     if (result < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append extraData to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
     // Encode Tx RLP LIST
@@ -273,7 +273,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     else
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to encode Tx.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
     /**************************************************************************
@@ -300,7 +300,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to BoatSignature signature.");
-        boat_throw(BOAT_ERROR_GEN_SIGNATURE_FAILED, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
     // assign signature value
@@ -340,14 +340,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to re-initialize v RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
 	v_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &v_rlp_object);  
     if (v_index < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to replace v in Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
     // Re-encode r
@@ -357,14 +357,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to re-initialize r RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
 	r_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &r_rlp_object);
     if (r_index < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to replace r in Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
     // Re-encode s
@@ -374,14 +374,14 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to re-initialize s RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
 	s_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &s_rlp_object); 
     if (s_index < BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to replace s in Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
     }
 
     // Re-encode Tx RLP LIST
@@ -395,7 +395,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     else
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to re-encode Tx.");
-        boat_throw(BOAT_ERROR_RLP_ENCODING_FAIL, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_RLP_ENCODER_FAIL, FiscobcosSendRawtx_cleanup);
     }
     
     // Allocate memory for RLP stream HEX string
@@ -406,7 +406,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     if (rlp_stream_hex_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Unable to dynamically allocate memory to store RLP HEX string.");
-        boat_throw(BOAT_ERROR_OUT_OF_MEMORY, FiscobcosSendRawtx_cleanup);
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, FiscobcosSendRawtx_cleanup);
     }
 
     // To save memory, re-use rlp_stream_hex_str to print debug information
@@ -450,15 +450,15 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
 	
     tx_hash_str = web3_fiscobcos_sendRawTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
 												    tx_ptr->wallet_ptr->network_info.node_url_ptr,
-												    &param_fiscobcos_sendRawTransaction);
+												    &param_fiscobcos_sendRawTransaction,&result);
     if (tx_hash_str == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
-		boat_throw(BOAT_ERROR_RPC_FAILED, FiscobcosSendRawtx_cleanup);
+		boat_throw(result, FiscobcosSendRawtx_cleanup);
     }
 
-    result = BoatFiscobcosPraseRpcResponseResult(tx_hash_str, "", 
-											&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    result = BoatFiscobcosPraseRpcResponseStringResult(tx_hash_str,
+											           &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
     if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");
@@ -490,18 +490,4 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     return result;
 }
 
-
-BOAT_RESULT FiscobcosSendRawtxWithReceipt(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
-{
-    BOAT_RESULT result = BOAT_ERROR;
-
-    result = FiscobcosSendRawtx(tx_ptr);
-
-    if (result == BOAT_SUCCESS)
-    {
-        result = BoatFiscobcosGetTransactionReceipt(tx_ptr);
-    }
-
-    return result;
-}
 #endif /* end of PROTOCOL_USE_FISCOBCOS */

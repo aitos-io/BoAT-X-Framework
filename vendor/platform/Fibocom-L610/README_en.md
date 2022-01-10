@@ -40,7 +40,7 @@ After copying these files, the directory structure should look like:
 
 ## File Modification
 
-### 1. Add BoAT-X Framework libraries path
+### 1. Add BoAT-X Framework static libraries .a files onto L610 platform
 
 Open `<L610 Root>/cmake/toolchain-gcc.cmake`.  
 Add the following two lines as below:
@@ -53,7 +53,7 @@ Add the following two lines as below:
 Open `<L610 Root>/CMakeLists.txt`.  
 Find include_directories(xxx), add the following content in the last new line:
 
-    include_directories(BoAT-X-Frameworkt/include BoAT-X-Frameworkt/include/protocolapi)
+    include_directories(BoAT-X-Frameworkt/include BoAT-X-Frameworkt/include/protocolapi BoAT-X-Framework/vendor/platform/include)
 
 
 ### 3. Add the link to the BoAT-X-Framework libs
@@ -100,9 +100,7 @@ In curly braces below `if(CONFIG_APPIMG_LOAD_FLASH)`,find `add_appimg(${target} 
    Open a Linux shell and build the demo:
 
       cd <L610 Root>
-      cd out
-      rm -r appimage_release//The files generated on the local PC must be deleted first
-      cd ..
+      rm -r out//The files generated on the local PC must be deleted first
       . tools/core_launch.sh
       cout
       cmake ../.. -G Ninja

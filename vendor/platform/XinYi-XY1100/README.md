@@ -3,7 +3,7 @@
 
 ## 一、前言
 
-本文档说明如何在XinYi-XY1100开发环境中整合BoAT-X-Framework，编译BoAT-X-Framework静态库，以及生成demo程序。
+本文档说明如何在XinYi-XY1100开发环境中整合BoAT-X-Framework、编译BoAT-X-Framework静态库以及生成demo程序。
 
 
 ## 二、拷贝文件

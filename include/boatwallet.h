@@ -101,6 +101,7 @@ typedef struct TBoatWalletPriKeyCtx_config
 	                                                //!< free it after BoatWalletCreate invoked. 
 													//!< @note For content of type string, such as PEM format data, the length includes 
                                                     //!< the terminating null byte.
+    BBOOL                    load_existed_wallet;    //false : need creat key by boat ; true : not need creat key
 }BoatWalletPriKeyCtx_config;
 
 
@@ -114,7 +115,7 @@ typedef struct TBoatWalletList
 }BoatWalletList;
 
 
-#define BOAT_MAX_WALLET_NUM 5
+#define BOAT_MAX_WALLET_NUM 6
 //!@brief BoAT IoT SDK Context
 typedef struct TBoatIotSdkContext
 {
@@ -134,6 +135,7 @@ extern "C" {
  * @details
  *   This function initialize global context of Boat IoT SDK.
  *   \n BoatIotSdkInit() MUST be called before any use of BoAT IoT SDK per process.
+ *   BoatIotSdkInit() MUST be called only once unless BoatIotSdkDeInit() is called.
  *   BoatIotSdkDeInit() MUST be called after use of BoAT IoT SDK.
  *
  * @param This function doesn't take any argument.

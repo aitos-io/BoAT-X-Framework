@@ -162,7 +162,7 @@ BOAT_RESULT NwyHttpPortSetOpt(NwyHttpPortContext * nwyhttpport_context_ptr, BCHA
 {
     if( nwyhttpport_context_ptr == NULL || remote_url_str == NULL)
     {
-        return BOAT_ERROR_INVALID_ARGUMENT;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     nwyhttpport_context_ptr->remote_url_str = remote_url_str;

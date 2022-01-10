@@ -91,6 +91,7 @@ BUINT8 *BoatExpandHrp(const BCHAR *hrp, BUINT8 hrplen, BUINT8 *out)
         *(out + i) = (BUINT8)((c >> 5) & 0x07);
         *(out + i + hrplen + 1) = (BUINT8)(c & 0x1f);
     }
+    *(out + hrplen) = 0;
     return out;
 }
 
@@ -142,7 +143,7 @@ BUINT8 *BoatBech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, 
     return out;
 }
 
-BSINT32 BoatPlatONBech32Encode(const BCHAR *in, BUINT32 inlen, BCHAR *out, const BCHAR *hrp, BUINT8 hrplen)
+BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BCHAR *out, const BCHAR *hrp, BUINT8 hrplen)
 {
     if (in == NULL || hrp == NULL || out == NULL)
     {
@@ -165,7 +166,7 @@ BSINT32 BoatPlatONBech32Encode(const BCHAR *in, BUINT32 inlen, BCHAR *out, const
         return -1;
     }
 
-    BoatConvertBits((BUINT8 *)in, inlen, base32Data, 8, 5);
+    BoatConvertBits(in, inlen, base32Data, 8, 5);
 
     expandHRPData = BoatMalloc(hrplen * 2 + 1);
 
@@ -192,11 +193,11 @@ BSINT32 BoatPlatONBech32Encode(const BCHAR *in, BUINT32 inlen, BCHAR *out, const
     return hrplen + 1 + base32OutLen + 6;
 }
 
-BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BCHAR *out)
+BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BUINT8 *out)
 {
     BSINT32 separatorOffset = 0;
     BSINT32 i;
-    BSINT32 hrplen, datalen;
+    BSINT32 hrplen, datalen,outlen;
     const BCHAR *hrp;
     BUINT8 *data, *chksum, *expandHRPData;
     if (in == NULL || out == NULL)
@@ -251,12 +252,17 @@ BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BCHAR *out)
         {
             BoatLog(BOAT_LOG_NORMAL, "PlatON address checksum is incorrect.");
             BoatFree(chksum);
+            if (data != NULL)
+            {
+                BoatFree(data);
+            }
             return -1;
         }
     }
     BoatFree(chksum);
-
-    return BoatConvertBits(data, datalen, (BUINT8 *)out, 5, 8);
+    outlen = BoatConvertBits(data, datalen, (BUINT8 *)out, 5, 8);
+    BoatFree(data);
+    return outlen;
 }
 
 #endif /* end of PROTOCOL_USE_PLATON */

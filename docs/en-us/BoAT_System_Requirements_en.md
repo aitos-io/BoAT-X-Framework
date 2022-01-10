@@ -4,7 +4,7 @@
 ## Introduction
 
 ### Overview
-This article describes the system requirements for BoAT Framework (C language version) on cellular modules. BoAT is an SDK that runs on the module's application processor. For the cellular module with an OpenCPU, BoAT is linked and called by the application as a library. For cellular modules without OpenCPU,BoAT APIs will be wrapped into AT commands to works fine in host MCUs.
+This article describes the system requirements for BoAT Framework (C language version) on cellular modules. BoAT is an SDK that runs on the module's application processor. For the cellular module with an OpenCPU, BoAT is linked and called by the application as a library. For cellular modules without OpenCPU, BoAT APIs will be wrapped into AT commands to work properly in host MCUs.
 
 ### Abbreviated Terms
 |Term   |Explanation                                            |
@@ -56,7 +56,7 @@ There are no special requirements concerning the operating system. Generally, Bo
 
 1. Supports dynamic memory allocation/release. 
 2. Supports mutual exclusion (mutex) protection mechanism.
-3. Supports thread suspension for a specified duration (optional). BoAT cannot support "timeout" or "polling" functions without the support of the "thread suspension" function, while other funtioncs have no such dependency. 
+3. Supports thread suspension for a specified duration (optional). BoAT cannot support "timeout" or "polling" functions without the support of the "thread suspension" function, while other functions have no such dependency. 
 4. From the candidate random number generators list, select to support at least one type in the order of priority: <br>
    (1) TRNG, true random number generator (requires hardware support) <br>
    (2) CSPRNG, a cryptographically secure pseudo-random number generator. For Linux, this capability can be provided by the OpenSSL library <br>
@@ -85,7 +85,7 @@ The communication protocol follows the operator's requirements if the device can
 
 If the application processor of the cellular module supports the TEE (Trusted Execution Environment), the TEE can be used to protect sensitive data such as keys, signatures as well as sensitive processes like encryption. The TEE should support at least the following capabilities:
 
-1. Allowing customers to develop a TA (Trusted Application) . For example, some necessary keys are offered.
+1. Allowing customers to develop a TA (Trusted Application). For example, some necessary keys are offered.
 2. Supporting Secure Boot, fuse, etc.
 3. Support for secure storage
 

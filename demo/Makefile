@@ -3,8 +3,8 @@
 # Generate sub-directory list
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/demo
 
-.PHONY: all demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs
-all: $(OBJECTS_DIR) demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs
+.PHONY: all demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs demo_chainmaker
+all: $(OBJECTS_DIR) demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs demo_chainmaker
 
 demo_ethereum:
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
@@ -36,6 +36,11 @@ ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_hw_bcs all	
 endif
 
+demo_chainmaker:
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
+	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker all	
+endif
+
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
 
@@ -46,4 +51,5 @@ clean:
 	make -C $(BOAT_BASE_DIR)/demo/demo_fiscobcos clean
 	make -C $(BOAT_BASE_DIR)/demo/demo_fabric clean
 	make -C $(BOAT_BASE_DIR)/demo/demo_hw_bcs clean
+	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker clean
 	-$(BOAT_RM) $(BOAT_BUILD_DIR)/demo

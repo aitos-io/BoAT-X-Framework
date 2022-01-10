@@ -26,11 +26,13 @@
 #include "boattypes.h"
 #include "boatutility.h"
 
-#include "sha3.h"
+#include "sha2.h"
+#include "keccak.h"
 
 /* net releated include */
 #include <sys/types.h>
 #include <string.h>
+#include <time.h>
 
 BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 inputLen, 
 				       BUINT8* hashed, BUINT8* hashedLen, void* rsvd )
@@ -41,7 +43,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
 	if(  hashed == NULL  )
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "param which 'hashed' can't be NULL." );
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
 	if( type == BOAT_HASH_KECCAK256 )
@@ -54,7 +56,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
 	}
 	else if( type == BOAT_HASH_SHA256 )
 	{
-		sha3_256( input, inputLen, hashed );
+		sha256_Raw( input, inputLen, hashed );
 		if( hashedLen != NULL )
 		{
 			*hashedLen = 32;
@@ -63,7 +65,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
 	else
 	{
 		BoatLog( BOAT_LOG_CRITICAL, "unknown boat hash algorithm type." );
-		result = BOAT_ERROR_INVALID_ARGUMENT;
+		result = BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	return result;
@@ -85,4 +87,11 @@ void BoatFree(void *mem_ptr)
 void BoatSleep(BUINT32 second)
 {
     sleep(second);
+}
+
+BUINT64 BoatGetTimes()
+{
+	BUINT64 timesec = 0;
+	time(&timesec);
+	return timesec;
 }

@@ -58,6 +58,7 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BoatHwbcsEndorserResponse *parsePtr = NULL;
+	Http2Response fabricHttp2res = {0,NULL};
 	Common__Transaction *proposalResponse = NULL;
 	Common__Response *resData = NULL;
 	Common__TxPayload *resPayload = NULL;
@@ -73,14 +74,21 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
+	if(tx_ptr->evaluateRes.httpResLen != 0){
+		if(tx_ptr->evaluateRes.http2Res != NULL){
+			BoatFree(tx_ptr->evaluateRes.http2Res);
+		}
+		tx_ptr->evaluateRes.httpResLen = 0;
+	}
+
 
 	result = hwbcsProposalTransactionPacked(tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, BoatHwbcsTxProposal_exception);
 	}
 	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL)
 	{
@@ -116,11 +124,10 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 #endif
 					tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
 
-					tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
+					// tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
 
-					parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
+					tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &(fabricHttp2res);
 
-					tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_HWBCS;
 					tx_ptr->wallet_ptr->http2Context_ptr->pathTmp = "/nodeservice.Contract/Invoke";
 					result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 					if (result != BOAT_SUCCESS)
@@ -128,12 +135,12 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 						continue;
 					}
 
-					proposalResponse = common__transaction__unpack(NULL, parsePtr->httpResLen - 5, parsePtr->http2Res + 5);
-					if (parsePtr->httpResLen != 0)
+					proposalResponse = common__transaction__unpack(NULL, fabricHttp2res.httpResLen - 5, fabricHttp2res.http2Res + 5);
+					if (fabricHttp2res.httpResLen != 0)
 					{
-						BoatFree(parsePtr->http2Res);
+						BoatFree(fabricHttp2res.http2Res);
 					}
-					parsePtr->httpResLen = 0;
+					fabricHttp2res.httpResLen = 0;
 
 					if ((proposalResponse != NULL) && (proposalResponse->n_approvals != 0) && (proposalResponse->approvals != NULL))
 					{
@@ -165,9 +172,13 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 						parsePtr->response[parsePtr->responseCount].payload.field_len = resData->payload.len;
 						parsePtr->response[parsePtr->responseCount].payload.field_ptr = BoatMalloc(resData->payload.len);
 						memcpy(parsePtr->response[parsePtr->responseCount].payload.field_ptr, resData->payload.data, resData->payload.len);
-						parsePtr->httpResLen = commondTxData->response->payload.len;
-						parsePtr->http2Res = BoatMalloc(parsePtr->httpResLen);
-						memcpy(parsePtr->http2Res, commondTxData->response->payload.data, commondTxData->response->payload.len);
+						tx_ptr->evaluateRes.httpResLen = commondTxData->response->payload.len;
+						tx_ptr->evaluateRes.http2Res = BoatMalloc(tx_ptr->evaluateRes.httpResLen);
+						memcpy(tx_ptr->evaluateRes.http2Res,commondTxData->response->payload.data,commondTxData->response->payload.len);
+
+						// parsePtr->http2res.httpResLen = commondTxData->response->payload.len;
+						// parsePtr->http2res.http2Res = BoatMalloc(parsePtr->http2res.httpResLen);
+						// memcpy(parsePtr->http2res.http2Res, commondTxData->response->payload.data, commondTxData->response->payload.len);
 						// parsePtr->http2Res =  commondTxData->response->payload.data;
 						parsePtr->responseCount++;
 						common__common_tx_data__free_unpacked(commondTxData, NULL);
@@ -228,13 +239,12 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 
 			tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
 
-			tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->endorserResponse;
+			tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &fabricHttp2res;
 
 			// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest 111 send :",
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 			// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
 			parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
-			tx_ptr->wallet_ptr->http2Context_ptr->chainType = HLCHAIN_TYPE_HWBCS;
 			tx_ptr->wallet_ptr->http2Context_ptr->pathTmp = "/nodeservice.TransactionSender/SendTransaction";
 			result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 			if (result != BOAT_SUCCESS)
@@ -243,8 +253,13 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 				continue;
 			}
 
-			resData = common__response__unpack(NULL, parsePtr->httpResLen - 7, parsePtr->http2Res + 7);
+			resData = common__response__unpack(NULL, fabricHttp2res.httpResLen - 7, fabricHttp2res.http2Res + 7);
 			BoatLog(BOAT_LOG_NORMAL, "[http2]common__response__unpack respond status : %d .", resData->status);
+			if (fabricHttp2res.httpResLen != 0)
+			{
+				BoatFree(fabricHttp2res.http2Res);
+			}
+			fabricHttp2res.httpResLen = 0;
 			if (resData->status == COMMON__STATUS__HWBCS__SUCCESS)
 			{
 				result = BOAT_SUCCESS;
@@ -287,7 +302,7 @@ BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo(BoatHwbcsWallet *wallet_ptr,
 	if (wallet_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* initialization */
@@ -304,7 +319,7 @@ BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo(BoatHwbcsWallet *wallet_ptr,
 	if (wallet_ptr->tlsClinet_info.cert.field_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHwbcsWalletSetTlsInfo_exception);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsWalletSetTlsInfo_exception);
 	}
 	memcpy(wallet_ptr->tlsClinet_info.cert.field_ptr, certContent.content, certContent.length);
 	wallet_ptr->tlsClinet_info.cert.field_len = certContent.length;
@@ -370,7 +385,7 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 	if ((tx_ptr == NULL) || (wallet_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments 'tx_ptr' or 'wallet_ptr' cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* tx_ptr instance reset */
@@ -434,7 +449,7 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 			if (*paramDstList[i] == NULL)
 			{
 				BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-				boat_throw(BOAT_ERROR_OUT_OF_MEMORY, BoatHlfabricTxInit_exception);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxInit_exception);
 			}
 			memcpy(*paramDstList[i], paramSrcList[i], stringLen + 1);
 		}
@@ -494,12 +509,12 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr)
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	if (tx_ptr->var.args.args[0] == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments args[0] cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Evaluate will execute...");
@@ -508,9 +523,6 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr)
 	tx_ptr->var.type = HWBCS_TYPE_PROPOSAL;
 	// urlTmp[0] = tx_ptr->wallet_ptr->network_info.endorser[0];
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_EVALUATE);
-	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
-						 tx_ptr->endorserResponse.http2Res,
-						 tx_ptr->endorserResponse.httpResLen);
 
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
@@ -538,12 +550,12 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	if (tx_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	if (tx_ptr->var.args.args[0] == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments args[0] cannot be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
@@ -553,7 +565,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
-		return BOAT_ERROR;
+		return result;
 	}
 	BoatLog(BOAT_LOG_NORMAL, "Submit proposal OK ...");
 	/* invoke-step2: submit transaction to orderer */
@@ -561,7 +573,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
-		return BOAT_ERROR;
+		return result;
 	}
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)

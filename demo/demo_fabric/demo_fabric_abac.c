@@ -25,127 +25,76 @@
 
 
 const BCHAR *fabric_client_demokey = "-----BEGIN PRIVATE KEY-----\n"
-"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgExGSgCJJjJNY+rm5\n"
-"PzSIdT9T0yq5HeMZfLWGIv4MMgmhRANCAAQjz9vBAzGon94IO318sSEsLPzv/hUG\n"
-"xpmVtgyP9M4kZiofXhHRFpd55yv1oSZVJ1qayXF72dVa3N1Efq3L6YPr\n"
+"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgC7i8hacnI2wqQwk7\n"
+"VdgA/o8v2QtsXqbahPi69og5tZShRANCAAS7Ml9eVj84iFqapPim8w/HWdg0mQJe\n"
+"TEnR3lnc9HYpX9kKFv2fqr7jSjEgHnkl8b2jAhnxT5xdoR2oVXDzcwli\n"
 									 "-----END PRIVATE KEY-----\n";
 
 const BCHAR *fabric_client_democert = "-----BEGIN CERTIFICATE-----\n"
-"MIICKzCCAdGgAwIBAgIRALjTWyXqQ91VfNkU3M4twDcwCgYIKoZIzj0EAwIwczEL\n"
+"MIICKjCCAdGgAwIBAgIRAI0L3xoUFFr70L1cOulWdKMwCgYIKoZIzj0EAwIwczEL\n"
 "MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\n"
 "cmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2Nh\n"
-"Lm9yZzEuZXhhbXBsZS5jb20wHhcNMjEwODI0MDI0MDAwWhcNMzEwODIyMDI0MDAw\n"
+"Lm9yZzEuZXhhbXBsZS5jb20wHhcNMjExMjI0MDI1ODAwWhcNMzExMjIyMDI1ODAw\n"
 "WjBsMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMN\n"
 "U2FuIEZyYW5jaXNjbzEPMA0GA1UECxMGY2xpZW50MR8wHQYDVQQDDBZVc2VyMUBv\n"
-"cmcxLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEI8/bwQMx\n"
-"qJ/eCDt9fLEhLCz87/4VBsaZlbYMj/TOJGYqH14R0RaXeecr9aEmVSdamslxe9nV\n"
-"WtzdRH6ty+mD66NNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYD\n"
-"VR0jBCQwIoAgPimayAehE+5QzYJ97IrO6+0If9ytCf9CmoQERy15+PYwCgYIKoZI\n"
-"zj0EAwIDSAAwRQIhAJbvy8Xf9LR2Ms4xVqpBrokvumKuqV1Er9zsH9xU4EtlAiBi\n"
-"7/vhTB1ciEDv1xAl/MGeCv5Fw2/kTuhWaqnweoljQA==\n"
+"cmcxLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEuzJfXlY/\n"
+"OIhamqT4pvMPx1nYNJkCXkxJ0d5Z3PR2KV/ZChb9n6q+40oxIB55JfG9owIZ8U+c\n"
+"XaEdqFVw83MJYqNNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYD\n"
+"VR0jBCQwIoAgI+E696/ogzYugT7xV3JcmrPctsc+cn+bIaonLnqfMW0wCgYIKoZI\n"
+"zj0EAwIDRwAwRAIgeBdvFkP2EDUZ+vCK4M7I439moFgCvT40V4rOiM7pGLQCIGmz\n"
+"wQKqZqrS+jyM1rv6dhaf0K0fz3CMvXrfKlf0NG89\n"
 									  "-----END CERTIFICATE-----\n";
 
 const BCHAR *fabric_org1_tlsCert = "-----BEGIN CERTIFICATE-----\n"
-"MIICWDCCAf6gAwIBAgIRAMLHCXEQpMlZvIgUacdL1f8wCgYIKoZIzj0EAwIwdjEL\n"
+"MIICVzCCAf6gAwIBAgIRAKTtoztI4X22hzMVl9iX4XIwCgYIKoZIzj0EAwIwdjEL\n"
 "MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\n"
 "cmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHzAdBgNVBAMTFnRs\n"
-"c2NhLm9yZzEuZXhhbXBsZS5jb20wHhcNMjEwODI0MDI0MDAwWhcNMzEwODIyMDI0\n"
-"MDAwWjB2MQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UE\n"
+"c2NhLm9yZzEuZXhhbXBsZS5jb20wHhcNMjExMjI0MDI1ODAwWhcNMzExMjIyMDI1\n"
+"ODAwWjB2MQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UE\n"
 "BxMNU2FuIEZyYW5jaXNjbzEZMBcGA1UEChMQb3JnMS5leGFtcGxlLmNvbTEfMB0G\n"
 "A1UEAxMWdGxzY2Eub3JnMS5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49\n"
-"AwEHA0IABCOyMlRJgG6eXUEYlgiclBDQNMlhN0jHuc+ryPpZwEOdOY7SxOZwQlf3\n"
-"vPUP2shVBWzb6m6LQcCj3pb/KK8SaY2jbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNV\n"
+"AwEHA0IABL3qQfhWhTm7RleBJGlhJEAKl2qhaQ09yEw9NWfOEndyZxJBIXBjrieV\n"
+"tbQqf1Mb1e/QmPm/G7+6xB7QH8TGsUijbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNV\n"
 "HSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwDwYDVR0TAQH/BAUwAwEB/zApBgNV\n"
-"HQ4EIgQg49uDUbku1O1WGsTBuGxDhXXqnzM1qquJ60hQzJdDkCMwCgYIKoZIzj0E\n"
-"AwIDSAAwRQIhALP1edBV25XT0JbahsT9DmFHcG7jj4JnzW+T7P1lWSJiAiBOt1IY\n"
-"lzlTjaqaqtRYCUNOLH0awrZh4eegEU/GqsloGA==\n"
+"HQ4EIgQg5MQFxUeKY3+lv9Lf2XZYwTD+IRH9pEUEpQN5B3odpN8wCgYIKoZIzj0E\n"
+"AwIDRwAwRAIgZxj4KIa/okvdnr3Vx8fFlCMsVY5MA96oDQoAxrluIBMCIGsp/zjG\n"
+"AFzgDUuOCXh1pq3fkKvSipwtbL8FX/QKmfHD\n"
 								   "-----END CERTIFICATE-----\n";
 
 const BCHAR *fabric_org2_tlsCert = "-----BEGIN CERTIFICATE-----\n"
-"MIICVzCCAf2gAwIBAgIQB8uVnnAtHwXeE/cEN0r62jAKBggqhkjOPQQDAjB2MQsw\n"
+"MIICVzCCAf2gAwIBAgIQJ8qLnN5Lzk9LWwIVSJVMJjAKBggqhkjOPQQDAjB2MQsw\n"
 "CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\n"
 "YW5jaXNjbzEZMBcGA1UEChMQb3JnMi5leGFtcGxlLmNvbTEfMB0GA1UEAxMWdGxz\n"
-"Y2Eub3JnMi5leGFtcGxlLmNvbTAeFw0yMTA4MDYwNjAzMDBaFw0zMTA4MDQwNjAz\n"
+"Y2Eub3JnMi5leGFtcGxlLmNvbTAeFw0yMTEyMjQwMjU4MDBaFw0zMTEyMjIwMjU4\n"
 "MDBaMHYxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH\n"
 "Ew1TYW4gRnJhbmNpc2NvMRkwFwYDVQQKExBvcmcyLmV4YW1wbGUuY29tMR8wHQYD\n"
 "VQQDExZ0bHNjYS5vcmcyLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0D\n"
-"AQcDQgAEhu/t0amzDHLt3p3D4mr7eO4wZLp98BKT6VgpswuMg4Sp/324pkT5Pb6c\n"
-"TogzGI3IZ5xDiYGrJ2lreaQ+bqOqKqNtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1Ud\n"
+"AQcDQgAEJh9kb3uL2rJ5QDjNN1nlVWDVRqBYIw2Rz7wPT2UBBkZQK3+wm3fvFVYN\n"
+"/yIRDUXxTHOMdVMFGWhtvYvD0n+0JKNtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1Ud\n"
 "JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud\n"
-"DgQiBCA/Ib/XHEMn9g9ZFgulJOSXI7rQLwYYyi2GfGd/7ixi2TAKBggqhkjOPQQD\n"
-"AgNIADBFAiEAn0y9XaOS4qV8KWcZB/IkJvPiEIZyYwLhew6BD7BUAhUCIA5NiTi7\n"
-"DncjS2X0syhZKmZv8hIIr/CAU6Imz2VDnaHF\n"
+"DgQiBCBPIsOtEM4aVcN6ZQ69ePg1wVpOdunnuOxeaNDElaMBkjAKBggqhkjOPQQD\n"
+"AgNIADBFAiEAzwwSpX2yvzLI9WDxBmEMRqCaFP2tWSdWfbuCjGuIONACIH2atidq\n"
+"eUkmzUD2rlmbSLfTX3HS6WGheYACFd0MDWlW\n"
 								   "-----END CERTIFICATE-----\n";
-const BCHAR *fabric_org3_tlsCert = "-----BEGIN CERTIFICATE-----\n"
-"MIICVzCCAf2gAwIBAgIQTm3owgqoEpuIwtOdOX/WOTAKBggqhkjOPQQDAjB2MQsw\n"
-"CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\n"
-"YW5jaXNjbzEZMBcGA1UEChMQb3JnMy5leGFtcGxlLmNvbTEfMB0GA1UEAxMWdGxz\n"
-"Y2Eub3JnMy5leGFtcGxlLmNvbTAeFw0yMTA4MDYwNjAzMDBaFw0zMTA4MDQwNjAz\n"
-"MDBaMHYxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH\n"
-"Ew1TYW4gRnJhbmNpc2NvMRkwFwYDVQQKExBvcmczLmV4YW1wbGUuY29tMR8wHQYD\n"
-"VQQDExZ0bHNjYS5vcmczLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0D\n"
-"AQcDQgAEAo/E152lnltILiB93p+maqTuMpTzxaHPP/en56CFlXUSGCIZDxGL02PM\n"
-"Ct5baXsuMqw/BZX5IwWIGjtV6gi3r6NtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1Ud\n"
-"JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud\n"
-"DgQiBCAtUULYJM0SesyrVgIctdaXK9NoZSORlRY1j/qlO9e9CjAKBggqhkjOPQQD\n"
-"AgNIADBFAiEA+j2On3m869r/2p+LP5hAvKKnIaaQKWF7x/8dHVh7xRkCIHA4QqUy\n"
-"Ei989Jdk9ePhXHO3+4gEuqOicO/StoI4MLST\n"
-								   "-----END CERTIFICATE-----\n";	
-const BCHAR *fabric_org4_tlsCert = "-----BEGIN CERTIFICATE-----\n"
-"MIICVzCCAf2gAwIBAgIQJn/Pwk6yDecJisJDb8MA4jAKBggqhkjOPQQDAjB2MQsw\n"
-"CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\n"
-"YW5jaXNjbzEZMBcGA1UEChMQb3JnNC5leGFtcGxlLmNvbTEfMB0GA1UEAxMWdGxz\n"
-"Y2Eub3JnNC5leGFtcGxlLmNvbTAeFw0yMTA4MDYwNjAzMDBaFw0zMTA4MDQwNjAz\n"
-"MDBaMHYxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH\n"
-"Ew1TYW4gRnJhbmNpc2NvMRkwFwYDVQQKExBvcmc0LmV4YW1wbGUuY29tMR8wHQYD\n"
-"VQQDExZ0bHNjYS5vcmc0LmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0D\n"
-"AQcDQgAE9oHFN++C3aTuQ1jvcHuMThFIUCxnQV+Ifiqigk8BmtmEUSpz2RG+EAT4\n"
-"g7rmkhGDX9E7kvul6f8df4ECxhA1r6NtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1Ud\n"
-"JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud\n"
-"DgQiBCDb+6LQGU4cWmBRC4eNK0btI7VO2e23WVhnl0MhpmHv9zAKBggqhkjOPQQD\n"
-"AgNIADBFAiEAijpIZ6wITdf6QlSOngxhJ3cdJrUxYqcfd3b37Vg0E4ICIG6nV5XT\n"
-"t806m0r0UE9w4HWQaI10LKHIVGgPeTKQ2H5Q\n"
-								   "-----END CERTIFICATE-----\n";
-const BCHAR *fabric_org5_tlsCert = "-----BEGIN CERTIFICATE-----\n"
-"MIICVjCCAf2gAwIBAgIQaerg8MYuK2AMniGrFsgacDAKBggqhkjOPQQDAjB2MQsw\n"
-"CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\n"
-"YW5jaXNjbzEZMBcGA1UEChMQb3JnNS5leGFtcGxlLmNvbTEfMB0GA1UEAxMWdGxz\n"
-"Y2Eub3JnNS5leGFtcGxlLmNvbTAeFw0yMTA4MDYwNjAzMDBaFw0zMTA4MDQwNjAz\n"
-"MDBaMHYxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH\n"
-"Ew1TYW4gRnJhbmNpc2NvMRkwFwYDVQQKExBvcmc1LmV4YW1wbGUuY29tMR8wHQYD\n"
-"VQQDExZ0bHNjYS5vcmc1LmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0D\n"
-"AQcDQgAEGwaGq1V2eL6hdJnLrB5hR0wuAGzfuhJ2GmYo4LGNQEqHX1FQ75y/FsyA\n"
-"ISGrnhU36TH4ZN0Nj4ojfxcKIhm7PKNtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1Ud\n"
-"JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud\n"
-"DgQiBCDk8/soRYRNFZ/CxB20/E9N+mrCIrwX01JdHdozbIfO9zAKBggqhkjOPQQD\n"
-"AgNHADBEAiBSbnHFIwu3JZVlCDaRK86Twr8ueqLtUGAqtUU4iad5NgIgCU60BfLi\n"
-"EYAfPQBFG6GKCD6iTPl08iewQdI6p+uevJk=\n"
-								   "-----END CERTIFICATE-----\n";								   													
+							   													
 const BCHAR *fabric_order_tlsCert = "-----BEGIN CERTIFICATE-----\n"
-"MIICRDCCAeqgAwIBAgIRAP/f8u4AxR/idbaatMbOA/wwCgYIKoZIzj0EAwIwbDEL\n"
+"MIICQzCCAeqgAwIBAgIRAIarlRJamkgzt7h+aLZ4J7gwCgYIKoZIzj0EAwIwbDEL\n"
 "MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\n"
 "cmFuY2lzY28xFDASBgNVBAoTC2V4YW1wbGUuY29tMRowGAYDVQQDExF0bHNjYS5l\n"
-"eGFtcGxlLmNvbTAeFw0yMTA4MDYwNjAzMDBaFw0zMTA4MDQwNjAzMDBaMGwxCzAJ\n"
+"eGFtcGxlLmNvbTAeFw0yMTEyMjQwMjU4MDBaFw0zMTEyMjIwMjU4MDBaMGwxCzAJ\n"
 "BgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TYW4gRnJh\n"
 "bmNpc2NvMRQwEgYDVQQKEwtleGFtcGxlLmNvbTEaMBgGA1UEAxMRdGxzY2EuZXhh\n"
-"bXBsZS5jb20wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAST3UZswR3f9F5Ll7p3\n"
-"1mz0Fw32bNOpyep+MvSsttZZc8zuGN60wlLOJuT34AuvZZDTgv+N/diu5V9pGAjO\n"
-"Yyouo20wazAOBgNVHQ8BAf8EBAMCAaYwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsG\n"
-"AQUFBwMBMA8GA1UdEwEB/wQFMAMBAf8wKQYDVR0OBCIEIMd0MLKv2pTct7IxlIsH\n"
-"Adj2fl9KJFrXE+RCBsUIftfPMAoGCCqGSM49BAMCA0gAMEUCIQD6wZ2r1zV2gqV0\n"
-"t2Q95/webUnNySZP4jEJ5G65Tw2WdwIgXOsy/6WFAeyqOuZvIuyqE5K504Oo+yys\n"
-"Tj2rBd786Lw=\n"
+"bXBsZS5jb20wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQRS02uAjXsGSbYCNmw\n"
+"Roi1NA1S8a/Tg2Q9N7RKSx6N05kIXKGXUZCGzv2cPrjzaxp3RYEfV3lgTw2OgCy7\n"
+"Imleo20wazAOBgNVHQ8BAf8EBAMCAaYwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsG\n"
+"AQUFBwMBMA8GA1UdEwEB/wQFMAMBAf8wKQYDVR0OBCIEIAYq5WJ5DZlLLWSA8OLT\n"
+"tJBl6ys9Nex8wDNnceJPx3O+MAoGCCqGSM49BAMCA0cAMEQCIGoaWICEuKYQTBjA\n"
+"I74fTLgEzbphv7d2wWKc20dvTBc+AiBjKPXwCXmYSZ27zzPD4kAfDfACAyhYVX68\n"
+"WLpF8/G5cg==\n"
 								   "-----END CERTIFICATE-----\n";	
 
 
-// const BCHAR *fabric_demo_endorser1_url = "139.224.234.74:7051";
-const BCHAR * fabric_demo_endorser1_url      = "192.168.132.190:7051";
-const BCHAR *fabric_demo_endorser1_hostName = "peer0.org1.example.com";
-const BCHAR *fabric_demo_endorser2_url = "192.168.132.190:9051";
-// const BCHAR *fabric_demo_endorser2_url = "139.224.234.74:7051";
-const BCHAR *fabric_demo_endorser2_hostName = "peer0.org2.example.com";
 const BCHAR *fabric_demo_order1_url = "192.168.132.190:7050";
-// const BCHAR *fabric_demo_order1_url = "139.224.234.74:7050";
 const BCHAR *fabric_demo_order1_hostName = "orderer.example.com";
 
 const BCHAR *fabric_demo_endorser_peer0Org1_url = "192.168.132.190:7051";
@@ -158,20 +107,6 @@ const BCHAR *fabric_demo_endorser_peer0Org2_hostName = "peer0.org2.example.com";
 const BCHAR *fabric_demo_endorser_peer1Org2_url = "192.168.132.190:10051";
 const BCHAR *fabric_demo_endorser_peer1Org2_hostName = "peer1.org2.example.com";
 
-const BCHAR *fabric_demo_endorser_peer0Org3_url = "192.168.132.190:6051";
-const BCHAR *fabric_demo_endorser_peer0Org3_hostName = "peer0.org3.example.com";
-const BCHAR *fabric_demo_endorser_peer1Org3_url = "192.168.132.190:11051";
-const BCHAR *fabric_demo_endorser_peer1Org3_hostName = "peer1.org3.example.com";
-
-const BCHAR *fabric_demo_endorser_peer0Org4_url = "192.168.132.190:6061";
-const BCHAR *fabric_demo_endorser_peer0Org4_hostName = "peer0.org4.example.com";
-const BCHAR *fabric_demo_endorser_peer1Org4_url = "192.168.132.190:11061";
-const BCHAR *fabric_demo_endorser_peer1Org4_hostName = "peer1.org4.example.com";
-
-const BCHAR *fabric_demo_endorser_peer0Org5_url = "192.168.132.190:6071";
-const BCHAR *fabric_demo_endorser_peer0Org5_hostName = "peer0.org5.example.com";
-const BCHAR *fabric_demo_endorser_peer1Org5_url = "192.168.132.190:11071";
-const BCHAR *fabric_demo_endorser_peer1Org5_hostName = "peer1.org5.example.com";
 
 BoatHlfabricWallet *g_fabric_wallet_ptr;
 // DiscoverRes discoverResult;
@@ -192,30 +127,12 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	wallet_config.accountCertContent.length = strlen(fabric_client_democert) + 1;
 	memcpy(wallet_config.accountCertContent.content, fabric_client_democert, wallet_config.accountCertContent.length);
 
-	//set rootCA info
-	// wallet_config.rootCaNumber = 3;
-	// wallet_config.rootCaContent[0].length = strlen(fabric_ca1_democert) + 1;
-	// memcpy(wallet_config.rootCaContent[0].content, fabric_ca1_democert, wallet_config.rootCaContent[0].length);
-	// wallet_config.rootCaContent[1].length = strlen(fabric_ca2_democert) + 1;
-	// memcpy(wallet_config.rootCaContent[1].content, fabric_ca2_democert, wallet_config.rootCaContent[1].length);
-	// wallet_config.rootCaContent[2].length = strlen(fabric_ca3_democert) + 1;
-	// memcpy(wallet_config.rootCaContent[2].content, fabric_ca3_democert, wallet_config.rootCaContent[2].length);
-
-	//set endorser info
-	// wallet_config.endorserNumber = 2;
-	// memcpy(wallet_config.endorser[0].nodeUrl, fabric_demo_endorser1_url, strlen(fabric_demo_endorser1_url) + 1);
-	// memcpy(wallet_config.endorser[0].hostName, fabric_demo_endorser1_hostName, strlen(fabric_demo_endorser1_hostName) + 1);
-	// memcpy(wallet_config.endorser[1].nodeUrl, fabric_demo_endorser2_url, strlen(fabric_demo_endorser2_url) + 1);
-	// memcpy(wallet_config.endorser[1].hostName, fabric_demo_endorser2_hostName, strlen(fabric_demo_endorser2_hostName) + 1);
-
 #if(DISCOVERY_PEER_QUERY != 1 )
 
-	wallet_config.nodesCfg.endorserLayoutNum = 2;
+	wallet_config.nodesCfg.endorserLayoutNum = 1;
 	wallet_config.nodesCfg.layoutCfg = BoatMalloc(wallet_config.nodesCfg.endorserLayoutNum * sizeof(BoatHlfabricNodeLayoutCfg));
-	wallet_config.nodesCfg.layoutCfg[0].endorserGroupNum = 4;
-	wallet_config.nodesCfg.layoutCfg[1].endorserGroupNum = 4;
+	wallet_config.nodesCfg.layoutCfg[0].endorserGroupNum = 2;
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg = BoatMalloc(wallet_config.nodesCfg.layoutCfg[0].endorserGroupNum * sizeof(BoatHlfabricNodeGroupCfg));
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg = BoatMalloc(wallet_config.nodesCfg.layoutCfg[1].endorserGroupNum * sizeof(BoatHlfabricNodeGroupCfg));
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorserNumber = 2;
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].quantities = 1;
 	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].tlsOrgCertContent.length = strlen(fabric_org1_tlsCert);
@@ -245,91 +162,7 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].endorser[1].nodeUrl,fabric_demo_endorser_peer1Org2_url,strlen(fabric_demo_endorser_peer1Org2_url)+1);
 	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[1].endorser[1].hostName,fabric_demo_endorser_peer1Org2_hostName,strlen(fabric_demo_endorser_peer1Org2_hostName)+1);
 
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorserNumber = 2;
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].quantities = 1;
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].tlsOrgCertContent.length = strlen(fabric_org3_tlsCert);
-	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].tlsOrgCertContent.content,fabric_org3_tlsCert,strlen(fabric_org3_tlsCert));
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorser = BoatMalloc(wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorser[0].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer0Org3_url)+1);
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorser[0].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer0Org3_hostName)+1);
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorser[1].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer1Org3_url)+1);
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorser[1].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer1Org3_hostName)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorser[0].nodeUrl,fabric_demo_endorser_peer0Org3_url,strlen(fabric_demo_endorser_peer0Org3_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorser[0].hostName,fabric_demo_endorser_peer0Org3_hostName,strlen(fabric_demo_endorser_peer0Org3_hostName)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorser[1].nodeUrl,fabric_demo_endorser_peer1Org3_url,strlen(fabric_demo_endorser_peer1Org3_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[2].endorser[1].hostName,fabric_demo_endorser_peer1Org3_hostName,strlen(fabric_demo_endorser_peer1Org3_hostName)+1);
-
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorserNumber = 2;
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].quantities = 1;
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].tlsOrgCertContent.length = strlen(fabric_org5_tlsCert);
-	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].tlsOrgCertContent.content,fabric_org5_tlsCert,strlen(fabric_org5_tlsCert));
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorser = BoatMalloc(wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorser[0].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer0Org5_url)+1);
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorser[0].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer0Org5_hostName)+1);
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorser[1].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer1Org5_url)+1);
-	wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorser[1].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer1Org5_hostName)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorser[0].nodeUrl,fabric_demo_endorser_peer0Org5_url,strlen(fabric_demo_endorser_peer0Org5_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorser[0].hostName,fabric_demo_endorser_peer0Org5_hostName,strlen(fabric_demo_endorser_peer0Org5_hostName)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorser[1].nodeUrl,fabric_demo_endorser_peer1Org5_url,strlen(fabric_demo_endorser_peer1Org5_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[3].endorser[1].hostName,fabric_demo_endorser_peer1Org5_hostName,strlen(fabric_demo_endorser_peer1Org5_hostName)+1);
-
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorserNumber = 2;
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].quantities = 1;
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].tlsOrgCertContent.length = strlen(fabric_org1_tlsCert);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].tlsOrgCertContent.content,fabric_org1_tlsCert,strlen(fabric_org1_tlsCert));
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorser = BoatMalloc(wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorser[0].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer0Org1_url)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorser[0].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer0Org1_hostName)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorser[1].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer1Org1_url)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorser[1].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer1Org1_hostName)+1);	
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorser[0].nodeUrl,fabric_demo_endorser_peer0Org1_url,strlen(fabric_demo_endorser_peer0Org1_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorser[0].hostName,fabric_demo_endorser_peer0Org1_hostName,strlen(fabric_demo_endorser_peer0Org1_hostName)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorser[1].nodeUrl,fabric_demo_endorser_peer1Org1_url,strlen(fabric_demo_endorser_peer1Org1_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[0].endorser[1].hostName,fabric_demo_endorser_peer1Org1_hostName,strlen(fabric_demo_endorser_peer1Org1_hostName)+1);
-
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorserNumber = 2;
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].quantities = 1;
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].tlsOrgCertContent.length = strlen(fabric_org2_tlsCert);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].tlsOrgCertContent.content,fabric_org2_tlsCert,strlen(fabric_org2_tlsCert));
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorser = BoatMalloc(wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorser[0].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer0Org2_url)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorser[0].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer0Org2_hostName)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorser[1].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer1Org2_url)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorser[1].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer1Org2_hostName)+1);		
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorser[0].nodeUrl,fabric_demo_endorser_peer0Org2_url,strlen(fabric_demo_endorser_peer0Org2_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorser[0].hostName,fabric_demo_endorser_peer0Org2_hostName,strlen(fabric_demo_endorser_peer0Org2_hostName)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorser[1].nodeUrl,fabric_demo_endorser_peer1Org2_url,strlen(fabric_demo_endorser_peer1Org2_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[1].endorser[1].hostName,fabric_demo_endorser_peer1Org2_hostName,strlen(fabric_demo_endorser_peer1Org2_hostName)+1);
-
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorserNumber = 2;
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].quantities = 1;
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].tlsOrgCertContent.length = strlen(fabric_org4_tlsCert);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].tlsOrgCertContent.content,fabric_org4_tlsCert,strlen(fabric_org4_tlsCert));
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorser = BoatMalloc(wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorser[0].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer0Org4_url)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorser[0].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer0Org4_hostName)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorser[1].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer1Org4_url)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorser[1].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer1Org4_hostName)+1);	
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorser[0].nodeUrl,fabric_demo_endorser_peer0Org4_url,strlen(fabric_demo_endorser_peer0Org4_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorser[0].hostName,fabric_demo_endorser_peer0Org4_hostName,strlen(fabric_demo_endorser_peer0Org4_hostName)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorser[1].nodeUrl,fabric_demo_endorser_peer1Org4_url,strlen(fabric_demo_endorser_peer1Org4_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[2].endorser[1].hostName,fabric_demo_endorser_peer1Org4_hostName,strlen(fabric_demo_endorser_peer1Org4_hostName)+1);
-
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorserNumber = 2;
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].quantities = 1;
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].tlsOrgCertContent.length = strlen(fabric_org5_tlsCert);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].tlsOrgCertContent.content,fabric_org5_tlsCert,strlen(fabric_org5_tlsCert));
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorser = BoatMalloc(wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorserNumber * sizeof(BoatHlfabricNodeInfoCfg));
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorser[0].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer0Org5_url)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorser[0].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer0Org5_hostName)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorser[1].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer1Org5_url)+1);
-	wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorser[1].hostName = BoatMalloc(strlen(fabric_demo_endorser_peer1Org5_hostName)+1);		
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorser[0].nodeUrl,fabric_demo_endorser_peer0Org5_url,strlen(fabric_demo_endorser_peer0Org5_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorser[0].hostName,fabric_demo_endorser_peer0Org5_hostName,strlen(fabric_demo_endorser_peer0Org5_hostName)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorser[1].nodeUrl,fabric_demo_endorser_peer1Org5_url,strlen(fabric_demo_endorser_peer1Org5_url)+1);
-	memcpy(wallet_config.nodesCfg.layoutCfg[1].groupCfg[3].endorser[1].hostName,fabric_demo_endorser_peer1Org5_hostName,strlen(fabric_demo_endorser_peer1Org5_hostName)+1);
-
-	
+	//set orderer info
 	wallet_config.nodesCfg.orderCfg.endorserNumber = 1;
 	wallet_config.nodesCfg.orderCfg.tlsOrgCertContent.length = strlen(fabric_order_tlsCert);
 	memcpy(wallet_config.nodesCfg.orderCfg.tlsOrgCertContent.content,fabric_order_tlsCert,strlen(fabric_order_tlsCert));
@@ -338,10 +171,8 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	wallet_config.nodesCfg.orderCfg.endorser[0].nodeUrl = BoatMalloc(strlen(fabric_demo_order1_url)+1);
 	memcpy(wallet_config.nodesCfg.orderCfg.endorser[0].nodeUrl,fabric_demo_order1_url,strlen(fabric_demo_order1_url)+1);
 	memcpy(wallet_config.nodesCfg.orderCfg.endorser[0].hostName,fabric_demo_order1_hostName,strlen(fabric_demo_order1_hostName)+1);
-	//set orderer info
-	// wallet_config.ordererNumber = 1;
-	// memcpy(wallet_config.orderer[0].nodeUrl, fabric_demo_order1_url, strlen(fabric_demo_order1_url) + 1);
-	// memcpy(wallet_config.orderer[0].hostName, fabric_demo_order1_hostName, strlen(fabric_demo_order1_hostName) + 1);
+
+
 #else
 	wallet_config.nodesCfg.endorserLayoutNum = 1;
 	wallet_config.nodesCfg.layoutCfg = BoatMalloc(wallet_config.nodesCfg.endorserLayoutNum * sizeof(BoatHlfabricNodeLayoutCfg));
@@ -368,10 +199,10 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 #else
 	return BOAT_ERROR;
 #endif
-	if (index == BOAT_ERROR)
+	if (index < BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_WALLET_CREATE_FAIL;
 	}
 	g_fabric_wallet_ptr = BoatGetWalletByIndex(index);
 	
@@ -382,7 +213,7 @@ int main(int argc, char *argv[])
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BoatHlfabricTx tx_ptr;
-	
+	boat_try_declare;
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
 	
@@ -391,7 +222,7 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 
 	/* step-3: fabric transaction structure initialization */
@@ -399,14 +230,14 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 #if(DISCOVERY_PEER_QUERY != 1 )
 	result = BoatHlfabricWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed." );
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 #endif
 	/* step-4: set transaction timestamp */
@@ -422,7 +253,7 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetTimestamp failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 
 /*
@@ -437,7 +268,7 @@ int main(int argc, char *argv[])
 		if (result != BOAT_SUCCESS)
 		{
 			//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(query) failed." );
-			return -1;
+			boat_throw(result, fabric_demo_catch);
 		}
 		// discoverResult = tx_ptr.discooverRes;
 		BoatHlfabricNodesCfg network_info = tx_ptr.wallet_ptr->network_info;
@@ -540,7 +371,7 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 	/* step-6: wait seconds and 'query' the tansaction */
 	BoatSleep(3);
@@ -548,23 +379,28 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxSetArgs() failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 	result = BoatHlfabricTxEvaluate(&tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxEvaluate() failed.");
-		return -1;
+		boat_throw(result, fabric_demo_catch);
 	}
 		BoatLog_hexasciidump(BOAT_LOG_NORMAL, "query result",
-						 tx_ptr.endorserResponse.http2Res,
-						 tx_ptr.endorserResponse.httpResLen);
+						 tx_ptr.evaluateRes.http2Res,
+						 tx_ptr.evaluateRes.httpResLen);
 	
+    boat_catch(fabric_demo_catch)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
+    }	
 	/* step-7: fabric transaction structure Deinitialization */
 	BoatHlfabricTxDeInit(&tx_ptr);
 	
 	/* step-8: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
+	fabricWalletConfigFree(wallet_config);
     
-    return 0;
+    return result;
 }

@@ -14,15 +14,15 @@
  * limitations under the License.
  *****************************************************************************/
 
-#define TEST_ETH_NODE_URL		"HTTP://127.0.0.1:7545"
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include "check.h"
+#include "boatlog.h"
+#include "boattypes.h"
+#include "boatwallet.h"
+#include "protocolapi/api_chainmaker.h"
 
-#define TEST_ETH_NODE_URL_1		"HTTP//127.0.0.17545"
-
-#define TEST_ETH_WALLET_ADDR_0	"0xEF5D6d9D037Faa6493637E26A2B5d604f7722779"
-#define TEST_ETH_WALLET_ADDR_1	"0xEF5D6d9D037Faa6493637E26A2B5d604f7722779"
-
-#define TEST_ETH_RECIPIENT_ADDR	"0xEF5D6d9D037Faa6493637E26A2B5d604f7722779"
-
-#define TEST_ETH_GASPRICE 		"0x333333"
-#define TEST_ETH_GASLIMIT 		"0x333333"
-#define TEST_ETH_VALUE			"0xDE0B6B3A7640000"
+char chainmaker_sign_key_buf[1024];
+char chainmaker_sign_cert_buf[1024];
+char chainmaker_ca_cert_buf[1024];

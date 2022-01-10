@@ -122,9 +122,7 @@ Note: The following two steps 6 and 7 change the boat-X-Framework compilation en
 
       a、Open the Cygwin terminal in Windows, or open the shell in Linux 
       b、cd <N58 Root>  
-      c、cd out  
-      d、rm -r appimage_release  
-      e、cd .. //back to <N58 Root> 
-      f、./nwy_opencpu.bat //The download image xxx_flash.pac will be generated if building is successful.
+      c、rm -r out  
+      d、./nwy_opencpu.bat //The download image xxx_flash.pac will be generated if building is successful.
 
 

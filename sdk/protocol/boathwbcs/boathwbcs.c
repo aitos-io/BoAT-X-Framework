@@ -146,7 +146,7 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 		(tx_ptr->wallet_ptr->http2Context_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	/* step-1: generate nonce once for proposal */
@@ -158,7 +158,7 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec hwbcsGenNonce.");
-		boat_throw(result, hwbcsProposalTransactionPacked_exception);
+		boat_throw(BOAT_ERROR_COMMON_GEN_RAND_FAIL, hwbcsProposalTransactionPacked_exception);
 	}
 
 	/* step-2:  payload packed  */
@@ -174,7 +174,7 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatHash.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_GEN_HASH_FAIL;
 	}
 
 	/* step-4: signature */
@@ -183,13 +183,13 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_GEN_SIGN_FAIL;
 	}
 
 	if (!signatureResult.pkcs_format_used)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_GEN_SIGN_FAIL;
 	}
 	/* approvals */
 
