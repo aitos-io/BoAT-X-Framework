@@ -53,6 +53,8 @@ extern http_session_policy_t http_session_policy;          /* http session polic
 extern TX_SEMAPHORE *g_tx_semaphore_returndata_ptr;
 
 extern TX_EVENT_FLAGS_GROUP *http_signal_handle;
+
+extern TX_EVENT_FLAGS_GROUP *http_release_handle;
 /*!*****************************************************************************
 @brief Initialize fibocom HTTP RPC context.
 
@@ -127,11 +129,14 @@ FibocomHttpPortContext *FibocomHttpPortInit(void)
 	tx_event_flags_create(http_signal_handle, "dss_signal_event");
 	tx_event_flags_set(http_signal_handle, 0x0, TX_AND);
 
+    txm_module_object_allocate(&http_release_handle, sizeof(TX_EVENT_FLAGS_GROUP));
+    tx_event_flags_create(http_release_handle, "http_release_event");
+    tx_event_flags_set(http_release_handle, 0x0, TX_AND);
+    
 	int ret = http_netctrl_start();
 	if (ret != 0)
 	{
 		BoatLog(BOAT_LOG_VERBOSE,"http_netctrl_start,result: %d",ret);
-		//return ret;
 	}
     
 	tx_event_flags_get(http_signal_handle, DSS_SIG_EVT_CONN_E|DSS_SIG_EVT_DIS_E|DSS_SIG_EVT_EXIT_E|DSS_SIG_EVT_NO_CONN_E, TX_OR_CLEAR, &dss_event, TX_WAIT_FOREVER);

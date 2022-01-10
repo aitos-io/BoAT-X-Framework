@@ -108,7 +108,7 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 		if(randHeapBuf == NULL)
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate random buffer.");
-			return BOAT_ERROR_OUT_OF_MEMORY;
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}
 		status = qapi_fibo_random_data_get((uint16)outputLen,randHeapBuf);
 		if(status != QAPI_OK)
@@ -142,7 +142,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	if ((digest == NULL) || (signatureResult == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
@@ -249,7 +249,7 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 		if(fullFilePath == NULL)
 		{
 			BoatLog(BOAT_LOG_CRITICAL,"BoatMalloc ERROR!");
-			return BOAT_ERROR_OUT_OF_MEMORY;
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}
 
 		strcat(fullFilePath,BoAT_DIR_PATH_ROOT);
@@ -267,14 +267,14 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 	if((status != QAPI_OK) && (-1 == fd))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 	status = qapi_FS_Seek(fd, 0, QAPI_FS_SEEK_END_E, &seek_status);
 	if(status != QAPI_OK)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to qapi_FS_Seek.");
 		qapi_FS_Close(fd);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_PERSISTER_READ_FAIL;
 	}
 
 	*size = (BUINT32)seek_status;
@@ -325,7 +325,7 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 		if(fullFilePath == NULL)
 		{
 			BoatLog(BOAT_LOG_CRITICAL,"BoatMalloc ERROR!");
-			return BOAT_ERROR_OUT_OF_MEMORY;
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}
 
 		strcat(fullFilePath,BoAT_DIR_PATH_ROOT);
@@ -341,7 +341,7 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 	if((status != QAPI_OK) && (-1 == fd))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 
 	status = qapi_FS_Write(fd, writeBuf, writeLen, &wr_bytes);
@@ -349,14 +349,14 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to qapi_FS_Write.");
 		qapi_FS_Close(fd);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_WRITE_FAIL;
 	}
 	qapi_FS_Close(fd);
 
 	if (wr_bytes != writeLen)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to write file: %s.", fileName);
-		return BOAT_ERROR;
+		return BOAT_ERROR_PERSISTER_STORE_FAIL;
 	}
 
 	return BOAT_SUCCESS;
@@ -396,7 +396,7 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 		if(fullFilePath == NULL)
 		{
 			BoatLog(BOAT_LOG_CRITICAL,"BoatMalloc ERROR!");
-			return BOAT_ERROR_OUT_OF_MEMORY;
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}
 
 		strcat(fullFilePath,BoAT_DIR_PATH_ROOT);
@@ -414,7 +414,7 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 	if((status != QAPI_OK) && (-1 == fd))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 
 	status = qapi_FS_Read(fd, readBuf, readLen, &rd_bytes);
@@ -422,14 +422,14 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to qapi_FS_Read.");
 		qapi_FS_Close(fd);
-		return BOAT_ERROR_BAD_FILE_DESCRIPTOR;
+		return BOAT_ERROR_STORAGE_FILE_READ_FAIL;
 	}
 	qapi_FS_Close(fd);
 
 	if (rd_bytes != readLen)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName);
-		return BOAT_ERROR;
+		return BOAT_ERROR_PERSISTER_READ_FAIL;
 	}
 
 	return BOAT_SUCCESS;
@@ -443,7 +443,7 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 	if (fileName == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	int status = 0;
 	int fNameLen = 0;
@@ -473,7 +473,7 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 		if(fullFilePath == NULL)
 		{
 			BoatLog(BOAT_LOG_CRITICAL,"BoatMalloc ERROR!");
-			return BOAT_ERROR_OUT_OF_MEMORY;
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}
 		
 		strcat(fullFilePath,BoAT_DIR_PATH_ROOT);
@@ -491,7 +491,7 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 	if(QAPI_OK != status)
     {
 
-        return BOAT_ERROR;
+        return BOAT_ERROR_STORAGE_FILE_REMOVE_FAIL;
     }
     else
     {	
@@ -775,7 +775,7 @@ BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWal
 	if ((config == NULL) || (pkCtx == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
-		return BOAT_ERROR_INVALID_ARGUMENT;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
 	if (config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
