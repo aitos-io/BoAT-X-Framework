@@ -2,3 +2,4 @@
 - [**BoAT System Requirements**](/en-us/BoAT_System_Requirements_en.md)
 - [**BoAT Getting Started**](/en-us/BoAT_Getting_Started_en.md)
 - [**BoAT Overall Design**](/en-us/BoAT_Overall_Design_en.md)
+- [**BoAT Whitepaper**](/en-us/BoAT_Blockchain_IoT_Module_Product_White_Paper_EN.md)
