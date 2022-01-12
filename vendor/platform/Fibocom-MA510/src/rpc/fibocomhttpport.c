@@ -223,6 +223,10 @@ void FibocomHttpPortDeinit(FibocomHttpPortContext *fibocomhttpport_context_ptr)
 
 	txm_module_object_deallocate(&http_signal_handle);
 
+    tx_event_flags_delete(http_release_handle);
+
+	txm_module_object_deallocate(&http_release_handle);
+
 	http_netctrl_stop();
 
     BoatFree(fibocomhttpport_context_ptr);
