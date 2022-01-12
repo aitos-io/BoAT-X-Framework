@@ -154,10 +154,15 @@ FibocomHttpPortContext *FibocomHttpPortInit(void)
 	else if(dss_event&DSS_SIG_EVT_EXIT_E)
 	{
 		BoatLog(BOAT_LOG_VERBOSE,"dss_event: %x",dss_event);
+        http_netctrl_stop();
+        tx_event_flags_delete(http_release_handle);
+        return NULL;
 	}
 	else
 	{
+        tx_event_flags_delete(http_release_handle);
 		BoatLog(BOAT_LOG_VERBOSE,"ret: %d",ret);
+        return NULL;
 	}
 
 	ret = txm_module_object_allocate(&g_tx_semaphore_returndata_ptr, sizeof(TX_SEMAPHORE));
