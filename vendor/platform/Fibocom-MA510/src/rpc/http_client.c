@@ -675,7 +675,7 @@ static void http_net_event_cb
 
             break;
         }
-        case QAPI_DSS_EVT_NET_DELADDR_E:
+        case QAPI_DSS_EVT_NET_DELADDR_E: 
         case QAPI_DSS_EVT_NET_NO_NET_E:
         {
             BoatLog(BOAT_LOG_CRITICAL,"Data Call Disconnected.\n");
