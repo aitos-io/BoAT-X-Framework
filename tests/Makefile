@@ -8,7 +8,7 @@ OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 all: tests_BoAT_chainmaker_linuxDefault $(OBJECTS_DIR) $(OBJECTS)
 
 tests_BoAT_chainmaker_linuxDefault:
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
+ifeq ($(BOAT_TEST_USE_CHAINMAKER), 1)
 	make -C  BoAT_chainmaker_linuxDefault all
 endif
 
@@ -21,3 +21,4 @@ $(OBJECTS_DIR)/%.o:%.c
 clean:
 	-$(BOAT_RM) $(OBJECTS)
 	make -C BoAT_chainmaker_linuxDefault clean
+
