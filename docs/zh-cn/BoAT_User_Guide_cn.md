@@ -454,7 +454,7 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
   2. 搜索`hw_bcs_client_democert`，设置客户端私钥对应的证书
   3. 如果demo启用TLS，则搜索`hw_bcs_org1_tlsCert`、`hw_bcs_org2_tlsCert`，设置CA证书链
   4. 搜索`hw_bcs_demo_endorser_peer0Org1_url`、`hw_bcs_demo_endorser_peer0Org2_url`、`hw_bcs_demo_order_url`，设置背书节点、排序节点的url地址
-  5. 如果demo启用TLS,则搜索`hw_bcs_demo_endorser_peer0Org1_hostName`、`hw_bcs_demo_endorser_peer0Org2_hostName`、`hw_bcs_demo_order_hostName`，设置节点的主机名称
+  5. 如果demo启用TLS，则搜索`hw_bcs_demo_endorser_peer0Org1_hostName`、`hw_bcs_demo_endorser_peer0Org2_hostName`、`hw_bcs_demo_order_hostName`，设置节点的主机名称
 
 #### 编译Demo
 在\<SDKRoot\>目录下执行以下命令编译SDK的调用Demo：

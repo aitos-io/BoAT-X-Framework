@@ -70,7 +70,7 @@
 	
 ### 5、修改BoAT-X-Framework编译平台为Neoway-N58
   打开N58平台代码根目录/BoAT-X-Framework/Makefile文件。  
-  找到PLATFORM_TARGET ?= XXX 修改其值为 Neoway-N58, 即：  
+  找到PLATFORM_TARGET ?= XXX 修改其值为 Neoway-N58，即：  
   	
 	PLATFORM_TARGET ?= Neoway-N58  
 

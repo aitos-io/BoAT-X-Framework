@@ -12,7 +12,7 @@
 
 1、拷贝 BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<XY1100 Root>/userapp`下。
 
-2、在`<XY1100 Root>/userapp/demo`下新建文件夹`boat_demo`,拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/boat_demo.c到`<XY1100 Root>/userapp/demo/boat_demo`下。
+2、在`<XY1100 Root>/userapp/demo`下新建文件夹`boat_demo`，拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/boat_demo.c到`<XY1100 Root>/userapp/demo/boat_demo`下。
 
 3、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.c到`<XY1100 Root>/userapp/demo/boat_demo`下。
 
