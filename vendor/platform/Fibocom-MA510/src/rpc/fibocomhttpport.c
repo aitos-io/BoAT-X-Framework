@@ -129,10 +129,12 @@ FibocomHttpPortContext *FibocomHttpPortInit(void)
 	tx_event_flags_create(http_signal_handle, "dss_signal_event");
 	tx_event_flags_set(http_signal_handle, 0x0, TX_AND);
 
+
+
     txm_module_object_allocate(&http_release_handle, sizeof(TX_EVENT_FLAGS_GROUP));
     tx_event_flags_create(http_release_handle, "http_release_event");
     tx_event_flags_set(http_release_handle, 0x0, TX_AND);
-    
+
 	int ret = http_netctrl_start();
 	if (ret != 0)
 	{
