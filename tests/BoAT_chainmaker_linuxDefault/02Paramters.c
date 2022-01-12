@@ -197,6 +197,9 @@ START_TEST(test_002Parameters_0002TxinitxFailureNullpara)
 
     rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, NULL);
     ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    rtnVal = BoatHlChainmakerTxInit(NULL, NULL);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
 
