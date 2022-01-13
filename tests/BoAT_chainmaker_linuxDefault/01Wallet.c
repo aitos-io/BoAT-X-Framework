@@ -66,7 +66,7 @@ BoatHlchainmakerWalletConfig get_chainmaker_wallet_settings()
     return wallet_config;
 }
 
-START_TEST(test_001Wallet_0001CreateOneTimeWalletSuccess) 
+START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
@@ -97,7 +97,7 @@ START_TEST(test_001Wallet_0001CreateOneTimeWalletSuccess)
 }
 END_TEST
 
-START_TEST(test_001Wallet_0002CreateOneTimeWalletFailureNullConfig) 
+START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig) 
 {
     BSINT32 rtnVal;
     extern BoatIotSdkContext g_boat_iot_sdk_context;
@@ -114,7 +114,7 @@ START_TEST(test_001Wallet_0002CreateOneTimeWalletFailureNullConfig)
 }
 END_TEST
 
-START_TEST(test_001Wallet_0003CreatePersistWalletSuccess) 
+START_TEST(test_001CreateWallet_0003CreatePersistWalletSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
@@ -148,7 +148,7 @@ START_TEST(test_001Wallet_0003CreatePersistWalletSuccess)
 }
 END_TEST
 
-START_TEST(test_001Wallet_0004CreateLoadWalletSuccess) 
+START_TEST(test_001CreateWallet_0004CreateLoadWalletSuccess) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
@@ -170,7 +170,7 @@ START_TEST(test_001Wallet_0004CreateLoadWalletSuccess)
 }
 END_TEST
 
-START_TEST(test_001Wallet_0005CreateLoadWalletFailureNoExist) 
+START_TEST(test_001CreateWallet_0005CreateLoadWalletFailureNoExist) 
 {
     BSINT32 rtnVal;
     extern BoatIotSdkContext g_boat_iot_sdk_context;
@@ -188,21 +188,21 @@ START_TEST(test_001Wallet_0005CreateLoadWalletFailureNoExist)
 }
 END_TEST
 
-START_TEST(test_001Wallet_0006DeleteWalletFailureNullFleName) 
+START_TEST(test_002DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
     BoatWalletDelete(NULL);
     ck_assert_int_eq(access("chainmaker", F_OK), 0);
 }
 END_TEST
 
-START_TEST(test_001Wallet_0007DeleteWalletFailureNoExistingFile) 
+START_TEST(test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile) 
 {
     BoatWalletDelete("chainmaker_no_exist");
     ck_assert_int_eq(access("chainmaker", F_OK), 0);
 }
 END_TEST
 
-START_TEST(test_001Wallet_0008DeleteWalletSucessExistingFile) 
+START_TEST(test_002DeleteWallet_0003DeleteWalletSucessExistingFile) 
 {
     BoatWalletDelete("chainmaker");
     ck_assert_int_eq(access("chainmaker", F_OK), -1);
@@ -220,14 +220,14 @@ Suite *make_wallet_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_wallet, tc_wallet_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_wallet_api, test_001Wallet_0001CreateOneTimeWalletSuccess);  
-    tcase_add_test(tc_wallet_api, test_001Wallet_0002CreateOneTimeWalletFailureNullConfig); 
-    tcase_add_test(tc_wallet_api, test_001Wallet_0003CreatePersistWalletSuccess);
-    tcase_add_test(tc_wallet_api, test_001Wallet_0004CreateLoadWalletSuccess);
-    tcase_add_test(tc_wallet_api, test_001Wallet_0005CreateLoadWalletFailureNoExist);
-    tcase_add_test(tc_wallet_api, test_001Wallet_0006DeleteWalletFailureNullFleName);
-    tcase_add_test(tc_wallet_api, test_001Wallet_0007DeleteWalletFailureNoExistingFile);
-    tcase_add_test(tc_wallet_api, test_001Wallet_0008DeleteWalletSucessExistingFile);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0001CreateOneTimeWalletSuccess);  
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig); 
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0003CreatePersistWalletSuccess);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0004CreateLoadWalletSuccess);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0005CreateLoadWalletFailureNoExist);
+    tcase_add_test(tc_wallet_api, test_002DeleteWallet_0001DeleteWalletFailureNullFleName);
+    tcase_add_test(tc_wallet_api, test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile);
+    tcase_add_test(tc_wallet_api, test_002DeleteWallet_0003DeleteWalletSucessExistingFile);
 
     return s_wallet;
 }
