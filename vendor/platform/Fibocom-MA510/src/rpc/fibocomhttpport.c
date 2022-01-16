@@ -122,14 +122,11 @@ FibocomHttpPortContext *FibocomHttpPortInit(void)
         }
     }
 
-
     /* Create event signal handle and clear signals */
     uint32 dss_event = 0;
 	txm_module_object_allocate(&http_signal_handle, sizeof(TX_EVENT_FLAGS_GROUP));
 	tx_event_flags_create(http_signal_handle, "dss_signal_event");
 	tx_event_flags_set(http_signal_handle, 0x0, TX_AND);
-
-
 
     txm_module_object_allocate(&http_release_handle, sizeof(TX_EVENT_FLAGS_GROUP));
     tx_event_flags_create(http_release_handle, "http_release_event");
@@ -146,23 +143,25 @@ FibocomHttpPortContext *FibocomHttpPortInit(void)
 	if(dss_event&DSS_SIG_EVT_CONN_E)
 	{
 		BoatLog(BOAT_LOG_VERBOSE,"dss_event:%x",dss_event);
+        /*
 		if(qapi_Net_DNSc_Is_Started() == 0)
 		{
 			qapi_Net_DNSc_Command(QAPI_NET_DNS_START_E);
 		}
+        */
 	}
 	else if(dss_event&DSS_SIG_EVT_EXIT_E)
 	{
 		BoatLog(BOAT_LOG_VERBOSE,"dss_event: %x",dss_event);
         http_netctrl_stop();
         tx_event_flags_delete(http_release_handle);
-        return NULL;
+       // return NULL;
 	}
 	else
 	{
         tx_event_flags_delete(http_release_handle);
 		BoatLog(BOAT_LOG_VERBOSE,"ret: %d",ret);
-        return NULL;
+       // return NULL;
 	}
 
 	ret = txm_module_object_allocate(&g_tx_semaphore_returndata_ptr, sizeof(TX_SEMAPHORE));
@@ -175,7 +174,6 @@ FibocomHttpPortContext *FibocomHttpPortInit(void)
 	{
 		BoatLog(BOAT_LOG_VERBOSE,"tx_semaphore_create [boat_malloc_buff] failed,ret = %d", ret);
 	}
-
 
     return fibocomhttpport_context_ptr;
 
