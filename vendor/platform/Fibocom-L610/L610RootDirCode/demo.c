@@ -57,8 +57,6 @@ static BOAT_RESULT platone_createOnetimeWallet()
     wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
     wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
-    wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
-    
     UtilityHexToBin(wallet_config.prikeyCtx_config.prikey_content.field_ptr, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
     wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
   
