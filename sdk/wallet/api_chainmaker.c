@@ -272,7 +272,6 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 
 BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BoatHlchainmakerTx* tx_ptr)
 {
-	BUINT32 stringLen;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
 	if ((tx_ptr == NULL) || (wallet_ptr == NULL))

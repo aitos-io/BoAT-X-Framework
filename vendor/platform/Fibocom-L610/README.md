@@ -51,7 +51,7 @@
 
   打开L610平台代码根目录下的主CMakeLists.txt文件。
   
-  找到include_directories(xxx ), 在最后添加以下BoAT-X-Framework内容：
+  找到include_directories(xxx )，在最后添加以下BoAT-X-Framework内容：
   ```
   include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi BoAT-X-Framework/vendor/platform/include)
   ```
@@ -85,7 +85,7 @@
 
    #### b、关闭FABRIC链宏开关  
 
-   由于资源限制，该平台暂时不支持FABRIC链。所以，需要打开主makefile，找到`BOAT_PROTOCOL_USE_HLFABRIC`,将后面参数改为0，即`BOAT_PROTOCOL_USE_HLFABRIC  ?= 0`。
+   由于资源限制，该平台暂时不支持FABRIC链。所以，需要打开主makefile，找到`BOAT_PROTOCOL_USE_HLFABRIC`，将后面参数改为0，即`BOAT_PROTOCOL_USE_HLFABRIC  ?= 0`。
    
    #### c、打开Linux终端进入BoAT-X-Framework目录编译BoAT静态库
    ```
