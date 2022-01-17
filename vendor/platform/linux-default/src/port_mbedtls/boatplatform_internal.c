@@ -364,7 +364,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	{
 		// BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
 		// boat_throw(BOAT_ERROR, BoatSignature_exception);
-		if (prikeyCtx.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+		if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "begin mbedtls_ecp_read_key ");
 			ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
@@ -373,7 +373,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1, ecPrikey, prikeyCtx.extra_data.value, prikeyCtx.extra_data.value_len);
 			BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key result = %x ", result);
 		}
-		else if (prikeyCtx.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+		else if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
 		{
 			ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
 			if (ecPrikey != NULL)
