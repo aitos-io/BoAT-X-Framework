@@ -371,7 +371,8 @@ BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
         result = boat_exception;
     }
-    if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
 
@@ -460,7 +461,8 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
         return_value_ptr = NULL;
         result = boat_exception;
     }
-    if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
     return return_value_ptr;
@@ -554,7 +556,8 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
         result = boat_exception;
     }
-    if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
     return return_value_ptr;
@@ -647,7 +650,8 @@ BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
         result = boat_exception;
     }
-    if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
     return return_value_ptr;
@@ -742,7 +746,8 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
         result = boat_exception;
     }
-    if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
 
@@ -836,7 +841,8 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
         result = boat_exception;
     }
-    if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
     return return_value_ptr;
@@ -933,7 +939,8 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
         result = boat_exception;
     }
-     if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
     return return_value_ptr;
@@ -1041,7 +1048,8 @@ BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
         result = boat_exception;
     }
-    if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
     return return_value_ptr;
@@ -1132,7 +1140,8 @@ BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
         result = boat_exception;
     }
-    if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
     return return_value_ptr;
@@ -1225,7 +1234,8 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
         return_value_ptr = NULL;
         result = boat_exception;
     }
-    if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
     return return_value_ptr;
@@ -1317,7 +1327,8 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
         return_value_ptr = NULL;
         result = boat_exception;
     }
-    if(*web3Result != NULL){
+    if (web3Result != NULL)
+    {
         *web3Result = result;
     }
     return return_value_ptr;
