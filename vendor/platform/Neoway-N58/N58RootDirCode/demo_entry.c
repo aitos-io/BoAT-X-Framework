@@ -52,27 +52,26 @@ static void boat_nwy_ext_echo(char* fmt, ...)
 	nwy_unlock_mutex(echo_mutex);
 }
 // end of printf log
-BUINT8 prikeyContent[32] = {0}; 
 
 __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 {
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config;
+    BUINT8 binFormatKey[32]               = {0};
 
 	/* wallet_config value assignment */
 	/* for one-time wallet, the 'prikeyId' field should be cleared */
 	//memset(wallet_config.prikeyId, 0, BOAT_KEYID_MAX_LEN); 
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
-#if 1
     char *nativedemoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
     wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
     wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    UtilityBinToHex(prikeyContent, nativedemoKey, 32, BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-	wallet_config.prikeyCtx_config.prikey_content.field_ptr = prikeyContent;
+    UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
+    UtilityHexToBin(wallet_config.prikeyCtx_config.prikey_content.field_ptr, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
     wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
-#endif
 
     strncpy(wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_PLATONE_NODE_URL_MAX_LEN - 1); // "http://116.236.47.90:7545"
 
