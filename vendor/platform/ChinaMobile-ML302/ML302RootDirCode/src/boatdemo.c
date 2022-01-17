@@ -9,7 +9,7 @@
 
 osThreadId OC_Main_TaskHandle;
 
-osMutexDef( VIR_AT_Mutex );
+osMutexDef(VIR_AT_Mutex);
 osMutexId vir_at_mutex;
 
 #define PERSIST_WALLET_NAME     "/nvm/platone.cfg"
@@ -24,34 +24,34 @@ BoatPlatoneWallet *g_platone_wallet_ptr;
 
 void boatdemo_clear_virt_at_buffer()
 {
-    osMutexWait( vir_at_mutex, osWaitForever );
+    osMutexWait(vir_at_mutex, osWaitForever);
     virt_at_len = 0;
-    osMutexRelease( vir_at_mutex );
+    osMutexRelease(vir_at_mutex);
 }
 
 
-unsigned char * boatdemo_check_at_str(const char *str)
+unsigned char *boatdemo_check_at_str(const char *str)
 {
     int i,j; 
     unsigned char *p;
     int at_len;
     
-    osMutexWait( vir_at_mutex, osWaitForever );
+    osMutexWait(vir_at_mutex, osWaitForever);
     at_len = virt_at_len;
-    osMutexRelease( vir_at_mutex );
+    osMutexRelease(vir_at_mutex);
 
-    if(at_len > 0)
+    if (at_len > 0)
     {
-        for(i = 0; i < at_len; i++) //将有效长度内所有含0的地方替换成'!'，以方便进行字符串检测
+        for (i = 0; i < at_len; i++) //将有效长度内所有含0的地方替换成'!'，以方便进行字符串检测
         {
-            if(virt_at_buffer[i] == 0)
+            if (virt_at_buffer[i] == 0)
             {
                 virt_at_buffer[i] = '!';
             }
         }
         virt_at_buffer[at_len] = 0;
         p = strstr((const char *)virt_at_buffer,str);
-        if(p != 0)
+        if (p != 0)
             return p;
     }
 
@@ -59,25 +59,25 @@ unsigned char * boatdemo_check_at_str(const char *str)
 }
 
 
-int boatdemo_wait_for_at_response(const char * response_to_wait, int delay)
+int boatdemo_wait_for_at_response(const char *response_to_wait, int delay)
 {
     int i;
 
     osSignalWait(0x0004, osWaitForever);
     
-    for( i = 0; i < delay; i++ )
+    for (i = 0; i < delay; i++)
     {
-        if(virt_at_len >= BOATDEMO_VIRT_AT_RESPONSE_BUF_LEN)
+        if (virt_at_len >= BOATDEMO_VIRT_AT_RESPONSE_BUF_LEN)
         {
-            osMutexWait( vir_at_mutex, osWaitForever );
+            osMutexWait(vir_at_mutex, osWaitForever);
             virt_at_len = 0;
-            osMutexRelease( vir_at_mutex );
+            osMutexRelease(vir_at_mutex);
         }
-        osMutexWait( vir_at_mutex, osWaitForever );
+        osMutexWait(vir_at_mutex, osWaitForever);
         virt_at_len += onemo_vir_at_get(virt_at_buffer+virt_at_len, BOATDEMO_VIRT_AT_RESPONSE_BUF_LEN - virt_at_len);
-        osMutexRelease( vir_at_mutex );
+        osMutexRelease(vir_at_mutex);
         
-        if( boatdemo_check_at_str(response_to_wait) != 0 )
+        if (boatdemo_check_at_str(response_to_wait) != 0)
         {
             break;
         }
@@ -87,7 +87,7 @@ int boatdemo_wait_for_at_response(const char * response_to_wait, int delay)
         }
     }
     
-    if( i < delay )
+    if (i < delay)
     {
         // The response string matched
         return 0;
@@ -105,7 +105,7 @@ void boatdemo_at_callback(void *param)
 
 void boatdemo_at_init(void)
 {
-    vir_at_mutex = osMutexCreate( osMutex(VIR_AT_Mutex) );
+    vir_at_mutex = osMutexCreate(osMutex(VIR_AT_Mutex));
     onemo_vir_at_init(boatdemo_at_callback);
 }
 
@@ -122,12 +122,12 @@ __BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, NULL, sizeof(BoatPlatoneWalletConfig));
-    if( index < BOAT_SUCCESS )
+    if (index < BOAT_SUCCESS)
 	{
         onemo_sys_log("load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-    g_platone_wallet_ptr = BoatGetWalletByIndex( index );
+    g_platone_wallet_ptr = BoatGetWalletByIndex(index);
 
     return BOAT_SUCCESS;
 }
@@ -143,27 +143,27 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
 #if 1
-    char * nativedemoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+    char *nativedemoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
     wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
     wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    UtilityHexToBin( wallet_config.prikeyCtx_config.prikey_content.field_ptr, 32, nativedemoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    UtilityHexToBin(wallet_config.prikeyCtx_config.prikey_content.field_ptr, 32, nativedemoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
     wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
 #endif
  
-	strncpy( wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_PLATONE_NODE_URL_MAX_LEN - 1 ); // "http://116.236.47.90:7545" //"http://106.14.94.165:8080"
+	strncpy(wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_PLATONE_NODE_URL_MAX_LEN - 1); // "http://116.236.47.90:7545" //"http://106.14.94.165:8080"
  
 	onemo_sys_log("======node_url_str:%s", wallet_config.node_url_str);
 
 	/* create platone wallet */
-    index = BoatWalletCreate( BOAT_PROTOCOL_PLATONE, PERSIST_WALLET_NAME, &wallet_config, sizeof(BoatPlatoneWalletConfig) ); // "/nvm/test.txt"
+    index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, PERSIST_WALLET_NAME, &wallet_config, sizeof(BoatPlatoneWalletConfig)); // "/nvm/test.txt"
 
-    if( index < BOAT_SUCCESS )
+    if (index < BOAT_SUCCESS)
 	{
-        onemo_sys_log("create one-time wallet failed." );
+        onemo_sys_log("create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-    g_platone_wallet_ptr = BoatGetWalletByIndex( index );
+    g_platone_wallet_ptr = BoatGetWalletByIndex(index);
     
     return BOAT_SUCCESS;
 }
@@ -182,14 +182,14 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 							   "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45",
 							   BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
 
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
 	{
         onemo_sys_log("BoatPlatoneTxInit fails.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
 
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "ML302 HelloWorld 0519");
-    if( result_str == NULL )
+    if (result_str == NULL)
 	{
         onemo_sys_log("my_contract_cpp_abi_setName failed: %s.", result_str);
 		return BOAT_ERROR;
@@ -197,7 +197,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 	onemo_sys_log("setName returns: %s", result_str);
     
     result_str = my_contract_cpp_abi_getName(&tx_ctx);
-    if( result_str == NULL )
+    if (result_str == NULL)
 	{
         onemo_sys_log("my_contract_cpp_abi_getName failed: %s.", result_str);
 		return BOAT_ERROR;
@@ -216,14 +216,14 @@ void boat_platone_entry(void)
     /* step-2: create platone wallet */
     result = platone_createOnetimeWallet();
     //result = platone_loadPersistWallet(PERSIST_WALLET_NAME);
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
 	{
 		 onemo_sys_log("platoneWalletPrepare_create failed : %d.", result);
 		return -1;
 	}
 	/* step-3: execute 'platone_call_mycontract' */
-	result = platone_call_mycontract( g_platone_wallet_ptr );
-    if( result != BOAT_SUCCESS )
+	result = platone_call_mycontract(g_platone_wallet_ptr);
+    if (result != BOAT_SUCCESS)
 	{
         onemo_sys_log("platone mycontract access Failed: %d.", result);
     }
@@ -243,12 +243,12 @@ int boatdemo_wait_for_4g_ready(void)
 
     onemo_sys_log("== wait_for_4g 1");
     
-    for(i = 0;i< 100;i++)
+    for (i = 0;i< 100;i++)
     {
         onemo_sys_log("Try AT+CPIN?");
         boatdemo_clear_virt_at_buffer();
         onemo_vir_at_send("AT+CPIN?\r\n");
-        if(boatdemo_wait_for_at_response("READY", 2) == 0)
+        if (boatdemo_wait_for_at_response("READY", 2) == 0)
         {
             onemo_sys_log("READY");
             break;
@@ -256,7 +256,7 @@ int boatdemo_wait_for_4g_ready(void)
         osDelay(1000);
     }
     onemo_sys_log("== wait_for_4g 2");
-    if( i >= 100 )
+    if (i >= 100)
     {
         onemo_sys_log("sim card error\n");
         return -1;
@@ -266,7 +266,7 @@ int boatdemo_wait_for_4g_ready(void)
     onemo_sys_log("Try AT+CFUN=1");
     boatdemo_clear_virt_at_buffer();
     onemo_vir_at_send("AT+CFUN=1\r\n");
-    if(boatdemo_wait_for_at_response("OK", 10) == 0)
+    if (boatdemo_wait_for_at_response("OK", 10) == 0)
     {
         onemo_sys_log("OK");
     }
@@ -278,12 +278,12 @@ int boatdemo_wait_for_4g_ready(void)
     onemo_sys_log("== wait_for_4g 4");
    
     /**************************************************/
-    for(i = 0;i< 30;i++)
+    for (i = 0; i < 30; i++)
     { 
         onemo_sys_log("Try AT+CEREG?");
         boatdemo_clear_virt_at_buffer();
         onemo_vir_at_send("AT+CEREG?\r\n");
-        if(boatdemo_wait_for_at_response("1,1", 10) == 0)
+        if (boatdemo_wait_for_at_response("1,1", 10) == 0)
         {
             onemo_sys_log("1,1");
             break;
@@ -291,7 +291,7 @@ int boatdemo_wait_for_4g_ready(void)
 
         boatdemo_clear_virt_at_buffer();
         onemo_vir_at_send("AT+CEREG?\r\n");
-        if(boatdemo_wait_for_at_response("0,1", 10) == 0)
+        if (boatdemo_wait_for_at_response("0,1", 10) == 0)
         {
             onemo_sys_log("0,1");
             break;
@@ -299,7 +299,7 @@ int boatdemo_wait_for_4g_ready(void)
         osDelay(1000);
     }        
     onemo_sys_log("== wait_for_4g 5");
-    if(i>=30)
+    if (i>=30)
     {
         onemo_sys_log("cereg error\n");
         return -1;
@@ -308,7 +308,7 @@ int boatdemo_wait_for_4g_ready(void)
     onemo_sys_log("Try AT+CGDCONT=1,\"IP\",\"CMNET\"");
     boatdemo_clear_virt_at_buffer();
     onemo_vir_at_send("AT+CGDCONT=1,\"IP\",\"CMNET\"\r\n");
-    if(boatdemo_wait_for_at_response("OK", 10) == 0)
+    if (boatdemo_wait_for_at_response("OK", 10) == 0)
     {
         onemo_sys_log("OK");
     }
@@ -321,7 +321,7 @@ int boatdemo_wait_for_4g_ready(void)
     onemo_sys_log("Try AT+CGACT=1,1");
     boatdemo_clear_virt_at_buffer();
     onemo_vir_at_send("AT+CGACT=1,1\r\n");
-    if(boatdemo_wait_for_at_response("OK", 30) == 0)
+    if (boatdemo_wait_for_at_response("OK", 30) == 0)
     {
         onemo_sys_log("OK");
     }
@@ -358,7 +358,7 @@ void onemo_main_task(void *p)
     boatdemo_at_deinit();
     
     onemo_sys_log("== end 4g 1");
-    if( ret == 0 )
+    if (ret == 0)
     {
         boat_platone_entry();
     }
