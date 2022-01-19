@@ -5,7 +5,7 @@
 
 This guide describes how to integrate BoAT-X Framework source code into N58 OpenCPU SDK, compile BoAT-X Framework static library and build the demo program under Linux environment.
 
-The paths in the document are in Linux and Cygwin，if the files need to be copied in Windows，please change character `/` to character `\` in the path.
+The paths in this document are either under Linux or Cygwin. To copy files under Windows, change the `/` character to `\` character in certain path.
 
 ## Copy files
 
