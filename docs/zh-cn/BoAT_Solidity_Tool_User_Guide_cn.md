@@ -19,7 +19,7 @@
 |FISCO-BCOS  |platoneSolidity2c.py  |
 
 ## 软件依赖
-
+@todo
 
 ## 使用说明
 通过工具生成Solidity合约的C接口文件时，需要根据相应的平台调用tools文件夹相应的合约版本，其中，`eth2c.py`，`fiscobcos2c.py`，`platoneSolidity2c.py`三个文件为相应链的合约脚本。  
@@ -36,7 +36,7 @@
 **已支持的Solidity变量:**  
 |Solidity变量类型  |BoAT中映射的变量类型         | 
 |:-----  | :--------------          | 
-|  string      |BCHAR *    |  
+|  string      |BCHAR *    |
 |  bytes       |BUINT8 *   |
 |  bytes[]     |BoatFieldVariable*|
 |  string[]    |BoatFieldVariable*|
@@ -53,7 +53,7 @@
 |  int32[]     |BSINT32 *  |
 |  int64[]     |BSINT64 *  |
 |  int128[]    |BSINT128 * |
-|  int256[]    |BSINT256 * |    
+|  int256[]    |BSINT256 * |
 |  bytes1[]    |Bbytes1 *  |
 |  bytes2[]    |Bbytes2 *  |
 |  bytes3[]    |Bbytes3 *  |
@@ -61,7 +61,7 @@
 |  bytes5[]    |Bbytes5 *  |
 |  bytes6[]    |Bbytes6 *  |
 |  bytes7[]    |Bbytes7 *  |
-|  bytes8[]    |Bbytes8 *  |    
+|  bytes8[]    |Bbytes8 *  |
 |  bytes9[]    |Bbytes9 *  |
 |  bytes10[]   |Bbytes10 * |
 |  bytes11[]   |Bbytes11 * |
@@ -69,7 +69,7 @@
 |  bytes13[]   |Bbytes13 * |
 |  bytes14[]   |Bbytes14 * |
 |  bytes15[]   |Bbytes15 * |
-|  bytes16[]   |Bbytes16 * |   
+|  bytes16[]   |Bbytes16 * |
 |  bytes17[]   |Bbytes17 * |
 |  bytes18[]   |Bbytes18 * |
 |  bytes19[]   |Bbytes19 * |
@@ -77,7 +77,7 @@
 |  bytes21[]   |Bbytes21 * |
 |  bytes22[]   |Bbytes22 * |
 |  bytes23[]   |Bbytes23 * |
-|  bytes24[]   |Bbytes24 * |    
+|  bytes24[]   |Bbytes24 * |
 |  bytes25[]   |Bbytes25 * |
 |  bytes26[]   |Bbytes26 * |
 |  bytes27[]   |Bbytes27 * |
@@ -92,14 +92,14 @@
 |  uint16      |BUINT16    |
 |  uint32      |BUINT32    |
 |  uint64      |BUINT64    |
-|  uint128     |BUINT128   | 
+|  uint128     |BUINT128   |
 |  uint256     |BUINT256   |
 |  int8        |BSINT8     |
 |  int16       |BSINT16    |
 |  int32       |BSINT32    |
 |  int64       |BSINT64    |
 |  int128      |BSINT128   |
-|  int256      |BSINT256   |      
+|  int256      |BSINT256   |
 |  bytes1      |Bbytes1    |
 |  bytes2      |Bbytes2    |
 |  bytes3      |Bbytes3    |
@@ -107,7 +107,7 @@
 |  bytes5      |Bbytes5    |
 |  bytes6      |Bbytes6    |
 |  bytes7      |Bbytes7    |
-|  bytes8      |Bbytes8    | 
+|  bytes8      |Bbytes8    |
 |  bytes9      |Bbytes9    |
 |  bytes10     |Bbytes10   |
 |  bytes11     |Bbytes11   |
@@ -115,7 +115,7 @@
 |  bytes13     |Bbytes13   |
 |  bytes14     |Bbytes14   |
 |  bytes15     |Bbytes15   |
-|  bytes16     |Bbytes16   | 
+|  bytes16     |Bbytes16   |
 |  bytes17     |Bbytes17   |
 |  bytes18     |Bbytes18   |
 |  bytes19     |Bbytes19   |
@@ -123,14 +123,147 @@
 |  bytes21     |Bbytes21   |
 |  bytes22     |Bbytes22   |
 |  bytes23     |Bbytes23   |
-|  bytes24     |Bbytes24   |    
+|  bytes24     |Bbytes24   |
 |  bytes25     |Bbytes25   |
 |  bytes26     |Bbytes26   |
 |  bytes27     |Bbytes27   |
 |  bytes28     |Bbytes28   |
-|  bytes29     |Bbytes29   | 
+|  bytes29     |Bbytes29   |
 |  bytes30     |Bbytes30   |
 |  bytes31     |Bbytes31   |
 |  bytes32     |Bbytes32   |
 
+以下例子中，生成的C语言函数均省去交易类型
+#### string类型
+Solidity中的string变成BCHAR *类型。
+Solidity函数：setName(string name);  
+C语言函数：合约名_setName(BCHAR *name);  
 
+示例：
+```
+const BCHAR *name = "Hello,World!";
+合约名_setName(name);
+```
+
+#### bytes类型
+Solidity中的bytes变成BUINT8 *类型和一个表示长度的BUINT32值
+Solidity函数：setData(bytes data);  
+C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen); 
+
+示例：
+```
+BUINT8 data[] = {0,1,2,3,4,5};
+合约名_setData(data, 6); 
+```
+
+#### bytes[N]类型
+其中N为大于0的整数。
+Solidity中的bytes[N]变成BoatFieldVariable *类型
+Solidity函数：setData(bytes[2] data);  
+C语言函数：合约名_setData(BoatFieldVariable *data); 
+
+示例：
+```
+BoatFieldVariable input[2];
+BUINT8 data1[] = {0,1};
+BUINT8 data2[] = {0,1,2,3,4,5};
+input[0].field_ptr = data1;
+input[0].field_len = 2;
+input[1].field_ptr = data2;
+input[1].field_len = 6;
+合约名_setData(input); 
+```
+
+#### bytes[]类型
+Solidity中的bytes[]变成BoatFieldVariable *类型和一个表示长度的BUINT32值
+Solidity函数：setData(bytes[] data);  
+C语言函数：合约名_setData(BoatFieldVariable *data, BUINT32 dataLen); 
+
+示例：
+```
+BoatFieldVariable input[3];
+BUINT8 data1[] = {0,1};
+BUINT8 data2[] = {0,1,2,3,4,5};
+BUINT8 data3[] = {7,8,9,10,11,12,13,14};
+input[0].field_ptr = data1;
+input[0].field_len = 2;
+input[1].field_ptr = data2;
+input[1].field_len = 6;
+input[2].field_ptr = data3;
+input[2].field_len = 8;
+合约名_setData(input, 3); 
+```
+
+#### string[N]类型
+Solidity中的string[N]变成BoatFieldVariable *类型
+Solidity函数：setData(string[3] data);  
+C语言函数：合约名_setData(BoatFieldVariable *data); 
+
+示例：
+```
+BoatFieldVariable input[3];
+BCHAR data1[] = {0x31, 0x32, 0x33, 0x34};
+BCHAR data2[] = {'H','e','l','l','o',',','w','o','r','l','d','!'};
+BCHAR data3[] = {0x39, 0x38, 0x37, 0x36, 0x35};
+
+input[0].field_ptr = data1;
+input[0].field_len = 4;
+input[1].field_ptr = data2;
+input[1].field_len = 12;
+input[2].field_ptr = data3;
+input[2].field_len = 5;
+合约名_setData(input); 
+```
+
+#### string[]类型
+Solidity中的string[]变成BoatFieldVariable *类型和一个表示长度的BUINT32值
+Solidity函数：setData(string[] data);  
+C语言函数：合约名_setData(BoatFieldVariable *data, BUINT32 dataLen); 
+
+示例：
+```
+BoatFieldVariable input[3];
+BCHAR data1[] = {0x31, 0x32, 0x33, 0x34};
+BCHAR data2[] = {'H','e','l','l','o',',','w','o','r','l','d','!'};
+BCHAR data3[] = {0x39, 0x38, 0x37, 0x36, 0x35};
+
+input[0].field_ptr = data1;
+input[0].field_len = 4;
+input[1].field_ptr = data2;
+input[1].field_len = 12;
+input[2].field_ptr = data3;
+input[2].field_len = 5;
+合约名_setData(input, 3); 
+```
+
+#### address[N]类型
+Solidity中的address[N]变成BoatAddress *类型
+Solidity函数：setData(address[2] data);  
+C语言函数：合约名_setData(BoatAddress data[2]); 
+
+示例：
+```
+BoatAddress data[2];
+for (i = 0; i < 20; i++)
+{
+    data[0][i] = i;
+    data[1][i] = 20 - i;
+}
+合约名_setData(data); 
+```
+
+#### address[]类型
+Solidity中的address[]变成BoatAddress *类型和一个表示长度的BUINT32值
+Solidity函数：setData(address[] data);  
+C语言函数：合约名_setData(BoatAddress *data, BUINT32 dataLen); 
+
+示例：
+```
+BoatAddress data[2];
+for (i = 0; i < 20; i++)
+{
+    data[0][i] = i;
+    data[1][i] = 20 - i;
+}
+合约名_setData(data, 2); 
+```
