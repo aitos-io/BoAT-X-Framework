@@ -187,7 +187,7 @@ typedef struct TBoatHlchainamkerTx {
  * @return
  *   If initinal success, return chainmaker wallet pointer, otherwise return \c NULL.
  ******************************************************************************/
-BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletConfig *config_ptr,BUINT32 config_size);
+BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletConfig *config_ptr);
 
 
 /*!****************************************************************************

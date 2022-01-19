@@ -113,7 +113,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
         BoatLog(BOAT_LOG_NORMAL, "Invalid wallet configuration.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
-    
+
     boatwalletStore_ptr = BoatMalloc(wallet_config_size + sizeof(BoatWalletPriKeyCtx));
     if (NULL == boatwalletStore_ptr)
     {
@@ -428,10 +428,18 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
 
          #if PROTOCOL_USE_CHAINMAKER == 1
         case BOAT_PROTOCOL_CHAINMAKER:
+            if (wallet_config_size < sizeof(BoatHlchainmakerWalletConfig))
+            {
+                g_boat_iot_sdk_context.wallet_list[i].is_used = BOAT_FALSE;
+                BoatLog(BOAT_LOG_NORMAL, "wallet_config_size out of memory");
+                BoatFree(boatwalletStore_ptr);
+                return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+            }
+
             if (wallet_config_ptr != NULL)
             {
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
-                wallet_ptr = BoatHlchainmakerWalletInit((BoatHlchainmakerWalletConfig*)wallet_config_ptr, wallet_config_size);
+                wallet_ptr = BoatHlchainmakerWalletInit((BoatHlchainmakerWalletConfig*)wallet_config_ptr);
 
                 if (wallet_ptr != NULL)
                 {
@@ -465,7 +473,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 BoatHlchainmakerWalletConfig *load_wallet_config_ptr = (BoatHlchainmakerWalletConfig*)boatwalletStore_ptr; 
                 load_wallet_config_ptr->user_prikey_cfg.prikey_content.field_ptr = NULL;
                 load_wallet_config_ptr->user_prikey_cfg.prikey_content.field_len = 0;
-                wallet_ptr = BoatHlchainmakerWalletInit(load_wallet_config_ptr, wallet_config_size);
+                wallet_ptr = BoatHlchainmakerWalletInit(load_wallet_config_ptr);
                 if (wallet_ptr != NULL)
                 {
                     // re-assign private key context
