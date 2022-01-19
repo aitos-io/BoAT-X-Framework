@@ -52,7 +52,7 @@ After copying these files, the directory structure should look like:
 
 ### 2. Add the BoAT-X Framework header files
    Open `<N58 Root>/cmake/CMakeLists.txt`.  
-   Find include_directories(xxx), add the following content in the last new line:
+   Add the following lines after include_directories(xxx):
 
       include_directories(BoAT-X-Framework/include BoAT-X-Framework/include/protocolapi)
 
