@@ -264,7 +264,12 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	{
 		BoatFree(wallet_ptr->node_info.host_name_info);
 		wallet_ptr->node_info.host_name_info = NULL;
-	
+	}
+
+	if (wallet_ptr->node_info.chain_id_info != NULL)
+	{
+		BoatFree(wallet_ptr->node_info.chain_id_info);
+		wallet_ptr->node_info.chain_id_info  = NULL;
 	}
 	
 	wallet_ptr->node_info.chain_id_info  = NULL;
