@@ -190,10 +190,37 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	wallet_ptr->node_info.chain_id_info        = NULL;
 	wallet_ptr->node_info.org_id_info          = NULL;
 
-	BoatChainmakerWalletSetNodeUrl(wallet_ptr, config_ptr->node_url_cfg);
-	BoatChainmakerWalletSetHostName(wallet_ptr, config_ptr->host_name_cfg);
-	BoatChainmakerWalletSetChainId(wallet_ptr, config_ptr->chain_id_cfg);
-	BoatChainmakerWalletSetOrgId(wallet_ptr, config_ptr->org_id_cfg);
+	result = BoatChainmakerWalletSetNodeUrl(wallet_ptr, config_ptr->node_url_cfg);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerWalletSetNodeUrl failed");
+		BoatFree(wallet_ptr);
+		return NULL;
+	}
+
+	result = BoatChainmakerWalletSetHostName(wallet_ptr, config_ptr->host_name_cfg);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerWalletSetHostName failed");
+		BoatFree(wallet_ptr);
+		return NULL;
+	}
+
+	result = BoatChainmakerWalletSetChainId(wallet_ptr, config_ptr->chain_id_cfg);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerWalletSetChainId failed");
+		BoatFree(wallet_ptr);
+		return NULL;
+	}
+
+	result = BoatChainmakerWalletSetOrgId(wallet_ptr, config_ptr->org_id_cfg);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerWalletSetOrgId failed");
+		BoatFree(wallet_ptr);
+		return NULL;
+	}
 
 	/* assignment */
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
@@ -203,6 +230,7 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	if (wallet_ptr->tls_ca_cert_info.field_ptr == NULL) 
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to malloc tls_ca_cert_info memory.");
+		BoatFree(wallet_ptr);
 		return NULL;
 	}
 
@@ -217,6 +245,7 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	if (result != BOAT_SUCCESS) 
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to set accountInfo|TlsUInfo|networkInfo.");
+		BoatFree(wallet_ptr);
 		return NULL;
 	}
 	return wallet_ptr;
@@ -583,6 +612,8 @@ BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, c
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or node_url_ptr cannot be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
+
+	printf("data is %s\n", node_url_ptr);
 
 	if (strchr(node_url_ptr, ':') == NULL)
 	{
