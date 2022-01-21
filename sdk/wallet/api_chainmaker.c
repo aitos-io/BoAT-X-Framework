@@ -188,11 +188,12 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	wallet_ptr->node_info.node_url_info        = NULL;
 	wallet_ptr->node_info.host_name_info       = NULL;   
 	wallet_ptr->node_info.chain_id_info        = NULL;
+	wallet_ptr->node_info.org_id_info          = NULL;
 
 	BoatChainmakerWalletSetNodeUrl(wallet_ptr, config_ptr->node_url_cfg);
 	BoatChainmakerWalletSetHostName(wallet_ptr, config_ptr->host_name_cfg);
 	BoatChainmakerWalletSetChainId(wallet_ptr, config_ptr->chain_id_cfg);
-	wallet_ptr->node_info.org_id_info          = config_ptr->org_id_cfg;
+	BoatChainmakerWalletSetOrgId(wallet_ptr, config_ptr->org_id_cfg);
 
 	/* assignment */
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
@@ -271,9 +272,12 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 		BoatFree(wallet_ptr->node_info.chain_id_info);
 		wallet_ptr->node_info.chain_id_info  = NULL;
 	}
-	
-	wallet_ptr->node_info.chain_id_info  = NULL;
-	wallet_ptr->node_info.org_id_info    = NULL;
+
+	if (wallet_ptr->node_info.org_id_info!= NULL)
+	{
+		BoatFree(wallet_ptr->node_info.org_id_info);
+		wallet_ptr->node_info.org_id_info = NULL;
+	}
 
 	/* http2Context DeInit */
 	http2DeInit(wallet_ptr->http2Context_ptr);
@@ -623,7 +627,7 @@ BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, 
     
 	if ((wallet_ptr == NULL) || (host_name_ptr == NULL))
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or node_url_ptr cannot be NULL.");
+		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or host_name_ptr cannot be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
@@ -663,7 +667,7 @@ BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, c
     
 	if ((wallet_ptr == NULL) || (chain_id_ptr == NULL))
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or node_url_ptr cannot be NULL.");
+		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or chain_id_ptr cannot be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
@@ -691,6 +695,46 @@ BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, c
 	else
 	{
 		strcpy(wallet_ptr->node_info.chain_id_info, chain_id_ptr);
+		result = BOAT_SUCCESS;
+	}
+
+    return result;
+}
+
+BOAT_RESULT BoatChainmakerWalletSetOrgId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *org_id_ptr)
+{
+    	BOAT_RESULT result;
+    
+	if ((wallet_ptr == NULL) || (org_id_ptr == NULL))
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or org_id_ptr cannot be NULL.");
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+	}
+
+	// string length check
+	if (BOAT_SUCCESS != UtilityStringLenCheck(org_id_ptr))
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "org id length out of limit: %s.", org_id_ptr);
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+	}
+
+	// Set Node URL
+
+	if (wallet_ptr->node_info.org_id_info != NULL)
+	{
+		BoatFree(wallet_ptr->node_info.org_id_info);
+	}
+
+	// +1 for NULL Terminator
+	wallet_ptr->node_info.org_id_info = BoatMalloc(strlen(org_id_ptr) + 1);
+	if (wallet_ptr->node_info.org_id_info == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate memory for org id string.");
+	 	result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+	}
+	else
+	{
+		strcpy(wallet_ptr->node_info.org_id_info, org_id_ptr);
 		result = BOAT_SUCCESS;
 	}
 
