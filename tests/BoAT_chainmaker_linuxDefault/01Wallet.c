@@ -226,6 +226,28 @@ START_TEST(test_001CreateWallet_0007_CreateOneTimeWalletSucessLongSize)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0008_CreateOneTimeWalletFailureUrlFormatError) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
+    memset(wallet_config.node_url_cfg, 0, BAOT_CHAINMAKER_URL_HOSTNAME_LEN);
+    strncpy(wallet_config.node_url_cfg,  "192",  4);
+
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
+    
+    /* 2. verify test result */
+    /* 2-1. verify the return value*/
+    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+}
+END_TEST
+
 START_TEST(test_002DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
     BoatWalletDelete(NULL);
@@ -265,6 +287,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0005CreateLoadWalletFailureNoExist);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0006_CreateOneTimeWalletFailureShortSize);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0007_CreateOneTimeWalletSucessLongSize);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0008_CreateOneTimeWalletFailureUrlFormatError);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0003DeleteWalletSucessExistingFile);
