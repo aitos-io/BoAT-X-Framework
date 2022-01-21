@@ -81,14 +81,18 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	wallet_config.user_prikey_cfg.prikey_content.field_len = strlen(chainmaker_user_key) + 1; 
 
 	//set user cert context
-	wallet_config.user_cert_cfg.length = strlen(chainmaker_user_cert);
+	wallet_config.user_cert_cfg.length = strlen(chainmaker_user_cert) + 1;
+	if (wallet_config.user_cert_cfg.length  > BOAT_CHAINMAKER_CERT_MAX_LEN)
+	{
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+	}
 	memcpy(wallet_config.user_cert_cfg.content, chainmaker_user_cert, wallet_config.user_cert_cfg.length);
 	
 	//set url and name
-	if ((strlen(chainmaker_node_url) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN) || 
-		 (strlen(chainmaker_host_name) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
-		 (strlen(chainmaker_chain_id) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
-		 (strlen(chainmaker_org_id) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN))
+	if ((strlen(chainmaker_node_url) >= BAOT_CHAINMAKER_URL_HOSTNAME_LEN) || 
+		 (strlen(chainmaker_host_name) >= BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
+		 (strlen(chainmaker_chain_id) >= BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
+		 (strlen(chainmaker_org_id) >= BAOT_CHAINMAKER_URL_HOSTNAME_LEN))
 	{
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT ;
 	}
@@ -99,6 +103,10 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 
 	//tls ca cert
 	wallet_config.tls_ca_cert_cfg.length = strlen(chainmaker_tls_ca_cert) + 1;
+	if (wallet_config.tls_ca_cert_cfg.length > BOAT_CHAINMAKER_CERT_MAX_LEN)
+	{
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+	}
 	memcpy(wallet_config.tls_ca_cert_cfg.content, chainmaker_tls_ca_cert, wallet_config.tls_ca_cert_cfg.length);
 
 	// create wallet
