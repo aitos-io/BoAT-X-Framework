@@ -252,8 +252,14 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 		wallet_ptr->http2Context_ptr->tlsCAchain = NULL;
 	}
 #endif
+
+	if (wallet_ptr->node_info.node_url_info != NULL)
+	{
+		BoatFree(wallet_ptr->node_info.node_url_info);
+		wallet_ptr->node_info.node_url_info  = NULL;
+	}
 	wallet_ptr->node_info.host_name_info = NULL;
-	wallet_ptr->node_info.node_url_info  = NULL;
+	
 	wallet_ptr->node_info.chain_id_info  = NULL;
 	wallet_ptr->node_info.org_id_info    = NULL;
 
