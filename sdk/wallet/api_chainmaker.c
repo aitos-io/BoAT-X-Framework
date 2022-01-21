@@ -160,14 +160,14 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 	return result;
 }
 
-BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletConfig *config_ptr, BUINT32 config_size)
+BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletConfig *config_ptr)
 {
 	BoatHlchainmakerWallet *wallet_ptr = NULL;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
-	if ((config_ptr == NULL) || (config_size == 0)) 
+	if (config_ptr == NULL) 
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "config_ptr cannot be NULL or config_size cannot be zero.");
+		BoatLog(BOAT_LOG_CRITICAL, "config_ptr cannot be NULL");
 		return NULL;
 	}
 
@@ -176,12 +176,6 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	if (wallet_ptr == NULL) 
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to malloc wallet memory.");
-		return NULL;
-	}
-
-	if (sizeof(BoatHlchainmakerWalletConfig) != config_size) 
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Incorrect configuration size.");
 		return NULL;
 	}
 
@@ -272,7 +266,6 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 
 BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BoatHlchainmakerTx* tx_ptr)
 {
-	BUINT32 stringLen;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
 	if ((tx_ptr == NULL) || (wallet_ptr == NULL))

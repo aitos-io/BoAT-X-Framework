@@ -26,9 +26,9 @@ static void boat_nwy_ext_echo(char* fmt, ...)
     va_list     a;
 	int i, size;
 
-	if(NULL == echo_mutex)
+	if (NULL == echo_mutex)
 		echo_mutex = nwy_create_mutex();
-	if(NULL == echo_mutex)
+	if (NULL == echo_mutex)
 		return;
 	nwy_lock_mutex(echo_mutex, 0);	
     va_start(a, fmt);
@@ -41,10 +41,10 @@ static void boat_nwy_ext_echo(char* fmt, ...)
     	int tx_size;
 		
     	tx_size = nwy_usb_serial_send((char *)echo_str + i, size - i);
-		if(tx_size <= 0)
+		if (tx_size <= 0)
 			break;
 		i += tx_size;
-		if((i < size))
+		if ((i < size))
 			nwy_sleep(10);
 		else
 			break;
@@ -52,38 +52,37 @@ static void boat_nwy_ext_echo(char* fmt, ...)
 	nwy_unlock_mutex(echo_mutex);
 }
 // end of printf log
-BUINT8 prikeyContent[32] = {0}; 
 
 __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 {
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config;
+    BUINT8 binFormatKey[32]               = {0};
 
 	/* wallet_config value assignment */
 	/* for one-time wallet, the 'prikeyId' field should be cleared */
 	//memset(wallet_config.prikeyId, 0, BOAT_KEYID_MAX_LEN); 
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
-#if 1
-    char * nativedemoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
+    char *nativedemoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
     wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
     wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    UtilityBinToHex( prikeyContent, nativedemoKey, 32, BIN2HEX_LEFTTRIM_QUANTITY, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-	wallet_config.prikeyCtx_config.prikey_content.field_ptr = prikeyContent;
+    UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
+    UtilityHexToBin(wallet_config.prikeyCtx_config.prikey_content.field_ptr, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
     wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
-#endif
 
-    strncpy( wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_PLATONE_NODE_URL_MAX_LEN - 1 ); // "http://116.236.47.90:7545"
+    strncpy(wallet_config.node_url_str, "http://116.236.47.90:7545", BOAT_PLATONE_NODE_URL_MAX_LEN - 1); // "http://116.236.47.90:7545"
 
 	/* create platone wallet */
-    index = BoatWalletCreate( BOAT_PROTOCOL_PLATONE, "platone.cfg", &wallet_config, sizeof(BoatPlatoneWalletConfig) );
-    if( index < BOAT_SUCCESS )
+    index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, "platone.cfg", &wallet_config, sizeof(BoatPlatoneWalletConfig));
+    if (index < BOAT_SUCCESS)
 	{
-        boat_nwy_ext_echo("create one-time wallet failed." );
+        boat_nwy_ext_echo("create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-    g_platone_wallet_ptr = BoatGetWalletByIndex( index );
+    g_platone_wallet_ptr = BoatGetWalletByIndex(index);
     
     return BOAT_SUCCESS;
 }
@@ -100,14 +99,14 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 							   "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45",
 							   BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
 
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
 	{
         boat_nwy_ext_echo("BoatPlatoneTxInit fails.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
     boat_nwy_ext_echo("N58 HelloWorld 0408");
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "N58 HelloWorld 0430");
-    if( result_str == NULL )
+    if (result_str == NULL)
 	{
         boat_nwy_ext_echo("my_contract_cpp_abi_setName failed: %s.", result_str);
 		return BOAT_ERROR;
@@ -115,7 +114,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 	boat_nwy_ext_echo("setName returns: %s", result_str);
     
     result_str = my_contract_cpp_abi_getName(&tx_ctx);
-    if( result_str == NULL )
+    if (result_str == NULL)
 	{
         boat_nwy_ext_echo("my_contract_cpp_abi_getName failed: %s.", result_str);
 		return BOAT_ERROR;
@@ -133,14 +132,14 @@ void boat_platone_entry(void)
     BoatIotSdkInit();
     /* step-2: create platone wallet */
     result = platone_createOnetimeWallet();
-    if( result != BOAT_SUCCESS )
+    if (result != BOAT_SUCCESS)
 	{
 		 boat_nwy_ext_echo("platoneWalletPrepare_create failed : %d.", result);
 		return -1;
 	}
 	/* step-3: execute 'platone_call_mycontract' */
-	result = platone_call_mycontract( g_platone_wallet_ptr );
-    if( result != BOAT_SUCCESS )
+	result = platone_call_mycontract(g_platone_wallet_ptr);
+    if (result != BOAT_SUCCESS)
 	{
         boat_nwy_ext_echo("platone mycontract access Failed: %d.", result);
     }
@@ -154,9 +153,7 @@ void boat_platone_entry(void)
 }
 
 static int ppp_state[10] = {0};
-static void nwy_data_cb_fun(   
-    int hndl,
-    nwy_data_call_state_t ind_state)
+static void nwy_data_cb_fun(int hndl, nwy_data_call_state_t ind_state)
 {
   if (hndl > 0 && hndl <= 8)
   {
@@ -258,7 +255,7 @@ int appimg_enter(void *param)
 
     sprintf(version,"\"%s\"", APP_VERSION);
     sprintf(APP_BUILD_TIME,"\"%s,%s\"", __DATE__,__TIME__);    
-    if(false == nwy_app_version(version, APP_BUILD_TIME))
+    if (false == nwy_app_version(version, APP_BUILD_TIME))
     {
       boat_nwy_ext_echo("app set version fail");
       return 0;

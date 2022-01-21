@@ -456,7 +456,7 @@ BoAT的设计应考虑TEE环境的支持。对于有TEE环境的硬件，BoAT应
 #### 通用工具简述
 ##### 生成Ethereum智能合约C语言接口的工具
 常用的Ethereum智能合约的编程语言是solidity，solidity编译后会生成一个描述合约接口的JSON文件，合约接口的JSON格式是由一个函数和/或事件描述的数组所给定的。一个函数的描述是一个有如下字段的JSON对象:
-+ type  ："function" , "constructor" , "receive" (接收Ether的函数) or "fallback"(缺省函数)
++ type  ："function" ， "constructor" ， "receive" (接收Ether的函数) or "fallback"(缺省函数)
 + name ：函数名称
 + inputs ：对象数组，每个数组对象会包含：
    - name ： 参数名称；

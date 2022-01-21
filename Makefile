@@ -54,6 +54,7 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
 # - MTK-MT3620                : MTK MT3620
 # - XinYi-XY1100              : XY1100
+# - Fibocom-MA510             : MA510
 PLATFORM_TARGET ?= linux-default
 
 # Environment-specific Settings
@@ -158,6 +159,8 @@ else ifeq ($(PLATFORM_TARGET), ChinaMobile-ML302)
 else ifeq ($(PLATFORM_TARGET), XinYi-XY1100) 
     SOFT_CRYPTO ?= CRYPTO_MBEDTLS
 else ifeq ($(PLATFORM_TARGET), MTK-MT3620) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else ifeq ($(PLATFORM_TARGET), Fibocom-MA510) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else
     $(error not support this platform : $(PLATFORM_TARGET))

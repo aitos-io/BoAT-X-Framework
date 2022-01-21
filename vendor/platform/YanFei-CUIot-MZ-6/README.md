@@ -56,7 +56,7 @@
 
   打开Yanfei平台代码根目录下的主CMakeLists.txt文件
   
-  找到include_directories(xxx ), 在最后新建一行添加以下BoAT-X-Frameworkt内容：
+  找到include_directories(xxx )，在最后新建一行添加以下BoAT-X-Frameworkt内容：
   ```
   include_directories(BoAT-X-Frameworkt/include BoAT-X-Frameworkt/include/protocolapi)
   ```

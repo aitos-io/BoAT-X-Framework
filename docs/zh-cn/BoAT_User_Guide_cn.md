@@ -142,7 +142,7 @@ sudo apt-get install libcurl4-openssl-dev
 ![image](https://user-images.githubusercontent.com/81662688/130744541-7645fe99-9c21-44e0-a3cc-fe84b102d0cf.png)
 ![image](https://user-images.githubusercontent.com/81662688/130744556-163fb5e4-0260-42d8-b8c1-4c78052bd7d1.png)
 
-在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](####以windows为编译环境)章节对编译文件进行调整。
+在Windows下，SDK不支持在Cygwin以外的环境下编译。如果必须在Cygwin以外运行（例如以Windows为Build环境的交叉编译器），请参照[以Windows为编译环境](#以windows为编译环境)章节对编译文件进行调整。
 
 在RTOS上移植SDK时，应对libcurl依赖进行移植或将RPC方法重写。  
 
@@ -205,7 +205,7 @@ SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，�
 |\<SDKRoot\>/tools/platoneSolidity2c.py |根据PlatONE Solidity的ABI，生成C调用代码    |
 |\<SDKRoot\>/tools/platoneWASM2c.py     |根据PlatONE WASM的ABI，生成C调用代码        |
 
-由于合约编程语言一般支持面向对象，而C语言不支持面向对象，无法使用统一范式传递对象，因此只有参数类型与C语言内置类型一致的合约函数，可以通过工具转换为C调用代码。具体的支持合约函数输入类型详见[合约调用（自动生成）](###合约调用（自动生成）) 章节。
+由于合约编程语言一般支持面向对象，而C语言不支持面向对象，无法使用统一范式传递对象，因此只有参数类型与C语言内置类型一致的合约函数，可以通过工具转换为C调用代码。具体的支持合约函数输入类型详见[合约调用（自动生成）](#合约调用（自动生成）) 章节。
 
 在进行调用前，首先需要编译合约，将合约编译中生成的ABI接口描述JSON文件，拷贝至SDK相应目录中：
 
@@ -218,7 +218,7 @@ SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，�
 
 ***注：ABI的JSON文件必须以“.json”为文件名后缀。***
 
-在编译Demo过程中，自动生成工具将根据合约ABI JSON文件，生成相应的C接口调用代码。如果编译中自动生成C接口失败，则需要从<SDKRoot>/contract的相应目录中，删除无法支持的ABI JSON文件（或者删除其中无法支持的接口），手工编写C代码，进行ABI接口组装，详见 [转账调用](###转账调用) 章节。  
+在编译Demo过程中，自动生成工具将根据合约ABI JSON文件，生成相应的C接口调用代码。如果编译中自动生成C接口失败，则需要从<SDKRoot>/contract的相应目录中，删除无法支持的ABI JSON文件（或者删除其中无法支持的接口），手工编写C代码，进行ABI接口组装，详见 [转账调用](#转账调用) 章节。  
 
 ### Host编译
 Host编译指编译环境与目标环境一致，例如，在x86上编译x86程序。通常有两种使用Host编译的场景: 
@@ -230,14 +230,14 @@ Host编译指编译环境与目标环境一致，例如，在x86上编译x86程�
 基于Linux发行版（例如Ubuntu）进行Host编译，一般无需特别配置编译环境，只需确保依赖软件都已安装。
 
 编译遵照如下步骤:
-1. 将SDK源码存放在符合[SDK源码路径](####SDK源码路径)要求的路径中。  
-2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见[合约C接口代码自动生成](###合约C接口代码自动生成)章节）。  
+1. 将SDK源码存放在符合[SDK源码路径](#boat-iot-framework-sdk源码路径)要求的路径中。  
+2. 可选：将要调用的智能合约的ABI JSON文件放在\<SDKRoot\>/demo/demo_\<protocol\>/demo_contract的对应目录中（参见[合约C接口代码自动生成](#合约c接口代码自动生成)章节）。  
 3. 在\<SDKRoot\>目录下，执行以下命令:  
 ```
 $make boatlibs
 ```
 
-编译完成后，生成的库文件在./lib中。应用应当包含./include下的头文件，并链接./lib下的库，实现访问区块链的功能。参见[头文件和库](###头文件和库)章节。
+编译完成后，生成的库文件在./lib中。应用应当包含./include下的头文件，并链接./lib下的库，实现访问区块链的功能。参见[头文件和库](#头文件和库)章节。
 
 #### 以Cygwin为编译环境
 在Windows上，SDK不支持在Cygwin以外的环境进行编译，也不支持使用gcc以外的编译器进行编译。
@@ -287,7 +287,7 @@ ${CC} -v
 ${AR} -v
 ```
 
-以上配置完成后，遵照[以Linux为编译环境](####以linux为编译环境)章节的步骤进行编译。
+以上配置完成后，遵照[以Linux为编译环境](#以linux为编译环境)章节的步骤进行编译。
 
 
 ##### 与模组开发环境整合的交叉编译环境
@@ -330,12 +330,12 @@ boatiotsdkclean:
 
 ***注：Makefile中，target下的命令，必须一个Tab（ASCII码0x09）开头，而不能以空格开头。***
 
-以上步骤仅仅是用于执行对SDK库的编译。SDK库编译完成后，还需将编译生成的lib库整合入模组开发环境。详见[头文件和库](###头文件和库)章节。
+以上步骤仅仅是用于执行对SDK库的编译。SDK库编译完成后，还需将编译生成的lib库整合入模组开发环境。详见[头文件和库](#头文件和库)章节。
 
 ###### 模组开发环境采用非GNU Make编译工程
 由于BoAT IoT Framework SDK以GNU make为编译工具，若模组开发环境采用非GNU Make的编译工具（例如Ninja、ant等），或者使用了编译工程的自动生成工具（如automake、CMake），则不能直接在模组开发环境中编译SDK。
 
-在此类模组开发环境中编译SDK，需要将模组开发环境中的gcc、binutils编译工具释出，配置[独立的交叉编译环境](#####独立的交叉编译环境)章节所述环境变量，使之可以在系统中调用，等同于独立交叉编译环境，然后编译SDK。
+在此类模组开发环境中编译SDK，需要将模组开发环境中的gcc、binutils编译工具释出，配置[独立的交叉编译环境](#独立的交叉编译环境)章节所述环境变量，使之可以在系统中调用，等同于独立交叉编译环境，然后编译SDK。
 
 
 #### 以Windows为编译环境
@@ -387,7 +387,7 @@ f)	在“编辑环境变量”页中点击“新建”，新增Cygwin的安装�
 在Cygwin以外进行交叉编译时，除上节所述外，还需要进行下列调整：
 
 1. 尝试make，如果提示路径错误，则将Makefile中相应的路径分隔符，从“/”修改为“\\”。不要一开始就把所有的“/”都改为“\\”，因为部分源自Linux的工具的Windows版本，可以识别“/”作为路径分隔符。
-2. 配置[独立的交叉编译环境](#####独立的交叉编译环境)章节所述环境变量，使之指向正确的交叉编译环境。在这些环境变量中，路径应以“\\”为分隔符
+2. 配置[独立的交叉编译环境](#独立的交叉编译环境)章节所述环境变量，使之指向正确的交叉编译环境。在这些环境变量中，路径应以“\\”为分隔符
 
 ### 编译和运行Demo
 #### 准备
@@ -454,7 +454,7 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
   2. 搜索`hw_bcs_client_democert`，设置客户端私钥对应的证书
   3. 如果demo启用TLS，则搜索`hw_bcs_org1_tlsCert`、`hw_bcs_org2_tlsCert`，设置CA证书链
   4. 搜索`hw_bcs_demo_endorser_peer0Org1_url`、`hw_bcs_demo_endorser_peer0Org2_url`、`hw_bcs_demo_order_url`，设置背书节点、排序节点的url地址
-  5. 如果demo启用TLS,则搜索`hw_bcs_demo_endorser_peer0Org1_hostName`、`hw_bcs_demo_endorser_peer0Org2_hostName`、`hw_bcs_demo_order_hostName`，设置节点的主机名称
+  5. 如果demo启用TLS，则搜索`hw_bcs_demo_endorser_peer0Org1_hostName`、`hw_bcs_demo_endorser_peer0Org2_hostName`、`hw_bcs_demo_order_hostName`，设置节点的主机名称
 
 #### 编译Demo
 在\<SDKRoot\>目录下执行以下命令编译SDK的调用Demo：
@@ -493,7 +493,7 @@ mkdir… 命令语法不正确。
 FIND: 参数格式不正确  
 
 
-该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[以Windows为编译环境](####以windows为编译环境)章节安装Cygwin和配置Makefile。
+该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[以Windows为编译环境](#以windows为编译环境)章节安装Cygwin和配置Makefile。
 
 
 ## 编程模型

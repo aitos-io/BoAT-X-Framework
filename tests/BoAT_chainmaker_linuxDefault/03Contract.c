@@ -131,7 +131,7 @@ static BOAT_RESULT test_contrct_query_prepara(BoatHlchainmakerTx  *tx_ptr)
 }
     
 
-START_TEST(test_003Contract_0001InvokeFailureTxNull) 
+START_TEST(test_005ContractInvoke_0001InvokeFailureTxNull) 
 {
     BOAT_RESULT        result;
     BoatInvokeResponse  invoke_response;
@@ -141,7 +141,7 @@ START_TEST(test_003Contract_0001InvokeFailureTxNull)
 }
 END_TEST
 
-START_TEST(test_003Contract_0002InvokeFailureMethodNull) 
+START_TEST(test_005ContractInvoke_0002InvokeFailureMethodNull) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -155,7 +155,7 @@ START_TEST(test_003Contract_0002InvokeFailureMethodNull)
 }
 END_TEST
 
-START_TEST(test_003Contract_0003InvokeFailureContractNull) 
+START_TEST(test_005ContractInvoke_0003InvokeFailureContractNull) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -169,7 +169,7 @@ START_TEST(test_003Contract_0003InvokeFailureContractNull)
 }
 END_TEST
 
-START_TEST(test_003Contract_0004InvokeFailureContractNoExist) 
+START_TEST(test_005ContractInvoke_0004InvokeFailureContractNoExist) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -188,7 +188,7 @@ START_TEST(test_003Contract_0004InvokeFailureContractNoExist)
 }
 END_TEST
 
-START_TEST(test_003Contract_0005InvokeFailureresponseNull) 
+START_TEST(test_005ContractInvoke_0005InvokeFailureresponseNull) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -201,7 +201,7 @@ START_TEST(test_003Contract_0005InvokeFailureresponseNull)
 }
 END_TEST
 
-START_TEST(test_003Contract_0006InvokeSucessSyncOn) 
+START_TEST(test_005ContractInvoke_0006InvokeSucessSyncOn) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -220,7 +220,7 @@ START_TEST(test_003Contract_0006InvokeSucessSyncOn)
 }
 END_TEST
 
-START_TEST(test_003Contract_0007InvokeSucessSyncOff) 
+START_TEST(test_005ContractInvoke_0007InvokeSucessSyncOff) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -239,7 +239,7 @@ START_TEST(test_003Contract_0007InvokeSucessSyncOff)
 }
 END_TEST
 
-START_TEST(test_003Contract_0008QueryFailureTxNull) 
+START_TEST(test_006ContractQuery_0001QueryFailureTxNull) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -250,7 +250,7 @@ START_TEST(test_003Contract_0008QueryFailureTxNull)
 }
 END_TEST
 
-START_TEST(test_003Contract_0009QueryFailureMethodNull) 
+START_TEST(test_006ContractQuery_0002QueryFailureMethodNull) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -265,7 +265,7 @@ START_TEST(test_003Contract_0009QueryFailureMethodNull)
 END_TEST
 
 
-START_TEST(test_003Contract_00010QueryFailureContractNull) 
+START_TEST(test_006ContractQuery_0003QueryFailureContractNull) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -279,7 +279,7 @@ START_TEST(test_003Contract_00010QueryFailureContractNull)
 }
 END_TEST
 
-START_TEST(test_003Contract_00011QueryFailureContractNoExist) 
+START_TEST(test_006ContractQuery_0004QueryFailureContractNoExist) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -298,7 +298,7 @@ START_TEST(test_003Contract_00011QueryFailureContractNoExist)
 }
 END_TEST
 
-START_TEST(test_003Contract_00012QueryFailureResponseNull) 
+START_TEST(test_006ContractQuery_0005QueryFailureResponseNull) 
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -312,7 +312,7 @@ START_TEST(test_003Contract_00012QueryFailureResponseNull)
 }
 END_TEST
 
-START_TEST(test_003Contract_00013QuerySucess) 
+START_TEST(test_006ContractQuery_0006QuerySucess) 
 {
    BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
@@ -343,20 +343,20 @@ Suite *make_contract_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_contract, tc_contract_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_contract_api, test_003Contract_0001InvokeFailureTxNull); 
-    tcase_add_test(tc_contract_api, test_003Contract_0002InvokeFailureMethodNull);  
-    tcase_add_test(tc_contract_api, test_003Contract_0003InvokeFailureContractNull);  
-    tcase_add_test(tc_contract_api, test_003Contract_0004InvokeFailureContractNoExist);  
-    tcase_add_test(tc_contract_api, test_003Contract_0005InvokeFailureresponseNull);  
-    tcase_add_test(tc_contract_api, test_003Contract_0006InvokeSucessSyncOn); 
-    tcase_add_test(tc_contract_api, test_003Contract_0007InvokeSucessSyncOff); 
+    tcase_add_test(tc_contract_api, test_005ContractInvoke_0001InvokeFailureTxNull); 
+    tcase_add_test(tc_contract_api, test_005ContractInvoke_0002InvokeFailureMethodNull);  
+    tcase_add_test(tc_contract_api, test_005ContractInvoke_0003InvokeFailureContractNull);  
+    tcase_add_test(tc_contract_api, test_005ContractInvoke_0004InvokeFailureContractNoExist);  
+    tcase_add_test(tc_contract_api, test_005ContractInvoke_0005InvokeFailureresponseNull);  
+    tcase_add_test(tc_contract_api, test_005ContractInvoke_0006InvokeSucessSyncOn); 
+    tcase_add_test(tc_contract_api, test_005ContractInvoke_0007InvokeSucessSyncOff); 
 
-    tcase_add_test(tc_contract_api, test_003Contract_0008QueryFailureTxNull); 
-    tcase_add_test(tc_contract_api, test_003Contract_0009QueryFailureMethodNull); 
-    tcase_add_test(tc_contract_api, test_003Contract_00010QueryFailureContractNull); 
-    tcase_add_test(tc_contract_api, test_003Contract_00011QueryFailureContractNoExist);
-    tcase_add_test(tc_contract_api, test_003Contract_00012QueryFailureResponseNull);
-    tcase_add_test(tc_contract_api, test_003Contract_00013QuerySucess);
+    tcase_add_test(tc_contract_api, test_006ContractQuery_0001QueryFailureTxNull); 
+    tcase_add_test(tc_contract_api, test_006ContractQuery_0002QueryFailureMethodNull); 
+    tcase_add_test(tc_contract_api, test_006ContractQuery_0003QueryFailureContractNull); 
+    tcase_add_test(tc_contract_api, test_006ContractQuery_0004QueryFailureContractNoExist);
+    tcase_add_test(tc_contract_api, test_006ContractQuery_0005QueryFailureResponseNull);
+    tcase_add_test(tc_contract_api, test_006ContractQuery_0006QuerySucess);
  
     return s_contract;
 }
