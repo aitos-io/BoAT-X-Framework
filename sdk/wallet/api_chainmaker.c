@@ -276,20 +276,7 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 		BoatFree(wallet_ptr->tls_ca_cert_info.field_ptr);
 		wallet_ptr->tls_ca_cert_info.field_ptr = NULL;
 	}
-
 	wallet_ptr->tls_ca_cert_info.field_len = 0;
-
-	if (wallet_ptr->http2Context_ptr->tlsCAchain != NULL) 
-	{
-		if (wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL) 
-		{
-			BoatFree(wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr);
-			wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = NULL;
-		}
-	
-		BoatFree(wallet_ptr->http2Context_ptr->tlsCAchain);
-		wallet_ptr->http2Context_ptr->tlsCAchain = NULL;
-	}
 #endif
 
 	if (wallet_ptr->node_info.node_url_info != NULL)
@@ -364,19 +351,6 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 	tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = tx_ptr->wallet_ptr->node_info.node_url_info;
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
-	// clear last data
-	if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain != NULL) 
-	{
-		if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL) 
-		{
-			BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr);
-			tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = NULL;
-		}
-		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = 0;
-		BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain);
-		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain = NULL;
-	}
-
 	tx_ptr->wallet_ptr->http2Context_ptr->hostName                = tx_ptr->wallet_ptr->node_info.host_name_info;
 	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain              = BoatMalloc(sizeof(BoatFieldVariable));
 	tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = tx_ptr->wallet_ptr->tls_ca_cert_info.field_len + 1;
@@ -399,6 +373,7 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 		else
 		{
 			BoatLog(BOAT_LOG_NORMAL, "[http2] respond NULL");
+			*tx_response = NULL;
 			result = BOAT_ERROR;
 		}
 	}
@@ -409,6 +384,20 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 		http2_response.httpResLen = 0;
 	}
 
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)		
+	// clear last data
+	if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain != NULL) 
+	{
+		if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL) 
+		{
+			BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr);
+			tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = NULL;
+		}
+		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = 0;
+		BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain);
+		tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain = NULL;
+	}
+#endif
 	return result;
 
 }
