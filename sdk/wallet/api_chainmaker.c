@@ -248,7 +248,7 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 	{
         	BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         	BoatHlchainmakerWalletDeInit(wallet_ptr);
-          result = boat_exception;
+          return NULL;
     	}
 
 	return wallet_ptr;
