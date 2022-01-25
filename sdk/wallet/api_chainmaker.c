@@ -512,7 +512,15 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 				if (tx_response->code == SUCCESS) {
 					transactation_info = common__transaction_info__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
 					invoke_response->gas_used = transactation_info->transaction->result->contract_result->gas_used;
-					common__transaction_info__free_unpacked(transactation_info, NULL);
+					if (tx_response != NULL)
+					{
+						common__tx_response__free_unpacked(tx_response, NULL);
+					}
+					if (transactation_info != NULL)
+					{
+						common__transaction_info__free_unpacked(transactation_info, NULL);
+					}
+			
 					break;
 				}
 			}
@@ -531,10 +539,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		BoatFree(invoke_tx_id);
 	}
 
-	if (tx_response != NULL)
-	{
-		common__tx_response__free_unpacked(tx_response, NULL);
-	}
+	
 	return result;
 }							   
 
