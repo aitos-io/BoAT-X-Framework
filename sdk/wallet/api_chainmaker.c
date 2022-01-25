@@ -608,7 +608,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 					BoatLog(BOAT_LOG_CRITICAL, "tx_response->contract_result->result.datais too long");
 					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
 				}
-				memcpy(query_response->contract_result, tx_response->contract_result->result.data, strlen((BCHAR*)tx_response->contract_result->result.data));
+				memcpy(query_response->contract_result, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
 			}
 			query_response->gas_used = tx_response->contract_result->gas_used;
 		}
