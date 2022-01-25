@@ -5,3 +5,4 @@
 - [**BoAT Getting Started**](/en-us/BoAT_Getting_Started_en.md)
 - [**BoAT Overall Design**](/en-us/BoAT_Overall_Design_en.md)
 - [**BoAT Whitepaper**](/en-us/BoAT_Blockchain_IoT_Module_Product_White_Paper_en.md)
+- [**Blockchain Module Technology and Application**](/en-us/BoAT_Blockchain_IoT_Module_Technology_and_Application_en.md)
