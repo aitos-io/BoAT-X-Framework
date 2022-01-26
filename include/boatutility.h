@@ -55,8 +55,8 @@ typedef enum
 //!@brief Argument type for UtilityBinToHex()
 typedef enum
 {
-    BIN2HEX_PREFIX_0x_NO = 0,   //<! Prepend "0x" to converted HEX string
-    BIN2HEX_PREFIX_0x_YES       //<! Don't prepend "0x" to converted HEX string
+    BIN2HEX_PREFIX_0x_NO = 0,   //<! Don't prepend "0x" to converted HEX string
+    BIN2HEX_PREFIX_0x_YES       //<! Prepend "0x" to converted HEX string
 }BIN2HEX_PREFIX_0x_MODE;
 
 
