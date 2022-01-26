@@ -97,6 +97,7 @@ START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig)
 {
     BSINT32 rtnVal;
     extern BoatIotSdkContext g_boat_iot_sdk_context;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
 
     /* 1. execute unit test */
     rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, NULL, sizeof(BoatHlchainmakerWalletConfig));
@@ -107,6 +108,9 @@ START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig)
 
     /* 3-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr == NULL);
 }
 END_TEST
 
