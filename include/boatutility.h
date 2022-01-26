@@ -213,7 +213,7 @@ BUINT32 UtilityTrimBin(BOAT_OUT BUINT8 *to_ptr,
  *       
  * @param[in] zero_as_null
  *   In case the binary stream contains only one or multiple 0x00:
- *   \n If <zero_as_null> is BOAT_TRUE, it will be converted to a null sting and
+ *   \n If <zero_as_null> is BOAT_TRUE, it will be converted to a null string and
  *   returns 0.
  *   \n If <zero_as_null> is BOAT_FALSE, it will be converted to "0" or "00"
  *   according to <trim_mode>.
