@@ -76,24 +76,20 @@ START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess)
     /* 1. execute unit test */
     rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
     
-    /* 2. verify test result */
-    /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, 0);
-
-     /* 1. execute unit test */
-    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
-    
-    /* 2. verify test result */
-    /* 2-1. verify the return value */
-    ck_assert_int_eq(rtnVal, 1);
-
-    /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
-    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == true);
-
     g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
     ck_assert(g_chaninmaker_wallet_ptr != NULL);
     ck_assert(check_chainmaker_wallet(g_chaninmaker_wallet_ptr) == BOAT_SUCCESS);
+
+     /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 1);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == true);
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr != NULL);
+    ck_assert(check_chainmaker_wallet(g_chaninmaker_wallet_ptr) == BOAT_SUCCESS); 
 }
 END_TEST
 
