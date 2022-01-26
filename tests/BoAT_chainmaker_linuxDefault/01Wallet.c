@@ -170,7 +170,7 @@ START_TEST(test_001CreateWallet_0004CreateLoadWalletSuccess)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0005CreateLoadWalletFailureNoExist) 
+START_TEST(test_001CreateWallet_0005CreateLoadWalletFailurePersistWalletNoExist) 
 {
     BSINT32 rtnVal;
     extern BoatIotSdkContext g_boat_iot_sdk_context;
@@ -391,7 +391,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig); 
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0003CreatePersistWalletSuccess);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0004CreateLoadWalletSuccess);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0005CreateLoadWalletFailureNoExist);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0005CreateLoadWalletFailurePersistWalletNoExist);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0006_CreateOneTimeWalletFailureShortSize);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0007_CreateOneTimeWalletSucessLongSize);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0008_CreateOneTimeWalletFailureUrlFormatError);
