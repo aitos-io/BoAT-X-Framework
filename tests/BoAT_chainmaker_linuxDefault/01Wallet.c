@@ -336,7 +336,7 @@ START_TEST(test_001CreateWallet_0010_CreatePersisWalletFailureLongName)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0011_CreatePersisWalletFailurepPotocolTypeNoExit) 
+START_TEST(test_001CreateWallet_0011_CreatePersisWalletFailurePotocolTypeNoExit) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
@@ -351,6 +351,27 @@ START_TEST(test_001CreateWallet_0011_CreatePersisWalletFailurepPotocolTypeNoExit
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+ 
+}
+END_TEST
+
+START_TEST(test_001CreateWallet_0012_CreatePersisWalletFailureIndexExceed) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatIotSdkInit();
+    BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, "chainmaker", &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
+
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(BOAT_MAX_WALLET_NUM);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    ck_assert_int_eq(g_chaninmaker_wallet_ptr, NULL);
  
 }
 END_TEST
@@ -397,7 +418,8 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0008_CreateOneTimeWalletFailureUrlFormatError);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0009_CreateOneTimeWalletFailureLongNum);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0010_CreatePersisWalletFailureLongName);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0011_CreatePersisWalletFailurepPotocolTypeNoExit);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0011_CreatePersisWalletFailurePotocolTypeNoExit);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0012_CreatePersisWalletFailureIndexExceed);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0003DeleteWalletSucessExistingFile);
