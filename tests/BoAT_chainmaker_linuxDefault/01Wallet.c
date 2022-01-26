@@ -310,7 +310,7 @@ START_TEST(test_001CreateWallet_0009_CreateOneTimeWalletFailureLongNum)
 END_TEST
 
 
-START_TEST(test_001CreateWallet_0010_CreateOneTimeWalletFailureLongName) 
+START_TEST(test_001CreateWallet_0010_CreatePersisWalletFailureLongName) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
@@ -377,7 +377,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0007_CreateOneTimeWalletSucessLongSize);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0008_CreateOneTimeWalletFailureUrlFormatError);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0009_CreateOneTimeWalletFailureLongNum);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0010_CreateOneTimeWalletFailureLongName);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0010_CreatePersisWalletFailureLongName);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0003DeleteWalletSucessExistingFile);
