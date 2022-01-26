@@ -69,7 +69,7 @@ BoatHlchainmakerWalletConfig get_chainmaker_wallet_settings()
 START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess) 
 {
     BSINT32 rtnVal;
-    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
@@ -97,7 +97,7 @@ START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig)
 {
     BSINT32 rtnVal;
     extern BoatIotSdkContext g_boat_iot_sdk_context;
-    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
 
     /* 1. execute unit test */
     rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, NULL, sizeof(BoatHlchainmakerWalletConfig));
@@ -117,7 +117,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0003CreatePersistWalletSuccess) 
 {
     BSINT32 rtnVal;
-    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
 
     BoatIotSdkInit();
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
@@ -128,7 +128,11 @@ START_TEST(test_001CreateWallet_0003CreatePersistWalletSuccess)
 
     /* 2. verify test result */
     /* 2-1. verify the return value */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
     ck_assert_int_eq(rtnVal, 0);
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr != NULL);
+    ck_assert(check_chainmaker_wallet(g_chaninmaker_wallet_ptr) == BOAT_SUCCESS);
     ck_assert_int_eq(access("chainmaker", F_OK), 0);
 
     /* 1. execute unit test */
@@ -136,15 +140,14 @@ START_TEST(test_001CreateWallet_0003CreatePersistWalletSuccess)
     
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_int_eq(rtnVal, 1);
-
-    /* 2-2. verify the global variables that be affected */
-    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    ck_assert_int_eq(rtnVal, 1);    
     ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == true);
 
     g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
     ck_assert(g_chaninmaker_wallet_ptr != NULL);
     ck_assert(check_chainmaker_wallet(g_chaninmaker_wallet_ptr) == BOAT_SUCCESS);
+    ck_assert_int_eq(access("chainmaker", F_OK), 0);
+
 }
 END_TEST
 
@@ -174,6 +177,7 @@ START_TEST(test_001CreateWallet_0005CreateLoadWalletFailurePersistWalletNoExist)
 {
     BSINT32 rtnVal;
     extern BoatIotSdkContext g_boat_iot_sdk_context;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
 
     /* 1. execute unit test */
     rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, "chainmaker_no_exist", NULL, sizeof(BoatHlchainmakerWalletConfig));
@@ -184,13 +188,16 @@ START_TEST(test_001CreateWallet_0005CreateLoadWalletFailurePersistWalletNoExist)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr == NULL);
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0006_CreateOneTimeWalletFailureShortSize) 
 {
     BSINT32 rtnVal;
-    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
@@ -203,13 +210,16 @@ START_TEST(test_001CreateWallet_0006_CreateOneTimeWalletFailureShortSize)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr == NULL);
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0007_CreateOneTimeWalletSucessLongSize) 
 {
     BSINT32 rtnVal;
-    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
@@ -222,13 +232,16 @@ START_TEST(test_001CreateWallet_0007_CreateOneTimeWalletSucessLongSize)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+     g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr != NULL);
+    ck_assert(check_chainmaker_wallet(g_chaninmaker_wallet_ptr) == BOAT_SUCCESS);
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0008_CreateOneTimeWalletFailureUrlFormatError) 
 {
     BSINT32 rtnVal;
-    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
     memset(wallet_config.node_url_cfg, 0, BAOT_CHAINMAKER_URL_HOSTNAME_LEN);
     strncpy(wallet_config.node_url_cfg,  "192",  4);
@@ -244,13 +257,16 @@ START_TEST(test_001CreateWallet_0008_CreateOneTimeWalletFailureUrlFormatError)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr == NULL);
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0009_CreateOneTimeWalletFailureLongNum) 
 {
     BSINT32 rtnVal;
-    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
@@ -313,7 +329,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0010_CreatePersisWalletFailureLongName) 
 {
     BSINT32 rtnVal;
-    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
     char chainmaker_name[4097];
 
     for (int i = 0; i < 4097; i++)
@@ -332,6 +348,9 @@ START_TEST(test_001CreateWallet_0010_CreatePersisWalletFailureLongName)
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_PERSISTER_STORE_FAIL);
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr == NULL);
  
 }
 END_TEST
@@ -339,7 +358,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0011_CreatePersisWalletFailurePotocolTypeNoExit) 
 {
     BSINT32 rtnVal;
-    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
     BoatIotSdkInit();
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
@@ -351,6 +370,9 @@ START_TEST(test_001CreateWallet_0011_CreatePersisWalletFailurePotocolTypeNoExit)
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr == NULL);
  
 }
 END_TEST
