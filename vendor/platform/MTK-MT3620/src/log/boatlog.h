@@ -44,7 +44,7 @@ boatLogConfig.h defines options for compiling.
 
 #define BoatPrintf                               printf
 
-extern const BCHAR * const g_log_level_name_str[];
+extern const BCHAR *const g_log_level_name_str[];
 
 /*!****************************************************************************
  * @brief Log Output
