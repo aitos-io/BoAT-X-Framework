@@ -26,13 +26,13 @@ BOAT_RESULT check_chainmaker_wallet(BoatHlchainmakerWallet *wallet_ptr)
         return result;
     }
 
-    result = strncmp(wallet_ptr->user_cert_info.prikeyCtx.extra_data.value, chainmaker_sign_key_buf, strlen(chainmaker_sign_key_buf));
+    result = strncmp(wallet_ptr->user_cert_prikey_info.prikeyCtx.extra_data.value, chainmaker_sign_key_buf, strlen(chainmaker_sign_key_buf));
     if (result != 0) 
     {
         return result;
     }
 
-    result = strncmp(wallet_ptr->user_cert_info.cert.field_ptr, chainmaker_sign_cert_buf, strlen(chainmaker_sign_cert_buf));
+    result = strncmp(wallet_ptr->user_cert_prikey_info.cert.field_ptr, chainmaker_sign_cert_buf, strlen(chainmaker_sign_cert_buf));
     if (result != 0) 
     {
         return result;
@@ -484,6 +484,29 @@ START_TEST(test_001CreateWallet_0015_CreateOneTimeWalletFailureOrgIdLenExceed)
 }
 END_TEST
 
+
+START_TEST(test_001CreateWallet_0016_CreateOneTimeWalletFailurePrikeyError) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
+    BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
+    wallet_config.user_prikey_cfg.prikey_content.field_ptr = "testprikey";
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
+    
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr == NULL);
+}
+END_TEST
+
 START_TEST(test_002DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
     BoatWalletDelete(NULL);
@@ -531,6 +554,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0013_CreateOneTimeWalletFailureHostNameLenExceed);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0014_CreateOneTimeWalletFailureChainIdLenExceed);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0015_CreateOneTimeWalletFailureOrgIdLenExceed);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0016_CreateOneTimeWalletFailurePrikeyError);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0003DeleteWalletSucessExistingFile);
