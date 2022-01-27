@@ -157,10 +157,10 @@ typedef struct BoatChainmakerNodeInfo
 //chainmaker wallet structure
 typedef struct TBoatHlchainmakerWallet {
 
-	BoatHlchainmakerKeyPair   user_cert_info; //!< user information
+  BoatHlchainmakerKeyPair   user_cert_prikey_info; //!< user information
   BoatFieldVariable         tls_ca_cert_info;
   BoatChainmakerNodeInfo    node_info;
-	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
+  struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
 } BoatHlchainmakerWallet;
 
 typedef struct TBoatHlchainamkerTx {
