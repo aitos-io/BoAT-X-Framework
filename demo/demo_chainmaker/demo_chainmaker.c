@@ -139,6 +139,7 @@ int main(int argc, char *argv[])
 	BoatHlchainmakerTx    tx_ptr;
 	BoatInvokeResponse     invoke_response;
 	BoatQueryResponse      query_response;
+	boat_try_declare;
 
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
@@ -147,28 +148,31 @@ int main(int argc, char *argv[])
 	result = chainmakerWalletPrepare();
 	if (result != BOAT_SUCCESS)
 	{
-		return -1;
+		BoatLog(BOAT_LOG_CRITICAL, "chainmakerWalletPrepare failed.");
+		boat_throw(result, chainmaker_demo_catch);;
 	}
 
 	/* step-3: Chainmaker transaction structure initialization */
 	result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, &tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
-		return -1;
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlChainmakerTxInit failed.");
+		boat_throw(result, chainmaker_demo_catch);
 	}
 
 	result = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005", NULL);
    	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
-		return -1;
+		boat_throw(result, chainmaker_demo_catch);
 	}
 
 	/* step-4: set transaction 'invoke' command */
-	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", true, &invoke_response); 
+	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", false, &invoke_response); 
 	if (result != BOAT_SUCCESS)
 	{
-		return -1;
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerContractInvoke() failed.");
+		boat_throw(result, chainmaker_demo_catch);
 	}
 
 	BoatLog( BOAT_LOG_CRITICAL, "response code = %d, message = %s, gas_used = %d\n", invoke_response.code, invoke_response.message, invoke_response.gas_used);
@@ -178,16 +182,23 @@ int main(int argc, char *argv[])
 	result = BoatHlchainmakerAddTxParam(&tx_ptr, 2, "file_hash", "ab3456df5799b87c77e7f85", NULL);
 	if (result != BOAT_SUCCESS)
 	{
-		return -1;
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
+		boat_throw(result, chainmaker_demo_catch);
 	}
 
 	result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &query_response);
 	if (result != BOAT_SUCCESS)
 	{
-		return -1;
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerContractQuery() failed.");
+		boat_throw(result, chainmaker_demo_catch);
 	}
-	BoatLog( BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, gas_used = %d\n", 
+	BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, gas_used = %d\n", 
 			query_response.code, query_response.message, query_response.contract_result, query_response.gas_used);
+
+	boat_catch(chainmaker_demo_catch)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+    }	
 	/* step-6: chainmaker transaction structure Deinitialization */
 	BoatHlchainmakerTxDeInit(&tx_ptr);
 
