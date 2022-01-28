@@ -151,7 +151,7 @@ Execute setup-x86_64.exe and install tools including make, gcc, python, libcurl 
 ![image](https://user-images.githubusercontent.com/81662688/130744556-163fb5e4-0260-42d8-b8c1-4c78052bd7d1.png)
 
 
-Under Windows, the SDK does not support compilation in environments other than Cygwin. If you must run outside of Cygwin (for example, a cross-compiler using Windows as the Build environment), please refer to [Use Windows as Compiler Environment](#Use-Windows-As-CompilerE-nvironment) chapter to adjust the compiled files.
+Under Windows, the SDK does not support compilation in environments other than Cygwin. If you must run outside of Cygwin (for example, a cross-compiler using Windows as the Build environment), please refer to [Use Windows as The Compilation Environment](#use-windows-as-the-compilation-environment) chapter to adjust the compiled files.
 
 When porting the SDK on RTOS, the libcurl dependency should be ported or the RPC method should be rewritten.
 
@@ -217,7 +217,7 @@ The SDK provides the following tools to generate the corresponding C interface c
 |\<SDKRoot\>/tools/platoneSolidity2c.py |Generate C calling code according to PlatONE (Solidity) ABI          |
 |\<SDKRoot\>/tools/platoneWASM2c.py     |Generate C calling code according to PlatONE (WASM) ABI              |
 
-Contract programming languages generally support "object-oriented". However, since C language does not support "object-oriented" and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools. The specific input types of support contract functions are described in the [Contract Call (Automatically Generated)](#Contract-Call-(automatically-generated)) chapter.
+Contract programming languages generally support "object-oriented". However, since C language does not support "object-oriented" and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools. The specific input types of support contract functions are described in the [Contract Call (Automatically Generated)](#contract-call-(automatically-generated)) chapter.
 
 Before making the call, you first need to compile the contract, and copy the ABI interface description JSON file generated in the contract compilation to the corresponding directory of the SDK: 
 
@@ -230,7 +230,7 @@ Before making the call, you first need to compile the contract, and copy the ABI
 
 *Note: ABI's JSON file must have ".json" as the file name suffix.*  
 
-During the demo compilation process, the automatic generation tool will generate the corresponding C interface calling code according to the contract ABI JSON file. If the automatic generation of C interface fails during compilation, you need to delete the unsupported ABI JSON file (or delete the unsupported interface) from the corresponding directory of \<SDKRoot\>/contract, write the C code manually, and assemble the ABI interface. For details, please refer to the [Transfer Call](#Transfer-Call) chapter.
+During the demo compilation process, the automatic generation tool will generate the corresponding C interface calling code according to the contract ABI JSON file. If the automatic generation of C interface fails during compilation, you need to delete the unsupported ABI JSON file (or delete the unsupported interface) from the corresponding directory of \<SDKRoot\>/contract, write the C code manually, and assemble the ABI interface. For details, please refer to the [Transfer Call](#transfer-call) chapter.
 ### Host Compilation
 Host compilation means that the compilation environment is consistent with the target environment, for example, to compile x86 programs on x86. There are usually two scenarios for using Host compilation: 
 1. In the software commissioning phase, the software functions are tested on the PC.
@@ -240,13 +240,13 @@ Host compilation means that the compilation environment is consistent with the t
 Compile Host based on Linux distribution (such as Ubuntu). Generally, there is no need to configure the compilation environment, just make sure that the dependent software has been installed.  
 Follow the steps below to compile:
 
-1. Store the SDK source code in a path that meets the requirements of [SDK source code path](#SDK-Source-Code-Path).
+1. Store the SDK source code in a path that meets the requirements of [BoAT IoT Framework SDK Source Path](#boat-iot-framework-sdk-source-path).
 2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/demo/demo_\<protocol\>/demo_contract (see section 3.3).
 3. In the \<SDKRoot\> directory, execute the following command:  
 ````
 $make boatlibs
 ````
-After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See [Header Files and Libraries](#Header-Files-and-Libraries)chapter.
+After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See [Header Files and Libraries](#header-files-and-libraries)chapter.
 
 #### Use Cygwin as The Compilation Environment
 On Windows, the SDK does not support compilation in environments other than Cygwin, nor does it support compilation with compilers other than gcc.
@@ -294,7 +294,7 @@ If the environment variables CC and AR have been set, you can execute the follow
 ${CC} -v  
 ${AR} -v  
 ````
-After the above configuration is completed, follow the steps in the chapter [Using Linux as the Compiling Environment](#Using-Linux-as-The-Compiling-Environment) chapter to compile.
+After the above configuration is completed, follow the steps in the chapter [Use Linux as the Compilation Environment](#use-linux-as-the-compilation-environment) chapter to compile.
 
 ##### A Cross-Compilation Environment Integrated with The Module Development Environment
 Some OpenCPU modules have integrated a supporting cross-compiler environment in the development environment provided by them, so that customers do not need to install a cross-compiler separately in the Linux system. This is especially convenient for developing application software on multiple modules of different models on a host computer without repeatedly switching the cross-compilation environment.
@@ -334,12 +334,12 @@ Among them, boatiotsdk is the directory where the SDK is located, and the -C par
 
 *Note: In the Makefile, the command under target must start with a Tab (ASCII code 0x09), not a space.*
 
-The above steps are only used to compile the SDK library. After the SDK library compilation completes, the compiled library needs to be integrated into the module development environment. See the [Header Files and Libraries](#Header-Files-and-Libraries) chapter for details.
+The above steps are only used to compile the SDK library. After the SDK library compilation completes, the compiled library needs to be integrated into the module development environment. See the [Header Files and Libraries](#header-files-and-libraries) chapter for details.
 
 ###### The Module Development Environment is Compiled with Non-GNU Make
 Since BoAT IoT Framework SDK uses GNU make as the compilation project, if the module development environment uses non-GNU Make compilation projects (such as Ninja, ant, etc.), or uses the automatic generation tools of the compilation project (such as automake, CMake), it cannot Compile the SDK directly in the module development environment.  
 
-To compile the SDK in such a module development environment, you need to release the gcc and binutils compilation tools in the module development environment, and configure the environment variables described in the chapter [Independent cross-compilation environment](#Independent-Cross-Compilation-Environment) so that they can be called in the system, which is equivalent to independent cross-compilation Environment, and then compile the SDK.
+To compile the SDK in such a module development environment, you need to release the gcc and binutils compilation tools in the module development environment, and configure the environment variables described in the chapter [Independent cross-compilation environment](#independent-cross-compilation-environment) so that they can be called in the system, which is equivalent to independent cross-compilation Environment, and then compile the SDK.
 
 #### Use Windows as The Compilation Environment
 Under Windows, the SDK does not support compilation in environments other than Cygwin. If the cross compiler with Windows as the build environment can only be run outside Cygwin, the compilation environment and compilation configuration files should be adjusted.  
@@ -391,7 +391,7 @@ f)	On the "Edit Environment Variables" page, click "New", add the bin path under
 When cross-compiling outside of Cygwin, in addition to the previous section, the following adjustments are required:
 
 1.	Try make, if it prompts that the path is wrong, change the corresponding path separator in the Makefile from "/" to "\\". Don't change all "/" to "\\" at the beginning, because the Windows version of some tools derived from Linux can recognize "/" as a path separator.
-2.	Configure the environment variables described in section [Independent Cross-Compilation Environment](#Independent-Cross-Compilation-Environment) to point to the correct cross-compilation environment. In these environment variables, the path should be separated by "\\".
+2.	Configure the environment variables described in section [Independent Cross-Compilation Environment](#independent-cross-compilation-environment) to point to the correct cross-compilation environment. In these environment variables, the path should be separated by "\\".
 
 ### Compile and Run Demo
 #### Ready
@@ -495,7 +495,7 @@ mkdir… command syntax is incorrect.
 FIND: The parameter format is incorrect  
 
 
-This problem is generally caused by compiling under Windows, but Cygwin is not installed, or the paths of BOAT_RM, BOAT_MKDIR, and BOAT_FIND are not correctly configured in the Makefile. Please refer to section [Use Windows as Compiler Environment](#Use-Windows-as-Compiler-Environment) to install Cygwin and configure Makefile.
+This problem is generally caused by compiling under Windows, but Cygwin is not installed, or the paths of BOAT_RM, BOAT_MKDIR, and BOAT_FIND are not correctly configured in the Makefile. Please refer to section [Use Windows as The Compilation Environment](#use-windows-as-the-compilation-environment) to install Cygwin and configure Makefile.
 
 ## Programming Model
 
