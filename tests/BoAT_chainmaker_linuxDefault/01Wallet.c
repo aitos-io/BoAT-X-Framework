@@ -490,7 +490,7 @@ START_TEST(test_001CreateWallet_0016_CreateOneTimeWalletFailurePrikeyError)
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
-    wallet_config.user_prikey_cfg.prikey_content.field_ptr = "testprikey";
+    wallet_config.user_prikey_cfg.prikey_content.field_ptr = "testPrikey";
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
     /* 1. execute unit test */
@@ -506,6 +506,29 @@ START_TEST(test_001CreateWallet_0016_CreateOneTimeWalletFailurePrikeyError)
     ck_assert(g_chaninmaker_wallet_ptr == NULL);
 }
 END_TEST
+
+START_TEST(test_001CreateWallet_0017_CreateOneTimeWalletFailureCertLenExceed) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
+    BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
+    wallet_config.user_cert_cfg.length = 1025;
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    //  /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
+    
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr == NULL);
+}
+END_TEST
+
 
 START_TEST(test_002DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
@@ -555,6 +578,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0014_CreateOneTimeWalletFailureChainIdLenExceed);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0015_CreateOneTimeWalletFailureOrgIdLenExceed);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016_CreateOneTimeWalletFailurePrikeyError);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0017_CreateOneTimeWalletFailureCertLenExceed);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0003DeleteWalletSucessExistingFile);
