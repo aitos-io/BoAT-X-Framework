@@ -153,8 +153,13 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
 		result = boat_exception;
-		/* free malloc param Deinit */
-		BoatFree(wallet_ptr->user_cert_prikey_info.cert.field_ptr);
+		// /* free malloc param Deinit */
+		if (wallet_ptr->user_cert_prikey_info.cert.field_ptr != NULL)
+		{
+			BoatFree(wallet_ptr->user_cert_prikey_info.cert.field_ptr);
+			wallet_ptr->user_cert_prikey_info.cert.field_ptr = NULL;
+		}
+		
 		wallet_ptr->user_cert_prikey_info.cert.field_len = 0;
 	}
 	return result;
@@ -241,8 +246,8 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 		boat_throw(result, BoatHlchainmakerWalletInitException);
 	}
 
-	/* http2Context_ptr assignment */
-	wallet_ptr->http2Context_ptr = http2Init();
+ 	/* http2Context_ptr assignment */
+ 	wallet_ptr->http2Context_ptr = http2Init();
 
 	boat_catch(BoatHlchainmakerWalletInitException)
 	{
@@ -266,6 +271,7 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	if (wallet_ptr->user_cert_prikey_info.cert.field_ptr != NULL) 
 	{
 		BoatFree(wallet_ptr->user_cert_prikey_info.cert.field_ptr);
+		wallet_ptr->user_cert_prikey_info.cert.field_ptr = NULL;
 	}
 	wallet_ptr->user_cert_prikey_info.cert.field_len = 0;
 	
@@ -307,10 +313,12 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	http2DeInit(wallet_ptr->http2Context_ptr);
 
 	/* wallet_ptr DeInit */
-	BoatFree(wallet_ptr);
+	if (wallet_ptr != NULL)
+	{
+		BoatFree(wallet_ptr);
+		wallet_ptr = NULL;
+	}
 
-	/* set NULL after free completed */
-	wallet_ptr = NULL;
 }
 
 BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BoatHlchainmakerTx* tx_ptr)
@@ -381,6 +389,7 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 	if (http2_response.http2Res != NULL) 
 	{
 		BoatFree(http2_response.http2Res);
+		http2_response.http2Res = NULL;
 		http2_response.httpResLen = 0;
 	}
 
@@ -537,6 +546,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	if (invoke_tx_id != NULL) 
 	{
 		BoatFree(invoke_tx_id);
+		invoke_tx_id = NULL;
 	}
 
 	
@@ -657,6 +667,7 @@ BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, c
 	if (wallet_ptr->node_info.node_url_info != NULL)
 	{
 		BoatFree(wallet_ptr->node_info.node_url_info);
+		wallet_ptr->node_info.node_url_info = NULL;
 	}
 
 	// +1 for NULL Terminator
@@ -698,6 +709,7 @@ BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, 
 	if (wallet_ptr->node_info.host_name_info != NULL)
 	{
 		BoatFree(wallet_ptr->node_info.host_name_info);
+		wallet_ptr->node_info.host_name_info = NULL;
 	}
 
 	// +1 for NULL Terminator
@@ -738,6 +750,7 @@ BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, c
 	if (wallet_ptr->node_info.chain_id_info != NULL)
 	{
 		BoatFree(wallet_ptr->node_info.chain_id_info);
+		wallet_ptr->node_info.chain_id_info = NULL;
 	}
 
 	// +1 for NULL Terminator
@@ -778,6 +791,7 @@ BOAT_RESULT BoatChainmakerWalletSetOrgId(BoatHlchainmakerWallet *wallet_ptr, con
 	if (wallet_ptr->node_info.org_id_info != NULL)
 	{
 		BoatFree(wallet_ptr->node_info.org_id_info);
+		wallet_ptr->node_info.org_id_info = NULL;
 	}
 
 	// +1 for NULL Terminator
