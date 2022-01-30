@@ -267,3 +267,64 @@ for (i = 0; i < 20; i++)
 }
 合约名_setData(data, 2); 
 ```
+
+#### bool[N]类型
+Solidity中的bool[N]变成BUINT8 *类型
+Solidity函数：setData(bool[2] data);  
+C语言函数：合约名_setData(BUINT8 *data); 
+
+示例：
+```
+BUINT8 data[2];
+data[0] = BOAT_FALSE;
+data[1] = BOAT_TRUE;
+合约名_setData(data); 
+```
+
+#### bool[]类型
+Solidity中的bool[]变成BUINT8 *类型和一个表示长度的BUINT32值
+Solidity函数：setData(bool[] data);  
+C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen); 
+
+示例：
+```
+BUINT8 data[3];
+data[0] = BOAT_FALSE;
+data[1] = BOAT_TRUE;
+data[3] = BOAT_FALSE;
+合约名_setData(data, 3); 
+```
+
+#### uint8[N]类型
+Solidity中的uint8[N]变成BUINT8类型
+Solidity函数：setData(uint8[2] data);  
+C语言函数：合约名_setData(BUINT8 *data); 
+
+示例：
+```
+BUINT8 data[2];
+data[0] = 0;
+data[1] = 1;
+合约名_setData(data); 
+```
+
+#### uint8[]类型
+Solidity中的uint8[]变成BUINT8类型和一个表示长度的BUINT32值
+Solidity函数：setData(uint8[] data);  
+C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen); 
+
+示例：
+```
+BUINT8 data[3];
+data[0] = 32;
+data[1] = 10;
+data[3] = 255;
+合约名_setData(data, 3); 
+```
+
+#### uint16[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BUINT16。
+
+#### uint16[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BUINT16。
+
