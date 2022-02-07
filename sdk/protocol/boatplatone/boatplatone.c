@@ -564,12 +564,12 @@ int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
     name = cJSON_GetObjectItemCaseSensitive(monitor_json, "code");
     if (cJSON_IsString(name) && (name->valuestring != NULL))
     {
-        printf("Checking monitor \"%s\"\n", name->valuestring);
+        BoatLog(BOAT_LOG_CRITICAL,"Checking monitor \"%s\"\n", name->valuestring);
     }
 
     resolutions = cJSON_GetObjectItemCaseSensitive(monitor_json, "data");
     int num = cJSON_GetArraySize(resolutions);
-    printf("num  = %d ,,   \n", num);
+    BoatLog(BOAT_LOG_NORMAL,"num  = %d\n", num);
     result_out->nodeInfo = BoatMalloc(num * sizeof(wbe3_nodeInfo));
     cJSON_ArrayForEach(resolution, resolutions)
     {
@@ -594,7 +594,7 @@ int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
         }
         else
         {
-            printf("un-implemention yet.");
+            BoatLog(BOAT_LOG_CRITICAL,"un-implemention yet.");
         }
         result_out->nodeInfo[result_out->num-1].rpcPort = height->valueint;
         
