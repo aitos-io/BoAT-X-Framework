@@ -209,29 +209,6 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, Boa
 
 /*!****************************************************************************
  * @brief 
- *   Set transaction datatime.
- *   
- * @details
- *   This function used to set transaction occurred datatime.
- *
- * @param tx_ptr 
- *   Chainmaker transaction structure pointer.
- *
- * @param sec
- *   Passing seconds from 1970-01-01 00:00:00.
- *
- * @param nanos
- *   Non-negative fractions of a second at nanosecond resolution.
- *   Must be from 0 to 999,999,999.
- *
- * @return  
- *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
- ******************************************************************************/
-void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr);
-
-
-/*!****************************************************************************
- * @brief 
  *   Set transaction command arguments.
  *
  * @details

@@ -146,6 +146,7 @@ int main(int argc, char *argv[])
 
 	/* step-2: prepare wallet */
 	result = chainmakerWalletPrepare();
+
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "chainmakerWalletPrepare failed.");
@@ -174,7 +175,6 @@ int main(int argc, char *argv[])
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerContractInvoke() failed.");
 		boat_throw(result, chainmaker_demo_catch);
 	}
-
 	BoatLog( BOAT_LOG_CRITICAL, "response code = %d, message = %s, gas_used = %d\n", invoke_response.code, invoke_response.message, invoke_response.gas_used);
 
 	/* step-5: wait seconds and 'query' the gas */
@@ -199,10 +199,8 @@ int main(int argc, char *argv[])
     {
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
     }	
-	/* step-6: chainmaker transaction structure Deinitialization */
-	BoatHlchainmakerTxDeInit(&tx_ptr);
 
-	/* step-7: Boat SDK Deinitialization */
+	/* step-6: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
 
     return 0;

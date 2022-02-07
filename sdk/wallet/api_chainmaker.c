@@ -119,8 +119,6 @@ BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wall
 
 	/* initialization */
 	memset(&wallet_ptr->user_cert_prikey_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx));
-	wallet_ptr->user_cert_prikey_info.cert.field_ptr = NULL;
-	wallet_ptr->user_cert_prikey_info.cert.field_len = 0;
 	
 	/* prikey context assignment */
 	if (prikeyCtx_config.prikey_content.field_ptr != NULL) 
@@ -273,7 +271,7 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 		BoatFree(wallet_ptr->user_cert_prikey_info.cert.field_ptr);
 		wallet_ptr->user_cert_prikey_info.cert.field_ptr = NULL;
 	}
-	wallet_ptr->user_cert_prikey_info.cert.field_len = 0;
+
 	
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
 	/* tlsClinet_info DeInit */
@@ -333,15 +331,6 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, Boa
 
 	tx_ptr->wallet_ptr = (BoatHlchainmakerWallet *)wallet_ptr;
 	return result;
-}
-
-void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr)
-{
-	if (tx_ptr == NULL) 
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Tx argument cannot be nULL.");
-		return;
-	}
 }
 
 __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, Common__TxResponse** tx_response)
@@ -475,6 +464,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	invoke_tx_id = BoatMalloc(BOAT_TXID_LEN + 1);
 	get_tx_id(invoke_tx_id);
 	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, invoke_tx_id);
+
 	if (result != BOAT_SUCCESS) {
 
 		BoatLog(BOAT_LOG_CRITICAL, "hlchainmakerTransactionPacked failed");
@@ -495,6 +485,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		memset(invoke_response->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
 		memcpy(invoke_response->message, tx_response->message, strlen(tx_response->message));
 	}
+
 	if (tx_response != NULL)
 	{
 		common__tx_response__free_unpacked(tx_response, NULL);
@@ -504,6 +495,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 
 		BoatHlchainmakerAddTxParam(tx_ptr, 2, "txId",invoke_tx_id);
 		result = hlchainmakerTransactionPacked(tx_ptr, "GET_TX_BY_TX_ID", "SYSTEM_CONTRACT_QUERY", TxType_QUERY_SYSTEM_CONTRACT, invoke_tx_id);
+
 		if (result == BOAT_SUCCESS) {
 
 			for (int i = 0; i < BOAT_RETRY_CNT; i++) 
@@ -548,7 +540,6 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		BoatFree(invoke_tx_id);
 		invoke_tx_id = NULL;
 	}
-
 	
 	return result;
 }							   
