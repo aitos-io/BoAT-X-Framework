@@ -362,6 +362,23 @@ START_TEST(test_006ContractQuery_0006QuerySucess)
 END_TEST
 
 
+START_TEST(test_006ContractQuery_0007QueryFailureInvalidUrl) 
+{
+    BOAT_RESULT        result;
+    BoatHlchainmakerTx tx_ptr;
+    BoatQueryResponse  query_response;
+    char url_buf[] = {"127.0.0.1:12310"};
+
+    result = test_contrct_invoke_prepara(&tx_ptr);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+    strncpy(tx_ptr.wallet_ptr->node_info.node_url_info, url_buf, strlen(url_buf));
+    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", &query_response); ;
+    ck_assert(result == BOAT_ERROR_HTTP2_CONNECT_FAIL);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+
 Suite *make_contract_suite(void) 
 {
     /* Create Suite */
@@ -388,6 +405,7 @@ Suite *make_contract_suite(void)
     tcase_add_test(tc_contract_api, test_006ContractQuery_0004QueryFailureContractNoExist);
     tcase_add_test(tc_contract_api, test_006ContractQuery_0005QueryFailureResponseNull);
     tcase_add_test(tc_contract_api, test_006ContractQuery_0006QuerySucess);
+    tcase_add_test(tc_contract_api, test_006ContractQuery_0007QueryFailureInvalidUrl); 
  
     return s_contract;
 }
