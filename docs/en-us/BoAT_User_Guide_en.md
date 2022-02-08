@@ -33,6 +33,7 @@ PlatONE<br>
 FISCO-BCOS<br>
 Hyperledger Fabric<br>
 Huawei BCS<br>
+Chainmaker<br>
 
 **Supported Target Operating System:**  
 Linux<br>
