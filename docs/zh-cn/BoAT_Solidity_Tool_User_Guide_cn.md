@@ -291,7 +291,7 @@ C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen);
 BUINT8 data[3];
 data[0] = BOAT_FALSE;
 data[1] = BOAT_TRUE;
-data[3] = BOAT_FALSE;
+data[2] = BOAT_FALSE;
 合约名_setData(data, 3); 
 ```
 
@@ -318,7 +318,7 @@ C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen);
 BUINT8 data[3];
 data[0] = 32;
 data[1] = 10;
-data[3] = 255;
+data[2] = 255;
 合约名_setData(data, 3); 
 ```
 
