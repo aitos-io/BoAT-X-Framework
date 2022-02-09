@@ -196,6 +196,7 @@ BOAT_PROTOCOL_USE_HLFABRIC   ?= 1
 BOAT_PROTOCOL_USE_HWBCS      ?= 1
 BOAT_PROTOCOL_USE_CHAINMAKER ?= 1
 BOAT_DISCOVERY_PEER_QUERY    ?= 1
+BOAT_PROTOCOL_USE_CHAINMAKER ?= 1
 ````
 
 As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or while compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.  
@@ -396,7 +397,7 @@ When cross-compiling outside of Cygwin, in addition to the previous section, the
 
 ### Compile and Run Demo
 #### Ready
-SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, Hyperledger Fabric and HW-BCS. Before running these demos, the corresponding blockchain node software is need to installed(or have known nodes) and deploy the smart contracts required by the demo.  
+SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, Hyperledger Fabric ,HW-BCS and Chainmaker. Before running these demos, the corresponding blockchain node software is need to installed(or have known nodes) and deploy the smart contracts required by the demo.  
 
 The smart contract used by the demo and its ABI JSON file are placed in:  
 
@@ -423,15 +424,16 @@ After completing the node (or simulator) deployment, you need to follow the inst
 
 The Demo C code that calls the smart contract is placed in:  
 
-|Demo C code                                                 |use                             |
-|:---------------------------------------------------------- |:------------------------------ |
-|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c    |Ethereum demo use case          |
-|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c     |Ethereum transfer demo use case |
-|\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         |PLATON transfer demo use case   |
-|\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     |PLATONE demo use case           |
-|\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c |FISCO-BCOS demo use case        |
-|\<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             |FABRIC demo use case            |
-|\<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  |HW-BCS demo use case            |
+| Demo C code                                                 | use                             |
+| :---------------------------------------------------------- | :------------------------------ |
+| \<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c    | Ethereum demo use case          |
+| \<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c     | Ethereum transfer demo use case |
+| \<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         | PLATON transfer demo use case   |
+| \<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     | PLATONE demo use case           |
+| \<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c | FISCO-BCOS demo use case        |
+| \<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             | FABRIC demo use case            |
+| \<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  | HW-BCS demo use case            |
+| \<SDKRoot\>/demo/demo_chainmaker/demo_chainmaker.c          | CHAINMAKER demo use case        |
 
 Before compiling the Demo, you need to modify the following parts of the Demo C code:  
 - For ETHEREUM, PLATON, FISCO-BCOS, PLATONE:  
@@ -447,25 +449,35 @@ Before compiling the Demo, you need to modify the following parts of the Demo C 
 		- For PlatONE, there is no need to modify the private key in the Demo  
 		- For FISCO-BCOS, set it to the private key under <FISCO-BCOS_ROOT>/console/accounts  
 	4. Search for `demoRecipientAddress` and modify it to the deployment address of the Demo contract.  
+	
 - For FABRIC:  
 	1. Search for `fabric_client_demokey` and set the private key used by the client  
 	2. Search for `fabric_client_democert` and set the certificate corresponding to the client private key  
 	3. If TLS is enabled for the demo, search for `fabric_org1_tlsCert`, `fabric_org2_tlsCert`, `fabric_order_tlsCert`, and set the CA certificate chain  
 	4. Search for `fabric_demo_order1_url`, `fabric_demo_endorser_peer0Org1_url`, `fabric_demo_endorser_peer1Org1_url`, `fabric_demo_endorser_peer0Org2_url`, `fabric_demo_endorser_peer1Org2_url`, and set the url address of the endorsement node and sorting node  
 	5. If TLS is enabled in the demo, search for `fabric_demo_order1_hostName`, `fabric_demo_endorser_peer0Org1_hostName`, `fabric_demo_endorser_peer1Org1_hostName`, `fabric_demo_endorser_peer0Org2_hostName`, `fabric_demo_endorser_peer1Org2_hostName` and set the host name of the node  
+	
 - For HW-BCS:  
-	1. Search for `hw_bcs_client_demokey` and set the private key used by the client  
-	2. Search for `hw_bcs_client_democert` and set the certificate corresponding to the client private key  
-	3. If TLS is enabled for the demo, search for `hw_bcs_org1_tlsCert`, `hw_bcs_org2_tlsCert`, and set the CA certificate chain  
-	4. Search for `hw_bcs_demo_endorser_peer0Org1_url`, `hw_bcs_demo_endorser_peer0Org2_url`, `hw_bcs_demo_order_url`, and set the url address of the endorsement node and sorting node  
-	5. If TLS is enabled in the demo, search for `hw_bcs_demo_endorser_peer0Org1_hostName`, `hw_bcs_demo_endorser_peer0Org2_hostName`, `hw_bcs_demo_order_hostName`and set the host name of the node  
+  1. Search for `hw_bcs_client_demokey` and set the private key used by the client  
+  2. Search for `hw_bcs_client_democert` and set the certificate corresponding to the client private key  
+  3. If TLS is enabled for the demo, search for `hw_bcs_org1_tlsCert`, `hw_bcs_org2_tlsCert`, and set the CA certificate chain  
+  4. Search for `hw_bcs_demo_endorser_peer0Org1_url`, `hw_bcs_demo_endorser_peer0Org2_url`, `hw_bcs_demo_order_url`, and set the url address of the endorsement node and sorting node  
+  5. If TLS is enabled in the demo, search for `hw_bcs_demo_endorser_peer0Org1_hostName`, `hw_bcs_demo_endorser_peer0Org2_hostName`, `hw_bcs_demo_order_hostName`and set the host name of the node  
+
+- For CHAINMAKER：
+
+  1. Search for`chainmaker_user_key`  ，and set the private key used by the client  
+  2. Search for`chainmaker_user_cert`，and set the certificate corresponding to the client private key  
+  3. If TLS is enabled for the demo， search for`chainmaker_tls_ca_cert`，and set the CA certificate chain
+  4.  Search for`chainmaker_node_url`， set url address
+  5. if TLS is enable in the demo， search for`chainmaker_host_name`and set the host name of the node  
 
 #### Compile Demo
 Execute the following commands in the \<SDKRoot\> directory to compile the SDK call Demo:  
 ````
 $make demo
 ````
-The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `platon` `fisco-bcos` `platone` `fabric` `hwbcs`.
+The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `platon` `fisco-bcos` `platone` `fabric` `hwbcs` `chainmaker`.
 
 
 ### Trouble Shooting in Compilation
@@ -1013,7 +1025,7 @@ The manual construction of transactions needs to follow the ABI interface of the
   Examples of using demo_fabric_abac.c code:  
   ```
   result = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
-  ```  
+  ```
   All function call of Fabric's input data are string. In the above code, "invoke" is the function name in the ABAC chain code. "a", "b", and "10" are the corresponding three inputs to the function. Regardless of the type of the corresponding variable in the chain code, the shape of string is used as the input.This is why there is no need to use automatically generate the contract interface tool.  
 
 - **Step 6** Send the transaction.  
@@ -1029,6 +1041,7 @@ The manual construction of transactions needs to follow the ABI interface of the
   When the return result is BOAT_SUCCESS, the call succeeds。
 
 **Example 4: HW BCS transaction structure**  
+
 - **Step 1** Call BoatHwbcsTxInit() to initialize the transaction, The parameters are set based on actual usage.  
 
 - **Step 2** Call BoatHwbcsWalletSetNetworkInfo() to set the newwork parameters. 
@@ -1037,25 +1050,45 @@ The manual construction of transactions needs to follow the ABI interface of the
 
 - **Step 4** Set trasaction parameters.  
   Examples of using demo_hw_bcs.c code:  
+  
   ```
   result = BoatHwbcsTxSetArgs(&tx_ptr, "initMarble", "a","1" , NULL, NULL);
-  ```  
-  All function call of Hwbcs's input data are string. In the above code, "initMarble" is the function name in the hw chain code. "a", "1" are the corresponding two inputs to the function. Regardless of the type of the corresponding variable in the chain code, the shape of string is used as the input.This is why there is no need to use automatically generate the contract interface tool.  
-
+  ```
+All function call of Hwbcs's input data are string. In the above code, "initMarble" is the function name in the hw chain code. "a", "1" are the corresponding two inputs to the function. Regardless of the type of the corresponding variable in the chain code, the shape of string is used as the input.This is why there is no need to use automatically generate the contract interface tool.  
+  
 - **Step 5** Send the transaction.  
+  
   - For contract calls that change the state of the blockchain, call the BoatHwbcsTxSubmit function：
     ```
     BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
-    ```
-
+  ```
+  
   - For contract calls that do not change the state of the blockchain, call the BoatHwbcsTxEvaluate contract function：
     ```
     BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr);
     ```
   When the return result is BOAT_SUCCESS, the call succeeds。
 
+**Example 5: CHAINMAKER  transaction structure**
+
+- **Step 1** Call BoatHlChainmakerTxInit() to initialize the transaction, The parameters are set based on actual usage.  
+
+- **Step 2** Call BoatHlchainmakerAddTxParam() to set transaction parameters.
+
+  Examples of using code:  
+
+  ```
+   BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005", NULL);
+  ```
+
+- **Step 3** Call BoatHlchainmakerContractInvoke() invoke transaction.
+
+- **Step 4** Call BoatHlchainmakerContractQuery() query transaction.
+
+
 
 ## Suggestions for Porting SDK to RTOS
+
 If the SDK is ported to RTOS, the following points should generally be followed:
 ###### 1. Remove The Dependency On Curl
 
