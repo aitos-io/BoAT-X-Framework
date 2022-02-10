@@ -189,7 +189,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     // return entire RESPONSE content	
 	// return_value_ptr = rpc_response_str;
 
-    web3_parse_json_result(rpc_response_str, "result", &prase_result);
+    BoatPlatonePraseRpcResponseResult(rpc_response_str, "result", &prase_result);
     nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr))/2);
     memset(nodeManagerAddr,0x00,strlen((BCHAR*)(prase_result.field_ptr))/2);
     // hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
@@ -249,7 +249,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     // return entire RESPONSE content	
 	return_value_ptr = rpc_response_str;
 
-    web3_parse_json_result(rpc_response_str, "data", &prase_result);
+    BoatPlatonePraseRpcResponseResult(rpc_response_str, "data", &prase_result);
 
     nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr))/2);
     memset(nodeManagerAddr,0x00,strlen((BCHAR*)(prase_result.field_ptr))/2);
