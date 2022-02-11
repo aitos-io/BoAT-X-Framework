@@ -150,14 +150,14 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
 
 		if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			// result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			// result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
             BoatFree(web3intf_context_ptr->web3_json_string_buf.field_ptr);
 	
 	        web3intf_context_ptr->web3_json_string_buf.field_len += WEB3_STRING_BUF_STEP_SIZE;
 	        web3intf_context_ptr->web3_json_string_buf.field_ptr  = BoatMalloc(web3intf_context_ptr->web3_json_string_buf.field_len);
 			if (web3intf_context_ptr->web3_json_string_buf.field_ptr ==  NULL)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_eth_call_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -211,14 +211,14 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
 
 		if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			// result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			// result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
             BoatFree(web3intf_context_ptr->web3_json_string_buf.field_ptr);
 	
 	        web3intf_context_ptr->web3_json_string_buf.field_len += WEB3_STRING_BUF_STEP_SIZE;
 	        web3intf_context_ptr->web3_json_string_buf.field_ptr  = BoatMalloc(web3intf_context_ptr->web3_json_string_buf.field_len);
 			if (web3intf_context_ptr->web3_json_string_buf.field_ptr ==  NULL)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_eth_call_cleanup);
 			}
 			malloc_size_expand_flag = true;
