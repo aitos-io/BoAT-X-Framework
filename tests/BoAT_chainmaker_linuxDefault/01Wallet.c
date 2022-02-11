@@ -442,18 +442,18 @@ START_TEST(test_001CreateWallet_0013_CreateOneTimeWalletSucessHostNameMaxLen)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0014_CreateOneTimeWalletFailureChainIdLenExceed) 
+START_TEST(test_001CreateWallet_0014_CreateOneTimeWalletSucessChainIdMaxLen) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
 
-    char chain_id[EXCEED_STR_MAX_LEN];
-    for (int i = 0; i < EXCEED_STR_MAX_LEN; i++)
+    char chain_id[BAOT_CHAINMAKER_NODE_STR_LEN];
+    for (int i = 0; i < BAOT_CHAINMAKER_NODE_STR_LEN; i++)
     {
         chain_id[i] = 'b';
     }
-    memcpy(wallet_config.chain_id_cfg, chain_id, EXCEED_STR_MAX_LEN);
+    memcpy(wallet_config.chain_id_cfg, chain_id, BAOT_CHAINMAKER_NODE_STR_LEN);
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
     /* 1. execute unit test */
@@ -461,12 +461,14 @@ START_TEST(test_001CreateWallet_0014_CreateOneTimeWalletFailureChainIdLenExceed)
     
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    ck_assert_int_eq(rtnVal, 0);
 
     /* 2-2. verify the global variables that be affected */
-    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+
     g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
-    ck_assert(g_chaninmaker_wallet_ptr == NULL);
+    ck_assert(g_chaninmaker_wallet_ptr != NULL);
+    ck_assert(check_chainmaker_wallet(g_chaninmaker_wallet_ptr) == BOAT_SUCCESS);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -594,7 +596,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0011_CreatePersisWalletFailurePotocolTypeNoExit);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0012_CreatePersisWalletFailureIndexExceed);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0013_CreateOneTimeWalletSucessHostNameMaxLen);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0014_CreateOneTimeWalletFailureChainIdLenExceed);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0014_CreateOneTimeWalletSucessChainIdMaxLen);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0015_CreateOneTimeWalletFailureOrgIdLenExceed);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016_CreateOneTimeWalletFailurePrikeyError);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0017_CreateOneTimeWalletFailureCertLenExceed);
