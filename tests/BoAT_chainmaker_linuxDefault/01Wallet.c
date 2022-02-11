@@ -251,7 +251,7 @@ START_TEST(test_001CreateWallet_0008_CreateOneTimeWalletFailureUrlFormatError)
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
     BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
-    memset(wallet_config.node_url_cfg, 0, BAOT_CHAINMAKER_URL_HOSTNAME_LEN);
+    memset(wallet_config.node_url_cfg, 0, BAOT_CHAINMAKER_NODE_STR_LEN);
     strncpy(wallet_config.node_url_cfg,  "192",  4);
 
     extern BoatIotSdkContext g_boat_iot_sdk_context;
