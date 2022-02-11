@@ -52,13 +52,13 @@ BoAT-X has two main operating methods.
 
 #### The Direct Approach
 
-![Direct Approach](https://aitos-io.github.io/BoAT-X-Framework/en-us/BoAT_README_Direct_Approach.png)]
+![Direct Approach](https://aitos-io.github.io/BoAT-X-Framework/en-us/images/BoAT_README_Direct_Approach.png)]
 
 The direct approach is suitable for IoT devices capable of direct access to a blockchain node. The IoT device sends data to the IoT platform, and by calling *BoAT-Engine* API, sends the hash of the data to the blockchain. The data consumer later compares the on-chain hash to the hash of the data normally stored on the IoT platform to determine its data credibility. The consumer also requests *BoAT-Mast* to check if the data comes from a registered device.
 
 #### The Indirect Approach
 
-![Indirect Approach](https://aitos-io.github.io/BoAT-X-Framework/en-us/BoAT_README_Indirect_Approach.png)]
+![Indirect Approach](https://aitos-io.github.io/BoAT-X-Framework/en-us/images/BoAT_README_Indirect_Approach.png)]
 
 The indirect approach accomodates IoT devices that can not otherwise directly access the blockchain node, due to various possible reasons such as an IP whitelist restriction and unmatched cryptographic algorithm capability.
 
