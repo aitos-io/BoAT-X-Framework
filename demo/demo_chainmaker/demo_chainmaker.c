@@ -89,10 +89,10 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	memcpy(wallet_config.user_cert_cfg.content, chainmaker_user_cert, wallet_config.user_cert_cfg.length);
 	
 	//set url and name
-	if ((strlen(chainmaker_node_url) >= BAOT_CHAINMAKER_URL_HOSTNAME_LEN) || 
-		 (strlen(chainmaker_host_name) >= BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
-		 (strlen(chainmaker_chain_id) >= BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
-		 (strlen(chainmaker_org_id) >= BAOT_CHAINMAKER_URL_HOSTNAME_LEN))
+	if ((strlen(chainmaker_node_url) >= BAOT_CHAINMAKER_NODE_STR_LEN) || 
+		 (strlen(chainmaker_host_name) >= BAOT_CHAINMAKER_NODE_STR_LEN)||
+		 (strlen(chainmaker_chain_id) >= BAOT_CHAINMAKER_NODE_STR_LEN)||
+		 (strlen(chainmaker_org_id) >= BAOT_CHAINMAKER_NODE_STR_LEN))
 	{
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT ;
 	}
