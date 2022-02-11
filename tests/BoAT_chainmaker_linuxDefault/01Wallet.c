@@ -14,7 +14,6 @@
  * limitations under the License.
  *****************************************************************************/
 #include "tcase_common.h"
-#define EXCEED_STR_MAX_LEN 4097
 
 BOAT_RESULT check_chainmaker_wallet(BoatHlchainmakerWallet *wallet_ptr)
 {
