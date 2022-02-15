@@ -77,7 +77,7 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, "platone.cfg", &wallet_config, sizeof(BoatPlatoneWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
 	{
         boat_nwy_ext_echo("create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;

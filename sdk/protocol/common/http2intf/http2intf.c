@@ -358,13 +358,13 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	}
 	data_prd.read_callback = data_source_read_callback;
 	result = nghttp2_submit_request(context->session, NULL, nva, sizeof(nva) / sizeof(nva[0]), &data_prd, NULL);
-	if (result < BOAT_SUCCESS)
+	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
 		boat_throw(BOAT_ERROR_HTTP2_INTERNAL + result, http2SubmitRequest_exception);
 	}
 	result = nghttp2_session_send(context->session);
-	if (result < BOAT_SUCCESS)
+	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "submit request failed.");
 		boat_throw(BOAT_ERROR_HTTP2_INTERNAL + result, http2SubmitRequest_exception);

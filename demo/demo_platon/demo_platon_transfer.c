@@ -46,7 +46,6 @@ const BCHAR *native_demoKey = "0xa09952a7a3e257cfd5af8c844f8cd77f56809cf29ac5189
 /**
  * PlatON test network node url
  */
-//const BCHAR *demoUrl = "http://47.241.98.219:6789";
 const BCHAR *demoUrl = "http://35.247.155.162:6789";
 
 /**
@@ -57,7 +56,7 @@ const BCHAR *hrp = "lat";
 /**
  * transfer recipient address
  */
-const BCHAR *demoRecipientAddress = "lat1u89782npf3s0a3e7zlmmwqqq58yhjctuqmmjh9";
+const BCHAR *demoRecipientAddress = "lat1y7qathqkx0s8fjqazskrdqw76j7f5mx95ujstt";
 
 
 BoatPlatONWallet *g_platon_wallet_ptr;
@@ -103,7 +102,7 @@ __BOATSTATIC BOAT_RESULT platon_createOnetimeWallet()
 
 	/* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, NULL, &wallet_config, sizeof(BoatPlatONWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
@@ -155,7 +154,7 @@ __BOATSTATIC BOAT_RESULT platon_createPersistWallet(BCHAR *wallet_name)
 
 	/* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, wallet_name, &wallet_config, sizeof(BoatPlatONWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
@@ -174,7 +173,7 @@ __BOATSTATIC BOAT_RESULT platon_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, wallet_name, NULL, sizeof(BoatPlatONWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;

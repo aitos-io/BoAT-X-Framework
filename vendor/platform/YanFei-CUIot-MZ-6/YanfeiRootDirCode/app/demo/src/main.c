@@ -38,7 +38,7 @@ __BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, NULL, sizeof(BoatPlatoneWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
 	{
         MG_osiTracePrintf(LOG_TAG,"load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
@@ -75,7 +75,7 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
     //index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, PERSIST_WALLET_NAME, &wallet_config, sizeof(BoatPlatoneWalletConfig)); // "/nvm/test.txt"
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet_config, sizeof(BoatPlatoneWalletConfig)); 
 
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
 	{
         MG_osiTracePrintf(LOG_TAG, "create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;

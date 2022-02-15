@@ -196,7 +196,7 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createOnetimeWallet()
 
     /* create fiscobcos wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, NULL, &wallet_config, sizeof(BoatFiscobcosWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
@@ -246,7 +246,7 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR* wallet_name)
 
     /* create fiscobcos wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, wallet_name, &wallet_config, sizeof(BoatFiscobcosWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
@@ -265,7 +265,7 @@ __BOATSTATIC BOAT_RESULT fiscobcos_loadPersistWallet(BCHAR* wallet_name)
 
     /* create fiscobcos wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, wallet_name, NULL, sizeof(BoatFiscobcosWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;

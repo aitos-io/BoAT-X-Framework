@@ -148,7 +148,7 @@ __BOATSTATIC BOAT_RESULT platon_createOnetimeWallet()
 
     /* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, NULL, &wallet_config, sizeof(BoatPlatONWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
     {
         //BoatLog( BOAT_LOG_CRITICAL, "create one-time wallet failed." );
         return BOAT_ERROR_WALLET_CREATE_FAIL;
@@ -200,7 +200,7 @@ __BOATSTATIC BOAT_RESULT platon_createPersistWallet(BCHAR* wallet_name)
 
     /* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, wallet_name, &wallet_config, sizeof(BoatPlatONWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
@@ -219,7 +219,7 @@ __BOATSTATIC BOAT_RESULT platon_loadPersistWallet(BCHAR* wallet_name)
 
     /* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, wallet_name, NULL, sizeof(BoatPlatONWalletConfig));
-    if (index < BOAT_SUCCESS)
+    if (index != BOAT_SUCCESS)
     {
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;

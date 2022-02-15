@@ -119,7 +119,7 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 #else
 	return BOAT_ERROR;
 #endif
-	if (index < BOAT_SUCCESS)
+	if (index != BOAT_SUCCESS)
 	{
 		return BOAT_ERROR_WALLET_CREATE_FAIL;
 	}
