@@ -17,6 +17,7 @@
 + [FISCO BCOS Github](https://github.com/FISCO-BCOS)
 + [Hyperledger Fabric](https://www.hyperledger.org/use/fabric)
 + [Hyperledger Fabric Docs](https://hyperledger-fabric.readthedocs.io/)
++ [Huawei BCS](https://www.huaweicloud.com/product/bcs)
 + [ChainMaker](https://chainmaker.org.cn/)
 + [ChainMaker Docs](https://docs.chainmaker.org.cn/)
 
