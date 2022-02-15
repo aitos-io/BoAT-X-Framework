@@ -553,6 +553,35 @@ START_TEST(test_001CreateWallet_0017_CreateOneTimeWalletFailureCertLenExceed)
 END_TEST
 
 
+START_TEST(test_001CreateWallet_0018_CreatePersisWalletFailureExceed256Name) 
+{
+    BSINT32 rtnVal;
+    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
+    char chainmaker_name[256];
+
+    for (int i = 0; i < 256; i++)
+    {
+        chainmaker_name[i] = 'g';
+    }
+
+    BoatIotSdkInit();
+    BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, chainmaker_name, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
+
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_PERSISTER_STORE_FAIL);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+
+    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_chaninmaker_wallet_ptr == NULL);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 START_TEST(test_002DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
     BoatWalletDelete(NULL);
@@ -602,6 +631,8 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0015_CreateOneTimeWalletSucessOrgIdMaxLen);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016_CreateOneTimeWalletFailurePrikeyError);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0017_CreateOneTimeWalletFailureCertLenExceed);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0018_CreatePersisWalletFailureExceed256Name);
+    
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0003DeleteWalletSucessExistingFile);
