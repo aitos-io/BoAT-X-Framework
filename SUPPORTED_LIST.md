@@ -18,6 +18,7 @@
 + [Hyperledger Fabric](https://www.hyperledger.org/use/fabric)
 + [Hyperledger Fabric Docs](https://hyperledger-fabric.readthedocs.io/)
 + [ChainMaker](https://chainmaker.org.cn/)
++ [ChainMaker Docs](https://docs.chainmaker.org.cn/)
 
 # Supported Module List
 
