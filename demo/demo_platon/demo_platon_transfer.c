@@ -42,7 +42,7 @@ const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
  * native demo key
  */
 const BCHAR *native_demoKey = "0xa09952a7a3e257cfd5af8c844f8cd77f56809cf29ac51893450a7df3aac146c3";
-
+//const BCHAR *native_demoKey = "0xa7f372a0b5b1e985a9ef631ce5d51777b41d534ff71d6211849d9febc9614616";
 /**
  * PlatON test network node url
  */
@@ -56,8 +56,8 @@ const BCHAR *hrp = "lat";
 /**
  * transfer recipient address
  */
-const BCHAR *demoRecipientAddress = "lat1y7qathqkx0s8fjqazskrdqw76j7f5mx95ujstt";
-
+//const BCHAR *demoRecipientAddress = "lat1y7qathqkx0s8fjqazskrdqw76j7f5mx95ujstt";
+const BCHAR *demoRecipientAddress = "lat159js9hw63x2y8m65mhgprm3eu9f4c7xmv3lym4";
 
 BoatPlatONWallet *g_platon_wallet_ptr;
 
@@ -102,7 +102,7 @@ __BOATSTATIC BOAT_RESULT platon_createOnetimeWallet()
 
 	/* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, NULL, &wallet_config, sizeof(BoatPlatONWalletConfig));
-    if (index != BOAT_SUCCESS)
+    if (index < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
@@ -154,7 +154,7 @@ __BOATSTATIC BOAT_RESULT platon_createPersistWallet(BCHAR *wallet_name)
 
 	/* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, wallet_name, &wallet_config, sizeof(BoatPlatONWalletConfig));
-    if (index != BOAT_SUCCESS)
+    if (index < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
@@ -173,7 +173,7 @@ __BOATSTATIC BOAT_RESULT platon_loadPersistWallet(BCHAR *wallet_name)
 
 	/* create platon wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, wallet_name, NULL, sizeof(BoatPlatONWalletConfig));
-    if (index != BOAT_SUCCESS)
+    if (index < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
@@ -233,7 +233,7 @@ BOAT_RESULT platonTransfer(BoatPlatONWallet *wallet_ptr)
     
 	/* 0xDE0B6B3A7640000: 1ETH or 1e18 wei, value */
 	/* 0x2386F26FC10000: 0.01ETH or 1e16 wei, value */
-    result = BoatPlatONTransfer(&tx_ctx, "0xdbfe49bc6728ffe");
+    result = BoatPlatONTransfer(&tx_ctx, "0x2386F26FC1");
 
     return result;
 }
