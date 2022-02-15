@@ -194,7 +194,8 @@ BOAT_RESULT platonGetBalance(BoatPlatONWallet *wallet_ptr)
 
     cur_balance_von = BoatPlatONWalletGetBalance(wallet_ptr, "lat");
 	result          = BoatPlatONPraseRpcResponseStringResult(cur_balance_von, &prase_result);
-    if(prase_result.field_ptr != NULL){
+    if (prase_result.field_ptr != NULL)
+    {
         BoatFree(prase_result.field_ptr);
         prase_result.field_ptr = NULL;
         prase_result.field_len = 0;
