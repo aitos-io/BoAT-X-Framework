@@ -27,9 +27,9 @@
 ### 输入文件生成
 
 #### 从Remix获得json文件
-当使用Remix编译合约时，编译完成后，不能从编译界面下面的ABI获得相关参数并手动生成JSON文件。而是应该从如下图4-1所示位置将相应的合约文件内容复制出来并手动在本地生成JSON文件。
-![从Remix获得json文件](./images/BoAT_Solidity_Tool_User_Guide_cn-F4-1-Remix_Get_Json.jpg)
-图 4-1 从Remix获得json文件
+当使用Remix编译合约时，编译完成后，不能从编译界面下面的ABI获得相关参数并手动生成JSON文件。而是应该从如下图4-1所示位置将相应的合约文件内容复制出来并手动在本地生成JSON文件。  
+![从Remix获得json文件](./images/BoAT_Solidity_Tool_User_Guide_cn-F4-1-Remix_Get_Json.jpg)  
+图 4-1 从Remix获得json文件  
 #### 从truffle获得json文件
 使用truffle对Solidity合约编译完成后会将相应的JSON文件生成在目录`\build\contracts`下。
 ### 输入类型转换
