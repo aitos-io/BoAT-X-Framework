@@ -135,7 +135,7 @@
 
 以下例子中，生成的C语言函数均省去交易类型
 #### string类型
-Solidity中的string变成BCHAR *类型。
+Solidity中的string变成BCHAR *类型。  
 Solidity函数：setName(string name);  
 C语言函数：合约名_setName(BCHAR *name);  
 
