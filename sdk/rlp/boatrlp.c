@@ -218,7 +218,7 @@ BSINT32 RlpEncoderReplaceObjectInList(RlpObject *to_list_object_ptr, BSINT32 rep
 }
 
 
-RlpObject * RlpEncoderGetListDescriptor(RlpObject *rlp_object_ptr, BUINT32 descriptor_index)
+RlpObject *RlpEncoderGetListDescriptor(RlpObject *rlp_object_ptr, BUINT32 descriptor_index)
 {
     RlpListDescriptors *rlp_list_descriptors_ptr;
 
@@ -741,7 +741,7 @@ BOAT_RESULT RlpReEncode(RlpObject *rlp_object_ptr, RlpEncodedStreamObject *paren
 }
 
 
-RlpEncodedStreamObject * RlpGetEncodedStream(RlpObject *rlp_object_ptr)
+RlpEncodedStreamObject *RlpGetEncodedStream(RlpObject *rlp_object_ptr)
 {
     if (rlp_object_ptr == NULL)
     {

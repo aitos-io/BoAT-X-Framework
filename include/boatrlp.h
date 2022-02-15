@@ -161,7 +161,7 @@ BOAT_RESULT RlpInitListObject(RlpObject *rlp_object_ptr);
  *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
  *   for details.
  ******************************************************************************/
-BOAT_RESULT RlpEncoderAppendObjectToList(RlpObject *to_list_object_ptr, RlpObject *from_object_ptr);
+BSINT32 RlpEncoderAppendObjectToList(RlpObject *to_list_object_ptr, RlpObject *from_object_ptr);
 
 
 /*!****************************************************************************
@@ -371,7 +371,7 @@ BOAT_RESULT RlpReEncode(RlpObject *rlp_object_ptr, RlpEncodedStreamObject *paren
  * 
  * @see RlpEncode() RlpReEncode()
  ******************************************************************************/
-RlpEncodedStreamObject * RlpGetEncodedStream(RlpObject *rlp_object_ptr);
+RlpEncodedStreamObject *RlpGetEncodedStream(RlpObject *rlp_object_ptr);
 
 /*! @}*/
 
