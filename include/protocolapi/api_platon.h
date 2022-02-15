@@ -296,14 +296,14 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONTxSetData(BoatPlatONTx *tx_ptr, 
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.
- * @see web3_parse_json_result()
+ * @see eth_parse_json_result()
  ******************************************************************************/
 BOAT_RESULT BoatPlatONPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out);
 
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.
- * @see web3_parse_json_result()
+ * @see eth_parse_json_result()
  ******************************************************************************/
 BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
                                              const BCHAR *child_name, 

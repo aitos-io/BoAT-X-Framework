@@ -514,7 +514,7 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
 
 BOAT_RESULT BoatPlatONPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return web3_parse_json_result(json_string, "", result_out);
+    return platon_parse_json_result(json_string, "", result_out);
 }
 
 BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
@@ -526,7 +526,7 @@ BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string,
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
-	return web3_parse_json_result(json_string, child_name, result_out);
+	return platon_parse_json_result(json_string, child_name, result_out);
 }
 
 #endif /* end of PROTOCOL_USE_PLATON */
