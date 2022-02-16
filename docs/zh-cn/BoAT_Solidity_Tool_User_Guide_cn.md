@@ -135,7 +135,7 @@
 
 以下例子中，生成的C语言函数均省去交易类型
 #### string类型
-Solidity中的string变成BCHAR *类型。
+Solidity中的string变成BCHAR *类型。  
 Solidity函数：setName(string name);  
 C语言函数：合约名_setName(BCHAR *name);  
 
@@ -146,21 +146,21 @@ const BCHAR *name = "Hello,World!";
 ```
 
 #### bytes类型
-Solidity中的bytes变成BUINT8 *类型和一个表示长度的BUINT32值
+Solidity中的bytes变成BUINT8 *类型和一个表示长度的BUINT32值  
 Solidity函数：setData(bytes data);  
-C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen); 
+C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen);  
 
 示例：
 ```
-BUINT8 data[] = {0,1,2,3,4,5};
-合约名_setData(data, 6); 
+BUINT8 data[] = {0,1,2,3,4,5};  
+合约名_setData(data, 6);  
 ```
 
 #### bytes[N]类型
-其中N为大于0的整数。
-Solidity中的bytes[N]变成BoatFieldVariable *类型
+其中N为大于0的整数。  
+Solidity中的bytes[N]变成BoatFieldVariable *类型  
 Solidity函数：setData(bytes[2] data);  
-C语言函数：合约名_setData(BoatFieldVariable *data); 
+C语言函数：合约名_setData(BoatFieldVariable *data);  
 
 示例：
 ```
@@ -175,9 +175,9 @@ input[1].field_len = 6;
 ```
 
 #### bytes[]类型
-Solidity中的bytes[]变成BoatFieldVariable *类型和一个表示长度的BUINT32值
+Solidity中的bytes[]变成BoatFieldVariable *类型和一个表示长度的BUINT32值  
 Solidity函数：setData(bytes[] data);  
-C语言函数：合约名_setData(BoatFieldVariable *data, BUINT32 dataLen); 
+C语言函数：合约名_setData(BoatFieldVariable *data, BUINT32 dataLen);  
 
 示例：
 ```
@@ -195,9 +195,9 @@ input[2].field_len = 8;
 ```
 
 #### string[N]类型
-Solidity中的string[N]变成BoatFieldVariable *类型
+Solidity中的string[N]变成BoatFieldVariable *类型  
 Solidity函数：setData(string[3] data);  
-C语言函数：合约名_setData(BoatFieldVariable *data); 
+C语言函数：合约名_setData(BoatFieldVariable *data);  
 
 示例：
 ```
@@ -216,9 +216,9 @@ input[2].field_len = 5;
 ```
 
 #### string[]类型
-Solidity中的string[]变成BoatFieldVariable *类型和一个表示长度的BUINT32值
+Solidity中的string[]变成BoatFieldVariable *类型和一个表示长度的BUINT32值  
 Solidity函数：setData(string[] data);  
-C语言函数：合约名_setData(BoatFieldVariable *data, BUINT32 dataLen); 
+C语言函数：合约名_setData(BoatFieldVariable *data, BUINT32 dataLen);  
 
 示例：
 ```
@@ -237,9 +237,9 @@ input[2].field_len = 5;
 ```
 
 #### address[N]类型
-Solidity中的address[N]变成BoatAddress *类型
+Solidity中的address[N]变成BoatAddress *类型  
 Solidity函数：setData(address[2] data);  
-C语言函数：合约名_setData(BoatAddress data[2]); 
+C语言函数：合约名_setData(BoatAddress data[2]);  
 
 示例：
 ```
@@ -253,11 +253,11 @@ for (i = 0; i < 20; i++)
 ```
 
 #### address[]类型
-Solidity中的address[]变成BoatAddress *类型和一个表示长度的BUINT32值
+Solidity中的address[]变成BoatAddress *类型和一个表示长度的BUINT32值  
 Solidity函数：setData(address[] data);  
-C语言函数：合约名_setData(BoatAddress *data, BUINT32 dataLen); 
+C语言函数：合约名_setData(BoatAddress *data, BUINT32 dataLen);  
 
-示例：
+示例：  
 ```
 BoatAddress data[2];
 for (i = 0; i < 20; i++)
@@ -269,9 +269,9 @@ for (i = 0; i < 20; i++)
 ```
 
 #### bool[N]类型
-Solidity中的bool[N]变成BUINT8 *类型
+Solidity中的bool[N]变成BUINT8 *类型  
 Solidity函数：setData(bool[2] data);  
-C语言函数：合约名_setData(BUINT8 *data); 
+C语言函数：合约名_setData(BUINT8 *data);  
 
 示例：
 ```
@@ -282,11 +282,11 @@ data[1] = BOAT_TRUE;
 ```
 
 #### bool[]类型
-Solidity中的bool[]变成BUINT8 *类型和一个表示长度的BUINT32值
+Solidity中的bool[]变成BUINT8 *类型和一个表示长度的BUINT32值  
 Solidity函数：setData(bool[] data);  
-C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen); 
+C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen);  
 
-示例：
+示例：  
 ```
 BUINT8 data[3];
 data[0] = BOAT_FALSE;
@@ -296,11 +296,11 @@ data[2] = BOAT_FALSE;
 ```
 
 #### uint8[N]类型
-Solidity中的uint8[N]变成BUINT8类型
+Solidity中的uint8[N]变成BUINT8类型  
 Solidity函数：setData(uint8[2] data);  
-C语言函数：合约名_setData(BUINT8 *data); 
+C语言函数：合约名_setData(BUINT8 *data);  
 
-示例：
+示例：  
 ```
 BUINT8 data[2];
 data[0] = 0;
@@ -309,9 +309,9 @@ data[1] = 1;
 ```
 
 #### uint8[]类型
-Solidity中的uint8[]变成BUINT8类型和一个表示长度的BUINT32值
+Solidity中的uint8[]变成BUINT8类型和一个表示长度的BUINT32值  
 Solidity函数：setData(uint8[] data);  
-C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen); 
+C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen);  
 
 示例：
 ```
@@ -323,8 +323,8 @@ data[2] = 255;
 ```
 
 #### uint16[N]类型
-参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BUINT16。
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BUINT16。  
 
 #### uint16[]类型
-参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BUINT16。
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BUINT16。  
 
