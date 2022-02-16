@@ -119,10 +119,10 @@ See [Supported List](./SUPPORTED_LIST.md) for supported blockchains and IoT modu
 ## Documentation
 
 ### Blockchain IoT Module Whitepaper
-See [BoAT Blockchain IoT Module Product White Paper](./docs/en-us/BoAT_Blockchain_IoT_Module_Product_White_Paper_en.pdf).
+See [BoAT Blockchain IoT Module Product White Paper](https://aitos-io.github.io/BoAT-X-Framework/en-us/BoAT_Blockchain_IoT_Module_Product_White_Paper_en.pdf).
 
 ### Blockchain IoT Module Technology and Application
-See [BoAT Blockchain IoT Module Technology and Application](./docs/en-us/BoAT_Blockchain_IoT_Module_Technology_and_Application_en.pdf).
+See [BoAT Blockchain IoT Module Technology and Application](https://aitos-io.github.io/BoAT-X-Framework/en-us/BoAT_Blockchain_IoT_Module_Technology_and_Application_en.pdf).
 
 ### Full Documents
 For full documents, please visit [BoAT documentation](https://aitos-io.github.io/BoAT-X-Framework)
