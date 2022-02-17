@@ -69,6 +69,7 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
   2. 搜索`chainmaker_user_cert`，设置客户端私钥对应的证书
   3. 如果demo启用TLS，则搜索`chainmaker_tls_ca_cert`，设置CA证书
   4. 搜索`chainmaker_node_url`， 设置url的地址
+  5. 如果demo启用TLS，则搜索`chainmaker_host_name`，设置节点的主机名称
 
 #### 编译Demo
 在\<SDKRoot\>目录下执行以下命令编译SDK的调用Demo：
