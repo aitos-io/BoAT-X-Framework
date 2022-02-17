@@ -35,9 +35,9 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 |\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         |PLATON转账演示用例     |
 |\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     |PLATONE合约演示用例    |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c |FISCO-BCOS合约演示用例 |
-|\<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             |FABRIC合约演示用例      |
-|\<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  |HW-BCS合约演示用例      |
-|\<SDKRoot\>/demo/demo_chainmaker/demo_chainmaker.c |CHAINMAKER合约演示用例 |
+|\<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             |FABRIC合约演示用例     |
+|\<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  |HW-BCS合约演示用例     |
+|\<SDKRoot\>/demo/demo_chainmaker/demo_chainmaker.c          |CHAINMAKER合约演示用例 |
 
 编译Demo之前，需要修改Demo的C代码中以下部分：
 - 对于ETHEREUM、PLATON、FISCO-BCOS、PLATONE:
