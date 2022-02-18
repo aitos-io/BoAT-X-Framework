@@ -159,7 +159,7 @@ BUINT8 data[] = {0,1,2,3,4,5};
 #### bytes[N]类型
 其中N为大于0的整数。  
 Solidity中的bytes[N]变成BoatFieldVariable *类型  
-Solidity函数：setData(bytes[2] data);  
+Solidity函数：setData(bytes[N] data);  
 C语言函数：合约名_setData(BoatFieldVariable *data);  
 
 示例：
@@ -196,7 +196,7 @@ input[2].field_len = 8;
 
 #### string[N]类型
 Solidity中的string[N]变成BoatFieldVariable *类型  
-Solidity函数：setData(string[3] data);  
+Solidity函数：setData(string[N] data);  
 C语言函数：合约名_setData(BoatFieldVariable *data);  
 
 示例：
@@ -237,8 +237,8 @@ input[2].field_len = 5;
 ```
 
 #### address[N]类型
-Solidity中的address[N]变成BoatAddress *类型  
-Solidity函数：setData(address[2] data);  
+Solidity中的address[N]变成BoatAddress *类型。  
+Solidity函数：setData(address[N] data);  
 C语言函数：合约名_setData(BoatAddress data[2]);  
 
 示例：
@@ -253,7 +253,7 @@ for (i = 0; i < 20; i++)
 ```
 
 #### address[]类型
-Solidity中的address[]变成BoatAddress *类型和一个表示长度的BUINT32值  
+Solidity中的address[]变成BoatAddress *类型和一个表示长度的BUINT32值。  
 Solidity函数：setData(address[] data);  
 C语言函数：合约名_setData(BoatAddress *data, BUINT32 dataLen);  
 
@@ -269,8 +269,8 @@ for (i = 0; i < 20; i++)
 ```
 
 #### bool[N]类型
-Solidity中的bool[N]变成BUINT8 *类型  
-Solidity函数：setData(bool[2] data);  
+Solidity中的bool[N]变成BUINT8 *类型。  
+Solidity函数：setData(bool[N] data);  
 C语言函数：合约名_setData(BUINT8 *data);  
 
 示例：
@@ -282,7 +282,7 @@ data[1] = BOAT_TRUE;
 ```
 
 #### bool[]类型
-Solidity中的bool[]变成BUINT8 *类型和一个表示长度的BUINT32值  
+Solidity中的bool[]变成BUINT8 *类型和一个表示长度的BUINT32值。  
 Solidity函数：setData(bool[] data);  
 C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen);  
 
@@ -296,8 +296,8 @@ data[2] = BOAT_FALSE;
 ```
 
 #### uint8[N]类型
-Solidity中的uint8[N]变成BUINT8类型  
-Solidity函数：setData(uint8[2] data);  
+Solidity中的uint8[N]变成BUINT8类型。  
+Solidity函数：setData(uint8[N] data);  
 C语言函数：合约名_setData(BUINT8 *data);  
 
 示例：  
@@ -309,7 +309,7 @@ data[1] = 1;
 ```
 
 #### uint8[]类型
-Solidity中的uint8[]变成BUINT8类型和一个表示长度的BUINT32值  
+Solidity中的uint8[]变成BUINT8类型和一个表示长度的BUINT32值。  
 Solidity函数：setData(uint8[] data);  
 C语言函数：合约名_setData(BUINT8 *data, BUINT32 dataLen);  
 
@@ -328,3 +328,83 @@ data[2] = 255;
 #### uint16[]类型
 参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BUINT16。  
 
+#### uint32[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BUINT32。  
+
+#### uint32[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BUINT32。  
+
+#### uint64[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BUINT64。  
+
+#### uint64[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BUINT64。  
+
+#### uint128[N]类型
+Solidity中的uint128[N]变成BUINT128类型，而一个BUINT128是由BUINT8[16]组成的数组。  
+Solidity函数：setData(uint128[N] data);  
+C语言函数：合约名_setData(BUINT128 *data);  
+
+示例：  
+```
+BUINT128 data[2];
+BUINT32 i;
+for (i = 0; i < 16; i++)
+{
+    data[0][i] = i;
+    data[1][i] = (32 - i) * 2;
+}
+合约名_setData(data); 
+```
+
+#### uint128[]类型
+Solidity中的uint128[N]变成BUINT128类型和一个表示长度的BUINT32值。，而一个BUINT128是由BUINT8[16]组成的数组。  
+Solidity函数：setData(uint128[] data);  
+C语言函数：合约名_setData(BUINT128 *data, BUINT32 len);  
+
+示例：  
+```
+BUINT128 data[2];
+BUINT32 i;
+for (i = 0; i < 16; i++)
+{
+    data[0][i] = i;
+    data[1][i] = (32 - i) * 2;
+}
+合约名_setData(data, 2); 
+``` 
+
+#### uint256[N]类型
+Solidity中的uint256[N]变成BUINT256类型，而一个BUINT256是由BUINT8[32]组成的数组。  
+Solidity函数：setData(uint256[N] data);  
+C语言函数：合约名_setData(BUINT256 *data);  
+
+示例：  
+```
+BUINT256 data[3];
+BUINT32 i;
+for (i = 0; i < 32; i++)
+{
+    data[0][i] = i;
+    data[1][i] = (32 - i) * 2;
+    data[2][i] = (16 - i) * 4;
+}
+合约名_setData(data); 
+```
+
+#### uint256[]类型
+Solidity中的uint256[N]变成BUINT256类型和一个表示长度的BUINT32值，而一个BUINT256是由BUINT8[32]组成的数组。  
+Solidity函数：setData(uint256[] data);  
+C语言函数：合约名_setData(BUINT256 *data, BUINT32 len);  
+
+示例：  
+```
+BUINT256 data[2];
+BUINT32 i;
+for (i = 0; i < 32; i++)
+{
+    data[0][i] = i;
+    data[1][i] = (32 - i) * 2;
+}
+合约名_setData(data, 2); 
+``` 
