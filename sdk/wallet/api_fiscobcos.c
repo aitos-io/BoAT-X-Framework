@@ -380,7 +380,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
             break;
 		}
 		// "status" == null : the transaction is pending, the result is BOAT_ERROR
-		// todo: need to change web3_parse_json_result() 
+		// todo: need to change fiscobcos_parse_json_result() 
 		result = BoatFiscobcosPraseRpcResponseResult(tx_status_str, "status", 
 													 &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 		
@@ -453,7 +453,7 @@ BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr)
 
 BOAT_RESULT BoatFiscobcosPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return web3_parse_json_result(json_string, "", result_out);
+    return fiscobcos_parse_json_result(json_string, "", result_out);
 }
 
 BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
@@ -465,6 +465,6 @@ BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string,
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
-	return web3_parse_json_result(json_string, child_name, result_out);
+	return fiscobcos_parse_json_result(json_string, child_name, result_out);
 }
 #endif /* end of PROTOCOL_USE_FISCOBCOS */
