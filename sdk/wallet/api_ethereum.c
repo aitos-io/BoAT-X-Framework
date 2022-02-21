@@ -236,7 +236,7 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
     param_eth_getBalance.block_num_str   = "latest";
     tx_balance_str = web3_getBalance(wallet_ptr->web3intf_context_ptr,
 									 wallet_ptr->network_info.node_url_ptr,
-									 &param_eth_getBalance,&result);
+									 &param_eth_getBalance, &result);
 
     if (tx_balance_str == NULL)
     {
@@ -377,7 +377,7 @@ BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce)
 		param_eth_getTransactionCount.block_num_str    = "latest";
 		tx_count_str = web3_getTransactionCount(tx_ptr->wallet_ptr->web3intf_context_ptr,
 												tx_ptr->wallet_ptr->network_info.node_url_ptr,
-												&param_eth_getTransactionCount,&result);
+												&param_eth_getTransactionCount, &result);
         if (tx_count_str == NULL)
         { 
             BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
@@ -473,7 +473,7 @@ BOAT_RESULT BoatEthTxSetGasLimit(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_limit_p
     // Set gasLimit
     if (gas_limit_ptr != NULL)
     {
-        memcpy(&tx_ptr->rawtx_fields.gaslimit, gas_limit_ptr,  sizeof(BoatFieldMax32B));
+        memcpy(&tx_ptr->rawtx_fields.gaslimit, gas_limit_ptr, sizeof(BoatFieldMax32B));
         return BOAT_SUCCESS;
     }
     else
@@ -647,18 +647,18 @@ BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr, BCHAR *func_proto_str,
 
     // Set function selector
     UtilityBinToHex(data_str, function_selector, 4,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES,  BOAT_FALSE);
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
 
     // Set function parameters.param1 '+10' means skip function selector prefixed
 	// e.g. "0x12345678" is a function selector prefixed
-    UtilityBinToHex(data_str+10,  func_param_ptr,  func_param_len,
-					BIN2HEX_LEFTTRIM_UNFMTDATA,  BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
+    UtilityBinToHex(data_str+10, func_param_ptr, func_param_len,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
     param_eth_call.method_name_str = "eth_call";
     param_eth_call.data            = data_str;
     param_eth_call.block_num_str   = "latest";
     retval_str = web3_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
                            tx_ptr->wallet_ptr->network_info.node_url_ptr,
-                           &param_eth_call,&result);
+                           &param_eth_call, &result);
     if (retval_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "web3 call fail, result = %d ",result);
@@ -738,7 +738,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
         BoatSleep(BOAT_ETH_MINE_INTERVAL); // Sleep waiting for the block being mined 
         tx_status_str = web3_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 														 tx_ptr->wallet_ptr->network_info.node_url_ptr,
-														 &param_eth_getTransactionReceipt,&result);
+														 &param_eth_getTransactionReceipt, &result);
         if (tx_status_str == NULL)
         {
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
@@ -746,7 +746,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
         }
 		result = BoatEthPraseRpcResponseResult(tx_status_str, "status", 
 											   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-        if (result != BOAT_SUCCESS)
+        if (result != BOAT_SUCCESS && result != BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             result = BOAT_ERROR_WALLET_RESULT_PRASE_FAIL;
@@ -757,7 +757,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
             // tx_status_str == "": the transaction is pending
             // tx_status_str == "0x1": the transaction is successfully mined
             // tx_status_str == "0x0": the transaction fails
-            if (tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr[0] != '\0')
+            if (result != BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL)
             {
                 if (strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x1") == 0)
                 {
@@ -766,8 +766,12 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
                 }
                 else
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_ETH_MINE_INTERVAL);
+                    BoatLog(BOAT_LOG_NORMAL, "Transaction fails.");
                 }
+            }
+            else
+            {
+                BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_ETH_MINE_INTERVAL);
             }
 
             tx_mined_timeout -= BOAT_ETH_MINE_INTERVAL;
