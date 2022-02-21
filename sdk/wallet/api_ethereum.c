@@ -69,7 +69,7 @@ BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 
     // if(config_ptr->prikeyCtx_config.prikey_content.field_ptr != NULL)
     if (config_ptr->load_existed_wallet == false)
     {
-        if(BOAT_SUCCESS != BoatPort_keyCreate(&config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
+        if (BOAT_SUCCESS != BoatPort_keyCreate(&config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
         {
             web3_deinit(wallet_ptr->web3intf_context_ptr);
             BoatFree(wallet_ptr);
@@ -105,7 +105,7 @@ void BoatEthWalletDeInit(BoatEthWallet *wallet_ptr)
 {
     if (wallet_ptr != NULL)
     {
-        if(wallet_ptr->network_info.node_url_ptr != NULL)
+        if (wallet_ptr->network_info.node_url_ptr != NULL)
         {
             BoatFree(wallet_ptr->network_info.node_url_ptr);
             wallet_ptr->network_info.node_url_ptr = NULL;
@@ -429,7 +429,7 @@ BOAT_RESULT BoatEthTxSetGasPrice(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_price_p
         // Return value of web3_gasPrice is in wei
         gas_price_from_net_str = web3_gasPrice(tx_ptr->wallet_ptr->web3intf_context_ptr, 
 											   tx_ptr->wallet_ptr->network_info.node_url_ptr,
-                                               "eth_gasPrice",&result);
+                                               "eth_gasPrice", &result);
 		if (gas_price_from_net_str == NULL)
         {
             BoatLog(BOAT_LOG_CRITICAL, "get gas price fail, result = %d.",result);
@@ -600,7 +600,7 @@ BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr, BCHAR *func_proto_str,
 	BUINT8 hashLenDummy;
 	
     // +4 for function selector, *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
-    BCHAR data_str[(func_param_len + 4)*2 + 3]; // Compiler MUST support C99 to allow variable-size local array
+    BCHAR data_str[(func_param_len + 4) * 2 + 3]; // Compiler MUST support C99 to allow variable-size local array
  
     Param_eth_call param_eth_call;
     BOAT_RESULT result = BOAT_SUCCESS;
@@ -631,12 +631,12 @@ BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr, BCHAR *func_proto_str,
         return NULL;
     }    
 
-    BCHAR recipient_hexstr[BOAT_ETH_ADDRESS_SIZE*2+3];
+    BCHAR recipient_hexstr[BOAT_ETH_ADDRESS_SIZE * 2 + 3];
     
     UtilityBinToHex(recipient_hexstr, tx_ptr->rawtx_fields.recipient,
 					BOAT_ETH_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA,
 					BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-    param_eth_call.to  = recipient_hexstr;
+    param_eth_call.to = recipient_hexstr;
 
     // Function call consumes zero gas but gasLimit and gasPrice must be specified.
     param_eth_call.gas = "0x1fffff";
@@ -659,7 +659,8 @@ BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr, BCHAR *func_proto_str,
     retval_str = web3_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
                            tx_ptr->wallet_ptr->network_info.node_url_ptr,
                            &param_eth_call,&result);
-    if(retval_str == NULL){
+    if (retval_str == NULL)
+    {
         BoatLog(BOAT_LOG_CRITICAL, "web3 call fail, result = %d ",result);
     }
 
@@ -738,7 +739,8 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
         tx_status_str = web3_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 														 tx_ptr->wallet_ptr->network_info.node_url_ptr,
 														 &param_eth_getTransactionReceipt,&result);
-        if(tx_status_str == NULL){
+        if (tx_status_str == NULL)
+        {
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             break;
         }
