@@ -109,16 +109,6 @@ extern "C" {
  ******************************************************************************/
 BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr);
 
-/*!*****************************************************************************
-* @brief Prase RPC method RESPONSE
-* @see eth_parse_json_result()
-*******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT fiscobcos_parse_json_result(const BCHAR *json_string, 
-								                                  const BCHAR *child_name, 
-								                                  BoatFieldVariable *result_out)
-{
-    return eth_parse_json_result(json_string, child_name, result_out);
-}
 
 /*! @}*/
 

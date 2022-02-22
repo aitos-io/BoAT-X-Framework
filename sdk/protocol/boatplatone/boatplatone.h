@@ -109,17 +109,6 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr);
 
 /*! @}*/
 
-/*!*****************************************************************************
-* @brief Prase RPC method RESPONSE
-* @see eth_parse_json_result()
-*******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT platone_parse_json_result(const BCHAR *json_string, 
-								                                const BCHAR *child_name, 
-								                                BoatFieldVariable *result_out)
-{
-    return eth_parse_json_result(json_string, child_name, result_out);
-}
-
 /*!****************************************************************************
  * @brief parse platone nodeinfo form Contract management service
  *

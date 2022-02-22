@@ -323,6 +323,16 @@ __BOATSTATIC __BOATINLINE void BoatPlatoneWalletDeInit(BoatPlatoneWallet *wallet
     BoatEthWalletDeInit((BoatEthWallet *)wallet_ptr);
 }
 
+/*!*****************************************************************************
+* @brief Prase RPC method RESPONSE
+* @see eth_parse_json_result()
+*******************************************************************************/
+__BOATSTATIC __BOATINLINE BOAT_RESULT platone_parse_json_result(const BCHAR *json_string, 
+								                                const BCHAR *child_name, 
+								                                BoatFieldVariable *result_out)
+{
+    return eth_parse_json_result(json_string, child_name, result_out);
+}
 
 /*!****************************************************************************
  * @brief Set Node Url
