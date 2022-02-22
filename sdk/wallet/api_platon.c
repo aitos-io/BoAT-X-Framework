@@ -472,7 +472,7 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
         }
 		result = BoatPlatONPraseRpcResponseResult(tx_status_str, "status", 
 											      &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-        if (result != BOAT_SUCCESS || result != BOAT_ERROR_JSON_OBJ_IS_NULL)
+        if (result != BOAT_SUCCESS && result != BOAT_ERROR_JSON_OBJ_IS_NULL)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             result = BOAT_ERROR_WALLET_RESULT_PRASE_FAIL;
