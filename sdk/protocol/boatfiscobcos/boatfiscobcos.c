@@ -134,7 +134,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     }
     
     rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &gaslimit_rlp_object);
-    if (rlp_index < rlp_index)
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append gaslimit to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, FiscobcosSendRawtx_cleanup);
