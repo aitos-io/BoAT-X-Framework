@@ -3,7 +3,7 @@
 
 ## About This Guideline
 
-This guide describes how to integrate BoAT-X Framework source code into L610 OpenCPU SDK, compile BoAT-X Framework static library and build the demo program under Linux environment.
+This guide describes how to integrate BoAT-X Framework source code into L610 OpenCPU SDK, compile BoAT-X Framework static library and build the demo program in Linux.
 
 
 ## Copy files
