@@ -491,6 +491,20 @@ void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_n
 *******************************************************************************/
 BOAT_RESULT UtilityStringLenCheck(const BCHAR *string);
 
+/******************************************************************************
+@brief Expand the memory 
+
+@param[in] mem
+	 The memory to be expanded
+
+@param[in] step_size
+	 The expanded mem->ptr memory size
+@return
+    This function returns BOAT_SUCCESS if expand successed. Otherwise
+    it returns an error code.
+*******************************************************************************/
+BOAT_RESULT BoatFieldVariable_malloc_size_expand(BoatFieldVariable *mem, BUINT32 step_size);
+
 BUINT64 UtilityBuint8Buf2Uint64(BUINT8* from,BUINT32 len);
 
 
