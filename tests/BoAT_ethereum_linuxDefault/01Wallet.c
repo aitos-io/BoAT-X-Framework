@@ -54,26 +54,6 @@ BoatEthWalletConfig get_ethereum_wallet_settings()
     return wallet_config;
 }
 
-BoatEthWalletConfig get_ethereum_wallet_settings()
-{
-    BoatEthWalletConfig wallet_config = {0};
-    BUINT8 binFormatKey[32]           = {0};
-    (void)binFormatKey; //avoid warning
-    
-    //set user private key context
-    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-    wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-    wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)ethereum_pkcs_key_buf;
-    wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(ethereum_pkcs_key_buf) + 1;
-
-    wallet_config.chain_id             = TEST_ETHEREUM_CHAIN_ID;
-    wallet_config.eip155_compatibility = BOAT_FALSE;
-    strncpy(wallet_config.node_url_str, TEST_ETHEREUM_NODE_URL, strlen(TEST_ETHEREUM_NODE_URL));
-    
-    return wallet_config;
-}
-
 START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess) 
 {
     BSINT32 rtnVal;
@@ -105,6 +85,23 @@ START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig) 
+{
+    BSINT32 rtnVal;
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, NULL, sizeof(BoatEthWalletConfig));
+    
+    /* 3. verify test result */
+    /* 3-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    /* 3-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -117,6 +114,7 @@ Suite *make_wallet_suite(void)
     suite_add_tcase(s_wallet, tc_wallet_api);       
     /* Test cases are added to the test set */
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0001CreateOneTimeWalletSuccess);  
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig); 
 
     return s_wallet;
 }
