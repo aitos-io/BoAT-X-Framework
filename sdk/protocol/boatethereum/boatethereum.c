@@ -609,8 +609,13 @@ BOAT_RESULT eth_parse_json_result(const BCHAR *json_string,
 			strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
 		}
 	}
-	else
+	else if (cJSON_IsNull(cjson_result_ptr))//cjson_result_ptr:null
 	{
+        BoatLog(BOAT_LOG_VERBOSE, "Result is NULL.");
+		boat_throw(BOAT_ERROR_JSON_OBJ_IS_NULL, eth_parse_json_result_cleanup);
+    }
+    else
+    {
 		BoatLog(BOAT_LOG_CRITICAL, "Un-expect object type.");
 		boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, eth_parse_json_result_cleanup);
 	}

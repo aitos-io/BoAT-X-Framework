@@ -746,7 +746,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
         }
 		result = BoatEthPraseRpcResponseResult(tx_status_str, "status", 
 											   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-        if (result != BOAT_SUCCESS && result != BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL)
+        if (result != BOAT_SUCCESS && result != BOAT_ERROR_JSON_OBJ_IS_NULL)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             result = BOAT_ERROR_WALLET_RESULT_PRASE_FAIL;
@@ -757,7 +757,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
             // tx_status_str == "": the transaction is pending
             // tx_status_str == "0x1": the transaction is successfully mined
             // tx_status_str == "0x0": the transaction fails
-            if (result != BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL)
+            if (result != BOAT_ERROR_JSON_OBJ_IS_NULL)
             {
                 if (strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x1") == 0)
                 {
@@ -767,6 +767,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
                 else
                 {
                     BoatLog(BOAT_LOG_NORMAL, "Transaction fails.");
+                    break;
                 }
             }
             else
