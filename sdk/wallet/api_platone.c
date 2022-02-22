@@ -249,10 +249,10 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
 
     BoatPlatonePraseRpcResponseResult(rpc_response_str, "data", &prase_result);
 
-    nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr))/2);
-    memset(nodeManagerAddr,0x00,strlen((BCHAR*)(prase_result.field_ptr))/2);
+    nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr)) / 2);
+    memset(nodeManagerAddr, 0x00, strlen((BCHAR*)(prase_result.field_ptr)) / 2);
     // hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
-    UtilityHexToBin(nodeManagerAddr,strlen((BCHAR*)(prase_result.field_ptr))/2,prase_result.field_ptr,TRIMBIN_TRIM_NO,BOAT_FALSE);
+    UtilityHexToBin(nodeManagerAddr, strlen((BCHAR*)(prase_result.field_ptr)) / 2, prase_result.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
  // Construct the REQUEST
     
     // web3_parse_fatherNamejson_result(nodeManagerAddr,"data", "externalIP", &prase_result);
@@ -267,10 +267,12 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
         return_value_ptr = NULL;
     }
-    if (nodeManagerAddr != NULL){
+    if (nodeManagerAddr != NULL)
+    {
         BoatFree(nodeManagerAddr);
     }
-    if (prase_result.field_ptr != NULL){
+    if (prase_result.field_ptr != NULL)
+    {
         BoatFree(prase_result.field_ptr);
         prase_result.field_len = 0;
     }
