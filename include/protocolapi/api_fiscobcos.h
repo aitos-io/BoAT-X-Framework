@@ -244,7 +244,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosWalletSetNodeUrl(BoatFiscobco
  ******************************************************************************/
 __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosWalletSetChainId(BoatFiscobcosWallet *wallet_ptr, BUINT32 chain_id)
 {
-    return BoatEthWalletSetChainId((BoatEthWallet *)wallet_ptr,chain_id);
+    return BoatEthWalletSetChainId((BoatEthWallet *)wallet_ptr, chain_id);
 }
 
 
