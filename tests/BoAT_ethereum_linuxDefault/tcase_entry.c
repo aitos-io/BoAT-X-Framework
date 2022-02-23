@@ -38,7 +38,7 @@ int read_key_content(char* key_ptr, char* url_ptr)
       return -1;
    }
 
-   fd = open("../../../tests/BoAT_ethereum_linuxDefault/pri_key/client1.sign.key", O_RDONLY);
+   fd = open("../../../tests/BoAT_ethereum_linuxDefault/pri_key/pkcs_key.key", O_RDONLY);
    if (fd < 0)
    {
       return -1;

@@ -398,21 +398,21 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 }
 END_TEST
 
-START_TEST(test_002DeleteWallet_0001DeleteWalletFailureNullFleName) 
+START_TEST(test_003DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
     BoatWalletDelete(NULL);
     ck_assert_int_eq(access("ethereum", F_OK), 0);
 }
 END_TEST
 
-START_TEST(test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile) 
+START_TEST(test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile) 
 {
     BoatWalletDelete("ethereum_no_exist");
     ck_assert_int_eq(access("ethereum", F_OK), 0);
 }
 END_TEST
 
-START_TEST(test_002DeleteWallet_0003DeleteWalletSucessExistingFile) 
+START_TEST(test_003sDeleteWallet_0003DeleteWalletSucessExistingFile) 
 {
     BoatWalletDelete("ethereum");
     ck_assert_int_eq(access("ethereum", F_OK), -1);
