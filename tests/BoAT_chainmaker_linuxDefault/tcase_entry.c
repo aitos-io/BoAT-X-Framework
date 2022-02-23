@@ -25,9 +25,11 @@ extern Suite *make_wallet_suite(void);
 extern Suite *make_parameters_suite(void);
 extern Suite *make_contract_suite(void);
 
-char chainmaker_sign_key_buf[1024];
-char chainmaker_sign_cert_buf[1024];
-char chainmaker_ca_cert_buf[1024];
+#define CERT_PRIKEY_LEN 1024
+
+char chainmaker_sign_key_buf[CERT_PRIKEY_LEN];
+char chainmaker_sign_cert_buf[CERT_PRIKEY_LEN];
+char chainmaker_ca_cert_buf[CERT_PRIKEY_LEN];
 
 int read_key_cert_content(char* key_ptr, char* cert_ptr, char* ca_ptr)
 {       
