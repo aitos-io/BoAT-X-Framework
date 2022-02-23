@@ -16,7 +16,7 @@ Assuming `<L610 Root>` to be the root directory of L610 OpenCPU SDK:
 
 3. Copy `BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.c` into `<L610 Root>`.
 
-3. Copy `BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.h` into `<L610 Root>`.
+4. Copy `BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.h` into `<L610 Root>`.
 
 
 After copying these files, the directory structure should look like:
@@ -40,7 +40,7 @@ After copying these files, the directory structure should look like:
 
 ## File Modification
 
-### 1. Add BoAT-X Framework static libraries .a files onto L610 platform
+### 1. Add BoAT-X-Framework static libraries .a files onto L610 platform
 
 Open `<L610 Root>/cmake/toolchain-gcc.cmake`.  
 Add the following two lines as below:
@@ -49,7 +49,7 @@ Add the following two lines as below:
     set(libboatvendor_file_name ${CMAKE_CURRENT_SOURCE_DIR}/BoAT-X-Framework/lib/libboatvendor.a)
 
 
-### 2. Add the BoAT-X Framework header files
+### 2. Add the BoAT-X-Framework header files
 Open `<L610 Root>/CMakeLists.txt`.  
 Find include_directories(xxx), add the following content in the last new line:
 
@@ -64,16 +64,16 @@ In curly braces below `if(CONFIG_APPIMG_LOAD_FLASH)`, find `target_link_librarie
     target_link_libraries(${target} PRIVATE ${libboatwallet_file_name} ${libboatvendor_file_name} ${libc_file_name} ${libm_file_name} 
 
 
-### 4. Add demo and smart contract files of BoAT-X-Framework
+### 4. Add BoAT-X-Framework demo & sample smart contracts into compile directory
 Open `<L610 Root>/CMakeList.txt`.  
 In curly braces below `if(CONFIG_APPIMG_LOAD_FLASH)`,find `add_appimg(${target} xxx)` and add `demo.c my_contract.cpp.abi.c` at the end, such as:
 
     add_appimg(${target} ${flash_ldscript} demo.c my_contract.cpp.abi.c)
 
 
-## Compile BoAT-X Framework Static library
+## Compile BoAT-X-Framework Static library
 
-### 1. Compile BoAT-X Framework static library (under Linux)
+### 1. Compile BoAT-X-Framework static library (under Linux)
 
    #### a. Configure the target platform in directory `<L610 Root>/BoAT-X-Framework/Makefile`
    
