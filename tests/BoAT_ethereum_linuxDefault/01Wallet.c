@@ -267,6 +267,24 @@ START_TEST(test_002InitWallet_0010SetEIP155CompFailureNullParam)
 }
 END_TEST
 
+START_TEST(test_002InitWallet_0011SetChainIdSuccess)
+{
+    BSINT32 rtnVal;
+    BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
+    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletSetChainId(wallet_ptr, wallet_config.chain_id);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(wallet_ptr->network_info.chain_id == wallet_config.chain_id);
+    
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -288,6 +306,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0008CreateOneTimeWalletFailureProtocolUnknown);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0009SetEIP155CompSuccess);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0010SetEIP155CompFailureNullParam);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0011SetChainIdSuccess);
 
     return s_wallet;
 }
