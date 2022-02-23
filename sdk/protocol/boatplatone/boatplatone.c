@@ -53,6 +53,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
     BSINT32 v_index = 0;
     BSINT32 r_index = 0;
     BSINT32 s_index = 0;
+    BSINT32 rlp_index = 0;
     
     RlpEncodedStreamObject *rlp_stream_storage_ptr;
     
@@ -98,8 +99,8 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatoneSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &nonce_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &nonce_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append nonce to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -115,8 +116,8 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatoneSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &gasprice_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &gasprice_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append gasprice to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -132,8 +133,8 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatoneSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &gaslimit_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &gaslimit_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append gaslimit to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -148,8 +149,8 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatoneSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &recipient_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &recipient_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append recipient to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -165,8 +166,8 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatoneSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &value_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &value_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append value to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -182,8 +183,8 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatoneSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &data_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &data_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append data to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -206,8 +207,8 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, PlatoneSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &txtype_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &txtype_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append txtype to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -239,7 +240,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         }
         
         v_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &v_rlp_object);
-        if (v_index < BOAT_SUCCESS)
+        if (v_index < 0)
         {
             BoatLog(BOAT_LOG_CRITICAL, "Fail to append v to Tx RLP object.");
             boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -256,7 +257,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         }
         
         r_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &r_rlp_object);
-        if (r_index < BOAT_SUCCESS)
+        if (r_index < 0)
         {
             BoatLog(BOAT_LOG_CRITICAL, "Fail to append r to Tx RLP object.");
             boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -274,7 +275,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         }
         
         s_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &s_rlp_object);
-        if (s_index < BOAT_SUCCESS)
+        if (s_index < 0)
         {
             BoatLog(BOAT_LOG_CRITICAL, "Fail to append s to Tx RLP object.");
             boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -387,7 +388,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         v_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &v_rlp_object);
     }
     
-    if (v_index < BOAT_SUCCESS)
+    if (v_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to replace v in Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -412,7 +413,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         r_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &r_rlp_object);
     }
 
-    if (r_index < BOAT_SUCCESS)
+    if (r_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to replace r in Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -437,7 +438,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
         s_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &s_rlp_object);
     }
     
-    if (s_index < BOAT_SUCCESS)
+    if (s_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Fail to replace s in Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, PlatoneSendRawtx_cleanup);
@@ -564,12 +565,12 @@ int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
     name = cJSON_GetObjectItemCaseSensitive(monitor_json, "code");
     if (cJSON_IsString(name) && (name->valuestring != NULL))
     {
-        printf("Checking monitor \"%s\"\n", name->valuestring);
+        BoatLog(BOAT_LOG_CRITICAL,"Checking monitor \"%s\"\n", name->valuestring);
     }
 
     resolutions = cJSON_GetObjectItemCaseSensitive(monitor_json, "data");
     int num = cJSON_GetArraySize(resolutions);
-    printf("num  = %d ,,   \n", num);
+    BoatLog(BOAT_LOG_NORMAL,"num  = %d\n", num);
     result_out->nodeInfo = BoatMalloc(num * sizeof(wbe3_nodeInfo));
     cJSON_ArrayForEach(resolution, resolutions)
     {
@@ -594,7 +595,7 @@ int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
         }
         else
         {
-            printf("un-implemention yet.");
+            BoatLog(BOAT_LOG_CRITICAL,"un-implemention yet.");
         }
         result_out->nodeInfo[result_out->num-1].rpcPort = height->valueint;
         

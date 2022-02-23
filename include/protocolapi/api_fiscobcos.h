@@ -217,6 +217,16 @@ __BOATSTATIC __BOATINLINE void BoatFiscobcosWalletDeInit(BoatFiscobcosWallet *wa
     return BoatEthWalletDeInit((BoatEthWallet *)wallet_ptr);
 }
 
+/*!*****************************************************************************
+* @brief Prase RPC method RESPONSE
+* @see eth_parse_json_result()
+*******************************************************************************/
+__BOATSTATIC __BOATINLINE BOAT_RESULT fiscobcos_parse_json_result(const BCHAR *json_string, 
+								                                  const BCHAR *child_name, 
+								                                  BoatFieldVariable *result_out)
+{
+    return eth_parse_json_result(json_string, child_name, result_out);
+}
 
 /*!****************************************************************************
  * @brief Set Node Url
@@ -286,13 +296,13 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.
- * @see web3_parse_json_result()
+ * @see eth_parse_json_result()
  ******************************************************************************/
 BOAT_RESULT BoatFiscobcosPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out);
 
 /*!****************************************************************************
  * @brief Prase RPC method RESPONSE.
- * @see web3_parse_json_result()
+ * @see eth_parse_json_result()
  ******************************************************************************/
 BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
                                                 const BCHAR *child_name, 

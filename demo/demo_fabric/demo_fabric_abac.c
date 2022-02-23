@@ -199,7 +199,7 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 #else
 	return BOAT_ERROR;
 #endif
-	if (index < BOAT_SUCCESS)
+	if (index < 0)
 	{
 		//BoatLog(BOAT_LOG_CRITICAL, "fabricWalletPrepare failed.");
 		return BOAT_ERROR_WALLET_CREATE_FAIL;

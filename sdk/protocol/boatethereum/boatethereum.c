@@ -24,6 +24,7 @@ perform it and wait for its receipt.
 #include "boatinternal.h"
 #include "web3intf.h"
 #include "boatethereum.h"
+#include "cJSON.h"
 
 
 BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
@@ -46,6 +47,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     BSINT32 v_index = 0;
     BSINT32 r_index = 0;
     BSINT32 s_index = 0;
+    BSINT32 rlp_index = 0;
     
     RlpEncodedStreamObject *rlp_stream_storage_ptr;
 
@@ -91,8 +93,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, EthSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &nonce_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &nonce_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append nonce to Tx RLP object failed.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
@@ -108,8 +110,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, EthSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &gasprice_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &gasprice_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append gasprice to Tx RLP object failed.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
@@ -125,8 +127,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, EthSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &gaslimit_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &gaslimit_rlp_object);
+    if (result < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append gaslimit to Tx RLP object failed.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
@@ -141,8 +143,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, EthSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &recipient_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &recipient_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append recipient to Tx RLP object failed.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
@@ -158,8 +160,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, EthSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &value_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &value_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append value to Tx RLP object failed.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
@@ -175,8 +177,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, EthSendRawtx_cleanup);
     }
     
-    result = RlpEncoderAppendObjectToList(&tx_rlp_object, &data_rlp_object);
-    if (result < BOAT_SUCCESS)
+    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &data_rlp_object);
+    if (rlp_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Append data to Tx RLP object failed.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
@@ -208,7 +210,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         }
         
         v_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &v_rlp_object);
-        if (v_index < BOAT_SUCCESS)
+        if (v_index < 0)
         {
             BoatLog(BOAT_LOG_CRITICAL, "Append v to Tx RLP object failed.");
             boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
@@ -225,7 +227,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         }
         
         r_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &r_rlp_object);
-        if (r_index < BOAT_SUCCESS)
+        if (r_index < 0)
         {
             BoatLog(BOAT_LOG_CRITICAL, "Append r to Tx RLP object failed.");
             boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
@@ -242,7 +244,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         }
         
         s_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &s_rlp_object);
-        if (s_index < BOAT_SUCCESS)
+        if (s_index < 0)
         {
             BoatLog(BOAT_LOG_CRITICAL, "Append s to Tx RLP object failed.");
             boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
@@ -352,7 +354,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         v_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &v_rlp_object);
     }
     
-    if (v_index < BOAT_SUCCESS)
+    if (v_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Replace v in Tx RLP object failed.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_REPLACE_FAIL, EthSendRawtx_cleanup);
@@ -377,7 +379,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         r_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &r_rlp_object);
     }
 
-    if (r_index < BOAT_SUCCESS)
+    if (r_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Replace r in Tx RLP object failed.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_FAIL, EthSendRawtx_cleanup);
@@ -402,7 +404,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         s_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &s_rlp_object);
     }
     
-    if (s_index < BOAT_SUCCESS)
+    if (s_index < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Replace s in Tx RLP object failed.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_FAIL, EthSendRawtx_cleanup);
@@ -474,8 +476,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
         BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
 		boat_throw(result, EthSendRawtx_cleanup);
     }
-    result = web3_parse_json_result(tx_hash_str, "", 
-									&tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    result = eth_parse_json_result(tx_hash_str, "", 
+								   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");
@@ -506,4 +508,135 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
 
     return result;
 }
+
+BOAT_RESULT eth_parse_json_result(const BCHAR *json_string, 
+								  const BCHAR *child_name, 
+								  BoatFieldVariable *result_out)
+{
+	cJSON  *cjson_string_ptr     = NULL;
+    cJSON  *cjson_result_ptr     = NULL;
+    cJSON  *cjson_child_name_ptr = NULL;
+    BCHAR  *parse_result_str     = NULL;
+	BUINT32 parse_result_str_len;
+	const char *cjson_error_ptr;
+	
+	BOAT_RESULT result = BOAT_SUCCESS;
+	boat_try_declare;
+	
+	if ((json_string == NULL) || (child_name == NULL) || (result_out == NULL))
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+	}
+	
+	// Convert string to cJSON
+	cjson_string_ptr = cJSON_Parse(json_string);
+	if (cjson_string_ptr == NULL)
+    {
+        cjson_error_ptr = cJSON_GetErrorPtr();
+        if (cjson_error_ptr != NULL)
+        {
+            BoatLog(BOAT_LOG_NORMAL, "Parsing RESPONSE as JSON fails before: %s.", cjson_error_ptr);
+        }
+        boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, eth_parse_json_result_cleanup);
+    }
+	
+	// Obtain result object
+	cjson_result_ptr = cJSON_GetObjectItemCaseSensitive(cjson_string_ptr, "result");
+	if (cjson_result_ptr == NULL)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "Cannot find \"result\" item in RESPONSE.");
+		boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, eth_parse_json_result_cleanup);
+	}
+
+	if (cJSON_IsObject(cjson_result_ptr))
+	{
+		// the "result" object is json item
+		cjson_child_name_ptr = cJSON_GetObjectItemCaseSensitive(cjson_result_ptr, child_name);
+		if (cjson_child_name_ptr == NULL)
+		{
+			BoatLog(BOAT_LOG_NORMAL, "Cannot find \"%s\" item in RESPONSE.", child_name);
+			boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, eth_parse_json_result_cleanup);
+		}
+	
+		//prase child_name object
+		if (cJSON_IsString(cjson_child_name_ptr))
+		{
+			parse_result_str = cJSON_GetStringValue(cjson_child_name_ptr);
+			if (parse_result_str != NULL)
+			{
+				BoatLog(BOAT_LOG_VERBOSE, "result = %s", parse_result_str);
+
+				parse_result_str_len = strlen(parse_result_str);
+
+				while(parse_result_str_len >= result_out->field_len)
+				{
+					BoatLog(BOAT_LOG_VERBOSE, "Expand result_out memory...");
+					result = BoatFieldVariable_malloc_size_expand(result_out, WEB3_STRING_BUF_STEP_SIZE);
+					if (result != BOAT_SUCCESS)
+					{
+						BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
+						boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, eth_parse_json_result_cleanup);
+					}
+				}
+				strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
+			}
+		}
+		else
+		{
+			BoatLog(BOAT_LOG_NORMAL, "un-implemention yet.");
+		}
+	}
+	else if (cJSON_IsString(cjson_result_ptr))
+	{
+		parse_result_str = cJSON_GetStringValue(cjson_result_ptr);
+		
+		if (parse_result_str != NULL)
+		{
+			BoatLog(BOAT_LOG_VERBOSE, "result = %s", parse_result_str);
+
+			parse_result_str_len = strlen(parse_result_str);
+			while(parse_result_str_len >= result_out->field_len)
+			{
+				BoatLog(BOAT_LOG_VERBOSE, "Expand result_out memory...");
+				result = BoatFieldVariable_malloc_size_expand(result_out, WEB3_STRING_BUF_STEP_SIZE);
+				if (result != BOAT_SUCCESS)
+				{
+					BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, eth_parse_json_result_cleanup);
+				}
+			}
+			strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
+		}
+	}
+	else if (cJSON_IsNull(cjson_result_ptr))//cjson_result_ptr:null
+	{
+        BoatLog(BOAT_LOG_VERBOSE, "Result is NULL.");
+		boat_throw(BOAT_ERROR_JSON_OBJ_IS_NULL, eth_parse_json_result_cleanup);
+    }
+    else
+    {
+		BoatLog(BOAT_LOG_CRITICAL, "Un-expect object type.");
+		boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, eth_parse_json_result_cleanup);
+	}
+	if (cjson_string_ptr != NULL)
+    {
+        cJSON_Delete(cjson_string_ptr);
+    }
+	
+	// Exceptional Clean Up
+    boat_catch(eth_parse_json_result_cleanup)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
+
+        if (cjson_string_ptr != NULL)
+        {
+            cJSON_Delete(cjson_string_ptr);
+        }
+
+        result = boat_exception;
+    }
+	
+	return result;
+}                        
 

@@ -109,7 +109,6 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr);
 
 /*! @}*/
 
-
 /*!****************************************************************************
  * @brief parse platone nodeinfo form Contract management service
  *

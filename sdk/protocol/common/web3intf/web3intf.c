@@ -25,166 +25,6 @@
 #include "cJSON.h"
 #include "web3intf.h"
 
-
-/******************************************************************************
-@brief Expand the memory 
-
-@param[in] mem
-	 The memory to be expanded
-
-@param[in] step_size
-	 The expanded memory size in one call
-@return
-    This function returns BOAT_SUCCESS if expand successed. Otherwise
-    it returns an error code.
-*******************************************************************************/
-static BOAT_RESULT web3_malloc_size_expand(BoatFieldVariable *mem, BUINT32 step_size)
-{	
-	//free before malloc to avoid allocate more memory at same time
-	BoatFree(mem->field_ptr);
-	
-	mem->field_len += step_size;
-	mem->field_ptr  = BoatMalloc(mem->field_len);
-	if (mem->field_ptr == NULL)
-	{
-		mem->field_len = 0;
-		BoatLog(BOAT_LOG_NORMAL, "web3_malloc_size_expand failed.");
-		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-	}	
-
-	BoatLog(BOAT_LOG_NORMAL, "Excuting %s:[%d].", __func__ , mem->field_len);
-	return BOAT_SUCCESS;
-}
-
-
-BOAT_RESULT web3_parse_json_result(const BCHAR *json_string, 
-								   const BCHAR *child_name, 
-								   BoatFieldVariable *result_out)
-{
-	cJSON  *cjson_string_ptr     = NULL;
-    cJSON  *cjson_result_ptr     = NULL;
-    cJSON  *cjson_child_name_ptr = NULL;
-    BCHAR  *parse_result_str     = NULL;
-	BUINT32 parse_result_str_len;
-	const char *cjson_error_ptr;
-	
-	BOAT_RESULT result = BOAT_SUCCESS;
-	boat_try_declare;
-	
-	if ((json_string == NULL) || (child_name == NULL) || (result_out == NULL))
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
-		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-	}
-	
-	// Convert string to cJSON
-	cjson_string_ptr = cJSON_Parse(json_string);
-	if (cjson_string_ptr == NULL)
-    {
-        cjson_error_ptr = cJSON_GetErrorPtr();
-        if (cjson_error_ptr != NULL)
-        {
-            BoatLog(BOAT_LOG_NORMAL, "Parsing RESPONSE as JSON fails before: %s.", cjson_error_ptr);
-        }
-        boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
-    }
-	
-	// Obtain result object
-	cjson_result_ptr = cJSON_GetObjectItemCaseSensitive(cjson_string_ptr, "result");
-	if (cjson_result_ptr == NULL)
-	{
-		BoatLog(BOAT_LOG_NORMAL, "Cannot find \"result\" item in RESPONSE.");
-		boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, web3_parse_json_result_cleanup);
-	}
-
-	if (cJSON_IsObject(cjson_result_ptr))
-	{
-		// the "result" object is json item
-		cjson_child_name_ptr = cJSON_GetObjectItemCaseSensitive(cjson_result_ptr, child_name);
-		if (cjson_child_name_ptr == NULL)
-		{
-			BoatLog(BOAT_LOG_NORMAL, "Cannot find \"%s\" item in RESPONSE.", child_name);
-			boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, web3_parse_json_result_cleanup);
-		}
-	
-		//prase child_name object
-		if (cJSON_IsString(cjson_child_name_ptr))
-		{
-			parse_result_str = cJSON_GetStringValue(cjson_child_name_ptr);
-			if (parse_result_str != NULL)
-			{
-				BoatLog(BOAT_LOG_VERBOSE, "result = %s", parse_result_str);
-
-				parse_result_str_len = strlen(parse_result_str);
-
-				while(parse_result_str_len >= result_out->field_len)
-				{
-					BoatLog(BOAT_LOG_VERBOSE, "Expand result_out memory...");
-					result = web3_malloc_size_expand(result_out, WEB3_STRING_BUF_STEP_SIZE);
-					if (result != BOAT_SUCCESS)
-					{
-						BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-						boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_parse_json_result_cleanup);
-					}
-				}
-				strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
-			}
-		}
-		else
-		{
-			BoatLog(BOAT_LOG_NORMAL, "un-implemention yet.");
-		}
-	}
-	else if (cJSON_IsString(cjson_result_ptr))
-	{
-		parse_result_str = cJSON_GetStringValue(cjson_result_ptr);
-		
-		if (parse_result_str != NULL)
-		{
-			BoatLog(BOAT_LOG_VERBOSE, "result = %s", parse_result_str);
-
-			parse_result_str_len = strlen(parse_result_str);
-			while(parse_result_str_len >= result_out->field_len)
-			{
-				BoatLog(BOAT_LOG_VERBOSE, "Expand result_out memory...");
-				result = web3_malloc_size_expand(result_out, WEB3_STRING_BUF_STEP_SIZE);
-				if (result != BOAT_SUCCESS)
-				{
-					BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
-					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_parse_json_result_cleanup);
-				}
-			}
-			strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
-		}
-	}
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Un-expect object type.");
-		boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, web3_parse_json_result_cleanup);
-	}
-	if (cjson_string_ptr != NULL)
-    {
-        cJSON_Delete(cjson_string_ptr);
-    }
-	
-	// Exceptional Clean Up
-    boat_catch(web3_parse_json_result_cleanup)
-    {
-        BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
-
-        if (cjson_string_ptr != NULL)
-        {
-            cJSON_Delete(cjson_string_ptr);
-        }
-
-        result = boat_exception;
-    }
-	
-	return result;
-}
-
-
-
 Web3IntfContext *web3_init(void)
 {
     Web3IntfContext *web3intf_context_ptr;
@@ -328,10 +168,10 @@ BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
 		
 		if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_getTransactionCount_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -418,10 +258,10 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
                                         );
 		if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_gasPrice_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -513,10 +353,10 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
                                         );
 		if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_getBalance_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -607,10 +447,10 @@ BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
                                         );
 		if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_sendRawTransaction_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -703,10 +543,10 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
                                         );
 		if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_getStorageAt_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -798,10 +638,10 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
 				);
 		if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_getTransactionReceiptStatus_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -896,10 +736,10 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
 				);
 		if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_call_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -1005,10 +845,10 @@ BCHAR *web3_fiscobcos_call(Web3IntfContext *web3intf_context_ptr,
 
         if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_fiscobcos_call_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -1097,10 +937,10 @@ BCHAR *web3_fiscobcos_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
 
         if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_fiscobcos_sendRawTransaction_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -1191,10 +1031,10 @@ BCHAR *web3_fiscobcos_getTransactionReceiptStatus(Web3IntfContext *web3intf_cont
 
         if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_fiscobcos_getTransactionReceiptStatus_cleanup);
 			}
 			malloc_size_expand_flag = true;
@@ -1284,10 +1124,10 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
 
         if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
 		{
-			result = web3_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
+			result = BoatFieldVariable_malloc_size_expand(&web3intf_context_ptr->web3_json_string_buf, WEB3_STRING_BUF_STEP_SIZE);
 			if (result != BOAT_SUCCESS)
 			{
-				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute web3_malloc_size_expand.");
+				BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, web3_fiscobcos_getBlockNumber_cleanup);
 			}
 			malloc_size_expand_flag = true;

@@ -17,6 +17,9 @@
 + [FISCO BCOS Github](https://github.com/FISCO-BCOS)
 + [Hyperledger Fabric](https://www.hyperledger.org/use/fabric)
 + [Hyperledger Fabric Docs](https://hyperledger-fabric.readthedocs.io/)
++ [Huawei BCS](https://www.huaweicloud.com/product/bcs)
++ [ChainMaker](https://chainmaker.org.cn/)
++ [ChainMaker Docs](https://docs.chainmaker.org.cn/)
 
 # Supported Module List
 
@@ -31,6 +34,7 @@ L610                      |广和通 Fibocom   |LTE Cat.1             |UNISOC UI
 L718                      |广和通 Fibocom   |LTE Cat.4             |ZTE ZX7520 V3
 NL668                     |广和通 Fibocom   |LTE Cat.4 linux       |Qualcomm MDM9207
 FG150                     |广和通 Fibocom   |5G                    |Qualcomm SDX55
+MA510                     |广和通 Fibocom   |LTE/Cat.M/NB2/EGPTS   |Qualcomm MDM9205
 CLM920_NC3                |域格 YuGe Tech   |LTE Cat.4             |Qualcomm MDM9207
 CLM920_RC3                |域格 YuGe Tech   |LTE Cat.1             |ASR1601
 N58                       |有方 Neoway      |LTE Cat.1             |UNISOC UIS8910DM
@@ -46,6 +50,6 @@ MN316                     |中移物联 China Mobile|NB-IoT            |Xinyi XY
 BeagleV-StarLight星光     |seeed, StarFive and beagleboard|Ethernet|StarFive JH7100      |BeagleV-StarLight星光 is a development board
 
 
-*Last update on September 18th, 2021*
+*Last update on January 25th, 2022*
 
 NOTE: Some of the blockchains are not supported on some modules due to resource constraint.

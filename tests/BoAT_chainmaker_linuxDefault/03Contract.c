@@ -138,6 +138,7 @@ START_TEST(test_005ContractInvoke_0001InvokeFailureTxNull)
 
     result = BoatHlchainmakerContractInvoke(NULL, "save", "fact", true, &invoke_response); ;
     ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -152,6 +153,7 @@ START_TEST(test_005ContractInvoke_0002InvokeFailureMethodNull)
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, NULL, "fact", true, &invoke_response); ;
     ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -166,6 +168,7 @@ START_TEST(test_005ContractInvoke_0003InvokeFailureContractNull)
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", NULL, true, &invoke_response); ;
     ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -185,6 +188,7 @@ START_TEST(test_005ContractInvoke_0004InvokeFailureContractNoExist)
         ck_assert(invoke_response.code == BOAT_SUCCESS);
         ck_assert(invoke_response.gas_used == 0);
     }
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -198,6 +202,7 @@ START_TEST(test_005ContractInvoke_0005InvokeFailureresponseNull)
 
     result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "test", true, NULL); ;
     ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -217,6 +222,7 @@ START_TEST(test_005ContractInvoke_0006InvokeSucessSyncOn)
         ck_assert(invoke_response.code == BOAT_SUCCESS);
         ck_assert(invoke_response.gas_used != 0);
     }
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -236,8 +242,26 @@ START_TEST(test_005ContractInvoke_0007InvokeSucessSyncOff)
         ck_assert(invoke_response.code == BOAT_SUCCESS);
         ck_assert(invoke_response.gas_used == 0);
     }
+    BoatIotSdkDeInit();
 }
 END_TEST
+
+START_TEST(test_005ContractInvoke_0008InvokeFailureInvalidUrl) 
+{
+    BOAT_RESULT        result;
+    BoatHlchainmakerTx tx_ptr;
+    BoatInvokeResponse  invoke_response;
+    char url_buf[] = {"127.0.0.1:12310"};
+
+    result = test_contrct_invoke_prepara(&tx_ptr);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+    strncpy(tx_ptr.wallet_ptr->node_info.node_url_info, url_buf, strlen(url_buf));
+    result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "fact", true, &invoke_response); ;
+    ck_assert(result == BOAT_ERROR_HTTP2_CONNECT_FAIL);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 
 START_TEST(test_006ContractQuery_0001QueryFailureTxNull) 
 {
@@ -247,6 +271,7 @@ START_TEST(test_006ContractQuery_0001QueryFailureTxNull)
 
     result = BoatHlchainmakerContractQuery(NULL, "save", "fact", &query_response); ;
     ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -261,6 +286,7 @@ START_TEST(test_006ContractQuery_0002QueryFailureMethodNull)
 
     result = BoatHlchainmakerContractQuery(&tx_ptr, NULL, "fact", &query_response); ;
     ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -276,6 +302,7 @@ START_TEST(test_006ContractQuery_0003QueryFailureContractNull)
 
     result = BoatHlchainmakerContractQuery(&tx_ptr, "save", NULL, &query_response); ;
     ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -295,6 +322,7 @@ START_TEST(test_006ContractQuery_0004QueryFailureContractNoExist)
         ck_assert(query_response.code != BOAT_SUCCESS);
         ck_assert(query_response.gas_used == 0);
     }
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -309,6 +337,7 @@ START_TEST(test_006ContractQuery_0005QueryFailureResponseNull)
 
     result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", NULL); 
     ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -328,6 +357,24 @@ START_TEST(test_006ContractQuery_0006QuerySucess)
         ck_assert(query_response.code == BOAT_SUCCESS);
         ck_assert(query_response.gas_used != 0);
     }
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+
+START_TEST(test_006ContractQuery_0007QueryFailureInvalidUrl) 
+{
+    BOAT_RESULT        result;
+    BoatHlchainmakerTx tx_ptr;
+    BoatQueryResponse  query_response;
+    char url_buf[] = {"127.0.0.1:12310"};
+
+    result = test_contrct_invoke_prepara(&tx_ptr);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+    strncpy(tx_ptr.wallet_ptr->node_info.node_url_info, url_buf, strlen(url_buf));
+    result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", &query_response); ;
+    ck_assert(result == BOAT_ERROR_HTTP2_CONNECT_FAIL);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -350,6 +397,7 @@ Suite *make_contract_suite(void)
     tcase_add_test(tc_contract_api, test_005ContractInvoke_0005InvokeFailureresponseNull);  
     tcase_add_test(tc_contract_api, test_005ContractInvoke_0006InvokeSucessSyncOn); 
     tcase_add_test(tc_contract_api, test_005ContractInvoke_0007InvokeSucessSyncOff); 
+    tcase_add_test(tc_contract_api, test_005ContractInvoke_0008InvokeFailureInvalidUrl); 
 
     tcase_add_test(tc_contract_api, test_006ContractQuery_0001QueryFailureTxNull); 
     tcase_add_test(tc_contract_api, test_006ContractQuery_0002QueryFailureMethodNull); 
@@ -357,6 +405,7 @@ Suite *make_contract_suite(void)
     tcase_add_test(tc_contract_api, test_006ContractQuery_0004QueryFailureContractNoExist);
     tcase_add_test(tc_contract_api, test_006ContractQuery_0005QueryFailureResponseNull);
     tcase_add_test(tc_contract_api, test_006ContractQuery_0006QuerySucess);
+    tcase_add_test(tc_contract_api, test_006ContractQuery_0007QueryFailureInvalidUrl); 
  
     return s_contract;
 }

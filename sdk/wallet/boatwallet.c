@@ -443,13 +443,14 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
 
                 if (wallet_ptr != NULL)
                 {
-                    memcpy(boatwalletStore_ptr + wallet_config_size, &((BoatHlchainmakerWallet*)wallet_ptr)->user_cert_info.prikeyCtx, sizeof(BoatWalletPriKeyCtx));
+                    memcpy(boatwalletStore_ptr + wallet_config_size, &((BoatHlchainmakerWallet*)wallet_ptr)->user_cert_prikey_info.prikeyCtx, sizeof(BoatWalletPriKeyCtx));
                     if (wallet_name_str != NULL)
                     {
                         /* create persistent wallet / Overwrite existed configuration */
                         if (BOAT_SUCCESS != BoatPersistStore(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)))
                         {
                             BoatLog(BOAT_LOG_NORMAL, "persistent wallet create failed.");
+                            g_boat_iot_sdk_context.wallet_list[i].is_used = BOAT_FALSE;
                             BoatFree(boatwalletStore_ptr);
                             return BOAT_ERROR_PERSISTER_STORE_FAIL;
                         }
@@ -458,6 +459,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                     {
                         /* create one-time wallet */
                         // nothing to do
+                        BoatLog(BOAT_LOG_NORMAL, "onetime wallet create");
                     } 
                 }   
             }
@@ -467,6 +469,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 if (BOAT_SUCCESS != BoatPersistRead(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)))
                 {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
+                    g_boat_iot_sdk_context.wallet_list[i].is_used = BOAT_FALSE;
                     BoatFree(boatwalletStore_ptr);
                     return BOAT_ERROR_PERSISTER_READ_FAIL;
                 }
@@ -477,7 +480,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 if (wallet_ptr != NULL)
                 {
                     // re-assign private key context
-                    memcpy(&((BoatHlchainmakerWallet*)wallet_ptr)->user_cert_info.prikeyCtx, boatwalletStore_ptr + wallet_config_size, sizeof(BoatWalletPriKeyCtx));                
+                    memcpy(&((BoatHlchainmakerWallet*)wallet_ptr)->user_cert_prikey_info.prikeyCtx, boatwalletStore_ptr + wallet_config_size, sizeof(BoatWalletPriKeyCtx));                
                 }
             }
             g_boat_iot_sdk_context.wallet_list[i].wallet_ptr = wallet_ptr;
