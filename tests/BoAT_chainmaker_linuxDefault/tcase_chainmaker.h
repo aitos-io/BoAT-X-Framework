@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __TCASE_COMMON_H__
-#define __TCASE_COMMON_H__
+#ifndef __TCASE_CHAINMAKER_H__
+#define __TCASE_CHAINMAKER_H__
 
 #include <stdio.h>
 #include <stdbool.h>

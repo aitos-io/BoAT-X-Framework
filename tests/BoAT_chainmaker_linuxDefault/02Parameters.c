@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "tcase_common.h"
+#include "tcase_chainmaker.h"
 
 static BoatHlchainmakerWallet* g_chaninmaker_wallet_ptr;
 static BoatHlchainmakerWalletConfig wallet_config = {0};
