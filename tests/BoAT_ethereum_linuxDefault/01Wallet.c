@@ -231,7 +231,7 @@ START_TEST(test_001CreateWallet_0008CreateOneTimeWalletFailureProtocolUnknown)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0009SetEIP155CompSuccess)
+START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
@@ -249,7 +249,7 @@ START_TEST(test_002InitWallet_0009SetEIP155CompSuccess)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0010SetEIP155CompFailureNullParam)
+START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
@@ -267,7 +267,7 @@ START_TEST(test_002InitWallet_0010SetEIP155CompFailureNullParam)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0011SetChainIdSuccess)
+START_TEST(test_002InitWallet_0003SetChainIdSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
@@ -285,7 +285,7 @@ START_TEST(test_002InitWallet_0011SetChainIdSuccess)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0012SetChainIdFailureNullParam)
+START_TEST(test_002InitWallet_0004SetChainIdFailureNullParam)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
@@ -303,7 +303,7 @@ START_TEST(test_002InitWallet_0012SetChainIdFailureNullParam)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0013SetNodeUrlSuccess)
+START_TEST(test_002InitWallet_0005SetNodeUrlSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
@@ -322,7 +322,7 @@ START_TEST(test_002InitWallet_0013SetNodeUrlSuccess)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0014SetNodeUrlFailureNullParam)
+START_TEST(test_002InitWallet_0006SetNodeUrlFailureNullParam)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
@@ -360,7 +360,7 @@ START_TEST(test_002InitWallet_0014SetNodeUrlFailureNullParam)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0015SetNodeUrlFailureErrorNodeUrlFormat)
+START_TEST(test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
@@ -380,7 +380,7 @@ START_TEST(test_002InitWallet_0015SetNodeUrlFailureErrorNodeUrlFormat)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0016SetNodeUrlFailureNodeUrlOutOfLimit)
+START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
@@ -438,18 +438,18 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0006CreateOneTimeWalletFailureShortSize);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0007CreateOneTimeWalletSuccessLongSize);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0008CreateOneTimeWalletFailureProtocolUnknown);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0009SetEIP155CompSuccess);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0010SetEIP155CompFailureNullParam);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0011SetChainIdSuccess);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0012SetChainIdFailureNullParam);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0013SetNodeUrlSuccess);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0014SetNodeUrlFailureNullParam);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0015SetNodeUrlFailureErrorNodeUrlFormat);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0016SetNodeUrlFailureNodeUrlOutOfLimit);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0001SetEIP155CompSuccess);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0002SetEIP155CompFailureNullParam);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0003SetChainIdSuccess);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0004SetChainIdFailureNullParam);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0005SetNodeUrlSuccess);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0006SetNodeUrlFailureNullParam);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0003DeleteWalletSucessExistingFile);
-    
+
     return s_wallet;
 }
 
