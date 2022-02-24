@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "tcase_common.h"
+#include "tcase_ethereum.h"
 
 BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 {

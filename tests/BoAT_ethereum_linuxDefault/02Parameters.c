@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "tcase_common.h"
+#include "tcase_ethereum.h"
 
 static BoatEthWallet* g_ethereum_wallet_ptr;
 static BoatEthWalletConfig wallet_config = {0};

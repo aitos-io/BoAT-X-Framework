@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include "check.h"
-#include "tcase_common.h"
+#include "tcase_ethereum.h"
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdio.h>
