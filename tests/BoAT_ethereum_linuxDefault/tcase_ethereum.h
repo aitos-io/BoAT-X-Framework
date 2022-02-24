@@ -24,4 +24,3 @@
 #include "protocolapi/api_ethereum.h"
 
 char ethereum_pkcs_key_buf[1024];
-char error_ethereum_node_url[5120];

@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "tcase_ethereum.h"
+#define EXCEED_STR_MAX_LEN 4097
 
 BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 {
@@ -382,7 +383,13 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
-    
+    char error_ethereum_node_url[EXCEED_STR_MAX_LEN];
+	
+    for (int i = 0; i < EXCEED_STR_MAX_LEN; i++)
+    {
+        error_ethereum_node_url[i] = ':';
+    }
+
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
     rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, error_ethereum_node_url);
@@ -410,7 +417,7 @@ START_TEST(test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile)
 }
 END_TEST
 
-START_TEST(test_003sDeleteWallet_0003DeleteWalletSucessExistingFile) 
+START_TEST(test_003DeleteWallet_0003DeleteWalletSucessExistingFile) 
 {
     BoatWalletDelete("ethereum");
     ck_assert_int_eq(access("ethereum", F_OK), -1);

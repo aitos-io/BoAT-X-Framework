@@ -26,9 +26,8 @@ extern Suite *make_wallet_suite(void);
 //extern Suite *make_contract_suite(void);
 
 char ethereum_pkcs_key_buf[1024];
-char error_ethereum_node_url[5120];
 
-int read_key_content(char* key_ptr, char* url_ptr)
+int read_key_content(char* key_ptr)
 {       
    int fd = 0;
    int len;
@@ -48,17 +47,6 @@ int read_key_content(char* key_ptr, char* url_ptr)
    {
        return -1;
    }
-
-   fd = open("../../../tests/BoAT_ethereum_linuxDefault/error_url/error_url", O_RDONLY);
-    if (fd < 0)
-   {
-      return -1;
-   }
-   len = read(fd, url_ptr, 5120);
-   if (len < 0)
-   {
-       return -1;
-   }
    
    return 0;
    
@@ -73,7 +61,7 @@ int main(int argc, char *argv[])
    Suite *suite_wallet    = make_wallet_suite();
 //   Suite *suite_paramters = make_parameters_suite();
 //   Suite *suite_contract  = make_contract_suite();
-   read_key_content(ethereum_pkcs_key_buf, error_ethereum_node_url);
+   read_key_content(ethereum_pkcs_key_buf);
 
    /* create srunner and add first suite to it.
     The first suite in a suite runner is always added in function srunner_create,
