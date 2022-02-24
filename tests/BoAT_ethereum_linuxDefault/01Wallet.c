@@ -37,8 +37,6 @@ BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 BoatEthWalletConfig get_ethereum_wallet_settings()
 {
     BoatEthWalletConfig wallet_config = {0};
-	BUINT8 binFormatKey[32]           = {0};
-    (void)binFormatKey; //avoid warning
     
     //set user private key context
 	wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
