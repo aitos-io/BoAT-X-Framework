@@ -26,6 +26,7 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 #if( DISCOVERY_PEER_QUERY == 1)
 #include "boatiotsdk.h"
 #include "boattypes.h"
+#include "protocolapi/api_hlfabric.h"
 
 
 typedef struct PeerInfo
