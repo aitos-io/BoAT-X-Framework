@@ -128,11 +128,11 @@ BOAT_RESULT BoatEthWalletSetNodeUrl(BoatEthWallet *wallet_ptr, const BCHAR *node
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
-	if (strchr(node_url_ptr, ':') == NULL)
+	/*if (strchr(node_url_ptr, ':') == NULL)
 	{
 	    BoatLog(BOAT_LOG_CRITICAL, "node URL has a invalid format: %s.", node_url_ptr);
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-	}
+	}*/
 
     // string length check
     if (BOAT_SUCCESS != UtilityStringLenCheck(node_url_ptr))
@@ -148,7 +148,7 @@ BOAT_RESULT BoatEthWalletSetNodeUrl(BoatEthWallet *wallet_ptr, const BCHAR *node
 	}
 
 	// +1 for NULL Terminator
-	wallet_ptr->network_info.node_url_ptr = BoatMalloc(strlen(node_url_ptr)+1);
+	wallet_ptr->network_info.node_url_ptr = BoatMalloc(strlen(node_url_ptr) + 1);
 	if (wallet_ptr->network_info.node_url_ptr == NULL)
     {
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate memory for Node URL string.");

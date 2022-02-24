@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#ifndef __TCASE_CHAINMAKER_H__
+#define __TCASE_CHAINMAKER_H__
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -25,6 +27,8 @@
 
 #define CERT_PRIKEY_LEN 1024
 
-char chainmaker_sign_key_buf[CERT_PRIKEY_LEN];
-char chainmaker_sign_cert_buf[CERT_PRIKEY_LEN];
-char chainmaker_ca_cert_buf[CERT_PRIKEY_LEN];
+extern char chainmaker_sign_key_buf[];
+extern char chainmaker_sign_cert_buf[];
+extern char chainmaker_ca_cert_buf[];
+
+#endif

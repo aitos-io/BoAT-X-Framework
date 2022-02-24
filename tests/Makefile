@@ -3,13 +3,18 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/tests
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-.PHONY: tests_BoAT_chainmaker_linuxDefault
+.PHONY: tests_BoAT_chainmaker_linuxDefault tests_BoAT_ethereum_linuxDefault cleanchaimakerlinux cleanethereumlinux
 
-all: tests_BoAT_chainmaker_linuxDefault $(OBJECTS_DIR) $(OBJECTS)
+all: tests_BoAT_chainmaker_linuxDefault tests_BoAT_ethereum_linuxDefault $(OBJECTS_DIR) $(OBJECTS)
 
 tests_BoAT_chainmaker_linuxDefault:
 ifeq ($(BOAT_TEST_USE_CHAINMAKER), 1)
-	make -C  BoAT_chainmaker_linuxDefault all
+	make -C BoAT_chainmaker_linuxDefault all
+endif
+
+tests_BoAT_ethereum_linuxDefault:
+ifeq ($(BOAT_TEST_USE_ETHEREUM), 1)
+	make -C BoAT_ethereum_linuxDefault all
 endif
 
 $(OBJECTS_DIR):
@@ -18,7 +23,12 @@ $(OBJECTS_DIR):
 $(OBJECTS_DIR)/%.o:%.c
 	$(CC)  -c  $(BOAT_CFLAGS)  $< -o $@
 
-clean:
+clean: cleanchaimakerlinux cleanethereumlinux
 	-$(BOAT_RM) $(OBJECTS)
+
+cleanchaimakerlinux:
 	make -C BoAT_chainmaker_linuxDefault clean
+
+cleanethereumlinux:
+	make -C BoAT_ethereum_linuxDefault clean
 
