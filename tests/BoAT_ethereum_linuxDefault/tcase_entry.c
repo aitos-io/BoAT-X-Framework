@@ -22,7 +22,7 @@
 
 /* extern suite declaration */
 extern Suite *make_wallet_suite(void);
-//extern Suite *make_parameters_suite(void);
+extern Suite *make_parameters_suite(void);
 //extern Suite *make_contract_suite(void);
 
 char ethereum_pkcs_key_buf[1024];
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
    /* new adding test suite should create in here */
    Suite *suite_wallet    = make_wallet_suite();
-//   Suite *suite_paramters = make_parameters_suite();
+   Suite *suite_paramters = make_parameters_suite();
 //   Suite *suite_contract  = make_contract_suite();
    read_key_content(ethereum_pkcs_key_buf);
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
    /* set generate test log in running path */
    srunner_set_log(sr, "test_statistics_report.txt");
    /* add other suite to srunner, more test suite should be add in here */
-//   srunner_add_suite(sr, suite_paramters);
+   srunner_add_suite(sr, suite_paramters);
 //   srunner_add_suite(sr, suite_contract);
 
    /* start to run all test case */

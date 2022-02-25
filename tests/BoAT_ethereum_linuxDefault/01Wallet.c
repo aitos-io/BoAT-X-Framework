@@ -47,7 +47,7 @@ BoatEthWalletConfig get_ethereum_wallet_settings()
 	wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(ethereum_pkcs_key_buf) + 1;
 
 	wallet_config.chain_id             = TEST_ETHEREUM_CHAIN_ID;
-    wallet_config.eip155_compatibility = BOAT_FALSE;
+    wallet_config.eip155_compatibility = TEST_EIP155_COMPATIBILITY;
     strncpy(wallet_config.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 	
     return wallet_config;
