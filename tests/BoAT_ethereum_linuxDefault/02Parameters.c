@@ -152,6 +152,57 @@ START_TEST(test_004ParametersInit_0001TxInitSuccess)
 }
 END_TEST
 
+START_TEST(test_004ParametersInit_0002TxInitFailureNullParam)
+{
+    BSINT32 rtnVal;
+    BoatEthTx tx_ptr;
+    rtnVal = ethereumWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+    rtnVal = BoatEthTxInit(NULL, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, NULL, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+				   
+	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, NULL);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+				   
+	rtnVal = BoatEthTxInit(NULL, NULL, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+					   
+	rtnVal = BoatEthTxInit(NULL, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, NULL);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, NULL, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, NULL);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+						   
+    rtnVal = BoatEthTxInit(NULL, NULL, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, NULL);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_004ParametersInit_0003TxInitFailureErrorGasPriceHexFormat)
+{
+    BSINT32 rtnVal;
+    BoatEthTx tx_ptr;
+    rtnVal = ethereumWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "0x123G", 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+}
+END_TEST
+
 Suite *make_parameters_suite(void)
 {
     /* Create Suite */
@@ -164,7 +215,9 @@ Suite *make_parameters_suite(void)
     suite_add_tcase(s_param, tc_param_api);       
     /* Test cases are added to the test set */
     tcase_add_test(tc_param_api, test_004ParametersInit_0001TxInitSuccess);  
- 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0002TxInitFailureNullParam);  
+    tcase_add_test(tc_param_api, test_004ParametersInit_0003TxInitFailureErrorGasPriceHexFormat);  
+	
     return s_param;
 }
 
