@@ -199,7 +199,49 @@ START_TEST(test_004ParametersInit_0003TxInitFailureErrorGasPriceHexFormat)
 	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "0x123G", 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
     ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+}
+END_TEST
 
+START_TEST(test_004ParametersInit_0004TxInitSuccessGasPriceHexNullOx)
+{
+	BSINT32 rtnVal;
+    BoatEthTx tx_ptr;
+    rtnVal = ethereumWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "A", 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);	
+    ck_assert(rtnVal == BOAT_SUCCESS);
+	ck_assert(param_check(&tx_ptr) == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_004ParametersInit_0005TxInitFailureGasLimitErrorHexFormat)
+{
+	BSINT32 rtnVal;
+    BoatEthTx tx_ptr;
+    rtnVal = ethereumWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   "0x123G", TEST_RECIPIENT_ADDRESS);
+	ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_004ParametersInit_0006TxInitSuccessGasLimitHexNullOx)
+{
+    BSINT32 rtnVal;
+    BoatEthTx tx_ptr;
+    rtnVal = ethereumWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+    rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   "333333", TEST_RECIPIENT_ADDRESS);
+    ck_assert(rtnVal == BOAT_SUCCESS);
+	ck_assert(param_check(&tx_ptr) == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -217,7 +259,10 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_param_api, test_004ParametersInit_0001TxInitSuccess);  
     tcase_add_test(tc_param_api, test_004ParametersInit_0002TxInitFailureNullParam);  
     tcase_add_test(tc_param_api, test_004ParametersInit_0003TxInitFailureErrorGasPriceHexFormat);  
-	
+    tcase_add_test(tc_param_api, test_004ParametersInit_0004TxInitSuccessGasPriceHexNullOx);  
+    tcase_add_test(tc_param_api, test_004ParametersInit_0005TxInitFailureGasLimitErrorHexFormat);  
+    tcase_add_test(tc_param_api, test_004ParametersInit_0006TxInitSuccessGasLimitHexNullOx);  
+
     return s_param;
 }
 
