@@ -181,7 +181,7 @@ START_TEST(test_003ParametersInit_0001TxinitSuccess)
     rtnVal = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, &tx_ptr);
     ck_assert(rtnVal == BOAT_SUCCESS);
     ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
-
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -200,6 +200,7 @@ START_TEST(test_003ParametersInit_0002TxinitxFailureNullpara)
 
     rtnVal = BoatHlChainmakerTxInit(NULL, NULL);
     ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -213,6 +214,7 @@ START_TEST(test_004ParametersAdd_0001AddTxParamSuccess)
                                                     "key3", "value3", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     ck_assert_int_eq(param_add_check(&tx_ptr, 3), BOAT_SUCCESS);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -224,6 +226,7 @@ START_TEST(test_004ParametersAdd_0002AddTxParamFailureShortParam)
 
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "key1", "value1", "key2", "value2", "key3", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -235,6 +238,7 @@ START_TEST(test_004ParametersAdd_0003AddTxParamFailureLongParam)
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 12, "key1", "value1", "key2", "value2", "key3", "value3", 
                                                      "key4", "value4", "key5", "value5", "key6", "value6", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 
 }
 END_TEST
@@ -247,6 +251,7 @@ START_TEST(test_004ParametersAdd_0004AddTxParamFailureOddParam)
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 9, "key1", "value1", "key2", "value2", "key3", "value3", 
                                                      "key4", "value4", "key5", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -258,6 +263,7 @@ START_TEST(test_004ParametersAdd_0005AddTxParamSucessNumberNULLParam)
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 0, NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     ck_assert_int_eq(tx_ptr.trans_para.n_parameters, 0);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -268,6 +274,7 @@ START_TEST(test_004ParametersAdd_0006AddTxParamFailureTxNULLParam)
 
     rtnVal = BoatHlchainmakerAddTxParam(NULL, 6, "key1", "vlaue1", "key2", "vlaue2", "key3", "value3", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -280,6 +287,7 @@ START_TEST(test_004ParametersAdd_0007AddTxParamSucessTxLessMaxEvenParam)
                                                     "key4", "value4",  NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     ck_assert_int_eq(param_add_check(&tx_ptr, 4), BOAT_SUCCESS);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -291,6 +299,7 @@ START_TEST(test_004ParametersAdd_0008AddTxParamFailureMoreMaxOddParam)
     rtnVal = BoatHlchainmakerAddTxParam(&tx_ptr, 11, "key1", "value1", "key2", "value2", "key3", "value3", 
                                                      "key4", "value4", "key5", "value5", "key6", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 

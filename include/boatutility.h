@@ -55,8 +55,8 @@ typedef enum
 //!@brief Argument type for UtilityBinToHex()
 typedef enum
 {
-    BIN2HEX_PREFIX_0x_NO = 0,   //<! Prepend "0x" to converted HEX string
-    BIN2HEX_PREFIX_0x_YES       //<! Don't prepend "0x" to converted HEX string
+    BIN2HEX_PREFIX_0x_NO = 0,   //<! Don't prepend "0x" to converted HEX string
+    BIN2HEX_PREFIX_0x_YES       //<! Prepend "0x" to converted HEX string
 }BIN2HEX_PREFIX_0x_MODE;
 
 
@@ -213,7 +213,7 @@ BUINT32 UtilityTrimBin(BOAT_OUT BUINT8 *to_ptr,
  *       
  * @param[in] zero_as_null
  *   In case the binary stream contains only one or multiple 0x00:
- *   \n If <zero_as_null> is BOAT_TRUE, it will be converted to a null sting and
+ *   \n If <zero_as_null> is BOAT_TRUE, it will be converted to a null string and
  *   returns 0.
  *   \n If <zero_as_null> is BOAT_FALSE, it will be converted to "0" or "00"
  *   according to <trim_mode>.
@@ -490,6 +490,20 @@ void UtilityWriteBignumToBigend(const utilityBignum256 *in_number, BUINT8 *out_n
 *   return  BOAT_ERROR.
 *******************************************************************************/
 BOAT_RESULT UtilityStringLenCheck(const BCHAR *string);
+
+/******************************************************************************
+@brief Expand the memory 
+
+@param[in] mem
+	 The memory to be expanded
+
+@param[in] step_size
+	 The expanded mem->ptr memory size
+@return
+    This function returns BOAT_SUCCESS if expand successed. Otherwise
+    it returns an error code.
+*******************************************************************************/
+BOAT_RESULT BoatFieldVariable_malloc_size_expand(BoatFieldVariable *mem, BUINT32 step_size);
 
 BUINT64 UtilityBuint8Buf2Uint64(BUINT8* from,BUINT32 len);
 

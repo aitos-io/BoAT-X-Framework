@@ -340,7 +340,8 @@ BCHAR *BoatFiscobcosCallContractFunc(BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_
     retval_str = web3_fiscobcos_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
 									 tx_ptr->wallet_ptr->network_info.node_url_ptr,
 									 &param_fiscobcos_call,&result);
-	if(retval_str == NULL){
+	if (retval_str == NULL)
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "web3 fiscobcos call fail ,result = %d .",result);
 	}
 
@@ -374,17 +375,18 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
         BoatSleep(BOAT_FISCOBCOS_MINE_INTERVAL); // Sleep waiting for the block being mined 
         tx_status_str = web3_fiscobcos_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 						tx_ptr->wallet_ptr->network_info.node_url_ptr,
-						&param_fiscobcos_getTransactionReceipt,&result);
-		if(tx_status_str == NULL){
+						&param_fiscobcos_getTransactionReceipt, &result);
+		if (tx_status_str == NULL)
+		{
 			BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             break;
 		}
 		// "status" == null : the transaction is pending, the result is BOAT_ERROR
-		// todo: need to change web3_parse_json_result() 
+		// todo: need to change fiscobcos_parse_json_result() 
 		result = BoatFiscobcosPraseRpcResponseResult(tx_status_str, "status", 
 													 &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 		
-        if (result != BOAT_SUCCESS)
+        if (result != BOAT_SUCCESS && result != BOAT_ERROR_JSON_OBJ_IS_NULL)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             result = BOAT_ERROR_WALLET_RESULT_PRASE_FAIL;
@@ -394,7 +396,7 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
         {
             // tx_status_str == "0x0": the transaction is successfully mined
             // tx_status_str is ohters: error number, for detail, see https://fisco-bcos-documentation.readthedocs.io/zh_CN/latest/docs/api.html#
-            if (tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr[0] != '\0')
+            if (result != BOAT_ERROR_JSON_OBJ_IS_NULL)
             {
                 if (strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x0") == 0)
                 {
@@ -403,10 +405,14 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
                 }
                 else
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, error number is %s.", tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr);
+					BoatLog(BOAT_LOG_VERBOSE, "Transaction failed, error number is %s.", tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr);
 					break;
                 }
             }
+			else
+			{
+                BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_FISCOBCOS_MINE_INTERVAL);
+			}
 
             tx_mined_timeout -= BOAT_FISCOBCOS_MINE_INTERVAL;
         }
@@ -445,7 +451,8 @@ BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr)
     retval_str = web3_fiscobcos_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
 											   tx_ptr->wallet_ptr->network_info.node_url_ptr,
 											   &param_fiscobcos_getBlockNumber,&result);
-	if(retval_str == NULL){
+	if (retval_str == NULL)
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "web3 fiscobcos get blocknumber fail ,result = %d .",result);
 	}
     return retval_str;
@@ -453,7 +460,7 @@ BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr)
 
 BOAT_RESULT BoatFiscobcosPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return web3_parse_json_result(json_string, "", result_out);
+    return fiscobcos_parse_json_result(json_string, "", result_out);
 }
 
 BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
@@ -465,6 +472,6 @@ BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string,
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
-	return web3_parse_json_result(json_string, child_name, result_out);
+	return fiscobcos_parse_json_result(json_string, child_name, result_out);
 }
 #endif /* end of PROTOCOL_USE_FISCOBCOS */

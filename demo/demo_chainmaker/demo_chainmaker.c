@@ -81,14 +81,18 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 	wallet_config.user_prikey_cfg.prikey_content.field_len = strlen(chainmaker_user_key) + 1; 
 
 	//set user cert context
-	wallet_config.user_cert_cfg.length = strlen(chainmaker_user_cert);
+	wallet_config.user_cert_cfg.length = strlen(chainmaker_user_cert) + 1;
+	if (wallet_config.user_cert_cfg.length  > BOAT_CHAINMAKER_CERT_MAX_LEN)
+	{
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+	}
 	memcpy(wallet_config.user_cert_cfg.content, chainmaker_user_cert, wallet_config.user_cert_cfg.length);
 	
 	//set url and name
-	if ((strlen(chainmaker_node_url) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN) || 
-		 (strlen(chainmaker_host_name) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
-		 (strlen(chainmaker_chain_id) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN)||
-		 (strlen(chainmaker_org_id) > BAOT_CHAINMAKER_URL_HOSTNAME_LEN))
+	if ((strlen(chainmaker_node_url) >= BAOT_CHAINMAKER_NODE_STR_LEN) || 
+		 (strlen(chainmaker_host_name) >= BAOT_CHAINMAKER_NODE_STR_LEN)||
+		 (strlen(chainmaker_chain_id) >= BAOT_CHAINMAKER_NODE_STR_LEN)||
+		 (strlen(chainmaker_org_id) >= BAOT_CHAINMAKER_NODE_STR_LEN))
 	{
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT ;
 	}
@@ -99,6 +103,10 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 
 	//tls ca cert
 	wallet_config.tls_ca_cert_cfg.length = strlen(chainmaker_tls_ca_cert) + 1;
+	if (wallet_config.tls_ca_cert_cfg.length > BOAT_CHAINMAKER_CERT_MAX_LEN)
+	{
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+	}
 	memcpy(wallet_config.tls_ca_cert_cfg.content, chainmaker_tls_ca_cert, wallet_config.tls_ca_cert_cfg.length);
 
 	// create wallet
@@ -111,7 +119,7 @@ __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 #else
 	return BOAT_ERROR;
 #endif
-	if (index < BOAT_SUCCESS)
+	if (index < 0)
 	{
 		return BOAT_ERROR_WALLET_CREATE_FAIL;
 	}
@@ -131,38 +139,42 @@ int main(int argc, char *argv[])
 	BoatHlchainmakerTx    tx_ptr;
 	BoatInvokeResponse     invoke_response;
 	BoatQueryResponse      query_response;
+	boat_try_declare;
 
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
 
 	/* step-2: prepare wallet */
 	result = chainmakerWalletPrepare();
+
 	if (result != BOAT_SUCCESS)
 	{
-		return -1;
+		BoatLog(BOAT_LOG_CRITICAL, "chainmakerWalletPrepare failed.");
+		boat_throw(result, chainmaker_demo_catch);;
 	}
 
 	/* step-3: Chainmaker transaction structure initialization */
 	result = BoatHlChainmakerTxInit(g_chaninmaker_wallet_ptr, &tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
-		return -1;
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlChainmakerTxInit failed.");
+		boat_throw(result, chainmaker_demo_catch);
 	}
 
 	result = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005", NULL);
    	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
-		return -1;
+		boat_throw(result, chainmaker_demo_catch);
 	}
 
 	/* step-4: set transaction 'invoke' command */
-	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", true, &invoke_response); 
+	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", false, &invoke_response); 
 	if (result != BOAT_SUCCESS)
 	{
-		return -1;
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerContractInvoke() failed.");
+		boat_throw(result, chainmaker_demo_catch);
 	}
-
 	BoatLog( BOAT_LOG_CRITICAL, "response code = %d, message = %s, gas_used = %d\n", invoke_response.code, invoke_response.message, invoke_response.gas_used);
 
 	/* step-5: wait seconds and 'query' the gas */
@@ -170,20 +182,25 @@ int main(int argc, char *argv[])
 	result = BoatHlchainmakerAddTxParam(&tx_ptr, 2, "file_hash", "ab3456df5799b87c77e7f85", NULL);
 	if (result != BOAT_SUCCESS)
 	{
-		return -1;
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerAddTxParam() failed.");
+		boat_throw(result, chainmaker_demo_catch);
 	}
 
 	result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &query_response);
 	if (result != BOAT_SUCCESS)
 	{
-		return -1;
+		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerContractQuery() failed.");
+		boat_throw(result, chainmaker_demo_catch);
 	}
-	BoatLog( BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, gas_used = %d\n", 
+	BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, gas_used = %d\n", 
 			query_response.code, query_response.message, query_response.contract_result, query_response.gas_used);
-	/* step-6: chainmaker transaction structure Deinitialization */
-	BoatHlchainmakerTxDeInit(&tx_ptr);
 
-	/* step-7: Boat SDK Deinitialization */
+	boat_catch(chainmaker_demo_catch)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+    }	
+
+	/* step-6: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
 
     return 0;

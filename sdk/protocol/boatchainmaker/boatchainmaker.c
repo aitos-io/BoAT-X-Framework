@@ -95,8 +95,8 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 	}
 
 	sender.org_id             = tx_ptr->wallet_ptr->node_info.org_id_info;
-	sender.member_info.len    = tx_ptr->wallet_ptr->user_cert_info.cert.field_len;
-	sender.member_info.data   = tx_ptr->wallet_ptr->user_cert_info.cert.field_ptr;
+	sender.member_info.len    = tx_ptr->wallet_ptr->user_cert_prikey_info.cert.field_len;
+	sender.member_info.data   = tx_ptr->wallet_ptr->user_cert_prikey_info.cert.field_ptr;
 	sender.is_full_cert       = true;
 
 	tx_header.chain_id        = tx_ptr->wallet_ptr->node_info.chain_id_info;
@@ -128,7 +128,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 	}
 
 	/* step-4: signature */
-	result = BoatSignature(tx_ptr->wallet_ptr->user_cert_info.prikeyCtx, hash, sizeof(hash), &signatureResult, NULL );
+	result = BoatSignature(tx_ptr->wallet_ptr->user_cert_prikey_info.prikeyCtx, hash, sizeof(hash), &signatureResult, NULL );
 
 	if( result != BOAT_SUCCESS ) {
 

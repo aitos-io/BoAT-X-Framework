@@ -34,7 +34,7 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 #define BOAT_HLCHAINMAKER_ARGS_MAX_NUM            10
 #define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN     100
 #define BOAT_RESPONSE_MESSAGE_MAX_LEN             10
-#define BAOT_CHAINMAKER_URL_HOSTNAME_LEN          127
+#define BAOT_CHAINMAKER_NODE_STR_LEN              127
 // call a pre created user contract, tx included in block
 // query a pre-created user contract, tx not included in block
 typedef enum {
@@ -132,10 +132,10 @@ typedef struct TBoatHlchainmakerWalletConfig {
     BoatWalletPriKeyCtx_config    user_prikey_cfg;
     BoatHlchainmakerCertInfoCfg   user_cert_cfg;   
 
-    BCHAR  node_url_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-    BCHAR  host_name_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-    BCHAR  chain_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
-    BCHAR  org_id_cfg[BAOT_CHAINMAKER_URL_HOSTNAME_LEN];
+    BCHAR  node_url_cfg[BAOT_CHAINMAKER_NODE_STR_LEN];
+    BCHAR  host_name_cfg[BAOT_CHAINMAKER_NODE_STR_LEN];
+    BCHAR  chain_id_cfg[BAOT_CHAINMAKER_NODE_STR_LEN];
+    BCHAR  org_id_cfg[BAOT_CHAINMAKER_NODE_STR_LEN];
     BoatHlchainmakerCertInfoCfg   tls_ca_cert_cfg;
 } BoatHlchainmakerWalletConfig;
 
@@ -157,10 +157,10 @@ typedef struct BoatChainmakerNodeInfo
 //chainmaker wallet structure
 typedef struct TBoatHlchainmakerWallet {
 
-	BoatHlchainmakerKeyPair   user_cert_info; //!< user information
+  BoatHlchainmakerKeyPair   user_cert_prikey_info; //!< user information
   BoatFieldVariable         tls_ca_cert_info;
   BoatChainmakerNodeInfo    node_info;
-	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
+  struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
 } BoatHlchainmakerWallet;
 
 typedef struct TBoatHlchainamkerTx {
@@ -206,29 +206,6 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
 BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, BoatHlchainmakerTx* tx_ptr);
-
-/*!****************************************************************************
- * @brief 
- *   Set transaction datatime.
- *   
- * @details
- *   This function used to set transaction occurred datatime.
- *
- * @param tx_ptr 
- *   Chainmaker transaction structure pointer.
- *
- * @param sec
- *   Passing seconds from 1970-01-01 00:00:00.
- *
- * @param nanos
- *   Non-negative fractions of a second at nanosecond resolution.
- *   Must be from 0 to 999,999,999.
- *
- * @return  
- *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
- ******************************************************************************/
-void BoatHlchainmakerTxDeInit(BoatHlchainmakerTx *tx_ptr);
-
 
 /*!****************************************************************************
  * @brief 

@@ -33,6 +33,7 @@ PlatONE<br>
 FISCO-BCOS<br>
 Hyperledger Fabric<br>
 Huawei BCS<br>
+Chainmaker<br>
 
 **Supported Target Operating System:**  
 Linux<br>
@@ -151,7 +152,7 @@ Execute setup-x86_64.exe and install tools including make, gcc, python, libcurl 
 ![image](https://user-images.githubusercontent.com/81662688/130744556-163fb5e4-0260-42d8-b8c1-4c78052bd7d1.png)
 
 
-Under Windows, the SDK does not support compilation in environments other than Cygwin. If you must run outside of Cygwin (for example, a cross-compiler using Windows as the Build environment), please refer to [Use Windows as Compiler Environment](#Use-Windows-As-CompilerE-nvironment) chapter to adjust the compiled files.
+Under Windows, the SDK does not support compilation in environments other than Cygwin. If you must run outside of Cygwin (for example, a cross-compiler using Windows as the Build environment), please refer to [Use Windows as The Compilation Environment](#use-windows-as-the-compilation-environment) chapter to adjust the compiled files.
 
 When porting the SDK on RTOS, the libcurl dependency should be ported or the RPC method should be rewritten.
 
@@ -187,12 +188,14 @@ During cross compilation, if the cross compilation environment needs to configur
 In the top-level makefile:
 
 ````
-BOAT_PROTOCOL_USE_ETHEREUM  ?= 1
-BOAT_PROTOCOL_USE_PLATON    ?= 1
-BOAT_PROTOCOL_USE_PLATONE   ?= 1
-BOAT_PROTOCOL_USE_FISCOBCOS ?= 1
-BOAT_PROTOCOL_USE_HLFABRIC  ?= 1
-BOAT_PROTOCOL_USE_HWBCS     ?= 1
+BOAT_PROTOCOL_USE_ETHEREUM   ?= 1
+BOAT_PROTOCOL_USE_PLATON     ?= 1
+BOAT_PROTOCOL_USE_PLATONE    ?= 1
+BOAT_PROTOCOL_USE_FISCOBCOS  ?= 1
+BOAT_PROTOCOL_USE_HLFABRIC   ?= 1
+BOAT_PROTOCOL_USE_HWBCS      ?= 1
+BOAT_DISCOVERY_PEER_QUERY    ?= 1
+BOAT_PROTOCOL_USE_CHAINMAKER ?= 1
 ````
 
 As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or while compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.  
@@ -215,7 +218,7 @@ The SDK provides the following tools to generate the corresponding C interface c
 |\<SDKRoot\>/tools/platoneSolidity2c.py |Generate C calling code according to PlatONE (Solidity) ABI          |
 |\<SDKRoot\>/tools/platoneWASM2c.py     |Generate C calling code according to PlatONE (WASM) ABI              |
 
-Contract programming languages generally support "object-oriented". However, since C language does not support "object-oriented" and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools. The specific input types of support contract functions are described in the [Contract Call (Automatically Generated)](#Contract-Call-(automatically-generated)) chapter.
+Contract programming languages generally support "object-oriented". However, since C language does not support "object-oriented" and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools. The specific input types of support contract functions are described in the [Contract Call (Automatically Generated)](#contract-call-(automatically-generated)) chapter.
 
 Before making the call, you first need to compile the contract, and copy the ABI interface description JSON file generated in the contract compilation to the corresponding directory of the SDK: 
 
@@ -228,7 +231,7 @@ Before making the call, you first need to compile the contract, and copy the ABI
 
 *Note: ABI's JSON file must have ".json" as the file name suffix.*  
 
-During the demo compilation process, the automatic generation tool will generate the corresponding C interface calling code according to the contract ABI JSON file. If the automatic generation of C interface fails during compilation, you need to delete the unsupported ABI JSON file (or delete the unsupported interface) from the corresponding directory of \<SDKRoot\>/contract, write the C code manually, and assemble the ABI interface. For details, please refer to the [Transfer Call](#Transfer-Call) chapter.
+During the demo compilation process, the automatic generation tool will generate the corresponding C interface calling code according to the contract ABI JSON file. If the automatic generation of C interface fails during compilation, you need to delete the unsupported ABI JSON file (or delete the unsupported interface) from the corresponding directory of \<SDKRoot\>/contract, write the C code manually, and assemble the ABI interface. For details, please refer to the [Transfer Call](#transfer-call) chapter.
 ### Host Compilation
 Host compilation means that the compilation environment is consistent with the target environment, for example, to compile x86 programs on x86. There are usually two scenarios for using Host compilation: 
 1. In the software commissioning phase, the software functions are tested on the PC.
@@ -238,13 +241,13 @@ Host compilation means that the compilation environment is consistent with the t
 Compile Host based on Linux distribution (such as Ubuntu). Generally, there is no need to configure the compilation environment, just make sure that the dependent software has been installed.  
 Follow the steps below to compile:
 
-1. Store the SDK source code in a path that meets the requirements of [SDK source code path](#SDK-Source-Code-Path).
+1. Store the SDK source code in a path that meets the requirements of [BoAT IoT Framework SDK Source Path](#boat-iot-framework-sdk-source-path).
 2. Optional: Put the ABI JSON file of the smart contract to be called in the corresponding directory of \<SDKRoot\>/demo/demo_\<protocol\>/demo_contract (see section 3.3).
 3. In the \<SDKRoot\> directory, execute the following command:  
 ````
 $make boatlibs
 ````
-After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See [Header Files and Libraries](#Header-Files-and-Libraries)chapter.
+After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See [Header Files and Libraries](#header-files-and-libraries)chapter.
 
 #### Use Cygwin as The Compilation Environment
 On Windows, the SDK does not support compilation in environments other than Cygwin, nor does it support compilation with compilers other than gcc.
@@ -292,7 +295,7 @@ If the environment variables CC and AR have been set, you can execute the follow
 ${CC} -v  
 ${AR} -v  
 ````
-After the above configuration is completed, follow the steps in the chapter [Using Linux as the Compiling Environment](#Using-Linux-as-The-Compiling-Environment) chapter to compile.
+After the above configuration is completed, follow the steps in the chapter [Use Linux as the Compilation Environment](#use-linux-as-the-compilation-environment) chapter to compile.
 
 ##### A Cross-Compilation Environment Integrated with The Module Development Environment
 Some OpenCPU modules have integrated a supporting cross-compiler environment in the development environment provided by them, so that customers do not need to install a cross-compiler separately in the Linux system. This is especially convenient for developing application software on multiple modules of different models on a host computer without repeatedly switching the cross-compilation environment.
@@ -332,12 +335,12 @@ Among them, boatiotsdk is the directory where the SDK is located, and the -C par
 
 *Note: In the Makefile, the command under target must start with a Tab (ASCII code 0x09), not a space.*
 
-The above steps are only used to compile the SDK library. After the SDK library compilation completes, the compiled library needs to be integrated into the module development environment. See the [Header Files and Libraries](#Header-Files-and-Libraries) chapter for details.
+The above steps are only used to compile the SDK library. After the SDK library compilation completes, the compiled library needs to be integrated into the module development environment. See the [Header Files and Libraries](#header-files-and-libraries) chapter for details.
 
 ###### The Module Development Environment is Compiled with Non-GNU Make
 Since BoAT IoT Framework SDK uses GNU make as the compilation project, if the module development environment uses non-GNU Make compilation projects (such as Ninja, ant, etc.), or uses the automatic generation tools of the compilation project (such as automake, CMake), it cannot Compile the SDK directly in the module development environment.  
 
-To compile the SDK in such a module development environment, you need to release the gcc and binutils compilation tools in the module development environment, and configure the environment variables described in the chapter [Independent cross-compilation environment](#Independent-Cross-Compilation-Environment) so that they can be called in the system, which is equivalent to independent cross-compilation Environment, and then compile the SDK.
+To compile the SDK in such a module development environment, you need to release the gcc and binutils compilation tools in the module development environment, and configure the environment variables described in the chapter [Independent cross-compilation environment](#independent-cross-compilation-environment) so that they can be called in the system, which is equivalent to independent cross-compilation Environment, and then compile the SDK.
 
 #### Use Windows as The Compilation Environment
 Under Windows, the SDK does not support compilation in environments other than Cygwin. If the cross compiler with Windows as the build environment can only be run outside Cygwin, the compilation environment and compilation configuration files should be adjusted.  
@@ -389,11 +392,11 @@ f)	On the "Edit Environment Variables" page, click "New", add the bin path under
 When cross-compiling outside of Cygwin, in addition to the previous section, the following adjustments are required:
 
 1.	Try make, if it prompts that the path is wrong, change the corresponding path separator in the Makefile from "/" to "\\". Don't change all "/" to "\\" at the beginning, because the Windows version of some tools derived from Linux can recognize "/" as a path separator.
-2.	Configure the environment variables described in section [Independent Cross-Compilation Environment](#Independent-Cross-Compilation-Environment) to point to the correct cross-compilation environment. In these environment variables, the path should be separated by "\\".
+2.	Configure the environment variables described in section [Independent Cross-Compilation Environment](#independent-cross-compilation-environment) to point to the correct cross-compilation environment. In these environment variables, the path should be separated by "\\".
 
 ### Compile and Run Demo
 #### Ready
-SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, Hyperledger Fabric and HW-BCS. Before running these demos, the corresponding blockchain node software is need to installed(or have known nodes) and deploy the smart contracts required by the demo.  
+SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, Hyperledger Fabric ,HW-BCS and Chainmaker. Before running these demos, the corresponding blockchain node software is need to installed(or have known nodes) and deploy the smart contracts required by the demo.  
 
 The smart contract used by the demo and its ABI JSON file are placed in:  
 
@@ -420,15 +423,16 @@ After completing the node (or simulator) deployment, you need to follow the inst
 
 The Demo C code that calls the smart contract is placed in:  
 
-|Demo C code                                                 |use                             |
-|:---------------------------------------------------------- |:------------------------------ |
-|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c    |Ethereum demo use case          |
-|\<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c     |Ethereum transfer demo use case |
-|\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         |PLATON transfer demo use case   |
-|\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     |PLATONE demo use case           |
-|\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c |FISCO-BCOS demo use case        |
-|\<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             |FABRIC demo use case            |
-|\<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  |HW-BCS demo use case            |
+| Demo C code                                                 | use                             |
+| :---------------------------------------------------------- | :------------------------------ |
+| \<SDKRoot\>/demo/demo_ethereum/demo_ethereum_storeread.c    | Ethereum demo use case          |
+| \<SDKRoot\>/demo/demo_ethereum/demo_ethereum_transfer.c     | Ethereum transfer demo use case |
+| \<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         | PLATON transfer demo use case   |
+| \<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     | PLATONE demo use case           |
+| \<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c | FISCO-BCOS demo use case        |
+| \<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             | FABRIC demo use case            |
+| \<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  | HW-BCS demo use case            |
+| \<SDKRoot\>/demo/demo_chainmaker/demo_chainmaker.c          | CHAINMAKER demo use case        |
 
 Before compiling the Demo, you need to modify the following parts of the Demo C code:  
 - For ETHEREUM, PLATON, FISCO-BCOS, PLATONE:  
@@ -444,25 +448,35 @@ Before compiling the Demo, you need to modify the following parts of the Demo C 
 		- For PlatONE, there is no need to modify the private key in the Demo  
 		- For FISCO-BCOS, set it to the private key under <FISCO-BCOS_ROOT>/console/accounts  
 	4. Search for `demoRecipientAddress` and modify it to the deployment address of the Demo contract.  
+	
 - For FABRIC:  
 	1. Search for `fabric_client_demokey` and set the private key used by the client  
 	2. Search for `fabric_client_democert` and set the certificate corresponding to the client private key  
 	3. If TLS is enabled for the demo, search for `fabric_org1_tlsCert`, `fabric_org2_tlsCert`, `fabric_order_tlsCert`, and set the CA certificate chain  
 	4. Search for `fabric_demo_order1_url`, `fabric_demo_endorser_peer0Org1_url`, `fabric_demo_endorser_peer1Org1_url`, `fabric_demo_endorser_peer0Org2_url`, `fabric_demo_endorser_peer1Org2_url`, and set the url address of the endorsement node and sorting node  
 	5. If TLS is enabled in the demo, search for `fabric_demo_order1_hostName`, `fabric_demo_endorser_peer0Org1_hostName`, `fabric_demo_endorser_peer1Org1_hostName`, `fabric_demo_endorser_peer0Org2_hostName`, `fabric_demo_endorser_peer1Org2_hostName` and set the host name of the node  
+	
 - For HW-BCS:  
-	1. Search for `hw_bcs_client_demokey` and set the private key used by the client  
-	2. Search for `hw_bcs_client_democert` and set the certificate corresponding to the client private key  
-	3. If TLS is enabled for the demo, search for `hw_bcs_org1_tlsCert`, `hw_bcs_org2_tlsCert`, and set the CA certificate chain  
-	4. Search for `hw_bcs_demo_endorser_peer0Org1_url`, `hw_bcs_demo_endorser_peer0Org2_url`, `hw_bcs_demo_order_url`, and set the url address of the endorsement node and sorting node  
-	5. If TLS is enabled in the demo, search for `hw_bcs_demo_endorser_peer0Org1_hostName`, `hw_bcs_demo_endorser_peer0Org2_hostName`, `hw_bcs_demo_order_hostName`and set the host name of the node  
+  1. Search for `hw_bcs_client_demokey` and set the private key used by the client  
+  2. Search for `hw_bcs_client_democert` and set the certificate corresponding to the client private key  
+  3. If TLS is enabled for the demo, search for `hw_bcs_org1_tlsCert`, `hw_bcs_org2_tlsCert`, and set the CA certificate chain  
+  4. Search for `hw_bcs_demo_endorser_peer0Org1_url`, `hw_bcs_demo_endorser_peer0Org2_url`, `hw_bcs_demo_order_url`, and set the url address of the endorsement node and sorting node  
+  5. If TLS is enabled in the demo, search for `hw_bcs_demo_endorser_peer0Org1_hostName`, `hw_bcs_demo_endorser_peer0Org2_hostName`, `hw_bcs_demo_order_hostName`and set the host name of the node  
+
+- For CHAINMAKER：
+
+  1. Search for`chainmaker_user_key`  ，and set the private key used by the client  
+  2. Search for`chainmaker_user_cert`，and set the certificate corresponding to the client private key  
+  3. If TLS is enabled for the demo， search for`chainmaker_tls_ca_cert`，and set the CA certificate chain
+  4.  Search for`chainmaker_node_url`， set url address
+  5. if TLS is enable in the demo， search for`chainmaker_host_name`and set the host name of the node  
 
 #### Compile Demo
 Execute the following commands in the \<SDKRoot\> directory to compile the SDK call Demo:  
 ````
 $make demo
 ````
-The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `platon` `fisco-bcos` `platone` `fabric` `hwbcs`.
+The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `platon` `fisco-bcos` `platone` `fabric` `hwbcs` `chainmaker`.
 
 
 ### Trouble Shooting in Compilation
@@ -493,7 +507,7 @@ mkdir… command syntax is incorrect.
 FIND: The parameter format is incorrect  
 
 
-This problem is generally caused by compiling under Windows, but Cygwin is not installed, or the paths of BOAT_RM, BOAT_MKDIR, and BOAT_FIND are not correctly configured in the Makefile. Please refer to section [Use Windows as Compiler Environment](#Use-Windows-as-Compiler-Environment) to install Cygwin and configure Makefile.
+This problem is generally caused by compiling under Windows, but Cygwin is not installed, or the paths of BOAT_RM, BOAT_MKDIR, and BOAT_FIND are not correctly configured in the Makefile. Please refer to section [Use Windows as The Compilation Environment](#use-windows-as-the-compilation-environment) to install Cygwin and configure Makefile.
 
 ## Programming Model
 
@@ -1010,7 +1024,7 @@ The manual construction of transactions needs to follow the ABI interface of the
   Examples of using demo_fabric_abac.c code:  
   ```
   result = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
-  ```  
+  ```
   All function call of Fabric's input data are string. In the above code, "invoke" is the function name in the ABAC chain code. "a", "b", and "10" are the corresponding three inputs to the function. Regardless of the type of the corresponding variable in the chain code, the shape of string is used as the input.This is why there is no need to use automatically generate the contract interface tool.  
 
 - **Step 6** Send the transaction.  
@@ -1026,6 +1040,7 @@ The manual construction of transactions needs to follow the ABI interface of the
   When the return result is BOAT_SUCCESS, the call succeeds。
 
 **Example 4: HW BCS transaction structure**  
+
 - **Step 1** Call BoatHwbcsTxInit() to initialize the transaction, The parameters are set based on actual usage.  
 
 - **Step 2** Call BoatHwbcsWalletSetNetworkInfo() to set the newwork parameters. 
@@ -1034,25 +1049,45 @@ The manual construction of transactions needs to follow the ABI interface of the
 
 - **Step 4** Set trasaction parameters.  
   Examples of using demo_hw_bcs.c code:  
+  
   ```
   result = BoatHwbcsTxSetArgs(&tx_ptr, "initMarble", "a","1" , NULL, NULL);
-  ```  
-  All function call of Hwbcs's input data are string. In the above code, "initMarble" is the function name in the hw chain code. "a", "1" are the corresponding two inputs to the function. Regardless of the type of the corresponding variable in the chain code, the shape of string is used as the input.This is why there is no need to use automatically generate the contract interface tool.  
-
+  ```
+All function call of Hwbcs's input data are string. In the above code, "initMarble" is the function name in the hw chain code. "a", "1" are the corresponding two inputs to the function. Regardless of the type of the corresponding variable in the chain code, the shape of string is used as the input.This is why there is no need to use automatically generate the contract interface tool.  
+  
 - **Step 5** Send the transaction.  
+  
   - For contract calls that change the state of the blockchain, call the BoatHwbcsTxSubmit function：
     ```
     BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
-    ```
-
+  ```
+  
   - For contract calls that do not change the state of the blockchain, call the BoatHwbcsTxEvaluate contract function：
     ```
     BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr);
     ```
   When the return result is BOAT_SUCCESS, the call succeeds。
 
+**Example 5: CHAINMAKER  transaction structure**
+
+- **Step 1** Call BoatHlChainmakerTxInit() to initialize the transaction, The parameters are set based on actual usage.  
+
+- **Step 2** Call BoatHlchainmakerAddTxParam() to set transaction parameters.
+
+  Examples of using code:  
+
+  ```
+   BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005", NULL);
+  ```
+
+- **Step 3** Call BoatHlchainmakerContractInvoke() invoke transaction.
+
+- **Step 4** Call BoatHlchainmakerContractQuery() query transaction.
+
+
 
 ## Suggestions for Porting SDK to RTOS
+
 If the SDK is ported to RTOS, the following points should generally be followed:
 ###### 1. Remove The Dependency On Curl
 
