@@ -285,9 +285,14 @@ START_TEST(test_005ParametersSet_0002SetNonceSuccess)
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
     ck_assert(rtnVal == BOAT_SUCCESS);
 	
-	rtnVal = BoatEthTxSetNonce(&tx_ptr, 0x01);	
+	rtnVal = BoatEthTxSetNonce(&tx_ptr, 0xA1);	
+	BoatFieldMax32B NONCE;
+	NONCE.field_len = UtilityHexToBin(NONCE.field, 32, "0xA1",
+					                  TRIMBIN_LEFTTRIM, BOAT_TRUE);
     ck_assert(rtnVal == BOAT_SUCCESS);
-//	ck_assert_int_eq(tx_ptr.rawtx_fields.nonce);
+	rtnVal = string_eq_check(tx_ptr.rawtx_fields.nonce.field, NONCE.field, 
+					tx_ptr.rawtx_fields.nonce.field_len, NONCE.field_len);
+    ck_assert(rtnVal == BOAT_SUCCESS);
     BoatIotSdkDeInit();
 }
 END_TEST
