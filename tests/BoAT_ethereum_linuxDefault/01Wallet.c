@@ -19,15 +19,15 @@
 BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-	
-    result = strncmp(wallet_ptr->network_info.node_url_ptr, TEST_ETHEREUM_NODE_URL, strlen(TEST_ETHEREUM_NODE_URL));
-    if (result != 0)
+
+	result = strncmp(wallet_ptr->account_info.prikeyCtx.extra_data.value, ethereum_pkcs_key_buf, strlen(ethereum_pkcs_key_buf));
+    if (result != 0) 
     {
         return result;
     }
-
-    result = strncmp(wallet_ptr->account_info.prikeyCtx.extra_data.value, ethereum_pkcs_key_buf, strlen(ethereum_pkcs_key_buf));
-    if (result != 0) 
+	
+    result = strncmp(wallet_ptr->network_info.node_url_ptr, TEST_ETHEREUM_NODE_URL, strlen(TEST_ETHEREUM_NODE_URL));
+    if (result != 0)
     {
         return result;
     }

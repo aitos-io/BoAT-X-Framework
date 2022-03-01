@@ -58,7 +58,28 @@ static BOAT_RESULT ethereumWalletPrepare(void)
     return BOAT_SUCCESS;
 }
 
-static BOAT_RESULT param_check(BoatEthTx* tx_ptr)
+static BOAT_RESULT string_eq_check(BUINT8 *string_a, BUINT8 *string_b, BUINT32 string_len_a, BUINT32 string_len_b)
+{
+	BOAT_RESULT result = BOAT_SUCCESS;
+	
+	if(string_len_a != string_len_b)
+	{
+		return BOAT_ERROR;
+	}
+	
+	int count = 0;
+	while (count < string_len_a)
+	{
+		if(string_a[count] != string_b[count])
+		{
+			return BOAT_ERROR;
+		}
+		count++;
+	}
+	return result;
+}
+
+static BOAT_RESULT param_init_check(BoatEthTx* tx_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -72,17 +93,12 @@ static BOAT_RESULT param_check(BoatEthTx* tx_ptr)
     {
         BIN_GAS_PRICE.field_len = UtilityHexToBin(BIN_GAS_PRICE.field, 32, TEST_GAS_PRICE, 
 											      TRIMBIN_LEFTTRIM, BOAT_TRUE);
-		if(tx_ptr->rawtx_fields.gasprice.field_len != BIN_GAS_PRICE.field_len)
-		{
-			return BOAT_ERROR;
-		}
-		for(int i = 0; i < BIN_GAS_PRICE.field_len; i++)
-		{
-			if(tx_ptr->rawtx_fields.gasprice.field[i] != BIN_GAS_PRICE.field[i])
-			{
-				return BOAT_ERROR;
-			}
-		}
+		result = string_eq_check(tx_ptr->rawtx_fields.gasprice.field, BIN_GAS_PRICE.field, 
+								 tx_ptr->rawtx_fields.gasprice.field_len, BIN_GAS_PRICE.field_len);
+    	if (result != 0) 
+    	{
+        	return BOAT_ERROR;
+    	}
     }
 	else
 	{
@@ -92,44 +108,27 @@ static BOAT_RESULT param_check(BoatEthTx* tx_ptr)
 	BoatFieldMax32B BIN_GAS_LIMIT;
 	BIN_GAS_LIMIT.field_len = UtilityHexToBin(BIN_GAS_LIMIT.field, 32, TEST_GAS_LIMIT,
 					                          TRIMBIN_LEFTTRIM, BOAT_TRUE);
-	if(tx_ptr->rawtx_fields.gaslimit.field_len != BIN_GAS_LIMIT.field_len)
-	{
-		return BOAT_ERROR;
-	}
-	for(int i = 0; i < BIN_GAS_LIMIT.field_len; i++)
-	{
-		if(tx_ptr->rawtx_fields.gaslimit.field[i] != BIN_GAS_LIMIT.field[i])
-		{
-			return BOAT_ERROR;
-		}
-	}
+	result = string_eq_check(tx_ptr->rawtx_fields.gaslimit.field, BIN_GAS_LIMIT.field, 
+							 tx_ptr->rawtx_fields.gaslimit.field_len, BIN_GAS_LIMIT.field_len);
 	
 	BUINT8 BIN_RECIPIENT_ADDRESS[BOAT_ETH_ADDRESS_SIZE];
 	BUINT32 CONVERTED_LEN;
 	CONVERTED_LEN = UtilityHexToBin(BIN_RECIPIENT_ADDRESS, BOAT_ETH_ADDRESS_SIZE, TEST_RECIPIENT_ADDRESS,
 		                            TRIMBIN_TRIM_NO, BOAT_TRUE);
-	for(int i = 0; i < CONVERTED_LEN; i++)
-	{
-		if(tx_ptr->rawtx_fields.recipient[i] != BIN_RECIPIENT_ADDRESS[i])
-		{
-			return BOAT_ERROR;
-		}
-	}
+	result = string_eq_check(tx_ptr->rawtx_fields.recipient, BIN_RECIPIENT_ADDRESS,
+							 BOAT_ETH_ADDRESS_SIZE, CONVERTED_LEN);
 	
-    result = (tx_ptr->wallet_ptr->network_info.chain_id == TEST_ETHEREUM_CHAIN_ID) ? 0 : -1;
-    if (result != 0) 
+    if (tx_ptr->wallet_ptr->network_info.chain_id != TEST_ETHEREUM_CHAIN_ID) 
     {
         return BOAT_ERROR;
     }
 
-	result = (tx_ptr->wallet_ptr->network_info.eip155_compatibility == TEST_EIP155_COMPATIBILITY) ? 0 : -1;
-    if (result != 0) 
+    if (tx_ptr->wallet_ptr->network_info.eip155_compatibility != TEST_EIP155_COMPATIBILITY) 
     {
         return BOAT_ERROR;
     }
 
-	result = (tx_ptr->is_sync_tx == TEST_IS_SYNC_TX) ? 0 : -1;
-    if (result != 0) 
+    if (tx_ptr->is_sync_tx != TEST_IS_SYNC_TX) 
     {
         return BOAT_ERROR;
     }
@@ -147,7 +146,7 @@ START_TEST(test_004ParametersInit_0001TxInitSuccess)
     rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
     ck_assert(rtnVal == BOAT_SUCCESS);
-	ck_assert(param_check(&tx_ptr) == BOAT_SUCCESS);
+	ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -190,7 +189,19 @@ START_TEST(test_004ParametersInit_0002TxInitFailureNullParam)
 }
 END_TEST
 
-START_TEST(test_004ParametersInit_0003TxInitFailureErrorGasPriceHexFormat)
+START_TEST(test_004ParametersInit_0003TxInitSuccessNullGasPrice)
+{
+	BSINT32 rtnVal;
+    BoatEthTx tx_ptr;
+    rtnVal = ethereumWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, NULL, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);	
+    ck_assert(rtnVal == BOAT_SUCCESS);
+}
+END_TEST
+
+START_TEST(test_004ParametersInit_0004TxInitFailureErrorGasPriceHexFormat)
 {
     BSINT32 rtnVal;
     BoatEthTx tx_ptr;
@@ -203,7 +214,7 @@ START_TEST(test_004ParametersInit_0003TxInitFailureErrorGasPriceHexFormat)
 }
 END_TEST
 
-START_TEST(test_004ParametersInit_0004TxInitSuccessGasPriceHexNullOx)
+START_TEST(test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx)
 {
 	BSINT32 rtnVal;
     BoatEthTx tx_ptr;
@@ -212,12 +223,12 @@ START_TEST(test_004ParametersInit_0004TxInitSuccessGasPriceHexNullOx)
 	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "A", 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);	
     ck_assert(rtnVal == BOAT_SUCCESS);
-	ck_assert(param_check(&tx_ptr) == BOAT_SUCCESS);
+	ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
     BoatIotSdkDeInit();
 }
 END_TEST
 
-START_TEST(test_004ParametersInit_0005TxInitFailureGasLimitErrorHexFormat)
+START_TEST(test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat)
 {
 	BSINT32 rtnVal;
     BoatEthTx tx_ptr;
@@ -230,7 +241,7 @@ START_TEST(test_004ParametersInit_0005TxInitFailureGasLimitErrorHexFormat)
 }
 END_TEST
 
-START_TEST(test_004ParametersInit_0006TxInitSuccessGasLimitHexNullOx)
+START_TEST(test_004ParametersInit_0007TxInitSuccessGasLimitHexNullOx)
 {
     BSINT32 rtnVal;
     BoatEthTx tx_ptr;
@@ -240,7 +251,43 @@ START_TEST(test_004ParametersInit_0006TxInitSuccessGasLimitHexNullOx)
     rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
 		                   "333333", TEST_RECIPIENT_ADDRESS);
     ck_assert(rtnVal == BOAT_SUCCESS);
-	ck_assert(param_check(&tx_ptr) == BOAT_SUCCESS);
+	ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_005ParametersSet_0001GetNonceFromNetworkSuccess)
+{
+    BSINT32 rtnVal;
+    BoatEthTx tx_ptr;
+    rtnVal = ethereumWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+	
+    rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
+    ck_assert(rtnVal == BOAT_SUCCESS);
+
+	rtnVal = BoatEthTxSetNonce(&tx_ptr, BOAT_ETH_NONCE_AUTO);	
+    ck_assert(rtnVal == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
+  
+}
+END_TEST
+
+START_TEST(test_005ParametersSet_0002SetNonceSuccess)
+{
+	BSINT32 rtnVal;
+    BoatEthTx tx_ptr;
+    rtnVal = ethereumWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
+    ck_assert(rtnVal == BOAT_SUCCESS);
+	
+	rtnVal = BoatEthTxSetNonce(&tx_ptr, 0x01);	
+    ck_assert(rtnVal == BOAT_SUCCESS);
+//	ck_assert_int_eq(tx_ptr.rawtx_fields.nonce);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -250,19 +297,25 @@ Suite *make_parameters_suite(void)
     /* Create Suite */
     Suite *s_param = suite_create("param");
 
+
     /* Create test cases */
     TCase *tc_param_api = tcase_create("param_api");
 
-    /* Add a test case to the Suite */
-    suite_add_tcase(s_param, tc_param_api);       
-    /* Test cases are added to the test set */
-    tcase_add_test(tc_param_api, test_004ParametersInit_0001TxInitSuccess);  
-    tcase_add_test(tc_param_api, test_004ParametersInit_0002TxInitFailureNullParam);  
-    tcase_add_test(tc_param_api, test_004ParametersInit_0003TxInitFailureErrorGasPriceHexFormat);  
-    tcase_add_test(tc_param_api, test_004ParametersInit_0004TxInitSuccessGasPriceHexNullOx);  
-    tcase_add_test(tc_param_api, test_004ParametersInit_0005TxInitFailureGasLimitErrorHexFormat);  
-    tcase_add_test(tc_param_api, test_004ParametersInit_0006TxInitSuccessGasLimitHexNullOx);  
 
+    /* Add a test case to the Suite */
+    suite_add_tcase(s_param, tc_param_api);      
+ 
+    /* Test cases are added to the test set */
+    tcase_add_test(tc_param_api, test_004ParametersInit_0001TxInitSuccess); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0002TxInitFailureNullParam); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0003TxInitSuccessNullGasPrice); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0004TxInitFailureErrorGasPriceHexFormat); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0007TxInitSuccessGasLimitHexNullOx); 
+    tcase_add_test(tc_param_api, test_005ParametersSet_0001GetNonceFromNetworkSuccess);  
+    tcase_add_test(tc_param_api, test_005ParametersSet_0002SetNonceSuccess);  
+	
     return s_param;
 }
 
