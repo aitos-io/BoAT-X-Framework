@@ -104,7 +104,7 @@ EXTERNAL_CFLAGS := -marm -target armv7m-none-musleabi -mfloat-abi=softfp -mfpu=n
    
    #### a、Configure the target platform in directory BoAT-X-Framework/Makefile
 
-   Open `<MA510 Root>/fibocom/example/BoAT-X-Framework/Makefile`,Set PLATFORM_TARGET:
+   Open `<MA510 Root>/fibocom/example/BoAT-X-Framework/Makefile`,set PLATFORM_TARGET:
    ```
    PLATFORM_TARGET ?= Fibocom-MA510
    ```

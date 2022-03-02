@@ -73,7 +73,7 @@ typedef struct
 mbedtls_pem_context;
 
 #ifdef BOAT_TEST
-BOAT_RESULT platone_createOnetimeWallet()
+__BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 {
     xy_printf("Ready to run platone_createOnetimeWallet1.\n");
     xy_printf("Ready to run platone_createOnetimeWallet2.\n");
@@ -127,7 +127,7 @@ BOAT_RESULT platone_createOnetimeWallet()
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
+__BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config = {0};
@@ -185,7 +185,7 @@ BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
+__BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
 {
 	BSINT32 index;
 
