@@ -56,7 +56,7 @@ const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
 
 
 #ifdef BOAT_TEST
-BOAT_RESULT platone_createOnetimeWallet()
+__BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 {
     BoatLog(BOAT_LOG_NORMAL,"Ready to run platone_createOnetimeWallet\n");
 
@@ -109,7 +109,7 @@ BOAT_RESULT platone_createOnetimeWallet()
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
+__BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config = {0};
@@ -160,7 +160,7 @@ BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
+__BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
 {
 	BSINT32 index;
 
