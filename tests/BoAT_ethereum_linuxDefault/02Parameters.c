@@ -336,6 +336,31 @@ START_TEST(test_005ParametersSet_0003SetNonceFailureNullTx)
 	
 	rtnVal = BoatEthTxSetNonce(NULL, 0xA1);	
 	ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_005ParametersSet_0004SetValueSuccess)
+{
+	BSINT32 rtnVal;
+    BoatEthTx tx_ptr;
+    rtnVal = ethereumWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
+    ck_assert(rtnVal == BOAT_SUCCESS);
+
+	BoatFieldMax32B value;
+    value.field_len = UtilityHexToBin(value.field, 32, "0x2386F26FC10000",
+									  TRIMBIN_LEFTTRIM, BOAT_TRUE);
+	rtnVal = BoatEthTxSetValue(&tx_ptr, &value);
+    ck_assert(rtnVal == BOAT_SUCCESS);
+
+	rtnVal = string_eq_check(tx_ptr.rawtx_fields.value.field, value.field, 
+					tx_ptr.rawtx_fields.value.field_len, value.field_len);
+    ck_assert(rtnVal == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -365,6 +390,7 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_param_api, test_005ParametersSet_0001GetNonceFromNetworkSuccess);  
     tcase_add_test(tc_param_api, test_005ParametersSet_0002SetNonceSuccess);  
 	tcase_add_test(tc_param_api, test_005ParametersSet_0003SetNonceFailureNullTx);
+	tcase_add_test(tc_param_api, test_005ParametersSet_0004SetValueSuccess);
 	
     return s_param;
 }
