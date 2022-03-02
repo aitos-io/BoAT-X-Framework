@@ -109,7 +109,7 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
+__BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config = {0};
