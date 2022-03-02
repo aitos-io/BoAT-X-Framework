@@ -73,7 +73,7 @@ typedef struct
 mbedtls_pem_context;
 
 #ifdef BOAT_TEST
-BOAT_RESULT platone_createOnetimeWallet()
+__BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 {
     xy_printf("Ready to run platone_createOnetimeWallet1.\n");
     xy_printf("Ready to run platone_createOnetimeWallet2.\n");
