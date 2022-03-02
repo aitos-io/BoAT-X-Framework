@@ -104,7 +104,6 @@ static int ecdsa_signature_to_asn1(const mbedtls_mpi *r, const mbedtls_mpi *s,
 static int derive_mpi(const mbedtls_ecp_group *grp, mbedtls_mpi *x,
                       const unsigned char *buf, size_t blen)
 {
-    int ret;
     size_t n_size = (grp->nbits + 7) / 8;
     size_t use_size = blen > n_size ? n_size : blen;
 
@@ -117,7 +116,7 @@ static int derive_mpi(const mbedtls_ecp_group *grp, mbedtls_mpi *x,
         MBEDTLS_MPI_CHK(mbedtls_mpi_sub_mpi(x, x, &grp->N));
 
 cleanup:
-    return(ret);
+    return 0;
 }
 
 /******************************************************************************
