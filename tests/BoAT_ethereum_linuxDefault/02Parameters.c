@@ -385,6 +385,25 @@ START_TEST(test_005ParametersSet_0005SetValueFailureNullTx)
 }
 END_TEST
 
+START_TEST(test_005ParametersSet_0006SetValueSuccessNullvalue)
+{
+    BSINT32 rtnVal;
+    BoatEthTx tx_ptr;
+    rtnVal = ethereumWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+    rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+                           TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
+    ck_assert(rtnVal == BOAT_SUCCESS);
+
+    rtnVal = BoatEthTxSetValue(&tx_ptr, NULL);
+    ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert_int_eq(tx_ptr.rawtx_fields.value.field_len, 0);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_parameters_suite(void)
 {
     /* Create Suite */
@@ -413,6 +432,7 @@ Suite *make_parameters_suite(void)
 	tcase_add_test(tc_param_api, test_005ParametersSet_0003SetNonceFailureNullTx);
 	tcase_add_test(tc_param_api, test_005ParametersSet_0004SetValueSuccess);
 	tcase_add_test(tc_param_api, test_005ParametersSet_0005SetValueFailureNullTx);
+    tcase_add_test(tc_param_api, test_005ParametersSet_0006SetValueSuccessNullvalue);
 
     return s_param;
 }
