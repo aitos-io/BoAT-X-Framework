@@ -11,6 +11,7 @@ $(OBJECTS_DIR):
 
 $(OBJECTS_DIR)/%.o:%.c
 	$(CC) -c $(BOAT_CFLAGS) $< -o $@
+	$(BOAT_COPY) $(SOURCES) $(OBJECTS_DIR)
 
 protos-objects:
 	make -C protos all
