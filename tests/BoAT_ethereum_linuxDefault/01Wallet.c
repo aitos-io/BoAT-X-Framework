@@ -409,7 +409,7 @@ START_TEST(test_002InitWallet_0009InitEthWalletWithNullConfig)
     rtnVal = BoatEthWalletInit(NULL, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_int_eq(rtnVal, NULL);
+    ck_assert_ptr_null(rtnVal);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -424,7 +424,7 @@ START_TEST(test_002InitWallet_0010InitEthWalletWithSmallerSize)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) - 1);
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_int_eq(rtnVal, NULL);
+    ck_assert_ptr_null(rtnVal);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -439,7 +439,22 @@ START_TEST(test_002InitWallet_0011InitEthWalletWithBiggerSize)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) + 1);
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_int_eq(rtnVal, NULL);
+    ck_assert_ptr_null(rtnVal);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
+START_TEST(test_002InitWallet_0012InitEthWalletSuccess)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig = get_ethereum_wallet_settings();
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_nonnull(rtnVal);
 
     /* 2-2. verify the global variables that be affected */ 
 }
