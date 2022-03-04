@@ -406,7 +406,7 @@ START_TEST(test_002InitWallet_0009InitEthWalletWithNullConfig)
     BoatEthWalletConfig walletConfig;
 
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletInit(NULL, 0);
+    rtnVal = BoatEthWalletInit(NULL, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, NULL);
@@ -421,7 +421,22 @@ START_TEST(test_002InitWallet_0010InitEthWalletWithSmallerSize)
     BoatEthWalletConfig walletConfig;
 
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletInit(&walletConfig, 0);
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) - 1);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, NULL);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
+START_TEST(test_002InitWallet_0011InitEthWalletWithBiggerSize)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig;
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) + 1);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, NULL);
@@ -478,6 +493,9 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0006SetNodeUrlFailureNullParam);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0009InitEthWalletWithNullConfig);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0010InitEthWalletWithSmallerSize);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0011InitEthWalletWithBiggerSize);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0003DeleteWalletSucessExistingFile);
