@@ -30,69 +30,68 @@ char error_ethereum_node_url[5120];
 
 int read_key_content(char* key_ptr, char* url_ptr)
 {       
-   int fd = 0;
-   int len;
+    int fd = 0;
+    int len;
 
-   if (key_ptr == NULL)
-   {
-      return -1;
-   }
+    if (key_ptr == NULL)
+    {
+        return -1;
+    }
 
-   fd = open("../../../tests/BoAT_ethereum_linuxDefault/pri_key/client1.sign.key", O_RDONLY);
-   if (fd < 0)
-   {
-      return -1;
-   }
-   len = read(fd, key_ptr, 1024);
-   if (len < 0)
-   {
-       return -1;
-   }
-
-   fd = open("../../../tests/BoAT_ethereum_linuxDefault/error_url/error_url", O_RDONLY);
+    fd = open("../../../tests/BoAT_ethereum_linuxDefault/pri_key/client1.sign.key", O_RDONLY);
     if (fd < 0)
-   {
-      return -1;
-   }
-   len = read(fd, url_ptr, 5120);
-   if (len < 0)
-   {
-       return -1;
-   }
+    {
+        return -1;
+    }
+    len = read(fd, key_ptr, 1024);
+    if (len < 0)
+    {
+        return -1;
+    }
+
+    fd = open("../../../tests/BoAT_ethereum_linuxDefault/error_url/error_url", O_RDONLY);
+    if (fd < 0)
+    {
+        return -1;
+    }
+    len = read(fd, url_ptr, 5120);
+    if (len < 0)
+    {
+        return -1;
+    }
    
-   return 0;
-   
+    return 0;
 }
 
 int main(int argc, char *argv[])
 {
-   SRunner *sr       = NULL;
-   int failed_number = 0;
+    SRunner *sr       = NULL;
+    int failed_number = 0;
 
-   /* new adding test suite should create in here */
-   Suite *suite_wallet    = make_wallet_suite();
+    /* new adding test suite should create in here */
+    Suite *suite_wallet    = make_wallet_suite();
 //   Suite *suite_paramters = make_parameters_suite();
 //   Suite *suite_contract  = make_contract_suite();
-   read_key_content(ethereum_pkcs_key_buf, error_ethereum_node_url);
+    read_key_content(ethereum_pkcs_key_buf, error_ethereum_node_url);
 
-   /* create srunner and add first suite to it.
+    /* create srunner and add first suite to it.
     The first suite in a suite runner is always added in function srunner_create,
     here set suite_wallet as first adding suite. */
-   sr = srunner_create(suite_wallet);
-   /* set generate test log in running path */
-   srunner_set_log(sr, "test_statistics_report.txt");
-   /* add other suite to srunner, more test suite should be add in here */
+    sr = srunner_create(suite_wallet);
+    /* set generate test log in running path */
+    srunner_set_log(sr, "test_statistics_report.txt");
+    /* add other suite to srunner, more test suite should be add in here */
 //   srunner_add_suite(sr, suite_paramters);
 //   srunner_add_suite(sr, suite_contract);
 
-   /* start to run all test case */
-   srunner_run_all(sr, CK_NORMAL);
-   /* get the failed unit test number */
-   failed_number = srunner_ntests_failed(sr);
+    /* start to run all test case */
+    srunner_run_all(sr, CK_NORMAL);
+    /* get the failed unit test number */
+    failed_number = srunner_ntests_failed(sr);
 
-   srunner_free(sr);
+    srunner_free(sr);
 
-   /* return failed unit number, this return value can be used in CI, CI tools according
+    /* return failed unit number, this return value can be used in CI, CI tools according
     to this return value determine the test is passed or not  */
-   return failed_number;
+    return failed_number;
 }
