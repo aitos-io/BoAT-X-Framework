@@ -415,6 +415,21 @@ START_TEST(test_002InitWallet_0009InitEthWalletWithNullConfig)
 }
 END_TEST
 
+START_TEST(test_002InitWallet_0010InitEthWalletWithSmallerSize)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig;
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, 0);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, NULL);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
 START_TEST(test_002DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
     BoatWalletDelete(NULL);
