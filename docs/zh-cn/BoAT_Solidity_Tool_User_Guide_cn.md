@@ -408,3 +408,39 @@ for (i = 0; i < 32; i++)
 }
 合约名_setData(data, 2); 
 ``` 
+
+#### int8[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BSINT8。    
+
+#### int8[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BSINT8。  
+
+#### int16[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BSINT16。  
+
+#### int16[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BSINT16。  
+
+#### int32[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BSINT32。  
+
+#### int32[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BSINT32。  
+
+#### int64[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BSINT64。  
+
+#### int64[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BSINT64。  
+
+#### int128[N]类型
+参考[uint128[N]类型](#uint128[n]类型)，只是需要把相应的BUINT128改为BSINT128。 
+
+#### int128[]类型
+参考[uint128[]类型](#uint128[]类型)，只是需要把相应的BUINT128改为BSINT128。
+
+#### int256[N]类型
+参考[uint256[N]类型](#uint256[n]类型)，只是需要把相应的BUINT256改为BSINT256。 
+
+#### int256[]类型
+参考[uint256[]类型](#uint256[]类型)，只是需要把相应的BUINT256改为BSINT256。
