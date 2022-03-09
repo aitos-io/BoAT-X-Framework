@@ -30,6 +30,7 @@ char fabric_client_key_buf[CERT_PRIKEY_LEN] = {0};
 char fabric_org1_tls_cert_buf[CERT_PRIKEY_LEN] = {0};
 char fabric_org2_tls_cert_buf[CERT_PRIKEY_LEN] = {0};
 char fabric_order_tls_cert_buf[CERT_PRIKEY_LEN] = {0};
+char fabric_client_key_false_buf[CERT_PRIKEY_LEN] = {0};
 
 
 int read_file_content(char *file,char* file_ptr)
@@ -89,6 +90,11 @@ int main(int argc, char *argv[])
       return ret;
    }
    ret = read_file_content(file_order_tls_cert,fabric_order_tls_cert_buf);
+   if(ret < 0){
+      printf("read file_order_tls_cert fail \n");
+      return ret;
+   }
+   ret = read_file_content(file_client_key_false,fabric_client_key_false_buf);
    if(ret < 0){
       printf("read file_order_tls_cert fail \n");
       return ret;
