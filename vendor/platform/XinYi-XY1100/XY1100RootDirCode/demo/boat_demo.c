@@ -297,11 +297,6 @@ static void* boat_task_entry(void *args)
 #ifdef BOAT_TEST
     boat_platone_entry();
 #endif
-    while(1)
-    {
-        xy_sleep(1000);
-        xy_printf("Boat demo end!!!\n");
-    }
 
     xy_work_unlock();
 	xy_TaskDelete(g_boat_task_Handle);
