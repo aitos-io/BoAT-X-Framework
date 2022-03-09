@@ -1,5 +1,5 @@
 /*===========================================================================
-                         boat_demo.C
+                         boat_demo.c
 
 DESCRIPTION
    This file is boat demo application.
