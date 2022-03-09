@@ -96,10 +96,10 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
     wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
 
-	/* create platone wallet */
+    /* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet_config, sizeof(BoatPlatoneWalletConfig));
     if (index < 0)
-	{
+    {
         xy_printf("create one-time wallet failed.\n");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
@@ -157,7 +157,7 @@ __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, &wallet_config, sizeof(BoatPlatoneWalletConfig));
     if (index < 0)
-	{
+    {
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
@@ -169,12 +169,12 @@ __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 
 __BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
 {
-	BSINT32 index;
+    BSINT32 index;
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, NULL, sizeof(BoatPlatoneWalletConfig));
     if (index < 0)
-	{
+    {
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
@@ -196,26 +196,26 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 							   BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
 
     if (result != BOAT_SUCCESS)
-	{
+    {
         xy_printf( "BoatPlatoneTxInit fails.\n");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
 
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "zzq_HelloWorld");
     if (result_str == NULL)
-	{
+    {
         xy_printf( "my_contract_cpp_abi_setName failed: %s.\n", result_str);
 		return BOAT_ERROR;
     }
-	xy_printf("setName returns: %s\n", result_str);
+    xy_printf("setName returns: %s\n", result_str);
     
     result_str = my_contract_cpp_abi_getName(&tx_ctx);
     if (result_str == NULL)
-	{
+    {
         xy_printf("my_contract_cpp_abi_getName failed: %s.\n", result_str);
 		return BOAT_ERROR;
     }
-	xy_printf( "getName returns: %s\n", result_str);
+    xy_printf( "getName returns: %s\n", result_str);
 	
     return BOAT_SUCCESS;
 }
@@ -263,16 +263,16 @@ void boat_platone_entry(void)
 	return -1;
 #endif	
     if( result != BOAT_SUCCESS )
-	{
-		xy_printf("platone create Wallet failed ,result = %d.\n", result);
-		goto end;
-	}
+    {
+	xy_printf("platone create Wallet failed ,result = %d.\n", result);
+	goto end;
+    }
     xy_printf("======= platone create Wallet run success ======\n");
 
 	/* step-3: execute 'platone_call_mycontract' */
-	result = platone_call_mycontract( g_platone_wallet_ptr );
+    result = platone_call_mycontract( g_platone_wallet_ptr );
     if( result != BOAT_SUCCESS )
-	{
+    {
         xy_printf("platone_call_mycontract failed , result = %d.\n", result);
         goto end;
     }
@@ -296,7 +296,7 @@ static void* boat_task_entry(void *args)
 #endif
 
     xy_work_unlock();
-	xy_TaskDelete(g_boat_task_Handle);
+    xy_TaskDelete(g_boat_task_Handle);
     return (void *)0;
 }
 
