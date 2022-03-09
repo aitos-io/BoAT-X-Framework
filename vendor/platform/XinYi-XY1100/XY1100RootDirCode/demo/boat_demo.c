@@ -59,9 +59,7 @@ mbedtls_pem_context;
 #ifdef BOAT_TEST
 __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 {
-    xy_printf("Ready to run platone_createOnetimeWallet1.\n");
-    xy_printf("Ready to run platone_createOnetimeWallet2.\n");
-    xy_printf("Ready to run platone_createOnetimeWallet3.\n");
+    xy_printf("Ready to run platone_createOnetimeWallet.\n");
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]               = {0};
@@ -291,7 +289,6 @@ end:
 static void* boat_task_entry(void *args)
 {
     xy_work_lock(1);
-    xy_printf("boatiotsdk  boat_task_entry!!! \n");
     xy_sleep(30000);
 
 #ifdef BOAT_TEST
