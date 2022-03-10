@@ -29,13 +29,13 @@ char ethereum_pkcs_key_buf[1024];
 
 int read_key_content(char* key_ptr)
 {       
-   int fd = 0;
-   int len;
+    int fd = 0;
+    int len;
 
-   if (key_ptr == NULL)
-   {
-      return -1;
-   }
+    if (key_ptr == NULL)
+    {
+        return -1;
+    }
 
    fd = open("../../../tests/BoAT_ethereum_linuxDefault/pri_key/pkcs_key.key", O_RDONLY);
    if (fd < 0)
@@ -49,13 +49,13 @@ int read_key_content(char* key_ptr)
    }
    
    return 0;
-   
+
 }
 
 int main(int argc, char *argv[])
 {
-   SRunner *sr       = NULL;
-   int failed_number = 0;
+    SRunner *sr       = NULL;
+    int failed_number = 0;
 
    /* new adding test suite should create in here */
    Suite *suite_wallet    = make_wallet_suite();
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 //   Suite *suite_contract  = make_contract_suite();
    read_key_content(ethereum_pkcs_key_buf);
 
-   /* create srunner and add first suite to it.
+    /* create srunner and add first suite to it.
     The first suite in a suite runner is always added in function srunner_create,
     here set suite_wallet as first adding suite. */
    sr = srunner_create(suite_wallet);
@@ -73,14 +73,14 @@ int main(int argc, char *argv[])
    srunner_add_suite(sr, suite_paramters);
 //   srunner_add_suite(sr, suite_contract);
 
-   /* start to run all test case */
-   srunner_run_all(sr, CK_NORMAL);
-   /* get the failed unit test number */
-   failed_number = srunner_ntests_failed(sr);
+    /* start to run all test case */
+    srunner_run_all(sr, CK_NORMAL);
+    /* get the failed unit test number */
+    failed_number = srunner_ntests_failed(sr);
 
-   srunner_free(sr);
+    srunner_free(sr);
 
-   /* return failed unit number, this return value can be used in CI, CI tools according
+    /* return failed unit number, this return value can be used in CI, CI tools according
     to this return value determine the test is passed or not  */
-   return failed_number;
+    return failed_number;
 }
