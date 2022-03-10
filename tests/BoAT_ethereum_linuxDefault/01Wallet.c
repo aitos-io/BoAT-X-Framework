@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "tcase_common.h"
+#include "tcase_ethereum.h"
+#define EXCEED_STR_MAX_LEN 4097
 
 BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-	
-    result = strncmp(wallet_ptr->network_info.node_url_ptr, TEST_ETHEREUM_NODE_URL, strlen(TEST_ETHEREUM_NODE_URL));
-    if (result != 0)
+
+	result = strncmp(wallet_ptr->account_info.prikeyCtx.extra_data.value, ethereum_pkcs_key_buf, strlen(ethereum_pkcs_key_buf));
+    if (result != 0) 
     {
         return result;
     }
-
-    result = strncmp(wallet_ptr->account_info.prikeyCtx.extra_data.value, ethereum_pkcs_key_buf, strlen(ethereum_pkcs_key_buf));
-    if (result != 0) 
+	
+    result = strncmp(wallet_ptr->network_info.node_url_ptr, TEST_ETHEREUM_NODE_URL, strlen(TEST_ETHEREUM_NODE_URL));
+    if (result != 0)
     {
         return result;
     }
@@ -37,8 +38,6 @@ BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 BoatEthWalletConfig get_ethereum_wallet_settings()
 {
     BoatEthWalletConfig wallet_config = {0};
-	BUINT8 binFormatKey[32]           = {0};
-    (void)binFormatKey; //avoid warning
     
     //set user private key context
 	wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
@@ -48,7 +47,7 @@ BoatEthWalletConfig get_ethereum_wallet_settings()
 	wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(ethereum_pkcs_key_buf) + 1;
 
 	wallet_config.chain_id             = TEST_ETHEREUM_CHAIN_ID;
-    wallet_config.eip155_compatibility = BOAT_FALSE;
+    wallet_config.eip155_compatibility = TEST_EIP155_COMPATIBILITY;
     strncpy(wallet_config.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 	
     return wallet_config;
@@ -57,7 +56,7 @@ BoatEthWalletConfig get_ethereum_wallet_settings()
 START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess) 
 {
     BSINT32 rtnVal;
-    BoatEthWallet *g_ethereum_wallet_ptr;
+    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
     BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
@@ -82,6 +81,7 @@ START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess)
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(rtnVal);
     ck_assert(g_ethereum_wallet_ptr != NULL);
     ck_assert(check_ethereum_wallet(g_ethereum_wallet_ptr) == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -99,13 +99,14 @@ START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig)
 
     /* 3-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0003CreatePersistWalletSuccess) 
 {
     BSINT32 rtnVal;
-    BoatEthWallet *g_ethereum_wallet_ptr;
+    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
 
     BoatIotSdkInit();
     BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
@@ -133,13 +134,14 @@ START_TEST(test_001CreateWallet_0003CreatePersistWalletSuccess)
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(rtnVal);
     ck_assert(g_ethereum_wallet_ptr != NULL);
     ck_assert(check_ethereum_wallet(g_ethereum_wallet_ptr) == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0004CreateLoadWalletSuccess) 
 {
     BSINT32 rtnVal;
-    BoatEthWallet *g_ethereum_wallet_ptr;
+    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
     /* 1. execute unit test */
@@ -155,6 +157,7 @@ START_TEST(test_001CreateWallet_0004CreateLoadWalletSuccess)
     g_ethereum_wallet_ptr = BoatGetWalletByIndex(rtnVal);
     ck_assert(g_ethereum_wallet_ptr != NULL);
     ck_assert(check_ethereum_wallet(g_ethereum_wallet_ptr) == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -173,13 +176,14 @@ START_TEST(test_001CreateWallet_0005CreateLoadWalletFailureNoExist)
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
     ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == false);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0006CreateOneTimeWalletFailureShortSize) 
 {
     BSINT32 rtnVal;
-    BoatEthWallet *g_ethereum_wallet_ptr;
+    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
     BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
@@ -192,13 +196,14 @@ START_TEST(test_001CreateWallet_0006CreateOneTimeWalletFailureShortSize)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0007CreateOneTimeWalletSuccessLongSize) 
 {
     BSINT32 rtnVal;
-    BoatEthWallet *g_ethereum_wallet_ptr;
+    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
     BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
@@ -211,13 +216,14 @@ START_TEST(test_001CreateWallet_0007CreateOneTimeWalletSuccessLongSize)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0008CreateOneTimeWalletFailureProtocolUnknown)
 {
     BSINT32 rtnVal;
-    BoatEthWallet *g_ethereum_wallet_ptr;
+    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
     BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     /* 1. execute unit test */
@@ -228,6 +234,7 @@ START_TEST(test_001CreateWallet_0008CreateOneTimeWalletFailureProtocolUnknown)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -245,7 +252,7 @@ START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.eip155_compatibility == wallet_config.eip155_compatibility);
-    
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -263,7 +270,7 @@ START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.eip155_compatibility == NULL);
-
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -281,7 +288,7 @@ START_TEST(test_002InitWallet_0003SetChainIdSuccess)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.chain_id == wallet_config.chain_id);
-    
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -299,6 +306,7 @@ START_TEST(test_002InitWallet_0004SetChainIdFailureNullParam)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.chain_id == NULL);
+    BoatIotSdkDeInit();
 
 }
 END_TEST
@@ -318,7 +326,7 @@ START_TEST(test_002InitWallet_0005SetNodeUrlSuccess)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert_str_eq(wallet_ptr->network_info.node_url_ptr, wallet_config.node_url_str);
-    
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -357,6 +365,7 @@ START_TEST(test_002InitWallet_0006SetNodeUrlFailureNullParam)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -376,7 +385,7 @@ START_TEST(test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
-    
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -384,7 +393,13 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
-    
+    char error_ethereum_node_url[EXCEED_STR_MAX_LEN];
+	
+    for (int i = 0; i < EXCEED_STR_MAX_LEN; i++)
+    {
+        error_ethereum_node_url[i] = ':';
+    }
+
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
     rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, error_ethereum_node_url);
@@ -394,7 +409,7 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
-    
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -487,14 +502,14 @@ START_TEST(test_002DeleteWallet_0001DeleteWalletFailureNullFleName)
 }
 END_TEST
 
-START_TEST(test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile) 
+START_TEST(test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile) 
 {
     BoatWalletDelete("ethereum_no_exist");
     ck_assert_int_eq(access("ethereum", F_OK), 0);
 }
 END_TEST
 
-START_TEST(test_002DeleteWallet_0003DeleteWalletSucessExistingFile) 
+START_TEST(test_003DeleteWallet_0003DeleteWalletSucessExistingFile) 
 {
     BoatWalletDelete("ethereum");
     ck_assert_int_eq(access("ethereum", F_OK), -1);
