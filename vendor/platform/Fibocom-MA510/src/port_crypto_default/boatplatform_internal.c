@@ -14,9 +14,9 @@
  * limitations under the License.
  *****************************************************************************/
 
-/*!@brief platform interface
+/*!@brief platform internal interface
 
-@file platform.c contains platform interface functions.
+@file boatplatform_internal.c contains platform internal interface functions.
 */
 
 //! self header include

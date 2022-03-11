@@ -36,6 +36,7 @@ api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "peer/transaction.pb-c.h"
 #include "peer/proposal_response.pb-c.h"
 #include "discovery/protocol.pb-c.h"
+#include "protocolapi/api_hlfabric_discovery.h"
 
 BUINT32 hlfabricDiscoveryGetURL(BUINT8 *data, BUINT32 datalen, BUINT32 *outOffset)
 {

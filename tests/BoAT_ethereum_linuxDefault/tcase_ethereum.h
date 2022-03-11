@@ -21,10 +21,6 @@
 #include "boatlog.h"
 #include "boattypes.h"
 #include "boatwallet.h"
-#include "protocolapi/api_chainmaker.h"
+#include "protocolapi/api_ethereum.h"
 
-#define CERT_PRIKEY_LEN 1024
-
-char chainmaker_sign_key_buf[CERT_PRIKEY_LEN];
-char chainmaker_sign_cert_buf[CERT_PRIKEY_LEN];
-char chainmaker_ca_cert_buf[CERT_PRIKEY_LEN];
+char ethereum_pkcs_key_buf[1024];

@@ -21,6 +21,7 @@
 #include "boatconfig.h"
 #include "boatiotsdk.h"
 #include "boatlog.h"
+#include "protocolapi/api_hlfabric_discovery.h"
 #include <time.h>
 
 
