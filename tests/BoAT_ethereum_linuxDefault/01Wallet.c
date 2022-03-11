@@ -16,6 +16,12 @@
 #include "tcase_ethereum.h"
 #define EXCEED_STR_MAX_LEN 4097
 
+#define TEST_EIP155_COMPATIBILITY   false
+#define TEST_ETHEREUM_CHAIN_ID      5777
+#define TEST_GAS_LIMIT              6721975
+#define TEST_GAS_PRICE              20000000000
+#define TEST_IS_SYNC_TX             true
+
 BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
@@ -413,8 +419,6 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 }
 END_TEST
 
-BoatEthWalletConfig get_ethereum_wallet_settings()
-
 START_TEST(test_002InitWallet_0009InitEthWalletWithNullConfig)
 {
     BoatEthWallet *rtnVal;
@@ -556,7 +560,7 @@ START_TEST(test_002InitWallet_0016InitEthWalletWithWrongType)
 }
 END_TEST
 
-START_TEST(test_002DeleteWallet_0001DeleteWalletFailureNullFleName) 
+START_TEST(test_003DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
     BoatWalletDelete(NULL);
     ck_assert_int_eq(access("ethereum", F_OK), 0);
