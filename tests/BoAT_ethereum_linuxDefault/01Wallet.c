@@ -493,7 +493,7 @@ START_TEST(test_002InitWallet_0013InitEthWalletGenerationKey)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_null(rtnVal);
+    ck_assert_ptr_nonnull(rtnVal);
 
     /* 2-2. verify the global variables that be affected */ 
 }
