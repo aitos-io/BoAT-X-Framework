@@ -280,6 +280,18 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
+    if ((gasprice_str != NULL) && !UtilityStringIsHex(gasprice_str))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The format of gasprice is incorrect");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    if ((gaslimit_str != NULL) && !UtilityStringIsHex(gaslimit_str))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The format of gaslimit is incorrect");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
     tx_ptr->wallet_ptr = wallet_ptr;
     memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
 
