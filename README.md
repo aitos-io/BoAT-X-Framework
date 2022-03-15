@@ -62,7 +62,7 @@ The direct approach is suitable for IoT devices capable of direct access to a bl
 
 The indirect approach accomodates IoT devices that can not otherwise directly access the blockchain node, due to various possible reasons such as an IP whitelist restriction and unmatched cryptographic algorithm capability.
 
-By calling *BoAT-Engine* APIs, the IoT device signs the data with the device's cryptographic key. It then may pack the signature and the data in a datagram and send the datagram to an intermediate edge gateway. The gateway which runs the *BoAT-Anchor* splits the datagram, and then sends the data to the IoT platform and the signature (i.e. dgitital fingerprint) to the blockchain. It also requests *BoAT-Mast* to check if the data come from a registered device.
+By calling *BoAT-Engine* APIs, the IoT device signs the data with the device's cryptographic key. It then may pack the signature and the data in a datagram and send the datagram to an intermediate edge gateway. The gateway which runs the *BoAT-Anchor* splits the datagram, and then sends the data to the IoT platform and the signature (i.e. digital fingerprint) to the blockchain. It also requests *BoAT-Mast* to check if the data come from a registered device.
 
 The data consumer could later verify the data stored on the IoT platform against the on-chain signature.
 

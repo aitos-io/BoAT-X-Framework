@@ -465,13 +465,14 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
         tx_status_str = web3_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 														 tx_ptr->wallet_ptr->network_info.node_url_ptr,
 														 &param_platon_getTransactionReceipt,&result);
-        if(tx_status_str == NULL){
+        if (tx_status_str == NULL)
+        {
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             break;
         }
 		result = BoatPlatONPraseRpcResponseResult(tx_status_str, "status", 
 											      &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-        if (result != BOAT_SUCCESS)
+        if (result != BOAT_SUCCESS && result != BOAT_ERROR_JSON_OBJ_IS_NULL)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             result = BOAT_ERROR_WALLET_RESULT_PRASE_FAIL;
@@ -482,9 +483,7 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
             // tx_status_str == "": the transaction is pending
             // tx_status_str == "0x1": the transaction is successfully mined
             // tx_status_str == "0x0": the transaction fails
-            //******************************************************
-            //需要更改
-            if (tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr[0] != '\0')
+            if (result != BOAT_ERROR_JSON_OBJ_IS_NULL)
             {
                 if (strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x1") == 0)
                 {
@@ -493,10 +492,14 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
                 }
                 else
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_PLATON_MINE_INTERVAL);
+                    BoatLog(BOAT_LOG_CRITICAL, "Transaction fails.");
+                    break;
                 }
             }
-            //******************************************************
+            else
+            {
+                BoatLog(BOAT_LOG_NORMAL, "Transaction has not got mined, requery after %d seconds.", BOAT_PLATON_MINE_INTERVAL);
+            }
 
             tx_mined_timeout -= BOAT_PLATON_MINE_INTERVAL;
         }
@@ -514,7 +517,7 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
 
 BOAT_RESULT BoatPlatONPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return web3_parse_json_result(json_string, "", result_out);
+    return platon_parse_json_result(json_string, "", result_out);
 }
 
 BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
@@ -526,7 +529,7 @@ BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string,
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
-	return web3_parse_json_result(json_string, child_name, result_out);
+	return platon_parse_json_result(json_string, child_name, result_out);
 }
 
 #endif /* end of PROTOCOL_USE_PLATON */

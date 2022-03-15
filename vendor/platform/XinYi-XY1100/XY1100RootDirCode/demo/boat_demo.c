@@ -1,24 +1,8 @@
-/******************************************************************************
-Copyright (C) 2018-2020 aitos.io
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-******************************************************************************/
+/*===========================================================================
+                         boat_demo.c
+DESCRIPTION
+   This file is boat demo application.
+===========================================================================*/
 
 #include "boatiotsdk.h"
 #include "my_contract.h"
@@ -57,7 +41,7 @@ const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a
  * test node url
  */
 const BCHAR *demoUrl = "http://116.236.47.90:7545";
-//const BCHAR *demoUrl = "http://121.5.173.139:8080/public/eth_gasPrice";
+
 
 /**
  * transfer recipient address
@@ -73,11 +57,9 @@ typedef struct
 mbedtls_pem_context;
 
 #ifdef BOAT_TEST
-BOAT_RESULT platone_createOnetimeWallet()
+__BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 {
-    xy_printf("Ready to run platone_createOnetimeWallet1.\n");
-    xy_printf("Ready to run platone_createOnetimeWallet2.\n");
-    xy_printf("Ready to run platone_createOnetimeWallet3.\n");
+    xy_printf("Ready to run platone_createOnetimeWallet.\n");
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]               = {0};
@@ -114,10 +96,10 @@ BOAT_RESULT platone_createOnetimeWallet()
     wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
 
-	/* create platone wallet */
+    /* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet_config, sizeof(BoatPlatoneWalletConfig));
-    if (index < BOAT_SUCCESS)
-	{
+    if (index < 0)
+    {
         xy_printf("create one-time wallet failed.\n");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
@@ -127,7 +109,7 @@ BOAT_RESULT platone_createOnetimeWallet()
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
+__BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config = {0};
@@ -174,8 +156,8 @@ BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, &wallet_config, sizeof(BoatPlatoneWalletConfig));
-    if(index < BOAT_SUCCESS)
-	{
+    if (index < 0)
+    {
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
@@ -185,14 +167,14 @@ BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
+__BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
 {
-	BSINT32 index;
+    BSINT32 index;
 
 	/* create platone wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, NULL, sizeof(BoatPlatoneWalletConfig));
-    if (index < BOAT_SUCCESS)
-	{
+    if (index < 0)
+    {
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
@@ -214,26 +196,26 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 							   BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
 
     if (result != BOAT_SUCCESS)
-	{
+    {
         xy_printf( "BoatPlatoneTxInit fails.\n");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
 
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "zzq_HelloWorld");
     if (result_str == NULL)
-	{
+    {
         xy_printf( "my_contract_cpp_abi_setName failed: %s.\n", result_str);
 		return BOAT_ERROR;
     }
-	xy_printf("setName returns: %s\n", result_str);
+    xy_printf("setName returns: %s\n", result_str);
     
     result_str = my_contract_cpp_abi_getName(&tx_ctx);
     if (result_str == NULL)
-	{
+    {
         xy_printf("my_contract_cpp_abi_getName failed: %s.\n", result_str);
 		return BOAT_ERROR;
     }
-	xy_printf( "getName returns: %s\n", result_str);
+    xy_printf( "getName returns: %s\n", result_str);
 	
     return BOAT_SUCCESS;
 }
@@ -281,16 +263,16 @@ void boat_platone_entry(void)
 	return -1;
 #endif	
     if( result != BOAT_SUCCESS )
-	{
-		xy_printf("platone create Wallet failed ,result = %d.\n", result);
-		goto end;
-	}
+    {
+	xy_printf("platone create Wallet failed ,result = %d.\n", result);
+	goto end;
+    }
     xy_printf("======= platone create Wallet run success ======\n");
 
 	/* step-3: execute 'platone_call_mycontract' */
-	result = platone_call_mycontract( g_platone_wallet_ptr );
+    result = platone_call_mycontract( g_platone_wallet_ptr );
     if( result != BOAT_SUCCESS )
-	{
+    {
         xy_printf("platone_call_mycontract failed , result = %d.\n", result);
         goto end;
     }
@@ -307,20 +289,14 @@ end:
 static void* boat_task_entry(void *args)
 {
     xy_work_lock(1);
-    xy_printf("boatiotsdk  boat_task_entry!!! \n");
     xy_sleep(30000);
 
 #ifdef BOAT_TEST
     boat_platone_entry();
 #endif
-    while(1)
-    {
-        xy_sleep(1000);
-        xy_printf("Boat demo end!!!\n");
-    }
 
     xy_work_unlock();
-	xy_TaskDelete(g_boat_task_Handle);
+    xy_TaskDelete(g_boat_task_Handle);
     return (void *)0;
 }
 

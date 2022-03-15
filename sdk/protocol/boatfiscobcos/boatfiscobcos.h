@@ -109,6 +109,7 @@ extern "C" {
  ******************************************************************************/
 BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr);
 
+
 /*! @}*/
 
 #ifdef __cplusplus

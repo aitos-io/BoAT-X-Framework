@@ -621,6 +621,25 @@ BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from,BUINT32 len)
         // ret =  (((long)from[4] << 24) | ((long)from[5] << 16) | ((long)from[6] << 8) | from[7]);
     return ret;
 }
+
+BOAT_RESULT BoatFieldVariable_malloc_size_expand(BoatFieldVariable *mem, BUINT32 step_size)
+{	
+	//free before malloc to avoid allocate more memory at same time
+	BoatFree(mem->field_ptr);
+	
+	mem->field_len += step_size;
+	mem->field_ptr  = BoatMalloc(mem->field_len);
+	if (mem->field_ptr == NULL)
+	{
+		mem->field_len = 0;
+		BoatLog(BOAT_LOG_NORMAL, "BoatFieldVariable_malloc_size_expand failed.");
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+	}	
+
+	BoatLog(BOAT_LOG_NORMAL, "Excuting %s:[%d].", __func__ , mem->field_len);
+	return BOAT_SUCCESS;
+}
+
 #if (BOAT_HWBCS_TLS_SUPPORT == 1)
 #include "mbedtls/x509_crt.h"
 #include "mbedtls/oid.h"

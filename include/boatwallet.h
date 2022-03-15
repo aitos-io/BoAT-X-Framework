@@ -142,7 +142,8 @@ extern "C" {
  *
  * @return
  *   This function returns BOAT_SUCCESS if initialization is successful.\n
- *   Otherwise it returns BOAT_ERROR.
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *   for details.
  * @see BoatIotSdkDeInit()
  ******************************************************************************/
 BOAT_RESULT BoatIotSdkInit(void);
@@ -212,8 +213,9 @@ void BoatIotSdkDeInit(void);
  *
  * @return
  *   This function returns the non-negative index of the loaded wallet.\n
- *   It returns -1 if wallet creation fails.
- *	
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *   for details.
+ * 
  * @see BoatWalletUnload() BoatWalletDelete()
  ******************************************************************************/
 BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_name_str, 

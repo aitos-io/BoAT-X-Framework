@@ -69,7 +69,7 @@ static BOAT_RESULT platone_createOnetimeWallet()
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet_config, sizeof(BoatPlatoneWalletConfig)); // "/nvm/test.txt"
     OSI_LOGI(0, "BoatWalletCreate index=%d", index);
 
-    if (index != BOAT_SUCCESS)
+    if (index < 0)
 	{
         OSI_LOGI(0, "create one-time wallet failed.");
         return BOAT_ERROR;

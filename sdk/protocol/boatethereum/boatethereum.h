@@ -103,8 +103,6 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr);
 
 
 
-
-
 /*! @}*/
 
 #ifdef __cplusplus
