@@ -200,8 +200,7 @@ START_TEST(test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "A", 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);	
-    ck_assert(rtnVal == BOAT_SUCCESS);
-	ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -228,8 +227,7 @@ START_TEST(test_004ParametersInit_0007TxInitSuccessGasLimitHexNullOx)
 
     rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
 		                   "333333", TEST_RECIPIENT_ADDRESS);
-    ck_assert(rtnVal == BOAT_SUCCESS);
-	ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatIotSdkDeInit();
 }
 END_TEST
