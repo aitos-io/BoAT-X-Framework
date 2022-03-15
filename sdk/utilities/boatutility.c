@@ -613,10 +613,10 @@ uint32_t random32(void)
 }
 */
 
-BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from,BUINT32 len)
+BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from)
 {
-    long ret ;
-    ret =  (((long)(from[0]&0x7F) << 56) | ((long)from[1] << 48) | ((long)from[2] << 40) | ((long)from[3] << 32) | ((long)from[4] << 24) | ((long)from[5] << 16) | ((long)from[6] << 8) | from[7]);
+    BUINT64 ret;
+    ret = (((BUINT64)(from[0] & 0x7F) << 56) | ((BUINT64)from[1] << 48) | ((BUINT64)from[2] << 40) | ((BUINT64)from[3] << 32) | ((BUINT64)from[4] << 24) | ((BUINT64)from[5] << 16) | ((BUINT64)from[6] << 8) | from[7]);
     // ret = random32() << 32 | random32();
         // ret =  (((long)from[4] << 24) | ((long)from[5] << 16) | ((long)from[6] << 8) | from[7]);
     return ret;

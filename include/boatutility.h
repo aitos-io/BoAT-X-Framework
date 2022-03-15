@@ -505,7 +505,19 @@ BOAT_RESULT UtilityStringLenCheck(const BCHAR *string);
 *******************************************************************************/
 BOAT_RESULT BoatFieldVariable_malloc_size_expand(BoatFieldVariable *mem, BUINT32 step_size);
 
-BUINT64 UtilityBuint8Buf2Uint64(BUINT8* from,BUINT32 len);
+/******************************************************************************
+* @brief Converts 63 bits of data to BUINT64
+*
+* @details
+*	 Note that the input bit is 63 bits.
+*
+* @param[in] from
+* 	 Big-Endian, Eight bytes. The highest bit of from[0] is invalid.
+*
+* @return
+*	 The transformed BUINT64
+*******************************************************************************/
+BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from);
 
 /******************************************************************************
 * @brief Check the input is hexadecimal representation
