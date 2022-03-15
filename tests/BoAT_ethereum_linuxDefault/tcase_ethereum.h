@@ -23,4 +23,4 @@
 #include "boatwallet.h"
 #include "protocolapi/api_ethereum.h"
 
-char ethereum_pkcs_key_buf[1024];
+extern char ethereum_pkcs_key_buf[1024];

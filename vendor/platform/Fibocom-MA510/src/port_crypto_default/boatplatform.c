@@ -16,7 +16,7 @@
 
 /*!@brief platform interface
 
-@file platform.c contains platform interface functions.
+@file boatplatform.c contains platform interface functions.
 */
 
 //! self header include

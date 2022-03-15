@@ -16,6 +16,12 @@
 #include "tcase_ethereum.h"
 #define EXCEED_STR_MAX_LEN 4097
 
+#define TEST_EIP155_COMPATIBILITY   false
+#define TEST_ETHEREUM_CHAIN_ID      5777
+#define TEST_GAS_LIMIT              6721975
+#define TEST_GAS_PRICE              20000000000
+#define TEST_IS_SYNC_TX             true
+
 BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
@@ -413,6 +419,147 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 }
 END_TEST
 
+START_TEST(test_002InitWallet_0009InitEthWalletWithNullConfig)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig;
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(NULL, sizeof(BoatEthWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_null(rtnVal);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
+START_TEST(test_002InitWallet_0010InitEthWalletWithSmallerSize)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig;
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) - 1);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_null(rtnVal);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
+START_TEST(test_002InitWallet_0011InitEthWalletWithBiggerSize)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig;
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) + 1);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_null(rtnVal);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
+START_TEST(test_002InitWallet_0012InitEthWalletSuccess)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig = get_ethereum_wallet_settings();
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_nonnull(rtnVal);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
+START_TEST(test_002InitWallet_0013InitEthWalletGenerationKey)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig;
+
+    walletConfig.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    walletConfig.prikeyCtx_config.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+    walletConfig.prikeyCtx_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    walletConfig.eip155_compatibility = BOAT_FALSE;
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_nonnull(rtnVal);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
+START_TEST(test_002InitWallet_0014InitEthWalletWithWrongGenMode)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig;
+
+    walletConfig.prikeyCtx_config.prikey_genMode = 3;
+    walletConfig.prikeyCtx_config.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+    walletConfig.prikeyCtx_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    walletConfig.eip155_compatibility = BOAT_FALSE;
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_null(rtnVal);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
+START_TEST(test_002InitWallet_0015InitEthWalletWithWrongKeyFormat)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig;
+
+    walletConfig.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    walletConfig.prikeyCtx_config.prikey_format = 4;
+    walletConfig.prikeyCtx_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    walletConfig.eip155_compatibility = BOAT_FALSE;
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_nonnull(rtnVal);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
+
+START_TEST(test_002InitWallet_0016InitEthWalletWithWrongType)
+{
+    BoatEthWallet *rtnVal;
+    BoatEthWalletConfig walletConfig;
+
+    walletConfig.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    walletConfig.prikeyCtx_config.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+    walletConfig.prikeyCtx_config.prikey_type = 3;
+    walletConfig.eip155_compatibility = BOAT_FALSE;
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_null(rtnVal);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
 START_TEST(test_003DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
     BoatWalletDelete(NULL);
@@ -461,6 +608,15 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0006SetNodeUrlFailureNullParam);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0009InitEthWalletWithNullConfig);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0010InitEthWalletWithSmallerSize);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0011InitEthWalletWithBiggerSize);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0012InitEthWalletSuccess);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0013InitEthWalletGenerationKey);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0014InitEthWalletWithWrongGenMode);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0015InitEthWalletWithWrongKeyFormat);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0016InitEthWalletWithWrongType);
+    
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0003DeleteWalletSucessExistingFile);

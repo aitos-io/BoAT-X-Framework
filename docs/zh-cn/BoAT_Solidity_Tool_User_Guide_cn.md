@@ -357,6 +357,10 @@ for (i = 0; i < 16; i++)
 合约名_setData(data); 
 ```
 
+注意：
+BUINT128是采用小端模式，即是指数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中。  
+例如原数据为0x1234，放入BUINT128 data中时，data[0] = 0x32, data[1] = 0x12，其他赋值为0。  
+
 #### uint128[]类型
 Solidity中的uint128[N]变成BUINT128类型和一个表示长度的BUINT32值。，而一个BUINT128是由BUINT8[16]组成的数组。  
 Solidity函数：setData(uint128[] data);  
@@ -373,6 +377,10 @@ for (i = 0; i < 16; i++)
 }
 合约名_setData(data, 2); 
 ``` 
+
+注意：
+BUINT128是采用小端模式，即是指数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中。  
+例如原数据为0x1234，放入BUINT128 data中时，data[0] = 0x32, data[1] = 0x12，其他赋值为0。  
 
 #### uint256[N]类型
 Solidity中的uint256[N]变成BUINT256类型，而一个BUINT256是由BUINT8[32]组成的数组。  
@@ -392,6 +400,10 @@ for (i = 0; i < 32; i++)
 合约名_setData(data); 
 ```
 
+注意：
+BUINT256是采用小端模式，即是指数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中。  
+例如原数据为0x1234，放入BUINT256 data中时，data[0] = 0x32, data[1] = 0x12，其他赋值为0。
+
 #### uint256[]类型
 Solidity中的uint256[N]变成BUINT256类型和一个表示长度的BUINT32值，而一个BUINT256是由BUINT8[32]组成的数组。  
 Solidity函数：setData(uint256[] data);  
@@ -408,3 +420,43 @@ for (i = 0; i < 32; i++)
 }
 合约名_setData(data, 2); 
 ``` 
+
+注意：
+BUINT256是采用小端模式，即是指数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中。  
+例如原数据为0x1234，放入BUINT256 data中时，data[0] = 0x32, data[1] = 0x12，其他赋值为0。
+
+#### int8[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BSINT8。    
+
+#### int8[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BSINT8。  
+
+#### int16[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BSINT16。  
+
+#### int16[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BSINT16。  
+
+#### int32[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BSINT32。  
+
+#### int32[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BSINT32。  
+
+#### int64[N]类型
+参考[uint8[N]类型](#uint8[n]类型)，只是需要把相应的BUINT8改为BSINT64。  
+
+#### int64[]类型
+参考[uint8[]类型](#uint8[]类型)，只是需要把相应的BUINT8改为BSINT64。  
+
+#### int128[N]类型
+参考[uint128[N]类型](#uint128[n]类型)，只是需要把相应的BUINT128改为BSINT128。 
+
+#### int128[]类型
+参考[uint128[]类型](#uint128[]类型)，只是需要把相应的BUINT128改为BSINT128。
+
+#### int256[N]类型
+参考[uint256[N]类型](#uint256[n]类型)，只是需要把相应的BUINT256改为BSINT256。 
+
+#### int256[]类型
+参考[uint256[]类型](#uint256[]类型)，只是需要把相应的BUINT256改为BSINT256。
