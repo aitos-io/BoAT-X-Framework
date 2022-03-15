@@ -507,6 +507,22 @@ BOAT_RESULT BoatFieldVariable_malloc_size_expand(BoatFieldVariable *mem, BUINT32
 
 BUINT64 UtilityBuint8Buf2Uint64(BUINT8* from,BUINT32 len);
 
+/******************************************************************************
+* @brief Check the input is hexadecimal representation
+*
+* @details
+*	 The input string has to have a prefix "0x" ot "0X". The input data can be 
+*	 an odd number. And there can be no Spaces in the string.
+*
+* @param[in] mem
+* 	 The string of hexadecimal representation
+*
+* @return
+*	If the string is legal hexadecimal representation, return BOAT_TRUE.
+*   Return BOAT_FALSE in other cases
+*******************************************************************************/
+BBOOL UtilityStringIsHex(const BCHAR *input);
+
 
 #if(BOAT_HWBCS_TLS_SUPPORT == 1)
 #include "mbedtls/x509_crt.h"

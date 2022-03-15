@@ -622,6 +622,40 @@ BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from,BUINT32 len)
     return ret;
 }
 
+BBOOL UtilityStringIsHex(const BCHAR *input)
+{
+    BUINT32 i;
+
+    if (input == NULL)
+    {
+        return BOAT_FALSE;
+    }
+
+    if (input[0] != '0')
+    {
+        return BOAT_FALSE;
+    }
+
+    if ((input[1] != 'x') || (input[1] != 'X'))
+    {
+        return BOAT_FALSE;
+    }
+
+    for (int i = 0; i < BOAT_STRING_MAX_LEN; i++)
+    {
+        if (input[i] == 0)
+        {
+            return BOAT_SUCCESS;
+        }
+        if ((input[i] < '0') || ((input[i] > '9') && (input[i] < 'A')) || ((input[i] > 'F') && (input[i] < 'a')) || (input[i] > 'f'))
+        {
+            return BOAT_FALSE;
+        }
+    }
+
+    return BOAT_FALSE;
+}
+
 BOAT_RESULT BoatFieldVariable_malloc_size_expand(BoatFieldVariable *mem, BUINT32 step_size)
 {	
 	//free before malloc to avoid allocate more memory at same time
