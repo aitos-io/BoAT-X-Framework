@@ -35,6 +35,9 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 |\<SDKRoot\>/demo/demo_platon/demo_platon_transfer.c         |PLATON转账演示用例     |
 |\<SDKRoot\>/demo/demo_platone/demo_platone_mycontract.c     |PLATONE合约演示用例    |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_fiscobcos_helloworld.c |FISCO-BCOS合约演示用例 |
+|\<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             |FABRIC合约演示用例     |
+|\<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  |HW-BCS合约演示用例     |
+|\<SDKRoot\>/demo/demo_chainmaker/demo_chainmaker.c          |CHAINMAKER合约演示用例 |
 
 编译Demo之前，需要修改Demo的C代码中以下部分：
 - 对于ETHEREUM、PLATON、FISCO-BCOS、PLATONE:
@@ -61,6 +64,12 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
   3. 如果demo启用TLS，则搜索`hw_bcs_org1_tlsCert`、`hw_bcs_org2_tlsCert`，设置CA证书链
   4. 搜索`hw_bcs_demo_endorser_peer0Org1_url`、`hw_bcs_demo_endorser_peer0Org2_url`、`hw_bcs_demo_order_url`，设置背书节点、排序节点的url地址
   5. 如果demo启用TLS,则搜索`hw_bcs_demo_endorser_peer0Org1_hostName`、`hw_bcs_demo_endorser_peer0Org2_hostName`、`hw_bcs_demo_order_hostName`，设置节点的主机名称
+- 对于CHAINMAKER：
+  1. 搜索`chainmaker_user_key`，设置客户端使用的私钥
+  2. 搜索`chainmaker_user_cert`，设置客户端私钥对应的证书
+  3. 如果demo启用TLS，则搜索`chainmaker_tls_ca_cert`，设置CA证书
+  4. 搜索`chainmaker_node_url`，设置url的地址
+  5. 如果demo启用TLS，则搜索`chainmaker_host_name`，设置节点的主机名称
 
 #### 编译Demo
 在\<SDKRoot\>目录下执行以下命令编译SDK的调用Demo：
@@ -77,6 +86,7 @@ $make demo
 该问题是因为系统中未安装curl及其开发文件引起。对于在Linux发行版上做Host编译而言，注意只安装curl包不够，还需要安装其开发文件包。开发文件包在不同的Linux发行版中有不同的名称，通常会命名为类似curl-devel，或者libcurl。具体请参照所使用的Linux发行版的软件包管理工具。  
 
 如果curl采用源码编译，且未安装到系统目录，则应在external.env中指定其搜索路径，并在链接时指定curl库所在路径。  
+  
 在交叉编译中，尤其要注意搜索路径和库应指向交叉编译环境中的头文件和库，而不应指向执行编译的Host上的路径。
 
 3. 交叉编译链接时提示字节序、位宽或ELF格式不匹配  
