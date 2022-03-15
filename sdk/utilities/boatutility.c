@@ -636,16 +636,16 @@ BBOOL UtilityStringIsHex(const BCHAR *input)
         return BOAT_FALSE;
     }
 
-    if ((input[1] != 'x') || (input[1] != 'X'))
+    if ((input[1] != 'x') && (input[1] != 'X'))
     {
         return BOAT_FALSE;
     }
 
-    for (int i = 0; i < BOAT_STRING_MAX_LEN; i++)
+    for (i = 2; i < BOAT_STRING_MAX_LEN; i++)
     {
-        if (input[i] == 0)
+        if (input[i] == '\0')
         {
-            return BOAT_SUCCESS;
+            return BOAT_TRUE;
         }
         if ((input[i] < '0') || ((input[i] > '9') && (input[i] < 'A')) || ((input[i] > 'F') && (input[i] < 'a')) || (input[i] > 'f'))
         {
