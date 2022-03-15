@@ -298,6 +298,18 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
+    if (UtilityStringLenCheck(recipient_str) != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The length of string recipient_str is incorrect");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    if (strlen(recipient_str) != 42)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The length of string recipient_str is incorrect");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
     tx_ptr->wallet_ptr = wallet_ptr;
     memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
 
