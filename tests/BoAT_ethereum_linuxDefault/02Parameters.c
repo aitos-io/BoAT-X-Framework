@@ -28,28 +28,33 @@ static BoatEthWalletConfig wallet_config = {0};
 static BOAT_RESULT ethereumWalletPrepare(void)
 {
     BOAT_RESULT index;
-
+    BUINT32 *binFormatKey;
+    
     //set user private key context
+        
+    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+    {
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+        binFormatKey = BoatMalloc(32);
+        UtilityHexToBin(binFormatKey, 32, ethereum_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
+        wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
+    }
+    else
+    {
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)ethereum_private_key_buf;
+	    wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(ethereum_private_key_buf) + 1;
+    }
 	wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-	wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
 	wallet_config.prikeyCtx_config.prikey_type	  = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-	wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)ethereum_pkcs_key_buf;
-	wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(ethereum_pkcs_key_buf) + 1;
 
 	wallet_config.chain_id             = TEST_ETHEREUM_CHAIN_ID;
     wallet_config.eip155_compatibility = TEST_EIP155_COMPATIBILITY;
     strncpy(wallet_config.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    // create wallet
-#if defined(USE_ONETIME_WALLET)
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
-#elif defined(USE_CREATE_PERSIST_WALLET)
-    index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum.cfg", &wallet_config, sizeof(BoatEthWalletConfig));
-#elif defined(USE_LOAD_PERSIST_WALLET)
-    index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum.cfg", NULL, sizeof(BoatEthWalletConfig));
-#else
-    return BOAT_ERROR;
-#endif
+
     if (index == BOAT_ERROR)
     {
         return BOAT_ERROR;
