@@ -28,11 +28,11 @@ static BoatEthWalletConfig wallet_config = {0};
 static BOAT_RESULT ethereumWalletPrepare(void)
 {
     BOAT_RESULT index;
-    BUINT32 *binFormatKey;
+    BUINT8 *binFormatKey;
     
     //set user private key context
         
-    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+    if (*TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
     {
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         binFormatKey = BoatMalloc(32);

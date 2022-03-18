@@ -16,11 +16,11 @@
 #include "tcase_ethereum.h"
 #define EXCEED_STR_MAX_LEN 4097
 
-#define TEST_EIP155_COMPATIBILITY   false
+#define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
 #define TEST_ETHEREUM_CHAIN_ID      5777
 #define TEST_GAS_LIMIT              6721975
 #define TEST_GAS_PRICE              20000000000
-#define TEST_IS_SYNC_TX             true
+#define TEST_IS_SYNC_TX             BOAT_TRUE
 
 BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 {
@@ -44,11 +44,11 @@ BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 BoatEthWalletConfig get_ethereum_wallet_settings()
 {
     BoatEthWalletConfig wallet_config = {0};
-    BUINT32 *binFormatKey;
+    BUINT8 *binFormatKey;
     
     //set user private key context
         
-    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+    if (*TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
     {
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         binFormatKey = BoatMalloc(32);
@@ -203,7 +203,6 @@ END_TEST
 START_TEST(test_001CreateWallet_0006CreateOneTimeWalletFailureShortSize) 
 {
     BSINT32 rtnVal;
-    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
     BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
@@ -223,7 +222,6 @@ END_TEST
 START_TEST(test_001CreateWallet_0007CreateOneTimeWalletSuccessLongSize) 
 {
     BSINT32 rtnVal;
-    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
     BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
@@ -243,7 +241,6 @@ END_TEST
 START_TEST(test_001CreateWallet_0008CreateOneTimeWalletFailureProtocolUnknown)
 {
     BSINT32 rtnVal;
-    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
     BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     /* 1. execute unit test */
@@ -289,7 +286,7 @@ START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
     /* 2-2. verify the global variables that be affected */
-    ck_assert(wallet_ptr->network_info.eip155_compatibility == NULL);
+    ck_assert(wallet_ptr->network_info.eip155_compatibility == BOAT_FALSE);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -325,7 +322,7 @@ START_TEST(test_002InitWallet_0004SetChainIdFailureNullParam)
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
     /* 2-2. verify the global variables that be affected */
-    ck_assert(wallet_ptr->network_info.chain_id == NULL);
+    ck_assert(wallet_ptr->network_info.chain_id == TEST_ETHEREUM_CHAIN_ID);
     BoatIotSdkDeInit();
 
 }
@@ -436,7 +433,6 @@ END_TEST
 START_TEST(test_002InitWallet_0009InitEthWalletWithNullConfig)
 {
     BoatEthWallet *rtnVal;
-    BoatEthWalletConfig walletConfig;
 
     /* 1. execute unit test */
     rtnVal = BoatEthWalletInit(NULL, sizeof(BoatEthWalletConfig));
@@ -451,7 +447,7 @@ END_TEST
 START_TEST(test_002InitWallet_0010InitEthWalletWithSmallerSize)
 {
     BoatEthWallet *rtnVal;
-    BoatEthWalletConfig walletConfig;
+    BoatEthWalletConfig walletConfig = {0};
 
     /* 1. execute unit test */
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) - 1);
@@ -466,7 +462,7 @@ END_TEST
 START_TEST(test_002InitWallet_0011InitEthWalletWithBiggerSize)
 {
     BoatEthWallet *rtnVal;
-    BoatEthWalletConfig walletConfig;
+    BoatEthWalletConfig walletConfig = {0};
 
     /* 1. execute unit test */
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) + 1);
