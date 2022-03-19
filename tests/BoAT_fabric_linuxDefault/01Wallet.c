@@ -392,6 +392,23 @@ START_TEST(test_001CreateWallet_0007CreateOneTimeWalletFail_AccountCertERR)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0008CreateOneTimeWalletFail_UrlERR)
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+    memset(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,0,strlen(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl));
+    memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,"111",strlen("111"));
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 
 Suite *make_wallet_suite(void) 
 {
@@ -411,6 +428,8 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0005CreateOneTimeWalletFail_KeyFormatERR);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0006CreateOneTimeWalletFail_KeyContentERR);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0007CreateOneTimeWalletFail_AccountCertERR);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0008CreateOneTimeWalletFail_UrlERR);
+    
 
     return s_wallet;
 }
