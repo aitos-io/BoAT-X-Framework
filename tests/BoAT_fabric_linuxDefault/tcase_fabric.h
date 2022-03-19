@@ -18,10 +18,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "check.h"
-#include "boatlog.h"
-#include "boattypes.h"
-#include "boatwallet.h"
-#include "protocolapi/api_hlfabric.h"
+// #include "boatlog.h"
+// #include "boattypes.h"
+// #include "boatwallet.h"
+#include "boatiotsdk.h"
+// #include "protocolapi/api_hlfabric.h"
 
 #define CERT_PRIKEY_LEN 1024
 
@@ -31,6 +32,7 @@
 #define file_org2_tls_cert  "../../../tests/BoAT_fabric_linuxDefault/cert_key/org2-tls-cert.crt"
 #define file_order_tls_cert  "../../../tests/BoAT_fabric_linuxDefault/cert_key/order-tls-cert.crt"
 #define file_client_key_false  "../../../tests/BoAT_fabric_linuxDefault/cert_key/client_err.key"
+#define file_client_cert_false  "../../../tests/BoAT_fabric_linuxDefault/cert_key/client_err.crt"
 
 #define ORDER_PORT          ":7050"
 #define ORG1_PEER0_PORT     ":7051"
@@ -52,3 +54,4 @@ char fabric_org1_tls_cert_buf[];
 char fabric_org2_tls_cert_buf[];
 char fabric_order_tls_cert_buf[];
 char fabric_client_key_false_buf[];
+char fabric_client_cert_false_buf[];
