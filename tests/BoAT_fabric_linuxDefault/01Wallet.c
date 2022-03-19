@@ -14,7 +14,6 @@
  * limitations under the License.
  *****************************************************************************/
 #include "tcase_fabric.h"
-#include "protocolapi/api_hlfabric.h"
 #define EXCEED_STR_MAX_LEN 4097
 const uint8_t fabric_client_pubkey[] = {0xbb,0x32,0x5f,0x5e,0x56,0x3f,0x38,0x88,0x5a,0x9a,0xa4,0xf8,0xa6,0xf3,0x0f,0xc7,0x59,0xd8,0x34,0x99,0x02,0x5e,0x4c,0x49,0xd1,0xde,0x59,0xdc,0xf4,0x76,0x29,0x5f,0xd9,0x0a,0x16,0xfd,0x9f,0xaa,0xbe,0xe3,0x4a,0x31,0x20,0x1e,0x79,0x25,0xf1,0xbd,0xa3,0x02,0x19,0xf1,0x4f,0x9c,0x5d,0xa1,0x1d,0xa8,0x55,0x70,0xf3,0x73,0x09,0x62};
 BOAT_RESULT check_fabric_wallet(BoatHlfabricWallet *wallet_ptr)
@@ -375,6 +374,24 @@ START_TEST(test_001CreateWallet_0006CreateOneTimeWalletFail_KeyContentERR)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0007CreateOneTimeWalletFail_AccountCertERR) 
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+    memset(wallet_config.accountCertContent.content,0,wallet_config.accountCertContent.length);
+    wallet_config.accountCertContent.length = strlen(fabric_client_cert_false_buf);
+    memcpy(wallet_config.accountCertContent.content,fabric_client_cert_false_buf,strlen(fabric_client_cert_false_buf));
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 
 Suite *make_wallet_suite(void) 
 {
@@ -393,6 +410,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0004CreateOneTimeWalletFail_KeyTypeErr);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0005CreateOneTimeWalletFail_KeyFormatERR);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0006CreateOneTimeWalletFail_KeyContentERR);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0007CreateOneTimeWalletFail_AccountCertERR);
 
     return s_wallet;
 }
