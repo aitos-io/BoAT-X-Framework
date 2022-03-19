@@ -431,6 +431,21 @@ START_TEST(test_001CreateWallet_0009CreateOneTimeWalletFail_NodesCfgERR)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0010CreateOneTimeWalletFail_WalletConfigNULL)
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, NULL, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 
 Suite *make_wallet_suite(void) 
 {
@@ -452,6 +467,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0007CreateOneTimeWalletFail_AccountCertERR);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0008CreateOneTimeWalletFail_UrlERR);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0009CreateOneTimeWalletFail_NodesCfgERR);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0010CreateOneTimeWalletFail_WalletConfigNULL);
     
 
     return s_wallet;
