@@ -18,12 +18,7 @@
 static BoatEthWallet* g_ethereum_wallet_ptr;
 static BoatEthWalletConfig wallet_config = {0};
 #define USE_ONETIME_WALLET
-#define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
-#define TEST_ETHEREUM_CHAIN_ID      5777
-#define TEST_GAS_LIMIT              "0x6691B7"
-#define TEST_GAS_PRICE              "0x4A817C800"
-#define TEST_IS_SYNC_TX             BOAT_TRUE
-#define TEST_RECIPIENT_ADDRESS      "0x4BeC3cDD520B7985067219F6f596EF7a55Ee5963"
+
 
 static BOAT_RESULT ethereumWalletPrepare(void)
 {

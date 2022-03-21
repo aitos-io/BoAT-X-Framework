@@ -16,12 +16,6 @@
 #include "tcase_ethereum.h"
 #define EXCEED_STR_MAX_LEN 4097
 
-#define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
-#define TEST_ETHEREUM_CHAIN_ID      5777
-#define TEST_GAS_LIMIT              6721975
-#define TEST_GAS_PRICE              20000000000
-#define TEST_IS_SYNC_TX             BOAT_TRUE
-
 BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
