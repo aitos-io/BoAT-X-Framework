@@ -31,3 +31,5 @@
 #define TEST_RECIPIENT_ADDRESS      "0x4BeC3cDD520B7985067219F6f596EF7a55Ee5963"
 
 extern char ethereum_private_key_buf[1024];
+extern BoatEthWallet *g_ethereum_wallet_ptr;
+extern BoatEthWalletConfig wallet_config;

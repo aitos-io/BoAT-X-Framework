@@ -37,7 +37,6 @@ BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet_ptr)
 
 BoatEthWalletConfig get_ethereum_wallet_settings()
 {
-    BoatEthWalletConfig wallet_config = {0};
     BUINT8 *binFormatKey;
     
     //set user private key context
@@ -71,18 +70,18 @@ START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *g_ethereum_wallet_ptr = NULL;
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
     /* 1. execute unit test */
-    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
     
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, 0);
 
      /* 1. execute unit test */
-	rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
+	rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
     
     /* 2. verify test result */
     /* 2-1. verify the return value */
@@ -123,11 +122,11 @@ START_TEST(test_001CreateWallet_0003CreatePersistWalletSuccess)
     BoatEthWallet *g_ethereum_wallet_ptr = NULL;
 
     BoatIotSdkInit();
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
     /* 1. execute unit test */
-    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum", &wallet_config, sizeof(BoatEthWalletConfig));
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum", &wallet, sizeof(BoatEthWalletConfig));
 
     /* 2. verify test result */
     /* 2-1. verify the return value */
@@ -135,7 +134,7 @@ START_TEST(test_001CreateWallet_0003CreatePersistWalletSuccess)
     ck_assert_int_eq(access("ethereum", F_OK), 0);
 
     /* 1. execute unit test */
-    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum", &wallet_config, sizeof(BoatEthWalletConfig));
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum", &wallet, sizeof(BoatEthWalletConfig));
     
     /* 2. verify test result */
     /* 2-1. verify the return value */
@@ -197,11 +196,11 @@ END_TEST
 START_TEST(test_001CreateWallet_0006CreateOneTimeWalletFailureShortSize) 
 {
     BSINT32 rtnVal;
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
     /* 1. execute unit test */
-    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig) - 10);
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig) - 10);
     
     /* 2. verify test result */
     /* 2-1. verify the return value */
@@ -216,11 +215,11 @@ END_TEST
 START_TEST(test_001CreateWallet_0007CreateOneTimeWalletSuccessLongSize) 
 {
     BSINT32 rtnVal;
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
     /* 1. execute unit test */
-    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig) + 10);
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig) + 10);
     
     /* 2. verify test result */
     /* 2-1. verify the return value */
@@ -235,10 +234,10 @@ END_TEST
 START_TEST(test_001CreateWallet_0008CreateOneTimeWalletFailureProtocolUnknown)
 {
     BSINT32 rtnVal;
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     /* 1. execute unit test */
-    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_UNKNOWN, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_UNKNOWN, NULL, &wallet, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
@@ -253,16 +252,16 @@ START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletSetEIP155Comp(wallet_ptr, wallet_config.eip155_compatibility);
+    rtnVal = BoatEthWalletSetEIP155Comp(wallet_ptr, wallet.eip155_compatibility);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
     /* 2-2. verify the global variables that be affected */
-    ck_assert(wallet_ptr->network_info.eip155_compatibility == wallet_config.eip155_compatibility);
+    ck_assert(wallet_ptr->network_info.eip155_compatibility == wallet.eip155_compatibility);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -271,10 +270,10 @@ START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletSetEIP155Comp(NULL, wallet_config.eip155_compatibility);
+    rtnVal = BoatEthWalletSetEIP155Comp(NULL, wallet.eip155_compatibility);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -289,16 +288,16 @@ START_TEST(test_002InitWallet_0003SetChainIdSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletSetChainId(wallet_ptr, wallet_config.chain_id);
+    rtnVal = BoatEthWalletSetChainId(wallet_ptr, wallet.chain_id);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
     /* 2-2. verify the global variables that be affected */
-    ck_assert(wallet_ptr->network_info.chain_id == wallet_config.chain_id);
+    ck_assert(wallet_ptr->network_info.chain_id == wallet.chain_id);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -306,10 +305,10 @@ END_TEST
 START_TEST(test_002InitWallet_0004SetChainIdFailureNullParam)
 {
     BSINT32 rtnVal;
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletSetChainId(NULL, wallet_config.chain_id);
+    rtnVal = BoatEthWalletSetChainId(NULL, wallet.chain_id);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -324,17 +323,17 @@ START_TEST(test_002InitWallet_0005SetNodeUrlSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, wallet_config.node_url_str);
+    rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, wallet.node_url_str);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
     /* 2-2. verify the global variables that be affected */
-    ck_assert_str_eq(wallet_ptr->network_info.node_url_ptr, wallet_config.node_url_str);
+    ck_assert_str_eq(wallet_ptr->network_info.node_url_ptr, wallet.node_url_str);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -343,11 +342,11 @@ START_TEST(test_002InitWallet_0006SetNodeUrlFailureNullParam)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
-    BoatEthWalletConfig wallet_config = get_ethereum_wallet_settings();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatEthWalletSetNodeUrl(NULL, wallet_config.node_url_str);
+    rtnVal = BoatEthWalletSetNodeUrl(NULL, wallet.node_url_str);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -382,12 +381,12 @@ START_TEST(test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
-    BoatEthWalletConfig wallet_config;
+    BoatEthWalletConfig wallet;
     
     /* 1. execute unit test */
-    strncpy(wallet_config.node_url_str, "abcd", strlen("abcd"));
+    strncpy(wallet.node_url_str, "abcd", strlen("abcd"));
     wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, wallet_config.node_url_str);
+    rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, wallet.node_url_str);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
