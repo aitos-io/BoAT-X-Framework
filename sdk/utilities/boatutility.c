@@ -628,16 +628,19 @@ BBOOL UtilityStringIsHex(const BCHAR *input)
 
     if (input == NULL)
     {
+        BoatLog(BOAT_LOG_CRITICAL, "The UtilityStringIsHex input is null");
         return BOAT_FALSE;
     }
 
     if (input[0] != '0')
     {
+        BoatLog(BOAT_LOG_CRITICAL, "The UtilityStringIsHex input can not find prefix 0");
         return BOAT_FALSE;
     }
 
     if ((input[1] != 'x') && (input[1] != 'X'))
     {
+        BoatLog(BOAT_LOG_CRITICAL, "The UtilityStringIsHex input can not find prefix x or X");
         return BOAT_FALSE;
     }
 
@@ -649,9 +652,11 @@ BBOOL UtilityStringIsHex(const BCHAR *input)
         }
         if ((input[i] < '0') || ((input[i] > '9') && (input[i] < 'A')) || ((input[i] > 'F') && (input[i] < 'a')) || (input[i] > 'f'))
         {
+            BoatLog(BOAT_LOG_CRITICAL, "The UtilityStringIsHex find illegal character %d.", input[i]);
             return BOAT_FALSE;
         }
     }
+    BoatLog(BOAT_LOG_CRITICAL, "The UtilityStringIsHex input can not find \\0");
 
     return BOAT_FALSE;
 }
