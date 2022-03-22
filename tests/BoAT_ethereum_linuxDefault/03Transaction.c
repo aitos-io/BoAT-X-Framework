@@ -81,6 +81,19 @@ START_TEST(test_006GetBalance_0002GetSuccessNullAddress)
     BoatIotSdkDeInit();
 }
 
+START_TEST(test_006GetBalance_0003GetFailureNullWallet) 
+{
+    BCHAR *cur_balance_wei = NULL;
+
+    BoatIotSdkInit();
+
+    cur_balance_wei = BoatEthWalletGetBalance(NULL, NULL);
+
+    ck_assert_ptr_null(cur_balance_wei);
+
+    BoatIotSdkDeInit();
+}
+
 
 
 START_TEST(test_007Transfer_0001TransferSuccess) 
@@ -140,7 +153,8 @@ Suite *make_transactions_suite(void)
  
     /* Test cases are added to the test set */
     tcase_add_test(tc_transaction_api, test_006GetBalance_0001GetSuccess); 
-    tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetSuccessNullAddress);  
+    tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetSuccessNullAddress); 
+    tcase_add_test(tc_transaction_api, test_006GetBalance_0003GetFailureNullWallet);
     tcase_add_test(tc_transaction_api, test_007Transfer_0001TransferSuccess); 
     tcase_add_test(tc_transaction_api, test_007Transfer_0002TransferFailureNullParam); 
 
