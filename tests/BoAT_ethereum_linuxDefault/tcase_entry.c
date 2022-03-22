@@ -23,6 +23,7 @@
 /* extern suite declaration */
 extern Suite *make_wallet_suite(void);
 extern Suite *make_parameters_suite(void);
+extern Suite *make_transactions_suite(void);
 //extern Suite *make_contract_suite(void);
 
 char ethereum_private_key_buf[1024];
@@ -37,7 +38,7 @@ int read_key_content(char* key_ptr)
         return -1;
     }
 
-    if (*TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
     {
         fd = open("../../../tests/BoAT_ethereum_linuxDefault/pri_key/native.key", O_RDONLY);
         if (fd < 0)
@@ -70,6 +71,7 @@ int main(int argc, char *argv[])
     /* new adding test suite should create in here */
     Suite *suite_wallet    = make_wallet_suite();
     Suite *suite_paramters = make_parameters_suite();
+    Suite *suite_transaction = make_transactions_suite();
 //   Suite *suite_contract  = make_contract_suite();
     read_key_content(ethereum_private_key_buf);
 
@@ -81,6 +83,8 @@ int main(int argc, char *argv[])
     srunner_set_log(sr, "test_statistics_report.txt");
     /* add other suite to srunner, more test suite should be add in here */
     srunner_add_suite(sr, suite_paramters);
+
+    srunner_add_suite(sr, suite_transaction);
 //   srunner_add_suite(sr, suite_contract);
 
     /* start to run all test case */

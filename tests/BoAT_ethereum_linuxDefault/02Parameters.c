@@ -15,20 +15,26 @@
  *****************************************************************************/
 #include "tcase_ethereum.h"
 
+#define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
+#define TEST_ETHEREUM_CHAIN_ID      5777
+#define TEST_GAS_LIMIT              "0x6691B7"
+#define TEST_GAS_PRICE              "0x4A817C800"
+#define TEST_IS_SYNC_TX             BOAT_TRUE
+#define TEST_RECIPIENT_ADDRESS      "0xde4c806b372Df8857C97cF36A08D528bB8E261Bd"
+
 BoatEthWallet *g_ethereum_wallet_ptr;
 BoatEthWalletConfig wallet_config = {0};
 
-static BOAT_RESULT ethereumWalletPrepare(void)
+BOAT_RESULT ethereumWalletPrepare(void)
 {
     BOAT_RESULT index;
-    BUINT8 *binFormatKey;
-    
+
     //set user private key context
+    memset(&wallet_config, 0, sizeof(wallet_config));
         
-    if (*TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
     {
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
-        binFormatKey = BoatMalloc(32);
         UtilityHexToBin(binFormatKey, 32, ethereum_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
         wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
         wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
@@ -62,7 +68,7 @@ static BOAT_RESULT ethereumWalletPrepare(void)
     return BOAT_SUCCESS;
 }
 
-static BOAT_RESULT param_init_check(BoatEthTx* tx_ptr)
+BOAT_RESULT param_init_check(BoatEthTx* tx_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -183,7 +189,7 @@ START_TEST(test_004ParametersInit_0003TxInitSuccessNullGasPrice)
 
 	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, NULL, 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);	
-    ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 }
 END_TEST
 
@@ -383,9 +389,13 @@ START_TEST(test_005ParametersSet_0005SetValueFailureNullTx)
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
+    ck_assert_int_eq(strlen(TEST_RECIPIENT_ADDRESS), 42);
+
     rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
                            TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
     ck_assert(rtnVal == BOAT_SUCCESS);
+
+    
 
     BoatFieldMax32B value;
     value.field_len = UtilityHexToBin(value.field, 32, "0x2386F26FC10000",
