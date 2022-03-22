@@ -458,11 +458,11 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
 		boat_throw(result, FiscobcosSendRawtx_cleanup);
     }
 
-    result = BoatFiscobcosPraseRpcResponseStringResult(tx_hash_str,
+    result = BoatFiscobcosParseRpcResponseStringResult(tx_hash_str,
 											           &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
     if (result != BOAT_SUCCESS)
 	{
-		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");
+		BoatLog(BOAT_LOG_NORMAL, "Fail to parse RPC response.");
 		boat_throw(result, FiscobcosSendRawtx_cleanup);
 	}                                        
 

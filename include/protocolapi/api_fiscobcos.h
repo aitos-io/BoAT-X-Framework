@@ -218,7 +218,7 @@ __BOATSTATIC __BOATINLINE void BoatFiscobcosWalletDeInit(BoatFiscobcosWallet *wa
 }
 
 /*!*****************************************************************************
-* @brief Prase RPC method RESPONSE
+* @brief Parse RPC method RESPONSE
 * @see eth_parse_json_result()
 *******************************************************************************/
 __BOATSTATIC __BOATINLINE BOAT_RESULT fiscobcos_parse_json_result(const BCHAR *json_string, 
@@ -295,16 +295,16 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx
 }
 
 /*!****************************************************************************
- * @brief Prase RPC method RESPONSE.
+ * @brief Parse RPC method RESPONSE.
  * @see eth_parse_json_result()
  ******************************************************************************/
-BOAT_RESULT BoatFiscobcosPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out);
+BOAT_RESULT BoatFiscobcosParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out);
 
 /*!****************************************************************************
- * @brief Prase RPC method RESPONSE.
+ * @brief Parse RPC method RESPONSE.
  * @see eth_parse_json_result()
  ******************************************************************************/
-BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
+BOAT_RESULT BoatFiscobcosParseRpcResponseResult(const BCHAR *json_string, 
                                                 const BCHAR *child_name, 
                                                 BoatFieldVariable *result_out);
 

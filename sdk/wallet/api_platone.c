@@ -115,7 +115,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     BOAT_RESULT result;
     BCHAR *return_value_ptr = NULL;
     BCHAR *nodeManagerAddr = NULL;
-    BoatFieldVariable prase_result = {NULL, 0};
+    BoatFieldVariable parse_result = {NULL, 0};
     
     boat_try_declare;
     
@@ -187,11 +187,11 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     // return entire RESPONSE content	
 	// return_value_ptr = rpc_response_str;
 
-    BoatPlatonePraseRpcResponseResult(rpc_response_str, "result", &prase_result);
-    nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr))/2);
-    memset(nodeManagerAddr,0x00,strlen((BCHAR*)(prase_result.field_ptr))/2);
-    // hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
-    UtilityHexToBin(nodeManagerAddr,strlen((BCHAR*)(prase_result.field_ptr))/2,prase_result.field_ptr,TRIMBIN_TRIM_NO,BOAT_FALSE);
+    BoatPlatoneParseRpcResponseResult(rpc_response_str, "result", &parse_result);
+    nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(parse_result.field_ptr))/2);
+    memset(nodeManagerAddr,0x00,strlen((BCHAR*)(parse_result.field_ptr))/2);
+    // hex2array(parse_result.field_ptr+2,strlen((BCHAR*)(parse_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
+    UtilityHexToBin(nodeManagerAddr,strlen((BCHAR*)(parse_result.field_ptr))/2,parse_result.field_ptr,TRIMBIN_TRIM_NO,BOAT_FALSE);
  // Construct the REQUEST
 	do{
 		malloc_size_expand_flag = false;
@@ -247,15 +247,15 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     // return entire RESPONSE content	
 	return_value_ptr = rpc_response_str;
 
-    BoatPlatonePraseRpcResponseResult(rpc_response_str, "data", &prase_result);
+    BoatPlatoneParseRpcResponseResult(rpc_response_str, "data", &parse_result);
 
-    nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(prase_result.field_ptr)) / 2);
-    memset(nodeManagerAddr, 0x00, strlen((BCHAR*)(prase_result.field_ptr)) / 2);
-    // hex2array(prase_result.field_ptr+2,strlen((BCHAR*)(prase_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
-    UtilityHexToBin(nodeManagerAddr, strlen((BCHAR*)(prase_result.field_ptr)) / 2, prase_result.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(parse_result.field_ptr)) / 2);
+    memset(nodeManagerAddr, 0x00, strlen((BCHAR*)(parse_result.field_ptr)) / 2);
+    // hex2array(parse_result.field_ptr+2,strlen((BCHAR*)(parse_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
+    UtilityHexToBin(nodeManagerAddr, strlen((BCHAR*)(parse_result.field_ptr)) / 2, parse_result.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
  // Construct the REQUEST
     
-    // web3_parse_fatherNamejson_result(nodeManagerAddr,"data", "externalIP", &prase_result);
+    // web3_parse_fatherNamejson_result(nodeManagerAddr,"data", "externalIP", &parse_result);
     nodeResFree(result_out);
     Platone_get_Nodeinfo(nodeManagerAddr,result_out);
 
@@ -271,10 +271,10 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     {
         BoatFree(nodeManagerAddr);
     }
-    if (prase_result.field_ptr != NULL)
+    if (parse_result.field_ptr != NULL)
     {
-        BoatFree(prase_result.field_ptr);
-        prase_result.field_len = 0;
+        BoatFree(parse_result.field_ptr);
+        parse_result.field_len = 0;
     }
     
     return return_value_ptr;
@@ -517,12 +517,12 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT BoatPlatonePraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
+BOAT_RESULT BoatPlatoneParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
     return platone_parse_json_result(json_string, "", result_out);
 }
 
-BOAT_RESULT BoatPlatonePraseRpcResponseResult(const BCHAR *json_string, 
+BOAT_RESULT BoatPlatoneParseRpcResponseResult(const BCHAR *json_string, 
 										  	  const BCHAR *child_name, 
 										  	  BoatFieldVariable *result_out)
 {

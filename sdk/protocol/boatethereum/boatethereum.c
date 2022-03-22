@@ -480,7 +480,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
 								   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if (result != BOAT_SUCCESS)
 	{
-		BoatLog(BOAT_LOG_NORMAL, "Fail to prase RPC response.");
+		BoatLog(BOAT_LOG_NORMAL, "Fail to parse RPC response.");
 		boat_throw(result, EthSendRawtx_cleanup);
 	}
 
@@ -559,7 +559,7 @@ BOAT_RESULT eth_parse_json_result(const BCHAR *json_string,
 			boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, eth_parse_json_result_cleanup);
 		}
 	
-		//prase child_name object
+		//parse child_name object
 		if (cJSON_IsString(cjson_child_name_ptr))
 		{
 			parse_result_str = cJSON_GetStringValue(cjson_child_name_ptr);

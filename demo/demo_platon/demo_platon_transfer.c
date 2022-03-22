@@ -189,20 +189,20 @@ BOAT_RESULT platonGetBalance(BoatPlatONWallet *wallet_ptr)
     //BCHAR * balance_wei;
     BCHAR *cur_balance_von = NULL;
     BOAT_RESULT result;
-    BoatFieldVariable prase_result = {NULL, 0};
+    BoatFieldVariable parse_result = {NULL, 0};
 
     cur_balance_von = BoatPlatONWalletGetBalance(wallet_ptr, "lat");
-	result          = BoatPlatONPraseRpcResponseStringResult(cur_balance_von, &prase_result);
-    if (prase_result.field_ptr != NULL)
+	result          = BoatPlatONParseRpcResponseStringResult(cur_balance_von, &parse_result);
+    if (parse_result.field_ptr != NULL)
     {
-        BoatFree(prase_result.field_ptr);
-        prase_result.field_ptr = NULL;
-        prase_result.field_len = 0;
+        BoatFree(parse_result.field_ptr);
+        parse_result.field_ptr = NULL;
+        parse_result.field_len = 0;
     }
-    //BoatLog(BOAT_LOG_NORMAL, "Balance: %s von", prase_result.field_ptr);
+    //BoatLog(BOAT_LOG_NORMAL, "Balance: %s von", parse_result.field_ptr);
 	if (result == BOAT_SUCCESS)
 	{
-		//BoatLog(BOAT_LOG_NORMAL, "BoatPlatONWalletGetBalance returns: %s", prase_result.field_ptr);
+		//BoatLog(BOAT_LOG_NORMAL, "BoatPlatONWalletGetBalance returns: %s", parse_result.field_ptr);
 	}
 	else
 	{

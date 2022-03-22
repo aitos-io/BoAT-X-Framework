@@ -118,7 +118,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 	// blocklimit should be greater than current blocknumber, 
 	// and less than current blocknumber plus 1000.
 	retval_str = BoatFiscobcosGetBlockNumber(tx_ptr);
-	result     = BoatFiscobcosPraseRpcResponseStringResult(retval_str, 
+	result     = BoatFiscobcosParseRpcResponseStringResult(retval_str, 
 											    	 	   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if (result != BOAT_SUCCESS)
 	{
@@ -383,13 +383,13 @@ BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr)
 		}
 		// "status" == null : the transaction is pending, the result is BOAT_ERROR
 		// todo: need to change fiscobcos_parse_json_result() 
-		result = BoatFiscobcosPraseRpcResponseResult(tx_status_str, "status", 
+		result = BoatFiscobcosParseRpcResponseResult(tx_status_str, "status", 
 													 &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 		
         if (result != BOAT_SUCCESS && result != BOAT_ERROR_JSON_OBJ_IS_NULL)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
-            result = BOAT_ERROR_WALLET_RESULT_PRASE_FAIL;
+            result = BOAT_ERROR_WALLET_RESULT_PARSE_FAIL;
             break;
         }
         else
@@ -458,12 +458,12 @@ BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr)
     return retval_str;
 }
 
-BOAT_RESULT BoatFiscobcosPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
+BOAT_RESULT BoatFiscobcosParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
     return fiscobcos_parse_json_result(json_string, "", result_out);
 }
 
-BOAT_RESULT BoatFiscobcosPraseRpcResponseResult(const BCHAR *json_string, 
+BOAT_RESULT BoatFiscobcosParseRpcResponseResult(const BCHAR *json_string, 
 										  		const BCHAR *child_name, 
 										  		BoatFieldVariable *result_out)
 {
