@@ -8,11 +8,11 @@
 
 ## 二、拷贝文件
 
-约定<Yanfei Root>是YanFei-CUIot-MZ-6平台SDK的根目录：
+约定`<Yanfei Root>`是YanFei-CUIot-MZ-6平台SDK的根目录：
   
 1、拷贝 BoAT代码，将BoAT-X-Framework整个文件夹拷贝到YanFei平台代码根目录下，即与主CMakeLists.txt平级。
 
-2、拷贝 BoAT-X-Framework\vendor\platform\YanFei-CUIot-MZ-6\YanfeiRootDirCode\app\demo\src到<Yanfei Root>\app\demo\src\下。
+2、拷贝 BoAT-X-Framework\vendor\platform\YanFei-CUIot-MZ-6\YanfeiRootDirCode\app\demo\src到`<Yanfei Root>\app\demo\src\`下。
 
 
 拷贝后的目录和文件结构如下：
@@ -37,7 +37,7 @@
 
 ### 1、添加BoAT-X-Framework生成的静态库.a文件到Yanfei平台
 
-  打开<Yanfei Root>\cmake\toolchain-gcc.cmake文件
+  打开`<Yanfei Root>\cmake\toolchain-gcc.cmake`文件
   
   添加以下两行到对应可加载到的地方：
   ```
@@ -47,7 +47,7 @@
 
 ### 2、添加BoAT-X-Framework lib文件到target_link_libraries
 
-  打开<Yanfei Root>\app\demo\CMakeList.txt文件
+  打开`<Yanfei Root>\app\demo\CMakeList.txt`文件
   
   找到target_link_libraries(XXX ${libc_file_name}) 字样，在${libc_file_name} 前面添加 ${libbw_file_name} ${libbv_file_name} ，如：
   ```
@@ -56,7 +56,7 @@
 
 ### 3、添加BoAT-X-Framework有关头文件路径到Yanfei平台
 
-  打开<Yanfei Root>目录下的主CMakeLists.txt文件
+  打开`<Yanfei Root>`目录下的主CMakeLists.txt文件
   
   找到include_directories(xxx )，在最后新建一行添加以下BoAT-X-Frameworkt内容：
   ```
@@ -65,7 +65,7 @@
 
 ### 4、添加BoAT-X-Framework测试Demo、智能合约文件到编译目录
 
-  打开<Yanfei Root>\app\demo\CMakeList.txt文件
+  打开`<Yanfei Root>\app\demo\CMakeList.txt`文件
 
   找到add_appimg(${target} xxx ) 字样，在后面添加${target_file_path}/my_contract.c，如：
   ```
@@ -93,7 +93,7 @@
 
 ### 2、编译Yanfei演示demo程序，生成.pac下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在<Yanfei Root>\app\demo\src\main.c
+   通过BoAT-X-Framework访问区块链的演示代码，在`<Yanfei Root>\app\demo\src\main.c`
    
    打开Linux终端进入Yanfei根目录
    ```
