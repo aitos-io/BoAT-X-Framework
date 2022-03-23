@@ -37,7 +37,7 @@
 
 ## 三、文件修改
 
-### 1、Add BoAT-X Framework libraries path
+### 1、添加BoAT-X-Framework的库路径
 
   打开`<N58 Root>/cmake/toolchain-gcc.cmake`文件。  
   在之前添加以下内容：
