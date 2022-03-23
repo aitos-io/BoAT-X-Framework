@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+ #include "tcase_platon.h"
 
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include "check.h"
-#include "boatlog.h"
-#include "boattypes.h"
-#include "boatwallet.h"
-#include "protocolapi/api_platon.h"
+BOAT_RESULT check_platon_wallet(BoatPlatONWallet *wallet_ptr)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
 
-extern char platon_private_key_buf[1024];
-extern BoatPlatONWallet *g_platon_wallet_ptr;
-extern BoatPlatONWalletConfig wallet_config;
-extern BUINT8 binFormatKey[32];
+    result = strncmp(wallet_ptr->account_info.prikeyCtx.extra_data.value, platon_private_key_buf, strlen(platon_private_key_buf));
+    if (result != 0) 
+    {
+        return result;
+    }
+    
+    result = strncmp(wallet_ptr->network_info.node_url_ptr, TEST_PLATON_NODE_URL, strlen(TEST_PLATON_NODE_URL));
+    if (result != 0)
+    {
+        return result;
+    }
+
+    return BOAT_SUCCESS;
+}
