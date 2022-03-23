@@ -105,7 +105,7 @@
 ### 2、编译N58程序，生成.pac下载文件
    a、Windows下打开Cygwin终端，或者Linux环境为下打开shell   
    b、cd `<N58 Root> `
-   c、rm -r out  
+   c、rm -r out
    d、./nwy_opencpu.bat //在根目录下执行，编译成功会生成xxx_flash.pac文件  
 
 
