@@ -11,7 +11,7 @@
 
 约定`<N58 Root>`是N58平台SDK的根目录：
 
-1、拷贝 boat2.0代码BoAT-X-Framework 整个文件夹放在`<N58 Root>`下，即与主CMakeLists.txt平级。  
+1、拷贝 boat2.0代码，将BoAT-X-Framework整个文件夹拷贝至`<N58 Root>`下，即与主CMakeLists.txt平级。  
 2、拷贝 BoAT-X-Framework/vendor/platform/Neoway-N58/N58RootDirCode/demo_entry.c到`<N58 Root>`下。  
 3、拷贝 BoAT-X-Framework/vendor/platform/Neoway-N58/N58RootDirCode/my_contract.cpp.abi.c到`<N58 Root>`下。  
 4、拷贝 BoAT-X-Framework/vendor/platform/Neoway-N58/N58RootDirCode/my_contract.cpp.abi.h到`<N58 Root>`下。  
