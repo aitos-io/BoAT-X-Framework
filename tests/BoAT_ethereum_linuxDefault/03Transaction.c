@@ -44,6 +44,7 @@ START_TEST(test_007Transfer_0001TransferSuccess)
 
     BoatIotSdkDeInit();
 }
+END_TEST
 
 Suite *make_transactions_suite(void)
 {
