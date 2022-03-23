@@ -10,7 +10,7 @@
 
 约定<Yanfei Root>是YanFei-CUIot-MZ-6平台SDK的根目录：
   
-1、拷贝 BoAT代码，BoAT-X-Framework 整个文件夹放在YanFei平台代码根目录下，即与主CMakeLists.txt平级。
+1、拷贝 BoAT代码，将BoAT-X-Framework整个文件夹拷贝到YanFei平台代码根目录下，即与主CMakeLists.txt平级。
 
 2、拷贝 BoAT-X-Framework\vendor\platform\YanFei-CUIot-MZ-6\YanfeiRootDirCode\app\demo\src到<Yanfei Root>\app\demo\src\下。
 
