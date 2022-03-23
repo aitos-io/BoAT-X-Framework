@@ -10,7 +10,7 @@
 
 约定`<L610 Root>`是L610平台SDK的根目录：
 
-1、拷贝 BoAT代码，BoAT-X-Framework 整个文件夹放在L610平台代码根目录下，即与主CMakeLists.txt平级。
+1、拷贝 BoAT代码，将 BoAT-X-Framework 整个文件夹拷贝至L610平台代码根目录下，即与主CMakeLists.txt平级。
 
 2、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/demo.c到L610平台代码根目录下。
 
@@ -101,7 +101,7 @@
 
 ### 2、编译L610演示demo程序，生成.pac下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在`<L610 Root>/demo.c`。
+   通过BoAT-X-Framework访问区块链的演示代码，在`<L610 Root>/demo.c`中。
    
    打开Linux终端进入L610根目录。
    ```
