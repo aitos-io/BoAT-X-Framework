@@ -18,6 +18,8 @@
 #define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
 #define TEST_PLATON_CHAIN_ID      210309
 
+BUINT8 binFormatKey[32];
+
 BOAT_RESULT check_platon_wallet(BoatPlatONWallet *wallet_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
@@ -63,4 +65,20 @@ BoatPlatONWalletConfig get_platon_wallet_settings()
     strncpy(wallet_config.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
     
     return wallet_config;
+}
+
+Suite *make_wallet_suite(void) 
+{
+    /* Create Suite */
+    Suite *s_wallet = suite_create("wallet");
+
+    /* Create test cases */
+    TCase *tc_wallet_api = tcase_create("wallet_api");
+
+    /* Add a test case to the Suite */
+    suite_add_tcase(s_wallet, tc_wallet_api);       
+    /* Test cases are added to the test set */
+    // tcase_add_test(tc_wallet_api, test_001CreateWallet_0001CreateOneTimeWalletSuccess);  
+
+    return s_wallet;
 }
