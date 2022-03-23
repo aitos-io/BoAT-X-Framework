@@ -10,13 +10,13 @@
 
 约定`<L610 Root>`是L610平台SDK的根目录：
 
-1、拷贝 BoAT代码，将 BoAT-X-Framework 整个文件夹拷贝至L610平台代码根目录下，即与主CMakeLists.txt平级。
+1、拷贝 BoAT代码，将 BoAT-X-Framework 整个文件夹拷贝至`<L610 Root>`下，即与主CMakeLists.txt平级。
 
-2、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/demo.c到L610平台代码根目录下。
+2、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/demo.c到`<L610 Root>`下。
 
-3、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.c到L610平台代码根目录下。
+3、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.c到`<L610 Root>`下。
 
-4、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.h到L610平台代码根目录下。
+4、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.h到`<L610 Root>`下。
 
 
 拷贝后的目录和文件结构如下：
