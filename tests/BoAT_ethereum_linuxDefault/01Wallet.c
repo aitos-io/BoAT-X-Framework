@@ -264,7 +264,7 @@ START_TEST(test_001CreateWallet_0009CreateWalletWithInternalGeneration)
     rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    ck_assert_int_eq(rtnVal, 0);
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
