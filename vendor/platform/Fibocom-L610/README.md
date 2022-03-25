@@ -8,18 +8,20 @@
 
 ## 二、拷贝文件
 
-1、拷贝 BoAT代码，BoAT-X-Framework 整个文件夹放在L610平台代码根目录下，即与主CMakeLists.txt平级。
+约定`<L610 Root>`是L610平台SDK的根目录：
 
-2、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/demo.c到L610平台代码根目录下。
+1、拷贝 BoAT代码，将 BoAT-X-Framework 整个文件夹拷贝至`<L610 Root>`下，即与主CMakeLists.txt平级。
 
-3、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.c到L610平台代码根目录下。
+2、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/demo.c到`<L610 Root>`下。
 
-4、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.h到L610平台代码根目录下。
+3、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.c到`<L610 Root>`下。
+
+4、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.h到`<L610 Root>`下。
 
 
 拷贝后的目录和文件结构如下：
 ```
-<L610平台代码根目录>
+<L610 Root>
 |
 +---BoAT-X-Framework
 +---cmake
@@ -39,7 +41,7 @@
 
 ### 1、添加BoAT-X-Framework生成的静态库.a文件到L610平台
 
-  打开L610平台代码根目录/cmake/toolchain-gcc.cmake文件。
+  打开`<L610 Root>/cmake/toolchain-gcc.cmake`文件。
   
   首先找到if(CONFIG_CPU_ARM_CA5)，然后在下方大括号内添加以下内容：
   ```
@@ -49,7 +51,7 @@
 
 ### 2、添加BoAT-X-Framework有关头文件路径到L610平台
 
-  打开L610平台代码根目录下的主CMakeLists.txt文件。
+  打开`<L610 Root>/CMakeLists.txt`文件。
   
   找到include_directories(xxx )，在最后添加以下BoAT-X-Framework内容：
   ```
@@ -58,7 +60,7 @@
 
 ### 3、添加BoAT-X-Framework lib文件到target_link_libraries
 
-  打开L610平台代码根目录下的主CMakeLists.txt文件。
+  打开`<L610 Root>/CMakeLists.txt`文件。
   
   在if(CONFIG_APPIMG_LOAD_FLASH)下方大括号内找到target_link_libraries(XXX ${libc_file_name}) 字样，在${libc_file_name} 前面添加 ${libboatwallet_file_name} ${libboatvendor_file_name} ，如：
   ```
@@ -67,7 +69,7 @@
 
 ### 4、添加BoAT-X-Framework测试Demo、智能合约文件到编译目录
 
-  打开L610平台代码根目录下的主CMakeLists.txt文件。
+  打开`<L610 Root>/CMakeLists.txt`文件。
 
   在if(CONFIG_APPIMG_LOAD_FLASH)下方大括号内找到add_appimg(${target} xxx ) 字样，在最后添加demo.c my_contract.cpp.abi.c，如：
   ```
@@ -99,11 +101,11 @@
 
 ### 2、编译L610演示demo程序，生成.pac下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在L610平台代码根目录下的demo.c。
+   通过BoAT-X-Framework访问区块链的演示代码，在`<L610 Root>/demo.c`中。
    
    打开Linux终端进入L610根目录。
    ```
-   cd L610代码根目录
+   cd <L610 Root>
    rm -r out//需要先删除本地之前生成的文件
    . tools/core_launch.sh
    cout

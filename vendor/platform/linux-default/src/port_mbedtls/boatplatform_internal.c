@@ -935,33 +935,35 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 			return BOAT_ERROR;
 		}
 
-	// 1- update private key
-	if (config->prikey_content.field_len > sizeof(pkCtx->extra_data.value))
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Error: length of injection key is too long.");
-		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-	}
-	memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
-	pkCtx->extra_data.value_len = config->prikey_content.field_len;
+		// 1- update private key
+		if (config->prikey_content.field_len > sizeof(pkCtx->extra_data.value))
+		{
+			BoatLog(BOAT_LOG_CRITICAL, "Error: length of injection key is too long.");
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+		}
+		memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
+		pkCtx->extra_data.value_len = config->prikey_content.field_len;
 
-	// 2- update private key format
-	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-	
-	// 3- update private key type
-	pkCtx->prikey_type   = config->prikey_type;
+		// 2- update private key format
+		pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+		
+		// 3- update private key type
+		pkCtx->prikey_type   = config->prikey_type;
 
-	// 4- update private key index
-	// This field should update by 'key secure storage'(such as TE/SE).
-	// When algorithms are implemented by software, this field is default to 0, means
-	// that ignore this field.
-	pkCtx->prikey_index  = 0; 
+		// 4- update private key index
+		// This field should update by 'key secure storage'(such as TE/SE).
+		// When algorithms are implemented by software, this field is default to 0, means
+		// that ignore this field.
+		pkCtx->prikey_index  = 0; 
 
 		// 5- update public key
 		// Ethereum series need NATIVE public key to calculate account address
 		pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
 		mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.X, &pkCtx->pubkey_content[0], 32);
 		mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.Y, &pkCtx->pubkey_content[32], 32);
-	}else if (config->prikey_format == BOAT_WALLET_PRIKEY_FORMAT_NATIVE){
+	}
+	else if (config->prikey_format == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+	{
 		// BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
 		// boat_throw(BOAT_ERROR, BoatSignature_exception);
 		mbedtls_ctr_drbg_init(&ctr_drbg);
@@ -970,12 +972,12 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 		result += mbedtls_pk_setup(&mbedtls_pkCtx, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
 		if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
 		{
-			BoatLog(BOAT_LOG_CRITICAL, "begin mbedtls_ecp_read_key ");
+			BoatLog(BOAT_LOG_VERBOSE, "begin mbedtls_ecp_read_key ");
 			// ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
 			// if (ecPrikey != NULL)
 			// 	mbedtls_ecp_keypair_init(ecPrikey);
 			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1,  mbedtls_pk_ec(mbedtls_pkCtx), config->prikey_content.field_ptr, config->prikey_content.field_len);
-			BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key result = %x ", result);
+			BoatLog(BOAT_LOG_VERBOSE, "mbedtls_ecp_read_key result = %x ", result);
 		}
 		else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
 		{
@@ -983,7 +985,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 			// if (ecPrikey != NULL)
 			// 	mbedtls_ecp_keypair_init(ecPrikey);
 			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(mbedtls_pkCtx), config->prikey_content.field_ptr, config->prikey_content.field_len);
-			BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key result = %x ", result);
+			BoatLog(BOAT_LOG_VERBOSE, "mbedtls_ecp_read_key result = %x ", result);
 		}
 		else
 		{
@@ -1021,7 +1023,9 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 		mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.X, &pkCtx->pubkey_content[0], 32);
 		mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.Y, &pkCtx->pubkey_content[32], 32);
 
-	}else{
+	}
+	else
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
 		// boat_throw(BOAT_ERROR, BoatSignature_exception);
 	}

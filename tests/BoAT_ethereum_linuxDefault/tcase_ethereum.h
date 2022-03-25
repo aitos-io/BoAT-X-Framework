@@ -23,4 +23,9 @@
 #include "boatwallet.h"
 #include "protocolapi/api_ethereum.h"
 
-char ethereum_pkcs_key_buf[1024];
+extern BOAT_RESULT ethereumWalletPrepare(void);
+
+extern char ethereum_private_key_buf[1024];
+extern BoatEthWallet *g_ethereum_wallet_ptr;
+extern BoatEthWalletConfig wallet_config;
+extern BUINT8 binFormatKey[32];

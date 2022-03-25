@@ -1026,7 +1026,7 @@ void BoatHlfabricTxDeInit(BoatHlfabricTx *tx_ptr)
 {
 	if (tx_ptr == NULL)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Tx argument cannot be nULL.");
+		BoatLog(BOAT_LOG_CRITICAL, "Tx argument cannot be NULL.");
 		return;
 	}
 

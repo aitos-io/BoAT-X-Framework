@@ -92,7 +92,7 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 		/* payload head */
 		txhead.chain_id = tx_ptr->var.chaincodeId.name;
 		txhead.timestamp = (long)(((double)tx_ptr->var.timestamp.sec) * 60 * 1000000.0);
-		txhead.nonce = UtilityBuint8Buf2Uint64(tx_ptr->var.nonce.field, sizeof(tx_ptr->var.nonce.field));
+		txhead.nonce = UtilityBuint8Buf2Uint64(tx_ptr->var.nonce.field);
 		identity_creator.id.data = (BUINT8 *)tx_ptr->var.creator_id;
 		identity_creator.id.len = strlen(tx_ptr->var.creator_id);
 		identity_creator.org = tx_ptr->var.orgName;

@@ -14,7 +14,6 @@
  * limitations under the License.
  *****************************************************************************/
 #include "tcase_fabric.h"
-#include "protocolapi/api_hlfabric.h"
 #define EXCEED_STR_MAX_LEN 4097
 const uint8_t fabric_client_pubkey[] = {0xbb,0x32,0x5f,0x5e,0x56,0x3f,0x38,0x88,0x5a,0x9a,0xa4,0xf8,0xa6,0xf3,0x0f,0xc7,0x59,0xd8,0x34,0x99,0x02,0x5e,0x4c,0x49,0xd1,0xde,0x59,0xdc,0xf4,0x76,0x29,0x5f,0xd9,0x0a,0x16,0xfd,0x9f,0xaa,0xbe,0xe3,0x4a,0x31,0x20,0x1e,0x79,0x25,0xf1,0xbd,0xa3,0x02,0x19,0xf1,0x4f,0x9c,0x5d,0xa1,0x1d,0xa8,0x55,0x70,0xf3,0x73,0x09,0x62};
 BOAT_RESULT check_fabric_wallet(BoatHlfabricWallet *wallet_ptr)
@@ -375,6 +374,209 @@ START_TEST(test_001CreateWallet_0006CreateOneTimeWalletFail_KeyContentERR)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0007CreateOneTimeWalletFail_AccountCertERR) 
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+    memset(wallet_config.accountCertContent.content,0,wallet_config.accountCertContent.length);
+    wallet_config.accountCertContent.length = strlen(fabric_client_cert_false_buf);
+    memcpy(wallet_config.accountCertContent.content,fabric_client_cert_false_buf,strlen(fabric_client_cert_false_buf));
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_001CreateWallet_0008CreateOneTimeWalletFail_UrlERR)
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+    memset(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,0,strlen(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl));
+    memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,"111",strlen("111"));
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_001CreateWallet_0009CreateOneTimeWalletFail_NodesCfgERR)
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+    wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].quantities = 0;
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+
+    wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].quantities = 3;
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_001CreateWallet_0010CreateOneTimeWalletFail_WalletConfigNULL)
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, NULL, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_001CreateWallet_0011CreatePersistWalletSuccess)
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 0);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_001CreateWallet_0012CreatePersistWalletSuccess_10wallets)
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric01.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 0);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+
+    
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric02.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 1);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric03.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 2);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[2].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric04.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 3);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[3].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric05.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 4);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[4].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric06.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 5);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[5].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric07.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 6);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[6].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric08.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 7);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[7].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric09.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 8);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[8].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric10.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 9);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[9].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 
 Suite *make_wallet_suite(void) 
 {
@@ -393,6 +595,13 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0004CreateOneTimeWalletFail_KeyTypeErr);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0005CreateOneTimeWalletFail_KeyFormatERR);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0006CreateOneTimeWalletFail_KeyContentERR);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0007CreateOneTimeWalletFail_AccountCertERR);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0008CreateOneTimeWalletFail_UrlERR);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0009CreateOneTimeWalletFail_NodesCfgERR);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0010CreateOneTimeWalletFail_WalletConfigNULL);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0011CreatePersistWalletSuccess);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0012CreatePersistWalletSuccess_10wallets);
+    
 
     return s_wallet;
 }

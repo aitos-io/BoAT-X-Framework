@@ -13,6 +13,7 @@ $(OBJECTS_DIR):
 
 $(OBJECTS_DIR)/%.o:%.c
 	$(CC) -c $(BOAT_CFLAGS) $< -o $@
+	$(BOAT_COPY) $(SOURCES) $(OBJECTS_DIR)
 
 
 clean:

@@ -15,35 +15,45 @@
  *****************************************************************************/
 #include "tcase_ethereum.h"
 
-static BoatEthWallet* g_ethereum_wallet_ptr;
-static BoatEthWalletConfig wallet_config = {0};
-#define USE_ONETIME_WALLET
+#define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
+#define TEST_ETHEREUM_CHAIN_ID      5777
+#define TEST_GAS_LIMIT              "0x6691B7"
+#define TEST_GAS_PRICE              "0x4A817C800"
+#define TEST_IS_SYNC_TX             BOAT_TRUE
+#define TEST_RECIPIENT_ADDRESS      "0xde4c806b372Df8857C97cF36A08D528bB8E261Bd"
 
-static BOAT_RESULT ethereumWalletPrepare(void)
+BoatEthWallet *g_ethereum_wallet_ptr;
+BoatEthWalletConfig wallet_config = {0};
+
+BOAT_RESULT ethereumWalletPrepare(void)
 {
     BOAT_RESULT index;
 
     //set user private key context
+    memset(&wallet_config, 0, sizeof(wallet_config));
+        
+    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+    {
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+        UtilityHexToBin(binFormatKey, 32, ethereum_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
+        wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
+    }
+    else
+    {
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)ethereum_private_key_buf;
+	    wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(ethereum_private_key_buf) + 1;
+    }
 	wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-	wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
 	wallet_config.prikeyCtx_config.prikey_type	  = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-	wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)ethereum_pkcs_key_buf;
-	wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(ethereum_pkcs_key_buf) + 1;
 
 	wallet_config.chain_id             = TEST_ETHEREUM_CHAIN_ID;
     wallet_config.eip155_compatibility = TEST_EIP155_COMPATIBILITY;
     strncpy(wallet_config.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    // create wallet
-#if defined(USE_ONETIME_WALLET)
     index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet_config, sizeof(BoatEthWalletConfig));
-#elif defined(USE_CREATE_PERSIST_WALLET)
-    index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum.cfg", &wallet_config, sizeof(BoatEthWalletConfig));
-#elif defined(USE_LOAD_PERSIST_WALLET)
-    index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum.cfg", NULL, sizeof(BoatEthWalletConfig));
-#else
-    return BOAT_ERROR;
-#endif
+
     if (index == BOAT_ERROR)
     {
         return BOAT_ERROR;
@@ -58,28 +68,7 @@ static BOAT_RESULT ethereumWalletPrepare(void)
     return BOAT_SUCCESS;
 }
 
-static BOAT_RESULT string_eq_check(BUINT8 *string_a, BUINT8 *string_b, BUINT32 string_len_a, BUINT32 string_len_b)
-{
-	BOAT_RESULT result = BOAT_SUCCESS;
-	
-	if(string_len_a != string_len_b)
-	{
-		return BOAT_ERROR;
-	}
-	
-	int count = 0;
-	while (count < string_len_a)
-	{
-		if(string_a[count] != string_b[count])
-		{
-			return BOAT_ERROR;
-		}
-		count++;
-	}
-	return result;
-}
-
-static BOAT_RESULT param_init_check(BoatEthTx* tx_ptr)
+BOAT_RESULT param_init_check(BoatEthTx* tx_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -93,12 +82,7 @@ static BOAT_RESULT param_init_check(BoatEthTx* tx_ptr)
     {
         BIN_GAS_PRICE.field_len = UtilityHexToBin(BIN_GAS_PRICE.field, 32, TEST_GAS_PRICE, 
 											      TRIMBIN_LEFTTRIM, BOAT_TRUE);
-		result = string_eq_check(tx_ptr->rawtx_fields.gasprice.field, BIN_GAS_PRICE.field, 
-								 tx_ptr->rawtx_fields.gasprice.field_len, BIN_GAS_PRICE.field_len);
-    	if (result != 0) 
-    	{
-        	return BOAT_ERROR;
-    	}
+		ck_assert_str_eq(tx_ptr->rawtx_fields.gasprice.field, BIN_GAS_PRICE.field);
     }
 	else
 	{
@@ -108,15 +92,13 @@ static BOAT_RESULT param_init_check(BoatEthTx* tx_ptr)
 	BoatFieldMax32B BIN_GAS_LIMIT;
 	BIN_GAS_LIMIT.field_len = UtilityHexToBin(BIN_GAS_LIMIT.field, 32, TEST_GAS_LIMIT,
 					                          TRIMBIN_LEFTTRIM, BOAT_TRUE);
-	result = string_eq_check(tx_ptr->rawtx_fields.gaslimit.field, BIN_GAS_LIMIT.field, 
-							 tx_ptr->rawtx_fields.gaslimit.field_len, BIN_GAS_LIMIT.field_len);
+	ck_assert_str_eq(tx_ptr->rawtx_fields.gaslimit.field, BIN_GAS_LIMIT.field);
 	
 	BUINT8 BIN_RECIPIENT_ADDRESS[BOAT_ETH_ADDRESS_SIZE];
 	BUINT32 CONVERTED_LEN;
 	CONVERTED_LEN = UtilityHexToBin(BIN_RECIPIENT_ADDRESS, BOAT_ETH_ADDRESS_SIZE, TEST_RECIPIENT_ADDRESS,
 		                            TRIMBIN_TRIM_NO, BOAT_TRUE);
-	result = string_eq_check(tx_ptr->rawtx_fields.recipient, BIN_RECIPIENT_ADDRESS,
-							 BOAT_ETH_ADDRESS_SIZE, CONVERTED_LEN);
+	ck_assert_str_eq(tx_ptr->rawtx_fields.recipient, BIN_RECIPIENT_ADDRESS);
 	
     if (tx_ptr->wallet_ptr->network_info.chain_id != TEST_ETHEREUM_CHAIN_ID) 
     {
@@ -138,15 +120,18 @@ static BOAT_RESULT param_init_check(BoatEthTx* tx_ptr)
 
 START_TEST(test_004ParametersInit_0001TxInitSuccess)
 {
-    BSINT32 rtnVal;
-    BoatEthTx tx_ptr;
+    BOAT_RESULT rtnVal;
+    BoatEthTx tx_ptr = {0};
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
-    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    ck_assert(rtnVal == BOAT_SUCCESS);
 
     rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
     ck_assert(rtnVal == BOAT_SUCCESS);
-	ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
+	//ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -155,6 +140,9 @@ START_TEST(test_004ParametersInit_0002TxInitFailureNullParam)
 {
     BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
@@ -193,11 +181,15 @@ START_TEST(test_004ParametersInit_0003TxInitSuccessNullGasPrice)
 {
 	BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
 	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, NULL, 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);	
-    ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 }
 END_TEST
 
@@ -205,6 +197,9 @@ START_TEST(test_004ParametersInit_0004TxInitFailureErrorGasPriceHexFormat)
 {
     BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "0x123G", 
@@ -218,12 +213,14 @@ START_TEST(test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx)
 {
 	BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "A", 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);	
-    ck_assert(rtnVal == BOAT_SUCCESS);
-	ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -232,6 +229,9 @@ START_TEST(test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat)
 {
 	BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
@@ -245,13 +245,15 @@ START_TEST(test_004ParametersInit_0007TxInitSuccessGasLimitHexNullOx)
 {
     BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
     rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
 		                   "333333", TEST_RECIPIENT_ADDRESS);
-    ck_assert(rtnVal == BOAT_SUCCESS);
-	ck_assert(param_init_check(&tx_ptr) == BOAT_SUCCESS);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -260,6 +262,9 @@ START_TEST(test_004ParametersInit_0008TxInitFailureRecipientErrorHexFormat)
 {
     BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
@@ -273,6 +278,9 @@ START_TEST(test_004ParametersInit_0009TxInitFailureRecipientLongLength)
 {
 	BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
@@ -286,6 +294,9 @@ START_TEST(test_005ParametersSet_0001GetNonceFromNetworkSuccess)
 {
     BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 	
@@ -296,7 +307,6 @@ START_TEST(test_005ParametersSet_0001GetNonceFromNetworkSuccess)
 	rtnVal = BoatEthTxSetNonce(&tx_ptr, BOAT_ETH_NONCE_AUTO);	
     ck_assert(rtnVal == BOAT_SUCCESS);
     BoatIotSdkDeInit();
-  
 }
 END_TEST
 
@@ -304,6 +314,9 @@ START_TEST(test_005ParametersSet_0002SetNonceSuccess)
 {
 	BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
@@ -316,9 +329,7 @@ START_TEST(test_005ParametersSet_0002SetNonceSuccess)
 	NONCE.field_len = UtilityHexToBin(NONCE.field, 32, "0xA1",
 					                  TRIMBIN_LEFTTRIM, BOAT_TRUE);
     ck_assert(rtnVal == BOAT_SUCCESS);
-	rtnVal = string_eq_check(tx_ptr.rawtx_fields.nonce.field, NONCE.field, 
-					tx_ptr.rawtx_fields.nonce.field_len, NONCE.field_len);
-    ck_assert(rtnVal == BOAT_SUCCESS);
+	ck_assert_str_eq(tx_ptr.rawtx_fields.nonce.field, NONCE.field);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -327,6 +338,9 @@ START_TEST(test_005ParametersSet_0003SetNonceFailureNullTx)
 {
 	BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
@@ -344,6 +358,9 @@ START_TEST(test_005ParametersSet_0004SetValueSuccess)
 {
 	BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
@@ -357,9 +374,7 @@ START_TEST(test_005ParametersSet_0004SetValueSuccess)
 	rtnVal = BoatEthTxSetValue(&tx_ptr, &value);
     ck_assert(rtnVal == BOAT_SUCCESS);
 
-	rtnVal = string_eq_check(tx_ptr.rawtx_fields.value.field, value.field, 
-					tx_ptr.rawtx_fields.value.field_len, value.field_len);
-    ck_assert(rtnVal == BOAT_SUCCESS);
+	ck_assert_str_eq(tx_ptr.rawtx_fields.value.field, value.field);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -368,12 +383,19 @@ START_TEST(test_005ParametersSet_0005SetValueFailureNullTx)
 {
     BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+    ck_assert_int_eq(strlen(TEST_RECIPIENT_ADDRESS), 42);
 
     rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
                            TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
     ck_assert(rtnVal == BOAT_SUCCESS);
+
+    
 
     BoatFieldMax32B value;
     value.field_len = UtilityHexToBin(value.field, 32, "0x2386F26FC10000",
@@ -389,6 +411,9 @@ START_TEST(test_005ParametersSet_0006SetValueSuccessNullvalue)
 {
     BSINT32 rtnVal;
     BoatEthTx tx_ptr;
+
+    BoatIotSdkInit();
+
     rtnVal = ethereumWalletPrepare();
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 

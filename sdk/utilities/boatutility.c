@@ -613,13 +613,52 @@ uint32_t random32(void)
 }
 */
 
-BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from,BUINT32 len)
+BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from)
 {
-    long ret ;
-    ret =  (((long)(from[0]&0x7F) << 56) | ((long)from[1] << 48) | ((long)from[2] << 40) | ((long)from[3] << 32) | ((long)from[4] << 24) | ((long)from[5] << 16) | ((long)from[6] << 8) | from[7]);
+    BUINT64 ret;
+    ret = (((BUINT64)(from[0] & 0x7F) << 56) | ((BUINT64)from[1] << 48) | ((BUINT64)from[2] << 40) | ((BUINT64)from[3] << 32) | ((BUINT64)from[4] << 24) | ((BUINT64)from[5] << 16) | ((BUINT64)from[6] << 8) | from[7]);
     // ret = random32() << 32 | random32();
         // ret =  (((long)from[4] << 24) | ((long)from[5] << 16) | ((long)from[6] << 8) | from[7]);
     return ret;
+}
+
+BBOOL UtilityStringIsHex(const BCHAR *input)
+{
+    BUINT32 i;
+
+    if (input == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The UtilityStringIsHex input is null");
+        return BOAT_FALSE;
+    }
+
+    if (input[0] != '0')
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The UtilityStringIsHex input can not find prefix 0");
+        return BOAT_FALSE;
+    }
+
+    if ((input[1] != 'x') && (input[1] != 'X'))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The UtilityStringIsHex input can not find prefix x or X");
+        return BOAT_FALSE;
+    }
+
+    for (i = 2; i < BOAT_STRING_MAX_LEN; i++)
+    {
+        if (input[i] == '\0')
+        {
+            return BOAT_TRUE;
+        }
+        if ((input[i] < '0') || ((input[i] > '9') && (input[i] < 'A')) || ((input[i] > 'F') && (input[i] < 'a')) || (input[i] > 'f'))
+        {
+            BoatLog(BOAT_LOG_CRITICAL, "The UtilityStringIsHex find illegal character %d.", input[i]);
+            return BOAT_FALSE;
+        }
+    }
+    BoatLog(BOAT_LOG_CRITICAL, "The UtilityStringIsHex input can not find \\0");
+
+    return BOAT_FALSE;
 }
 
 BOAT_RESULT BoatFieldVariable_malloc_size_expand(BoatFieldVariable *mem, BUINT32 step_size)
