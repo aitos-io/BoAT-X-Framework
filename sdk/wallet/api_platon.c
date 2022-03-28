@@ -193,7 +193,7 @@ BOAT_RESULT BoatPlatONTxSetNonce(BoatPlatONTx *tx_ptr, BUINT64 nonce)
             BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
             return result;
         }
-		result = BoatPlatONPraseRpcResponseStringResult(tx_count_str, 
+		result = BoatPlatONParseRpcResponseStringResult(tx_count_str, 
 												        &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS)
         { 
@@ -246,7 +246,7 @@ BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_p
             return BOAT_ERROR_WEB3_GET_GASPRICE_FAIL;
         }
 
-        result = BoatPlatONPraseRpcResponseStringResult(gas_price_from_net_str, 
+        result = BoatPlatONParseRpcResponseStringResult(gas_price_from_net_str, 
 											            &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result == BOAT_SUCCESS)
         {
@@ -470,12 +470,12 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             break;
         }
-		result = BoatPlatONPraseRpcResponseResult(tx_status_str, "status", 
+		result = BoatPlatONParseRpcResponseResult(tx_status_str, "status", 
 											      &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS && result != BOAT_ERROR_JSON_OBJ_IS_NULL)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
-            result = BOAT_ERROR_WALLET_RESULT_PRASE_FAIL;
+            result = BOAT_ERROR_WALLET_RESULT_PARSE_FAIL;
             break;
         }
         else
@@ -515,12 +515,12 @@ BOAT_RESULT BoatPlatONGetTransactionReceipt(BoatPlatONTx *tx_ptr)
     return result;
 }
 
-BOAT_RESULT BoatPlatONPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
+BOAT_RESULT BoatPlatONParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
     return platon_parse_json_result(json_string, "", result_out);
 }
 
-BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
+BOAT_RESULT BoatPlatONParseRpcResponseResult(const BCHAR *json_string, 
 										  	 const BCHAR *child_name, 
 										  	 BoatFieldVariable *result_out)
 {

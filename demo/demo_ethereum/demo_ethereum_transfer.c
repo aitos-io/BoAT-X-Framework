@@ -185,17 +185,17 @@ BOAT_RESULT ethereumGetBalance(BoatEthWallet *wallet_ptr)
     //BCHAR *balance_wei;
     BCHAR *cur_balance_wei = NULL;
     BOAT_RESULT result;
-    BoatFieldVariable prase_result = {NULL, 0};
+    BoatFieldVariable parse_result = {NULL, 0};
 
     cur_balance_wei = BoatEthWalletGetBalance(wallet_ptr, NULL);
-	result          = BoatEthPraseRpcResponseStringResult(cur_balance_wei, &prase_result);
-    //BoatLog(BOAT_LOG_NORMAL, "Balance: %s wei", prase_result.field_ptr);
-    if(prase_result.field_ptr != NULL){
-        BoatFree(prase_result.field_ptr);
+	result          = BoatEthParseRpcResponseStringResult(cur_balance_wei, &parse_result);
+    //BoatLog(BOAT_LOG_NORMAL, "Balance: %s wei", parse_result.field_ptr);
+    if(parse_result.field_ptr != NULL){
+        BoatFree(parse_result.field_ptr);
     }
 	if (result == BOAT_SUCCESS)
 	{
-		//BoatLog(BOAT_LOG_NORMAL, "BoatEthWalletGetBalance returns: %s", prase_result.field_ptr);
+		//BoatLog(BOAT_LOG_NORMAL, "BoatEthWalletGetBalance returns: %s", parse_result.field_ptr);
 	}
 	else
 	{

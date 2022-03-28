@@ -931,7 +931,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 		if (result != BOAT_SUCCESS)
 		{
 			mbedtls_pk_free(&mbedtls_pkCtx);
-			BoatLog(BOAT_LOG_CRITICAL, "Error: pkcs key prase failed.");
+			BoatLog(BOAT_LOG_CRITICAL, "Error: pkcs key parse failed.");
 			return BOAT_ERROR;
 		}
 

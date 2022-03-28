@@ -254,6 +254,60 @@ START_TEST(test_001CreateWallet_0008CreateOneTimeWalletFailureProtocolUnknown)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0009CreateWalletWithInternalGeneration)
+{
+    BSINT32 rtnVal;
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+    wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 0);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_001CreateWallet_0010CreateSixWallet)
+{
+    BSINT32 rtnVal;
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+    wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
+    ck_assert_int_eq(rtnVal, 0);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
+    ck_assert_int_eq(rtnVal, 1);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
+    ck_assert_int_eq(rtnVal, 2);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
+    ck_assert_int_eq(rtnVal, 3);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
+    ck_assert_int_eq(rtnVal, 4);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
+    ck_assert_int_eq(rtnVal, 5);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[2].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[3].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[4].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[5].is_used == true);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 {
     BSINT32 rtnVal;
@@ -521,8 +575,6 @@ START_TEST(test_002InitWallet_0014InitEthWalletWithWrongGenMode)
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_null(rtnVal);
-
-    /* 2-2. verify the global variables that be affected */ 
 }
 END_TEST
 
@@ -541,8 +593,6 @@ START_TEST(test_002InitWallet_0015InitEthWalletWithWrongKeyFormat)
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_nonnull(rtnVal);
-
-    /* 2-2. verify the global variables that be affected */ 
 }
 END_TEST
 
@@ -562,8 +612,6 @@ START_TEST(test_002InitWallet_0016InitEthWalletWithWrongType)
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_null(rtnVal);
-
-    /* 2-2. verify the global variables that be affected */ 
 }
 END_TEST
 
@@ -607,6 +655,8 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0006CreateOneTimeWalletFailureShortSize);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0007CreateOneTimeWalletSuccessLongSize);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0008CreateOneTimeWalletFailureProtocolUnknown);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0009CreateWalletWithInternalGeneration);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0010CreateSixWallet);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0001SetEIP155CompSuccess);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0002SetEIP155CompFailureNullParam);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0003SetChainIdSuccess);

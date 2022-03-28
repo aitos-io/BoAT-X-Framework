@@ -247,12 +247,12 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
     return tx_balance_str;
 }
 
-BOAT_RESULT BoatEthPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
+BOAT_RESULT BoatEthParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
     return eth_parse_json_result(json_string, "", result_out);
 }
 
-BOAT_RESULT BoatEthPraseRpcResponseResult(const BCHAR *json_string, 
+BOAT_RESULT BoatEthParseRpcResponseResult(const BCHAR *json_string, 
 										  const BCHAR *child_name, 
 										  BoatFieldVariable *result_out)
 {
@@ -413,7 +413,7 @@ BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce)
             BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
             return result;
         }
-		result = BoatEthPraseRpcResponseStringResult(tx_count_str,
+		result = BoatEthParseRpcResponseStringResult(tx_count_str,
 											         &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS)
         { 
@@ -466,7 +466,7 @@ BOAT_RESULT BoatEthTxSetGasPrice(BoatEthTx *tx_ptr, BoatFieldMax32B *gas_price_p
             return BOAT_ERROR_WEB3_GET_GASPRICE_FAIL;
         }
 
-        result = BoatEthPraseRpcResponseStringResult(gas_price_from_net_str,
+        result = BoatEthParseRpcResponseStringResult(gas_price_from_net_str,
 											         &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result == BOAT_SUCCESS)
         {
@@ -774,12 +774,12 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             break;
         }
-		result = BoatEthPraseRpcResponseResult(tx_status_str, "status", 
+		result = BoatEthParseRpcResponseResult(tx_status_str, "status", 
 											   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS && result != BOAT_ERROR_JSON_OBJ_IS_NULL)
 		{
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
-            result = BOAT_ERROR_WALLET_RESULT_PRASE_FAIL;
+            result = BOAT_ERROR_WALLET_RESULT_PARSE_FAIL;
             break;
         }
         else
