@@ -107,5 +107,5 @@ In curly braces below `if(CONFIG_APPIMG_LOAD_FLASH)`,find `add_appimg(${target} 
       ninja
 
 
-   The download image .pac will be generated in `<L610 Root>/out/appimage_debug/hex/` if building is successful.
+   A .pac file will be generated under  `<L610 Root>/out/appimage_debug/hex/` once compiled successfully.
 

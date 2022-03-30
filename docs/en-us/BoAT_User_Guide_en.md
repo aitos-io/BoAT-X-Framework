@@ -52,7 +52,7 @@ Smart contract call (manual construction)
 
 
  ### Position in The System
- BoAT IoT Framework runs on the application processor of the cellular module in the form of a software lib library. The SDK is provided in the form of C source files and compiled in the development environment of the cellular module.
+ BoAT IoT Framework runs on the application processor of the cellular module in the form of a software library. The SDK is provided in the form of C source files and compiled in the development environment of the cellular module.
 
  For the cellular module in the form of OpenCPU, the BoAT IoT Framework library is linked by the IoT Application to form an IoT application with blockchain link capabilities.
 
