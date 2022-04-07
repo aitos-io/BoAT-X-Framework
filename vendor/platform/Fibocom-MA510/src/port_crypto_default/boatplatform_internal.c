@@ -71,14 +71,6 @@ uint32_t random32(void)
 	// https://en.wikipedia.org/wiki/Linear_congruential_generator
 	seed = 1664525 * seed + 1013904223;
 	
-/*
-	static uint32_t seed = 0;
-
-	uint16_t *random_ptr=(uint16_t *)&seed;
-
-	qapi_fibo_random_data_get(1,random_ptr);
-	qapi_fibo_random_data_get(1,random_ptr+1);
-*/
 	return seed;
 }
 
