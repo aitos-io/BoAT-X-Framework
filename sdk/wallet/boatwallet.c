@@ -207,6 +207,12 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
         case BOAT_PROTOCOL_HWBCS:
             if (wallet_config_ptr != NULL)
             {
+                if(((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION &&
+                ((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION){
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_genMode err.");
+                    BoatFree(boatwalletStore_ptr);
+                    return BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
+                }
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
                 ((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.load_existed_wallet = false;
                 wallet_ptr = BoatHlfabricWalletInit((BoatHlfabricWalletConfig*)wallet_config_ptr, wallet_config_size);
