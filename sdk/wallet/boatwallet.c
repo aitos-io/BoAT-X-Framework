@@ -95,6 +95,35 @@ void BoatIotSdkDeInit(void)
 // For Multi-Thread Support: DeleteMutex Here
 }
 
+static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const void *wallet_config_ptr){
+
+     switch (protocol_type)
+    {
+
+        #if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_HWBCS == 1)
+        case BOAT_PROTOCOL_HLFABRIC:
+        case BOAT_PROTOCOL_HWBCS:
+            if (wallet_config_ptr != NULL)
+            {
+                if(((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION &&
+                ((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION){
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_genMode err.");
+                    return BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
+                }
+                if(((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256K1 &&
+                ((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256R1){
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_type err.");
+                    return BOAT_ERROR_WALLET_KEY_TYPE_ERR;
+                }
+                
+            }
+            break;
+        #endif
+        
+    }
+    return BOAT_SUCCESS;
+}
+
 
 BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_name_str, 
 						 const void *wallet_config_ptr, BUINT32 wallet_config_size)
@@ -106,12 +135,17 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
     BUINT8  pubkeyHashDummy[32];
     BUINT8  hashLenDummy;
 #endif    
+    BOAT_RESULT result = BOAT_SUCCESS;
 
     /* Check wallet configuration */ 
     if ((wallet_name_str == NULL) && (wallet_config_ptr == NULL))
     {
         BoatLog(BOAT_LOG_NORMAL, "Invalid wallet configuration.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+    result = BoatWalletCreatParaCheck(protocol_type,wallet_config_ptr);
+    if(result != BOAT_SUCCESS){
+        return result;
     }
 
     boatwalletStore_ptr = BoatMalloc(wallet_config_size + sizeof(BoatWalletPriKeyCtx));
@@ -207,12 +241,6 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
         case BOAT_PROTOCOL_HWBCS:
             if (wallet_config_ptr != NULL)
             {
-                if(((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION &&
-                ((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION){
-                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_genMode err.");
-                    BoatFree(boatwalletStore_ptr);
-                    return BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
-                }
                 memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
                 ((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.load_existed_wallet = false;
                 wallet_ptr = BoatHlfabricWalletInit((BoatHlfabricWalletConfig*)wallet_config_ptr, wallet_config_size);
