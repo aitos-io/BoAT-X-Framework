@@ -105,15 +105,22 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
         case BOAT_PROTOCOL_HWBCS:
             if (wallet_config_ptr != NULL)
             {
-                if(((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION &&
-                ((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION){
+                BoatHlfabricWalletConfig* fabric_config_ptr = wallet_config_ptr;
+                if(fabric_config_ptr->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION &&
+                    fabric_config_ptr->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION){
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_genMode err.");
                     return BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
                 }
-                if(((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256K1 &&
-                ((BoatHlfabricWalletConfig*)wallet_config_ptr)->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256R1){
+                if(fabric_config_ptr->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256K1 &&
+                    fabric_config_ptr->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256R1){
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_type err.");
                     return BOAT_ERROR_WALLET_KEY_TYPE_ERR;
+                }
+                if(fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_PKCS &&
+                    fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_NATIVE &&
+                    fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC){
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_format err.");
+                    return BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
                 }
                 
             }
