@@ -389,10 +389,11 @@ END_TEST
 START_TEST(test_001CreateWallet_0008CreateOneTimeWalletFail_UrlERR)
 {
     BSINT32 rtnVal;
+    BUINT8 testURL[3] = {1,2,3};
     BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
     BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
     memset(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,0,strlen(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl));
-    memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,"111",strlen("111"));
+    memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,testURL,sizeof(testURL));
 
     /* 1. execute unit test */
     rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
