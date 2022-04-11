@@ -590,7 +590,14 @@ START_TEST(test_001CreateWallet_0012CreatePersistWalletSuccess_10wallets)
     // ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
 
 
-    BoatIotSdkDeInit();
+    // BoatIotSdkDeInit();
+    fabricWalletConfigFree(wallet_config); 
+    BoatWalletDelete("fabric01.cfg");
+    BoatWalletDelete("fabric02.cfg");
+    BoatWalletDelete("fabric03.cfg");
+    BoatWalletDelete("fabric04.cfg");
+    BoatWalletDelete("fabric05.cfg");
+    BoatWalletDelete("fabric06.cfg");
 }
 END_TEST
 
