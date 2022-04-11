@@ -14,48 +14,49 @@
  * limitations under the License.
  *****************************************************************************/
 
-/*!@brief BoAT IoT SDK interface header file for PlatONE
+/*!@brief BoAT IoT SDK interface header file for Venachain
 
 @file
-api_platone.h is header file for BoAT IoT SDK PlatONE's interface.
+api_venachain.h is header file for BoAT IoT SDK Venachain's interface.
 */
 
-#ifndef __API_PLATONE_H__
-#define __API_PLATONE_H__
+#ifndef __API_VENACHAIN_H__
+#define __API_VENACHAIN_H__
 
 #include "boatiotsdk.h"
 #include "api_ethereum.h"
 
-/*! @defgroup platone-api boat platone-API
+/*! @defgroup venachain-api boat venachain-API
  * @{
  */
 
-#define BOAT_PLATONE_NODE_URL_MAX_LEN           BOAT_ETH_NODE_URL_MAX_LEN
+#define BOAT_VENACHAIN_NODE_URL_MAX_LEN           BOAT_ETH_NODE_URL_MAX_LEN
 
-#define BOAT_PLATONE_NONCE_AUTO                  BOAT_ETH_NONCE_AUTO
-#define BOAT_PLATONE_ADDRESS_SIZE                BOAT_ETH_ADDRESS_SIZE
+#define BOAT_VENACHAIN_NONCE_AUTO                  BOAT_ETH_NONCE_AUTO
+#define BOAT_VENACHAIN_ADDRESS_SIZE                BOAT_ETH_ADDRESS_SIZE
 
+/*
 typedef enum
 {
-BOAT_PLATONE_TX_TYPE_NORMAL_TRANSFER = 0x00,
-BOAT_PLATONE_TX_TYPE_CONTRACT = 0x02,
-BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR = 0x09,
-}BoatPlatoneTxtype;
+BOAT_VENACHAIN_TX_TYPE_NORMAL_TRANSFER = 0x00,
+BOAT_VENACHAIN_TX_TYPE_CONTRACT = 0x02,
+BOAT_VENACHAIN_TX_TYPE_CONTRACT_NULL_TERMED_STR = 0x09,
+}BoatVenachainTxtype;
+*/
 
-typedef BoatEthAccountInfo  BoatPlatoneAccountInfo;
-typedef BoatEthNetworkInfo  BoatPlatoneNetworkInfo;
-typedef BoatEthWallet       BoatPlatoneWallet;
-typedef BoatEthWalletConfig BoatPlatoneWalletConfig;
-typedef BoatEthTxFieldSig   BoatPlatoneTxFieldSig;
+typedef BoatEthAccountInfo  BoatVenachainAccountInfo;
+typedef BoatEthNetworkInfo  BoatVenachainNetworkInfo;
+typedef BoatEthWallet       BoatVenachainWallet;
+typedef BoatEthWalletConfig BoatVenachainWalletConfig;
+typedef BoatEthTxFieldSig   BoatVenachainTxFieldSig;
 
-//!@brief RAW PlatONE transaction fields
+//!@brief RAW Venachain transaction fields
 
-//! The only difference from Ethereum is appending a txtype field at the end of the
-//! struct. Thus a BoatPlatoneRawtxFields pointer can be transfered to any function
+//! Thus a BoatVenachainRawtxFields pointer can be transfered to any function
 //! that accepts a BoatEthRawtxFields argument. It behaves as a C implementation of
 //! class inheritance, i.e. a pointer of an inherited class could be assigned to a
 //! pointer of a base class.
-typedef struct TBoatPlatoneRawtxFields
+typedef struct TBoatVenachainRawtxFields
 {
     // Following fields are inherited from Ethereum.
     // DO NOT modify these fields unless all of Ethereum and all other protocols
@@ -70,25 +71,25 @@ typedef struct TBoatPlatoneRawtxFields
     BoatEthTxFieldSig sig;        //!< ECDSA signature, including r and s parts
     
     // PlatONE specific fields are appended here.
-    BoatPlatoneTxtype txtype;     //!< Transaction Type
+    //BoatPlatoneTxtype txtype;     //!< Transaction Type
 
-}BoatPlatoneRawtxFields;
+}BoatVenachainRawtxFields;
 
 //!@brief PlatONE Transaction
 
-//! The only difference between PlatONE transaction and Ethereum transaction is
-//! BoatPlatoneRawtxFields has more fields than BoatEthRawtxFields. To allow
-//! PlatONE to re-use Ethereum APIs that take BoatEthTx as function arguments,
+//! The only difference between Venachain transaction and Ethereum transaction is
+//! BoatVenachainRawtxFields has more fields than BoatEthRawtxFields. To allow
+//! Venachain to re-use Ethereum APIs that take BoatEthTx as function arguments,
 //! <rawtx_fields> MUST be the last field.
-typedef struct TBoatPlatoneTx
+typedef struct TBoatVenachainTx
 {
-    BoatPlatoneWallet *wallet_ptr; //!< Wallet pointer the transaction is combined with
+    BoatVenachainWallet *wallet_ptr; //!< Wallet pointer the transaction is combined with
     BoatFieldMax32B tx_hash;       //!< Transaction hash returned from network
     BBOOL is_sync_tx;              //!< True to perform a synchronous transaction (wait for getting mined), False for asynchronous transaction
 
     // rawtx_fields MUST be the last field
-    BoatPlatoneRawtxFields rawtx_fields;      //!< RAW transaction fields
-}BoatPlatoneTx;
+    BoatVenachainRawtxFields rawtx_fields;      //!< RAW transaction fields
+}BoatVenachainTx;
 
 typedef struct T_wbe3_nodeInfo
 {
@@ -110,10 +111,10 @@ extern "C" {
 
 
 /*!****************************************************************************
- * @brief Initialize PlatONE Transaction
+ * @brief Initialize Venachain Transaction
  *
  * @details
- *   This function initialize an PlatONE transaction.
+ *   This function initialize an Venachain transaction.
  *   
  * @param[in] wallet_ptr
  *   The wallet pointer that this transaction is combined with.
@@ -143,26 +144,22 @@ extern "C" {
  *   BoatPlatonTxSetRecipient() can later be called to modify the recipient at any
  *   time before the transaction is executed.
  *
- * @param[in] txtype
- *   Transaction type defined by BoatPlatonTxtype.
- *
  * @return
  *   This function returns BOAT_SUCCESS if initialization is successful.\n
  *   Otherwise it returns BOAT_ERROR.
  *
  * @see BoatEthTxInit()
  ******************************************************************************/
-BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
-							  BoatPlatoneTx *tx_ptr,
+BOAT_RESULT BoatVenachainTxInit(BoatVenachainWallet *wallet_ptr,
+							  BoatVenachainTx *tx_ptr,
 							  BBOOL is_sync_tx,
 							  BCHAR *gasprice_str,
 							  BCHAR *gaslimit_str,
-							  BCHAR *recipient_str,
-							  BoatPlatoneTxtype txtype);
+							  BCHAR *recipient_str);
 
 
 /*!****************************************************************************
- * @brief Set PlatONE Transaction Parameter: Transaction Type
+ * @brief Set Venachain Transaction Parameter: Transaction Type
  *
  * @details
  *   This function sets the type of transaction
@@ -177,7 +174,7 @@ BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
  *   This function returns BOAT_SUCCESS if setting is successful.\n
  *   Otherwise it returns one of the error codes.      
  ******************************************************************************/
-BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txtype);
+//BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txtype);
 
 
 /*!****************************************************************************
@@ -213,12 +210,12 @@ BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txty
  *   called contract function.\n
  *   If any error occurs, it returns NULL.
  *
- * @see BoatPlatoneTxSend()
+ * @see BoatVenachainTxSend()
  ******************************************************************************/
-BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
+BCHAR *BoatVenachainCallContractFunc(BoatVenachainTx *tx_ptr, BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
 
 /*!****************************************************************************
- * @brief Construct a raw PlatONE transaction synchronously.
+ * @brief Construct a raw Venachain transaction synchronously.
  *
  * @details
  *   This function is similar to PlatoneSendRawtx except that it waits for the
@@ -231,9 +228,9 @@ BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
  *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
  *   of the error codes.
  *	 
- * @see PlatoneSendRawtx()
+ * @see VenachainSendRawtx()
  ******************************************************************************/
-BOAT_RESULT BoatPlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr);
+BOAT_RESULT BoatVenachainSendRawtxWithReceipt(BOAT_INOUT BoatVenachainTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief Sign and send a transaction. Also call a stateful contract function.
@@ -274,11 +271,11 @@ BOAT_RESULT BoatPlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr);
  *
  * @see BoatPlatoneTxSend()
  ******************************************************************************/
-BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr);
+BOAT_RESULT BoatVenachainTxSend(BoatVenachainTx *tx_ptr);
 
 
 /*!****************************************************************************
- * @brief Transfer PlatONE value to spceified recipient
+ * @brief Transfer Venachain value to spceified recipient
  *
  * @details
  *   This function transfer PlatONE value from the wallet's owner account to the
@@ -299,16 +296,16 @@ BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr);
  *   This function returns BOAT_SUCCESS if transfer is successful.\n
  *   Otherwise it returns one of the error codes.
  ******************************************************************************/
-BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str);
+BOAT_RESULT BoatVenachainTransfer(BoatVenachainTx *tx_ptr, BCHAR * value_hex_str);
 
 
-// Ethereum APIs compatible for PlatONE
+// Ethereum APIs compatible for Venachain
 
 /*!****************************************************************************
- * @brief Initialize Boat PlatONE Wallet
+ * @brief Initialize Boat Venachain Wallet
  * @see BoatEthWalletInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BoatPlatoneWallet *BoatPlatoneWalletInit(const BoatPlatoneWalletConfig *config_ptr, BUINT32 config_size)
+__BOATSTATIC __BOATINLINE BoatPlatoneWallet *BoatVenachainWalletInit(const BoatVenachainWalletConfig *config_ptr, BUINT32 config_size)
 {
     return BoatEthWalletInit((const BoatEthWalletConfig *)config_ptr, config_size);
 }
@@ -318,7 +315,7 @@ __BOATSTATIC __BOATINLINE BoatPlatoneWallet *BoatPlatoneWalletInit(const BoatPla
  * @brief De-initialize Boat PlatONE Wallet
  * @see BoatEthWalletDeInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE void BoatPlatoneWalletDeInit(BoatPlatoneWallet *wallet_ptr)
+__BOATSTATIC __BOATINLINE void BoatVenachainWalletDeInit(BoatVenachainWallet *wallet_ptr)
 {
     BoatEthWalletDeInit((BoatEthWallet *)wallet_ptr);
 }
@@ -327,7 +324,7 @@ __BOATSTATIC __BOATINLINE void BoatPlatoneWalletDeInit(BoatPlatoneWallet *wallet
 * @brief Parse RPC method RESPONSE
 * @see eth_parse_json_result()
 *******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT platone_parse_json_result(const BCHAR *json_string, 
+__BOATSTATIC __BOATINLINE BOAT_RESULT venachain_parse_json_result(const BCHAR *json_string, 
 								                                const BCHAR *child_name, 
 								                                BoatFieldVariable *result_out)
 {
@@ -338,7 +335,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT platone_parse_json_result(const BCHAR *jso
  * @brief Set Node Url
  * @see BoatEthWalletSetNodeUrl()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneWalletSetNodeUrl(BoatPlatoneWallet *wallet_ptr, const BCHAR *node_url_ptr)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainWalletSetNodeUrl(BoatVenachainWallet *wallet_ptr, const BCHAR *node_url_ptr)
 {
     return BoatEthWalletSetNodeUrl((BoatEthWallet *)wallet_ptr, node_url_ptr);
 }
@@ -348,7 +345,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneWalletSetNodeUrl(BoatPlatoneWal
  * @brief Set EIP155
  * @see BoatEthWalletSetEIP155Comp()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneWalletSetEIP155Comp(BoatPlatoneWallet *wallet_ptr, BBOOL eip155_compatibility)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainWalletSetEIP155Comp(BoatVenachainWallet *wallet_ptr, BBOOL eip155_compatibility)
 {
     return BoatEthWalletSetEIP155Comp((BoatEthWallet *)wallet_ptr,eip155_compatibility);
 }
@@ -358,7 +355,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneWalletSetEIP155Comp(BoatPlatone
  * @brief Set ChainId
  * @see BoatEthWalletSetChainId()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneWalletSetChainId(BoatPlatoneWallet *wallet_ptr, BUINT32 chain_id)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainWalletSetChainId(BoatVenachainWallet *wallet_ptr, BUINT32 chain_id)
 {
     return BoatEthWalletSetChainId((BoatEthWallet *)wallet_ptr,chain_id);
 }
@@ -368,7 +365,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneWalletSetChainId(BoatPlatoneWal
  * @brief Get Balance
  * @see BoatEthWalletGetBalance()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BCHAR *BoatPlatoneWalletGetBalance(BoatPlatoneWallet *wallet_ptr, BCHAR *alt_address_str)
+__BOATSTATIC __BOATINLINE BCHAR *BoatVenachainWalletGetBalance(BoatVenachainWallet *wallet_ptr, BCHAR *alt_address_str)
 {
     return BoatEthWalletGetBalance((BoatEthWallet *)wallet_ptr, alt_address_str);
 }
@@ -378,7 +375,7 @@ __BOATSTATIC __BOATINLINE BCHAR *BoatPlatoneWalletGetBalance(BoatPlatoneWallet *
  * @brief Set Nonce
  * @see BoatEthTxSetNonce()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetNonce(BoatPlatoneTx *tx_ptr, BUINT64 nonce)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainTxSetNonce(BoatVenachainTx *tx_ptr, BUINT64 nonce)
 {
     return BoatEthTxSetNonce((BoatEthTx *)tx_ptr, nonce);
 }
@@ -388,7 +385,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetNonce(BoatPlatoneTx *tx_pt
  * @brief Set GasPrice
  * @see BoatEthTxSetGasPrice()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetGasPrice(BoatPlatoneTx *tx_ptr, BoatFieldMax32B *gas_price_ptr)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainTxSetGasPrice(BoatVenachainTx *tx_ptr, BoatFieldMax32B *gas_price_ptr)
 {
     return BoatEthTxSetGasPrice((BoatEthTx *)tx_ptr, gas_price_ptr);
 }
@@ -398,7 +395,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetGasPrice(BoatPlatoneTx *tx
  * @brief Set GasLimit
  * @see BoatEthTxSetGasLimit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetGasLimit(BoatPlatoneTx *tx_ptr, BoatFieldMax32B *gas_limit_ptr)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainTxSetGasLimit(BoatVenachainTx *tx_ptr, BoatFieldMax32B *gas_limit_ptr)
 {
     return BoatEthTxSetGasLimit((BoatEthTx *)tx_ptr, gas_limit_ptr);
 }
@@ -408,7 +405,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetGasLimit(BoatPlatoneTx *tx
  * @brief Set Recipient
  * @see BoatEthTxSetRecipient()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetRecipient(BoatPlatoneTx *tx_ptr, BUINT8 address[BOAT_PLATONE_ADDRESS_SIZE])
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainTxSetRecipient(BoatVenachainTx *tx_ptr, BUINT8 address[BOAT_PLATONE_ADDRESS_SIZE])
 {
     return BoatEthTxSetRecipient((BoatEthTx *)tx_ptr,address);
 }
@@ -418,7 +415,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetRecipient(BoatPlatoneTx *t
  * @brief Set Value
  * @see BoatEthTxSetValue()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetValue(BoatPlatoneTx *tx_ptr, BoatFieldMax32B *value_ptr)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainTxSetValue(BoatVenachainTx *tx_ptr, BoatFieldMax32B *value_ptr)
 {
     return BoatEthTxSetValue((BoatEthTx *)tx_ptr,value_ptr);
 }
@@ -428,7 +425,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetValue(BoatPlatoneTx *tx_pt
  * @brief Set Data
  * @see BoatEthTxSetData()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetData(BoatPlatoneTx *tx_ptr, BoatFieldVariable *data_ptr)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainTxSetData(BoatVenachainTx *tx_ptr, BoatFieldVariable *data_ptr)
 {
     return BoatEthTxSetData((BoatEthTx *)tx_ptr,data_ptr);
 }
@@ -438,7 +435,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneTxSetData(BoatPlatoneTx *tx_ptr
  * @brief Wait for a transaction being mined.
  * @see BoatEthGetTransactionReceipt()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneGetTransactionReceipt(BoatPlatoneTx *tx_ptr)
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainGetTransactionReceipt(BoatVenachainTx *tx_ptr)
 {
     return BoatEthGetTransactionReceipt((BoatEthTx *)tx_ptr);
 }
@@ -447,13 +444,13 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatoneGetTransactionReceipt(BoatPlato
  * @brief Parse RPC method RESPONSE.
  * @see eth_parse_json_result()
  ******************************************************************************/
-BOAT_RESULT BoatPlatoneParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out);
+BOAT_RESULT BoatVenachainParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out);
 
 /*!****************************************************************************
  * @brief Parse RPC method RESPONSE.
  * @see eth_parse_json_result()
  ******************************************************************************/
-BOAT_RESULT BoatPlatoneParseRpcResponseResult(const BCHAR *json_string, 
+BOAT_RESULT BoatVenachainParseRpcResponseResult(const BCHAR *json_string, 
                                               const BCHAR *child_name, 
                                               BoatFieldVariable *result_out);
 
@@ -461,7 +458,7 @@ BOAT_RESULT BoatPlatoneParseRpcResponseResult(const BCHAR *json_string,
  * @brief Get Nodes Info e.g. IP/Port.
  * @see BoatPlatoneGetNodesInfo()
  ******************************************************************************/
-BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out);
+BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,nodesResult *result_out);
 
 /*! @}*/
 
