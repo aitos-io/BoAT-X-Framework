@@ -99,6 +99,24 @@ START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig) 
+{
+    BSINT32 rtnVal;
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATON, NULL, NULL, sizeof(BoatPlatONWalletConfig));
+    
+    /* 3. verify test result */
+    /* 3-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    /* 3-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
