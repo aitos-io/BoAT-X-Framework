@@ -451,6 +451,7 @@ START_TEST(test_001CreateWallet_0015CreateSixWalletUnloadOneSuccess)
     ck_assert(g_boat_iot_sdk_context.wallet_list[5].is_used == true);
     BoatIotSdkDeInit();
 }
+END_TEST
 
 START_TEST(test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne)
 {
@@ -498,6 +499,7 @@ START_TEST(test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne)
 
     BoatIotSdkDeInit();
 }
+END_TEST
 
 START_TEST(test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne)
 {
@@ -546,6 +548,7 @@ START_TEST(test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne)
 
     BoatIotSdkDeInit();
 }
+END_TEST
 
 START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 {
