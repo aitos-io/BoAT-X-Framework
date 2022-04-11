@@ -107,7 +107,6 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
         #if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_HWBCS == 1)
         case BOAT_PROTOCOL_HLFABRIC:
         case BOAT_PROTOCOL_HWBCS:
-        #include "mbedtls/x509_crt.h"
             if (wallet_config_ptr != NULL)
             {
                 BoatHlfabricWalletConfig* fabric_config_ptr = wallet_config_ptr;
@@ -131,7 +130,7 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
 	            mbedtls_x509_crt_init(&m_certificate);
 	            int status = mbedtls_x509_crt_parse(&m_certificate,fabric_config_ptr->accountCertContent.content, fabric_config_ptr->accountCertContent.length);
                 if(status != BOAT_SUCCESS){
-                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet account cert err. ");
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet account cert err. %x ",-status);
                     return BOAT_ERROR;
                 }
                 for (int i = 0; i < fabric_config_ptr->nodesCfg.endorserLayoutNum; i++)
@@ -141,6 +140,7 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                     {
                         if(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities == 0 ||
                         fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities > fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber){
+                            BoatLog(BOAT_LOG_NORMAL, "quantities ERR ");
                             return BOAT_ERROR;
                         }
                         /* code */
@@ -148,16 +148,19 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                         {
                             /* code */
                             if(strlen(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl)==0){
+                                BoatLog(BOAT_LOG_NORMAL, "url len is 0 ");
                                 return BOAT_ERROR;
                             }
                             
                             if(UtilityStringLenCheck(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl) != BOAT_SUCCESS){
+                                BoatLog(BOAT_LOG_NORMAL, "url len check ERR ");
                                 return BOAT_ERROR;
                             }
                             for (int l = 0; l < strlen(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl); l++)
                             {
                                 /* code */
                                 if(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl[l] < 0x20){
+                                    BoatLog(BOAT_LOG_NORMAL, "url code ERR ");
                                     return BOAT_ERROR;
                                 }
                             }
@@ -169,15 +172,19 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                 {
                     /* code */
                     if(strlen(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl) == 0){
+                       BoatLog(BOAT_LOG_NORMAL, "order url len is  0 ");
                         return BOAT_ERROR;
                     }
                     if(UtilityStringLenCheck(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl) != BOAT_SUCCESS){
+                        BoatLog(BOAT_LOG_NORMAL, "order url len check ERR ");
                         return BOAT_ERROR;
                     }
+                    BoatLog(BOAT_LOG_NORMAL, "order url : %s ",fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl);
                     for (int l = 0; l < strlen(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl); l++)
                     {
                         /* code */
                         if(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl[l] < 0x20){
+                            BoatLog(BOAT_LOG_NORMAL, "order url ode ERR ");
                             return BOAT_ERROR;
                         }
                     }
