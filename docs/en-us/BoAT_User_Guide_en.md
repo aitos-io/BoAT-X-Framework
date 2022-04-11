@@ -396,7 +396,7 @@ When cross-compiling outside of Cygwin, in addition to the previous section, the
 
 ### Compile and Run Demo
 #### Ready
-SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, Hyperledger Fabric ,HW-BCS and Chainmaker. Before running these demos, the corresponding blockchain node software is need to installed(or have known nodes) and deploy the smart contracts required by the demo.  
+SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, Hyperledger Fabric ,HW-BCS and Chainmaker. Before running these demos, the corresponding blockchain node software needs to be installed if there is no known nodes. Also the smart contracts required by the demo needs to be deployed.
 
 The smart contract used by the demo and its ABI JSON file are placed in:  
 
@@ -476,7 +476,7 @@ Execute the following commands in the \<SDKRoot\> directory to compile the SDK c
 ````
 $make demo
 ````
-The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum` `platon` `fisco-bcos` `platone` `fabric` `hwbcs` `chainmaker`.
+The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum`,`platon`,`fisco-bcos`,`platone`,`fabric`,`hwbcs` or `chainmaker`.
 
 
 ### Trouble Shooting in Compilation

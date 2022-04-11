@@ -137,7 +137,34 @@ START_TEST(test_007Transfer_0002TransferFailureNullParam)
     BoatIotSdkDeInit();
 }
 
+START_TEST(test_007Transfer_0003TransferWithSpecifyChainIDSuccess) 
+{
+    BSINT32 rtnVal;
+    BOAT_RESULT result;
+    BoatEthTx tx_ctx;
 
+    BoatIotSdkInit();
+
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
+    
+    wallet.eip155_compatibility = BOAT_TRUE;
+    wallet.chain_id = TEST_ETHEREUM_CHAIN_ID;
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, NULL, &wallet, sizeof(BoatEthWalletConfig));
+    ck_assert_int_eq(rtnVal, 0);
+
+    g_ethereum_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+
+    result = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
+                           "0x333333",
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatEthTransfer(&tx_ctx, "0x1");
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    BoatIotSdkDeInit();
+}
 
 Suite *make_transactions_suite(void)
 {
@@ -156,8 +183,10 @@ Suite *make_transactions_suite(void)
     tcase_add_test(tc_transaction_api, test_006GetBalance_0001GetSuccess); 
     tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetSuccessNullAddress); 
     tcase_add_test(tc_transaction_api, test_006GetBalance_0003GetFailureNullWallet);
+
     tcase_add_test(tc_transaction_api, test_007Transfer_0001TransferSuccess); 
     tcase_add_test(tc_transaction_api, test_007Transfer_0002TransferFailureNullParam); 
-
+    tcase_add_test(tc_transaction_api, test_007Transfer_0003TransferWithSpecifyChainIDSuccess); 
+    
     return s_transaction;
 }

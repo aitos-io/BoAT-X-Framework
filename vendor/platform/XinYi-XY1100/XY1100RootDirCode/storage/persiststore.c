@@ -52,9 +52,9 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
     BUINT8  salt_array[BOAT_STORAGE_SALT_SIZE];
     BUINT8  data_hash_array[32];
     BUINT8  rawData[data_len + 31]; // 31 for AES padding
-	BUINT8  encrypted_array[data_len + 31]; // 31 for AES padding
+    BUINT8  encrypted_array[data_len + 31]; // 31 for AES padding
     BUINT32 encrypted_len;
-	BUINT8  writeDataTmp[data_len + 31 + 32 + 16 + 16];
+    BUINT8  writeDataTmp[data_len + 31 + 32 + 16 + 16];
     BUINT32 writeDataLen;
 
     BOAT_RESULT result = BOAT_SUCCESS;
