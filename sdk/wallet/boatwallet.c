@@ -134,6 +134,50 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet account cert err. ");
                     return BOAT_ERROR;
                 }
+                for (int i = 0; i < fabric_config_ptr->nodesCfg.endorserLayoutNum; i++)
+                {
+                    /* code */
+                    for (int j = 0; j < fabric_config_ptr->nodesCfg.layoutCfg[i].endorserGroupNum; j++)
+                    {
+                        /* code */
+                        for (int k = 0; k < fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber; k++)
+                        {
+                            /* code */
+                            if(strlen(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl)==0){
+                                return BOAT_ERROR;
+                            }
+                            
+                            if(UtilityStringLenCheck(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl) != BOAT_SUCCESS){
+                                return BOAT_ERROR;
+                            }
+                            for (int l = 0; l < strlen(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl); l++)
+                            {
+                                /* code */
+                                if(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl[l] < 0x20){
+                                    return BOAT_ERROR;
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+                for (int i = 0; i < fabric_config_ptr->nodesCfg.orderCfg.endorserNumber; i++)
+                {
+                    /* code */
+                    if(strlen(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl) == 0){
+                        return BOAT_ERROR;
+                    }
+                    if(UtilityStringLenCheck(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl) != BOAT_SUCCESS){
+                        return BOAT_ERROR;
+                    }
+                    for (int l = 0; l < strlen(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl); l++)
+                    {
+                        /* code */
+                        if(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl[l] < 0x20){
+                            return BOAT_ERROR;
+                        }
+                    }
+                }
                 
             }
             break;
