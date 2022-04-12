@@ -14,32 +14,31 @@
  * limitations under the License.
  *****************************************************************************/
 
-/*!@brief Platone wallet API for BoAT IoT SDK
+/*!@brief Venachain wallet API for BoAT IoT SDK
 
 @file
-boatPlatonewallet.c defines the Platone wallet API for BoAT IoT SDK.
+boatVenachainwallet.c defines the Venachain wallet API for BoAT IoT SDK.
 */
 
 #include "boatconfig.h"
 #include "boatinternal.h"
-#if PROTOCOL_USE_PLATONE == 1
+#if PROTOCOL_USE_VENACHAIN == 1
 #include "web3intf.h"
 #include "boatprotocols.h"
 #include "rpcintf.h"
 
 #include "cJSON.h"
 
-// As Platone's wallet structure is mostly the same as Ethereum, thus it
+// As Venachain's wallet structure is mostly the same as Ethereum, thus it
 // re-use a lot of Ethereum's data structure and API. APIs not listed 
 // here are compatible with Ethereum.
 
-BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
-							  BoatPlatoneTx *tx_ptr,
+BOAT_RESULT BoatVenachainTxInit(BoatVenachainWallet *wallet_ptr,
+							  BoatVenachainTx *tx_ptr,
 							  BBOOL is_sync_tx,
 							  BCHAR *gasprice_str,
 							  BCHAR *gaslimit_str,
-							  BCHAR *recipient_str,
-							  BoatPlatoneTxtype txtype)
+							  BCHAR *recipient_str)
 {
     BOAT_RESULT result;
 
@@ -57,24 +56,24 @@ BOAT_RESULT BoatPlatoneTxInit(BoatPlatoneWallet *wallet_ptr,
                            is_sync_tx, gasprice_str, gaslimit_str, recipient_str);
     if (result != BOAT_SUCCESS)
     {
-		BoatLog(BOAT_LOG_CRITICAL, "platone Tx init failed.");
+		BoatLog(BOAT_LOG_CRITICAL, "venachain Tx init failed.");
         return result;
     }
-
+    /*
     // Set transaction type
-    result = BoatPlatoneTxSetTxtype(tx_ptr, txtype);
+    result = BoatVenachainTxSetTxtype(tx_ptr, txtype);
 
     if (result != BOAT_SUCCESS)
     {
-		BoatLog(BOAT_LOG_CRITICAL, "platone set Tx type failed.");
+		BoatLog(BOAT_LOG_CRITICAL, "venachain set Tx type failed.");
         return result;
     }
-    
+    */
     return BOAT_SUCCESS;
 }
 
-
-BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txtype)
+/*
+BOAT_RESULT BoatVenachainTxSetTxtype(BoatVenachainTx *tx_ptr, BoatVenachainTxtype txtype)
 {
     if (tx_ptr == NULL)
     {
@@ -86,7 +85,7 @@ BOAT_RESULT BoatPlatoneTxSetTxtype(BoatPlatoneTx *tx_ptr, BoatPlatoneTxtype txty
     
     return BOAT_SUCCESS;
 }
-
+*/
 
 
 void nodeResFree(nodesResult *result_out)
@@ -187,7 +186,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     // return entire RESPONSE content	
 	// return_value_ptr = rpc_response_str;
 
-    BoatPlatoneParseRpcResponseResult(rpc_response_str, "result", &parse_result);
+    BoatVenachainParseRpcResponseResult(rpc_response_str, "result", &parse_result);
     nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(parse_result.field_ptr))/2);
     memset(nodeManagerAddr,0x00,strlen((BCHAR*)(parse_result.field_ptr))/2);
     // hex2array(parse_result.field_ptr+2,strlen((BCHAR*)(parse_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
@@ -247,7 +246,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     // return entire RESPONSE content	
 	return_value_ptr = rpc_response_str;
 
-    BoatPlatoneParseRpcResponseResult(rpc_response_str, "data", &parse_result);
+    BoatVenachainParseRpcResponseResult(rpc_response_str, "data", &parse_result);
 
     nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(parse_result.field_ptr)) / 2);
     memset(nodeManagerAddr, 0x00, strlen((BCHAR*)(parse_result.field_ptr)) / 2);
@@ -257,7 +256,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     
     // web3_parse_fatherNamejson_result(nodeManagerAddr,"data", "externalIP", &parse_result);
     nodeResFree(result_out);
-    Platone_get_Nodeinfo(nodeManagerAddr,result_out);
+    Venachain_get_Nodeinfo(nodeManagerAddr,result_out);
 
 
 
@@ -280,7 +279,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     return return_value_ptr;
 }
 
-BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
+BCHAR *BoatVenachainCallContractFunc(BoatVenachainTx *tx_ptr, BUINT8 *rlp_param_ptr,
 								   BUINT32 rlp_param_len)
 {
     // *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
@@ -308,9 +307,9 @@ BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
         return NULL;
     }
 
-    BCHAR recipient_hexstr[BOAT_PLATONE_ADDRESS_SIZE*2+3];
+    BCHAR recipient_hexstr[BOAT_VENACHAIN_ADDRESS_SIZE*2+3];
     
-    UtilityBinToHex(recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_PLATONE_ADDRESS_SIZE,
+    UtilityBinToHex(recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_VENACHAIN_ADDRESS_SIZE,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     param_eth_call.to = recipient_hexstr;
 
@@ -333,7 +332,7 @@ BCHAR *BoatPlatoneCallContractFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
     return retval_str;
 }
 
-BCHAR *BoatPlatoneCallContractGetNodesInfoFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rlp_param_ptr,
+BCHAR *BoatVenachainCallContractGetNodesInfoFunc(BoatVenachainTx *tx_ptr, BUINT8 *rlp_param_ptr,
 									           BUINT32 rlp_param_len ,
                                                nodesResult *result_out)
 {
@@ -361,9 +360,9 @@ BCHAR *BoatPlatoneCallContractGetNodesInfoFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rl
         return NULL;
     }
 
-    BCHAR recipient_hexstr[BOAT_PLATONE_ADDRESS_SIZE*2+3];
+    BCHAR recipient_hexstr[BOAT_VENACHAIN_ADDRESS_SIZE*2+3];
     
-    UtilityBinToHex(recipient_hexstr, tx_ptr->wallet_ptr->account_info.address, BOAT_PLATONE_ADDRESS_SIZE,
+    UtilityBinToHex(recipient_hexstr, tx_ptr->wallet_ptr->account_info.address, BOAT_VENACHAIN_ADDRESS_SIZE,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     param_eth_call.to = recipient_hexstr;
     
@@ -386,7 +385,7 @@ BCHAR *BoatPlatoneCallContractGetNodesInfoFunc(BoatPlatoneTx *tx_ptr, BUINT8 *rl
 }
 
 
-BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out)
+BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,nodesResult *result_out)
 {
     BCHAR *call_result_str = NULL;
     RlpEncodedStreamObject * rlp_stream_ptr;
@@ -415,9 +414,9 @@ BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out)
 
     rlp_stream_ptr = RlpGetEncodedStream(&rlp_object_list);
 
-    call_result_str = BoatPlatoneCallContractGetNodesInfoFunc(tx_ptr, rlp_stream_ptr->stream_ptr, rlp_stream_ptr->stream_len,result_out);
+    call_result_str = BoatVenachainCallContractGetNodesInfoFunc(tx_ptr, rlp_stream_ptr->stream_ptr, rlp_stream_ptr->stream_len,result_out);
 
-    BoatLog(BOAT_LOG_CRITICAL, " BoatPlatoneCallContractGetNodesInfoFunc ok.");
+    BoatLog(BOAT_LOG_CRITICAL, " BoatVenachainCallContractGetNodesInfoFunc ok.");
     boat_catch(cleanup)
     {
         RlpRecursiveDeleteObject(&rlp_object_list);
@@ -429,21 +428,21 @@ BCHAR * BoatPlatoneGetNodesInfo(BoatPlatoneTx *tx_ptr,nodesResult *result_out)
 
 }
 
-BOAT_RESULT BoatPlatoneSendRawtxWithReceipt(BOAT_INOUT BoatPlatoneTx *tx_ptr)
+BOAT_RESULT BoatVenachainSendRawtxWithReceipt(BOAT_INOUT BoatVenachainTx *tx_ptr)
 {
     BOAT_RESULT result = BOAT_ERROR;
 
-    result = PlatoneSendRawtx(tx_ptr);
+    result = VenachainSendRawtx(tx_ptr);
 
     if (result == BOAT_SUCCESS)
     {
-        result = BoatPlatoneGetTransactionReceipt(tx_ptr);
+        result = BoatVenachainGetTransactionReceipt(tx_ptr);
     }
 
     return result;
 }
 
-BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
+BOAT_RESULT BoatVenachainTxSend(BoatVenachainTx *tx_ptr)
 {
     BOAT_RESULT result;
 
@@ -455,18 +454,18 @@ BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr)
 
     if (tx_ptr->is_sync_tx == BOAT_FALSE)
     {
-        result = PlatoneSendRawtx(tx_ptr);
+        result = VenachainSendRawtx(tx_ptr);
     }
     else
     {
-        result = BoatPlatoneSendRawtxWithReceipt(tx_ptr);
+        result = BoatVenachainSendRawtxWithReceipt(tx_ptr);
     }
     
     return result;
 }
 
 
-BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
+BOAT_RESULT BoatVenachainTransfer(BoatVenachainTx *tx_ptr, BCHAR *value_hex_str)
 {
     BoatFieldMax32B   value;
     BoatFieldVariable data;
@@ -480,7 +479,7 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
     }
     
     // Set nonce
-    result = BoatPlatoneTxSetNonce(tx_ptr, BOAT_PLATONE_NONCE_AUTO);
+    result = BoatVenachainTxSetNonce(tx_ptr, BOAT_VENACHAIN_NONCE_AUTO);
     if (result != BOAT_SUCCESS)
     {
         return result;
@@ -489,7 +488,7 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
     // Set value
     value.field_len = UtilityHexToBin(value.field, 32, value_hex_str,
 									  TRIMBIN_LEFTTRIM, BOAT_TRUE);
-    result = BoatPlatoneTxSetValue(tx_ptr, &value);
+    result = BoatVenachainTxSetValue(tx_ptr, &value);
     if (result != BOAT_SUCCESS)
     {
         return result;
@@ -500,7 +499,7 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
     data.field_ptr = (BUINT8*)&tx_type_big;
     data.field_len = sizeof(BUINT64);
     
-    result = BoatPlatoneTxSetData(tx_ptr, &data);
+    result = BoatVenachainTxSetData(tx_ptr, &data);
     if (result != BOAT_SUCCESS)
     {
         return result;
@@ -508,7 +507,7 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
     
     // Perform the transaction
     // NOTE: Field v,r,s are calculated automatically
-    result = BoatPlatoneTxSend(tx_ptr);
+    result = BoatVenachainTxSend(tx_ptr);
     if (result != BOAT_SUCCESS)
     {
          return result;
@@ -517,12 +516,12 @@ BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR *value_hex_str)
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT BoatPlatoneParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
+BOAT_RESULT BoatVenachainParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return platone_parse_json_result(json_string, "", result_out);
+    return venachain_parse_json_result(json_string, "", result_out);
 }
 
-BOAT_RESULT BoatPlatoneParseRpcResponseResult(const BCHAR *json_string, 
+BOAT_RESULT BoatVenachainParseRpcResponseResult(const BCHAR *json_string, 
 										  	  const BCHAR *child_name, 
 										  	  BoatFieldVariable *result_out)
 {
@@ -531,6 +530,6 @@ BOAT_RESULT BoatPlatoneParseRpcResponseResult(const BCHAR *json_string,
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
-	return platone_parse_json_result(json_string, child_name, result_out);
+	return venachain_parse_json_result(json_string, child_name, result_out);
 }
-#endif /* end of PROTOCOL_USE_PLATONE */
+#endif /* end of PROTOCOL_USE_VENACHAIN */
