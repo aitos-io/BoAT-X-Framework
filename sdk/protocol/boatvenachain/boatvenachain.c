@@ -44,7 +44,7 @@ BOAT_RESULT VenachainSendRawtx(BOAT_INOUT BoatVenachainTx *tx_ptr)
     RlpObject value_rlp_object;
     RlpObject data_rlp_object;
 
-    RlpObject txtype_rlp_object;
+// RlpObject txtype_rlp_object;
 
     RlpObject v_rlp_object;
     RlpObject r_rlp_object;
