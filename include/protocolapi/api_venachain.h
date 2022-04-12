@@ -191,7 +191,7 @@ BOAT_RESULT BoatVenachainTxInit(BoatVenachainWallet *wallet_ptr,
  *   \n To call contract function that may change the state, use BoatPlatonTxSend()
  *   instead.
  *   \n If call a contract function that may change the state with
- *   BoatPlatoneCallContractFunc(), the function will be executed and return a value,
+ *   BoatVenachainCallContractFunc(), the function will be executed and return a value,
  *   but none of the states will change.
  *
  * @param[in] tx_ptr
@@ -218,7 +218,7 @@ BCHAR *BoatVenachainCallContractFunc(BoatVenachainTx *tx_ptr, BUINT8 *rlp_param_
  * @brief Construct a raw Venachain transaction synchronously.
  *
  * @details
- *   This function is similar to PlatoneSendRawtx except that it waits for the
+ *   This function is similar to VenachainSendRawtx except that it waits for the
  *   transaction being mined.
  *	 
  * @param[in] tx_ptr
@@ -250,7 +250,7 @@ BOAT_RESULT BoatVenachainSendRawtxWithReceipt(BOAT_INOUT BoatVenachainTx *tx_ptr
  *   \n If the transaction is a contract function call, the caller cannot get its
  *   return value because the transaction is asynchronously executed. It's a
  *   good practice to save the return value in a state variable and use
- *   BoatPlatoneCallContractFunc() to call a "read" contract function that could read
+ *   BoatVenachainCallContractFunc() to call a "read" contract function that could read
  *   and return the state variable.
  *
  * @note
@@ -258,7 +258,7 @@ BOAT_RESULT BoatVenachainSendRawtxWithReceipt(BOAT_INOUT BoatVenachainTx *tx_ptr
  *   be called in a transaction way. "state" is the "global variable" used in a
  *   contract.
  *   \n Any contract function that doesn't change the state of the contract can
- *   be called either in a transaction way or by BoatPlatoneCallContractFunc(), which
+ *   be called either in a transaction way or by BoatVenachainCallContractFunc(), which
  *   invokes the eth_call RPC method. However the former will consume gas and
  *   latter doesn't consume gas.
  *
@@ -269,7 +269,7 @@ BOAT_RESULT BoatVenachainSendRawtxWithReceipt(BOAT_INOUT BoatVenachainTx *tx_ptr
  *   This function returns BOAT_SUCCESS if setting is successful.\n
  *   Otherwise it returns one of the error codes.
  *
- * @see BoatPlatoneTxSend()
+ * @see BoatVenachainTxSend()
  ******************************************************************************/
 BOAT_RESULT BoatVenachainTxSend(BoatVenachainTx *tx_ptr);
 
@@ -305,7 +305,7 @@ BOAT_RESULT BoatVenachainTransfer(BoatVenachainTx *tx_ptr, BCHAR * value_hex_str
  * @brief Initialize Boat Venachain Wallet
  * @see BoatEthWalletInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BoatPlatoneWallet *BoatVenachainWalletInit(const BoatVenachainWalletConfig *config_ptr, BUINT32 config_size)
+__BOATSTATIC __BOATINLINE BoatVenachainWallet *BoatVenachainWalletInit(const BoatVenachainWalletConfig *config_ptr, BUINT32 config_size)
 {
     return BoatEthWalletInit((const BoatEthWalletConfig *)config_ptr, config_size);
 }
@@ -405,7 +405,7 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainTxSetGasLimit(BoatVenachainTx
  * @brief Set Recipient
  * @see BoatEthTxSetRecipient()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainTxSetRecipient(BoatVenachainTx *tx_ptr, BUINT8 address[BOAT_PLATONE_ADDRESS_SIZE])
+__BOATSTATIC __BOATINLINE BOAT_RESULT BoatVenachainTxSetRecipient(BoatVenachainTx *tx_ptr, BUINT8 address[BOAT_VENACHAIN_ADDRESS_SIZE])
 {
     return BoatEthTxSetRecipient((BoatEthTx *)tx_ptr,address);
 }
@@ -456,7 +456,7 @@ BOAT_RESULT BoatVenachainParseRpcResponseResult(const BCHAR *json_string,
 
 /*!****************************************************************************
  * @brief Get Nodes Info e.g. IP/Port.
- * @see BoatPlatoneGetNodesInfo()
+ * @see BoatVenachainGetNodesInfo()
  ******************************************************************************/
 BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,nodesResult *result_out);
 
