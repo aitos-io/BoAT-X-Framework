@@ -189,7 +189,7 @@ BOAT_RESULT VenachainSendRawtx(BOAT_INOUT BoatVenachainTx *tx_ptr)
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append data to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, VenachainSendRawtx_cleanup);
     }
-
+/*
     //Encode txtype
     BUINT8 txtype_field[8];
     BUINT8 txtype_len;
@@ -213,7 +213,7 @@ BOAT_RESULT VenachainSendRawtx(BOAT_INOUT BoatVenachainTx *tx_ptr)
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append txtype to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, VenachainSendRawtx_cleanup);
     }
-
+*/
     // If EIP-155 is required, encode v = chain id, r = s = NULL in this step
     if (tx_ptr->wallet_ptr->network_info.eip155_compatibility == BOAT_TRUE)
     {
