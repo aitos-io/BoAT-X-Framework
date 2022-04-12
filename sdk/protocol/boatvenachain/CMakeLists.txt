@@ -1,6 +1,6 @@
-set(SUB_MODULE_NAME boatplatone-obj)
+set(SUB_MODULE_NAME boatvenachain-obj)
 
-set(FILE_SRC        boatplatone.c)
+set(FILE_SRC        boatvenachain.c)
 
 
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
