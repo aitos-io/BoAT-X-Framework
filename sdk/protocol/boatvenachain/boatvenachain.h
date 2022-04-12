@@ -17,16 +17,16 @@
 /*!@brief Header file for performing RAW transaction
 
 @file
-boatplatone.h is header file for RAW transaction construction and performing.
+boatvenachain.h is header file for RAW transaction construction and performing.
 */
 
-#ifndef __BOATPLATONE_H__
-#define __BOATPLATONE_H__
+#ifndef __BOATVENACHAIN_H__
+#define __BOATVENACHAIN_H__
 
 #include "boatinternal.h"
 
 
-/*! @defgroup platonep protocol-platone 
+/*! @defgroup venachainp protocol-venachain 
  * @{
  */
 
@@ -36,7 +36,7 @@ extern "C" {
 
 
 /*!****************************************************************************
- * @brief Construct a raw PlatONE transacton and encodes it as per RLP rules.
+ * @brief Construct a raw Venachain transacton and encodes it as per RLP rules.
  *
  * @details
  *   This function constructs a raw transacton and sends it asynchronously (i.e.
@@ -104,22 +104,22 @@ extern "C" {
  *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
  *   of the error codes.
  ******************************************************************************/
-BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr);
+BOAT_RESULT VenachainSendRawtx(BOAT_INOUT BoatVenachainTx *tx_ptr);
 
 
 /*! @}*/
 
 /*!****************************************************************************
- * @brief parse platone nodeinfo form Contract management service
+ * @brief parse venachain nodeinfo form Contract management service
  *
  * @details
  *   This function Obtain node information by calling the contract management service，
- * and parse platone nodeinfo 
+ * and parse venachain nodeinfo 
  *	 
  * @param[in] monitor
  *   return form contract management service
  * @param[in] result_out
- * platone node info for Boat
+ * venachain node info for Boat
  *
  * @return
  *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
@@ -127,7 +127,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr);
  *	 
  * @see 
  ******************************************************************************/
-int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out);
+int Venachain_get_Nodeinfo(const char * const monitor,nodesResult *result_out);
 
 
 #ifdef __cplusplus
