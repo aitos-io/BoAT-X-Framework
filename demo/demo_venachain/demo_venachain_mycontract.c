@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "my_contract.cpp.abi.h"
-#include "protocolapi/api_platone.h"
+#include "protocolapi/api_venachain.h"
 
 /**
  * macro used to select wallet type:
@@ -53,14 +53,14 @@ const BCHAR *demoUrl = "http://116.236.47.90:7545";
 const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
 
 
-BoatPlatoneWallet *g_platone_wallet_ptr;
+BoatVenachainWallet *g_venachain_wallet_ptr;
 
 
 #if defined(USE_ONETIME_WALLET)
-__BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
+__BOATSTATIC BOAT_RESULT venachain_createOnetimeWallet()
 {
     BSINT32 index;
-    BoatPlatoneWalletConfig wallet_config = {0};
+    BoatVenachainWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]               = {0};
 
     (void)binFormatKey; //avoid warning
@@ -93,26 +93,26 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 	
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
-    strncpy(wallet_config.node_url_str, demoUrl, BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
+    strncpy(wallet_config.node_url_str, demoUrl, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
 
-	/* create platone wallet */
-    index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet_config, sizeof(BoatPlatoneWalletConfig));
+	/* create venachain wallet */
+    index = BoatWalletCreate(BOAT_PROTOCOL_VENACHAIN, NULL, &wallet_config, sizeof(BoatVenachainWalletConfig));
     if (index < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-    g_platone_wallet_ptr = BoatGetWalletByIndex(index);
+    g_venachain_wallet_ptr = BoatGetWalletByIndex(index);
     
     return BOAT_SUCCESS;
 }
 #endif
 
 #if defined(USE_CREATE_PERSIST_WALLET)
-__BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
+__BOATSTATIC BOAT_RESULT venachain_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatPlatoneWalletConfig wallet_config = {0};
+    BoatVenachainWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]               = {0};
 
     (void)binFormatKey; //avoid warning
@@ -145,59 +145,58 @@ __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
-    strncpy(wallet_config.node_url_str, demoUrl, BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
+    strncpy(wallet_config.node_url_str, demoUrl, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
 
-	/* create platone wallet */
-    index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, &wallet_config, sizeof(BoatPlatoneWalletConfig));
+	/* create venachain wallet */
+    index = BoatWalletCreate(BOAT_PROTOCOL_VENACHAIN, wallet_name, &wallet_config, sizeof(BoatVenachainWalletConfig));
     if (index < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
 
-    g_platone_wallet_ptr = BoatGetWalletByIndex(index);
+    g_venachain_wallet_ptr = BoatGetWalletByIndex(index);
 
     return BOAT_SUCCESS;
 }
 #endif
 
 #if defined(USE_LOAD_PERSIST_WALLET)
-__BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
+__BOATSTATIC BOAT_RESULT venachain_loadPersistWallet(BCHAR *wallet_name)
 {
 	BSINT32 index;
 
-	/* create platone wallet */
-    index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, NULL, sizeof(BoatPlatoneWalletConfig));
+	/* create venachain wallet */
+    index = BoatWalletCreate(BOAT_PROTOCOL_VENACHAIN, wallet_name, NULL, sizeof(BoatVenachainWalletConfig));
     if (index < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-    g_platone_wallet_ptr = BoatGetWalletByIndex(index);
+    g_venachain_wallet_ptr = BoatGetWalletByIndex(index);
 
     return BOAT_SUCCESS;
 }
 #endif
 
-BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
+BOAT_RESULT venachain_call_mycontract(BoatVenachainWallet *wallet_ptr)
 {
     BCHAR *result_str;
-    BoatPlatoneTx tx_ctx;
+    BoatVenachainTx tx_ctx;
     BOAT_RESULT result;
     nodesResult result_out = {0,NULL};
 
     /* Set Contract Address */
-    result = BoatPlatoneTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
+    result = BoatVenachainTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
 							   "0x333333",
-							   (BCHAR *)demoRecipientAddress,
-							   BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
+							   (BCHAR *)demoRecipientAddress);
 
     if (result != BOAT_SUCCESS)
 	{
-        //BoatLog(BOAT_LOG_NORMAL, "BoatPlatoneTxInit fails.");
+        //BoatLog(BOAT_LOG_NORMAL, "BoatVenachainTxInit fails.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
-    result_str = BoatPlatoneGetNodesInfo(&tx_ctx,&result_out);
+    result_str = BoatVenachainGetNodesInfo(&tx_ctx,&result_out);
     for (BSINT32 i = 0; i < result_out.num; i++)
     {
         /* code */
@@ -231,16 +230,16 @@ int main(int argc, char *argv[])
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     
-	/* step-2: create platone wallet */
+	/* step-2: create venachain wallet */
 #if defined(USE_ONETIME_WALLET)	
 	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
-	result = platone_createOnetimeWallet();
+	result = venachain_createOnetimeWallet();
 #elif defined(USE_CREATE_PERSIST_WALLET)
 	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
-	result = platone_createPersistWallet("platone.cfg");
+	result = venachain_createPersistWallet("venachain.cfg");
 #elif defined(USE_LOAD_PERSIST_WALLET)
 	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: load persist wallet.");
-	result = platone_loadPersistWallet("platone.cfg");
+	result = venachain_loadPersistWallet("venachain.cfg");
 #else
 	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
 	//return -1;
@@ -248,22 +247,22 @@ int main(int argc, char *argv[])
 #endif	
     if (result != BOAT_SUCCESS)
 	{
-		 //BoatLog(BOAT_LOG_CRITICAL, "platoneWalletPrepare_create failed : %d.", result);
+		 //BoatLog(BOAT_LOG_CRITICAL, "venachainWalletPrepare_create failed : %d.", result);
 		//return -1;
-        boat_throw(result, platone_demo_catch);
+        boat_throw(result, venachain_demo_catch);
 	}
     
-	/* step-3: execute 'platone_call_mycontract' */
-	result = platone_call_mycontract(g_platone_wallet_ptr);
+	/* step-3: execute 'venachain_call_mycontract' */
+	result = venachain_call_mycontract(g_venachain_wallet_ptr);
     if (result != BOAT_SUCCESS)
 	{
-        //BoatLog(BOAT_LOG_NORMAL, "platone mycontract access Failed: %d.", result);
+        //BoatLog(BOAT_LOG_NORMAL, "venachain mycontract access Failed: %d.", result);
     }
 	else
 	{
-        //BoatLog(BOAT_LOG_NORMAL, "platone mycontract access Passed.");
+        //BoatLog(BOAT_LOG_NORMAL, "venachain mycontract access Passed.");
     }
-	boat_catch(platone_demo_catch)
+	boat_catch(venachain_demo_catch)
     {
     }
 	/* step-4: Boat SDK Deinitialization */
