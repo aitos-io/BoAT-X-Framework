@@ -755,7 +755,7 @@ class CFunctionGen():
         inputs_len = len(inputs)
 
         input_str = '('
-        input_str += 'BoatPlatoneTx *tx_ptr'
+        input_str += 'BoatVenachainTx *tx_ptr'
 
         if inputs_len != 0:
             input_str += ', '
@@ -851,7 +851,7 @@ class CFunctionGen():
 
         # Set Nonce
         if not self.is_Change_Blockchain_State(abi_item):
-            func_body_str += '    boat_try(BoatPlatoneTxSetNonce(tx_ptr, BOAT_PLATONE_NONCE_AUTO));\n\n'
+            func_body_str += '    boat_try(BoatVenachainTxSetNonce(tx_ptr, BOAT_VENACHAIN_NONCE_AUTO));\n\n'
 
 
 
@@ -1059,11 +1059,11 @@ class CFunctionGen():
 
         if self.is_Change_Blockchain_State(abi_item):
             # for state-less funciton call
-            func_body_str += '    call_result_str = BoatPlatoneCallContractFunc(tx_ptr, data_field.field_ptr, data_field.field_len);\n\n'
+            func_body_str += '    call_result_str = BoatVenachainCallContractFunc(tx_ptr, data_field.field_ptr, data_field.field_len);\n\n'
         else:
             # for stateful transaction
-            func_body_str += '    boat_try(BoatPlatoneTxSetData(tx_ptr, &data_field));\n\n'
-            func_body_str += '    boat_try(BoatPlatoneTxSend(tx_ptr));\n\n'
+            func_body_str += '    boat_try(BoatVenachainTxSetData(tx_ptr, &data_field));\n\n'
+            func_body_str += '    boat_try(BoatVenachainTxSend(tx_ptr));\n\n'
             func_body_str += '    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
 
         # Cleanup Label
