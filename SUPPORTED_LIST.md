@@ -10,7 +10,7 @@
 
 ### Blockchain Official Websites
 + [Ethereum](https://ethereum.org/)
-+ [Ganache: an Ethereum Simulator](https://www.trufflesuite.com/truffle/)
++ [Ganache: an Ethereum Simulator](https://trufflesuite.com/ganache/)
 + [PlatON](https://www.platon.network/)
 + [PlatON Enterprise](https://github.com/PlatONEnterprise/)
 + [FISCO BCOS](http://fisco-bcos.org/)
