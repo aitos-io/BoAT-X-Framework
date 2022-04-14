@@ -66,13 +66,15 @@ clean:
 	make -C boatplaton    clean
 	make -C boatplatone   clean
 	make -C boatfiscobcos clean
-	make -c boatvenachain clean
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)	
 	make -C boathlfabric  clean
 endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)	
 	make -C boathwbcs  clean
 endif
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)	
 	make -C boatchainmaker clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
+	make -C boatvenachain clean
 endif

@@ -5,7 +5,7 @@ OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol/boatvenachain
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 
-all: $(OBJECTS_DIR) $(OBJECTS)
+all: $(OBJECTS_DIR) $(OBJECTS) 
 
 
 $(OBJECTS_DIR):
