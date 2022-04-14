@@ -390,8 +390,8 @@ BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,nodesResult *result_ou
     BCHAR *call_result_str = NULL;
     RlpEncodedStreamObject * rlp_stream_ptr;
     RlpObject rlp_object_list;
-    RlpObject rlp_object_txtype;
-    BUINT64 txtype;
+ //   RlpObject rlp_object_txtype;
+ //   BUINT64 txtype;
     RlpObject rlp_object_string_func_name;
     RlpObject rlp_object_string_parm_name;
     RlpObject rlp_object_string_type_name;
@@ -399,9 +399,9 @@ BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,nodesResult *result_ou
 
     boat_try(RlpInitListObject(&rlp_object_list));
 
-    txtype = tx_ptr->rawtx_fields.txtype;
-    boat_try(RlpInitStringObject(&rlp_object_txtype, UtilityChangeEndian(&txtype, sizeof(txtype)), sizeof(txtype)));
-    boat_try(0 > RlpEncoderAppendObjectToList(&rlp_object_list, &rlp_object_txtype));
+//    txtype = tx_ptr->rawtx_fields.txtype;
+//    boat_try(RlpInitStringObject(&rlp_object_txtype, UtilityChangeEndian(&txtype, sizeof(txtype)), sizeof(txtype)));
+//    boat_try(0 > RlpEncoderAppendObjectToList(&rlp_object_list, &rlp_object_txtype));
 
     boat_try(RlpInitStringObject(&rlp_object_string_func_name, (BUINT8*)"getContractAddress", strlen("getContractAddress")));
     boat_try(0 > RlpEncoderAppendObjectToList(&rlp_object_list, &rlp_object_string_func_name));
