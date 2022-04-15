@@ -15,7 +15,7 @@
 # limitations under the License.
 
 
-# This python script generates PlatONE's C language interface function from contract ABI (WASM).
+# This python script generates Venachain's C language interface function from contract ABI (WASM).
 
 # Not all contract ABI can be converted to C interface because C is lack of object-oriented programming
 # capability. If the tool fails to generate the interface, you may have to organize the contract call
@@ -117,7 +117,7 @@ class CFunctionGen():
         inputs_len = len(inputs)
 
         input_str = '('
-        input_str += 'BoatPlatoneTx *tx_ptr'
+        input_str += 'BoatVenachainTx *tx_ptr'
 
         if inputs_len != 0:
             input_str += ', '
@@ -156,8 +156,8 @@ class CFunctionGen():
 
         func_body_str += '    RlpEncodedStreamObject *rlp_stream_ptr;\n'
         func_body_str += '    RlpObject rlp_object_list;\n'
-        func_body_str += '    RlpObject rlp_object_txtype;\n'
-        func_body_str += '    BUINT64 txtype;\n'
+#        func_body_str += '    RlpObject rlp_object_txtype;\n'
+#        func_body_str += '    BUINT64 txtype;\n'
         func_body_str += '    RlpObject rlp_object_string_func_name;\n'
 
         # Local variables extracted from function arguments
@@ -169,15 +169,15 @@ class CFunctionGen():
 
         # Set Nonce
         if abi_item['constant'] != 'true':
-            func_body_str += '    boat_try(BoatPlatoneTxSetNonce(tx_ptr, BOAT_PLATONE_NONCE_AUTO));\n\n'
+            func_body_str += '    boat_try(BoatVenachainTxSetNonce(tx_ptr, BOAT_VENACHAIN_NONCE_AUTO));\n\n'
          
         # Initialize List
         func_body_str += '    boat_try(RlpInitListObject(&rlp_object_list));\n\n'
 
         # Append Transaction Type 
-        func_body_str += '    txtype = tx_ptr->rawtx_fields.txtype;\n'
-        func_body_str += '    boat_try(' + 'RlpInitStringObject(&rlp_object_txtype, UtilityChangeEndian(&txtype, sizeof(txtype)), sizeof(txtype)));\n'
-        func_body_str += '    boat_try(' + '0 > RlpEncoderAppendObjectToList(&rlp_object_list, &rlp_object_txtype));\n\n'
+#        func_body_str += '    txtype = tx_ptr->rawtx_fields.txtype;\n'
+#        func_body_str += '    boat_try(' + 'RlpInitStringObject(&rlp_object_txtype, UtilityChangeEndian(&txtype, sizeof(txtype)), sizeof(txtype)));\n'
+#        func_body_str += '    boat_try(' + '0 > RlpEncoderAppendObjectToList(&rlp_object_list, &rlp_object_txtype));\n\n'
         
         # Append Contract Function Name
         func_body_str += '    boat_try(' + 'RlpInitStringObject(&rlp_object_string_func_name' + ', (BUINT8*)\"' + abi_item['name'] + '\", strlen(\"' + abi_item['name'] + '\")));\n'
@@ -207,13 +207,13 @@ class CFunctionGen():
 
         if abi_item['constant'] == 'true':
             # for state-less funciton call
-            func_body_str += '    call_result_str = BoatPlatoneCallContractFunc(tx_ptr, rlp_stream_ptr->stream_ptr, rlp_stream_ptr->stream_len);\n\n'
+            func_body_str += '    call_result_str = BoatVenachainCallContractFunc(tx_ptr, rlp_stream_ptr->stream_ptr, rlp_stream_ptr->stream_len);\n\n'
         else:
             # for stateful transaction
             func_body_str += '    data_field.field_ptr = rlp_stream_ptr->stream_ptr;\n'
             func_body_str += '    data_field.field_len = rlp_stream_ptr->stream_len;\n'
-            func_body_str += '    boat_try(BoatPlatoneTxSetData(tx_ptr, &data_field));\n\n'
-            func_body_str += '    boat_try(BoatPlatoneTxSend(tx_ptr));\n\n'
+            func_body_str += '    boat_try(BoatVenachainTxSetData(tx_ptr, &data_field));\n\n'
+            func_body_str += '    boat_try(BoatVenachainTxSend(tx_ptr));\n\n'
             func_body_str += '    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);\n\n'
          
         
