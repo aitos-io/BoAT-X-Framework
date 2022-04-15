@@ -91,18 +91,18 @@ typedef struct TBoatVenachainTx
     BoatVenachainRawtxFields rawtx_fields;      //!< RAW transaction fields
 }BoatVenachainTx;
 
-typedef struct T_wbe3_nodeInfo
+typedef struct T_venachain_wbe3_nodeInfo
 {
     char * IP;
     BUINT32 rpcPort;
     
-}wbe3_nodeInfo;
+}venachain_wbe3_nodeInfo;
 
-typedef struct T_nodesResult
+typedef struct T_venachain_nodesResult
 {
     BUINT8 num;
-    wbe3_nodeInfo *nodeInfo;
-}nodesResult;
+    venachain_wbe3_nodeInfo *nodeInfo;
+}venachain_nodesResult;
 
 
 #ifdef __cplusplus
@@ -458,11 +458,11 @@ BOAT_RESULT BoatVenachainParseRpcResponseResult(const BCHAR *json_string,
  * @brief Get Nodes Info e.g. IP/Port.
  * @see BoatVenachainGetNodesInfo()
  ******************************************************************************/
-BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,nodesResult *result_out);
+BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,venachain_nodesResult *result_out);
 
 /*! @}*/
 
-void nodeResFree(nodesResult *result_out);
+void venachainNodeResFree(venachain_nodesResult *result_out);
 
 #ifdef __cplusplus
 }
