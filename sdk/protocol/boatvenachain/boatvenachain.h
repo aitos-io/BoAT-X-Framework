@@ -127,7 +127,7 @@ BOAT_RESULT VenachainSendRawtx(BOAT_INOUT BoatVenachainTx *tx_ptr);
  *	 
  * @see 
  ******************************************************************************/
-int Venachain_get_Nodeinfo(const char * const monitor,nodesResult *result_out);
+int Venachain_get_Nodeinfo(const char * const monitor,venachain_nodesResult *result_out);
 
 
 #ifdef __cplusplus
