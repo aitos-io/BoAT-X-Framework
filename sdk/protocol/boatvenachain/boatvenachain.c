@@ -544,7 +544,7 @@ BOAT_RESULT VenachainSendRawtx(BOAT_INOUT BoatVenachainTx *tx_ptr)
 }
 
 
-int Venachain_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
+int Venachain_get_Nodeinfo(const char * const monitor,venachain_nodesResult *result_out)
 {
     const cJSON *resolution = NULL;
     const cJSON *resolutions = NULL;
@@ -571,7 +571,7 @@ int Venachain_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
     resolutions = cJSON_GetObjectItemCaseSensitive(monitor_json, "data");
     int num = cJSON_GetArraySize(resolutions);
     BoatLog(BOAT_LOG_NORMAL,"num  = %d\n", num);
-    result_out->nodeInfo = BoatMalloc(num * sizeof(wbe3_nodeInfo));
+    result_out->nodeInfo = BoatMalloc(num * sizeof(venachain_wbe3_nodeInfo));
     cJSON_ArrayForEach(resolution, resolutions)
     {
         result_out->num ++;
