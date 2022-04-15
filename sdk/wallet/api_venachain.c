@@ -88,7 +88,7 @@ BOAT_RESULT BoatVenachainTxSetTxtype(BoatVenachainTx *tx_ptr, BoatVenachainTxtyp
 */
 
 
-void nodeResFree(nodesResult *result_out)
+void venachainNodeResFree(venachain_nodesResult *result_out)
 {
     for (size_t i = 0; i < result_out->num; i++)
     {
@@ -104,7 +104,7 @@ void nodeResFree(nodesResult *result_out)
 BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
                                          BCHAR *node_url_str,
                                          const Param_eth_call *param_ptr,
-                                         nodesResult *result_out)
+                                         venachain_nodesResult *result_out)
 {
     BCHAR *rpc_response_str;
     BUINT32 rpc_response_len;
@@ -255,7 +255,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
  // Construct the REQUEST
     
     // web3_parse_fatherNamejson_result(nodeManagerAddr,"data", "externalIP", &parse_result);
-    nodeResFree(result_out);
+    venachainNodeResFree(result_out);
     Venachain_get_Nodeinfo(nodeManagerAddr,result_out);
 
 
@@ -334,7 +334,7 @@ BCHAR *BoatVenachainCallContractFunc(BoatVenachainTx *tx_ptr, BUINT8 *rlp_param_
 
 BCHAR *BoatVenachainCallContractGetNodesInfoFunc(BoatVenachainTx *tx_ptr, BUINT8 *rlp_param_ptr,
 									           BUINT32 rlp_param_len ,
-                                               nodesResult *result_out)
+                                               venachain_nodesResult *result_out)
 {
     // *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
     BCHAR data_str[rlp_param_len*2 + 3]; // Compiler MUST support C99 to allow variable-size local array
@@ -385,7 +385,7 @@ BCHAR *BoatVenachainCallContractGetNodesInfoFunc(BoatVenachainTx *tx_ptr, BUINT8
 }
 
 
-BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,nodesResult *result_out)
+BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,venachain_nodesResult *result_out)
 {
     BCHAR *call_result_str = NULL;
     RlpEncodedStreamObject * rlp_stream_ptr;
