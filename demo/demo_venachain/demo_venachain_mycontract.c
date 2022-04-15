@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "my_contract.cpp.abi.h"
+#include "mycontract.cpp.abi.h"
 #include "protocolapi/api_venachain.h"
 
 /**
@@ -45,13 +45,13 @@ const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a
 /**
  * test node url
  */
-const BCHAR *demoUrl = "http://116.236.47.90:7545";
-
+//const BCHAR *demoUrl = "http://116.236.47.90:7545";
+const BCHAR *demoUrl = "http://127.0.0.1:6791";
 /**
  * transfer recipient address
  */
-const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
-
+//const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
+const BCHAR *demoRecipientAddress = "0x344b541bb88Cc332d8f6aC7e57c2E3931d45B4B7";
 
 BoatVenachainWallet *g_venachain_wallet_ptr;
 
@@ -204,21 +204,21 @@ BOAT_RESULT venachain_call_mycontract(BoatVenachainWallet *wallet_ptr)
     }
     venachainNodeResFree(&result_out);
 
-    result_str = my_contract_cpp_abi_setName(&tx_ctx, "HelloWorld");
+    result_str = mycontract_cpp_abi_store(&tx_ctx, "hello_venachain!");
     if (result_str == NULL)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "my_contract_cpp_abi_setName failed: %s.", result_str);
 		return BOAT_ERROR;
     }
-	//BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", result_str);
+	BoatLog(BOAT_LOG_NORMAL, "store returns: %s", result_str);
     
-    result_str = my_contract_cpp_abi_getName(&tx_ctx);
+    result_str = mycontract_cpp_abi_retrieve(&tx_ctx);
     if (result_str == NULL)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "my_contract_cpp_abi_getName failed: %s.", result_str);
 		return BOAT_ERROR;
     }
-	//BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str);
+	BoatLog(BOAT_LOG_NORMAL, "retrieve returns: %s", result_str);
 	
     return BOAT_SUCCESS;
 }
