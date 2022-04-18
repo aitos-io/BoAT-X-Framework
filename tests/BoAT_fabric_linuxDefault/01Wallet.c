@@ -668,6 +668,21 @@ START_TEST(test_001CreateWallet_0013CreatePersistWalletFail_11wallets)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0014CreatePersistWalletFail_KeyTypeErr)
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    wallet_config.accountPriKey_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_UNKNOWN;
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_WALLET_KEY_TYPE_ERR);
+
+    fabricWalletConfigFree(wallet_config);
+}
+END_TEST
+
 
 Suite *make_wallet_suite(void) 
 {
@@ -693,7 +708,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0011CreatePersistWalletSuccess);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0012CreatePersistWalletSuccess_10wallets);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0013CreatePersistWalletFail_11wallets);
-    
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0014CreatePersistWalletFail_KeyTypeErr);
 
     return s_wallet;
 }
