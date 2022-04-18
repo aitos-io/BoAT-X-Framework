@@ -720,6 +720,31 @@ START_TEST(test_001CreateWallet_0016GetWalletByIndex_Index_ERR)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0017BoatWalletUnload_Success)
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+ /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    
+    ck_assert_int_eq(rtnVal, 0);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+	rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+    fabricWalletConfigFree(wallet_config);
+    BoatWalletUnload(0);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(0);
+    ck_assert(g_fabric_wallet_ptr == NULL);
+
+}
+END_TEST
+
 
 Suite *make_wallet_suite(void) 
 {
@@ -748,6 +773,8 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0014CreatePersistWalletFail_KeyTypeErr);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0015GetWalletByIndex_Success);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016GetWalletByIndex_Index_ERR);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0017BoatWalletUnload_Success);
+
 
     return s_wallet;
 }
