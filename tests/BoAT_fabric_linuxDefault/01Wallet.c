@@ -770,6 +770,33 @@ START_TEST(test_001CreateWallet_0018BoatWalletUnload_index_ERR)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0019BoatWalletDelete_Success)
+{
+    BSINT32 rtnVal;
+    BSINT32 index;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", &wallet_config, sizeof(BoatHlfabricWalletConfig));
+
+    ck_assert_int_eq(rtnVal, 0);
+    BoatWalletUnload(0);
+
+	index = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", NULL, sizeof(BoatHlfabricWalletConfig));
+	ck_assert_int_eq(rtnVal, 0);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(index);
+    rtnVal = BoatHlfabricWalletSetNetworkInfo(g_fabric_wallet_ptr, wallet_config.nodesCfg);
+	ck_assert(rtnVal == BOAT_SUCCESS);
+
+    ck_assert(check_fabric_wallet(g_fabric_wallet_ptr) == BOAT_SUCCESS);
+    fabricWalletConfigFree(wallet_config); 
+    BoatWalletDelete("fabric.cfg");
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, "fabric.cfg", NULL, sizeof(BoatHlfabricWalletConfig));
+	ck_assert_int_eq(rtnVal, BOAT_ERROR_PERSISTER_READ_FAIL);
+}
+END_TEST
+
 
 Suite *make_wallet_suite(void) 
 {
@@ -800,6 +827,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016GetWalletByIndex_Index_ERR);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0017BoatWalletUnload_Success);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0018BoatWalletUnload_index_ERR);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0019BoatWalletDelete_Success);
 
 
     return s_wallet;
