@@ -888,6 +888,21 @@ START_TEST(test_001CreateWallet_0023BoatHlfabricWalletInit_Fail_wallet_config_NU
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0024BoatHlfabricWalletInit_Fail_configsize_ERR)
+{
+    BSINT32 rtnVal;
+    BSINT32 index;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    
+    g_fabric_wallet_ptr = BoatHlfabricWalletInit(&wallet_config, sizeof(wallet_config)-1);
+    ck_assert(g_fabric_wallet_ptr == NULL);
+
+	fabricWalletConfigFree(wallet_config); 
+
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -922,6 +937,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0021BoatWalletDelete_Fail_WalletName_ERR);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0022BoatHlfabricWalletInit_SUCCESS);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0023BoatHlfabricWalletInit_Fail_wallet_config_NULL);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0024BoatHlfabricWalletInit_Fail_configsize_ERR);
 
     return s_wallet;
 }
