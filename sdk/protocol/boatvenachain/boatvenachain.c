@@ -543,7 +543,7 @@ BOAT_RESULT VenachainSendRawtx(BOAT_INOUT BoatVenachainTx *tx_ptr)
     return result;
 }
 
-
+/*
 int Venachain_get_Nodeinfo(const char * const monitor,venachain_nodesResult *result_out)
 {
     const cJSON *resolution = NULL;
@@ -606,6 +606,6 @@ end:
     return status;
 }
 
-
+*/
 
 #endif /* end of PROTOCOL_USE_VENACHAIN */
