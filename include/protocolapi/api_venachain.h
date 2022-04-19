@@ -69,9 +69,7 @@ typedef struct TBoatVenachainRawtxFields
     BoatFieldVariable data;       //!< data to transfer, unformatted stream
     BoatFieldMax4B v;             //!< chain id or recovery identifier, @see RawtxPerform()
     BoatEthTxFieldSig sig;        //!< ECDSA signature, including r and s parts
-    
-    // PlatONE specific fields are appended here.
-    //BoatPlatoneTxtype txtype;     //!< Transaction Type
+
 
 }BoatVenachainRawtxFields;
 
@@ -91,20 +89,7 @@ typedef struct TBoatVenachainTx
     BoatVenachainRawtxFields rawtx_fields;      //!< RAW transaction fields
 }BoatVenachainTx;
 
-/*
-typedef struct T_venachain_wbe3_nodeInfo
-{
-    char * IP;
-    BUINT32 rpcPort;
-    
-}venachain_wbe3_nodeInfo;
 
-typedef struct T_venachain_nodesResult
-{
-    BUINT8 num;
-    venachain_wbe3_nodeInfo *nodeInfo;
-}venachain_nodesResult;
-*/
 
 #ifdef __cplusplus
 extern "C" {
@@ -455,15 +440,6 @@ BOAT_RESULT BoatVenachainParseRpcResponseResult(const BCHAR *json_string,
                                               const BCHAR *child_name, 
                                               BoatFieldVariable *result_out);
 
-/*!****************************************************************************
- * @brief Get Nodes Info e.g. IP/Port.
- * @see BoatVenachainGetNodesInfo()
- ******************************************************************************/
-//BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,venachain_nodesResult *result_out);
-
-/*! @}*/
-
-//void venachainNodeResFree(venachain_nodesResult *result_out);
 
 #ifdef __cplusplus
 }
