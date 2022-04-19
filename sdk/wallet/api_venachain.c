@@ -87,12 +87,12 @@ BOAT_RESULT BoatVenachainTxSetTxtype(BoatVenachainTx *tx_ptr, BoatVenachainTxtyp
 }
 */
 
-
+/*
 void venachainNodeResFree(venachain_nodesResult *result_out)
 {
     for (size_t i = 0; i < result_out->num; i++)
     {
-        /* code */
+
         if (result_out->nodeInfo[i].IP != NULL)
         {
             BoatFree(result_out->nodeInfo[i].IP);
@@ -100,7 +100,8 @@ void venachainNodeResFree(venachain_nodesResult *result_out)
     }
     result_out->num = 0;
 }
-
+*/
+/*
 BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
                                          BCHAR *node_url_str,
                                          const Param_eth_call *param_ptr,
@@ -278,7 +279,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     
     return return_value_ptr;
 }
-
+*/
 BCHAR *BoatVenachainCallContractFunc(BoatVenachainTx *tx_ptr, BUINT8 *rlp_param_ptr,
 								   BUINT32 rlp_param_len)
 {
@@ -331,7 +332,7 @@ BCHAR *BoatVenachainCallContractFunc(BoatVenachainTx *tx_ptr, BUINT8 *rlp_param_
     }
     return retval_str;
 }
-
+/*
 BCHAR *BoatVenachainCallContractGetNodesInfoFunc(BoatVenachainTx *tx_ptr, BUINT8 *rlp_param_ptr,
 									           BUINT32 rlp_param_len ,
                                                venachain_nodesResult *result_out)
@@ -383,8 +384,8 @@ BCHAR *BoatVenachainCallContractGetNodesInfoFunc(BoatVenachainTx *tx_ptr, BUINT8
     return retval_str;
 
 }
-
-
+*/
+/*
 BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,venachain_nodesResult *result_out)
 {
     BCHAR *call_result_str = NULL;
@@ -427,6 +428,7 @@ BCHAR * BoatVenachainGetNodesInfo(BoatVenachainTx *tx_ptr,venachain_nodesResult 
     return(call_result_str);
 
 }
+*/
 
 BOAT_RESULT BoatVenachainSendRawtxWithReceipt(BOAT_INOUT BoatVenachainTx *tx_ptr)
 {
