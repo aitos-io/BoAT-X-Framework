@@ -184,7 +184,7 @@ BOAT_RESULT venachain_call_mycontract(BoatVenachainWallet *wallet_ptr)
     BCHAR *result_str;
     BoatVenachainTx tx_ctx;
     BOAT_RESULT result;
-    venachain_nodesResult result_out = {0,NULL};
+//    venachain_nodesResult result_out = {0,NULL};
 
     /* Set Contract Address */
     result = BoatVenachainTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
