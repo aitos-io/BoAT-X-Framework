@@ -107,27 +107,7 @@ extern "C" {
 BOAT_RESULT VenachainSendRawtx(BOAT_INOUT BoatVenachainTx *tx_ptr);
 
 
-/*! @}*/
 
-/*!****************************************************************************
- * @brief parse venachain nodeinfo form Contract management service
- *
- * @details
- *   This function Obtain node information by calling the contract management service，
- * and parse venachain nodeinfo 
- *	 
- * @param[in] monitor
- *   return form contract management service
- * @param[in] result_out
- * venachain node info for Boat
- *
- * @return
- *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
- *   of the error codes.
- *	 
- * @see 
- ******************************************************************************/
-//int Venachain_get_Nodeinfo(const char * const monitor,venachain_nodesResult *result_out);
 
 
 #ifdef __cplusplus
