@@ -469,7 +469,7 @@ BOAT_RESULT BoatVenachainTransfer(BoatVenachainTx *tx_ptr, BCHAR *value_hex_str)
 {
     BoatFieldMax32B   value;
     BoatFieldVariable data;
-    BUINT64           tx_type_big;
+//    BUINT64           tx_type_big;
     BOAT_RESULT       result;
    
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL || value_hex_str == NULL)
@@ -495,15 +495,15 @@ BOAT_RESULT BoatVenachainTransfer(BoatVenachainTx *tx_ptr, BCHAR *value_hex_str)
     }
 	
     // Set data (contains txtype only)
-    UtilityUint64ToBigend((BUINT8*)&tx_type_big, 0,  TRIMBIN_TRIM_NO);
-    data.field_ptr = (BUINT8*)&tx_type_big;
-    data.field_len = sizeof(BUINT64);
+    // UtilityUint64ToBigend((BUINT8*)&tx_type_big, 0,  TRIMBIN_TRIM_NO);
+    // data.field_ptr = (BUINT8*)&tx_type_big;
+    // data.field_len = sizeof(BUINT64);
     
-    result = BoatVenachainTxSetData(tx_ptr, &data);
-    if (result != BOAT_SUCCESS)
-    {
-        return result;
-    }
+    // result = BoatVenachainTxSetData(tx_ptr, &data);
+    // if (result != BOAT_SUCCESS)
+    // {
+    //     return result;
+    // }
     
     // Perform the transaction
     // NOTE: Field v,r,s are calculated automatically
