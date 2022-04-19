@@ -50,8 +50,8 @@ const BCHAR *demoUrl = "http://127.0.0.1:6791";
 /**
  * transfer recipient address
  */
-//const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
-const BCHAR *demoRecipientAddress = "0x344b541bb88Cc332d8f6aC7e57c2E3931d45B4B7";
+//const BCHAR *demoRecipientAddress = "0x344b541bb88Cc332d8f6aC7e57c2E3931d45B4B7"; //sol contract
+const BCHAR *demoRecipientAddress = "0x42267f36f2c5b1610bfb253cf044ad0bcd9a5b47";//wasm contract
 
 BoatVenachainWallet *g_venachain_wallet_ptr;
 
@@ -91,7 +91,7 @@ __BOATSTATIC BOAT_RESULT venachain_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
 	
-    wallet_config.chain_id             = 1;
+    wallet_config.chain_id             = 300;
     wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
 
@@ -143,7 +143,7 @@ __BOATSTATIC BOAT_RESULT venachain_createPersistWallet(BCHAR *wallet_name)
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
 
-    wallet_config.chain_id             = 1;
+    wallet_config.chain_id             = 300;
     wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
 
@@ -196,15 +196,9 @@ BOAT_RESULT venachain_call_mycontract(BoatVenachainWallet *wallet_ptr)
         //BoatLog(BOAT_LOG_NORMAL, "BoatVenachainTxInit fails.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
-    result_str = BoatVenachainGetNodesInfo(&tx_ctx,&result_out);
-    for (BSINT32 i = 0; i < result_out.num; i++)
-    {
-        /* code */
-        printf( "node[%d] : IP[%s],port[%d]. \n",i,result_out.nodeInfo[i].IP,result_out.nodeInfo[i].rpcPort);
-    }
-    venachainNodeResFree(&result_out);
-
-    result_str = mycontract_cpp_abi_store(&tx_ctx, "hello_venachain!");
+    
+    //result_str = mycontract_cpp_abi_store(&tx_ctx, "hello_venachain!");//sol contradct
+    result_str = mycontract_cpp_abi_setName(&tx_ctx, "hello_venachain!!");//wasm contract
     if (result_str == NULL)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "my_contract_cpp_abi_setName failed: %s.", result_str);
@@ -212,7 +206,8 @@ BOAT_RESULT venachain_call_mycontract(BoatVenachainWallet *wallet_ptr)
     }
 	BoatLog(BOAT_LOG_NORMAL, "store returns: %s", result_str);
     
-    result_str = mycontract_cpp_abi_retrieve(&tx_ctx);
+    //result_str = mycontract_cpp_abi_retrieve(&tx_ctx);//sol contract
+    result_str = mycontract_cpp_abi_getName(&tx_ctx);//wasm contract
     if (result_str == NULL)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "my_contract_cpp_abi_getName failed: %s.", result_str);
@@ -267,6 +262,6 @@ int main(int argc, char *argv[])
     }
 	/* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
-    
+    BoatLog(BOAT_LOG_NORMAL, "======== over ======" );
     return 0;
 }
