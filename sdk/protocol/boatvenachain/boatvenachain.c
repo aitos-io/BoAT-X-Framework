@@ -189,31 +189,7 @@ BOAT_RESULT VenachainSendRawtx(BOAT_INOUT BoatVenachainTx *tx_ptr)
         BoatLog(BOAT_LOG_CRITICAL, "Fail to append data to Tx RLP object.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, VenachainSendRawtx_cleanup);
     }
-/*
-    //Encode txtype
-    BUINT8 txtype_field[8];
-    BUINT8 txtype_len;
 
-    txtype_len = UtilityUint64ToBigend(txtype_field,
-                                       (BUINT64)tx_ptr->rawtx_fields.txtype,
-                                       TRIMBIN_LEFTTRIM);
-    
-    result = RlpInitStringObject(&txtype_rlp_object,
-                                 txtype_field,
-                                 txtype_len);
-    if (result != BOAT_SUCCESS)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Fail to initialize txtype RLP object.");
-        boat_throw(BOAT_ERROR_RLP_STRING_INIT_FAIL, VenachainSendRawtx_cleanup);
-    }
-    
-    rlp_index = RlpEncoderAppendObjectToList(&tx_rlp_object, &txtype_rlp_object);
-    if (rlp_index < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Fail to append txtype to Tx RLP object.");
-        boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, VenachainSendRawtx_cleanup);
-    }
-*/
     // If EIP-155 is required, encode v = chain id, r = s = NULL in this step
     if (tx_ptr->wallet_ptr->network_info.eip155_compatibility == BOAT_TRUE)
     {
@@ -542,70 +518,5 @@ BOAT_RESULT VenachainSendRawtx(BOAT_INOUT BoatVenachainTx *tx_ptr)
 
     return result;
 }
-
-/*
-int Venachain_get_Nodeinfo(const char * const monitor,venachain_nodesResult *result_out)
-{
-    const cJSON *resolution = NULL;
-    const cJSON *resolutions = NULL;
-    const cJSON *name = NULL;
-    int status = 0;
-    cJSON *monitor_json = cJSON_Parse(monitor);
-    if (monitor_json == NULL)
-    {
-        const char *error_ptr = cJSON_GetErrorPtr();
-        if (error_ptr != NULL)
-        {
-            fprintf(stderr, "Error before: %s\n", error_ptr);
-        }
-        status = 0;
-        goto end;
-    }
-
-    name = cJSON_GetObjectItemCaseSensitive(monitor_json, "code");
-    if (cJSON_IsString(name) && (name->valuestring != NULL))
-    {
-        BoatLog(BOAT_LOG_CRITICAL,"Checking monitor \"%s\"\n", name->valuestring);
-    }
-
-    resolutions = cJSON_GetObjectItemCaseSensitive(monitor_json, "data");
-    int num = cJSON_GetArraySize(resolutions);
-    BoatLog(BOAT_LOG_NORMAL,"num  = %d\n", num);
-    result_out->nodeInfo = BoatMalloc(num * sizeof(venachain_wbe3_nodeInfo));
-    cJSON_ArrayForEach(resolution, resolutions)
-    {
-        result_out->num ++;
-        cJSON *externalIP = cJSON_GetObjectItemCaseSensitive(resolution, "externalIP");
-        cJSON *height = cJSON_GetObjectItemCaseSensitive(resolution, "rpcPort");
-
-        if (cJSON_IsString(externalIP))
-        {
-            char *parse_result_str = cJSON_GetStringValue(externalIP);
-            if (parse_result_str != NULL)
-            {
-                
-
-                int parse_result_str_len = strlen(parse_result_str);
-                
-                result_out->nodeInfo[result_out->num-1].IP = malloc(parse_result_str_len);
-               
-            //    memcpy((char*)result_out->nodeInfo[result_out->num-1].IP, parse_result_str,parse_result_str_len);
-                strcpy(result_out->nodeInfo[result_out->num-1].IP, parse_result_str);
-            }
-        }
-        else
-        {
-            BoatLog(BOAT_LOG_CRITICAL,"un-implemention yet.");
-        }
-        result_out->nodeInfo[result_out->num-1].rpcPort = height->valueint;
-        
-    }
-
-end:
-    cJSON_Delete(monitor_json);
-    return status;
-}
-
-*/
 
 #endif /* end of PROTOCOL_USE_VENACHAIN */
