@@ -50,8 +50,8 @@ const BCHAR *demoUrl = "http://127.0.0.1:6791";
 /**
  * transfer recipient address
  */
-//const BCHAR *demoRecipientAddress = "0x344b541bb88Cc332d8f6aC7e57c2E3931d45B4B7"; //sol contract
-const BCHAR *demoRecipientAddress = "0x42267f36f2c5b1610bfb253cf044ad0bcd9a5b47";//wasm contract
+const BCHAR *demoRecipientAddress = "0x344b541bb88Cc332d8f6aC7e57c2E3931d45B4B7"; //sol contract
+//const BCHAR *demoRecipientAddress = "0x42267f36f2c5b1610bfb253cf044ad0bcd9a5b47";//wasm contract
 
 BoatVenachainWallet *g_venachain_wallet_ptr;
 
@@ -197,8 +197,8 @@ BOAT_RESULT venachain_call_mycontract(BoatVenachainWallet *wallet_ptr)
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
     
-    //result_str = mycontract_cpp_abi_store(&tx_ctx, "hello_venachain!");//sol contradct
-    result_str = mycontract_cpp_abi_setName(&tx_ctx, "hello_venachain!!");//wasm contract
+    result_str = mycontract_cpp_abi_store(&tx_ctx, "hello_venachain!");//sol contradct
+    //result_str = mycontract_cpp_abi_setName(&tx_ctx, "hello_venachain!!");//wasm contract
     if (result_str == NULL)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "my_contract_cpp_abi_setName failed: %s.", result_str);
@@ -206,8 +206,8 @@ BOAT_RESULT venachain_call_mycontract(BoatVenachainWallet *wallet_ptr)
     }
 	BoatLog(BOAT_LOG_NORMAL, "store returns: %s", result_str);
     
-    //result_str = mycontract_cpp_abi_retrieve(&tx_ctx);//sol contract
-    result_str = mycontract_cpp_abi_getName(&tx_ctx);//wasm contract
+    result_str = mycontract_cpp_abi_retrieve(&tx_ctx);//sol contract
+    //result_str = mycontract_cpp_abi_getName(&tx_ctx);//wasm contract
     if (result_str == NULL)
 	{
         //BoatLog(BOAT_LOG_NORMAL, "my_contract_cpp_abi_getName failed: %s.", result_str);
