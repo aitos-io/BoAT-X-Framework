@@ -161,6 +161,7 @@ int main(int argc, char *argv[])
 		boat_throw(result, chainmaker_demo_catch);
 	}
 
+	/* step-4: add invoke parameters */
 	result = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005", NULL);
    	if (result != BOAT_SUCCESS)
 	{
@@ -168,7 +169,7 @@ int main(int argc, char *argv[])
 		boat_throw(result, chainmaker_demo_catch);
 	}
 
-	/* step-4: set transaction 'invoke' command */
+	/* step-5: execute invoke command */
 	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", false, &invoke_response); 
 	if (result != BOAT_SUCCESS)
 	{
@@ -177,7 +178,7 @@ int main(int argc, char *argv[])
 	}
 	BoatLog( BOAT_LOG_CRITICAL, "response code = %d, message = %s, gas_used = %d\n", invoke_response.code, invoke_response.message, invoke_response.gas_used);
 
-	/* step-5: wait seconds and 'query' the gas */
+	/* step-6: add query parameters*/
 	BoatSleep(2);
 	result = BoatHlchainmakerAddTxParam(&tx_ptr, 2, "file_hash", "ab3456df5799b87c77e7f85", NULL);
 	if (result != BOAT_SUCCESS)
@@ -186,6 +187,7 @@ int main(int argc, char *argv[])
 		boat_throw(result, chainmaker_demo_catch);
 	}
 
+	/* step-7: execute query command*/
 	result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &query_response);
 	if (result != BOAT_SUCCESS)
 	{
