@@ -563,6 +563,24 @@ START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 }
 END_TEST
 
+START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
+{
+    BSINT32 rtnVal;
+    BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
+    BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
+    
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletSetEIP155Comp(NULL, wallet.eip155_compatibility);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(wallet_ptr->network_info.eip155_compatibility == BOAT_FALSE);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -592,6 +610,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0001SetEIP155CompSuccess);
-    
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0002SetEIP155CompFailureNullParam);
+
     return s_wallet;
 }
