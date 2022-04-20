@@ -92,6 +92,7 @@ BOAT_RESULT get_tx_id(BUINT8* tx_id_ptr)
 	//32 byte randrom generate
 	BoatFieldMax32B  random_data;
 	random_data.field_len = 32;
+	BOAT_RESULT result = BOAT_SUCCESS;
 
 	BoatRandom(random_data.field, random_data.field_len, NULL);
 	if (random_data.field == NULL) 
@@ -99,8 +100,8 @@ BOAT_RESULT get_tx_id(BUINT8* tx_id_ptr)
 		return BOAT_ERROR;
 	}
 
-	array_to_str(random_data.field, tx_id_ptr, random_data.field_len);
-	return BOAT_SUCCESS;
+	result = array_to_str(random_data.field, tx_id_ptr, random_data.field_len);
+	return result;
 }
 
 
