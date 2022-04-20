@@ -451,6 +451,7 @@ START_TEST(test_001CreateWallet_0015CreateSixWalletUnloadOneSuccess)
     ck_assert(g_boat_iot_sdk_context.wallet_list[5].is_used == true);
     BoatIotSdkDeInit();
 }
+END_TEST
 
 START_TEST(test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne)
 {
@@ -498,6 +499,7 @@ START_TEST(test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne)
 
     BoatIotSdkDeInit();
 }
+END_TEST
 
 START_TEST(test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne)
 {
@@ -546,6 +548,7 @@ START_TEST(test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne)
 
     BoatIotSdkDeInit();
 }
+END_TEST
 
 START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 {
@@ -728,7 +731,7 @@ START_TEST(test_002InitWallet_0009InitEthWalletWithNullConfig)
     rtnVal = BoatEthWalletInit(NULL, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_null(rtnVal);
+    ck_assert_ptr_eq(rtnVal,NULL);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -743,7 +746,7 @@ START_TEST(test_002InitWallet_0010InitEthWalletWithSmallerSize)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) - 1);
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_null(rtnVal);
+    ck_assert_ptr_eq(rtnVal,NULL);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -758,7 +761,7 @@ START_TEST(test_002InitWallet_0011InitEthWalletWithBiggerSize)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) + 1);
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_null(rtnVal);
+    ck_assert_ptr_eq(rtnVal,NULL);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -773,7 +776,7 @@ START_TEST(test_002InitWallet_0012InitEthWalletSuccess)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_nonnull(rtnVal);
+    ck_assert_ptr_ne(rtnVal,NULL);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -793,7 +796,7 @@ START_TEST(test_002InitWallet_0013InitEthWalletGenerationKey)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_nonnull(rtnVal);
+    ck_assert_ptr_ne(rtnVal,NULL);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -813,7 +816,7 @@ START_TEST(test_002InitWallet_0014InitEthWalletWithWrongGenMode)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_null(rtnVal);
+    ck_assert_ptr_eq(rtnVal,NULL);
 }
 END_TEST
 
@@ -831,7 +834,7 @@ START_TEST(test_002InitWallet_0015InitEthWalletWithWrongKeyFormat)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_nonnull(rtnVal);
+    ck_assert_ptr_ne(rtnVal,NULL);
 }
 END_TEST
 
@@ -850,7 +853,7 @@ START_TEST(test_002InitWallet_0016InitEthWalletWithWrongType)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_null(rtnVal);
+    ck_assert_ptr_eq(rtnVal,NULL);
 }
 END_TEST
 
