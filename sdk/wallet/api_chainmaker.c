@@ -463,9 +463,14 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	}
 
 	invoke_tx_id = BoatMalloc(BOAT_TXID_LEN + 1);
-	get_tx_id(invoke_tx_id);
-	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, invoke_tx_id);
+	result = get_tx_id(invoke_tx_id);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "get_tx_id failed");
+		boat_throw(result, BoatHlchainmakerContractInvoke);
+	}
 
+	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, invoke_tx_id);
 	if (result != BOAT_SUCCESS) {
 
 		BoatLog(BOAT_LOG_CRITICAL, "hlchainmakerTransactionPacked failed");
