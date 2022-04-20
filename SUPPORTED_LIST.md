@@ -7,6 +7,7 @@
 + Hyperledger Fabric
 + Huawei BCS (华为链)
 + Chainmaker
++ Venachain
 
 ### Blockchain Official Websites
 + [Ethereum](https://ethereum.org/)
@@ -20,6 +21,7 @@
 + [Huawei BCS](https://www.huaweicloud.com/product/bcs)
 + [ChainMaker](https://chainmaker.org.cn/)
 + [ChainMaker Docs](https://docs.chainmaker.org.cn/)
++ [Venachain Docs](https://venachain-docs.readthedocs.io/zh/latest/)
 
 # Supported Module List
 

@@ -4,9 +4,9 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-.PHONY: all rotocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker
+.PHONY: all rotocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain
 
-all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker $(OBJECTS_DIR) $(OBJECTS)
+all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain $(OBJECTS_DIR) $(OBJECTS)
 
 
 protocol_common:
@@ -47,6 +47,11 @@ ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
 	make -C  boatchainmaker all
 endif
 
+protocol_venachain:
+ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
+	make -C  boatvenachain all
+endif
+
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
 
@@ -67,6 +72,9 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)	
 	make -C boathwbcs  clean
 endif
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)	
 	make -C boatchainmaker clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
+	make -C boatvenachain clean
 endif
