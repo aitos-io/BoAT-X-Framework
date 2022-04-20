@@ -522,10 +522,12 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 					if (tx_response != NULL)
 					{
 						common__tx_response__free_unpacked(tx_response, NULL);
+						tx_response = NULL;
 					}
 					if (transactation_info != NULL)
 					{
 						common__transaction_info__free_unpacked(transactation_info, NULL);
+						transactation_info = NULL;
 					}
 			
 					break;
