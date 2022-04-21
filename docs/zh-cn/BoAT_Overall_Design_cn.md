@@ -135,7 +135,7 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 ##### 交易的数据结构和功能实现清单
 交易是经过签名后的一条消息，通过区块链的网络传播，被记录在区块链上。不同的区块链提供的交易接口的功能基本一致。  
 
-对于Ethereum/PlatON/PlatONE/FISCO BCOS：
+对于Ethereum/Polygon/PlatON/PlatONE/FISCO BCOS：
 
 交易应至少包含如下元素：
 + 钱包的数据结构
