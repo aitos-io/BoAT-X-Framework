@@ -393,7 +393,7 @@ f)	在“编辑环境变量”页中点击“新建”，新增Cygwin的安装�
 
 ### 编译和运行Demo
 #### 准备
-SDK提供基于以太坊、PlatON、PlatONE、FISCO-BCOS、Hyperledger Fabric、HW-BCS和Chainmaker的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
+SDK提供基于以太坊/Polygon、PlatON、PlatONE、FISCO-BCOS、Hyperledger Fabric、HW-BCS和Chainmaker的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
 
 Demo所使用的智能合约及其ABI JSON文件放置在：  
 
