@@ -18,46 +18,47 @@
 #include "boatiotsdk.h"
 #include "boatlog.h"
 
-const BCHAR* chainmaker_user_key =  "-----BEGIN EC PRIVATE KEY-----\n"
-									"MHcCAQEEIKra8nWWBSPS/AejMaW+yonu8d9dBoj+SPWDrJbmIh1HoAoGCCqGSM49\n"
-									"AwEHoUQDQgAEMc5rXZAi7DJkvOdGAlEw/kOsLIhb6L5DXwSYltVYAndlKKubd7HO\n"
-									"MrZBWP5+xAw/3eB6A8aBwqOWdx9Hv4vX+A==\n"
+const BCHAR* chainmaker_user_key =  "------BEGIN EC PRIVATE KEY-----\n"
+									"MHcCAQEEIObTIWiOPC014eokTlChY2zqolJvkjPsObydiDTBAg8boAoGCCqGSM49\n"
+									"AwEHoUQDQgAETvjoYFEqRN/PediSM3Op6rTOWORSuSiv/hyoSqBfb5Os0+aNYfjM\n"
+									"AylgQ8ug/EcXrnpCqijjwbeR4nFzoZf4RA==\n"
 									"-----END EC PRIVATE KEY-----\n";
 
 const BCHAR* chainmaker_user_cert =	"-----BEGIN CERTIFICATE-----\n"
-									"MIICijCCAi+gAwIBAgIDDgl6MAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
-									"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
-									"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-									"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTIyODA4MDczNVoXDTI2\n"
-									"MTIyNzA4MDczNVowgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
-									"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
-									"MQ8wDQYDVQQLEwZjbGllbnQxLDAqBgNVBAMTI2NsaWVudDEuc2lnbi53eC1vcmcx\n"
-									"LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEMc5rXZAi\n"
-									"7DJkvOdGAlEw/kOsLIhb6L5DXwSYltVYAndlKKubd7HOMrZBWP5+xAw/3eB6A8aB\n"
-									"wqOWdx9Hv4vX+KN7MHkwDgYDVR0PAQH/BAQDAgGmMA8GA1UdJQQIMAYGBFUdJQAw\n"
-									"KQYDVR0OBCIEIOaCMaVI//RuFz8f8kZkjB6MeBP/E7WtWF8S7TcpT0MEMCsGA1Ud\n"
-									"IwQkMCKAIE2++CJNZObR1Gih2bf+ZpgA1sm5bvtr5G0mE1Ur2vaLMAoGCCqGSM49\n"
-									"BAMCA0kAMEYCIQDTssD55Pt4BjkuSsJ13dqzIkeq6BQ9jT/FUeUxduUpdAIhAOOn\n"
-									"20LbYVxt8FDAUYwToWUdJ6/AHmuB3flrsEYVzf9y\n"
-									"-----END CERTIFICATE-----\n";
+"MIICijCCAi+gAwIBAgIDDlJ2MAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
+"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
+"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIyMDQyMDAzMTUxOFoXDTI3\n"
+"MDQxOTAzMTUxOFowgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
+"MQ8wDQYDVQQLEwZjbGllbnQxLDAqBgNVBAMTI2NsaWVudDEuc2lnbi53eC1vcmcx\n"
+"LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAETvjoYFEq\n"
+"RN/PediSM3Op6rTOWORSuSiv/hyoSqBfb5Os0+aNYfjMAylgQ8ug/EcXrnpCqijj\n"
+"wbeR4nFzoZf4RKN7MHkwDgYDVR0PAQH/BAQDAgGmMA8GA1UdJQQIMAYGBFUdJQAw\n"
+"KQYDVR0OBCIEIAFwt17+e6KmNgVopl6ED5nNJwpZQ02fXNZ7bDZdfyBuMCsGA1Ud\n"
+"IwQkMCKAIAmbbnImfl7WRFdfnVcN75avqpER441lOyLRE59F2GBGMAoGCCqGSM49\n"
+"BAMCA0kAMEYCIQCu431XukTkg/pO91/hehPMmt/Z+ZuTwElw2ahvCTI7lwIhAO7A\n"
+"i6DOlUowKa2AKpTULwWHED+9W/WPAMe6eCYXKKWx\n"
+"-----END CERTIFICATE-----\n";
+
 
 
 const BCHAR* chainmaker_tls_ca_cert =   "-----BEGIN CERTIFICATE-----\n"
-										"MIICrzCCAlWgAwIBAgIDDokOMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+										"MIICsDCCAlWgAwIBAgIDCVBkMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
 										"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
 										"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-										"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIxMTIyODA4MDczNVoXDTMx\n"
-										"MTIyNjA4MDczNVowgYoxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+										"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIyMDQyMDAzMTUxOFoXDTMy\n"
+										"MDQxNzAzMTUxOFowgYoxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
 										"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
 										"MRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMTGWNhLnd4LW9yZzEuY2hhaW5t\n"
-										"YWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQGpOQlJ5dh0sLHX/tE\n"
-										"k6PN3rEKUGCf00u4qsH/uRdQZbfIh0YGSKQWBegrCUS01RxpLlWgxfZAtUIOI4fi\n"
-										"t16Po4GnMIGkMA4GA1UdDwEB/wQEAwIBpjAPBgNVHSUECDAGBgRVHSUAMA8GA1Ud\n"
-										"EwEB/wQFMAMBAf8wKQYDVR0OBCIEIE2++CJNZObR1Gih2bf+ZpgA1sm5bvtr5G0m\n"
-										"E1Ur2vaLMEUGA1UdEQQ+MDyCDmNoYWlubWFrZXIub3Jngglsb2NhbGhvc3SCGWNh\n"
-										"Lnd4LW9yZzEuY2hhaW5tYWtlci5vcmeHBH8AAAEwCgYIKoZIzj0EAwIDSAAwRQIg\n"
-										"CpL7BZ88AWei7Kx20u+U3QYiYfRugaVqz3FSVsKA/7wCIQC3VxwMdrsEKJexNGSL\n"
-										"sNHNihrTET6DD5/3pPSpf9HL7g==\n"
+										"YWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQ3IktxZ7XhTCaYt54a\n"
+										"01oXyPoDwHPd1c6aqUyuu8QhAprPKkiOjeQ02nVaQ1/M4fgdHADdLgAxeU5iifAD\n"
+										"pw04o4GnMIGkMA4GA1UdDwEB/wQEAwIBpjAPBgNVHSUECDAGBgRVHSUAMA8GA1Ud\n"
+										"EwEB/wQFMAMBAf8wKQYDVR0OBCIEIAmbbnImfl7WRFdfnVcN75avqpER441lOyLR\n"
+										"E59F2GBGMEUGA1UdEQQ+MDyCDmNoYWlubWFrZXIub3Jngglsb2NhbGhvc3SCGWNh\n"
+										"Lnd4LW9yZzEuY2hhaW5tYWtlci5vcmeHBH8AAAEwCgYIKoZIzj0EAwIDSQAwRgIh\n"
+										"AMx1WVoT0vZQEuc+383n0vwB/jXUYQhdNUzpsI8o0RUsAiEAl51FmBKPZQBoURz/\n"
+										"Da0VTpq1XNH7wUU22CMqG+KkU+A=\n"
 										"-----END CERTIFICATE-----\n";
 
 //wallet para
@@ -161,6 +162,7 @@ int main(int argc, char *argv[])
 		boat_throw(result, chainmaker_demo_catch);
 	}
 
+	/* step-4: add invoke parameters */
 	result = BoatHlchainmakerAddTxParam(&tx_ptr, 6, "time", "6543235", "file_hash", "ab3456df5799b87c77e7f85", "file_name", "name005", NULL);
    	if (result != BOAT_SUCCESS)
 	{
@@ -168,7 +170,7 @@ int main(int argc, char *argv[])
 		boat_throw(result, chainmaker_demo_catch);
 	}
 
-	/* step-4: set transaction 'invoke' command */
+	/* step-5: execute invoke command */
 	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", false, &invoke_response); 
 	if (result != BOAT_SUCCESS)
 	{
@@ -177,7 +179,7 @@ int main(int argc, char *argv[])
 	}
 	BoatLog( BOAT_LOG_CRITICAL, "response code = %d, message = %s, gas_used = %d\n", invoke_response.code, invoke_response.message, invoke_response.gas_used);
 
-	/* step-5: wait seconds and 'query' the gas */
+	/* step-6: add query parameters*/
 	BoatSleep(2);
 	result = BoatHlchainmakerAddTxParam(&tx_ptr, 2, "file_hash", "ab3456df5799b87c77e7f85", NULL);
 	if (result != BOAT_SUCCESS)
@@ -186,6 +188,7 @@ int main(int argc, char *argv[])
 		boat_throw(result, chainmaker_demo_catch);
 	}
 
+	/* step-7: execute query command*/
 	result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &query_response);
 	if (result != BOAT_SUCCESS)
 	{

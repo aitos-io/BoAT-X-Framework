@@ -92,6 +92,7 @@ BOAT_RESULT get_tx_id(BUINT8* tx_id_ptr)
 	//32 byte randrom generate
 	BoatFieldMax32B  random_data;
 	random_data.field_len = 32;
+	BOAT_RESULT result = BOAT_SUCCESS;
 
 	BoatRandom(random_data.field, random_data.field_len, NULL);
 	if (random_data.field == NULL) 
@@ -99,8 +100,8 @@ BOAT_RESULT get_tx_id(BUINT8* tx_id_ptr)
 		return BOAT_ERROR;
 	}
 
-	array_to_str(random_data.field, tx_id_ptr, random_data.field_len);
-	return BOAT_SUCCESS;
+	result = array_to_str(random_data.field, tx_id_ptr, random_data.field_len);
+	return result;
 }
 
 
@@ -462,9 +463,14 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	}
 
 	invoke_tx_id = BoatMalloc(BOAT_TXID_LEN + 1);
-	get_tx_id(invoke_tx_id);
-	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, invoke_tx_id);
+	result = get_tx_id(invoke_tx_id);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "get_tx_id failed");
+		boat_throw(result, BoatHlchainmakerContractInvoke);
+	}
 
+	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, invoke_tx_id);
 	if (result != BOAT_SUCCESS) {
 
 		BoatLog(BOAT_LOG_CRITICAL, "hlchainmakerTransactionPacked failed");
@@ -516,10 +522,12 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 					if (tx_response != NULL)
 					{
 						common__tx_response__free_unpacked(tx_response, NULL);
+						tx_response = NULL;
 					}
 					if (transactation_info != NULL)
 					{
 						common__transaction_info__free_unpacked(transactation_info, NULL);
+						transactation_info = NULL;
 					}
 			
 					break;
