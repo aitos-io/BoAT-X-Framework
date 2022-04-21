@@ -635,6 +635,45 @@ START_TEST(test_002InitWallet_0005SetNodeUrlSuccess)
 }
 END_TEST
 
+START_TEST(test_002InitWallet_0006SetNodeUrlFailureNullParam)
+{
+    BSINT32 rtnVal;
+    BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
+    BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
+    
+    /* 1. execute unit test */
+    wallet_ptr->network_info.node_url_ptr = NULL;
+    rtnVal = BoatEthWalletSetNodeUrl(NULL, wallet.node_url_str);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
+
+    /* 1. execute unit test */
+    wallet_ptr->network_info.node_url_ptr = NULL;
+    rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, NULL);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
+
+    /* 1. execute unit test */
+    wallet_ptr->network_info.node_url_ptr = NULL;
+    rtnVal = BoatEthWalletSetNodeUrl(NULL, NULL);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -668,6 +707,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0003SetChainIdSuccess);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0004SetChainIdFailureNullParam);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0005SetNodeUrlSuccess);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0006SetNodeUrlFailureNullParam);
 
     return s_wallet;
 }
