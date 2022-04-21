@@ -599,6 +599,23 @@ START_TEST(test_002InitWallet_0003SetChainIdSuccess)
 }
 END_TEST
 
+START_TEST(test_002InitWallet_0004SetChainIdFailureNullParam)
+{
+    BSINT32 rtnVal;
+    BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
+    
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletSetChainId(NULL, wallet.chain_id);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+
+    BoatIotSdkDeInit();
+
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -630,6 +647,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0001SetEIP155CompSuccess);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0002SetEIP155CompFailureNullParam);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0003SetChainIdSuccess);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0004SetChainIdFailureNullParam);
 
     return s_wallet;
 }
