@@ -732,7 +732,7 @@ START_TEST(test_002InitWallet_0009InitPlatONWalletWithNullConfig)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0010InitEthWalletWithSmallerSize)
+START_TEST(test_002InitWallet_0010InitPlatONWalletWithSmallerSize)
 {
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig = {0};
