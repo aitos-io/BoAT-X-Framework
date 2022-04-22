@@ -77,7 +77,7 @@ The communication protocol follows the operator's requirements if the device can
 
 7. Supports commonly used standard C library functions such as memcpy(), strcpy(), snprintf()(optional for I/O-related functions such as printf()).
 
-8. If the cellular IoT Module utilizes a Linux operating system, it should support adb or similar login mechanism and have root privileges during debugging.
+8. If the cellular IoT module utilizes a Linux operating system, it should support adb or similar login mechanism and have root privileges during debugging.
 
 ## Part 4- TEE and Remote Attestation (optional)
 
