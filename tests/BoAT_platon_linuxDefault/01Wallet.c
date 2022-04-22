@@ -865,6 +865,13 @@ START_TEST(test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile)
 }
 END_TEST
 
+START_TEST(test_003DeleteWallet_0003DeleteWalletSucessExistingFile) 
+{
+    BoatWalletDelete("platon");
+    ck_assert_int_eq(access("platon", F_OK), -1);
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -911,6 +918,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0016InitPlatONWalletWithWrongType);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile);
+    tcase_add_test(tc_wallet_api, test_003DeleteWallet_0003DeleteWalletSucessExistingFile);
   
     return s_wallet;
 }
