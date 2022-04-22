@@ -1,8 +1,8 @@
 # Source and Objects
 
 SOURCES = $(wildcard *.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/tests/BoAT_ethereum_linuxDefault/lib
-EXECUTABLE_DIR  = $(BOAT_BUILD_DIR)/tests/BoAT_ethereum_linuxDefault
+OBJECTS_DIR = $(BOAT_BUILD_DIR)/tests/BoAT_platon_linuxDefault/lib
+EXECUTABLE_DIR  = $(BOAT_BUILD_DIR)/tests/BoAT_platon_linuxDefault
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
@@ -14,7 +14,7 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 				  -lrt\
 				  -lsubunit
                                 
-BOAT_CFLAGS +=  -DTEST_ETHEREUM_NODE_URL=\"$(ETHEREUM_NODE_URL)\"\
+BOAT_CFLAGS +=  -DTEST_PLATON_NODE_URL=\"$(PLATON_NODE_URL)\"\
 				-DTEST_KEY_TYPE=$(BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
 
 all: $(OBJECTS_DIR) $(OBJECTS)	
