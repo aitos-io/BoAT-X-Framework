@@ -46,7 +46,7 @@ In both cases, the storage requirements do not include the system libraries that
 
 ## Part 2- Process Capacity Requirements
 
-In the Ethereum blockchain, the BoAT Framework (C language version) takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, running on an ARM Cortex M4 at around 100MHz. The exact time can vary with different blockchain protocols.
+To Ethereum blockchain protocol, the BoAT Framework (C language version) takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, running on an ARM Cortex M4 at around 100MHz. The exact time can vary with different blockchain protocols.
 
 The exact computing performance requirements depend on the application's power consumption and latency requirements calling (porting in) the BoAT Framework SDK. BoAT itself has no special requirements.
 
