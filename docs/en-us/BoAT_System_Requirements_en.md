@@ -42,7 +42,7 @@ To enable HyperLedger Fabric capability, the storage requirements of the C-langu
 - RAM (global variables, heap, stack): about 30kB
 
 
-The above does not include the system libraries that the BoAT Framework (C language version) depends on. The exact values may vary with different blockchain protocols.
+In both cases, the storage requirements do not include the system libraries that the BoAT Framework SDK (C language version) relies on. The exact values may vary with different blockchain protocols.
 
 ## Part 2- Process Capacity Requirements
 
