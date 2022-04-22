@@ -93,7 +93,7 @@ If the application processor of the cellular module supports the TEE (Trusted Ex
 
 Remote attestation is a mechanism that uses the Root of Trust embedded in the chip to provide signature services for device data, and may probe device operating environment characteristic information. Remote attestation can help service providers remotely authenticate the authenticity of equipment. If the module's chip supports remote authentication, it should support at least the following capabilities:
 
-1. Support for signing given data on the device, and verifying the signature on the remote server
+1. Supports authentication signatures on a given data and can be verified on a remote server
 2. If the TEE is supported, the data should be signed in TEE (optional)
 
 
