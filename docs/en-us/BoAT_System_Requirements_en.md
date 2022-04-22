@@ -62,7 +62,7 @@ There are no special requirements concerning the operating system. Generally, Bo
    (2) CSPRNG, a cryptographically secure pseudo-random number generator. For Linux, this capability can be provided by the OpenSSL library <br>
    (3) PRNG, a (non-cryptographically secure) pseudo-random number generator <br>
 
-5. Depending on a high to low minimum priority, at least one of the following types of times below is supported (for the pseudo-random number seed and the time in the data and log): <br>
+5. At least one of the following times (for pseudo random number seed and timeslots in data and logfiles) is supported in descending order of priority: <br>
    (1) RTC time that can be consistent with the real-time through protocols such as NTP <br>
    (2) RTC time needs to be set manually <br>
    (3) Tick since power on <br>
