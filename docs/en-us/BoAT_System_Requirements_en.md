@@ -99,7 +99,7 @@ Remote attestation is a mechanism that uses the Root of Trust embedded in the ch
 
 ## Part 5- Cryptography Hardware Acceleration (optional)
 
-If the hardware supports cryptographic hardware acceleration, utilizing this technology will improve the performance of cryptographic operations.
+If the hardware supports cryptography operation acceleration, the cryptography operation performance can be improved. 
 
 For Ethereum/PlatONE/FISCO BCOS, BoAT needs at least the following cryptographic operations:
 1. Elliptic curve signature ECDSA (secp256k1 curve)
