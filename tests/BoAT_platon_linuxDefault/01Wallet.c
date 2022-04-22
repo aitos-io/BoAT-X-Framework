@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
  #include "tcase_platon.h"
+#define EXCEED_STR_MAX_LEN 4097
 
 #define TEST_EIP155_COMPATIBILITY   BOAT_TRUE
 #define TEST_PLATON_CHAIN_ID        210309
