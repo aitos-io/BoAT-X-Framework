@@ -1014,7 +1014,7 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
     当返回的结果为BOAT_SUCCESS时，说明调用成功。
 
 **例4：HW-BCS交易构造**
-- **步骤1** BoatHwbcsTxInit()进行交易初始化，其中参数根据实际使用进行设置。
+- **步骤1** 调用BoatHwbcsTxInit()进行交易初始化，其中参数根据实际使用进行设置。
 - **步骤2** 调用BoatHwbcsWalletSetNetworkInfo()进行网络参数设置。
 - **步骤3** 调用BoatHwbcsTxSetTimestamp()设置时间戳，实时时间通过硬件相应功能获取。
 - **步骤4** 设置交易参数。  
@@ -1037,7 +1037,7 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
 
 **例5：CHAINMAKER交易构造**
 
-* **步骤1** BoatHlChainmakerTxInit()进行交易初始化，其中参数根据实际使用进行设置。
+* **步骤1** 调用BoatHlChainmakerTxInit()进行交易初始化，其中参数根据实际使用进行设置。
 
 * **步骤2** 调用BoatHlchainmakerAddTxParam()  设置交易参数。
 

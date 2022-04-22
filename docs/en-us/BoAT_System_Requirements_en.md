@@ -42,13 +42,13 @@ To enable HyperLedger Fabric capability, the storage requirements of the C-langu
 - RAM (global variables, heap, stack): about 30kB
 
 
-The above does not include the system libraries that the BoAT Framework (C language version) depends on. The exact values may vary with different blockchain protocols.
+In both cases, the storage requirements do not include the system libraries that the BoAT Framework SDK (C language version) relies on. The exact values may vary with different blockchain protocols.
 
 ## Part 2- Process Capacity Requirements
 
-In the Ethereum blockchain, the BoAT Framework (C language version) takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, running on an ARM Cortex M4 at around 100MHz. The exact time can vary with different blockchain protocols.
+To Ethereum blockchain protocol, the BoAT Framework (C language version) takes about 1 second (excluding network communication time) to complete the cryptographic operations for a blockchain transaction or smart contract call, running on an ARM Cortex M4 at around 100MHz. The exact time can vary with different blockchain protocols.
 
-The exact computing performance requirements depend on the application's power consumption and latency requirements calling (porting in) the BoAT Framework SDK. BoAT itself has no special requirements.
+The exact processing power requirements depend on the power consumption and latency requirements of the application that calls the BoAT Framework SDK. BoAT itself has no special requirements.
 
 ## Part 3- Operating System and Communication Requirements 
 
@@ -62,7 +62,7 @@ There are no special requirements concerning the operating system. Generally, Bo
    (2) CSPRNG, a cryptographically secure pseudo-random number generator. For Linux, this capability can be provided by the OpenSSL library <br>
    (3) PRNG, a (non-cryptographically secure) pseudo-random number generator <br>
 
-5. Depending on a high to low minimum priority, at least one of the following types of times below is supported (for the pseudo-random number seed and the time in the data and log): <br>
+5. At least one of the following times (for pseudo random number seed and timeslots in data and logfiles) is supported in descending order of priority: <br>
    (1) RTC time that can be consistent with the real-time through protocols such as NTP <br>
    (2) RTC time needs to be set manually <br>
    (3) Tick since power on <br>
@@ -77,7 +77,7 @@ The communication protocol follows the operator's requirements if the device can
 
 7. Supports commonly used standard C library functions such as memcpy(), strcpy(), snprintf()(optional for I/O-related functions such as printf()).
 
-8. If the cellular IoT Module utilizes a Linux operating system, it should support adb or similar login mechanism and have root privileges during debugging.
+8. If the cellular IoT module utilizes a Linux operating system, it should support adb or similar login mechanism and have root privileges during debugging.
 
 ## Part 4- TEE and Remote Attestation (optional)
 
@@ -93,13 +93,13 @@ If the application processor of the cellular module supports the TEE (Trusted Ex
 
 Remote attestation is a mechanism that uses the Root of Trust embedded in the chip to provide signature services for device data, and may probe device operating environment characteristic information. Remote attestation can help service providers remotely authenticate the authenticity of equipment. If the module's chip supports remote authentication, it should support at least the following capabilities:
 
-1. Support for signing given data on the device, and verifying the signature on the remote server
+1. Supports authentication signatures on a given data and can be verified on a remote server
 2. If the TEE is supported, the data should be signed in TEE (optional)
 
 
 ## Part 5- Cryptography Hardware Acceleration (optional)
 
-If the hardware supports cryptographic hardware acceleration, utilizing this technology will improve the performance of cryptographic operations.
+If the hardware supports cryptography operation acceleration, the cryptography operation performance can be improved. 
 
 For Ethereum/PlatONE/FISCO BCOS, BoAT needs at least the following cryptographic operations:
 1. Elliptic curve signature ECDSA (secp256k1 curve)
