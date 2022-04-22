@@ -900,6 +900,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0015CreateSixWalletUnloadOneSuccess);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne);
+    
     tcase_add_test(tc_wallet_api, test_002InitWallet_0001SetEIP155CompSuccess);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0002SetEIP155CompFailureNullParam);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0003SetChainIdSuccess);
@@ -916,6 +917,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0014InitPlatONWalletWithWrongGenMode);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0016InitPlatONWalletWithWrongType);
+    
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0003DeleteWalletSucessExistingFile);
