@@ -238,7 +238,7 @@ __BOATSTATIC __BOATINLINE void BoatPlatONWalletDeInit(BoatPlatONWallet *wallet_p
 }
 
 /*!*****************************************************************************
-* @brief Prase RPC method RESPONSE
+* @brief Parse RPC method RESPONSE
 * @see eth_parse_json_result()
 *******************************************************************************/
 __BOATSTATIC __BOATINLINE BOAT_RESULT platon_parse_json_result(const BCHAR *json_string, 
@@ -305,17 +305,17 @@ __BOATSTATIC __BOATINLINE BOAT_RESULT BoatPlatONTxSetData(BoatPlatONTx *tx_ptr, 
 }
 
 /*!****************************************************************************
- * @brief Prase RPC method RESPONSE.
+ * @brief Parse RPC method RESPONSE.
  * @see eth_parse_json_result()
  ******************************************************************************/
-BOAT_RESULT BoatPlatONPraseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out);
+BOAT_RESULT BoatPlatONParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out);
 
 
 /*!****************************************************************************
- * @brief Prase RPC method RESPONSE.
+ * @brief Prarse RPC method RESPONSE.
  * @see eth_parse_json_result()
  ******************************************************************************/
-BOAT_RESULT BoatPlatONPraseRpcResponseResult(const BCHAR *json_string, 
+BOAT_RESULT BoatPlatONParseRpcResponseResult(const BCHAR *json_string, 
                                              const BCHAR *child_name, 
                                              BoatFieldVariable *result_out);
 

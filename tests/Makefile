@@ -13,9 +13,7 @@ ifeq ($(BOAT_TEST_USE_CHAINMAKER), 1)
 endif
 
 tests_BoAT_ethereum_linuxDefault:
-ifeq ($(BOAT_TEST_USE_ETHEREUM), 1)
 	make -C BoAT_ethereum_linuxDefault all
-endif
 
 tests_BoAT_fabric_linuxDefault:
 	make -C  BoAT_fabric_linuxDefault all

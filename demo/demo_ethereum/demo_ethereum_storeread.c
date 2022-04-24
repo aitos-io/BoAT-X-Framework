@@ -186,7 +186,7 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
     BUINT32 index;
     BoatEthTx tx_ctx;
     BOAT_RESULT result;
-    BoatFieldVariable prase_result = {NULL, 0};
+    BoatFieldVariable parse_result = {NULL, 0};
     
     /* Set Contract Address */
     result = BoatEthTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
@@ -205,22 +205,22 @@ BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
     if (result_str != NULL)
     {
         result_str = StoreRead_readListLength(&tx_ctx);
-        result = BoatEthPraseRpcResponseStringResult(result_str, &prase_result);
+        result = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
         if (result == BOAT_SUCCESS && result_str != NULL)
         {
             //BoatLog(BOAT_LOG_NORMAL, "readListLength returns: %s", result_str);
             
             UtilityHexToBin((BUINT8*)index_u256_big, sizeof(index_u256_big),
-							(BCHAR*)prase_result.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
+							(BCHAR*)parse_result.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
             UtilityChangeEndian(index_u256_big, sizeof(index_u256_big));
             list_len = index_u256_big[0];      
             for (index = 0; index < list_len; index++)
             {
                 result_str = StoreRead_readListByIndex(&tx_ctx, index);
-                result     = BoatEthPraseRpcResponseStringResult(result_str, &prase_result);
+                result     = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
                 if (result == BOAT_SUCCESS && result_str != NULL)
                 {
-                    //BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", prase_result.field_ptr);
+                    //BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", parse_result.field_ptr);
                 }
                 else 
                 {

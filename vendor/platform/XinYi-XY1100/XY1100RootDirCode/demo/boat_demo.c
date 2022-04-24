@@ -225,7 +225,6 @@ void boat_platone_entry(void)
 {
     BOAT_RESULT  result  = BOAT_SUCCESS;
     int ret=0;
-    xy_printf("======= Ready to INIT BoatIotSdk ======\n");
 	/* step-1: Boat SDK initialization */
     result = BoatIotSdkInit();
     if(result != BOAT_SUCCESS)
@@ -244,7 +243,6 @@ void boat_platone_entry(void)
     else
     {
        xy_printf("xy_wait_tcpip_ok error, ret=%x\n",ret);
-       xy_printf("tcp/ip is not ok!!!\n");
        return ;
     }
 
@@ -267,7 +265,7 @@ void boat_platone_entry(void)
 	xy_printf("platone create Wallet failed ,result = %d.\n", result);
 	goto end;
     }
-    xy_printf("======= platone create Wallet run success ======\n");
+    xy_printf("======= platone: create_Wallet success ======\n");
 
 	/* step-3: execute 'platone_call_mycontract' */
     result = platone_call_mycontract( g_platone_wallet_ptr );
@@ -276,7 +274,7 @@ void boat_platone_entry(void)
         xy_printf("platone_call_mycontract failed , result = %d.\n", result);
         goto end;
     }
-    xy_printf("======= platone_call_mycontract run success ======\n");
+    xy_printf("======= platone:call_mycontract success ======\n");
 
 end:	
     /* step-4: Boat SDK Deinitialization */

@@ -58,7 +58,6 @@ const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
 #ifdef BOAT_TEST
 __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 {
-    BoatLog(BOAT_LOG_NORMAL,"Ready to run platone_createOnetimeWallet\n");
 
     BSINT32 index;
     BoatPlatoneWalletConfig wallet_config = {0};
@@ -181,7 +180,6 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
   BCHAR *result_str;
   BoatPlatoneTx tx_ctx;
   BOAT_RESULT result;
-  BoatLog(BOAT_LOG_NORMAL, "Ready to call contract!\n");
 
   /* Set Contract Address */
   result = BoatPlatoneTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
@@ -219,7 +217,6 @@ void boat_platone_entry(void)
 {
   BOAT_RESULT  result  = BOAT_SUCCESS;
   int ret=0;
-  BoatLog(BOAT_LOG_NORMAL,"======= Ready to INIT BoatIotSdk ======\n");
 
   
 	/* step-1: Boat SDK initialization */
@@ -249,7 +246,7 @@ void boat_platone_entry(void)
 		BoatLog(BOAT_LOG_CRITICAL,"platone create Wallet failed ,result = %d.", result);
 		goto end;
 	}
-  BoatLog(BOAT_LOG_NORMAL,"=== platone create Wallet run success ===");
+  BoatLog(BOAT_LOG_NORMAL,"=== platone：create_Wallet run success ===");
 	/* step-3: execute 'platone_call_mycontract' */
 	result = platone_call_mycontract( g_platone_wallet_ptr );
   if( result != BOAT_SUCCESS )
@@ -257,7 +254,7 @@ void boat_platone_entry(void)
       BoatLog(BOAT_LOG_CRITICAL,"platone_call_mycontract failed,result = %d.\n", result);
       goto end;
   }
-  BoatLog(BOAT_LOG_NORMAL,"=== platone_call_mycontract run success ===");
+  BoatLog(BOAT_LOG_NORMAL,"=== platone：call_mycontract run success ===");
 
 end:	
     /* step-4: Boat SDK Deinitialization */
@@ -284,7 +281,7 @@ int fibocom_task_entry(void)
     return ret;
   }
 
-  /* BoAT demo task ----------------------------------------------------------*/
+  /* BoAT demo task */
   boat_platone_entry();
 
    return 0;

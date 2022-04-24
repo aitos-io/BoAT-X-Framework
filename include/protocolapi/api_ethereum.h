@@ -222,9 +222,9 @@ BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 
 void BoatEthWalletDeInit(BoatEthWallet *wallet_ptr);
 
 /*!*****************************************************************************
-@brief Prase RPC method RESPONSE
+@brief Parse RPC method RESPONSE
 
-   This function Prase "result" segment.
+   This function Parse "result" segment.
    If "result" object is string, this function will returns contents of "result" . 
    If "result" object is still json object, the parameter named "child_name" will actived,
    if "child_name" object is string, this function will returns contents of "child_name"; 
@@ -238,12 +238,12 @@ void BoatEthWalletDeInit(BoatEthWallet *wallet_ptr);
 	 if "result" item is json object, this param will actived.
 
 @param[out] result_out
-	 The buffer to store prase result.
+	 The buffer to store parse result.
 	 Caller can allocate memory for this param, or can initial it with {NULL, 0},
-	 this function will expand the memory if it too small to store prase result.
+	 this function will expand the memory if it too small to store parse result.
 	 
 @return
-    This function returns BOAT_SUCCESS if prase successed. Otherwise
+    This function returns BOAT_SUCCESS if parse successed. Otherwise
     it returns an error code.
 *******************************************************************************/
 BOAT_RESULT eth_parse_json_result(const BCHAR *json_string, 
@@ -341,30 +341,30 @@ BOAT_RESULT BoatEthWalletSetChainId(BoatEthWallet *wallet_ptr, BUINT32 chain_id)
 BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_ptr);
 
 /*!*****************************************************************************
-@brief Prase RPC method RESPONSE
+@brief Parse RPC method RESPONSE
 
-   This function Prase "result" segment.
+   This function Parse "result" segment.
    "result" object must be cjson_string, this function will returns contents of "result" . 
 
 @param[in] json_string
 	 The json to be parsed.
 
 @param[out] result_out
-	 The buffer to store prase result.
+	 The buffer to store parse result.
 	 Caller can allocate memory for this param, or can initial it with {NULL, 0},
-	 this function will expand the memory if it too small to store prase result.
+	 this function will expand the memory if it too small to store parse result.
 	 
 @return
-    This function returns BOAT_SUCCESS if prase successed. Otherwise
+    This function returns BOAT_SUCCESS if parse successed. Otherwise
     it returns an error code.
 *******************************************************************************/
-BOAT_RESULT BoatEthPraseRpcResponseStringResult(const BCHAR *json_string, 
+BOAT_RESULT BoatEthParseRpcResponseStringResult(const BCHAR *json_string, 
 										        BoatFieldVariable *result_out);
 
 /*!*****************************************************************************
-@brief Prase RPC method RESPONSE
+@brief Parse RPC method RESPONSE
 
-   This function Prase "result" segment.
+   This function Parse "result" segment.
    If "result" object must be json object, the parameter named "child_name" will actived,
    if "child_name" object is string, this function will returns contents of "child_name"; 
    if "child_name" object is other types, his function will prompt "un-implemention yet".
@@ -377,15 +377,15 @@ BOAT_RESULT BoatEthPraseRpcResponseStringResult(const BCHAR *json_string,
 	 This parameter is mandatory.
 
 @param[out] result_out
-	 The buffer to store prase result.
+	 The buffer to store parse result.
 	 Caller can allocate memory for this param, or can initial it with {NULL, 0},
-	 this function will expand the memory if it too small to store prase result.
+	 this function will expand the memory if it too small to store parse result.
 	 
 @return
-    This function returns BOAT_SUCCESS if prase successed. Otherwise
+    This function returns BOAT_SUCCESS if parse successed. Otherwise
     it returns an error code.
 *******************************************************************************/
-BOAT_RESULT BoatEthPraseRpcResponseResult(const BCHAR *json_string, 
+BOAT_RESULT BoatEthParseRpcResponseResult(const BCHAR *json_string, 
 										  const BCHAR *child_name, 
 										  BoatFieldVariable *result_out);
 

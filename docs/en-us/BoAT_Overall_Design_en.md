@@ -146,7 +146,7 @@ This interface is used to check whether the given private key is valid. The cont
 ##### Transaction Data Structure and Function Realization List
 A transaction is a signed message, transmitted through the blockchain network and recorded on the blockchain. The functions of transaction interfaces provided by different blockchains are basically the same.  
 
-For Ethereum/PlatON/PlatONE/FISCO BCOS:
+For Ethereum/Polygon/PlatON/PlatONE/FISCO BCOS:
 
 The transaction should contain at least the following elements:
 + The data structure of the wallet
@@ -164,7 +164,7 @@ The transaction should provide the following functions:
   
  
 
-##### Brief Description of Ethereum Transaction Interface Function Implementation
+##### Brief Description of Ethereum/Polygon Transaction Interface Function Implementation
 + Wallet initialization:
   The content implemented by this interface includes:
   1. Set the blockchain contract address
@@ -286,7 +286,7 @@ Figure 4-4 describes a possible data structure design idea of FISCO BCOS. Please
 
 ### Protocol Layer
 #### Overview
-The protocol layer is located in the second layer of the BoAT SDK, which mainly implements the protocol part of each blockchain. For Ethereum series blockchains, their protocols are very similar, such as Ethereum, PlatON, PlatONE and FISCO BCOS.   
+The protocol layer is located in the second layer of the BoAT SDK, which mainly implements the protocol part of each blockchain. For Ethereum series blockchains, their protocols are very similar, such as Polygon, PlatON, PlatONE and FISCO BCOS.   
 The protocol layer is supported by the RPC layer. Please refer to [RPC Layer](#rpc-layer).  
 
 #### Ethereum's Protocol Layer Implementation
@@ -316,6 +316,8 @@ The content implemented by this interface includes:
   3. Same as step 3 of "not specifying the chain ID"
   4. Perform RLP encoding on the nine fields of the transaction, including nonce, gasPrice, gasLimit, recipient, value, data, v, r, s, where v = Chain ID * 2 + parity + 35, and parity, r, s have been given in the previous step
   5. Same as step 5 of "not specifying the chain ID"
+
+  ***NOTE: EIP-155 is mandatory for Polygon.***
 
 + raw transaction sent synchronously  
 This interface executes "raw transaction asynchronous sending" and waits for the transaction to be confirmed after success or timeout. The content implemented by this interface includes:

@@ -1,16 +1,17 @@
 # Supported Blockchain List
 
-+ Ethereum
++ Ethereum/Polygon
 + PlatON
 + PlatON Enterprise (PlatONE)
 + FISCO-BCOS
 + Hyperledger Fabric
 + Huawei BCS (华为链)
 + Chainmaker
++ Venachain
 
 ### Blockchain Official Websites
 + [Ethereum](https://ethereum.org/)
-+ [Ganache: an Ethereum Simulator](https://www.trufflesuite.com/truffle/)
++ [Ganache: an Ethereum Simulator](https://trufflesuite.com/ganache/)
 + [PlatON](https://www.platon.network/)
 + [PlatON Enterprise](https://github.com/PlatONEnterprise/)
 + [FISCO BCOS](http://fisco-bcos.org/)
@@ -20,6 +21,8 @@
 + [Huawei BCS](https://www.huaweicloud.com/product/bcs)
 + [ChainMaker](https://chainmaker.org.cn/)
 + [ChainMaker Docs](https://docs.chainmaker.org.cn/)
++ [Venachain Docs](https://venachain-docs.readthedocs.io/zh/latest/)
++ [Polygon](https://polygon.technology/)
 
 # Supported Module List
 
@@ -50,6 +53,6 @@ MN316                     |中移物联 China Mobile|NB-IoT            |Xinyi XY
 BeagleV-StarLight星光     |seeed, StarFive and beagleboard|Ethernet|StarFive JH7100      |BeagleV-StarLight星光 is a development board
 
 
-*Last update on January 25th, 2022*
+*Last update on April 24th, 2022*
 
 NOTE: Some of the blockchains are not supported on some modules due to resource constraint.
