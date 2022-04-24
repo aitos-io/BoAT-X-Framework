@@ -595,7 +595,7 @@ wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTER
 wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
 
 wallet_config.chain_id             = 1;
-wallet_config.eip155_compatibility = BOAT_FALSE;
+wallet_config.eip155_compatibility = BOAT_TRUE;
 strncpy(wallet_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
 /* create ethereum wallet */
