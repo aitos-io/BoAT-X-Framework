@@ -536,11 +536,6 @@ BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from);
 BBOOL UtilityStringIsHex(const BCHAR *input);
 
 
-#if(BOAT_HWBCS_TLS_SUPPORT == 1)
-#include "mbedtls/x509_crt.h"
-#include "mbedtls/oid.h"
-size_t Utility_find_oid_value_in_name(const mbedtls_x509_name *name, const char* target_short_name, char *value, size_t value_length);
-#endif
 
 char *Utility_itoa(int num, char *str, int radix);
 
