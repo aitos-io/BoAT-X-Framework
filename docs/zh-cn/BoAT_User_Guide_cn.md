@@ -27,7 +27,7 @@
 BoAT IoT Framework是面向蜂窝模组的C语言区块链应用框架客户端软件，便于移植到各类模组中，帮助基于蜂窝模组的物联网应用连接区块链，实现数据上链等业务。BoAT IoT Framework SDK向物联网应用提供的功能包括发起链上交易、智能合约C接口代码自动生成、调用智能合约、管理区块链密钥等。
 
 **已支持的区块链:**  
-以太坊  
+以太坊/Polygon  
 PlatON  
 PlatONE  
 FISCO-BCOS  

@@ -135,7 +135,7 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 ##### 交易的数据结构和功能实现清单
 交易是经过签名后的一条消息，通过区块链的网络传播，被记录在区块链上。不同的区块链提供的交易接口的功能基本一致。  
 
-对于Ethereum/PlatON/PlatONE/FISCO BCOS：
+对于Ethereum/Polygon/PlatON/PlatONE/FISCO BCOS：
 
 交易应至少包含如下元素：
 + 钱包的数据结构
@@ -277,7 +277,7 @@ PlatON和Ethereum相比，差异主要集中在如下三点:
 
 ### 协议层
 #### 概述
-协议层位于BoAT SDK的第二层，主要实现各个区块链的协议部分。对于Ethereum系的区块链，其协议比较相似，如Ethereum、PlatON、PlatONE和FISCO BCOS。  
+协议层位于BoAT SDK的第二层，主要实现各个区块链的协议部分。对于Ethereum系的区块链，其协议比较相似，如Ethereum、Polygon、PlatON、PlatONE和FISCO BCOS。  
 协议层由RPC层提供支持。RPC层描述请参考 [RPC层](#RPC层).  
 
 #### Ethereum的协议层实现
