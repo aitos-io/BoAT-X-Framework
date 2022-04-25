@@ -24,7 +24,44 @@
 extern Suite *make_wallet_suite(void);
 // extern Suite *make_parameters_suite(void);
 // extern Suite *make_transactions_suite(void);
-//extern Suite *make_contract_suite(void);
+// extern Suite *make_contract_suite(void);
+
+char platon_private_key_buf[1024];
+
+int read_key_content(char* key_ptr)
+{       
+    int fd = 0;
+    int len;
+
+    if (key_ptr == NULL)
+    {
+        return -1;
+    }
+
+    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+    {
+        fd = open("../../../tests/BoAT_platon_linuxDefault/pri_key/native.key", O_RDONLY);
+        if (fd < 0)
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        fd = open("../../../tests/BoAT_platon_linuxDefault/pri_key/pkcs_key.key", O_RDONLY);
+        if (fd < 0)
+        {
+            return -1;
+        }
+    }
+    len = read(fd, key_ptr, 1024);
+    if (len < 0)
+    {
+        return -1;
+    }
+   
+    return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +72,8 @@ int main(int argc, char *argv[])
     Suite *suite_wallet    = make_wallet_suite();
     // Suite *suite_paramters = make_parameters_suite();
     // Suite *suite_transaction = make_transactions_suite();
-//   Suite *suite_contract  = make_contract_suite();
+    // Suite *suite_contract  = make_contract_suite();
+    read_key_content(palton_private_key_buf);
 
     /* create srunner and add first suite to it.
     The first suite in a suite runner is always added in function srunner_create,

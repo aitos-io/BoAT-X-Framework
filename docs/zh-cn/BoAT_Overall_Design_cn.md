@@ -135,7 +135,7 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 ##### 交易的数据结构和功能实现清单
 交易是经过签名后的一条消息，通过区块链的网络传播，被记录在区块链上。不同的区块链提供的交易接口的功能基本一致。  
 
-对于Ethereum/PlatON/PlatONE/FISCO BCOS：
+对于Ethereum/Polygon/PlatON/PlatONE/FISCO BCOS：
 
 交易应至少包含如下元素：
 + 钱包的数据结构
@@ -153,7 +153,7 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
   
  
 
-##### Ethereum交易接口功能实现简述
+##### Ethereum/Polygon交易接口功能实现简述
 + 钱包初始化：  
   该接口执行的内容包括：
   1. 设置区块链合约地址
@@ -277,7 +277,7 @@ PlatON和Ethereum相比，差异主要集中在如下三点:
 
 ### 协议层
 #### 概述
-协议层位于BoAT SDK的第二层，主要实现各个区块链的协议部分。对于Ethereum系的区块链，其协议比较相似，如Ethereum、PlatON、PlatONE和FISCO BCOS。  
+协议层位于BoAT SDK的第二层，主要实现各个区块链的协议部分。对于Ethereum系的区块链，其协议比较相似，如Polygon、PlatON、PlatONE和FISCO BCOS。  
 协议层由RPC层提供支持。RPC层描述请参考 [RPC层](#RPC层).  
 
 #### Ethereum的协议层实现
@@ -304,6 +304,9 @@ PlatON和Ethereum相比，差异主要集中在如下三点:
   3. 同“不指定链ID方式”的步骤3
   4. 对交易的nonce、gasPrice、gasLimit、recipient、value、data、v、r、s等九个字段执行RLP编码，其中v = Chain ID * 2 + parity + 35，parity、r、s已在前一步骤中给出
   5. 同“不指定链ID方式”的步骤5
+  
+  ***注：Polygon必须启用EIP-155.***
+  
 + raw transaction同步发送  
 该接口执行“rawtransaction异步发送”并等待交易成功或超时后返回。该接口执行的内容包括:
   1. 执行raw transaction异步发送
