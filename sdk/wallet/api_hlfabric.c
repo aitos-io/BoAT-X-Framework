@@ -935,7 +935,7 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 
 	boat_try_declare;
 
-	if ((tx_ptr == NULL) || (wallet_ptr == NULL) ||  (chaincodeId_name_str == NULL) || (channelId_str == NULL))
+	if ((tx_ptr == NULL) || (wallet_ptr == NULL) ||  (chaincodeId_name_str == NULL) || (channelId_str == NULL) || (orgName_str == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments 'tx_ptr' or 'wallet_ptr' cannot be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
