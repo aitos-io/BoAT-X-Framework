@@ -38,6 +38,23 @@ START_TEST(test_002Transaction_0001TXInit_Success)
 }
 END_TEST
 
+START_TEST(test_002Transaction_0002TxInit_tx_ptr_NULL) 
+{
+    BSINT32 rtnVal;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+
+    rtnVal = BoatHlfabricTxInit(NULL, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+    fabricWalletConfigFree(wallet_config);
+}
+END_TEST
+
 Suite *make_transaction_suite(void) 
 {
     /* Create Suite */
@@ -50,6 +67,7 @@ Suite *make_transaction_suite(void)
     suite_add_tcase(s_transaction, tc_transaction_api);       
     /* Test cases are added to the test set */
     tcase_add_test(tc_transaction_api, test_002Transaction_0001TXInit_Success);
+    tcase_add_test(tc_transaction_api, test_002Transaction_0002TxInit_tx_ptr_NULL);
     
 
     return s_transaction;
