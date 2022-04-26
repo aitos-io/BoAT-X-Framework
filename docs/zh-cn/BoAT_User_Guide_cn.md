@@ -27,7 +27,7 @@
 BoAT IoT Framework是面向蜂窝模组的C语言区块链应用框架客户端软件，便于移植到各类模组中，帮助基于蜂窝模组的物联网应用连接区块链，实现数据上链等业务。BoAT IoT Framework SDK向物联网应用提供的功能包括发起链上交易、智能合约C接口代码自动生成、调用智能合约、管理区块链密钥等。
 
 **已支持的区块链:**  
-以太坊  
+以太坊/Polygon  
 PlatON  
 PlatONE  
 FISCO-BCOS  
@@ -595,7 +595,7 @@ wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTER
 wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
 
 wallet_config.chain_id             = 1;
-wallet_config.eip155_compatibility = BOAT_FALSE;
+wallet_config.eip155_compatibility = BOAT_TRUE;
 strncpy(wallet_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
 /* create ethereum wallet */
@@ -1014,7 +1014,7 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
     当返回的结果为BOAT_SUCCESS时，说明调用成功。
 
 **例4：HW-BCS交易构造**
-- **步骤1** BoatHwbcsTxInit()进行交易初始化，其中参数根据实际使用进行设置。
+- **步骤1** 调用BoatHwbcsTxInit()进行交易初始化，其中参数根据实际使用进行设置。
 - **步骤2** 调用BoatHwbcsWalletSetNetworkInfo()进行网络参数设置。
 - **步骤3** 调用BoatHwbcsTxSetTimestamp()设置时间戳，实时时间通过硬件相应功能获取。
 - **步骤4** 设置交易参数。  
@@ -1037,7 +1037,7 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
 
 **例5：CHAINMAKER交易构造**
 
-* **步骤1** BoatHlChainmakerTxInit()进行交易初始化，其中参数根据实际使用进行设置。
+* **步骤1** 调用BoatHlChainmakerTxInit()进行交易初始化，其中参数根据实际使用进行设置。
 
 * **步骤2** 调用BoatHlchainmakerAddTxParam()  设置交易参数。
 

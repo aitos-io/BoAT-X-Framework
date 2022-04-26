@@ -36,6 +36,45 @@ boatutility.h is header file for boatwallet utility functions.
 //! The maximum allowed string length
 #define BOAT_STRING_MAX_LEN					     4096 
 
+
+#define PRIKEY_PKCS_BEGIN "-----BEGIN EC PRIVATE KEY-----"
+#define PRIKEY_PKCS_END   "-----END EC PRIVATE KEY-----"
+
+/**
+ * \name DER constants
+ * These constants comply with the DER encoded ASN.1 type tags.
+ * DER encoding uses hexadecimal representation.
+ * An example DER sequence is:\n
+ * - 0x02 -- tag indicating INTEGER
+ * - 0x01 -- length in octets
+ * - 0x05 -- value
+ * Such sequences are typically read into \c ::mbedtls_x509_buf.
+ * \{
+ */
+#define ASN1_BOOLEAN                 0x01
+#define ASN1_INTEGER                 0x02
+#define ASN1_BIT_STRING              0x03
+#define ASN1_OCTET_STRING            0x04
+#define ASN1_NULL                    0x05
+#define ASN1_OID                     0x06
+#define ASN1_ENUMERATED              0x0A
+#define ASN1_UTF8_STRING             0x0C
+#define ASN1_SEQUENCE                0x10
+#define ASN1_SET                     0x11
+#define ASN1_PRINTABLE_STRING        0x13
+#define ASN1_T61_STRING              0x14
+#define ASN1_IA5_STRING              0x16
+#define ASN1_UTC_TIME                0x17
+#define ASN1_GENERALIZED_TIME        0x18
+#define ASN1_UNIVERSAL_STRING        0x1C
+#define ASN1_BMP_STRING              0x1E
+#define ASN1_PRIMITIVE               0x00
+#define ASN1_CONSTRUCTED             0x20
+#define ASN1_CONTEXT_SPECIFIC        0x80
+
+#define MBEDTLS_OID_ISO_IDENTIFIED_ORG  0x2b
+
+
 //!@brief Argument type for UtilityTrimBin(), UtilityHexToBin() and UtilityUint32ToBigend()
 typedef enum
 {
@@ -76,6 +115,34 @@ typedef struct
 {
 	BUINT32 val[9];
 } utilityBignum256;
+
+typedef enum
+{
+    KEYPAIT_ALG_UNKNOWN = 0,   
+    KEYPAIT_ALG_SECP256K1  ,        
+	KEYPAIT_ALG_SECP256R1  ,
+	KEYPAIT_ALG_SM
+}KEYPAIT_ALG;
+typedef struct TLVStruct
+{
+	/* data */
+	BUINT8 tag;
+	BUINT8 Llen;
+	BUINT32 len;
+	BUINT8 *data;
+}TLVStruct;
+
+typedef struct KeypairNative
+{
+	/* data */
+	BUINT8 *prikey;
+	BUINT8 *pubkey;
+	BUINT8 prikeylen;
+	BUINT8 pubkeylen;
+	KEYPAIT_ALG alg;
+}KeypairNative;
+
+
 
 
 
@@ -536,13 +603,12 @@ BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from);
 BBOOL UtilityStringIsHex(const BCHAR *input);
 
 
-#if(BOAT_HWBCS_TLS_SUPPORT == 1)
-#include "mbedtls/x509_crt.h"
-#include "mbedtls/oid.h"
-size_t Utility_find_oid_value_in_name(const mbedtls_x509_name *name, const char* target_short_name, char *value, size_t value_length);
-#endif
 
 char *Utility_itoa(int num, char *str, int radix);
+
+BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair);
+BCHAR* UtilityNative2PKCS(KeypairNative keypair);
+void UtilityFreeKeypair(KeypairNative keypair);
 
 /*! @}*/
 

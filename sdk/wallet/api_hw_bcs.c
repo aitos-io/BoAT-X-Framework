@@ -36,6 +36,55 @@ api_hw_bcs.c defines the Ethereum wallet API for BoAT IoT SDK.
 #include "boatutility.h"
 #endif
 
+__BOATSTATIC size_t boat_find_oid_value_in_name(const mbedtls_x509_name *name, const char* target_short_name, char *value, size_t value_length)
+{
+    const char *short_name = NULL;
+    bool found = false;
+    size_t retval = 0;
+
+    while((name != NULL) && !found)
+    {
+        // if there is no data for this name go to the next one
+        if(!name->oid.p)
+        {
+            name = name->next;
+            continue;
+        }
+
+        int ret = mbedtls_oid_get_attr_short_name(&name->oid, &short_name);
+        if((ret == 0) && (strcmp(short_name, target_short_name) == 0))
+        {
+            found = true;
+        }
+
+        if(found)
+        {
+            size_t bytes_to_write = (name->val.len >= value_length) ? value_length - 1 : name->val.len;
+
+            for(size_t i = 0; i < bytes_to_write; i++)
+            {
+                char c = name->val.p[i];
+                if (c < 32 || c == 127 || (c > 128 && c < 160))
+                {
+                    value[i] = '?';
+                } else
+                {
+                    value[i] = c;
+                }
+            }
+
+            // null terminate
+            value[bytes_to_write] = 0;
+
+            retval = name->val.len;
+        }
+
+        name = name->next;
+    }
+
+    return retval;
+}
+
 /*!****************************************************************************
  * @brief Access to the specified node 
  * 
@@ -463,7 +512,7 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 	char value[64];
 	size_t value_len;
 
-	value_len = Utility_find_oid_value_in_name(name, "CN", value, sizeof(value));
+	value_len = boat_find_oid_value_in_name(name, "CN", value, sizeof(value));
 	if (value_len)
 	{
 		tx_ptr->var.creator_id = BoatMalloc(value_len + 1);
