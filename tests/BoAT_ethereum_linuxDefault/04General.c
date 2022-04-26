@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "tcase_ethereum.h"
+#include "TestABIContract.h"
 
 #define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
 #define TEST_ETHEREUM_CHAIN_ID      5777
@@ -21,7 +22,7 @@
 #define TEST_GAS_PRICE              "0x4A817C800"
 #define TEST_IS_SYNC_TX             BOAT_TRUE
 #define TEST_RECIPIENT_ADDRESS      "0xde4c806b372Df8857C97cF36A08D528bB8E261Bd"
-#define TEST_STOREREAD_ADDRESS      "0x"
+#define TEST_CONTRACT_ADDRESS       "0x"
 
 
 extern BoatEthWalletConfig get_ethereum_wallet_settings();
@@ -213,6 +214,28 @@ START_TEST(test_002InitWallet_0012InitEthWalletSuccess)
 }
 END_TEST
 
+START_TEST(test_008Contract_0001CallNoneInputContractFuction)
+{
+    BoatEthTx tx_ctx;
+    BoatEthWallet *rtnVal;
+    BCHAR *result_str;
+    BOAT_RESULT result;
+    BoatEthWalletConfig walletConfig = get_ethereum_wallet_settings();
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
+    ck_assert_ptr_ne(rtnVal, NULL);
+
+    result = BoatEthTxInit(rtnVal, &tx_ctx, BOAT_TRUE, NULL,
+						   "0x333333",
+						   (BCHAR *)TEST_CONTRACT_ADDRESS);
+    ck_assert_int_eq(result, BOAT_SUCCESS);                   
+
+    result_str = TestABIContract_count(&tx_ctx);
+    ck_assert_ptr_ne(rtnVal, NULL);
+}
+END_TEST
+
 Suite *make_general_suite(void)
 {
     /* Create Suite */
@@ -235,6 +258,8 @@ Suite *make_general_suite(void)
     tcase_add_test(tc_general_api, test_002InitWallet_0003SetChainIdSuccess); 
     tcase_add_test(tc_general_api, test_002InitWallet_0005SetNodeUrlSuccess); 
     tcase_add_test(tc_general_api, test_002InitWallet_0012InitEthWalletSuccess); 
+
+    tcase_add_test(tc_general_api, test_008Contract_0001CallNoneInputContractFuction); 
     
     return s_general;
 }
