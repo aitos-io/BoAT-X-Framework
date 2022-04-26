@@ -236,6 +236,36 @@ START_TEST(test_008Contract_0001CallNoneInputContractFuction)
 }
 END_TEST
 
+START_TEST(test_008Contract_0002SetAndGetBoolContractFuction)
+{
+    BoatEthTx tx_ctx;
+    BoatEthWallet *rtnVal;
+    BCHAR *result_str;
+    BOAT_RESULT result;
+    BoatFieldVariable parse_result = {NULL, 0};
+    BoatEthWalletConfig walletConfig = get_ethereum_wallet_settings();
+
+    /* 1. execute unit test */
+    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
+    ck_assert_ptr_ne(rtnVal, NULL);
+
+    result = BoatEthTxInit(rtnVal, &tx_ctx, BOAT_TRUE, NULL,
+						   "0x333333",
+						   (BCHAR *)TEST_CONTRACT_ADDRESS);
+    ck_assert_int_eq(result, BOAT_SUCCESS);                   
+
+    result_str = TestABIContract_setBool(&tx_ctx, BOAT_TRUE);
+    ck_assert_ptr_ne(rtnVal, NULL);
+
+    result_str = TestABIContract_getBool(&tx_ctx);
+    ck_assert_ptr_ne(rtnVal, NULL);
+    result = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
+    ck_assert_int_eq(result, BOAT_SUCCESS);   
+
+    BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", parse_result.field_ptr);
+}
+END_TEST
+
 Suite *make_general_suite(void)
 {
     /* Create Suite */
@@ -260,6 +290,7 @@ Suite *make_general_suite(void)
     tcase_add_test(tc_general_api, test_002InitWallet_0012InitEthWalletSuccess); 
 
     tcase_add_test(tc_general_api, test_008Contract_0001CallNoneInputContractFuction); 
+    tcase_add_test(tc_general_api, test_008Contract_0002SetAndGetBoolContractFuction); 
     
     return s_general;
 }
