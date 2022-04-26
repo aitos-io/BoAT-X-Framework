@@ -52,6 +52,7 @@ START_TEST(test_006GetBalance_0001GetSuccess)
 
     BoatIotSdkDeInit();
 }
+END_TEST
 
 START_TEST(test_006GetBalance_0002GetSuccessNullAddress) 
 {
@@ -80,6 +81,7 @@ START_TEST(test_006GetBalance_0002GetSuccessNullAddress)
 
     BoatIotSdkDeInit();
 }
+END_TEST
 
 START_TEST(test_006GetBalance_0003GetFailureNullWallet) 
 {
@@ -93,6 +95,7 @@ START_TEST(test_006GetBalance_0003GetFailureNullWallet)
 
     BoatIotSdkDeInit();
 }
+END_TEST
 
 
 
@@ -136,6 +139,7 @@ START_TEST(test_007Transfer_0002TransferFailureNullParam)
 
     BoatIotSdkDeInit();
 }
+END_TEST
 
 START_TEST(test_007Transfer_0003TransferWithSpecifyChainIDSuccess) 
 {
@@ -165,6 +169,7 @@ START_TEST(test_007Transfer_0003TransferWithSpecifyChainIDSuccess)
 
     BoatIotSdkDeInit();
 }
+END_TEST
 
 Suite *make_transactions_suite(void)
 {
