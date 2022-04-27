@@ -34,6 +34,7 @@ FISCO-BCOS
 Hyperledger Fabric  
 Huawei BCS (华为链)  
 Chainmaker (长安链)  
+VenaChain (万纳链)
 
 **支持的Target操作系统：**  
 Linux  
@@ -186,9 +187,10 @@ BOAT_PROTOCOL_USE_FISCOBCOS  ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC   ?= 1
 BOAT_PROTOCOL_USE_HWBCS      ?= 1
 BOAT_PROTOCOL_USE_CHAINMAKER ?= 1
+BOAT_PROTOCOL_USE_VENACHAIN  ?= 1
 ```
 根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁用相应的区块链协议。  
-***注：由于PlatON，PlatONE和FISCO BCOS三个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能。***  
+***注：由于PlatON，PlatONE，FISCO BCOS和Venachain四个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能。***  
 ***注：由于hw_bcs区块链钱包代码大量复用fabric的钱包代码，所以使能hw_bcs时，都需要把fabric使能。*** 
 - 日志打印级别调整  
 根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
@@ -441,7 +443,7 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
         - 对于PlatON，无需修改Demo中的私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥对应的原生格式私钥
-  3.	如果demo需使用原生私钥，则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
+  3.	如果demo需使用PKCS格式私钥，则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
         - 对于以太坊，设置为ganache生成的任意一个账户的私钥对应的PKCS格式私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥
