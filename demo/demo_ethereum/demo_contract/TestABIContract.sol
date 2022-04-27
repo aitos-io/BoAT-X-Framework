@@ -62,6 +62,14 @@ contract TestABIContract {
         output = b32;
     }
 
+    function setAddress(address input) public {
+        a = input;
+    }
+
+    function getAddress() public view returns (address output) {
+        output = a;
+    }
+
     function setIntArray(int32[] memory input) public {
         int32List = input;
     }

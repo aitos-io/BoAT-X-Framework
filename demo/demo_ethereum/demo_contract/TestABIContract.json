@@ -27,6 +27,21 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "getAddress",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "output",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "getBool",
 			"outputs": [
 				{
@@ -127,6 +142,21 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "input",
+					"type": "address"
+				}
+			],
+			"name": "setAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
