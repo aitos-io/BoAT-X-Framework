@@ -33,6 +33,8 @@ api_chainmaker.c defines the Ethereum wallet API for BoAT IoT SDK.
 
 static BOAT_RESULT BoatChainmakerWalletSetOrgId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *org_id_ptr);
 static BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *chain_id_ptr);
+static BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *host_name_ptr);
+
 
 
 BUINT8 get_fibon_data(BUINT8 n) {
