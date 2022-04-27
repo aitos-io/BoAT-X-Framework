@@ -22,7 +22,7 @@
 #define TEST_GAS_PRICE              "0x4A817C800"
 #define TEST_IS_SYNC_TX             BOAT_TRUE
 #define TEST_RECIPIENT_ADDRESS      "0xde4c806b372Df8857C97cF36A08D528bB8E261Bd"
-#define TEST_CONTRACT_ADDRESS       "0x"
+#define TEST_CONTRACT_ADDRESS       "0x729221d84D36acF19594D793D8Ca76C19eFc7b12"
 
 
 extern BoatEthWalletConfig get_ethereum_wallet_settings();
@@ -262,7 +262,7 @@ START_TEST(test_008Contract_0002SetAndGetBoolContractFuction)
     result = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
     ck_assert_int_eq(result, BOAT_SUCCESS);   
 
-    BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", parse_result.field_ptr);
+    BoatLog(BOAT_LOG_NORMAL, "getBool returns: %s", parse_result.field_ptr);
 }
 END_TEST
 
@@ -292,7 +292,7 @@ START_TEST(test_008Contract_0003SetAndGetUintContractFuction)
     result = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
     ck_assert_int_eq(result, BOAT_SUCCESS);   
 
-    BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", parse_result.field_ptr);
+    BoatLog(BOAT_LOG_NORMAL, "getUint32 returns: %s", parse_result.field_ptr);
 }
 END_TEST
 
@@ -323,7 +323,7 @@ START_TEST(test_008Contract_0004SetAndGetStringContractFuction)
     result = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
     ck_assert_int_eq(result, BOAT_SUCCESS);   
 
-    BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", parse_result.field_ptr);
+    BoatLog(BOAT_LOG_NORMAL, "getString returns: %s", parse_result.field_ptr);
 }
 END_TEST
 
@@ -360,7 +360,7 @@ START_TEST(test_008Contract_0005SetAndGetBytesContractFuction)
     result = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
     ck_assert_int_eq(result, BOAT_SUCCESS);   
 
-    BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", parse_result.field_ptr);
+    BoatLog(BOAT_LOG_NORMAL, "getByte returns: %s", parse_result.field_ptr);
 }
 END_TEST
 
@@ -397,7 +397,7 @@ START_TEST(test_008Contract_0006SetAndGetAddressContractFuction)
     result = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
     ck_assert_int_eq(result, BOAT_SUCCESS);   
 
-    BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", parse_result.field_ptr);
+    BoatLog(BOAT_LOG_NORMAL, "getAddress returns: %s", parse_result.field_ptr);
 }
 END_TEST
 
@@ -423,7 +423,7 @@ START_TEST(test_008Contract_0007SetAndGetIntArrayContractFuction)
 
     for (i = 0; i < 10; i++)  
     {
-        ba[i] = 0 - i;
+        bs[i] = 0 - i;
     }      
 
     result_str = TestABIContract_setIntArray(&tx_ctx, bs, 10);
@@ -434,7 +434,7 @@ START_TEST(test_008Contract_0007SetAndGetIntArrayContractFuction)
     result = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
     ck_assert_int_eq(result, BOAT_SUCCESS);   
 
-    BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", parse_result.field_ptr);
+    BoatLog(BOAT_LOG_NORMAL, "getIntArray returns: %s", parse_result.field_ptr);
 }
 END_TEST
 
@@ -468,7 +468,6 @@ Suite *make_general_suite(void)
     tcase_add_test(tc_general_api, test_008Contract_0005SetAndGetBytesContractFuction);
     tcase_add_test(tc_general_api, test_008Contract_0006SetAndGetAddressContractFuction);
     tcase_add_test(tc_general_api, test_008Contract_0007SetAndGetIntArrayContractFuction);
-    
     
     return s_general;
 }
