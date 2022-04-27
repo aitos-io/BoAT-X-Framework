@@ -299,6 +299,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
                     BoatFree(boatwalletStore_ptr);
+                    g_boat_iot_sdk_context.wallet_list[i].is_used = BOAT_FALSE;
                     return BOAT_ERROR_PERSISTER_READ_FAIL;
                 }
                 //
