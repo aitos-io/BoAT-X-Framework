@@ -99,9 +99,9 @@ void BoatIotSdkDeInit(void)
 // For Multi-Thread Support: DeleteMutex Here
 }
 
-static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const void *wallet_config_ptr){
-
-     switch (protocol_type)
+static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const void *wallet_config_ptr)
+{
+    switch (protocol_type)
     {
 
         #if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_HWBCS == 1)
@@ -110,26 +110,30 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
             if (wallet_config_ptr != NULL)
             {
                 BoatHlfabricWalletConfig* fabric_config_ptr = wallet_config_ptr;
-                if(fabric_config_ptr->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION &&
-                    fabric_config_ptr->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION){
+                if (fabric_config_ptr->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION &&
+                    fabric_config_ptr->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
+                {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_genMode err.");
                     return BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
                 }
-                if(fabric_config_ptr->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256K1 &&
-                    fabric_config_ptr->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256R1){
+                if (fabric_config_ptr->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256K1 &&
+                    fabric_config_ptr->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+                {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_type err.");
                     return BOAT_ERROR_WALLET_KEY_TYPE_ERR;
                 }
-                if(fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_PKCS &&
+                if (fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_PKCS &&
                     fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_NATIVE &&
-                    fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC){
+                    fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC)
+                {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_format err.");
                     return BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
                 }
                 mbedtls_x509_crt m_certificate;
 	            mbedtls_x509_crt_init(&m_certificate);
 	            int status = mbedtls_x509_crt_parse(&m_certificate,fabric_config_ptr->accountCertContent.content, fabric_config_ptr->accountCertContent.length);
-                if(status != BOAT_SUCCESS){
+                if (status != BOAT_SUCCESS)
+                {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet account cert err. %x ",-status);
                     return BOAT_ERROR;
                 }
@@ -138,8 +142,9 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                     /* code */
                     for (int j = 0; j < fabric_config_ptr->nodesCfg.layoutCfg[i].endorserGroupNum; j++)
                     {
-                        if(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities == 0 ||
-                        fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities > fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber){
+                        if (fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities == 0 ||
+                        fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities > fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber)
+                        {
                             BoatLog(BOAT_LOG_NORMAL, "quantities ERR ");
                             return BOAT_ERROR;
                         }
@@ -147,19 +152,22 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                         for (int k = 0; k < fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber; k++)
                         {
                             /* code */
-                            if(strlen(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl)==0){
+                            if (strlen(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl)==0)
+                            {
                                 BoatLog(BOAT_LOG_NORMAL, "url len is 0 ");
                                 return BOAT_ERROR;
                             }
                             
-                            if(UtilityStringLenCheck(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl) != BOAT_SUCCESS){
+                            if (UtilityStringLenCheck(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl) != BOAT_SUCCESS)
+                            {
                                 BoatLog(BOAT_LOG_NORMAL, "url len check ERR ");
                                 return BOAT_ERROR;
                             }
                             for (int l = 0; l < strlen(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl); l++)
                             {
                                 /* code */
-                                if(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl[l] < 0x20){
+                                if (fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl[l] < 0x20)
+                                {
                                     BoatLog(BOAT_LOG_NORMAL, "url code ERR ");
                                     return BOAT_ERROR;
                                 }
@@ -171,11 +179,13 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                 for (int i = 0; i < fabric_config_ptr->nodesCfg.orderCfg.endorserNumber; i++)
                 {
                     /* code */
-                    if(strlen(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl) == 0){
+                    if (strlen(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl) == 0)
+                    {
                        BoatLog(BOAT_LOG_NORMAL, "order url len is  0 ");
                         return BOAT_ERROR;
                     }
-                    if(UtilityStringLenCheck(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl) != BOAT_SUCCESS){
+                    if (UtilityStringLenCheck(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl) != BOAT_SUCCESS)
+                    {
                         BoatLog(BOAT_LOG_NORMAL, "order url len check ERR ");
                         return BOAT_ERROR;
                     }
@@ -183,7 +193,8 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                     for (int l = 0; l < strlen(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl); l++)
                     {
                         /* code */
-                        if(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl[l] < 0x20){
+                        if (fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl[l] < 0x20)
+                        {
                             BoatLog(BOAT_LOG_NORMAL, "order url ode ERR ");
                             return BOAT_ERROR;
                         }
@@ -218,7 +229,8 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
     result = BoatWalletCreatParaCheck(protocol_type,wallet_config_ptr);
-    if(result != BOAT_SUCCESS){
+    if (result != BOAT_SUCCESS)
+    {
         return result;
     }
 
@@ -523,7 +535,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
                 if (wallet_ptr != NULL)
                 {
                     // re-assign private key context
-                    memcpy( &((BoatFiscobcosWallet*)wallet_ptr)->account_info.prikeyCtx,  boatwalletStore_ptr + wallet_config_size, sizeof(BoatWalletPriKeyCtx));
+                    memcpy(&((BoatFiscobcosWallet*)wallet_ptr)->account_info.prikeyCtx,  boatwalletStore_ptr + wallet_config_size, sizeof(BoatWalletPriKeyCtx));
                     // compute address
                     BoatHash(BOAT_HASH_KECCAK256, ((BoatFiscobcosWallet*)wallet_ptr)->account_info.prikeyCtx.pubkey_content, 64, pubkeyHashDummy, &hashLenDummy, NULL);
                     memcpy(((BoatFiscobcosWallet*)wallet_ptr)->account_info.address, &pubkeyHashDummy[32 - BOAT_FISCOBCOS_ADDRESS_SIZE], BOAT_FISCOBCOS_ADDRESS_SIZE);     
@@ -742,10 +754,10 @@ void BoatWalletUnload(BSINT32 wallet_index)
 }
 
 
-void BoatWalletDelete(BCHAR *wallet_name_str)
+BOAT_RESULT BoatWalletDelete(BCHAR *wallet_name_str)
 {
     // Delete persistent wallet
-    BoatPersistDelete(wallet_name_str);
+    return BoatPersistDelete(wallet_name_str);
 }
 
 

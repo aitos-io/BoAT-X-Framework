@@ -620,7 +620,7 @@ void BoatWalletUnload(BSINT32 wallet_index);
 #### 删除钱包
 删除钱包会将持久化的钱包删除。如果该钱包在删除之前已经加载，那么删除之后，该持久化钱包会变为一次性钱包，在卸载之前仍可使用。  
 ```
-void BoatWalletDelete(BCHAR * wallet_name_str);
+BOAT_RESULT BoatWalletDelete(BCHAR * wallet_name_str);
 ```
 参数:
 

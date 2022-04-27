@@ -631,7 +631,7 @@ Parameters:
 Deleting the wallet will delete the persistent wallet. If the wallet has been loaded before the deletion, the persistent wallet will become a one-time wallet, which can still be used before being unloaded.
 
 ````
-void BoatWalletDelete(BCHAR *wallet_name_str);
+BOAT_RESULT BoatWalletDelete(BCHAR *wallet_name_str);
 ````
 
 Parameters:
