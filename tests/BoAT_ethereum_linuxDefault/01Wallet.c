@@ -580,11 +580,6 @@ START_TEST(test_001CreateWallet_0018DeletePersistWalletSuccess)
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
     ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == false);
 
-    g_ethereum_wallet_ptr = BoatGetWalletByIndex(rtnVal);
-    ck_assert(g_ethereum_wallet_ptr != NULL);
-
-
-    //ck_assert(check_ethereum_wallet(g_ethereum_wallet_ptr) == BOAT_SUCCESS);
     BoatIotSdkDeInit();
 }
 END_TEST
