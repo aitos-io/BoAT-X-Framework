@@ -443,7 +443,7 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
         - 对于PlatON，无需修改Demo中的私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥对应的原生格式私钥
-  3.	如果demo需使用原生私钥，则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
+  3.	如果demo需使用PKCS格式私钥，则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
         - 对于以太坊，设置为ganache生成的任意一个账户的私钥对应的PKCS格式私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥
