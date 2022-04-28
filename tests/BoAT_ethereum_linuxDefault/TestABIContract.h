@@ -54,6 +54,7 @@ This file is generated from contract ABI. DO NOT modify it by hand.
 
 BCHAR *TestABIContract_count(BoatEthTx *tx_ptr);
 BCHAR *TestABIContract_destroy(BoatEthTx *tx_ptr);
+BCHAR *TestABIContract_getAddress(BoatEthTx *tx_ptr);
 BCHAR *TestABIContract_getBool(BoatEthTx *tx_ptr);
 BCHAR *TestABIContract_getByte(BoatEthTx *tx_ptr);
 BCHAR *TestABIContract_getCountTimes(BoatEthTx *tx_ptr);
@@ -61,6 +62,7 @@ BCHAR *TestABIContract_getIntArray(BoatEthTx *tx_ptr);
 BCHAR *TestABIContract_getString(BoatEthTx *tx_ptr);
 BCHAR *TestABIContract_getUint32(BoatEthTx *tx_ptr);
 BCHAR *TestABIContract_organizer(BoatEthTx *tx_ptr);
+BCHAR *TestABIContract_setAddress(BoatEthTx *tx_ptr, BoatAddress input);
 BCHAR *TestABIContract_setBool(BoatEthTx *tx_ptr, BUINT8 input);
 BCHAR *TestABIContract_setByte(BoatEthTx *tx_ptr, Bbytes32 input);
 BCHAR *TestABIContract_setIntArray(BoatEthTx *tx_ptr, BSINT32 *input, BUINT32 inputLen);

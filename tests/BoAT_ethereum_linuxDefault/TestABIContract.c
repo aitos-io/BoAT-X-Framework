@@ -160,6 +160,54 @@ BCHAR *TestABIContract_destroy(BoatEthTx *tx_ptr)
 
 }
 
+BCHAR *TestABIContract_getAddress(BoatEthTx *tx_ptr)
+{
+    BCHAR *call_result_str = NULL;
+    BoatFieldVariable data_field = {NULL, 0};
+    BCHAR *function_prototye_str;
+    BUINT8 field_bytes32[32];
+    BUINT8 fixedsize_bytes32[32];
+    BUINT8 *data_offset_ptr;
+    BUINT32 i;
+    (void) fixedsize_bytes32;
+    (void) i;
+    boat_try_declare;
+
+    if (tx_ptr == NULL)
+    {
+        return NULL;
+    }
+
+    data_field.field_len = (0 * 32 + 4);
+    data_field.field_ptr = BoatMalloc(data_field.field_len);
+    if (data_field.field_ptr == NULL)
+    {
+        boat_throw(BOAT_ERROR, cleanup);
+    }
+    data_offset_ptr = data_field.field_ptr;
+
+    function_prototye_str = "getAddress()";
+    BoatHash(BOAT_HASH_KECCAK256, (BUINT8 *)function_prototye_str, strlen(function_prototye_str), field_bytes32, NULL, NULL);
+    memcpy(data_offset_ptr, field_bytes32, 4);
+    data_offset_ptr += 4;
+
+    call_result_str = BoatEthCallContractFunc(tx_ptr, function_prototye_str, data_field.field_ptr+4, data_field.field_len-4);
+
+
+    boat_catch(cleanup)
+    {
+        if (data_field.field_ptr != NULL)
+        {
+            BoatFree(data_field.field_ptr);
+        }
+        return(NULL);
+    }
+        
+    BoatFree(data_field.field_ptr);
+    return(call_result_str);
+
+}
+
 BCHAR *TestABIContract_getBool(BoatEthTx *tx_ptr)
 {
     BCHAR *call_result_str = NULL;
@@ -493,6 +541,64 @@ BCHAR *TestABIContract_organizer(BoatEthTx *tx_ptr)
         
     BoatFree(data_field.field_ptr);
     return(call_result_str);
+
+}
+
+BCHAR *TestABIContract_setAddress(BoatEthTx *tx_ptr, BoatAddress input)
+{
+    static BCHAR tx_hash_str[67] = "";
+    BoatFieldVariable data_field = {NULL, 0};
+    BCHAR *function_prototye_str;
+    BUINT8 field_bytes32[32];
+    BUINT8 fixedsize_bytes32[32];
+    BUINT8 *data_offset_ptr;
+    BUINT32 i;
+    (void) fixedsize_bytes32;
+    (void) i;
+    boat_try_declare;
+
+    if ((tx_ptr == NULL) || (input == NULL))
+    {
+        return NULL;
+    }
+
+    boat_try(BoatEthTxSetNonce(tx_ptr, BOAT_ETH_NONCE_AUTO));
+
+    data_field.field_len = (1 * 32 + 4);
+    data_field.field_ptr = BoatMalloc(data_field.field_len);
+    if (data_field.field_ptr == NULL)
+    {
+        boat_throw(BOAT_ERROR, cleanup);
+    }
+    data_offset_ptr = data_field.field_ptr;
+
+    function_prototye_str = "setAddress(address)";
+    BoatHash(BOAT_HASH_KECCAK256, (BUINT8 *)function_prototye_str, strlen(function_prototye_str), field_bytes32, NULL, NULL);
+    memcpy(data_offset_ptr, field_bytes32, 4);
+    data_offset_ptr += 4;
+
+    memset(data_offset_ptr, 0x00, 32);
+    UtilityChangeEndian(input, sizeof(BoatAddress));
+    memcpy(data_offset_ptr + 32 - sizeof(BoatAddress), input, sizeof(BoatAddress));
+    data_offset_ptr += 32;
+    boat_try(BoatEthTxSetData(tx_ptr, &data_field));
+
+    boat_try(BoatEthTxSend(tx_ptr));
+
+    UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
+
+
+    boat_catch(cleanup)
+    {
+        if (data_field.field_ptr != NULL)
+        {
+            BoatFree(data_field.field_ptr);
+        }
+        return(NULL);
+    }
+        
+    BoatFree(data_field.field_ptr);
+    return(tx_hash_str);
 
 }
 
