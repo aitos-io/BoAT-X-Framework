@@ -3,8 +3,8 @@
 # Generate sub-directory list
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/demo
 
-.PHONY: all demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs demo_chainmaker demo_venachain
-all: $(OBJECTS_DIR) demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs demo_chainmaker demo_venachain
+.PHONY: all demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs demo_chainmaker demo_venachain demo_quorum
+all: $(OBJECTS_DIR) demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs demo_chainmaker demo_venachain demo_quorum
 
 demo_ethereum:
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
@@ -46,6 +46,16 @@ ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_venachain all
 endif
 
+demo_venachain:
+ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
+	make -C $(BOAT_BASE_DIR)/demo/demo_venachain all
+endif
+
+demo_quorum:
+ifeq ($(BOAT_PROTOCOL_USE_QUORUM), 1)
+	make -C $(BOAT_BASE_DIR)/demo/demo_quorum all
+endif
+
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
 
@@ -58,4 +68,5 @@ clean:
 	make -C $(BOAT_BASE_DIR)/demo/demo_hw_bcs clean
 	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker clean
 	make -C $(BOAT_BASE_DIR)/demo/demo_venachain clean
+	make -C $(BOAT_BASE_DIR)/demo/demo_quorum clean
 	-$(BOAT_RM) $(BOAT_BUILD_DIR)/demo
