@@ -52,7 +52,7 @@ ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	make -C  boatvenachain all
 endif
 
-protocol_chainmaker:
+protocol_quorum:
 ifeq ($(BOAT_PROTOCOL_USE_QUORUM), 1)
 	make -C  boatquorum all
 endif
