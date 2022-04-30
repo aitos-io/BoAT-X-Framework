@@ -385,8 +385,6 @@ BOAT_RESULT BoatQuorumTxSetNonce(BoatQuorumTx *tx_ptr, BUINT64 nonce)
     BCHAR *tx_count_str;
     BOAT_RESULT result;
 
-     printf("BoatQuorumTxSetNonce start\n");
-
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
@@ -403,7 +401,6 @@ BOAT_RESULT BoatQuorumTxSetNonce(BoatQuorumTx *tx_ptr, BUINT64 nonce)
         param_quorum_getTransactionCount.method_name_str  = "eth_getTransactionCount";
         param_quorum_getTransactionCount.address_str      = account_address_str;
         param_quorum_getTransactionCount.block_num_str    = "latest";
-        printf("liuhshhhhhhhhshshh777777777788888888 =%s\n", account_address_str);
 
         tx_count_str = web3_getTransactionCount(tx_ptr->wallet_ptr->web3intf_context_ptr,
                                                 tx_ptr->wallet_ptr->network_info.node_url_ptr,
@@ -421,19 +418,11 @@ BOAT_RESULT BoatQuorumTxSetNonce(BoatQuorumTx *tx_ptr, BUINT64 nonce)
             BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
             return result;
         }
-         BoatLog_hexdump(BOAT_LOG_VERBOSE, "Encoded RLP 1111111111111", 
-                      tx_ptr->rawtx_fields.nonce.field,  tx_ptr->rawtx_fields.nonce.field_len);
 
         /* Set nonce from transaction count */
         tx_ptr->rawtx_fields.nonce.field_len = UtilityHexToBin(tx_ptr->rawtx_fields.nonce.field, 32,  
                                                                (BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
                                                                TRIMBIN_LEFTTRIM, BOAT_TRUE);
-        printf("nonce1111111111111111111111111111 = %d\n",  tx_ptr->rawtx_fields.nonce.field_len);
-        BoatLog_hexdump(BOAT_LOG_VERBOSE, "Encoded RLP 1111111111111", 
-                      tx_ptr->rawtx_fields.nonce.field,  tx_ptr->rawtx_fields.nonce.field_len);
-
-          printf("nonce1111111111111111111111222 = %s\n",  (BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr);
-
     }
     else
     {
@@ -441,7 +430,6 @@ BOAT_RESULT BoatQuorumTxSetNonce(BoatQuorumTx *tx_ptr, BUINT64 nonce)
         tx_ptr->rawtx_fields.nonce.field_len = UtilityUint64ToBigend(tx_ptr->rawtx_fields.nonce.field,
                                                                      nonce, TRIMBIN_LEFTTRIM);
     }
-       printf("BoatQuorumTxSetNonce end\n");
     return BOAT_SUCCESS;
 }
 
