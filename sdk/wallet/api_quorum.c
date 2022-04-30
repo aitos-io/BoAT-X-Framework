@@ -86,9 +86,6 @@ BoatQuorumWallet *BoatQuorumWalletInit(const BoatQuorumWalletConfig *config_ptr,
     BoatHash(BOAT_HASH_KECCAK256, wallet_ptr->account_info.prikeyCtx.pubkey_content, 
              64, pubkeyHash, &hashLenDummy, NULL);
     memcpy(wallet_ptr->account_info.address, &pubkeyHash[32 - BOAT_QUORUM_ADDRESS_SIZE], BOAT_QUORUM_ADDRESS_SIZE);
-     memcpy(wallet_ptr->account_info.address, &pubkeyHash[32], BOAT_QUORUM_ADDRESS_SIZE);
-    printf("shhhhhhhhhhhhhhhhhhhhhhhhh = %s\n", wallet_ptr->account_info.address);
-    
     // Configure Chain ID
     BoatQuorumWalletSetChainId(wallet_ptr, config_ptr->chain_id);
     
@@ -265,7 +262,6 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
                           BCHAR *recipient_str)
 {
     BOAT_RESULT result;
-       printf("BoatQuorumTxInit1111111111111111111111111111111 start = %s\n", recipient_str);
 
     if (wallet_ptr == NULL || tx_ptr == NULL || recipient_str == NULL)
     {
@@ -314,7 +310,6 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
     // Either manually set the gas price or get the price from network
    
         gasprice.field_len = sizeof("0x0");
-        printf("kkkkkkkkkkkkkk= %d\n", gasprice.field_len);
         memcpy(&tx_ptr->rawtx_fields.gasprice, "0x0", sizeof("0x0"));
    
     if (result != BOAT_SUCCESS)
@@ -613,7 +608,6 @@ BCHAR *BoatQuorumCallContractFunc(BoatQuorumTx *tx_ptr, BCHAR *func_proto_str,
                     BOAT_QUORUM_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA,
                     BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     param_quorum_call.to = recipient_hexstr;
-     printf("000000000000000000000000 = %s\n", recipient_hexstr);
 
     // Function call consumes zero gas but gasLimit and gasPrice must be specified.
     param_quorum_call.gas = "0x1fffff";
@@ -640,8 +634,7 @@ BCHAR *BoatQuorumCallContractFunc(BoatQuorumTx *tx_ptr, BCHAR *func_proto_str,
     {
         BoatLog(BOAT_LOG_CRITICAL, "web3 call fail, result = %d ",result);
     }
-    BoatLog(BOAT_LOG_CRITICAL, "liuliuliuliuliuliuliuliuliuliu = %d ",result);
-      BoatLog(BOAT_LOG_CRITICAL, "liuliuliuliuliuliuliuliuliuliu = %s ",retval_str);
+
     return retval_str;
 }
 
