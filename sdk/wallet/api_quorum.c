@@ -330,19 +330,12 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
         BoatLog(BOAT_LOG_CRITICAL, "BoatQuorumTxSetGasLimit failed.");
         return result;
     }
-
-    printf("cccccccccccccccccccc = %s\n", gaslimit_str);
-       printf("cccccccccccccccccccc = %s\n", gaslimit.field);
-
     // Initialize recipient
     BUINT8 recipient[BOAT_QUORUM_ADDRESS_SIZE];
     BUINT32 converted_len;
-    printf("22222222222222222222 =%s\n", recipient_str);
+
     converted_len = UtilityHexToBin(recipient, BOAT_QUORUM_ADDRESS_SIZE, recipient_str, 
                                     TRIMBIN_TRIM_NO, BOAT_TRUE);
-
-    BoatLog_hexdump(BOAT_LOG_VERBOSE, "222222222---22222222", 
-                        recipient, converted_len);
 
     if (converted_len == 0)
     {
@@ -366,8 +359,6 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
         BoatLog(BOAT_LOG_CRITICAL, "BoatQuorumTxSetValue failed.");
         return result;
     }
-
-    printf("BoatQuorumTxInit1111111111111111111111111111111 end\n");
     
     return BOAT_SUCCESS;
 }
