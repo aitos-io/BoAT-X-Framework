@@ -37,9 +37,9 @@ const BCHAR * demoUrl = "172.16.239.11:8545";
 /**
  * transfer recipient address
  */
-const BCHAR *demo_recipient_address = "0x341ed42cdfb13b897a198cd1c87ddf070e25e6a1";
+const BCHAR *demo_recipient_address = "0x1932c48b2bf8102ba33b4a6b545c32236e342f34";
 
-const BCHAR *native_demoKey = "0x882a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63";
+const BCHAR *native_demoKey = "0xf1395a1fc3f74f0c867b61292e28e0f6cc98a095535fd6bf04e4169ebc047e61";
 
 
 BoatQuorumWallet *g_quorum_wallet_ptr;
@@ -95,8 +95,9 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
         BoatLog(BOAT_LOG_NORMAL, "BoatQuorumTxInit fails.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
-    
-    result_str = SimpleStorage_set(&tx_ctx, 24);
+    char set_data[32] = {0};
+    set_data[31]= 8;
+    result_str = SimpleStorage_set(&tx_ctx, set_data);
     if(result_str == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "SimpleStorage_set failed: %s.", result_str);
