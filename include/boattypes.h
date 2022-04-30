@@ -62,7 +62,8 @@ typedef enum
 	BOAT_PROTOCOL_FISCOBCOS,       //!< FISCOBCOS Enterprise consortium chain
     BOAT_PROTOCOL_HWBCS,           // huawei chain
     BOAT_PROTOCOL_CHAINMAKER,      // chainmaker
-    BOAT_PROTOCOL_VENACHAIN        // Venachain Enterprise consortium chain
+    BOAT_PROTOCOL_VENACHAIN,       // Venachain Enterprise consortium chain
+    BOAT_PROTOCOL_QUORUM           // quorum
 }BoatProtocolType;
 
 //!@brief Blockchain hash algorithm
