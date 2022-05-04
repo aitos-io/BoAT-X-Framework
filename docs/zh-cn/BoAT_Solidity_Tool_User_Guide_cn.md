@@ -23,7 +23,7 @@
 @todo
 
 ## 使用说明
-通过工具生成Solidity合约的C接口文件时，需要根据相应的平台调用tools文件夹相应的合约版本，其中，`eth2c.py`，`fiscobcos2c.py`，`platoneSolidity2c.py`三个文件为相应链的合约脚本。  
+通过工具生成Solidity合约的C接口文件时，需要根据相应的平台调用tools文件夹相应的合约版本，其中，`eth2c.py`，`fiscobcos2c.py`，`platoneSolidity2c.py`和`venachainSolidity2c.py`四个文件为相应链的合约脚本。  
 
 ### 输入文件生成
 
