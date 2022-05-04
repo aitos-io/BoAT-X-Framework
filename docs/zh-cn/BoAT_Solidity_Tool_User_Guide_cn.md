@@ -17,6 +17,7 @@
 |以太坊  |eth2c.py                   |
 |PlatONE  |fiscobcos2c.py           |
 |FISCO-BCOS  |platoneSolidity2c.py  |
+|Venachain  |venachainSolidity2c.py  |
 
 ## 软件依赖
 @todo
