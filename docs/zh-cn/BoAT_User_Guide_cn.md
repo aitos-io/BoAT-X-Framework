@@ -215,12 +215,14 @@ SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，�
 
 在进行调用前，首先需要编译合约，将合约编译中生成的ABI接口描述JSON文件，拷贝至SDK相应目录中：
 
-|合约ABI存放路径                                       |用途                                            |
-|:--------------------------------------------------- |:----------------------------------------       |
-|\<SDKRoot\>/demo/demo_ethereum/demo_contract         |将以太坊的ABI JSON文件拷贝至该目录下              |
-|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract        |将FISCO-BCOS的ABI JSON文件拷贝至该目录下          |
-|\<SDKRoot\>/demo/demo_platone/demo_contract/Solidity |将PlatONE（Solidity）的ABI JSON文件拷贝至该目录下 |
-|\<SDKRoot\>/demo/demo_platone/demo_contract/WSAM     |将PlatONE（WASM）的ABI JSON文件拷贝至该目录下     |
+|合约ABI存放路径                                          |用途                                            |
+|:------------------------------------------------------|:----------------------------------------       |
+|\<SDKRoot\>/demo/demo_ethereum/demo_contract           |将以太坊的ABI JSON文件拷贝至该目录下                 |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract          |将FISCO-BCOS的ABI JSON文件拷贝至该目录下            |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/Solidity   |将PlatONE（Solidity）的ABI JSON文件拷贝至该目录下    |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/WSAM       |将PlatONE（WASM）的ABI JSON文件拷贝至该目录下        |
+|\<SDKRoot\>/demo/demo_venachain/demo_contract/Solidity |将Venachain（Solidity）的ABI JSON文件拷贝至该目录下  |
+|\<SDKRoot\>/demo/demo_venachain/demo_contract/WSAM     |将Venachain（WASM）的ABI JSON文件拷贝至该目录下      |
 
 ***注：ABI的JSON文件必须以“.json”为文件名后缀。***
 
