@@ -52,10 +52,9 @@ extern "C" {
  *       4. recipient;
  *       5. value(optional);
  *       6. data(contain at least an 8-byte bigendian txtype field in data);
- *       7. txtype(same value as above, except trimming leading zeros);
- *       8. v;
- *       9. signature.r;
- *      10. signature.s;
+ *       7. v;
+ *       8. signature.r;
+ *       9. signature.s;
  *
  *   These transaction fields are encoded as elements of a LIST in above order
  *   as per RLP encoding rules. "LIST" is a type of RLP field.
