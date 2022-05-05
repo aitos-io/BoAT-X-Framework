@@ -235,6 +235,30 @@ START_TEST(test_002Transaction_0011TxSetTimestamp_Success)
 }
 END_TEST
 
+START_TEST(test_002Transaction_0012TxSetTimestamp_TxPtr_NULL) 
+{
+    BSINT32 rtnVal;
+    BoatHlfabricTx tx_ptr;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    BoatIotSdkInit();
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+
+    rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    rtnVal = BoatHlfabricWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
+	ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    long int timesec = 0;
+	time(&timesec);
+	rtnVal = BoatHlfabricTxSetTimestamp(NULL, timesec, 0);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+    fabricWalletConfigFree(wallet_config);
+}
+END_TEST
+
 Suite *make_transaction_suite(void) 
 {
     /* Create Suite */
@@ -257,7 +281,7 @@ Suite *make_transaction_suite(void)
     tcase_add_test(tc_transaction_api, test_002Transaction_0009TxSetNetworkInfo_NodesCfg_layoutNumIs0);
     tcase_add_test(tc_transaction_api, test_002Transaction_0010TxSetNetworkInfo_NodesCfg_orderCfg_NumIs0);
     tcase_add_test(tc_transaction_api, test_002Transaction_0011TxSetTimestamp_Success);
-    
+    tcase_add_test(tc_transaction_api, test_002Transaction_0012TxSetTimestamp_TxPtr_NULL);
 
     return s_transaction;
 }
