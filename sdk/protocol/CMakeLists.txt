@@ -30,6 +30,10 @@ add_subdirectory(boathwbcs)
 set(PROTOS  ${PROTOS} $<TARGET_OBJECTS:boathwbcs-obj>)
 endif()
 
+if(BOAT_PROTOCOL_USE_VENACHAIN)
+add_subdirectory(boatvenachain)
+set(PROTOS  ${PROTOS} $<TARGET_OBJECTS:boatvenachain-obj>)
+endif()
 
 add_library(protocol_obj    OBJECT  ${PROTOS})
 

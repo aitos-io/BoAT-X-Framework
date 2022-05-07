@@ -17,7 +17,7 @@
 /*!@brief Perform RAW transaction
 
 @file
-ethereum.c contains functions to construct a raw transaction, serialize it with RLP,
+boatvenachain.c contains functions to construct a raw transaction, serialize it with RLP,
 perform it and wait for its receipt.
 */
 
