@@ -33,15 +33,14 @@
 /**
  * test node url
  */
-const BCHAR * demoUrl = "172.16.239.11:8545";
+const BCHAR * demoUrl = "127.0.0.1:22000";
 /**
  * transfer recipient address
  */
 const BCHAR *demo_recipient_address = "0x1932c48b2bf8102ba33b4a6b545c32236e342f34";
 
-const BCHAR *native_demoKey = "0xf1395a1fc3f74f0c867b61292e28e0f6cc98a095535fd6bf04e4169ebc047e61";
-
-
+const BCHAR *native_demoKey = "0x880771e3c738852af5dd1f1115441adf2d3ae982cb1453b8ea20e6e9c37fad";
+                               
 BoatQuorumWallet *g_quorum_wallet_ptr;
 
 __BOATSTATIC BOAT_RESULT Quorumereum_createOnetimeWallet()
@@ -87,7 +86,7 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
     
     /* Set Contract Address */
     result = BoatQuorumTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, "0x0",
-                           "0x333333",
+                           "0x24A22",
                            (BCHAR *)demo_recipient_address);
 
     if (result != BOAT_SUCCESS)
@@ -96,7 +95,7 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
     char set_data[32] = {0};
-    set_data[31]= 8;
+    set_data[31]= 9;
     result_str = SimpleStorage_set(&tx_ctx, set_data);
     if(result_str == NULL)
     {
