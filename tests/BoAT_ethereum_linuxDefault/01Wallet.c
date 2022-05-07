@@ -894,6 +894,20 @@ END_TEST
 
 START_TEST(test_003DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
+    BSINT32 rtnVal;
+    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
+
+    BoatIotSdkInit();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum", &wallet, sizeof(BoatEthWalletConfig));
+
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 0);
+
     BoatWalletDelete(NULL);
     ck_assert_int_eq(access("ethereum", F_OK), 0);
 }
