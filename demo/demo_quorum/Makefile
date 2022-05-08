@@ -20,8 +20,16 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 all: $(OBJECTS_DIR) contract_generate
 	
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_quorum_public_storeread.c \
-		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_quorum_storeread_onetime_pkcs
+		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_quorum_storeread_public_onetime_pkcs
+
+		$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_quorum_private_storeread.c \
+		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_quorum_private_storeread_onetime_pkcs
+
+		$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_quorum_transfer.c \
+		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE\
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_quorum_transfer_onetime_pkcs
 	
 
 contract_generate:
