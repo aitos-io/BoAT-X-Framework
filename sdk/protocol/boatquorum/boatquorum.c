@@ -697,43 +697,42 @@ BOAT_RESULT quorum_parse_json_result(const BCHAR *json_string,
             boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, quorum_parse_json_result_cleanup);
         }
 
-            if (cJSON_IsObject(cjson_child_name_ptr))
+        if (cJSON_IsObject(cjson_child_name_ptr))
+        {
+            // the "result" object is json item
+            cjson_child_child_name_ptr = cJSON_GetObjectItemCaseSensitive(cjson_child_name_ptr, child_child_name);
+            if (cjson_child_child_name_ptr == NULL)
             {
-                // the "result" object is json item
-                cjson_child_child_name_ptr = cJSON_GetObjectItemCaseSensitive(cjson_child_name_ptr, child_child_name);
-                if (cjson_child_child_name_ptr == NULL)
-                {
-                    BoatLog(BOAT_LOG_NORMAL, "Cannot find \"%s\" item in RESPONSE.", child_child_name);
-                    boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, quorum_parse_json_result_cleanup);
-                }
-
-                 //parse child_child_name object
-                if (cJSON_IsString(cjson_child_child_name_ptr))
-                {
-                    parse_result_str = cJSON_GetStringValue(cjson_child_child_name_ptr);
-                    if (parse_result_str != NULL)
-                    {
-                        BoatLog(BOAT_LOG_VERBOSE, "result = %s", parse_result_str);
-
-                        parse_result_str_len = strlen(parse_result_str);
-
-                        while(parse_result_str_len >= result_out->field_len)
-                        {
-                            BoatLog(BOAT_LOG_VERBOSE, "Expand result_out memory...");
-                            result = BoatFieldVariable_malloc_size_expand(result_out, WEB3_STRING_BUF_STEP_SIZE);
-                            if (result != BOAT_SUCCESS)
-                            {
-                                BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
-                                boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, quorum_parse_json_result_cleanup);
-                            }
-                        }
-                        strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
-                    }
-                 }
-
+                BoatLog(BOAT_LOG_NORMAL, "Cannot find \"%s\" item in RESPONSE.", child_child_name);
+                boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, quorum_parse_json_result_cleanup);
             }
+
+             //parse child_child_name object
+            if (cJSON_IsString(cjson_child_child_name_ptr))
+            {
+                parse_result_str = cJSON_GetStringValue(cjson_child_child_name_ptr);
+                if (parse_result_str != NULL)
+                {
+                    BoatLog(BOAT_LOG_VERBOSE, "result = %s", parse_result_str);
+
+                    parse_result_str_len = strlen(parse_result_str);
+
+                    while(parse_result_str_len >= result_out->field_len)
+                    {
+                        BoatLog(BOAT_LOG_VERBOSE, "Expand result_out memory...");
+                        result = BoatFieldVariable_malloc_size_expand(result_out, WEB3_STRING_BUF_STEP_SIZE);
+                        if (result != BOAT_SUCCESS)
+                        {
+                            BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
+                            boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, quorum_parse_json_result_cleanup);
+                        }
+                    }
+                    strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
+                }
+             }
+
         }
-        //parse child_name object
+         //parse child_name object
         else if (cJSON_IsString(cjson_child_name_ptr))
         {
             parse_result_str = cJSON_GetStringValue(cjson_child_name_ptr);
@@ -756,6 +755,9 @@ BOAT_RESULT quorum_parse_json_result(const BCHAR *json_string,
                 strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
             }
         }
+
+    }
+       
     
     else if (cJSON_IsString(cjson_result_ptr))
     {
