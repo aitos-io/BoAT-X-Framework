@@ -35,7 +35,8 @@ api_Quorum.h is header file for BoAT IoT SDK Quorum's interface.
 #define BOAT_QUORUM_NODE_URL_MAX_LEN                127 //!< Maxmum length for node's URL
 
 #define BOAT_QUORUM_NONCE_AUTO                      0xFFFFFFFFFFFFFFFF
-#define BOAT_QUORUM_ADDRESS_SIZE                 20
+#define BOAT_QUORUM_ADDRESS_SIZE                    20
+#define BOAT_QUORUM_PUBLIC_KEY_SIZE                 44
 
 //!@brief Account information
 //! An account's only identifier is its private key. An address is calculated
@@ -89,17 +90,7 @@ typedef struct TBoatQuorumWallet
 
 //!@brief Quorum Wallet configuration
 
-//! Quorum wallet configuration is used in wallet creation.
-typedef struct TBoatQUorumWalletConfig
-{
-    BoatWalletPriKeyCtx_config  prikeyCtx_config; //!< @NOTE This field MUST BE placed in the first member of the structure
-                                                  //!< because in function BoatWalletCreate(), 
-    BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
-    BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatQuorumNetworkInfo
-    BCHAR    node_url_str[BOAT_QUORUM_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
-    BBOOL    load_existed_wallet;   //false: need creat key by Boat , true: not need creat key
-}BoatQuorumWalletConfig;
-
+typedef BoatEthWalletConfig BoatQuorumWalletConfig;
 
 //!@brief ECDSA signature struct
 typedef struct TBoatQuorumTxFieldSig
@@ -132,11 +123,12 @@ typedef struct TBoatQuorumRawtxFields
     //
     // Protocols inherited these fileds include:
     // PlatONE
+    BUINT8 private_flag;
     BoatFieldMax32B nonce;        //!< nonce, uint256 in bigendian, equal to the transaction count of the sender's account address
-    BoatFieldVariable privatefor;        //!< nonce, uint256 in bigendian, equal to the transaction count of the sender's ac
     BoatFieldMax32B gasprice;     //!< gasprice in wei, uint256 in bigendian
     BoatFieldMax32B gaslimit;     //!< gaslimit, uint256 in bigendian
     BUINT8 recipient[BOAT_QUORUM_ADDRESS_SIZE]; //!< recipient's address, 160 bits
+    BUINT8 privatefor[BOAT_QUORUM_PUBLIC_KEY_SIZE];
     BoatFieldMax32B value;        //!< value to transfer, uint256 in bigendian
     BoatFieldVariable data;       //!< data to transfer, unformatted stream
     BoatFieldMax4B v;             //!< chain id or recovery identifier, @see RawtxPerform()
@@ -220,45 +212,6 @@ BoatQuorumWallet *BoatQuorumWalletInit(const BoatQuorumWalletConfig *config_ptr,
  * @see BoatQuorumWalletInit()
  ******************************************************************************/
 void BoatQuorumWalletDeInit(BoatQuorumWallet *wallet_ptr);
-
-/*!*****************************************************************************
-@brief Parse RPC Quorum RESPONSE
-
-   This function Parse "result" segment.
-   If "result" object is string, this function will returns contents of "result" . 
-   If "result" object is still json object, the parameter named "child_name" will actived,
-   if "child_name" object is string, this function will returns contents of "child_name"; 
-   if "child_name" object is other types, this function will prompt "un-implemention yet".
-   For other types of "result" this function is not support yet.
-
-@param[in] json_string
-     The json to be parsed.
-
-@param[in] child_name
-     if "result" item is json object, this param will actived.
-
-@param[out] result_out
-     The buffer to store parse result.
-     Caller can allocate memory for this param, or can initial it with {NULL, 0},
-     this function will expand the memory if it too small to store parse result.
-     
-@return
-    This function returns BOAT_SUCCESS if parse successed. Otherwise
-    it returns an error code.
-*******************************************************************************/
-// BOAT_RESULT Quorum_parse_json_result(const BCHAR *json_string, 
-//                                   const BCHAR *child_name, 
-//                                   BoatFieldVariable *result_out);
-/*!*****************************************************************************
-* @brief Parse RPC method RESPONSE
-* @see eth_parse_json_result()
-*******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT quorum_parse_json_result(const BCHAR *json_string, 
-                                                                  const BCHAR *child_name, 
-                                                                  BoatFieldVariable *result_out)
-{
-    return eth_parse_json_result(json_string, child_name, result_out);
-}
 
 
 /*!****************************************************************************
@@ -445,9 +398,11 @@ BOAT_RESULT BoatQuorumParseRpcResponseResult(const BCHAR *json_string,
 BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
                           BoatQuorumTx *tx_ptr,
                           BBOOL is_sync_tx,
+                          BBOOL is_private,
                           BCHAR *gasprice_str,
                           BCHAR *gaslimit_str,
-                          BCHAR *recipient_str);
+                          BCHAR *recipient_str,
+                          BCHAR *privatefor_str);
 
 
 /*!****************************************************************************
@@ -703,6 +658,7 @@ BOAT_RESULT BoatQuorumTransfer(BoatQuorumTx *tx_ptr, BCHAR *value_hex_str);
  *   of the error codes.
  ******************************************************************************/
 BOAT_RESULT BoatQuorumGetTransactionReceipt(BoatQuorumTx *tx_ptr);
+
 
 
 /*! @}*/
