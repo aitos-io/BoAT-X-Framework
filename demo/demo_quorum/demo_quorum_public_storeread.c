@@ -30,6 +30,21 @@
  * - USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE : key is native format via external injection
  */
 
+
+/**
+ * PKCS format demo key. The original private key of 'pkcs_demoKey' is 
+ * "fcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca"
+ */
+const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
+                             "MHQCAQEEIPz212cG5mJQ26zJgnvEJzIe25VC1Yp0pnYkslOWBGXKoAcGBSuBBAAK\n"
+                             "oUQDQgAEMU/3IAjKpQc8XdURIGQZZJQRHZhPDkp80ahiRAM7KKV9Gmn699pei5fL\n"
+                             "qZlYLvlxdQJsoh2IPyObgGr87gBT7w==\n"
+                             "-----END EC PRIVATE KEY-----\n";
+/**
+ * native demo key
+ */
+const BCHAR *native_demoKey = "0xf1395a1fc3f74f0c867b61292e28e0f6cc98a095535fd6bf04e4169ebc047e61";
+
 /**
  * test node url
  */
@@ -39,14 +54,68 @@ const BCHAR * demoUrl = "127.0.0.1:22000";
  */
 const BCHAR *demo_recipient_address = "0x1932c48b2bf8102ba33b4a6b545c32236e342f34";
 
-const BCHAR *native_demoKey = "0x880771e3c738852af5dd1f1115441adf2d3ae982cb1453b8ea20e6e9c37fad";
 
 #define PRIVATE_TRUE  1
 #define PRIVATE_FALSE 0
                                
 BoatQuorumWallet *g_quorum_wallet_ptr;
 
-__BOATSTATIC BOAT_RESULT Quorumereum_createOnetimeWallet()
+#if defined(USE_ONETIME_WALLET)
+__BOATSTATIC BOAT_RESULT quorum_createOnetimeWallet()
+{
+    BSINT32 index;
+    BoatQuorumWalletConfig wallet_config = {0};
+    BUINT8 binFormatKey[32]              = {0};
+
+    (void)binFormatKey; //avoid warning
+    /* wallet_config value assignment */
+    #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+
+    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
+        wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
+
+    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
+
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
+        wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
+
+    #else  
+        /* default is internal generation */  
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    #endif
+
+    wallet_config.eip155_compatibility = BOAT_FALSE;
+    strncpy(wallet_config.node_url_str, demoUrl, BOAT_QUORUM_NODE_URL_MAX_LEN - 1);
+
+    /* create quorum wallet */
+    index = BoatWalletCreate(BOAT_PROTOCOL_QUORUM, NULL, &wallet_config, sizeof(BoatQuorumWalletConfig));
+    if (index < 0)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
+    }
+
+    g_quorum_wallet_ptr = BoatGetWalletByIndex(index);
+    return BOAT_SUCCESS;
+}
+#endif
+
+#if defined(USE_CREATE_PERSIST_WALLET)
+__BOATSTATIC BOAT_RESULT quorum_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
     BoatQuorumWalletConfig wallet_config = {0};
@@ -54,29 +123,69 @@ __BOATSTATIC BOAT_RESULT Quorumereum_createOnetimeWallet()
 
     (void)binFormatKey; //avoid warning
 
-     //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
-    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-    wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
-    wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
-    wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
-    wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
+    /* wallet_config value assignment */
+    #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
 
-    wallet_config.chain_id             = 1;
-    wallet_config.eip155_compatibility = BOAT_FALSE;
+    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
+        wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
+
+    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
+        wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
+
+    #else  
+        /* default is internal generation */  
+        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    #endif
+
+    wallet_config.eip155_compatibility          = BOAT_FALSE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_QUORUM_NODE_URL_MAX_LEN - 1);
 
-    /* create Quorumereum wallet */
-    index = BoatWalletCreate(BOAT_PROTOCOL_QUORUM, NULL, &wallet_config, sizeof(BoatQuorumWalletConfig));
+    /* create platon wallet */
+    index = BoatWalletCreate(BOAT_PROTOCOL_QUORUM, wallet_name, &wallet_config, sizeof(BoatQuorumWalletConfig));
     if (index < 0)
     {
-        //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
+        //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
+    }
+
+    g_quorum_wallet_ptr = BoatGetWalletByIndex(index);
+
+    return BOAT_SUCCESS;
+}
+#endif
+
+#if defined(USE_LOAD_PERSIST_WALLET)
+__BOATSTATIC BOAT_RESULT quorum_loadPersistWallet(BCHAR *wallet_name)
+{
+    BSINT32 index;
+
+    /* create platon wallet */
+    index = BoatWalletCreate(BOAT_PROTOCOL_QUORUM, wallet_name, NULL, sizeof(BoatQuorumWalletConfig));
+    if (index < 0)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_quorum_wallet_ptr = BoatGetWalletByIndex(index);
-    
+
     return BOAT_SUCCESS;
 }
+#endif
 
 BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
 {
@@ -125,7 +234,22 @@ int main(int argc, char *argv[])
     /* step-1: Boat SDK initialization */
     BoatIotSdkInit();
 
-    result = Quorumereum_createOnetimeWallet();
+#if defined(USE_ONETIME_WALLET)
+    BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
+    result = quorum_createOnetimeWallet();
+
+#elif defined(USE_CREATE_PERSIST_WALLET)
+    BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
+    result = quorum_createPersistWallet("quorum.cfg");
+
+#elif defined(USE_LOAD_PERSIST_WALLET)
+    BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: load persist wallet.");
+    result = quorum_loadPersistWallet("quorum.cfg");
+
+#else
+    BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
+    result = BOAT_ERROR;
+#endif 
 
     if (result != BOAT_SUCCESS)
     {

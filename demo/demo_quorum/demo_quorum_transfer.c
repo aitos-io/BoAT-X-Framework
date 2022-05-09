@@ -179,7 +179,7 @@ __BOATSTATIC BOAT_RESULT quorum_loadPersistWallet(BCHAR *wallet_name)
         BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-    g_platon_wallet_ptr = BoatGetWalletByIndex(index);
+    g_quorum_wallet_ptr = BoatGetWalletByIndex(index);
 
     return BOAT_SUCCESS;
 }
