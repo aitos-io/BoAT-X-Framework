@@ -40,6 +40,9 @@ const BCHAR * demoUrl = "127.0.0.1:22000";
 const BCHAR *demo_recipient_address = "0x1932c48b2bf8102ba33b4a6b545c32236e342f34";
 
 const BCHAR *native_demoKey = "0x880771e3c738852af5dd1f1115441adf2d3ae982cb1453b8ea20e6e9c37fad";
+
+#define PRIVATE_TRUE  1
+#define PRIVATE_FALSE 0
                                
 BoatQuorumWallet *g_quorum_wallet_ptr;
 
@@ -85,9 +88,10 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
     printf("quorum_call_ReadStore start\n");
     
     /* Set Contract Address */
-    result = BoatQuorumTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, "0x0",
+    result = BoatQuorumTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, PRIVATE_FALSE, "0x0",
                            "0x24A22",
-                           (BCHAR *)demo_recipient_address);
+                           (BCHAR *)demo_recipient_address,
+                           NULL);
 
     if (result != BOAT_SUCCESS)
     {
