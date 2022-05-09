@@ -186,7 +186,7 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     /************************** Encode value end **********************************/  
 
     /************************** Encode data start ****************************/  
-    if (tx_ptr->rawtx_fields.private_flag)
+    if (tx_ptr->is_private)
     {
         tx_ptr->rawtx_fields.data.field_ptr = BoatMalloc(64);
        UtilityHexToBin(tx_ptr->rawtx_fields.data.field_ptr, 64, tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
@@ -362,7 +362,7 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     }
     else
     {
-        if (tx_ptr->rawtx_fields.private_flag)
+        if (tx_ptr->is_private)
         {
             v = sig_parity + 37;
         }
@@ -510,7 +510,7 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     UtilityBinToHex(rlp_stream_hex_str, rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len,
 				    BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
 
-    if (tx_ptr->rawtx_fields.private_flag)
+    if (tx_ptr->is_private)
     {
         param_quorum_sendRawPrivateTransaction.method_name_str = "eth_sendRawPrivateTransaction";
         param_quorum_sendRawPrivateTransaction.signedtx_str    = rlp_stream_hex_str; 

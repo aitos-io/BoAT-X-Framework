@@ -123,7 +123,6 @@ typedef struct TBoatQuorumRawtxFields
     //
     // Protocols inherited these fileds include:
     // PlatONE
-    BUINT8 private_flag;
     BoatFieldMax32B nonce;        //!< nonce, uint256 in bigendian, equal to the transaction count of the sender's account address
     BoatFieldMax32B gasprice;     //!< gasprice in wei, uint256 in bigendian
     BoatFieldMax32B gaslimit;     //!< gaslimit, uint256 in bigendian
@@ -151,7 +150,7 @@ typedef struct TBoatQuorumTx
     BoatQuorumWallet *wallet_ptr; //!< Wallet pointer the transaction is combined with
     BoatFieldMax32B tx_hash;   //!< Transaction hash returned from network
     BBOOL is_sync_tx;          //!< True to perform a synchronous transaction (wait for getting mined), False for asynchronous transaction
-
+    BBOOL is_private;
     // <rawtx_field> MUST be the last member in this struct to allow inheritance
     BoatQuorumRawtxFields rawtx_fields;       //!< RAW transaction fields
 }BoatQuorumTx;

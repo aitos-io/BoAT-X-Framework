@@ -259,7 +259,7 @@ BOAT_RESULT BoatQuorumParseRpcResponseResult(const BCHAR *json_string,
 BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
                           BoatQuorumTx *tx_ptr,
                           BBOOL is_sync_tx,
-                          BBOOL private_flag,
+                          BBOOL is_private,
                           BCHAR *gasprice_str,
                           BCHAR *gaslimit_str,
                           BCHAR *recipient_str,
@@ -307,7 +307,8 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
     memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
 
     // Set synchronous transaction flag
-    tx_ptr->is_sync_tx = is_sync_tx;
+    tx_ptr->is_sync_tx    = is_sync_tx;
+    tx_ptr->is_private    = is_private;
     
     // Initialize gasprice
     BoatFieldMax32B gasprice;
@@ -486,21 +487,25 @@ BOAT_RESULT BoatQuorumSendRawtxWithReceipt(BOAT_INOUT BoatQuorumTx *tx_ptr)
 {
     BOAT_RESULT result = BOAT_ERROR;
 
-    result = QuorumSendFilltx(tx_ptr);
-    //result = QuorumSendRawtx(tx_ptr, 1);
-
+    if (tx_ptr->is_private)
+    {
+        result = QuorumSendFilltx(tx_ptr);
+    }
+    else
+    {
+        result = QuorumSendRawtx(tx_ptr);
+    }
 
     if (result == BOAT_SUCCESS)
     {
-         //result = BoatQuorumGetTransactionReceipt(tx_ptr);
+         result = BoatQuorumGetTransactionReceipt(tx_ptr);
     }
     else
     {
         BoatLog(BOAT_LOG_CRITICAL, "QuorumSendRawtx failed.");
     }
 
-   // return result;
-    return BOAT_SUCCESS;
+    return result;
 }
 
 
@@ -568,8 +573,14 @@ BOAT_RESULT BoatQuorumTxSend(BoatQuorumTx *tx_ptr)
 
     if (tx_ptr->is_sync_tx == BOAT_FALSE)
     {
-       result = QuorumSendRawtx(tx_ptr, 1);
-       //result = QuorumSendFilltx(tx_ptr);
+        if (tx_ptr->is_private)
+        {
+            result = QuorumSendFilltx(tx_ptr);
+        }
+        else
+        {
+            result = QuorumSendRawtx(tx_ptr);
+        }
     }
     else
     {
@@ -731,7 +742,7 @@ BOAT_RESULT BoatQuorumGetTransactionReceipt(BoatQuorumTx *tx_ptr)
             break;
         }
 
-        result = BoatQuorumParseRpcResponseResult(tx_status_str, "input", 
+        result = BoatQuorumParseRpcResponseResult(tx_status_str, "status", 
                                                &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS && result != BOAT_ERROR_JSON_OBJ_IS_NULL)
         {
