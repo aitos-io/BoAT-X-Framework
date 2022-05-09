@@ -47,9 +47,11 @@ const BCHAR *native_demoKey = "0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cb
 const BCHAR * demoUrl = "127.0.0.1:22000";
 
 /*** transfer recipient address ***/
-const BCHAR *demoRecipientAddress = "0xf17f52151EbEF6C7334FAD080c5704D77216b732";
+const BCHAR *demoRecipientAddress = "0x1932c48b2bf8102ba33b4a6b545c32236e342f34";
 
 #define USE_ONETIME_WALLET
+#define PRIVATE_TRUE  1
+#define PRIVATE_FALSE 0
 
 BoatEthWallet *g_quorum_wallet_ptr;
 
@@ -206,7 +208,7 @@ BOAT_RESULT quorumTransfer(BoatEthWallet *wallet_ptr)
     BoatQuorumTx tx_ctx;
     
     /* Set Recipient Address */
-    result = BoatQuorumTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL, "0x333333", (BCHAR *)demoRecipientAddress);
+    result = BoatQuorumTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, PRIVATE_FALSE, NULL, "0x333333", (BCHAR *)demoRecipientAddress, NULL);
 
     if (result != BOAT_SUCCESS)
     {

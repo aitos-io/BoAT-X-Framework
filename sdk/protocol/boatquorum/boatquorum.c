@@ -26,7 +26,7 @@ perform it and wait for its receipt.
 #include "boatquorum.h"
 #include "cJSON.h"
 
-BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr, BBOOL private_flag)
+BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
 {
     unsigned int chain_id_len;
         
@@ -79,7 +79,7 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr, BBOOL private_flag)
         BoatLog(BOAT_LOG_CRITICAL, "Tx RLP object initialize failed.");
         boat_throw(BOAT_ERROR_RLP_LIST_INIT_FAIL, EthSendRawtx_cleanup);
     }
-    printf("boat 22222222222222222222222222\n");
+
     /************************** Encode nonce end ****************************************/
     result = RlpInitStringObject(&nonce_rlp_object,
                                  tx_ptr->rawtx_fields.nonce.field,
@@ -184,25 +184,13 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr, BBOOL private_flag)
 
     result = RlpEncode(&tx_rlp_object, NULL);
     /************************** Encode value end **********************************/  
-    printf("boat 22222222222222222\n");
+
     /************************** Encode data start ****************************/  
-    if (private_flag)
+    if (tx_ptr->rawtx_fields.private_flag)
     {
-             static BCHAR tx_hash_str_2[65] = "";
-    // Encode data
-        char *tx_hash_str_data_1 = "0x8e299ce1e427f30ec304d9db8ee440588656d40bdf874e771496457a0588b7bf6650b06870bee84e2ba31ce57cb457ef530a7a1d153d2700cc46248d5f5297fc";
-      tx_ptr->rawtx_fields.data.field_len = 64;
-      // UtilityBinToHex(tx_hash_str_2, tx_hash_str_data_1, 65, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-       UtilityHexToBin(tx_hash_str_2, 64, tx_hash_str_data_1, TRIMBIN_TRIM_NO, BOAT_FALSE);
-
-       printf("yyyyyyyyyyyyyyyyyyyyyyyyyyy\n");
-   printf("11111111111111111 =%s\n", tx_hash_str_2);
-    //  printf("11111111111111111 =%d\n", tx_ptr->rawtx_fields.data.field_len);
-       printf("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\n");
-   tx_ptr->rawtx_fields.data.field_ptr = BoatMalloc(64);
-       memcpy(tx_ptr->rawtx_fields.data.field_ptr, tx_hash_str_2, 64);
+        tx_ptr->rawtx_fields.data.field_ptr = BoatMalloc(64);
+       UtilityHexToBin(tx_ptr->rawtx_fields.data.field_ptr, 64, tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
        tx_ptr->rawtx_fields.data.field_len = 64;   
-
     }
        
     result = RlpInitStringObject(&data_rlp_object,
@@ -221,7 +209,6 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr, BBOOL private_flag)
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
     }
      /************************** Encode data end ******************************/   
-    printf("boat 111111111111111111111111111\n");
 
     /**************************************************************************
     * STEP 1: Construction RAW transaction without real v/r/s                 *
@@ -375,7 +362,7 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr, BBOOL private_flag)
     }
     else
     {
-        if (private_flag)
+        if (tx_ptr->rawtx_fields.private_flag)
         {
             v = sig_parity + 37;
         }
@@ -506,24 +493,24 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr, BBOOL private_flag)
     BoatLog(BOAT_LOG_NORMAL, "Transaction to: %s", rlp_stream_hex_str);
 
 	/* print ethereum transaction message */
-	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Nonce    )", 
+	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Nonce     )", 
 					tx_ptr->rawtx_fields.nonce.field, tx_ptr->rawtx_fields.nonce.field_len);
-	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Sender   )", 
+	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Sender    )", 
 					tx_ptr->wallet_ptr->account_info.address, 20);
-	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Recipient)", 
+	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Recipient )", 
 					tx_ptr->rawtx_fields.recipient, 20);
-	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Value    )", 
+	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Value     )", 
 					tx_ptr->rawtx_fields.value.field, tx_ptr->rawtx_fields.value.field_len);
-	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Data     )", 
+	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Data      )", 
 					tx_ptr->rawtx_fields.data.field_ptr, tx_ptr->rawtx_fields.data.field_len);
-    BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(privatefor     )", 
+    BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(privatefor)", 
                     tx_ptr->rawtx_fields.privatefor, 44);
 
 
     UtilityBinToHex(rlp_stream_hex_str, rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len,
 				    BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
 
-    if (private_flag)
+    if (tx_ptr->rawtx_fields.private_flag)
     {
         param_quorum_sendRawPrivateTransaction.method_name_str = "eth_sendRawPrivateTransaction";
         param_quorum_sendRawPrivateTransaction.signedtx_str    = rlp_stream_hex_str; 
@@ -632,6 +619,9 @@ BOAT_RESULT QuorumSendFilltx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     }
     result = quorum_parse_json_result(tx_hash_str, "tx", "input",
                                    &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+
+    QuorumSendRawtx(tx_ptr);
+
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to parse RPC response.");

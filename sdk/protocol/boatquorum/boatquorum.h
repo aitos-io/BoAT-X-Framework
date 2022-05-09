@@ -102,6 +102,11 @@ extern "C" {
 BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr);
 
 
+BOAT_RESULT quorum_parse_json_result(const BCHAR *json_string, 
+                                  const BCHAR *child_name, 
+                                  const BCHAR *child_child_name,
+                                  BoatFieldVariable *result_out);
+
 
 /*! @}*/
 
