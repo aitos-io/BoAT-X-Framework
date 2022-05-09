@@ -52,7 +52,7 @@ const BCHAR * demoUrl = "127.0.0.1:22000";
 /**
  * transfer recipient address
  */
-const BCHAR *demo_recipient_address = "0x1932c48b2bf8102ba33b4a6b545c32236e342f34";
+const BCHAR *demo_recipient_address = "0x1349f3e1b8d71effb47b840594ff27da7e603d17";
 
 
 #define PRIVATE_TRUE  1
@@ -207,8 +207,10 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
         BoatLog(BOAT_LOG_NORMAL, "BoatQuorumTxInit fails.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
+
+    printf("quorum_call_ReadStore startqqqqqqqqqqqq\n");
     char set_data[32] = {0};
-    set_data[0]= 9;
+    set_data[0]= 5;
     result_str = SimpleStorage_set(&tx_ctx, set_data);
     if(result_str == NULL)
     {

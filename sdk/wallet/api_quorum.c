@@ -356,14 +356,17 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
         return result;
     }
 
-    result = BoatQuorumTxSetPrivateFor(tx_ptr, privatefor_str);
-
-    if (result != BOAT_SUCCESS)
+    if (tx_ptr->is_private)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatQuorumTxSetPrivateFor failed.");
-        return result;
+        result = BoatQuorumTxSetPrivateFor(tx_ptr, privatefor_str);
+        if (result != BOAT_SUCCESS)
+        {
+            BoatLog(BOAT_LOG_CRITICAL, "BoatQuorumTxSetPrivateFor failed.");
+            return result;
+        }
     }
 
+   
     // Initialize value = 0
     result = BoatQuorumTxSetValue(tx_ptr, NULL);
 
