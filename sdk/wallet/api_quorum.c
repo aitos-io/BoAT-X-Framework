@@ -220,7 +220,7 @@ BCHAR *BoatQuorumWalletGetBalance(BoatQuorumWallet *wallet_ptr, BCHAR *alt_addre
     // Return value of web3_getBalance() is balance in wei
     UtilityBinToHex(address_str, address_ptr, BOAT_QUORUM_ADDRESS_SIZE,
                     BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-    param_quorum_getBalance.method_name_str = "Quorum_getBalance";               
+    param_quorum_getBalance.method_name_str = "eth_getBalance";               
     param_quorum_getBalance.address_str     = address_str;
     param_quorum_getBalance.block_num_str   = "latest";
     tx_balance_str = web3_getBalance(wallet_ptr->web3intf_context_ptr,
@@ -236,9 +236,11 @@ BCHAR *BoatQuorumWalletGetBalance(BoatQuorumWallet *wallet_ptr, BCHAR *alt_addre
     return tx_balance_str;
 }
 
+
+
 BOAT_RESULT BoatQuorumParseRpcResponseStringResult(const BCHAR *json_string, BoatFieldVariable *result_out)
 {
-    return quorum_parse_json_result(json_string, "", result_out);
+    return quorum_parse_json_result(json_string, "", "",result_out);
 }
 
 BOAT_RESULT BoatQuorumParseRpcResponseResult(const BCHAR *json_string, 
@@ -250,16 +252,18 @@ BOAT_RESULT BoatQuorumParseRpcResponseResult(const BCHAR *json_string,
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
-    return quorum_parse_json_result(json_string, child_name, result_out);
+    return quorum_parse_json_result(json_string, child_name, "",result_out);
 }
 
 
 BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
                           BoatQuorumTx *tx_ptr,
                           BBOOL is_sync_tx,
+                          BBOOL private_flag,
                           BCHAR *gasprice_str,
                           BCHAR *gaslimit_str,
-                          BCHAR *recipient_str)
+                          BCHAR *recipient_str,
+                          BCHAR *privatefor_str)
 {
     BOAT_RESULT result;
 
@@ -348,6 +352,14 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "BoatQuorumTxSetRecipient failed.");
+        return result;
+    }
+
+    result = BoatQuorumTxSetPrivateFor(tx_ptr, privatefor_str);
+
+    if (result != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "BoatQuorumTxSetPrivateFor failed.");
         return result;
     }
 
@@ -442,6 +454,20 @@ BOAT_RESULT BoatQuorumTxSetGasLimit(BoatQuorumTx *tx_ptr, BoatFieldMax32B *gas_l
 }
 
 
+BOAT_RESULT BoatQuorumTxSetPrivateFor(BoatQuorumTx *tx_ptr, BUINT8 public[BOAT_QUORUM_PUBLIC_KEY_SIZE])
+{
+    if (tx_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+    
+    // Set recipient's address
+    memcpy(&tx_ptr->rawtx_fields.privatefor, public, BOAT_QUORUM_PUBLIC_KEY_SIZE);
+    return BOAT_SUCCESS;    
+}
+
+
 BOAT_RESULT BoatQuorumTxSetRecipient(BoatQuorumTx *tx_ptr, BUINT8 address[BOAT_QUORUM_ADDRESS_SIZE])
 {
     if (tx_ptr == NULL)
@@ -460,18 +486,21 @@ BOAT_RESULT BoatQuorumSendRawtxWithReceipt(BOAT_INOUT BoatQuorumTx *tx_ptr)
 {
     BOAT_RESULT result = BOAT_ERROR;
 
-    result = QuorumSendRawtx(tx_ptr);
+    result = QuorumSendFilltx(tx_ptr);
+    //result = QuorumSendRawtx(tx_ptr, 1);
+
 
     if (result == BOAT_SUCCESS)
     {
-        result = BoatQuorumGetTransactionReceipt(tx_ptr);
+         //result = BoatQuorumGetTransactionReceipt(tx_ptr);
     }
     else
     {
         BoatLog(BOAT_LOG_CRITICAL, "QuorumSendRawtx failed.");
     }
 
-    return result;
+   // return result;
+    return BOAT_SUCCESS;
 }
 
 
@@ -502,7 +531,6 @@ BOAT_RESULT BoatQuorumTxSetValue(BoatQuorumTx *tx_ptr, BoatFieldMax32B *value_pt
 
 BOAT_RESULT BoatQuorumTxSetData(BoatQuorumTx *tx_ptr, BoatFieldVariable *data_ptr)
 {
-    printf("BoatQuorumTxSetData start\n");
     if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
@@ -524,7 +552,6 @@ BOAT_RESULT BoatQuorumTxSetData(BoatQuorumTx *tx_ptr, BoatFieldVariable *data_pt
         //       data.field_len == 1 && data.field_ptr[0] == 0x00 for RLP encoding
         tx_ptr->rawtx_fields.data.field_len = 0;
     }
-    printf("BoatQuorumTxSetData end\n");
     return BOAT_SUCCESS;
 }
 
@@ -532,8 +559,7 @@ BOAT_RESULT BoatQuorumTxSetData(BoatQuorumTx *tx_ptr, BoatFieldVariable *data_pt
 BOAT_RESULT BoatQuorumTxSend(BoatQuorumTx *tx_ptr)
 {
     BOAT_RESULT result;
-    printf("BoatQuorumTxSend start\n");
-    
+   
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
@@ -542,14 +568,14 @@ BOAT_RESULT BoatQuorumTxSend(BoatQuorumTx *tx_ptr)
 
     if (tx_ptr->is_sync_tx == BOAT_FALSE)
     {
-
-        result = QuorumSendRawtx(tx_ptr);
+       result = QuorumSendRawtx(tx_ptr, 1);
+       //result = QuorumSendFilltx(tx_ptr);
     }
     else
     {
         result = BoatQuorumSendRawtxWithReceipt(tx_ptr);
     }
-        printf("BoatQuorumTxSend end\n");
+
     return result;
 }
 
@@ -649,25 +675,6 @@ BOAT_RESULT BoatQuorumTransfer(BoatQuorumTx *tx_ptr, BCHAR *value_hex_str)
         return result;
     }
 
-    // BCHAR account_address_str[43];
-
-    // UtilityBinToHex(account_address_str, tx_ptr->wallet_ptr->account_info.address,
-    //                     BOAT_QUORUM_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA, 
-    //                     BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-
-    // /* Set nonce from transaction count */
-    // tx_ptr->rawtx_fields.privatefor.field_ptr = account_address_str;
-    // tx_ptr->rawtx_fields.privatefor.field_len =  43;
-
-
-    tx_ptr->rawtx_fields.privatefor.field_ptr = "ROAZBWtSacxXQrOe3FGAqJDyJjFePR5ce4TSIzmJ0Bc=";
-    tx_ptr->rawtx_fields.privatefor.field_len =  45;
-
-
-    BoatLog_hexdump(BOAT_LOG_VERBOSE, "99999999999999999999999999", 
-                        tx_ptr->rawtx_fields.privatefor.field_ptr,  tx_ptr->rawtx_fields.privatefor.field_len);
-
-
     // Set value
     value.field_len = UtilityHexToBin(value.field, 32, value_hex_str,
                                       TRIMBIN_LEFTTRIM, BOAT_TRUE);
@@ -694,7 +701,6 @@ BOAT_RESULT BoatQuorumTransfer(BoatQuorumTx *tx_ptr, BCHAR *value_hex_str)
         BoatLog(BOAT_LOG_CRITICAL, "transaction send failed.");
         return result;
     }
-
     return BOAT_SUCCESS;
 }
 
@@ -724,7 +730,8 @@ BOAT_RESULT BoatQuorumGetTransactionReceipt(BoatQuorumTx *tx_ptr)
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
             break;
         }
-        result = BoatQuorumParseRpcResponseResult(tx_status_str, "status", 
+
+        result = BoatQuorumParseRpcResponseResult(tx_status_str, "input", 
                                                &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
         if (result != BOAT_SUCCESS && result != BOAT_ERROR_JSON_OBJ_IS_NULL)
         {
