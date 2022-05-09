@@ -26,11 +26,9 @@ perform it and wait for its receipt.
 #include "boatquorum.h"
 #include "cJSON.h"
 
-
-BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
+BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr, BBOOL private_flag)
 {
     unsigned int chain_id_len;
-    printf("QuorumSendRawtx start\n");
         
     BCHAR *tx_hash_str;
 
@@ -61,6 +59,7 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     BUINT32 v;
 
     Param_eth_sendRawTransaction param_eth_sendRawTransaction;
+    Param_quorum_sendRawPrivateTransaction param_quorum_sendRawPrivateTransaction;
 
     BOAT_RESULT result = BOAT_SUCCESS;
     boat_try_declare;
@@ -80,9 +79,8 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
         BoatLog(BOAT_LOG_CRITICAL, "Tx RLP object initialize failed.");
         boat_throw(BOAT_ERROR_RLP_LIST_INIT_FAIL, EthSendRawtx_cleanup);
     }
-
-
-    // Encode nonce
+    printf("boat 22222222222222222222222222\n");
+    /************************** Encode nonce end ****************************************/
     result = RlpInitStringObject(&nonce_rlp_object,
                                  tx_ptr->rawtx_fields.nonce.field,
                                  tx_ptr->rawtx_fields.nonce.field_len);
@@ -102,7 +100,11 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
 
      result = RlpEncode(&tx_rlp_object, NULL);
 
-    // Encode gasprice
+   /************************** Encode nonce end *****************************************/
+
+
+
+   /************************** Encode gasprice start ***********************************/
     result = RlpInitStringObject(&gasprice_rlp_object,
                                  tx_ptr->rawtx_fields.gasprice.field,
                                  tx_ptr->rawtx_fields.gasprice.field_len);
@@ -120,8 +122,10 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     }
 
      result = RlpEncode(&tx_rlp_object, NULL);
+    /************************** Encode gasprice end ************************************/
 
-    // Encode gaslimit
+
+    /************************** Encode gaslimit start *********************************/
     result = RlpInitStringObject(&gaslimit_rlp_object,
                                  tx_ptr->rawtx_fields.gaslimit.field,
                                  tx_ptr->rawtx_fields.gaslimit.field_len);
@@ -138,8 +142,11 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
     }
       result = RlpEncode(&tx_rlp_object, NULL);
+    /************************** Encode gaslimit end *********************************/
 
-    // Encode recipient
+
+    /************************** Encode recipient start *********************************/
+
     result = RlpInitStringObject(&recipient_rlp_object,
                                  tx_ptr->rawtx_fields.recipient, 20);
     if (result != BOAT_SUCCESS)
@@ -156,8 +163,9 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     }
 
     result = RlpEncode(&tx_rlp_object, NULL);
+    /************************** Encode recipient end *********************************/
 
-    // Encode value
+    /************************** Encode value start **********************************/  
     result = RlpInitStringObject(&value_rlp_object,
                                  tx_ptr->rawtx_fields.value.field,
                                  tx_ptr->rawtx_fields.value.field_len);
@@ -175,8 +183,28 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     }
 
     result = RlpEncode(&tx_rlp_object, NULL);
-
+    /************************** Encode value end **********************************/  
+    printf("boat 22222222222222222\n");
+    /************************** Encode data start ****************************/  
+    if (private_flag)
+    {
+             static BCHAR tx_hash_str_2[65] = "";
     // Encode data
+        char *tx_hash_str_data_1 = "0x8e299ce1e427f30ec304d9db8ee440588656d40bdf874e771496457a0588b7bf6650b06870bee84e2ba31ce57cb457ef530a7a1d153d2700cc46248d5f5297fc";
+      tx_ptr->rawtx_fields.data.field_len = 64;
+      // UtilityBinToHex(tx_hash_str_2, tx_hash_str_data_1, 65, BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
+       UtilityHexToBin(tx_hash_str_2, 64, tx_hash_str_data_1, TRIMBIN_TRIM_NO, BOAT_FALSE);
+
+       printf("yyyyyyyyyyyyyyyyyyyyyyyyyyy\n");
+   printf("11111111111111111 =%s\n", tx_hash_str_2);
+    //  printf("11111111111111111 =%d\n", tx_ptr->rawtx_fields.data.field_len);
+       printf("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\n");
+   tx_ptr->rawtx_fields.data.field_ptr = BoatMalloc(64);
+       memcpy(tx_ptr->rawtx_fields.data.field_ptr, tx_hash_str_2, 64);
+       tx_ptr->rawtx_fields.data.field_len = 64;   
+
+    }
+       
     result = RlpInitStringObject(&data_rlp_object,
                                  tx_ptr->rawtx_fields.data.field_ptr,
                                  tx_ptr->rawtx_fields.data.field_len);
@@ -192,7 +220,9 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
         BoatLog(BOAT_LOG_CRITICAL, "Append data to Tx RLP object failed.");
         boat_throw(BOAT_ERROR_RLP_ENCODER_APPEND_FAIL, EthSendRawtx_cleanup);
     }
- 
+     /************************** Encode data end ******************************/   
+    printf("boat 111111111111111111111111111\n");
+
     /**************************************************************************
     * STEP 1: Construction RAW transaction without real v/r/s                 *
     *         (See above description for details)                             *
@@ -345,8 +375,14 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     }
     else
     {
-        // v = parity + 27
-        v = sig_parity + 27;
+        if (private_flag)
+        {
+            v = sig_parity + 37;
+        }
+        else
+        {
+            v = sig_parity + 27;
+        }
     }
         
     chain_id_len = UtilityUint32ToBigend(tx_ptr->rawtx_fields.v.field,
@@ -481,29 +517,37 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
 	BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Data     )", 
 					tx_ptr->rawtx_fields.data.field_ptr, tx_ptr->rawtx_fields.data.field_len);
     BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(privatefor     )", 
-                    tx_ptr->rawtx_fields.privatefor.field_ptr, tx_ptr->rawtx_fields.privatefor.field_len);
+                    tx_ptr->rawtx_fields.privatefor, 44);
 
 
     UtilityBinToHex(rlp_stream_hex_str, rlp_stream_storage_ptr->stream_ptr, rlp_stream_storage_ptr->stream_len,
 				    BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-    // rlp_stream_hex_str += strlen(rlp_stream_hex_str);
-    //    char data_privatfor[] = {"\", {\"privateFor\": [\"BULeR8JyUWhiuuCMU/HLA0Q5pzkYT+cHII3ZKBey3Bo=\"]}"};
-    // memcpy(rlp_stream_hex_str, data_privatfor, strlen(data_privatfor));
 
-    // rlp_stream_hex_str -= strlen(rlp_stream_hex_str);
-    //param_eth_sendRawTransaction.method_name_str = "eth_sendRawPrivateTransaction";
+    if (private_flag)
+    {
+        param_quorum_sendRawPrivateTransaction.method_name_str = "eth_sendRawPrivateTransaction";
+        param_quorum_sendRawPrivateTransaction.signedtx_str    = rlp_stream_hex_str; 
+        param_quorum_sendRawPrivateTransaction.privatefor_str  = "ROAZBWtSacxXQrOe3FGAqJDyJjFePR5ce4TSIzmJ0Bc=";
+    
+        tx_hash_str = web3_sendRawPrivateTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
+                                          tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                          &param_quorum_sendRawPrivateTransaction,&result);
+    }
+    else
+    {
         param_eth_sendRawTransaction.method_name_str = "eth_sendRawTransaction";
-    param_eth_sendRawTransaction.signedtx_str = rlp_stream_hex_str; 
- 
-    tx_hash_str = web3_sendRawTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
+        param_eth_sendRawTransaction.signedtx_str = rlp_stream_hex_str; 
+        tx_hash_str = web3_sendRawTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
                                           tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                           &param_eth_sendRawTransaction,&result);
+    }
+  
 	if (tx_hash_str == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
 		boat_throw(result, EthSendRawtx_cleanup);
     }
-    result = eth_parse_json_result(tx_hash_str, "", 
+    result = quorum_parse_json_result(tx_hash_str, "tx", "input",
 								   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 	if (result != BOAT_SUCCESS)
 	{
@@ -535,4 +579,245 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     
     return result;
 }
+
+BOAT_RESULT QuorumSendFilltx(BOAT_INOUT BoatQuorumTx *tx_ptr)
+{
+
+    Param_quorun_fillTransaction param_quorum_fillTransaction;
+    BCHAR *data_hex = NULL;// Storage for RLP stream HEX string for use with web3 interface
+    BCHAR *recipient_hex = NULL;// Storage for RLP stream HEX string for use with web3 interface
+    BCHAR *tx_hash_str;
+
+    BOAT_RESULT result = BOAT_SUCCESS;
+    boat_try_declare;
+
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Transaction and wallet pointer cannot be NULL.");
+        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, EthSendRawtx_cleanup);
+    }
+
+    data_hex = BoatMalloc(tx_ptr->rawtx_fields.data.field_len * 2 + 2 + 1);
+    if (data_hex == NULL)
+    {
+
+    }
+
+    recipient_hex = BoatMalloc(BOAT_QUORUM_ADDRESS_SIZE * 2 + 2 +1);
+    if (recipient_hex == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Unable to dynamically allocate memory to store RLP HEX string.");
+        //boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, EthSendRawtx_cleanup);
+    }
+
+    UtilityBinToHex(data_hex, tx_ptr->rawtx_fields.data.field_ptr, tx_ptr->rawtx_fields.data.field_len,
+        BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
+
+    UtilityBinToHex(recipient_hex, tx_ptr->rawtx_fields.recipient, BOAT_QUORUM_ADDRESS_SIZE,
+        BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
+
+  
+    param_quorum_fillTransaction.method_name_str = "eth_fillTransaction";
+    param_quorum_fillTransaction.data            = data_hex;
+    param_quorum_fillTransaction.to              = recipient_hex;
+    param_quorum_fillTransaction.privateFor      = tx_ptr->rawtx_fields.privatefor;
+ 
+    tx_hash_str = web3_fillTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
+                                          tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                          &param_quorum_fillTransaction,&result);
+    if (tx_hash_str == NULL)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Fail to send raw transaction to network.");
+        boat_throw(result, EthSendRawtx_cleanup);
+    }
+    result = quorum_parse_json_result(tx_hash_str, "tx", "input",
+                                   &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    if (result != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Fail to parse RPC response.");
+        boat_throw(result, EthSendRawtx_cleanup);
+    }
+
+    tx_ptr->tx_hash.field_len = UtilityHexToBin(tx_ptr->tx_hash.field, 32, 
+                                                (BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
+                                                TRIMBIN_TRIM_NO, BOAT_FALSE);
+
+    result = BOAT_SUCCESS;
+
+    // Clean Up
+    boat_catch(EthSendRawtx_cleanup)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+        result = boat_exception;
+    }
+    
+    return result;
+}
+
+
+BOAT_RESULT quorum_parse_json_result(const BCHAR *json_string, 
+                                  const BCHAR *child_name, 
+                                  const BCHAR *child_child_name,
+                                  BoatFieldVariable *result_out)
+{
+    cJSON  *cjson_string_ptr     = NULL;
+    cJSON  *cjson_result_ptr     = NULL;
+    cJSON  *cjson_child_name_ptr = NULL;
+    cJSON  *cjson_child_child_name_ptr = NULL;
+    BCHAR  *parse_result_str     = NULL;
+    BUINT32 parse_result_str_len;
+    const char *cjson_error_ptr;
+    
+    BOAT_RESULT result = BOAT_SUCCESS;
+    boat_try_declare;
+    
+    if ((json_string == NULL) || (child_name == NULL) || (result_out == NULL))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+    
+    // Convert string to cJSON
+    cjson_string_ptr = cJSON_Parse(json_string);
+    if (cjson_string_ptr == NULL)
+    {
+        cjson_error_ptr = cJSON_GetErrorPtr();
+        if (cjson_error_ptr != NULL)
+        {
+            BoatLog(BOAT_LOG_NORMAL, "Parsing RESPONSE as JSON fails before: %s.", cjson_error_ptr);
+        }
+        boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, quorum_parse_json_result_cleanup);
+    }
+    
+    // Obtain result object
+    cjson_result_ptr = cJSON_GetObjectItemCaseSensitive(cjson_string_ptr, "result");
+    if (cjson_result_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Cannot find \"result\" item in RESPONSE.");
+        boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, quorum_parse_json_result_cleanup);
+    }
+
+    if (cJSON_IsObject(cjson_result_ptr))
+    {
+        // the "result" object is json item
+        cjson_child_name_ptr = cJSON_GetObjectItemCaseSensitive(cjson_result_ptr, child_name);
+        if (cjson_child_name_ptr == NULL)
+        {
+            BoatLog(BOAT_LOG_NORMAL, "Cannot find \"%s\" item in RESPONSE.", child_name);
+            boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, quorum_parse_json_result_cleanup);
+        }
+
+            if (cJSON_IsObject(cjson_child_name_ptr))
+            {
+                // the "result" object is json item
+                cjson_child_child_name_ptr = cJSON_GetObjectItemCaseSensitive(cjson_child_name_ptr, child_child_name);
+                if (cjson_child_child_name_ptr == NULL)
+                {
+                    BoatLog(BOAT_LOG_NORMAL, "Cannot find \"%s\" item in RESPONSE.", child_child_name);
+                    boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, quorum_parse_json_result_cleanup);
+                }
+
+                 //parse child_child_name object
+                if (cJSON_IsString(cjson_child_child_name_ptr))
+                {
+                    parse_result_str = cJSON_GetStringValue(cjson_child_child_name_ptr);
+                    if (parse_result_str != NULL)
+                    {
+                        BoatLog(BOAT_LOG_VERBOSE, "result = %s", parse_result_str);
+
+                        parse_result_str_len = strlen(parse_result_str);
+
+                        while(parse_result_str_len >= result_out->field_len)
+                        {
+                            BoatLog(BOAT_LOG_VERBOSE, "Expand result_out memory...");
+                            result = BoatFieldVariable_malloc_size_expand(result_out, WEB3_STRING_BUF_STEP_SIZE);
+                            if (result != BOAT_SUCCESS)
+                            {
+                                BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
+                                boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, quorum_parse_json_result_cleanup);
+                            }
+                        }
+                        strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
+                    }
+                 }
+
+            }
+        }
+        //parse child_name object
+        else if (cJSON_IsString(cjson_child_name_ptr))
+        {
+            parse_result_str = cJSON_GetStringValue(cjson_child_name_ptr);
+            if (parse_result_str != NULL)
+            {
+                BoatLog(BOAT_LOG_VERBOSE, "result = %s", parse_result_str);
+
+                parse_result_str_len = strlen(parse_result_str);
+
+                while(parse_result_str_len >= result_out->field_len)
+                {
+                    BoatLog(BOAT_LOG_VERBOSE, "Expand result_out memory...");
+                    result = BoatFieldVariable_malloc_size_expand(result_out, WEB3_STRING_BUF_STEP_SIZE);
+                    if (result != BOAT_SUCCESS)
+                    {
+                        BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
+                        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, quorum_parse_json_result_cleanup);
+                    }
+                }
+                strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
+            }
+        }
+    
+    else if (cJSON_IsString(cjson_result_ptr))
+    {
+        parse_result_str = cJSON_GetStringValue(cjson_result_ptr);
+        
+        if (parse_result_str != NULL)
+        {
+            BoatLog(BOAT_LOG_VERBOSE, "result = %s", parse_result_str);
+
+            parse_result_str_len = strlen(parse_result_str);
+            while(parse_result_str_len >= result_out->field_len)
+            {
+                BoatLog(BOAT_LOG_VERBOSE, "Expand result_out memory...");
+                result = BoatFieldVariable_malloc_size_expand(result_out, WEB3_STRING_BUF_STEP_SIZE);
+                if (result != BOAT_SUCCESS)
+                {
+                    BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
+                    boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, quorum_parse_json_result_cleanup);
+                }
+            }
+            strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
+        }
+    }
+    else if (cJSON_IsNull(cjson_result_ptr))//cjson_result_ptr:null
+    {
+        BoatLog(BOAT_LOG_VERBOSE, "Result is NULL.");
+        boat_throw(BOAT_ERROR_JSON_OBJ_IS_NULL, quorum_parse_json_result_cleanup);
+    }
+    else
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Un-expect object type.");
+        boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, quorum_parse_json_result_cleanup);
+    }
+    if (cjson_string_ptr != NULL)
+    {
+        cJSON_Delete(cjson_string_ptr);
+    }
+    
+    // Exceptional Clean Up
+    boat_catch(quorum_parse_json_result_cleanup)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
+
+        if (cjson_string_ptr != NULL)
+        {
+            cJSON_Delete(cjson_string_ptr);
+        }
+
+        result = boat_exception;
+    }
+    
+    return result;
+}                        
+
 
