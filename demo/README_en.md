@@ -19,6 +19,8 @@ Before running the PlatON Demo, the PlatON node need to be installed. The specif
 
 Before running the PlatONE Demo, you need to install the PlatONE node, as well as smart contract compilation and deployment tools,could visit this website: https://platone.wxblockchain.com .
 
+Before running the Venachain Demo, you need to install the Venachain node, as well as smart contract compilation and deployment tools,could visit this website: https://github.com/Venachain/Venachain .
+
 Before running the FISCO-BCOS Demo, you need to install the FISCO-BCOS node and contract deployment.
 FISCO-BCOS source code and installation and deployment steps can visit this website: https://fisco-bcos-documentation.readthedocs.io
 
