@@ -455,6 +455,7 @@ BoAT的设计应考虑TEE环境的支持。对于有TEE环境的硬件，BoAT应
 + 用于生成Ethereum智能合约C语言接口的工具
 + 用于生成PlatONE智能合约C语言接口的工具
 + 用于生成FISCO BCOS智能合约C语言接口的工具
++ 用于生成Venachain智能合约C语言接口的工具
 
 #### 通用工具简述
 ##### 生成Ethereum智能合约C语言接口的工具
