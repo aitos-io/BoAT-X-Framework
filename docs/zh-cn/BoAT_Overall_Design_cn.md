@@ -533,6 +533,9 @@ BoAT的设计应考虑TEE环境的支持。对于有TEE环境的硬件，BoAT应
 ##### 生成PlatONE智能合约C语言接口的工具
 常用的PlatONE智能合约的开发语言是C++，同Ethereum一样，PlatONE的智能合约经过编译后也会生成一个描述合约接口的JSON文件。其JSON字段和Ethereum的JSON字段相同，C语言接口和JSON字段的对应关系也与Ethereum一致。
 
+##### 生成Venachain智能合约C语言接口的工具
+常用的Venachain智能合约的开发语言是C++，同Ethereum一样，Venachain的智能合约经过编译后也会生成一个描述合约接口的JSON文件。其JSON字段和Ethereum的JSON字段相同，C语言接口和JSON字段的对应关系也与Ethereum一致。
+
 ##### 生成FISCO BCOS智能合约C语言接口的工具
 常用的FISCO BCOS智能合约的开发语言是solidity，具体可以参考[生成Ethereum智能合约C语言接口的工具](#生成Ethereum智能合约C语言接口的工具)。
 
