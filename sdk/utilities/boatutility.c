@@ -922,7 +922,7 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
                 }
                 // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_3.tag = %02x . datalen = %02x",TLV_Level_3.tag,TLV_Level_3.len);
                 if(TLV_Level_3.tag == ASN1_OID){
-                    if(TLV_Level_3.len = sizeof(oid_secp256k1)){
+                    if(TLV_Level_3.len == sizeof(oid_secp256k1)){
                         if(memcmp(TLV_Level_3.data,oid_secp256k1,sizeof(oid_secp256k1)) ==0 ){
                             BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256k1 .");
                              (*keypair).alg = KEYPAIT_ALG_SECP256K1;
@@ -932,7 +932,7 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
                             (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
                             break;
                         }
-                    }else if(TLV_Level_3.len = sizeof(oid_secp256r1)){
+                    }else if(TLV_Level_3.len == sizeof(oid_secp256r1)){
                         if(memcmp(TLV_Level_3.data,oid_secp256r1,sizeof(oid_secp256r1)) ==0 ){
                              (*keypair).alg = KEYPAIT_ALG_SECP256R1;
                              BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256r1 .");

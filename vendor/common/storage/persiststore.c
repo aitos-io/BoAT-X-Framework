@@ -39,8 +39,8 @@ __BOATSTATIC const BUINT8 g_aes_key[32] = { 0x7F ,0x78, 0xBC, 0xEC, 0xD8, 0xBA, 
                                             0x81, 0xD2, 0x5E, 0xC6, 0x16, 0xAC, 0x08, 0xC4 };
 
 
-BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_ptr, 
-							  BUINT32 data_len )
+BOAT_RESULT BoatPersistStore(const BCHAR *storage_name_str, const void *data_ptr, 
+							 BUINT32 data_len)
 {
     // Storage format: | 16 byte salt | 32 byte hash | AES(data) | 1~31 byte AES paddiing |
     // Where, hash = keccak256(data)
@@ -55,13 +55,13 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
 
     BOAT_RESULT result = BOAT_SUCCESS;
 
-    if( (storage_name_str == NULL) || (data_ptr == NULL) || (data_len == 0) )
+   	if ((storage_name_str == NULL) || (data_ptr == NULL) || (data_len == 0))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "storage_name or data cannot be NULL, data_len cannot be zero.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
-    if ( (BOAT_SUCCESS != UtilityStringLenCheck(storage_name_str)) )
+    if ((BOAT_SUCCESS != UtilityStringLenCheck(storage_name_str)))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
@@ -80,27 +80,27 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
 	
     /* Encrypt the data	*/
 	result = BoatAesEncrypt(salt_array, g_aes_key, rawData, encrypted_len, encrypted_array);
-    if( result == BOAT_SUCCESS )
+   	if (result == BOAT_SUCCESS)
     {
 		writeDataLen = 0;
 		/* Write salt */
-		memcpy( &writeDataTmp[writeDataLen], salt_array, sizeof(salt_array) );
+		memcpy(&writeDataTmp[writeDataLen], salt_array, sizeof(salt_array));
 		writeDataLen += sizeof(salt_array);
 		/* Write hash */
-		memcpy( &writeDataTmp[writeDataLen], data_hash_array, sizeof(data_hash_array) );
+		memcpy(&writeDataTmp[writeDataLen], data_hash_array, sizeof(data_hash_array));
 		writeDataLen += sizeof(data_hash_array);
 		/* Write encrypted data */
-		memcpy( &writeDataTmp[writeDataLen], encrypted_array, encrypted_len );
+		memcpy(&writeDataTmp[writeDataLen], encrypted_array, encrypted_len);
 		writeDataLen += encrypted_len;
-		result = BoatWriteFile( storage_name_str, writeDataTmp, writeDataLen, NULL );
+		result = BoatWriteFile(storage_name_str, writeDataTmp, writeDataLen, NULL);
     }
 	
     return result;
 }
 
 
-BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_ptr, 
-							 BUINT32 len_to_read )
+BOAT_RESULT BoatPersistRead(const BCHAR *storage_name_str, BOAT_OUT void *data_ptr, 
+							BUINT32 len_to_read)
 {
     // Storage format: | 16 byte salt | 32 byte hash | AES(data) | 1~31 byte AES paddiing |
     // Where, hash = keccak256(data)
@@ -119,30 +119,30 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
     
     BOAT_RESULT result = BOAT_SUCCESS;
 
-    if( (storage_name_str == NULL) || (data_ptr == NULL) || (len_to_read == 0) )
+   	if ((storage_name_str == NULL) || (data_ptr == NULL) || (len_to_read == 0))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "storage_name or data cannot be NULL, data_len cannot be zero.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
-    if ( (BOAT_SUCCESS != UtilityStringLenCheck(storage_name_str)) )
+    if ((BOAT_SUCCESS != UtilityStringLenCheck(storage_name_str)))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
-	result += BoatGetFileSize( storage_name_str, &fileSize, NULL );
-	result += BoatReadFile( storage_name_str, readDataTmp, fileSize, NULL );
+	result += BoatGetFileSize(storage_name_str, &fileSize, NULL);
+	result += BoatReadFile(storage_name_str, readDataTmp, fileSize, NULL);
 
-	if( ( result == BOAT_SUCCESS ) && \
-		( fileSize >= BOAT_STORAGE_SALT_SIZE + sizeof(data_hash_array) + len_to_read ) )
+	if ((result == BOAT_SUCCESS) && \
+		(fileSize >= BOAT_STORAGE_SALT_SIZE + sizeof(data_hash_array) + len_to_read))
 	{
 		readDataIndex = 0;
 		/* Read salt */
-		memcpy(salt_array, &readDataTmp[readDataIndex], BOAT_STORAGE_SALT_SIZE );
+		memcpy(salt_array, &readDataTmp[readDataIndex], BOAT_STORAGE_SALT_SIZE);
 		readDataIndex += BOAT_STORAGE_SALT_SIZE;
 		/* Read original data hash */
-		memcpy(original_data_hash_array, &readDataTmp[readDataIndex], sizeof(original_data_hash_array) );
+		memcpy(original_data_hash_array, &readDataTmp[readDataIndex], sizeof(original_data_hash_array));
 		readDataIndex += sizeof(original_data_hash_array);
 		/* Read rest of the file (encrypted data)  */
 		encrypted_readLen = BOAT_MIN(sizeof(encrypted_array), 
@@ -151,12 +151,12 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 		/* decrypt data */
 		result = BoatAesDecrypt(salt_array, g_aes_key, encrypted_array, encrypted_readLen, plain_array);
 		// Check size of the decrypted data matches the length to read
-		if( result == BOAT_SUCCESS && plain_len == len_to_read )
+		if (result == BOAT_SUCCESS && plain_len == len_to_read)
 		{
 			/* Calculate data hash from the decrypted data */
 			keccak_256(plain_array, BOAT_ROUNDUP(len_to_read, 16), data_hash_array);
 			/* Check if decrypted hash is the same as the original one */
-			if( 0 == memcmp(original_data_hash_array, data_hash_array, sizeof(data_hash_array)) )
+			if (0 == memcmp(original_data_hash_array, data_hash_array, sizeof(data_hash_array)))
 			{
 				memcpy(data_ptr, plain_array, len_to_read);
 				result = BOAT_SUCCESS;
@@ -183,8 +183,8 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 }
 
 
-BOAT_RESULT BoatPersistDelete(const BCHAR * storage_name_str)
+BOAT_RESULT BoatPersistDelete(const BCHAR *storage_name_str)
 {
     // Delete file
-	return BoatRemoveFile( storage_name_str, NULL );
+	return BoatRemoveFile(storage_name_str, NULL);
 }

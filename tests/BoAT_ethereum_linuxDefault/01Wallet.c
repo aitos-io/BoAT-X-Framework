@@ -193,8 +193,7 @@ START_TEST(test_001CreateWallet_0005CreateLoadWalletFailureNoExist)
     ck_assert_int_eq(rtnVal, BOAT_ERROR_PERSISTER_READ_FAIL);
 
     /* 2-2. verify the global variables that be affected */
-    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
-    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == false);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -550,6 +549,42 @@ START_TEST(test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0018DeletePersistWalletSuccess) 
+{
+    BSINT32 rtnVal;
+    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
+
+    BoatIotSdkInit();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum", &wallet, sizeof(BoatEthWalletConfig));
+    
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 0);
+
+    rtnVal = BoatWalletDelete("ethereum");
+
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum", NULL, sizeof(BoatEthWalletConfig));
+    
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_PERSISTER_READ_FAIL);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == false);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+
 START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 {
     BSINT32 rtnVal;
@@ -731,7 +766,7 @@ START_TEST(test_002InitWallet_0009InitEthWalletWithNullConfig)
     rtnVal = BoatEthWalletInit(NULL, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_eq(rtnVal,NULL);
+    ck_assert_ptr_eq(rtnVal, NULL);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -746,7 +781,7 @@ START_TEST(test_002InitWallet_0010InitEthWalletWithSmallerSize)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) - 1);
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_eq(rtnVal,NULL);
+    ck_assert_ptr_eq(rtnVal, NULL);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -761,7 +796,7 @@ START_TEST(test_002InitWallet_0011InitEthWalletWithBiggerSize)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig) + 1);
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_eq(rtnVal,NULL);
+    ck_assert_ptr_eq(rtnVal, NULL);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -776,7 +811,7 @@ START_TEST(test_002InitWallet_0012InitEthWalletSuccess)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_ne(rtnVal,NULL);
+    ck_assert_ptr_ne(rtnVal, NULL);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -796,7 +831,7 @@ START_TEST(test_002InitWallet_0013InitEthWalletGenerationKey)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_ne(rtnVal,NULL);
+    ck_assert_ptr_ne(rtnVal, NULL);
 
     /* 2-2. verify the global variables that be affected */ 
 }
@@ -816,7 +851,7 @@ START_TEST(test_002InitWallet_0014InitEthWalletWithWrongGenMode)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_eq(rtnVal,NULL);
+    ck_assert_ptr_eq(rtnVal, NULL);
 }
 END_TEST
 
@@ -834,7 +869,7 @@ START_TEST(test_002InitWallet_0015InitEthWalletWithWrongKeyFormat)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_ne(rtnVal,NULL);
+    ck_assert_ptr_ne(rtnVal, NULL);
 }
 END_TEST
 
@@ -853,12 +888,26 @@ START_TEST(test_002InitWallet_0016InitEthWalletWithWrongType)
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_eq(rtnVal,NULL);
+    ck_assert_ptr_eq(rtnVal, NULL);
 }
 END_TEST
 
 START_TEST(test_003DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
+    BSINT32 rtnVal;
+    BoatEthWallet *g_ethereum_wallet_ptr = NULL;
+
+    BoatIotSdkInit();
+    BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM, "ethereum", &wallet, sizeof(BoatEthWalletConfig));
+
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 0);
+
     BoatWalletDelete(NULL);
     ck_assert_int_eq(access("ethereum", F_OK), 0);
 }
@@ -906,6 +955,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0015CreateSixWalletUnloadOneSuccess);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0018DeletePersistWalletSuccess);
     
     tcase_add_test(tc_wallet_api, test_002InitWallet_0001SetEIP155CompSuccess);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0002SetEIP155CompFailureNullParam);

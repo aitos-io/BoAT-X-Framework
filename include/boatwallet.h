@@ -254,11 +254,11 @@ void BoatWalletUnload(BSINT32 wallet_index);
  *   The wallet name to delete.
  *
  * @return
- *   This function doesn't return any thing.
+ *   This function return BOAT_RESULT.
  *
  * @see BoatWalletCreate() BoatWalletUnload()
  ******************************************************************************/
-void BoatWalletDelete(BCHAR *wallet_name_str);
+BOAT_RESULT BoatWalletDelete(BCHAR *wallet_name_str);
 
 
 /*!****************************************************************************

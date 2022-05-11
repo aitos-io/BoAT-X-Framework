@@ -87,7 +87,7 @@ BOAT_RESULT FiscobcosSendRawtx(BOAT_INOUT BoatFiscobcosTx *tx_ptr)
     }
 
     /**************************************************************************
-    * STEP 1: Construction RAW transaction without real v/r/s                 *
+    * STEP 1: Construct RAW transaction without real v/r/s                 *
     **************************************************************************/
     // Encode nonce
     result = RlpInitStringObject(&nonce_rlp_object,

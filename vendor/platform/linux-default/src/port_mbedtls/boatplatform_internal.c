@@ -96,6 +96,93 @@ cleanup:
     return(ret);
 }
 
+
+/*
+ * Get the type of a curve
+ */
+mbedtls_ecp_curve_type boat_mbedtls_ecp_get_type( const mbedtls_ecp_group *grp )
+{
+    if( grp->G.X.p == NULL )
+        return( MBEDTLS_ECP_TYPE_NONE );
+
+    if( grp->G.Y.p == NULL )
+        return( MBEDTLS_ECP_TYPE_MONTGOMERY );
+    else
+        return( MBEDTLS_ECP_TYPE_SHORT_WEIERSTRASS );
+}
+
+/*
+ * Read a private key.
+ */
+int boat_mbedtls_ecp_read_key( mbedtls_ecp_group_id grp_id, mbedtls_ecp_keypair *key,
+                          const unsigned char *buf, size_t buflen )
+{
+    int ret = 0;
+
+    if( key  == NULL ){
+		return MBEDTLS_ERR_ECP_BAD_INPUT_DATA;
+	}
+    if( buf  == NULL ){
+		return MBEDTLS_ERR_ECP_BAD_INPUT_DATA;
+	}
+
+    if( ( ret = mbedtls_ecp_group_load( &key->grp, grp_id ) ) != 0 )
+        return( ret );
+
+    ret = MBEDTLS_ERR_ECP_FEATURE_UNAVAILABLE;
+
+#if defined(ECP_MONTGOMERY)
+    if( mbedtls_ecp_get_type( &key->grp ) == MBEDTLS_ECP_TYPE_MONTGOMERY )
+    {
+        /*
+         * If it is Curve25519 curve then mask the key as mandated by RFC7748
+         */
+        if( grp_id == MBEDTLS_ECP_DP_CURVE25519 )
+        {
+            if( buflen != ECP_CURVE25519_KEY_SIZE )
+                return MBEDTLS_ERR_ECP_INVALID_KEY;
+
+            MBEDTLS_MPI_CHK( mbedtls_mpi_read_binary_le( &key->d, buf, buflen ) );
+
+            /* Set the three least significant bits to 0 */
+            MBEDTLS_MPI_CHK( mbedtls_mpi_set_bit( &key->d, 0, 0 ) );
+            MBEDTLS_MPI_CHK( mbedtls_mpi_set_bit( &key->d, 1, 0 ) );
+            MBEDTLS_MPI_CHK( mbedtls_mpi_set_bit( &key->d, 2, 0 ) );
+
+            /* Set the most significant bit to 0 */
+            MBEDTLS_MPI_CHK(
+                    mbedtls_mpi_set_bit( &key->d,
+                                         ECP_CURVE25519_KEY_SIZE * 8 - 1, 0 )
+                    );
+
+            /* Set the second most significant bit to 1 */
+            MBEDTLS_MPI_CHK(
+                    mbedtls_mpi_set_bit( &key->d,
+                                         ECP_CURVE25519_KEY_SIZE * 8 - 2, 1 )
+                    );
+        }
+        else
+            ret = MBEDTLS_ERR_ECP_FEATURE_UNAVAILABLE;
+    }
+
+#endif
+// #if defined(ECP_SHORTWEIERSTRASS)
+    if( boat_mbedtls_ecp_get_type( &key->grp ) == MBEDTLS_ECP_TYPE_SHORT_WEIERSTRASS )
+    {
+        MBEDTLS_MPI_CHK( mbedtls_mpi_read_binary( &key->d, buf, buflen ) );
+
+        MBEDTLS_MPI_CHK( mbedtls_ecp_check_privkey( &key->grp, &key->d ) );
+    }
+
+// #endif
+cleanup:
+
+    if( ret != 0 )
+        mbedtls_mpi_free( &key->d );
+
+    return( ret );
+}
+
 /******************************************************************************
  * @brief ECDSA with prefix
  *
@@ -152,7 +239,7 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
 									       int (*f_rng_blind)(void *, unsigned char *, size_t),
 									       void *p_rng_blind, unsigned char *ecdsPrefix)
 {
-    int ret, key_tries, sign_tries;
+    int ret, key_tries, sign_tries,blind_tries;
     mbedtls_ecp_point R;
 	mbedtls_mpi r, s;
     mbedtls_mpi k, e, t; //k: temporary random number of signature
@@ -161,7 +248,8 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
 	int boat_ecdsPrefix;
 
     /* Fail cleanly on curves such as Curve25519 that can't be used for ECDSA */
-    if (ctx == NULL || !mbedtls_ecdsa_can_do(ctx->grp.id) || ctx->grp.N.p == NULL)
+    // if (ctx == NULL || !mbedtls_ecdsa_can_do(ctx->grp.id) || ctx->grp.N.p == NULL)
+	if (ctx == NULL  || ctx->grp.N.p == NULL)
         return(MBEDTLS_ERR_ECP_BAD_INPUT_DATA);
 
     /* Make sure d is in range 1..n-1 */
@@ -197,13 +285,15 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
                 goto cleanup;
             }
 
-            MBEDTLS_MPI_CHK(mbedtls_ecp_gen_privkey(&ctx->grp, &k, f_rng, p_rng));
+            // MBEDTLS_MPI_CHK(mbedtls_ecp_gen_privkey(&ctx->grp, &k, f_rng, p_rng));
 
-            MBEDTLS_MPI_CHK(mbedtls_ecp_mul_restartable(&ctx->grp, &R, &k, &ctx->grp.G,
-							f_rng_blind,
-							p_rng_blind,
-							NULL));
-            MBEDTLS_MPI_CHK(mbedtls_mpi_mod_mpi(&r, &R.X, &ctx->grp.N));
+            // MBEDTLS_MPI_CHK(mbedtls_ecp_mul_restartable(&ctx->grp, &R, &k, &ctx->grp.G,
+			// 				f_rng_blind,
+			// 				p_rng_blind,
+			// 				NULL));
+            // MBEDTLS_MPI_CHK(mbedtls_mpi_mod_mpi(&r, &R.X, &ctx->grp.N));
+			MBEDTLS_MPI_CHK( mbedtls_ecp_gen_keypair( &ctx->grp, &k, &R, f_rng, p_rng ) );
+            MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &r, &R.X, &ctx->grp.N ) );
 			
 			//-----------------------------------------------------------
 			// -boat:boat_ecdsPrefix update 
@@ -224,8 +314,21 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
          * Generate a random value to blind inv_mod in next step,
          * avoiding a potential timing leak.
          */
-        MBEDTLS_MPI_CHK(mbedtls_ecp_gen_privkey(&ctx->grp, &t, f_rng_blind,
-						p_rng_blind));
+        // MBEDTLS_MPI_CHK(mbedtls_ecp_gen_privkey(&ctx->grp, &t, f_rng_blind,
+		// 				p_rng_blind));
+		blind_tries = 0;
+        do
+        {
+            size_t n_size = ( ctx->grp.nbits + 7 ) / 8;
+            MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &t, n_size, f_rng, p_rng ) );
+            MBEDTLS_MPI_CHK( mbedtls_mpi_shift_r( &t, 8 * n_size - ctx->grp.nbits ) );
+
+            /* See mbedtls_ecp_gen_keypair() */
+            if( ++blind_tries > 30 )
+                return( MBEDTLS_ERR_ECP_RANDOM_FAILED );
+        }
+        while( mbedtls_mpi_cmp_int( &t, 1 ) < 0 ||
+               mbedtls_mpi_cmp_mpi( &t, &ctx->grp.N ) >= 0 );
 
         /*
          * Step 6: compute s = (e + r * d) / k = t (e + rd) / (kt) mod n
@@ -325,7 +428,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	BUINT8 raw_r[32];
 	BUINT8 raw_s[32];
 	BUINT8 ecdsPrefix = 0;
-	
+
 	BOAT_RESULT result;
 	boat_try_declare;
 	
@@ -370,16 +473,16 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 			ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
 			if (ecPrikey != NULL)
 				mbedtls_ecp_keypair_init(ecPrikey);
-			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1, ecPrikey, prikeyCtx.extra_data.value, prikeyCtx.extra_data.value_len);
-			BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key result = %x ", result);
+			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1, ecPrikey, prikeyCtx.extra_data.value, prikeyCtx.extra_data.value_len);
+			BoatLog(BOAT_LOG_CRITICAL, "boat_mbedtls_ecp_read_key result = %x ", result);
 		}
 		else if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
 		{
 			ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
 			if (ecPrikey != NULL)
 				mbedtls_ecp_keypair_init(ecPrikey);
-			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256R1, ecPrikey, prikeyCtx.extra_data.value, prikeyCtx.extra_data.value_len);
-			BoatLog(BOAT_LOG_CRITICAL, "mbedtls_ecp_read_key result = %x ", result);
+			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256R1, ecPrikey, prikeyCtx.extra_data.value, prikeyCtx.extra_data.value_len);
+			BoatLog(BOAT_LOG_CRITICAL, "boat_mbedtls_ecp_read_key result = %x ", result);
 		}
 		else
 		{
@@ -398,6 +501,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	result = Boat_private_ecdsa_sign(ecPrikey, digest, digestLen, signatureTmp, &signatureTmpLen, raw_r, raw_s, 
 							 		 mbedtls_ctr_drbg_random, &ctr_drbg,
 							  		 mbedtls_ctr_drbg_random, &ctr_drbg, &ecdsPrefix);
+
 	if(result != 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ecdsa_write_signature.");
@@ -972,20 +1076,20 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 		result += mbedtls_pk_setup(&mbedtls_pkCtx, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
 		if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
 		{
-			BoatLog(BOAT_LOG_VERBOSE, "begin mbedtls_ecp_read_key ");
+			BoatLog(BOAT_LOG_VERBOSE, "begin boat_mbedtls_ecp_read_key ");
 			// ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
 			// if (ecPrikey != NULL)
 			// 	mbedtls_ecp_keypair_init(ecPrikey);
-			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1,  mbedtls_pk_ec(mbedtls_pkCtx), config->prikey_content.field_ptr, config->prikey_content.field_len);
-			BoatLog(BOAT_LOG_VERBOSE, "mbedtls_ecp_read_key result = %x ", result);
+			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1,  mbedtls_pk_ec(mbedtls_pkCtx), config->prikey_content.field_ptr, config->prikey_content.field_len);
+			BoatLog(BOAT_LOG_VERBOSE, "boat_mbedtls_ecp_read_key result = %x ", result);
 		}
 		else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
 		{
 			// ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
 			// if (ecPrikey != NULL)
 			// 	mbedtls_ecp_keypair_init(ecPrikey);
-			result = mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(mbedtls_pkCtx), config->prikey_content.field_ptr, config->prikey_content.field_len);
-			BoatLog(BOAT_LOG_VERBOSE, "mbedtls_ecp_read_key result = %x ", result);
+			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(mbedtls_pkCtx), config->prikey_content.field_ptr, config->prikey_content.field_len);
+			BoatLog(BOAT_LOG_VERBOSE, "boat_mbedtls_ecp_read_key result = %x ", result);
 		}
 		else
 		{

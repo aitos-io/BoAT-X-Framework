@@ -24,6 +24,7 @@
 extern Suite *make_wallet_suite(void);
 extern Suite *make_parameters_suite(void);
 extern Suite *make_transactions_suite(void);
+extern Suite *make_general_suite(void);
 //extern Suite *make_contract_suite(void);
 
 char ethereum_private_key_buf[1024];
@@ -72,6 +73,7 @@ int main(int argc, char *argv[])
     Suite *suite_wallet    = make_wallet_suite();
     Suite *suite_paramters = make_parameters_suite();
     Suite *suite_transaction = make_transactions_suite();
+    Suite *suite_general = make_general_suite();
 //   Suite *suite_contract  = make_contract_suite();
     read_key_content(ethereum_private_key_buf);
 
@@ -85,6 +87,8 @@ int main(int argc, char *argv[])
     srunner_add_suite(sr, suite_paramters);
 
     srunner_add_suite(sr, suite_transaction);
+
+    srunner_add_suite(sr, suite_general);
 //   srunner_add_suite(sr, suite_contract);
 
     /* start to run all test case */
