@@ -18,6 +18,7 @@ OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/nghttp2/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatplaton/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatplatone/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatvenachain/*.o) \
+		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatquorum/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatfiscobcos/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/platform/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/*.o) \

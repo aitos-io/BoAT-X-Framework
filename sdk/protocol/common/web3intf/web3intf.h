@@ -125,6 +125,25 @@ typedef struct TParam_fiscobcos_getBlockNumber
 	BCHAR *groupid;     //!< groupid
 }Param_fiscobcos_getBlockNumber;
 
+/***************************************************************************************************
+                                  QUORUM BCOS JSONRPC INTERFACE
+***************************************************************************************************/
+//!@brief Parameter for web3_fiscobcos_sendRawTransaction()
+typedef struct TParam_quorun_fillTransaction
+{
+   BCHAR *method_name_str; 
+   BCHAR *to;
+   BCHAR *data;
+   BCHAR *privateFor;
+}Param_quorun_fillTransaction;
+
+//!@brief Parameter for web3_sendRawTransaction()
+typedef struct TParam_quorum_sendRawPrivateTransaction
+{
+    BCHAR *method_name_str; //!< String of this method name, e.g. Ethereum "eth_getTransactionCount" PlatON "platon_getTransactionCount"
+    BCHAR *signedtx_str;  //!< String of the signed transaction in HEX with "0x" prefixed
+    BCHAR *privatefor_str;
+}Param_quorum_sendRawPrivateTransaction;
 
 
 
@@ -614,6 +633,20 @@ BCHAR *web3_fiscobcos_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
 									 BCHAR *node_url_str,
 									 const Param_fiscobcos_getBlockNumber *param_ptr,
                                      BOAT_RESULT *web3Result);
+
+
+/***************************************************************************************************
+                                  QUORUM BCOS JSONRPC INTERFACE
+***************************************************************************************************/
+BCHAR *web3_fillTransaction(Web3IntfContext *web3intf_context_ptr,
+                               BCHAR *node_url_str,
+                               const Param_quorun_fillTransaction *param_ptr,
+                               BOAT_RESULT *web3Result);
+
+BCHAR *web3_sendRawPrivateTransaction(Web3IntfContext *web3intf_context_ptr,
+                               BCHAR *node_url_str,
+                               const Param_quorum_sendRawPrivateTransaction *param_ptr,
+                               BOAT_RESULT *web3Result);
 
 
 

@@ -6,7 +6,7 @@ OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 .PHONY: all protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain
 
-all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain $(OBJECTS_DIR) $(OBJECTS)
+all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain  $(OBJECTS_DIR) $(OBJECTS)
 
 
 protocol_common:
@@ -50,6 +50,11 @@ endif
 protocol_venachain:
 ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	make -C  boatvenachain all
+endif
+
+protocol_quorum:
+ifeq ($(BOAT_PROTOCOL_USE_QUORUM), 1)
+	make -C  boatquorum all
 endif
 
 $(OBJECTS_DIR):
