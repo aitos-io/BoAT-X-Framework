@@ -139,8 +139,8 @@ START_TEST(test_002Transaction_0007SetNetworkInfoSuccess)
     rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
     g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
 
-    rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", NULL);
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
 	ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     BoatIotSdkDeInit();
