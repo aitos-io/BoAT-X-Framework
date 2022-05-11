@@ -46,11 +46,6 @@ ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_venachain all
 endif
 
-demo_venachain:
-ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
-	make -C $(BOAT_BASE_DIR)/demo/demo_venachain all
-endif
-
 demo_quorum:
 ifeq ($(BOAT_PROTOCOL_USE_QUORUM), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_quorum all
