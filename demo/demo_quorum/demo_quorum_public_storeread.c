@@ -174,7 +174,7 @@ __BOATSTATIC BOAT_RESULT quorum_loadPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
 
-    /* create platon wallet */
+    /* create quorum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_QUORUM, wallet_name, NULL, sizeof(BoatQuorumWalletConfig));
     if (index < 0)
     {
@@ -208,14 +208,13 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
 
-    printf("quorum_call_ReadStore startqqqqqqqqqqqq\n");
     char set_data[32] = {0};
     set_data[0]= 5;
     result_str = SimpleStorage_set(&tx_ctx, set_data);
     if(result_str == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "SimpleStorage_set failed: %s.", result_str);
-        //return BOAT_ERROR;
+        return BOAT_ERROR;
     }
     
     result_str = SimpleStorage_get(&tx_ctx);
@@ -257,7 +256,6 @@ int main(int argc, char *argv[])
     {
         BoatLog(BOAT_LOG_CRITICAL, "QuorumWalletPrepare_create failed: %d.", result);
         return -1;
-       
     }
     
     /* step-3: execute 'Quorum_call_ReadStore' */

@@ -513,7 +513,7 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     if (tx_ptr->is_private)
     {
         param_quorum_sendRawPrivateTransaction.method_name_str = "eth_sendRawPrivateTransaction";
-        param_quorum_sendRawPrivateTransaction.signedtx_str    = rlp_stream_hex_str; 
+        param_quorum_sendRawPrivateTransaction.signedtx_str    =  rlp_stream_hex_str; 
         param_quorum_sendRawPrivateTransaction.privatefor_str  = "ROAZBWtSacxXQrOe3FGAqJDyJjFePR5ce4TSIzmJ0Bc=";
     
         tx_hash_str = web3_sendRawPrivateTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
@@ -620,19 +620,19 @@ BOAT_RESULT QuorumSendFilltx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     result = quorum_parse_json_result(tx_hash_str, "tx", "input",
                                    &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
 
-    QuorumSendRawtx(tx_ptr);
-
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_NORMAL, "Fail to parse RPC response.");
         boat_throw(result, EthSendRawtx_cleanup);
     }
 
-    tx_ptr->tx_hash.field_len = UtilityHexToBin(tx_ptr->tx_hash.field, 32, 
-                                                (BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
-                                                TRIMBIN_TRIM_NO, BOAT_FALSE);
+    // tx_ptr->tx_hash.field_len = UtilityHexToBin(tx_ptr->tx_hash.field, 32, 
+    //                                             (BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
+    //                                             TRIMBIN_TRIM_NO, BOAT_FALSE);
 
-    result = BOAT_SUCCESS;
+    result = QuorumSendRawtx(tx_ptr);
+
+    // result = BOAT_SUCCESS;
 
     // Clean Up
     boat_catch(EthSendRawtx_cleanup)

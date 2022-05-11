@@ -153,7 +153,7 @@ __BOATSTATIC BOAT_RESULT quorum_createPersistWallet(BCHAR *wallet_name)
     wallet_config.eip155_compatibility          = BOAT_TRUE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_QUORUM_NODE_URL_MAX_LEN - 1);
 
-    /* create platon wallet */
+    /* create quorum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_QUORUM, wallet_name, &wallet_config, sizeof(BoatQuorumWalletConfig));
     if (index < 0)
     {
