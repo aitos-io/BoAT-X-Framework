@@ -80,7 +80,7 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     }
 
     /**************************************************************************
-    * STEP 1: Construction RAW transaction without real v/r/s                 *
+    * STEP 1: Construct RAW transaction without real v/r/s                 *
     *         (See above description for details)                             *
     **************************************************************************/
     // Encode nonce

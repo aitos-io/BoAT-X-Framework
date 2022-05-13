@@ -45,7 +45,7 @@ START_TEST(test_006GetBalance_0001GetSuccess)
     cur_balance_wei = BoatEthWalletGetBalance(g_ethereum_wallet_ptr, TEST_RECIPIENT_ADDRESS);
 	result          = BoatEthParseRpcResponseStringResult(cur_balance_wei, &parse_result);
 
-    ck_assert_ptr_ne(parse_result.field_ptr,NULL);
+    ck_assert_ptr_eq(parse_result.field_ptr, NULL);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     BoatFree(parse_result.field_ptr);
@@ -74,7 +74,7 @@ START_TEST(test_006GetBalance_0002GetSuccessNullAddress)
     cur_balance_wei = BoatEthWalletGetBalance(g_ethereum_wallet_ptr, NULL);
 	result          = BoatEthParseRpcResponseStringResult(cur_balance_wei, &parse_result);
 
-    ck_assert_ptr_ne(parse_result.field_ptr,NULL);
+    ck_assert_ptr_eq(parse_result.field_ptr, NULL);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     BoatFree(parse_result.field_ptr);
@@ -91,7 +91,7 @@ START_TEST(test_006GetBalance_0003GetFailureNullWallet)
 
     cur_balance_wei = BoatEthWalletGetBalance(NULL, NULL);
 
-    ck_assert_ptr_eq(cur_balance_wei,NULL);
+    ck_assert_ptr_eq(cur_balance_wei, NULL);
 
     BoatIotSdkDeInit();
 }

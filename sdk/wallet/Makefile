@@ -28,6 +28,10 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	SOURCES += api_venachain.c
 endif
+ifeq ($(BOAT_PROTOCOL_USE_QUORUM), 1)
+	SOURCES += api_quorum.c
+endif
+
 
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/wallet
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
