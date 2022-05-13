@@ -22,6 +22,7 @@ boatutility.c contains utility functions for boatwallet.
 
 #include "boatinternal.h"
 #include "boatlog.h"
+#include "base64.h"
 
 //!@brief Literal representation of log level
 const BCHAR * const g_log_level_name_str[] = 
@@ -679,59 +680,6 @@ BOAT_RESULT BoatFieldVariable_malloc_size_expand(BoatFieldVariable *mem, BUINT32
 	return BOAT_SUCCESS;
 }
 
-#if (BOAT_HWBCS_TLS_SUPPORT == 1)
-#include "mbedtls/x509_crt.h"
-#include "mbedtls/oid.h"
-size_t Utility_find_oid_value_in_name(const mbedtls_x509_name *name, const char* target_short_name, char *value, size_t value_length)
-{
-    const char *short_name = NULL;
-    bool found = false;
-    size_t retval = 0;
-
-    while((name != NULL) && !found)
-    {
-        // if there is no data for this name go to the next one
-        if(!name->oid.p)
-        {
-            name = name->next;
-            continue;
-        }
-
-        int ret = mbedtls_oid_get_attr_short_name(&name->oid, &short_name);
-        if((ret == 0) && (strcmp(short_name, target_short_name) == 0))
-        {
-            found = true;
-        }
-
-        if(found)
-        {
-            size_t bytes_to_write = (name->val.len >= value_length) ? value_length - 1 : name->val.len;
-
-            for(size_t i = 0; i < bytes_to_write; i++)
-            {
-                char c = name->val.p[i];
-                if (c < 32 || c == 127 || (c > 128 && c < 160))
-                {
-                    value[i] = '?';
-                } else
-                {
-                    value[i] = c;
-                }
-            }
-
-            // null terminate
-            value[bytes_to_write] = 0;
-
-            retval = name->val.len;
-        }
-
-        name = name->next;
-    }
-
-    return retval;
-}
-#endif
-
 
 
 char *Utility_itoa(int num, char *str, int radix)
@@ -768,5 +716,329 @@ char *Utility_itoa(int num, char *str, int radix)
 		str[i - 1 + k - j] = temp;
 	}
 	return str;
+}
+
+/*****************************************************************
+密钥格式转换
+*******************************************************************/
+/*
+    从数组中获取第一个tlv格式数据。默认tag的长度都是一个字节。
+*/
+
+int UtilityGetTLV_LL(BUINT8 *input,BUINT32 len){
+    //input[0] 是tag
+    if(input[1] < 0x0080){
+        return 1;
+    }else if(input[1] == 0x81){
+        return 2;
+    }else if(input[1] == 0x82){
+        return 3;
+    }else{
+        return -1;
+    }
+
+}
+
+int UtilityGetTLV_LL_from_len(BUINT32 len){
+    //input[0] 是tag
+    if(len < 0x0080){
+        return 1;
+    }else if((len /0x80) == 1){
+        return 2;
+    }else {
+        return 3;
+    }
+
+}
+
+int UtilityGetTLV_L(BUINT8 *input,BUINT32 len){
+    //input[0] 是tag
+    if(input[1] <= 0x0080){
+        return input[1];
+    }else if(input[1] == 0x81){
+        return input[2];
+    }else if(input[1] == 0x82){
+        return ((input[2] << 8 )| input[3]);
+    }else{
+        return -1;
+    }
+
+}
+
+BOAT_RESULT UtilityGetTLV(BUINT8 *input,BUINT32 inputlen,TLVStruct *tlv){
+    BOAT_RESULT ret = BOAT_SUCCESS;
+    BUINT32 offset = 0,len = 0;
+    int ll = 0;
+
+    ll = UtilityGetTLV_LL(input,inputlen);
+    if(ll < 0 ){
+        return BOAT_ERROR;
+    }
+    len = UtilityGetTLV_L(input,inputlen);
+    if(len < 0 ){
+        return BOAT_ERROR;
+    }
+    if(len + ll +1 > inputlen){
+        return BOAT_ERROR;
+    }
+    offset += (1+ll);
+    (*tlv).tag = input[0];
+    (*tlv).Llen = ll;
+    (*tlv).len = len;
+    (*tlv).data = input + offset;
+    return ret;
+}
+
+
+int add_TL_withOffset(BUINT8 bTag,BUINT8* pbBuff,BUINT32* nOffset,BUINT32 nLen)
+{
+    BUINT32 nTLLen = 0; 
+    BUINT8 bTLV[10];
+    BUINT8* buf  = NULL;
+    buf = malloc(nLen);
+
+    memset(bTLV, 0, 10);
+
+    if( bTag == ASN1_BIT_STRING )
+    {
+        memcpy(buf,pbBuff +*nOffset,nLen);
+        memcpy( pbBuff+* nOffset +1,buf,nLen );
+        nLen += 1;
+        pbBuff[* nOffset] = 0x00;
+    }
+    //鍒ゆ柇nLen澶у皬
+    if( nLen < 0x80 ) //nLen < 0x80
+    {
+        nTLLen = 2;
+        bTLV[0] = bTag;
+        bTLV[1]=  nLen;
+    }
+    else if( nLen / 0x80  == 1) // 0xFF > nlen >=0x80
+    {
+        nTLLen = 3;
+        bTLV[0] = bTag;
+        bTLV[1]= 0x81;
+        bTLV[2] = nLen;
+    }
+    else
+    {
+        nTLLen = 4;
+        bTLV[0] = bTag;
+        bTLV[1]= 0x82;
+        bTLV[2] = (nLen & 0xFF00) >> 8;
+        bTLV[3] = (nLen & 0x00FF);
+    }
+    if(nLen != 0)
+	{
+        memcpy(buf,pbBuff +*nOffset,nLen);
+        memcpy( pbBuff+*nOffset,bTLV,nTLLen);
+        memcpy(pbBuff +*nOffset+ nTLLen,buf,nLen);
+        *nOffset += ( nLen+ nTLLen);
+    }
+
+    free(buf);
+    return nLen+ nTLLen;
+}
+
+void UtilityFreeKeypair(KeypairNative keypair){
+    keypair.alg = 0;
+    if((keypair.prikeylen != 0) && (keypair.prikey != NULL)){
+        BoatFree(keypair.prikey);
+        keypair.prikey = NULL;
+    }
+    keypair.prikeylen = 0;
+    if(keypair.pubkeylen != 0 && keypair.pubkey != NULL){
+        BoatFree(keypair.pubkey);
+        keypair.pubkey = NULL;
+    }
+    keypair.pubkeylen = 0;
+}
+
+BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
+    BOAT_RESULT ret = BOAT_ERROR;
+    BCHAR *begin = NULL;
+    BCHAR *end = NULL;
+    BCHAR *realdata = NULL;
+    BUINT8 pkcsDataHex[160] = {0};
+    BUINT8 oid_secp256k1[] = {0x2b,0x81,0x04,0x00,0x0a};
+    BUINT8 oid_secp256r1[] = {0x2b,0x81,0x04,0x03,0x01,0x07};
+    BUINT8 oid_sm2sm3[] = {0x2a,0x81,0x1c,0xcf,0x55,0x01,0x82,0x2d};
+    BCHAR bytedata = 0;
+    BUINT16 offset = 0 , len = 0 ,offset_level_3 = 0;
+    BUINT16 i = 0,j = 0;
+    TLVStruct TLV_Level_1,TLV_Level_2,TLV_Level_3;
+    begin = strstr(input,PRIKEY_PKCS_BEGIN);
+    end= strstr(input,PRIKEY_PKCS_END);
+    if(NULL == begin || NULL == end){
+        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native have no begin or end .");
+        return BOAT_ERROR;
+    }
+    offset = input - begin + strlen(PRIKEY_PKCS_BEGIN);
+    len = end - begin - strlen(PRIKEY_PKCS_BEGIN);
+    realdata = BoatMalloc(len);
+    for(int i = 0;i < len;i++){
+        bytedata = input[offset+i];
+        if(bytedata != ' ' && bytedata != 0x0A && bytedata != 0x0D){
+            realdata[j++] = bytedata;
+        }
+    }
+    len = base64_decode(realdata,j,pkcsDataHex);
+    if(len  == 0){
+        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native base64 decode err .");
+        return BOAT_ERROR;
+    }
+    // BoatLog_hexdump(BOAT_LOG_VERBOSE, "pkcsDataHex : ", 
+	// 					pkcsDataHex, len);
+
+    ret = UtilityGetTLV(pkcsDataHex,len,&TLV_Level_1);
+    if(ret != BOAT_SUCCESS){
+         BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 1 err .");
+        return ret;
+    }
+    if(TLV_Level_1.tag != (ASN1_CONSTRUCTED |ASN1_SEQUENCE) ){
+        BoatLog(BOAT_LOG_NORMAL, "UtilityPKCS2Native tlv 1 tag err : %02x.",TLV_Level_1.tag);
+        return BOAT_ERROR;
+    }
+    offset = 0;
+    while(offset < TLV_Level_1.len){
+        ret = UtilityGetTLV(TLV_Level_1.data+offset,TLV_Level_1.len - offset,&TLV_Level_2);
+        if(ret != BOAT_SUCCESS){
+            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 2 err .");
+            return ret;
+        }
+        // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_2.tag = %02x .",TLV_Level_2.tag);
+        if(TLV_Level_2.tag == ASN1_OCTET_STRING){
+            // (*keypair).prikey = TLV_Level_2.data;
+            (*keypair).prikey = BoatMalloc(TLV_Level_2.len);
+            memcpy((*keypair).prikey,TLV_Level_2.data,TLV_Level_2.len);
+            (*keypair).prikeylen = TLV_Level_2.len;
+        }
+        if((TLV_Level_2.tag & 0xF0) == (ASN1_CONSTRUCTED | ASN1_CONTEXT_SPECIFIC)){
+            while(offset_level_3 < TLV_Level_2.len){
+                ret = UtilityGetTLV(TLV_Level_2.data+offset_level_3,TLV_Level_2.len - offset_level_3,&TLV_Level_3);
+                if(ret != BOAT_SUCCESS){
+                    BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 3 err .");
+                    return ret;
+                }
+                // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_3.tag = %02x . datalen = %02x",TLV_Level_3.tag,TLV_Level_3.len);
+                if(TLV_Level_3.tag == ASN1_OID){
+                    if(TLV_Level_3.len == sizeof(oid_secp256k1)){
+                        if(memcmp(TLV_Level_3.data,oid_secp256k1,sizeof(oid_secp256k1)) ==0 ){
+                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256k1 .");
+                             (*keypair).alg = KEYPAIT_ALG_SECP256K1;
+                             break;
+                        }else{
+                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_unknown.");
+                            (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
+                            break;
+                        }
+                    }else if(TLV_Level_3.len == sizeof(oid_secp256r1)){
+                        if(memcmp(TLV_Level_3.data,oid_secp256r1,sizeof(oid_secp256r1)) ==0 ){
+                             (*keypair).alg = KEYPAIT_ALG_SECP256R1;
+                             BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256r1 .");
+                             break;
+                        }else{
+                            (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
+                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_unknown .");
+                            break;
+                        }
+                    }else if(TLV_Level_3.len >= sizeof(oid_sm2sm3) ){
+                        if(memcmp(TLV_Level_3.data,oid_sm2sm3,sizeof(oid_sm2sm3)-2) == 0){
+                            (*keypair).alg = KEYPAIT_ALG_SM;
+                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_sm .");
+                            break;
+                        }else{
+                            (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
+                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native unknown .");
+                            break;
+                        }
+                    }
+                }else if(TLV_Level_3.tag == ASN1_BIT_STRING){
+                    if(TLV_Level_3.len != 0x42){
+                        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native pubkeylen err : %02x  .",TLV_Level_3.len);
+                        return BOAT_ERROR;
+                    }
+                    (*keypair).pubkeylen = TLV_Level_3.len -2;
+                    // (*keypair).pubkey = TLV_Level_3.data + 2;
+                    (*keypair).pubkey = BoatMalloc(TLV_Level_3.len -2);
+                    memcpy((*keypair).pubkey,TLV_Level_3.data + 2,TLV_Level_3.len -2);
+                    return BOAT_SUCCESS;
+                }
+                offset_level_3 += TLV_Level_3.len + TLV_Level_3.Llen +1;
+            }
+        }
+
+        offset += TLV_Level_2.len + TLV_Level_2.Llen +1;
+
+    }
+    return ret;
+}
+
+
+BCHAR* UtilityNative2PKCS(KeypairNative keypair){
+    BUINT8 oid_secp256k1[] = {0x2b,0x81,0x04,0x00,0x0a};
+    BUINT8 oid_secp256r1[] = {0x2b,0x81,0x04,0x03,0x01,0x07};
+    BUINT8 oid_sm2sm3[] = {0x2a,0x81,0x1c,0xcf,0x55,0x01,0x82,0x2d};
+    BUINT8 version[] = {0x02,0x01,0x01};
+    BUINT8 *dataHex = NULL;
+    BCHAR  *outStr = NULL;
+    BUINT8 object_sn = 0;
+    BUINT32 len = 0 , len_level_2 = 0 ,offset = 0 , offset_bat = 0;
+    len += 3; //version
+    len += UtilityGetTLV_LL_from_len(keypair.prikeylen) + 1 + keypair.prikeylen; //prikey
+    if(keypair.alg == KEYPAIT_ALG_SECP256K1){
+        len_level_2 = UtilityGetTLV_LL_from_len(sizeof(oid_secp256k1)) + 1 + sizeof(oid_secp256k1);
+    }else if(keypair.alg == KEYPAIT_ALG_SECP256R1){
+        len_level_2 = UtilityGetTLV_LL_from_len(sizeof(oid_secp256r1)) + 1 + sizeof(oid_secp256r1);
+    }else if(keypair.alg == KEYPAIT_ALG_SM){
+        len_level_2 = UtilityGetTLV_LL_from_len(sizeof(oid_sm2sm3)) + 1 + sizeof(oid_sm2sm3);
+    }else{
+        return NULL;
+    }
+    len += UtilityGetTLV_LL_from_len(len_level_2) + 1 + len_level_2; //oid
+    len_level_2 = UtilityGetTLV_LL_from_len(keypair.pubkeylen) + 1 + keypair.pubkeylen;
+    len += UtilityGetTLV_LL_from_len(len_level_2) + 1 + len_level_2; //pubkey
+    len += UtilityGetTLV_LL_from_len(len) + 1 + len; //all hex data
+    dataHex = BoatMalloc(len);
+    memcpy(dataHex + offset,version,sizeof(version));
+    offset += sizeof(version);
+    memcpy(dataHex + offset ,keypair.prikey,keypair.prikeylen);
+    add_TL_withOffset(ASN1_OCTET_STRING,dataHex,&offset,keypair.prikeylen); //prikey
+    offset_bat = offset;
+    if(keypair.alg == KEYPAIT_ALG_SECP256K1){
+        memcpy(dataHex + offset,oid_secp256k1,sizeof(oid_secp256k1));
+        len = add_TL_withOffset(ASN1_OID,dataHex,&offset,sizeof(oid_secp256k1)); //oid
+    }else if(keypair.alg == KEYPAIT_ALG_SECP256R1){
+        memcpy(dataHex + offset,oid_secp256r1,sizeof(oid_secp256r1));
+        len = add_TL_withOffset(ASN1_OID,dataHex,&offset,sizeof(oid_secp256r1)); //oid
+    }else if(keypair.alg == KEYPAIT_ALG_SM){
+        memcpy(dataHex + offset,oid_sm2sm3,sizeof(oid_sm2sm3));
+        len = add_TL_withOffset(ASN1_OID,dataHex,&offset,sizeof(oid_sm2sm3)); //oid
+    }
+    add_TL_withOffset((ASN1_CONSTRUCTED | ASN1_CONTEXT_SPECIFIC) + object_sn,dataHex,&offset_bat,len); //oid
+    object_sn ++;
+    offset = offset_bat;
+    dataHex[offset] = 0x04;
+    memcpy(dataHex + offset + 1 ,keypair.pubkey,keypair.pubkeylen);
+    len = add_TL_withOffset(ASN1_BIT_STRING,dataHex,&offset,keypair.pubkeylen + 1 ); //pubkey
+    add_TL_withOffset((ASN1_CONSTRUCTED | ASN1_CONTEXT_SPECIFIC) + object_sn,dataHex,&offset_bat,len); //pubkey
+    len = offset_bat;
+    offset = 0;
+    add_TL_withOffset((ASN1_CONSTRUCTED | ASN1_SEQUENCE) ,dataHex,&offset,len); //all
+    outStr = BoatMalloc(offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6) ;
+    memset(outStr,0,offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6);
+    len = base64_encode(dataHex,offset,outStr+strlen(PRIKEY_PKCS_BEGIN)+2);
+    memcpy(outStr,PRIKEY_PKCS_BEGIN,strlen(PRIKEY_PKCS_BEGIN));
+    offset = strlen(PRIKEY_PKCS_BEGIN);
+    outStr[offset++] = 0x0D;
+    outStr[offset++] = 0x0A;
+    offset += len;
+    outStr[offset++] = 0x0D;
+    outStr[offset++] = 0x0A;
+    memcpy(outStr + offset,PRIKEY_PKCS_END,strlen(PRIKEY_PKCS_BEGIN));
+    outStr[offset++] = 0x0D;
+    outStr[offset++] = 0x0A;
+    BoatFree(dataHex);
+    return outStr;
 }
 

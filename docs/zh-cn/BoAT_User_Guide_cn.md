@@ -34,6 +34,7 @@ FISCO-BCOS
 Hyperledger Fabric  
 Huawei BCS (华为链)  
 Chainmaker (长安链)  
+VenaChain (万纳链)
 
 **支持的Target操作系统：**  
 Linux  
@@ -186,9 +187,10 @@ BOAT_PROTOCOL_USE_FISCOBCOS  ?= 1
 BOAT_PROTOCOL_USE_HLFABRIC   ?= 1
 BOAT_PROTOCOL_USE_HWBCS      ?= 1
 BOAT_PROTOCOL_USE_CHAINMAKER ?= 1
+BOAT_PROTOCOL_USE_VENACHAIN  ?= 1
 ```
 根据需要，将相应变量的值改为`1`/`0`，或编译SDK时通过make \<BOAT_PROTOCOL_USE_XXX\>=<1|0>以使能或禁用相应的区块链协议。  
-***注：由于PlatON，PlatONE和FISCO BCOS三个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能。***  
+***注：由于PlatON，PlatONE，FISCO BCOS和Venachain四个区块链钱包代码大量复用以太坊的钱包代码，所以这三个任意一个使能时，都需要把以太坊使能。***  
 ***注：由于hw_bcs区块链钱包代码大量复用fabric的钱包代码，所以使能hw_bcs时，都需要把fabric使能。*** 
 - 日志打印级别调整  
 根据需要，调整路径\<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h中`BOAT_LOG_LEVEL`的值，来调整日志的打印级别。
@@ -200,23 +202,27 @@ BOAT_PROTOCOL_USE_CHAINMAKER ?= 1
 
 SDK提供以下工具，用于根据合约ABI，生成相应的C接口代码，使得C代码中，可以像调用一般C函数一样，通过生成的接口代码调用链上智能合约：  
 
-|转换工具                                |用途                                      |
-|:------------------------------------- |:---------------------------------------- |
-|\<SDKRoot\>/tools/eth2c.py             |根据以太坊Solidity的ABI，生成C调用代码      |
-|\<SDKRoot\>/tools/fiscobcos2c.py       |根据FISCO-BCOS Solidity的ABI，生成C调用代码 |
-|\<SDKRoot\>/tools/platoneSolidity2c.py |根据PlatONE Solidity的ABI，生成C调用代码    |
-|\<SDKRoot\>/tools/platoneWASM2c.py     |根据PlatONE WASM的ABI，生成C调用代码        |
+|转换工具                                  |用途                                      |
+|:----------------------------------------|:----------------------------------------|
+|\<SDKRoot\>/tools/eth2c.py               |根据以太坊Solidity的ABI，生成C调用代码       |
+|\<SDKRoot\>/tools/fiscobcos2c.py         |根据FISCO-BCOS Solidity的ABI，生成C调用代码 |
+|\<SDKRoot\>/tools/platoneSolidity2c.py   |根据PlatONE Solidity的ABI，生成C调用代码    |
+|\<SDKRoot\>/tools/platoneWASM2c.py       |根据PlatONE WASM的ABI，生成C调用代码        |
+|\<SDKRoot\>/tools/venachainSolidity2c.py |根据Venachain Solidity的ABI，生成C调用代码  |
+|\<SDKRoot\>/tools/venachainWASM2c.py     |根据Venachain WASM的ABI，生成C调用代码      |
 
 由于合约编程语言一般支持面向对象，而C语言不支持面向对象，无法使用统一范式传递对象，因此只有参数类型与C语言内置类型一致的合约函数，可以通过工具转换为C调用代码。具体的支持合约函数输入类型详见[合约调用（自动生成）](#合约调用（自动生成）) 章节。
 
 在进行调用前，首先需要编译合约，将合约编译中生成的ABI接口描述JSON文件，拷贝至SDK相应目录中：
 
-|合约ABI存放路径                                       |用途                                            |
-|:--------------------------------------------------- |:----------------------------------------       |
-|\<SDKRoot\>/demo/demo_ethereum/demo_contract         |将以太坊的ABI JSON文件拷贝至该目录下              |
-|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract        |将FISCO-BCOS的ABI JSON文件拷贝至该目录下          |
-|\<SDKRoot\>/demo/demo_platone/demo_contract/Solidity |将PlatONE（Solidity）的ABI JSON文件拷贝至该目录下 |
-|\<SDKRoot\>/demo/demo_platone/demo_contract/WSAM     |将PlatONE（WASM）的ABI JSON文件拷贝至该目录下     |
+|合约ABI存放路径                                          |用途                                            |
+|:------------------------------------------------------|:----------------------------------------       |
+|\<SDKRoot\>/demo/demo_ethereum/demo_contract           |将以太坊的ABI JSON文件拷贝至该目录下                 |
+|\<SDKRoot\>/demo/demo_fiscobcos/demo_contract          |将FISCO-BCOS的ABI JSON文件拷贝至该目录下            |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/Solidity   |将PlatONE（Solidity）的ABI JSON文件拷贝至该目录下    |
+|\<SDKRoot\>/demo/demo_platone/demo_contract/WSAM       |将PlatONE（WASM）的ABI JSON文件拷贝至该目录下        |
+|\<SDKRoot\>/demo/demo_venachain/demo_contract/Solidity |将Venachain（Solidity）的ABI JSON文件拷贝至该目录下  |
+|\<SDKRoot\>/demo/demo_venachain/demo_contract/WSAM     |将Venachain（WASM）的ABI JSON文件拷贝至该目录下      |
 
 ***注：ABI的JSON文件必须以“.json”为文件名后缀。***
 
@@ -393,7 +399,7 @@ f)	在“编辑环境变量”页中点击“新建”，新增Cygwin的安装�
 
 ### 编译和运行Demo
 #### 准备
-SDK提供基于以太坊、PlatON、PlatONE、FISCO-BCOS、Hyperledger Fabric、HW-BCS和Chainmaker的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
+SDK提供基于以太坊、PlatON、PlatONE、FISCO-BCOS、Hyperledger Fabric、HW-BCS、Venachain和Chainmaker的Demo。在运行这些Demo之前，需要首先安装相应的区块链节点软件（或者有已知节点），并部署Demo所需的智能合约。
 
 Demo所使用的智能合约及其ABI JSON文件放置在：  
 
@@ -402,7 +408,7 @@ Demo所使用的智能合约及其ABI JSON文件放置在：
 |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.sol   |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.json   |以太坊演示     |
 |\<SDKRoot\>/demo/demo_platone/demo_contract/WASM/my_contract.cpp    |\<SDKRoot\>/demo/demo_platone/demo_contract/WASM/my_contract.cpp.abi.json    |PlatONE演示    |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json |FISCO-BCOS演示 |
-
+|\<SDKRoot\>/demo/demo_venachain/demo_contract/WASM/mycontract.cpp    |\<SDKRoot\>/demo/demo_venachain/demo_contract/WASM/mycontract.cpp.abi.json    |Venachain演示   |
 
 在运行以太坊的Demo之前，需要安装以太坊节点模拟器ganache，以及以太坊智能合约编译部署工具truffle。  
 ganache及truffle工具可以访问该网站：https://truffleframework.com  
@@ -414,6 +420,9 @@ PlatON源码及工具可以访问该网站：https://platon.network/
 
 在运行PlatONE的Demo之前，需要安装PlatONE节点，以及智能合约编译和部署工具。  
 PlatONE源码及工具可以访问该网站：https://platone.wxblockchain.com
+
+在运行Venachain的Demo之前，需要安装Venachain节点，以及智能合约编译和部署工具。  
+Venachain源码及工具可以访问该网站：https://venachain-docs.readthedocs.io/zh/latest/documents/quick/env.html
 
 在运行FISCO-BCOS的Demo之前，需要安装FISCO-BCOS节点和合约部署。  
 FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-documentation.readthedocs.io
@@ -432,16 +441,18 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 |\<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             |FABRIC合约演示用例      |
 |\<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  |HW-BCS合约演示用例      |
 |\<SDKRoot\>/demo/demo_chainmaker/demo_chainmaker.c |CHAINMAKER合约演示用例 |
+|\<SDKRoot\>/demo/demo_venachain/demo_venachain_mycontract.c |Venachain合约演示用例 |
 
 编译Demo之前，需要修改Demo的C代码中以下部分：
-- 对于ETHEREUM、PLATON、FISCO-BCOS、PLATONE:
+- 对于ETHEREUM、PLATON、FISCO-BCOS、PLATONE、Venachain:
   1.	搜索`demoUrl`，将节点URL（含端口）填写为实际部署的节点或模拟器的IP地址和RPC端口
   2.	如果demo需使用原生私钥，则搜索`native_demoKey`，并将客户端私钥设置为：  
         -	对于ETHEREUM，设置为ganache生成的任意一个账户的私钥  
         - 对于PlatON，无需修改Demo中的私钥
         - 对于PlatONE，无需修改Demo中的私钥
+        - 对于Venachain，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥对应的原生格式私钥
-  3.	如果demo需使用原生私钥，则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
+  3.	如果demo需使用PKCS格式私钥，则搜索`pkcs_demoKey`，并将客户端私钥设置为：  
         - 对于以太坊，设置为ganache生成的任意一个账户的私钥对应的PKCS格式私钥
         - 对于PlatONE，无需修改Demo中的私钥
         - 对于FISCO-BCOS，设置为<FISCO-BCOS_ROOT>/console/accounts下私钥
@@ -470,7 +481,7 @@ FISCO-BCOS源码及安装部署步骤可以访问该网站：https://fisco-bcos-
 ```
 $make demo
 ```
-生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下，< protocol>可以为`ethereum`、`platon`、`fisco-bcos`、`platone`、`fabric`、`hwbcs`或`chainmaker`。
+生成的Demo程序分别位于\<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>路径下，< protocol>可以为`ethereum`、`platon`、`fisco-bcos`、`platone`、`venachain`、`fabric`、`hwbcs`或`chainmaker`。
 
 
 
@@ -618,7 +629,7 @@ void BoatWalletUnload(BSINT32 wallet_index);
 #### 删除钱包
 删除钱包会将持久化的钱包删除。如果该钱包在删除之前已经加载，那么删除之后，该持久化钱包会变为一次性钱包，在卸载之前仍可使用。  
 ```
-void BoatWalletDelete(BCHAR * wallet_name_str);
+BOAT_RESULT BoatWalletDelete(BCHAR * wallet_name_str);
 ```
 参数:
 
@@ -1014,7 +1025,7 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
     当返回的结果为BOAT_SUCCESS时，说明调用成功。
 
 **例4：HW-BCS交易构造**
-- **步骤1** BoatHwbcsTxInit()进行交易初始化，其中参数根据实际使用进行设置。
+- **步骤1** 调用BoatHwbcsTxInit()进行交易初始化，其中参数根据实际使用进行设置。
 - **步骤2** 调用BoatHwbcsWalletSetNetworkInfo()进行网络参数设置。
 - **步骤3** 调用BoatHwbcsTxSetTimestamp()设置时间戳，实时时间通过硬件相应功能获取。
 - **步骤4** 设置交易参数。  
@@ -1037,7 +1048,7 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
 
 **例5：CHAINMAKER交易构造**
 
-* **步骤1** BoatHlChainmakerTxInit()进行交易初始化，其中参数根据实际使用进行设置。
+* **步骤1** 调用BoatHlChainmakerTxInit()进行交易初始化，其中参数根据实际使用进行设置。
 
 * **步骤2** 调用BoatHlchainmakerAddTxParam()  设置交易参数。
 

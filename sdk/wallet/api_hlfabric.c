@@ -707,38 +707,41 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo(BoatHlfabricWallet *wallet_ptr,
 		// 	BoatFree(wallet_ptr->network_info.endorser[i].hostName);
 		// }
 		// wallet_ptr->network_info.endorserNum = 0;
-		for (i = 0; i < wallet_ptr->network_info.endorserLayoutNum; i++)
-		{
-			for (j = 0; j < wallet_ptr->network_info.layoutCfg[i].endorserGroupNum; j++)
+		if(wallet_ptr != NULL){
+			for (i = 0; i < wallet_ptr->network_info.endorserLayoutNum; i++)
 			{
-				for (k = 0; k < wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorserNumber; k++)
+				for (j = 0; j < wallet_ptr->network_info.layoutCfg[i].endorserGroupNum; j++)
 				{
-					if (wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName != NULL)
+					for (k = 0; k < wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorserNumber; k++)
 					{
-						BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName);
-						wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = NULL;
-					}
-					if (wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl != NULL)
-					{
-						BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl);
-						wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = NULL;
+						if (wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName != NULL)
+						{
+							BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName);
+							wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = NULL;
+						}
+						if (wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl != NULL)
+						{
+							BoatFree(wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl);
+							wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = NULL;
+						}
 					}
 				}
 			}
-		}
-		for (i = 0; i < wallet_ptr->network_info.orderCfg.endorserNumber; i++)
-		{
-			if (wallet_ptr->network_info.orderCfg.endorser[i].hostName != NULL)
+			for (i = 0; i < wallet_ptr->network_info.orderCfg.endorserNumber; i++)
 			{
-				BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].hostName);
-				wallet_ptr->network_info.orderCfg.endorser[i].hostName = NULL;
-			}
-			if (wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl != NULL)
-			{
-				BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl);
-				wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = NULL;
+				if (wallet_ptr->network_info.orderCfg.endorser[i].hostName != NULL)
+				{
+					BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].hostName);
+					wallet_ptr->network_info.orderCfg.endorser[i].hostName = NULL;
+				}
+				if (wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl != NULL)
+				{
+					BoatFree(wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl);
+					wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = NULL;
+				}
 			}
 		}
+		
 	}
 	return result;
 }
@@ -775,6 +778,7 @@ BoatHlfabricWallet *BoatHlfabricWalletInit(const BoatHlfabricWalletConfig *confi
 	wallet_ptr->network_info.endorserLayoutNum = 0;
 	wallet_ptr->network_info.orderCfg.endorserNumber = 0;
 	wallet_ptr->network_info.layoutCfg = NULL;
+	wallet_ptr->network_info.orderCfg.endorser = NULL;
 	// wallet_ptr->network_info.layoutCfg->endorserGroupNum = 0;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 #if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
@@ -935,7 +939,7 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 
 	boat_try_declare;
 
-	if ((tx_ptr == NULL) || (wallet_ptr == NULL))
+	if ((tx_ptr == NULL) || (wallet_ptr == NULL) ||  (chaincodeId_name_str == NULL) || (channelId_str == NULL) || (orgName_str == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments 'tx_ptr' or 'wallet_ptr' cannot be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;

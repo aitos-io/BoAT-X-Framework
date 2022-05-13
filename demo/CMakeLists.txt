@@ -23,4 +23,6 @@ if(BOAT_PROTOCOL_USE_HWBCS)
 add_subdirectory(demo_hw_bcs)
 endif()
 
-
+if(BOAT_PROTOCOL_USE_VENACHAIN)
+add_subdirectory(demo_venachain)
+endif()

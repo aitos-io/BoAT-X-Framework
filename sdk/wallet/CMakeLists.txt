@@ -28,6 +28,9 @@ if(BOAT_PROTOCOL_USE_HWBCS)
 set(FILE_SRC    ${FILE_SRC} api_hw_bcs.c)
 endif()
 
+if(BOAT_PROTOCOL_USE_VENACHAIN)
+set(FILE_SRC    ${FILE_SRC} api_venachain.c)
+endif()
 
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
 

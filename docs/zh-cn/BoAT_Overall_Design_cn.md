@@ -135,7 +135,8 @@ SDK使用的一些三方库如果在调用前需做一次反初始化，则应�
 ##### 交易的数据结构和功能实现清单
 交易是经过签名后的一条消息，通过区块链的网络传播，被记录在区块链上。不同的区块链提供的交易接口的功能基本一致。  
 
-对于Ethereum/Polygon/PlatON/PlatONE/FISCO BCOS：
+
+对于Ethereum/Polygon/PlatON/PlatONE/FISCO BCOS/Venachain：
 
 交易应至少包含如下元素：
 + 钱包的数据结构
@@ -455,6 +456,7 @@ BoAT的设计应考虑TEE环境的支持。对于有TEE环境的硬件，BoAT应
 + 用于生成Ethereum智能合约C语言接口的工具
 + 用于生成PlatONE智能合约C语言接口的工具
 + 用于生成FISCO BCOS智能合约C语言接口的工具
++ 用于生成Venachain智能合约C语言接口的工具
 
 #### 通用工具简述
 ##### 生成Ethereum智能合约C语言接口的工具
@@ -531,6 +533,9 @@ BoAT的设计应考虑TEE环境的支持。对于有TEE环境的硬件，BoAT应
 
 ##### 生成PlatONE智能合约C语言接口的工具
 常用的PlatONE智能合约的开发语言是C++，同Ethereum一样，PlatONE的智能合约经过编译后也会生成一个描述合约接口的JSON文件。其JSON字段和Ethereum的JSON字段相同，C语言接口和JSON字段的对应关系也与Ethereum一致。
+
+##### 生成Venachain智能合约C语言接口的工具
+常用的Venachain智能合约的开发语言是C++，同Ethereum一样，Venachain的智能合约经过编译后也会生成一个描述合约接口的JSON文件。其JSON字段和Ethereum的JSON字段相同，C语言接口和JSON字段的对应关系也与Ethereum一致。
 
 ##### 生成FISCO BCOS智能合约C语言接口的工具
 常用的FISCO BCOS智能合约的开发语言是solidity，具体可以参考[生成Ethereum智能合约C语言接口的工具](#生成Ethereum智能合约C语言接口的工具)。
