@@ -402,7 +402,7 @@ When cross-compiling outside of Cygwin, in addition to the previous section, the
 
 ### Compile and Run Demo
 #### Preparation
-SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, Hyperledger Fabric ,HW-BCS and Chainmaker. Before running these demos, the corresponding blockchain node software needs to be installed if there is no known nodes. Also the smart contracts required by the demo needs to be deployed.
+SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, Hyperledger Fabric ,HW-BCS , Chainmaker and Venachain. Before running these demos, the corresponding blockchain node software needs to be installed if there is no known nodes. Also the smart contracts required by the demo needs to be deployed.
 
 The smart contract used by the demo and its ABI JSON file are placed in:  
 
