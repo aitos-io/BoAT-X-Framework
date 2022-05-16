@@ -62,6 +62,7 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - Neoway-N58                : Neoway's LTE Cat.1 module
 # - YanFei-CUIot-MZ-6         : China Unicom's LTE Cat.1 module
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
+# - ChinaMobile-ML302v2       : China Mobile's LTE Cat.1 module API version 2
 # - MTK-MT3620                : MTK MT3620
 # - XinYi-XY1100              : XY1100
 # - Fibocom-MA510             : MA510
@@ -167,6 +168,8 @@ else ifeq ($(PLATFORM_TARGET), Neoway-N58)
 else ifeq ($(PLATFORM_TARGET), YanFei-CUIot-MZ-6) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else ifeq ($(PLATFORM_TARGET), ChinaMobile-ML302) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else ifeq ($(PLATFORM_TARGET), ChinaMobile-ML302v2) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else ifeq ($(PLATFORM_TARGET), XinYi-XY1100) 
     SOFT_CRYPTO ?= CRYPTO_MBEDTLS
