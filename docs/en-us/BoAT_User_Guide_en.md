@@ -488,7 +488,7 @@ Execute the following commands in the \<SDKRoot\> directory to compile the SDK c
 ````
 $make demo
 ````
-The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum`,`platon`,`fisco-bcos`,`platone`,`fabric`,`hwbcs` or `chainmaker`.
+The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum`,`platon`,`fisco-bcos`,`platone`,`fabric`,`hwbcs`,`venachain` or `chainmaker`.
 
 
 ### Trouble Shooting in Compilation
