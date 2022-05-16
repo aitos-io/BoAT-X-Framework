@@ -219,6 +219,8 @@ The SDK provides the following tools to generate the corresponding C interface c
 |\<SDKRoot\>/tools/fiscobcos2c.py       |According to the ABI of FISCO-BCOS Solidity, generate C calling code |
 |\<SDKRoot\>/tools/platoneSolidity2c.py |Generate C calling code according to PlatONE (Solidity) ABI          |
 |\<SDKRoot\>/tools/platoneWASM2c.py     |Generate C calling code according to PlatONE (WASM) ABI              |
+|\<SDKRoot\>/tools/venachainSolidity2c.py |Generate C calling code according to Venachain (Solidity) ABI          |
+|\<SDKRoot\>/tools/venachainWASM2c.py     |Generate C calling code according to Venachain (WASM) ABI              |
 
 Contract programming languages generally support "object-oriented". However, since C language does not support "object-oriented" and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools. The specific input types of support contract functions are described in the [Contract Call (Automatically Generated)](#contract-call-automatically-generated) chapter.
 
