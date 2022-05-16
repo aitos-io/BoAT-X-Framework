@@ -423,6 +423,8 @@ Before running the PlatON Demo, the PlatON node need to be installed. The specif
 
 Before running the PlatONE Demo, you need to install the PlatONE node, as well as smart contract compilation and deployment tools,could visit this website: https://platone.wxblockchain.com  .
 
+Before running the Venachain Demo, you need to install the Venachain node, as well as smart contract compilation and deployment tools,could visit this website: https://venachain-docs.readthedocs.io/zh/latest/documents/quick/env.html  .
+
 Before running the FISCO-BCOS Demo, you need to install the FISCO-BCOS node and contract deployment.
 FISCO-BCOS source code and installation and deployment steps can visit this website: https://fisco-bcos-documentation.readthedocs.io
 
@@ -440,6 +442,7 @@ The Demo C code that calls the smart contract is placed in:
 | \<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             | FABRIC demo use case            |
 | \<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  | HW-BCS demo use case            |
 | \<SDKRoot\>/demo/demo_chainmaker/demo_chainmaker.c          | CHAINMAKER demo use case        |
+| \<SDKRoot\>/demo/demo_venachain/demo_venachain_mycontract.c          | Venachain demo use case        |
 
 Before compiling the Demo, you need to modify the following parts of the Demo C code:  
 - For ETHEREUM, PLATON, FISCO-BCOS, PLATONE:  
