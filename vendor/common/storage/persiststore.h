@@ -34,7 +34,7 @@ extern "C" {
  */
 
 /*!****************************************************************************
- * @brief Persitently store data in an encrypted file
+ * @brief Persistently store data in an encrypted file
  *
  * @details
  *   This function persistently stores data in an encrypted file with hash check.
@@ -49,7 +49,7 @@ extern "C" {
  *   @verbatim
     File format:\n
      --------------------------------------------------------------------------
-     | 16 byte salt | 32 byte hash | AES(plain_data) | 0~31 byte AES paddiing |
+     | 16 byte salt | 32 byte hash | AES(plain_data) | 0~31 byte AES padding |
      --------------------------------------------------------------------------
       ^              ^              ^                 ^                        
       |              |              |                 |-> Padding within 1~31  
@@ -136,7 +136,7 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
  *
  * @details
  *   This function reads and decrypts data from an encrypted file (written by
- *   BoatPersistRead()). It also checks the data hash to verify if the decrypted
+ *   BoatPersistStore()). It also checks the data hash to verify if the decrypted
  *   data is correct.
  *
  * @note
@@ -157,7 +157,7 @@ BOAT_RESULT BoatPersistStore( const BCHAR *storage_name_str, const void *data_pt
  *   <data_len> in corresponding BoatPersistStore() call.
  *  
  * @return
- *   This function returns BOAT_SUCCESS if it successfully stores the data.\n
+ *   This function returns BOAT_SUCCESS if it successfully read the data.\n
  *   Otherwise it returns one of the error codes.
  *
  * @see BoatPersistStore()
