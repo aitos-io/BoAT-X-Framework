@@ -411,6 +411,7 @@ The smart contract used by the demo and its ABI JSON file are placed in:
 |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.sol   |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.json   |Ethereum demo   |
 |\<SDKRoot\>/demo/demo_platone/demo_contract/WASM/my_contract.cpp    |\<SDKRoot\>/demo/demo_platone/demo_contract/WASM/my_contract.cpp.abi.json    |PlatONE demo    |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json |FISCO-BCOS demo |
+|\<SDKRoot\>/demo/demo_venachain/demo_contract/WASM/mycontract.cpp    |\<SDKRoot\>/demo/demo_venachain/demo_contract/WASM/mycontract.cpp.abi.json    |Venachain demo   |
 
 
 Before running Ethereum's Demo, you need to install the Ethereum node simulator ganache, as well as the Ethereum smart contract compilation deployment tool truffle, could visit this website: https://truffleframework.com  .
