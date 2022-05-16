@@ -232,6 +232,8 @@ Before making the call, you first need to compile the contract, and copy the ABI
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract        |Copy the ABI JSON file of FISCO-BCOS to this directory        |
 |\<SDKRoot\>/demo/demo_platone/demo_contract\Solidity |Copy PlatONE (Solidity) ABI JSON file to this directory       |
 |\<SDKRoot\>/demo/demo_platone/demo_contract\WASM     |Copy PlatONE (WASM) ABI JSON file to this directory           |
+|\<SDKRoot\>/demo/demo_venachain/demo_contract\Solidity |Copy Venachain (Solidity) ABI JSON file to this directory       |
+|\<SDKRoot\>/demo/demo_venachain/demo_contract\WASM     |Copy Venachain (WASM) ABI JSON file to this directory           |
 
 *Note: ABI's JSON file must have ".json" as the file name suffix.*  
 
