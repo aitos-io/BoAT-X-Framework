@@ -24,7 +24,7 @@ boatLogConfig.h defines options for compiling.
 #define __BOATLOG_H__
 
 #include "boattypes.h"
-#include "onemo_sys.h"
+#include "cm_sys.h"
 
 //! BOAT LOG LEVEL DEFINITION
 //! Log level is used to control the detail of log output.

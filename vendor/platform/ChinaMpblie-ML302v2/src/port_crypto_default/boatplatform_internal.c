@@ -33,6 +33,8 @@
 #include "bignum.h"
 #include <string.h>
 
+#include "cm_fs.h"
+
 /* net releated include */
 #if (PROTOCOL_USE_HLFABRIC == 1)
 #include <sys/types.h>
@@ -240,7 +242,7 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName);
 		return BOAT_ERROR_STORAGE_FILE_READ_FAIL;
 	}
-	
+
 	result = cm_fs_fclose(file);
 	if (result < 0)
 	{

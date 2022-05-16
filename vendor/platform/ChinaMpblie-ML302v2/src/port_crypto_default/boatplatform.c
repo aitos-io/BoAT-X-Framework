@@ -28,6 +28,8 @@
 
 #include "sha3.h"
 
+#include "cm_sys.h"
+
 /* net releated include */
 #include <sys/types.h>
 #include <string.h>
