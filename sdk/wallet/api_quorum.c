@@ -27,7 +27,6 @@ api_Quorum.c defines the Quorumereum wallet API for BoAT IoT SDK.
 #include "cJSON.h"
 #include "boatquorum/boatquorum.h"
 
-//BoatQuorumWallet *BoatQuorumWalletInit(const BoatQuorumWalletConfig *config_ptr, BUINT32 config_size)
 BoatQuorumWallet *BoatQuorumWalletInit(const BoatQuorumWalletConfig *config_ptr, BUINT32 config_size)
 {
     BoatQuorumWallet *wallet_ptr;
@@ -115,8 +114,10 @@ void BoatQuorumWalletDeInit(BoatQuorumWallet *wallet_ptr)
         }
 
         web3_deinit(wallet_ptr->web3intf_context_ptr);
+        wallet_ptr->web3intf_context_ptr = NULL;
 
         BoatFree(wallet_ptr);
+        wallet_ptr = NULL;
     }
 }
 
