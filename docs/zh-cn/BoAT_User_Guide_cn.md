@@ -999,7 +999,7 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
                                         BUINT32 rlp_param_len);
     ```
     其中，rlp_param_ptr的格式遵循与步骤3相同的规则。
-    具体调用方法，可参照SDK所附的Demo的自动生成代码，这些代码位于\<SDKRoot\>/contract/generated下。
+    具体调用方法，可参照SDK所附的Demo的自动生成代码，这些代码位于\<SDKRoot\>/build/demo/demo_\<protocol\>/demo_contract下。
 
 **例3：Hyperledger Fabric交易构造**
 - **步骤1** 调用BoatHlfabricTxInit()进行交易初始化，其中参数根据实际使用进行设置。
