@@ -1104,7 +1104,13 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
 参数：
 \<protocol_type\>: integer type
 - 1: Ethereum
-- 2: PlatONE
+- 2: HLFABRIC
+- 3: PLATON
+- 4: PLATONE
+- 5: FISCOBCOS
+- 6: HWBCS
+- 7: Chainmaker
+- 8: Venachain
 
 \<wallet_name\>: string type; 
 a string of wallet name
