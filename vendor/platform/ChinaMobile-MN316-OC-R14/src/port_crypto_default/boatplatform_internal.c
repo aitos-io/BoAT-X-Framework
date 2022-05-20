@@ -33,6 +33,8 @@
 #include "bignum.h"
 #include <string.h>
 
+#include "cm_flash.h"
+
 /* net releated include */
 #if (PROTOCOL_USE_HLFABRIC == 1)
 #include <sys/types.h>
