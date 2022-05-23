@@ -39,9 +39,6 @@ To use mbed HTTP RPC porting, RPC_USE_MBEDHTTPPORT in boatoptions.h must set to 
 #include "mbedhttpport.h"
 
 #include "cm_http.h"
-#include "cm_asocket.h"
-#include "cm_eloop.h"
-#include "cm_async_dns.h"
 
 static cm_eloop_handle_t s_main_eloop = NULL;
 /*!*****************************************************************************
@@ -66,18 +63,6 @@ MbedHttpPortContext *MbedHttpPortInit(void)
 {
     MbedHttpPortContext *mbedhttpport_context_ptr;
     BOAT_RESULT result = BOAT_SUCCESS;
-
-    /* 初始化异步eloop模块 */
-    cm_eloop_init();
-
-    /* 创建事件循环 */
-    s_main_eloop = cm_eloop_create(MAX_EVENT_NUM);
-
-    /* 初始化异步socket模块 */
-    cm_asocket_init(MAX_ASOCKET_NUM, s_main_eloop);
-
-    /* 初始化异步DNS模块 */
-    cm_async_dns_init(MAX_ASYNC_DNS_NUM, s_main_eloop);
 
     mbedhttpport_context_ptr = BoatMalloc(sizeof(MbedHttpPortContext));
 

@@ -16,7 +16,9 @@ DESCRIPTION
 #include "cm_modem.h"
 #include "cm_rtc.h"
 #include "cm_os.h"
-
+#include "cm_asocket.h"
+#include "cm_eloop.h"
+#include "cm_async_dns.h"
 
 
 static int g_boat_task_Handle = -1;
@@ -119,6 +121,20 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     return BOAT_SUCCESS;
 }
 
+void init_asocket_module()
+{
+    /* 初始化异步eloop模块 */
+    cm_eloop_init();
+
+    /* 创建事件循环 */
+    s_main_eloop = cm_eloop_create(MAX_EVENT_NUM);
+
+    /* 初始化异步socket模块 */
+    cm_asocket_init(MAX_ASOCKET_NUM, s_main_eloop);
+
+    /* 初始化异步DNS模块 */
+    cm_async_dns_init(MAX_ASYNC_DNS_NUM, s_main_eloop);
+}
 
 void boat_platone_entry(void)
 {
@@ -192,6 +208,9 @@ static void* boat_task_entry(void *args)
             cm_demo_printf("Network is connected\n");
         }
     }
+
+    osDelay(10);
+    init_asocket_module();
 
     osDelay(10);
     struct tm cur_time = {0};
