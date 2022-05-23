@@ -68,6 +68,7 @@ START_TEST(test_002Transaction_0003TxInit_Wallet_NULL)
 
     rtnVal = BoatHlfabricTxInit(&tx_ptr, NULL, NULL, "mycc", NULL, "mychannel", "Org1MSP");
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -86,6 +87,7 @@ START_TEST(test_002Transaction_0004TxInit_chainCodeIDName_NULL)
 
     rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, NULL, NULL, "mychannel", "Org1MSP");
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -104,6 +106,7 @@ START_TEST(test_002Transaction_0005TxInit_channelID_NULL)
 
     rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, NULL, "Org1MSP");
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -123,6 +126,7 @@ START_TEST(test_002Transaction_0006TxInit_orgName_NULL)
 
     rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -143,6 +147,7 @@ START_TEST(test_002Transaction_0007SetNetworkInfoSuccess)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
 	ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -164,6 +169,7 @@ START_TEST(test_002Transaction_0008TxSetNetworkInfo_Wallet_NULL)
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     rtnVal = BoatHlfabricWalletSetNetworkInfo(NULL, wallet_config.nodesCfg);
 	ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -185,6 +191,7 @@ START_TEST(test_002Transaction_0009TxSetNetworkInfo_NodesCfg_layoutNumIs0)
     wallet_config.nodesCfg.endorserLayoutNum = 0;
     rtnVal = BoatHlfabricWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
 	ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -206,6 +213,7 @@ START_TEST(test_002Transaction_0010TxSetNetworkInfo_NodesCfg_orderCfg_NumIs0)
     wallet_config.nodesCfg.orderCfg.endorserNumber = 0;
     rtnVal = BoatHlfabricWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
 	ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -230,6 +238,7 @@ START_TEST(test_002Transaction_0011TxSetTimestamp_Success)
 	time(&timesec);
 	rtnVal = BoatHlfabricTxSetTimestamp(&tx_ptr, timesec, 0);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -254,6 +263,7 @@ START_TEST(test_002Transaction_0012TxSetTimestamp_TxPtr_NULL)
 	time(&timesec);
 	rtnVal = BoatHlfabricTxSetTimestamp(NULL, timesec, 0);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -280,6 +290,7 @@ START_TEST(test_002Transaction_0013TxSetArgs_Success)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -306,6 +317,7 @@ START_TEST(test_002Transaction_0014TxSetArgs_Txptr_NULL)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(NULL, "invoke", "a", "b", "10", NULL);
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -332,6 +344,7 @@ START_TEST(test_002Transaction_0015TxSetArgs_argsMoreThanLimit)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", "c","d","e","f","c","d","e","f");
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_OUT_OF_MEMORY);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -360,6 +373,7 @@ START_TEST(test_002Transaction_0016TxInvoke_Success)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -388,6 +402,7 @@ START_TEST(test_002Transaction_0017TxInvokeFail_Txptr_NULL)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSubmit(NULL); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -416,6 +431,7 @@ START_TEST(test_002Transaction_0018TxInvokeFail_Args_NULL)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -444,6 +460,7 @@ START_TEST(test_002Transaction_0019TxInvokeFail_Args_Lack1)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -472,6 +489,7 @@ START_TEST(test_002Transaction_0020TxInvokeFail_Args_Lack2)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -500,6 +518,7 @@ START_TEST(test_002Transaction_0021TxInvokeFail_Args_Lack3)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -528,6 +547,36 @@ START_TEST(test_002Transaction_0022TxInvokeFail_Args_ADD1)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    BoatHlfabricTxDeInit(&tx_ptr);
+    BoatIotSdkDeInit();
+    fabricWalletConfigFree(wallet_config);
+}
+END_TEST
+
+START_TEST(test_002Transaction_0023TxQuery_Success) 
+{
+    BSINT32 rtnVal;
+    BoatHlfabricTx tx_ptr;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    BoatIotSdkInit();
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+
+    rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    rtnVal = BoatHlfabricWalletSetNetworkInfo(tx_ptr.wallet_ptr, wallet_config.nodesCfg);
+	ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    long int timesec = 0;
+	time(&timesec);
+	rtnVal = BoatHlfabricTxSetTimestamp(&tx_ptr, timesec, 0);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
     fabricWalletConfigFree(wallet_config);
 }
@@ -567,6 +616,7 @@ Suite *make_transaction_suite(void)
     tcase_add_test(tc_transaction_api, test_002Transaction_0020TxInvokeFail_Args_Lack2);
     tcase_add_test(tc_transaction_api, test_002Transaction_0021TxInvokeFail_Args_Lack3);
     tcase_add_test(tc_transaction_api, test_002Transaction_0022TxInvokeFail_Args_ADD1);
+    tcase_add_test(tc_transaction_api, test_002Transaction_0023TxQuery_Success);
 
     return s_transaction;
 }
