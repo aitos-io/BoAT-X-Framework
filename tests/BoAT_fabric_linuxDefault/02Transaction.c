@@ -764,6 +764,16 @@ START_TEST(test_002Transaction_0030DeInit_Txptr_NULL)
 }
 END_TEST
 
+START_TEST(test_002Transaction_0031Free_WalletConfig_NULL) 
+{
+
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    BoatIotSdkInit();
+    BoatIotSdkDeInit();
+    fabricWalletConfigFree(wallet_config);
+}
+END_TEST
+
 
 Suite *make_transaction_suite(void) 
 {
@@ -806,6 +816,7 @@ Suite *make_transaction_suite(void)
     tcase_add_test(tc_transaction_api, test_002Transaction_0028TxQueryFail_arg2_NULL);
     tcase_add_test(tc_transaction_api, test_002Transaction_0029TxQueryFail_args_ADD1);
     tcase_add_test(tc_transaction_api, test_002Transaction_0030DeInit_Txptr_NULL);
+    tcase_add_test(tc_transaction_api, test_002Transaction_0031Free_WalletConfig_NULL);
 
     return s_transaction;
 }
