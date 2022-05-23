@@ -1131,7 +1131,7 @@ BOAT_RESULT BoatHlfabricTxSetArgs(BoatHlfabricTx *tx_ptr,
 	{
 		tx_ptr->var.args.args[tx_ptr->var.args.nArgs] = (BCHAR *)args;
 		tx_ptr->var.args.nArgs++;
-		if (tx_ptr->var.args.nArgs > BOAT_HLFABRIC_ARGS_MAX_NUM)
+		if (tx_ptr->var.args.nArgs >= BOAT_HLFABRIC_ARGS_MAX_NUM)
 		{
 			result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 			break;
