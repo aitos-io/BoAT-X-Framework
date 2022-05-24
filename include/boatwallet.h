@@ -60,7 +60,7 @@ typedef enum
 //!@brief format of public key
 typedef enum
 {
-	BOAT_WALLET_PUBKEY_FORMAT_UNKNOWN = 0, //!< Placeholder for unknown prikey
+	BOAT_WALLET_PUBKEY_FORMAT_UNKNOWN = 0, //!< Placeholder for unknown public key
     BOAT_WALLET_PUBKEY_FORMAT_NATIVE,      //!< The 64 bytes public key, it's a coordinate of an elliptic curve 
 }BoatWalletPubKeyFormat;
 
