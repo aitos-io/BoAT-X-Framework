@@ -52,9 +52,9 @@ typedef enum
 //!       but it's still suggest to fill this field.
 typedef enum
 {
-    BOAT_WALLET_PRIKEY_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown signature algorithm
-	BOAT_WALLET_PRIKEY_TYPE_SECP256K1,    //!< secp256k1 algorithm
-	BOAT_WALLET_PRIKEY_TYPE_SECP256R1,    //!< secp256r1 algorithm
+    BOAT_WALLET_PRIKEY_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown ecliptic curve
+	BOAT_WALLET_PRIKEY_TYPE_SECP256K1,    //!< secp256k1 ecliptic curve
+	BOAT_WALLET_PRIKEY_TYPE_SECP256R1,    //!< secp256r1 ecliptic curve
 }BoatWalletPriKeyType;
 
 //!@brief format of public key
