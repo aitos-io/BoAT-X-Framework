@@ -17,7 +17,7 @@
 /*!@brief Header file for utility functions
 
 @file
-boatutility.h is header file for boatwallet utility functions.
+boatutility.h is header file for utility functions.
 */
 
 #ifndef __BOATUTILITY_H__
@@ -29,7 +29,7 @@ boatutility.h is header file for boatwallet utility functions.
 #include "protocolapi/api_hw_bcs.h"
 #endif
 
-/*! @defgroup utility boat utility
+/*! @defgroup BoAT utility functions
  * @{
  */
 
