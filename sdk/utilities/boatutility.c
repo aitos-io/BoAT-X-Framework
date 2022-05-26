@@ -836,7 +836,7 @@ int add_TL_withOffset(BUINT8 bTag,BUINT8* pbBuff,BUINT32* nOffset,BUINT32 nLen)
         *nOffset += ( nLen+ nTLLen);
     }
 
-    free(buf);
+    BoatFree(buf);
     return nLen+ nTLLen;
 }
 
