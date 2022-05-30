@@ -23,6 +23,7 @@
 /* extern suite declaration */
 extern Suite *make_wallet_suite(void);
 extern Suite *make_transaction_suite(void);
+extern Suite *make_nodesDiscover_suite(void);
 
 char fabric_client_cert_buf[CERT_PRIKEY_LEN] = {0};
 char fabric_client_key_buf[CERT_PRIKEY_LEN] = {0};
@@ -70,6 +71,7 @@ int main(int argc, char *argv[])
     /* new adding test suite should create in here */
     Suite *suite_wallet    = make_wallet_suite();
     Suite *suite_transaction = make_transaction_suite();
+    Suite *suite_nodesDiscover = make_nodesDiscover_suite();
     ret = read_file_content(file_client_key,fabric_client_key_buf);
     if(ret < 0){
         printf("read file_client_key fail \n");
@@ -111,6 +113,8 @@ int main(int argc, char *argv[])
     here set suite_wallet as first adding suite. */
     sr = srunner_create(suite_wallet);
     srunner_add_suite(sr, suite_transaction);
+    srunner_add_suite(sr, suite_nodesDiscover);
+
     /* set generate test log in running path */
     srunner_set_log(sr, "test_statistics_report.txt");
 
