@@ -257,6 +257,33 @@ START_TEST(test_003NodesDiscover_0004Discover_Fail_nodesCfg_tlsCert_ERR)
 }
 END_TEST
 
+START_TEST(test_003NodesDiscover_0005Discover_Fail_nodesCfg_nodeUrl_ERR) 
+{
+    BSINT32 rtnVal;
+    BoatHlfabricTx tx_ptr;
+    BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
+    BoatHlfabricWalletConfig wallet_config = get_fabric_wallet_settings();
+    BoatIotSdkInit();
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_HLFABRIC, NULL, &wallet_config, sizeof(BoatHlfabricWalletConfig));
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    g_fabric_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_fabric_wallet_ptr != NULL);
+    rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    long int timesec = 0;
+	time(&timesec);
+	rtnVal = BoatHlfabricTxSetTimestamp(&tx_ptr, timesec, 0);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    memset(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,'1',strlen(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl));
+    rtnVal = BoatHlfabricDiscoverySubmit(&tx_ptr,wallet_config.nodesCfg);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    BoatHlfabricTxDeInit(&tx_ptr);
+    BoatIotSdkDeInit();
+    fabricWalletConfigFree(wallet_config);
+}
+END_TEST
+
 Suite *make_nodesDiscover_suite(void) 
 {
     /* Create Suite */
@@ -272,6 +299,7 @@ Suite *make_nodesDiscover_suite(void)
     tcase_add_test(tc_nodesDiscover_api, test_003NodesDiscover_0002Discover_Fail_nodesCfg_nodeUrl_NULL);
     tcase_add_test(tc_nodesDiscover_api, test_003NodesDiscover_0003Discover_Fail_nodesCfg_tlsCert_NULL);
     tcase_add_test(tc_nodesDiscover_api, test_003NodesDiscover_0004Discover_Fail_nodesCfg_tlsCert_ERR);
+    tcase_add_test(tc_nodesDiscover_api, test_003NodesDiscover_0005Discover_Fail_nodesCfg_nodeUrl_ERR);
 
     return s_nodesDiscover;
 }
