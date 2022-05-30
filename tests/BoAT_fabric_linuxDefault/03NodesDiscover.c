@@ -302,7 +302,11 @@ START_TEST(test_003NodesDiscover_0006Discover_Fail_nodesCfg_hostName_ERR)
 	time(&timesec);
 	rtnVal = BoatHlfabricTxSetTimestamp(&tx_ptr, timesec, 0);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    memset(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName,'1',strlen(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName));
+    // memset(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName,'1',strlen(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName));
+    BoatFree(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName);
+    wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName = BoatMalloc(5);
+    memset(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName,0,5);
+    memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName,"1111",strlen("1111"));
     rtnVal = BoatHlfabricDiscoverySubmit(&tx_ptr,wallet_config.nodesCfg);
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     BoatHlfabricTxDeInit(&tx_ptr);
