@@ -961,6 +961,8 @@ BOAT_RESULT BoatHlfabricTxInit(BoatHlfabricTx *tx_ptr,
 	tx_ptr->var.chaincodeId.path = NULL;
 	tx_ptr->var.chaincodeId.version = NULL;
 	tx_ptr->var.args.nArgs = 0;
+	tx_ptr->var.contract_name = NULL;
+	tx_ptr->var.creator_id = NULL;
 	for (i = 0; i < BOAT_HLFABRIC_ARGS_MAX_NUM; i++)
 	{
 		tx_ptr->var.args.args[i] = NULL;
