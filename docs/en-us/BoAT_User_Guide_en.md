@@ -119,9 +119,9 @@ BoAT IoT Framework SDK depends on the following software:
 
 | Dependent software | requirements                                         | Build environment         | Target environment        |
 | :----------------- | :--------------------------------------------------- | :------------------------ | :------------------------ |
-| Host OS            | Linux，Or Cygwin on Windows                          | Required                  |                           |
+| Host OS            | Linux, Or Cygwin on Windows                          | Required                  |                           |
 | Target OS          | Linux                                                |                           | Required                  |
-| Compiler           | gcc，Need to support c99 (9.3.0 is tested)           | Required                  |                           |
+| Compiler           | gcc, Need to support c99 (9.3.0 is tested)           | Required                  |                           |
 | Cross-compiler     | arm-oe-linux-gnueabi-gcc (4.9.2 is tested)           | Required                  |                           |
 | Make               | GNU Make (4.3 is tested)                             | Required                  |                           |
 | Python             | Python 3.8.3 (Python 2.7 is also compatible)         | Required                  |                           |
