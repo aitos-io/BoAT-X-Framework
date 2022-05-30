@@ -41,6 +41,10 @@ To enable HyperLedger Fabric capability, the storage requirements of the C-langu
 - Flash (non-volatile RW data): thousands of bytes
 - RAM (global variables, heap, stack): about 30kB
 
+To enable Chainmaker capability, the storage requirements of the C-language BoAT Framework (excluding static or shared dependent libraries such as the C library) are:
+- Flash (code and read-only data): about 380kB
+- Flash (non-volatile RW data): thousands of bytes
+- RAM (global variables, heap, stack): about 40kB
 
 In both cases, the storage requirements do not include the system libraries that the BoAT Framework SDK (C language version) relies on. The exact values may vary with different blockchain protocols.
 
