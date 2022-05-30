@@ -215,7 +215,15 @@ endif
 ifeq ($(BOAT_TEST), TEST_MODE)
 BOAT_TEST_FLAG = -fprofile-arcs\
                  -ftest-coverage
+
+ifeq ($(BOAT_NODES_DISCOVER), OPEN)
+BOAT_DISCOVERY_PEER_QUERY    = 1
+else
+BOAT_DISCOVERY_PEER_QUERY    = 0
 endif
+endif
+
+
 # Combine FLAGS
 BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \
                $(BOAT_INCLUDE) \
