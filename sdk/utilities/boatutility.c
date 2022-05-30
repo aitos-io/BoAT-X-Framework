@@ -882,7 +882,7 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
             realdata[j++] = bytedata;
         }
     }
-    len = base64_decode(realdata,j,pkcsDataHex);
+    len = BoAT_base64_decode(realdata,j,pkcsDataHex);
     if(len  == 0){
         BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native base64 decode err .");
         return BOAT_ERROR;
@@ -1027,7 +1027,7 @@ BCHAR* UtilityNative2PKCS(KeypairNative keypair){
     add_TL_withOffset((BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_SEQUENCE) ,dataHex,&offset,len); //all
     outStr = BoatMalloc(offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6) ;
     memset(outStr,0,offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6);
-    len = base64_encode(dataHex,offset,outStr+strlen(PRIKEY_PKCS_BEGIN)+2);
+    len = BoAT_base64_encode(dataHex,offset,outStr+strlen(PRIKEY_PKCS_BEGIN)+2);
     memcpy(outStr,PRIKEY_PKCS_BEGIN,strlen(PRIKEY_PKCS_BEGIN));
     offset = strlen(PRIKEY_PKCS_BEGIN);
     outStr[offset++] = 0x0D;
