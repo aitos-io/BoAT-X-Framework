@@ -398,9 +398,9 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadPacked(BoatHlfabricTx *tx_ptr,
 		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, hlfabricPayloadPacked_exception);
 	}
 
-	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "signatureHeaderPacked result",
-						 signatureHeaderPacked.field_ptr,
-						 signatureHeaderPacked.field_len);
+	// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "signatureHeaderPacked result",
+	// 					 signatureHeaderPacked.field_ptr,
+	// 					 signatureHeaderPacked.field_len);
 
 
 	/* payload.data */
@@ -671,9 +671,9 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	if(tx_ptr->evaluateRes.httpResLen == 0){
 		return BOAT_ERROR;
 	}
-	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invoke result",
-						 tx_ptr->evaluateRes.http2Res,
-						 tx_ptr->evaluateRes.httpResLen);
+	// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invoke result",
+	// 					 tx_ptr->evaluateRes.http2Res,
+	// 					 tx_ptr->evaluateRes.httpResLen);
 	// http2ResData = tx_ptr->endorserResponse.response[0].payload.field_ptr;
 	// http2Reslen = tx_ptr->endorserResponse.response[0].payload.field_len;
 
