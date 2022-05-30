@@ -142,12 +142,15 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                     /* code */
                     for (int j = 0; j < fabric_config_ptr->nodesCfg.layoutCfg[i].endorserGroupNum; j++)
                     {
-                        if (fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities == 0 ||
-                        fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities > fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber)
-                        {
-                            BoatLog(BOAT_LOG_NORMAL, "quantities ERR ");
-                            return BOAT_ERROR;
+                        if(DISCOVERY_PEER_QUERY == 0){
+                            if (fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities == 0 ||
+                            fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities > fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber)
+                            {
+                                BoatLog(BOAT_LOG_NORMAL, "quantities ERR ");
+                                return BOAT_ERROR;
+                            }
                         }
+
                         /* code */
                         for (int k = 0; k < fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber; k++)
                         {
