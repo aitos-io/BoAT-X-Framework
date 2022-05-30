@@ -595,6 +595,9 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoveryExec(BoatHlfabricTx *tx_ptr,
 		{
 			for (k = 0; k < nodeCfg.layoutCfg[i].groupCfg[j].endorserNumber; k++)
 			{
+				if(nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl == NULL){
+					return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+				}
 				tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 
