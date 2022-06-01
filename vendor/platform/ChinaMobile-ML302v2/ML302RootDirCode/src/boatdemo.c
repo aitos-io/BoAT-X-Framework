@@ -391,7 +391,7 @@ void ML302_OpenCPU_Entry()
 }
 
 //SDK中调用，不可删除
-int onemo_wdt_config_cb(void)
+int cm_wdt_config_cb(void)
 {
     return 0;//关闭看门狗
     //return 1;//开启看门狗
