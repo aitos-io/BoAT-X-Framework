@@ -411,3 +411,15 @@ int cm_gnss_uc6226_cb(void)
         return 0;
     #endif
 }
+
+int cm_gnss_uctd1036_cb(void)
+{
+    #if ((defined CM_HARDWARE_ENLM_SUPPORT) || (defined CM_HARDWARE_PNLM_SUPPORT))
+        cm_sys_log("[GPS] cm_gnss_uctd1036_cb 1\n");
+        return 1;
+    #else
+        cm_sys_log("[GPS] cm_gnss_uctd1036_cb 0\n");
+        return 0;
+    #endif
+     
+}
