@@ -396,3 +396,18 @@ int cm_wdt_config_cb(void)
     return 0;//关闭看门狗
     //return 1;//开启看门狗
 }
+
+//SDK中调用，GNSS功能硬件版本自适应配置项，不可删除，亦无需修改，修改可能引起功能异常
+int cm_gnss_uc6226_cb(void)
+{   
+    #if ((defined CM_HARDWARE_FNLM_SUPPORT) || (defined CM_HARDWARE_KNLM_SUPPORT) || (defined CM_HARDWARE_GNLM_SUPPORT) || (defined CM_HARDWARE_LNLM_SUPPORT))
+        cm_sys_log("[GPS] cm_gnss_uc6226_cb 1\n");
+#ifdef CM_PROD_VERSION_H3
+    cm_uc6226_gnss_reset(1);
+#endif
+        return 1;
+    #else
+        cm_sys_log("[GPS] cm_gnss_uc6226_cb 0\n");
+        return 0;
+    #endif
+}
