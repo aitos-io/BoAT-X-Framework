@@ -148,7 +148,7 @@ static int cm_test_wait_for_network(void)
  *  
  *  \details More details	
  */
-void cm_test_network_config(void)
+void boat_cm_test_network_config(void)
 {
 #ifdef CM_NET_AUTOREG_SUPPORT
 	//采用ATCHART模块实现的网络自注册方式，实现自动注网
