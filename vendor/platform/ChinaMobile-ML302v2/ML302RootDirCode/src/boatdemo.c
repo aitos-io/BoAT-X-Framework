@@ -371,6 +371,8 @@ void boat_platone_entry(void)
 
 void cm_main_task(void *p)
 {  
+
+	boat_cm_test_network_config();
     boat_platone_entry();
     while (1)
     {
