@@ -284,7 +284,7 @@ BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_pt
 
     if (NULL == http_handle)
     {   
-        ret = cm_httpclient_create(TEST_HTTP_SERVER, NULL, http_handle);
+        ret = cm_httpclient_create(mbedhttpport_context_ptr->remote_url_str, NULL, http_handle);
 
         if (CM_HTTP_RET_CODE_OK != ret || NULL == http_handle)
         {
