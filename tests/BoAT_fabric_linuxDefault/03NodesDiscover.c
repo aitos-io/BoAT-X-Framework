@@ -103,6 +103,33 @@ static BoatHlfabricWalletConfig get_fabric_wallet_settings_groupCfg_NULL()
     return wallet_config;
 }
 
+
+static BoatHlfabricWalletConfig get_fabric_wallet_settings_endorser_NULL()
+{
+    BoatHlfabricWalletConfig wallet_config = {0};
+    wallet_config.accountPriKey_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+	wallet_config.accountPriKey_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256R1;
+	wallet_config.accountPriKey_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+	wallet_config.accountPriKey_config.prikey_content.field_ptr = (BUINT8 *)fabric_client_key_buf;
+	wallet_config.accountPriKey_config.prikey_content.field_len = strlen(fabric_client_key_buf) + 1; //length contain terminator
+
+	//set cert context
+	wallet_config.accountCertContent.length = strlen(fabric_client_cert_buf) + 1;
+	memcpy(wallet_config.accountCertContent.content, fabric_client_cert_buf, wallet_config.accountCertContent.length);
+
+    wallet_config.nodesCfg.endorserLayoutNum = 1;
+	wallet_config.nodesCfg.layoutCfg = BoatMalloc(wallet_config.nodesCfg.endorserLayoutNum * sizeof(BoatHlfabricNodeLayoutCfg));
+	wallet_config.nodesCfg.layoutCfg[0].endorserGroupNum = 1;
+	wallet_config.nodesCfg.layoutCfg[0].groupCfg = BoatMalloc(wallet_config.nodesCfg.layoutCfg[0].endorserGroupNum * sizeof(BoatHlfabricNodeGroupCfg));
+	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorserNumber = 0;
+	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].tlsOrgCertContent.length = strlen(fabric_org1_tls_cert_buf);
+	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].tlsOrgCertContent.content,fabric_org1_tls_cert_buf,strlen(fabric_org1_tls_cert_buf));
+
+	wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser = NULL;
+
+    return wallet_config;
+}
+
 static BOAT_RESULT check_fabric_nodesInfo(BoatHlfabricNodesCfg network_info)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
