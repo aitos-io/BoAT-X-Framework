@@ -59,6 +59,7 @@ static BoatHlfabricWalletConfig get_fabric_wallet_settings()
    	memset(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,0,strlen(TEST_FABRIC_NODE_URL) + strlen(ORG1_PEER0_PORT)+1);
     memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl,TEST_FABRIC_NODE_URL,strlen(TEST_FABRIC_NODE_URL));
     memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl+strlen(TEST_FABRIC_NODE_URL),ORG1_PEER0_PORT,strlen(ORG1_PEER0_PORT));
+    memset(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName,0,strlen(ORG1_PEER0_HOSTNAME)+1);
 	memcpy(wallet_config.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].hostName,ORG1_PEER0_HOSTNAME,strlen(ORG1_PEER0_HOSTNAME));
 
     return wallet_config;
