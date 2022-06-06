@@ -664,6 +664,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
+	if(endorserInfo_ptr.endorserLayoutNum == 0 || endorserInfo_ptr.layoutCfg == NULL ){
+		BoatLog(BOAT_LOG_CRITICAL, "layoutCfg cannot be NULL.");
+		return BOAT_ERROR;
+	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute... [%d] " ,endorserInfo_ptr.endorserLayoutNum);
 	DiscoveryResInit(&discoverResult);
