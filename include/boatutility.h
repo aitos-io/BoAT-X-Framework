@@ -17,7 +17,7 @@
 /*!@brief Header file for utility functions
 
 @file
-boatutility.h is header file for boatwallet utility functions.
+boatutility.h is header file for utility functions.
 */
 
 #ifndef __BOATUTILITY_H__
@@ -29,7 +29,7 @@ boatutility.h is header file for boatwallet utility functions.
 #include "protocolapi/api_hw_bcs.h"
 #endif
 
-/*! @defgroup utility boat utility
+/*! @defgroup BoAT utility functions
  * @{
  */
 
@@ -51,26 +51,26 @@ boatutility.h is header file for boatwallet utility functions.
  * Such sequences are typically read into \c ::mbedtls_x509_buf.
  * \{
  */
-#define ASN1_BOOLEAN                 0x01
-#define ASN1_INTEGER                 0x02
-#define ASN1_BIT_STRING              0x03
-#define ASN1_OCTET_STRING            0x04
-#define ASN1_NULL                    0x05
-#define ASN1_OID                     0x06
-#define ASN1_ENUMERATED              0x0A
-#define ASN1_UTF8_STRING             0x0C
-#define ASN1_SEQUENCE                0x10
-#define ASN1_SET                     0x11
-#define ASN1_PRINTABLE_STRING        0x13
-#define ASN1_T61_STRING              0x14
-#define ASN1_IA5_STRING              0x16
-#define ASN1_UTC_TIME                0x17
-#define ASN1_GENERALIZED_TIME        0x18
-#define ASN1_UNIVERSAL_STRING        0x1C
-#define ASN1_BMP_STRING              0x1E
-#define ASN1_PRIMITIVE               0x00
-#define ASN1_CONSTRUCTED             0x20
-#define ASN1_CONTEXT_SPECIFIC        0x80
+#define BoAT_ASN1_BOOLEAN                 0x01
+#define BoAT_ASN1_INTEGER                 0x02
+#define BoAT_ASN1_BIT_STRING              0x03
+#define BoAT_ASN1_OCTET_STRING            0x04
+#define BoAT_ASN1_NULL                    0x05
+#define BoAT_ASN1_OID                     0x06
+#define BoAT_ASN1_ENUMERATED              0x0A
+#define BoAT_ASN1_UTF8_STRING             0x0C
+#define BoAT_ASN1_SEQUENCE                0x10
+#define BoAT_ASN1_SET                     0x11
+#define BoAT_ASN1_PRINTABLE_STRING        0x13
+#define BoAT_ASN1_T61_STRING              0x14
+#define BoAT_ASN1_IA5_STRING              0x16
+#define BoAT_ASN1_UTC_TIME                0x17
+#define BoAT_ASN1_GENERALIZED_TIME        0x18
+#define BoAT_ASN1_UNIVERSAL_STRING        0x1C
+#define BoAT_ASN1_BMP_STRING              0x1E
+#define BoAT_ASN1_PRIMITIVE               0x00
+#define BoAT_ASN1_CONSTRUCTED             0x20
+#define BoAT_ASN1_CONTEXT_SPECIFIC        0x80
 
 #define MBEDTLS_OID_ISO_IDENTIFIED_ORG  0x2b
 

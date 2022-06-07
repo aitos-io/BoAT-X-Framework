@@ -922,7 +922,9 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0006CreateOneTimeWalletFail_KeyContentERR);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0007CreateOneTimeWalletFail_AccountCertERR);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0008CreateOneTimeWalletFail_UrlERR);
+    if(DISCOVERY_PEER_QUERY == 0){
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0009CreateOneTimeWalletFail_NodesCfgERR);
+    }
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0010CreateOneTimeWalletFail_WalletConfigNULL);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0011CreatePersistWalletSuccess);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0012CreatePersistWalletSuccess_10wallets);

@@ -795,11 +795,11 @@ int add_TL_withOffset(BUINT8 bTag,BUINT8* pbBuff,BUINT32* nOffset,BUINT32 nLen)
     BUINT32 nTLLen = 0; 
     BUINT8 bTLV[10];
     BUINT8* buf  = NULL;
-    buf = malloc(nLen);
+    buf = BoatMalloc(nLen);
 
     memset(bTLV, 0, 10);
 
-    if( bTag == ASN1_BIT_STRING )
+    if( bTag == BoAT_ASN1_BIT_STRING )
     {
         memcpy(buf,pbBuff +*nOffset,nLen);
         memcpy( pbBuff+* nOffset +1,buf,nLen );
@@ -836,7 +836,7 @@ int add_TL_withOffset(BUINT8 bTag,BUINT8* pbBuff,BUINT32* nOffset,BUINT32 nLen)
         *nOffset += ( nLen+ nTLLen);
     }
 
-    free(buf);
+    BoatFree(buf);
     return nLen+ nTLLen;
 }
 
@@ -882,7 +882,7 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
             realdata[j++] = bytedata;
         }
     }
-    len = base64_decode(realdata,j,pkcsDataHex);
+    len = BoAT_base64_decode(realdata,j,pkcsDataHex);
     if(len  == 0){
         BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native base64 decode err .");
         return BOAT_ERROR;
@@ -895,7 +895,7 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
          BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 1 err .");
         return ret;
     }
-    if(TLV_Level_1.tag != (ASN1_CONSTRUCTED |ASN1_SEQUENCE) ){
+    if(TLV_Level_1.tag != (BoAT_ASN1_CONSTRUCTED |BoAT_ASN1_SEQUENCE) ){
         BoatLog(BOAT_LOG_NORMAL, "UtilityPKCS2Native tlv 1 tag err : %02x.",TLV_Level_1.tag);
         return BOAT_ERROR;
     }
@@ -907,13 +907,13 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
             return ret;
         }
         // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_2.tag = %02x .",TLV_Level_2.tag);
-        if(TLV_Level_2.tag == ASN1_OCTET_STRING){
+        if(TLV_Level_2.tag == BoAT_ASN1_OCTET_STRING){
             // (*keypair).prikey = TLV_Level_2.data;
             (*keypair).prikey = BoatMalloc(TLV_Level_2.len);
             memcpy((*keypair).prikey,TLV_Level_2.data,TLV_Level_2.len);
             (*keypair).prikeylen = TLV_Level_2.len;
         }
-        if((TLV_Level_2.tag & 0xF0) == (ASN1_CONSTRUCTED | ASN1_CONTEXT_SPECIFIC)){
+        if((TLV_Level_2.tag & 0xF0) == (BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_CONTEXT_SPECIFIC)){
             while(offset_level_3 < TLV_Level_2.len){
                 ret = UtilityGetTLV(TLV_Level_2.data+offset_level_3,TLV_Level_2.len - offset_level_3,&TLV_Level_3);
                 if(ret != BOAT_SUCCESS){
@@ -921,7 +921,7 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
                     return ret;
                 }
                 // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_3.tag = %02x . datalen = %02x",TLV_Level_3.tag,TLV_Level_3.len);
-                if(TLV_Level_3.tag == ASN1_OID){
+                if(TLV_Level_3.tag == BoAT_ASN1_OID){
                     if(TLV_Level_3.len == sizeof(oid_secp256k1)){
                         if(memcmp(TLV_Level_3.data,oid_secp256k1,sizeof(oid_secp256k1)) ==0 ){
                             BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256k1 .");
@@ -953,7 +953,7 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
                             break;
                         }
                     }
-                }else if(TLV_Level_3.tag == ASN1_BIT_STRING){
+                }else if(TLV_Level_3.tag == BoAT_ASN1_BIT_STRING){
                     if(TLV_Level_3.len != 0x42){
                         BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native pubkeylen err : %02x  .",TLV_Level_3.len);
                         return BOAT_ERROR;
@@ -1003,31 +1003,31 @@ BCHAR* UtilityNative2PKCS(KeypairNative keypair){
     memcpy(dataHex + offset,version,sizeof(version));
     offset += sizeof(version);
     memcpy(dataHex + offset ,keypair.prikey,keypair.prikeylen);
-    add_TL_withOffset(ASN1_OCTET_STRING,dataHex,&offset,keypair.prikeylen); //prikey
+    add_TL_withOffset(BoAT_ASN1_OCTET_STRING,dataHex,&offset,keypair.prikeylen); //prikey
     offset_bat = offset;
     if(keypair.alg == KEYPAIT_ALG_SECP256K1){
         memcpy(dataHex + offset,oid_secp256k1,sizeof(oid_secp256k1));
-        len = add_TL_withOffset(ASN1_OID,dataHex,&offset,sizeof(oid_secp256k1)); //oid
+        len = add_TL_withOffset(BoAT_ASN1_OID,dataHex,&offset,sizeof(oid_secp256k1)); //oid
     }else if(keypair.alg == KEYPAIT_ALG_SECP256R1){
         memcpy(dataHex + offset,oid_secp256r1,sizeof(oid_secp256r1));
-        len = add_TL_withOffset(ASN1_OID,dataHex,&offset,sizeof(oid_secp256r1)); //oid
+        len = add_TL_withOffset(BoAT_ASN1_OID,dataHex,&offset,sizeof(oid_secp256r1)); //oid
     }else if(keypair.alg == KEYPAIT_ALG_SM){
         memcpy(dataHex + offset,oid_sm2sm3,sizeof(oid_sm2sm3));
-        len = add_TL_withOffset(ASN1_OID,dataHex,&offset,sizeof(oid_sm2sm3)); //oid
+        len = add_TL_withOffset(BoAT_ASN1_OID,dataHex,&offset,sizeof(oid_sm2sm3)); //oid
     }
-    add_TL_withOffset((ASN1_CONSTRUCTED | ASN1_CONTEXT_SPECIFIC) + object_sn,dataHex,&offset_bat,len); //oid
+    add_TL_withOffset((BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_CONTEXT_SPECIFIC) + object_sn,dataHex,&offset_bat,len); //oid
     object_sn ++;
     offset = offset_bat;
     dataHex[offset] = 0x04;
     memcpy(dataHex + offset + 1 ,keypair.pubkey,keypair.pubkeylen);
-    len = add_TL_withOffset(ASN1_BIT_STRING,dataHex,&offset,keypair.pubkeylen + 1 ); //pubkey
-    add_TL_withOffset((ASN1_CONSTRUCTED | ASN1_CONTEXT_SPECIFIC) + object_sn,dataHex,&offset_bat,len); //pubkey
+    len = add_TL_withOffset(BoAT_ASN1_BIT_STRING,dataHex,&offset,keypair.pubkeylen + 1 ); //pubkey
+    add_TL_withOffset((BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_CONTEXT_SPECIFIC) + object_sn,dataHex,&offset_bat,len); //pubkey
     len = offset_bat;
     offset = 0;
-    add_TL_withOffset((ASN1_CONSTRUCTED | ASN1_SEQUENCE) ,dataHex,&offset,len); //all
+    add_TL_withOffset((BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_SEQUENCE) ,dataHex,&offset,len); //all
     outStr = BoatMalloc(offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6) ;
     memset(outStr,0,offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6);
-    len = base64_encode(dataHex,offset,outStr+strlen(PRIKEY_PKCS_BEGIN)+2);
+    len = BoAT_base64_encode(dataHex,offset,outStr+strlen(PRIKEY_PKCS_BEGIN)+2);
     memcpy(outStr,PRIKEY_PKCS_BEGIN,strlen(PRIKEY_PKCS_BEGIN));
     offset = strlen(PRIKEY_PKCS_BEGIN);
     outStr[offset++] = 0x0D;

@@ -872,8 +872,8 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
 |wallet_ptr       |The wallet pointer that this transaction is combined with.                                      |
 |tx_ptr           |Pointer a transaction object.                                                                   |
 |is_sync_tx       |For a stateful transaction, specify BOAT_TRUE to wait until the transaction is mined.<br>Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.<br>For a state-less contract call, this option is ignored.|
-|gasprice         |A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed.|
-|gaslimit         |A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed.|
+|gasprice_str         |A HEX string representing the gas price (unit: wei) to be used in the transaction.<br>Set \<gasprice\> = NULL to obtain gas price from network.<br>BoatEthTxSetGasPrice() can later be called to modify the gas price at any time before the transaction is executed.|
+|gaslimit_str         |A HEX string representing the gas limit to be used in the transaction.<br>BoatEthTxSetGasLimit() can later be called to modify the gas limit at any time before the transaction is executed.|
 |recipient_str    |A HEX string representing the recipient address, in HEX format like"0x19c91A4649654265823512a457D2c16981bB64F5".<br>BoatEthTxSetRecipient() can later be called to modify the recipient at any time before the transaction is executed.|
 
 **返回值:**  
@@ -999,7 +999,7 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
                                         BUINT32 rlp_param_len);
     ```
     其中，rlp_param_ptr的格式遵循与步骤3相同的规则。
-    具体调用方法，可参照SDK所附的Demo的自动生成代码，这些代码位于\<SDKRoot\>/contract/generated下。
+    具体调用方法，可参照SDK所附的Demo的自动生成代码，这些代码位于\<SDKRoot\>/build/demo/demo_\<protocol\>/demo_contract下。
 
 **例3：Hyperledger Fabric交易构造**
 - **步骤1** 调用BoatHlfabricTxInit()进行交易初始化，其中参数根据实际使用进行设置。
@@ -1104,7 +1104,13 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
 参数：
 \<protocol_type\>: integer type
 - 1: Ethereum
-- 2: PlatONE
+- 2: HLFABRIC
+- 3: PLATON
+- 4: PLATONE
+- 5: FISCOBCOS
+- 6: HWBCS
+- 7: Chainmaker
+- 8: Venachain
 
 \<wallet_name\>: string type; 
 a string of wallet name

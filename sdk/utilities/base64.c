@@ -70,7 +70,7 @@ static const unsigned char base64de[] = {
 };
 
 unsigned int
-base64_encode(const unsigned char *in, unsigned int inlen, char *out)
+BoAT_base64_encode(const unsigned char *in, unsigned int inlen, char *out)
 {
 	int s;
 	unsigned int i;
@@ -119,7 +119,7 @@ base64_encode(const unsigned char *in, unsigned int inlen, char *out)
 }
 
 unsigned int
-base64_decode(const char *in, unsigned int inlen, unsigned char *out)
+BoAT_base64_decode(const char *in, unsigned int inlen, unsigned char *out)
 {
 	unsigned int i;
 	unsigned int j;

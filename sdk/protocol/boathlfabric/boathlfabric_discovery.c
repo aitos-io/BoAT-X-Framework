@@ -398,9 +398,9 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadPacked(BoatHlfabricTx *tx_ptr,
 		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, hlfabricPayloadPacked_exception);
 	}
 
-	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "signatureHeaderPacked result",
-						 signatureHeaderPacked.field_ptr,
-						 signatureHeaderPacked.field_len);
+	// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "signatureHeaderPacked result",
+	// 					 signatureHeaderPacked.field_ptr,
+	// 					 signatureHeaderPacked.field_len);
 
 
 	/* payload.data */
@@ -595,6 +595,9 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoveryExec(BoatHlfabricTx *tx_ptr,
 		{
 			for (k = 0; k < nodeCfg.layoutCfg[i].groupCfg[j].endorserNumber; k++)
 			{
+				if(nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl == NULL){
+					return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+				}
 				tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 
@@ -661,6 +664,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
+	if(endorserInfo_ptr.endorserLayoutNum == 0 || endorserInfo_ptr.layoutCfg == NULL ){
+		BoatLog(BOAT_LOG_CRITICAL, "layoutCfg cannot be NULL.");
+		return BOAT_ERROR;
+	}
 
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute... [%d] " ,endorserInfo_ptr.endorserLayoutNum);
 	DiscoveryResInit(&discoverResult);
@@ -671,9 +678,9 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	if(tx_ptr->evaluateRes.httpResLen == 0){
 		return BOAT_ERROR;
 	}
-	BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invoke result",
-						 tx_ptr->evaluateRes.http2Res,
-						 tx_ptr->evaluateRes.httpResLen);
+	// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "invoke result",
+	// 					 tx_ptr->evaluateRes.http2Res,
+	// 					 tx_ptr->evaluateRes.httpResLen);
 	// http2ResData = tx_ptr->endorserResponse.response[0].payload.field_ptr;
 	// http2Reslen = tx_ptr->endorserResponse.response[0].payload.field_len;
 

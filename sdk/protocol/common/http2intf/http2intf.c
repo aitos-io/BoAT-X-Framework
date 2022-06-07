@@ -330,6 +330,12 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 		boat_throw(BOAT_ERROR_HTTP2_CONNECT_FAIL, http2SubmitRequest_exception);
 	}
 #if (BOAT_TLS_SUPPORT == 1)
+	if (context->tlsCAchain == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "BoatTlsInit tlsCAchain NULL.");
+		boat_throw(BOAT_ERROR_HTTP2_TLS_INIT_FAIL, http2SubmitRequest_exception);
+	}
+	
 	result = BoatTlsInit(context->hostName, context->tlsCAchain, context->sockfd, context->tlsContext, NULL);
 	if (result != BOAT_SUCCESS)
 	{

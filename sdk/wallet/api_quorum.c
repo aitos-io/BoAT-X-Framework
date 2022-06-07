@@ -27,7 +27,6 @@ api_Quorum.c defines the Quorumereum wallet API for BoAT IoT SDK.
 #include "cJSON.h"
 #include "boatquorum/boatquorum.h"
 
-//BoatQuorumWallet *BoatQuorumWalletInit(const BoatQuorumWalletConfig *config_ptr, BUINT32 config_size)
 BoatQuorumWallet *BoatQuorumWalletInit(const BoatQuorumWalletConfig *config_ptr, BUINT32 config_size)
 {
     BoatQuorumWallet *wallet_ptr;
@@ -115,8 +114,10 @@ void BoatQuorumWalletDeInit(BoatQuorumWallet *wallet_ptr)
         }
 
         web3_deinit(wallet_ptr->web3intf_context_ptr);
+        wallet_ptr->web3intf_context_ptr = NULL;
 
         BoatFree(wallet_ptr);
+        wallet_ptr = NULL;
     }
 }
 
@@ -438,23 +439,15 @@ BOAT_RESULT BoatQuorumTxSetNonce(BoatQuorumTx *tx_ptr, BUINT64 nonce)
 
 BOAT_RESULT BoatQuorumTxSetGasLimit(BoatQuorumTx *tx_ptr, BoatFieldMax32B *gas_limit_ptr)
 {
-    if (tx_ptr == NULL)
+    if (tx_ptr == NULL || gas_limit_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     // Set gasLimit
-    if (gas_limit_ptr != NULL)
-    {
-        memcpy(&tx_ptr->rawtx_fields.gaslimit, gas_limit_ptr, sizeof(BoatFieldMax32B));
-        return BOAT_SUCCESS;
-    }
-    else
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
+    memcpy(&tx_ptr->rawtx_fields.gaslimit, gas_limit_ptr, sizeof(BoatFieldMax32B));
+    return BOAT_SUCCESS;
 }
 
 
