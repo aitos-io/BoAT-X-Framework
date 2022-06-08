@@ -322,7 +322,7 @@ BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_pt
     }
 
     cm_httpclient_sync_response_t response = {};
-    cm_httpclient_sync_param_t param = {HTTPCLIENT_REQUEST_POST, mbedhttpport_context_ptr->remote_url_str, request_len, request_str};
+    cm_httpclient_sync_param_t param = {HTTPCLIENT_REQUEST_POST, HTTP_PATH, request_len, request_str};
 
     ret = cm_httpclient_sync_request(http_handle, param, &response);
 
