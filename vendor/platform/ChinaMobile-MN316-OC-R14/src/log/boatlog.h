@@ -63,7 +63,7 @@ extern const BCHAR *const g_log_level_name_str[];
 #else
 #define BoatLog(level, format,...)\
     do{\
-        if( level <= BOAT_LOG_LEVEL ) {cm_log_printf(CM_LOG_LEVEL, format,##__VA_ARGS__ );}\
+        if( level <= BOAT_LOG_LEVEL ) {cm_demo_printf(format,##__VA_ARGS__ );}\
     }while(0)
 #endif
 
