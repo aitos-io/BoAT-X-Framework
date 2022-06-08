@@ -350,8 +350,8 @@ BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_pt
             result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
             boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, cleanup);
         }
-        mbedhttpport_context_ptr->http_response_body.string_len = response.response_header_len;
-        memcpy(mbedhttpport_context_ptr->http_response_body.string_ptr, response.response_content, response.response_header_len);
+        mbedhttpport_context_ptr->http_response_body.string_len = response.response_content_len;
+        memcpy(mbedhttpport_context_ptr->http_response_body.string_ptr, response.response_content, response.response_content_len);
         
         *response_str_ptr = mbedhttpport_context_ptr->http_response_body.string_ptr;
         *response_len_ptr = mbedhttpport_context_ptr->http_response_body.string_len;
