@@ -53,7 +53,7 @@
 
 #define GENERATE_KEY_REPEAT_TIMES	100
 
-/*
+
 uint32_t random32(void)
 {
 	static uint32_t seed = 0;
@@ -67,7 +67,7 @@ uint32_t random32(void)
 
 	return seed;
 }
-*/
+
 
 
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
