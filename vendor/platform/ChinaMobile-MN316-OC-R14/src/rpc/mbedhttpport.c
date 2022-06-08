@@ -39,6 +39,7 @@ To use mbed HTTP RPC porting, RPC_USE_MBEDHTTPPORT in boatoptions.h must set to 
 #include "mbedhttpport.h"
 
 #include "cm_http.h"
+#include "cm_eloop.h"
 
 static cm_eloop_handle_t s_main_eloop = NULL;
 /*!*****************************************************************************
