@@ -309,6 +309,16 @@ BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_pt
             result = BOAT_ERROR_HTTP_CONNECT_FAIL;
             boat_throw(BOAT_ERROR_HTTP_CONNECT_FAIL, cleanup);
         }
+
+        uint8_t *header_str = "Content-Type: application/json";
+        ret = cm_httpclient_custom_header_set(http_handle, header_str, strlen(header_str));
+       
+        if (CM_HTTP_RET_CODE_OK != ret || NULL == http_handle)
+        {
+            BoatLog(BOAT_LOG_CRITICAL, "Http header set config error.");
+            result = BOAT_ERROR_HTTP_CONNECT_FAIL;
+            boat_throw(BOAT_ERROR_HTTP_CONNECT_FAIL, cleanup);
+        }
     }
 
     cm_httpclient_sync_response_t response = {};
