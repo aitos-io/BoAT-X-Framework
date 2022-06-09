@@ -552,6 +552,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
     result = UtilityPKCS2Native(config->prikey_content.field_ptr,&keypair);
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> UtilityPKCS2Native err.");
+	UtilityFreeKeypair(keypair);
         return result;
     }
 
