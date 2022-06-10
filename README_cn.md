@@ -59,3 +59,32 @@ BoAT-X有两种运行模式
 物联网设备通过调用BoAT Engine API，使用设备的密钥对数据进行签名，并将签名发送到边缘网关。运行**BoAT-Anchor**的将签名（即数据指纹）发送到区块链上。数据消费者随后将链上哈希值与存储在物联网平台上的数据产生的哈希值进行比对，以确定其数据可信度。消费者可以通过BoAT Mast检查数据是否来自真实注册在网的物联网终端。
 
 
+
+### 代码目录
+
+#### BoAT-Engine
+```
+<SDKRoot>
+|
++---build           | Directory to store object and executable files
++---demo            | Demo application
++---docs            | API reference manual
++---vendor          | Special vendor dependency
+|   \---common      |     Universal soft algorithms implementation
+|   \---platform    |     Dependency of different platforms
++---include         | Header files for application to include
++---lib             | Lib files for application to link with
++---sdk             | SDK source
+|   +---third-party |     Third party libraries
+|   +---include     |     Header files for SDK internal use
+|   +---protocol    |     Blockchain client protocol implementation
+|   +---rlp         |     RLP encoder
+|   +---utilities   |     Utility APIs
+|   \---wallet      |     SDK entry API implementation
++---tests           | Test cases
+\---tools           | Tools for generating C interface from contract ABI
+
+NOTE: ./build and ./lib are created in building
+
+```
+
