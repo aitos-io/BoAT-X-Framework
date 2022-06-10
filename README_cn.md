@@ -129,3 +129,13 @@ BoAT-X 社区相关信息：
 + 漏洞提交： [BoAT-X Issues](https://github.com/aitos-io/BoAT-X-Framework/issues)
 + 相关新闻： https://aitos-io.medium.com/
 + LinkedIn： https://www.linkedin.com/company/aitos-io
+
+
+## 社区贡献
+热烈欢迎社区核心团队中的贡献者，包括（但不限于）风格/缺陷修复、功能的实现、方案/算法的建议以及文档更新。
+
+更多信息请参考 [Contribution Guideline](./CONTRIBUTING.md)。
+
+开发文档请参考 [BoAT documentation](https://aitos-io.github.io/BoAT-X-Framework)。
+
+提交Pull Requests请前往[Pull Requests](https://github.com/aitos-io/BoAT-X-Framework/pulls)。
