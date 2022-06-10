@@ -122,3 +122,10 @@ NOTE: ./build and ./lib are created in building
 ### 常见问题
 敬请期待。
 
+
+## 社区
+BoAT-X 社区相关信息：
++ 联系邮箱： info@aitos.io
++ 漏洞提交： [BoAT-X Issues](https://github.com/aitos-io/BoAT-X-Framework/issues)
++ 相关新闻： https://aitos-io.medium.com/
++ LinkedIn： https://www.linkedin.com/company/aitos-io
