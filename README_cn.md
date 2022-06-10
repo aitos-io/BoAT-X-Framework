@@ -94,3 +94,16 @@ NOTE: ./build and ./lib are created in building
 
 #### BoAT-Mast
 敬请期待。
+
+
+## 发布及状态
+
+### 发布信息
+新功能的完整列表，请访问 [发布信息](https://github.com/aitos-io/BoAT-X-Framework/releases)。
+
+### 项目状态报告
+项目状态更新，请访问[项目状态更新报告](https://github.com/aitos-io/project-status-update)。
+
+### 已经支持BoAT的区块链物联网模组列表
+已经支持BoAT的区块链物联网模块列表，请参阅[支持列表](./SUPPORTED_LIST.md)。
+
