@@ -107,3 +107,18 @@ NOTE: ./build and ./lib are created in building
 ### 已经支持BoAT的区块链物联网模组列表
 已经支持BoAT的区块链物联网模块列表，请参阅[支持列表](./SUPPORTED_LIST.md)。
 
+
+## 文档
+
+### 区块链物联网模组白皮书
+访问[BoAT区块链物联网模组产品白皮书](https://aitos-io.github.io/BoAT-X-Framework/en-us/BoAT_Blockchain_IoT_Module_Product_White_Paper_en.pdf)。
+
+### 区块链物联网模组技术及应用
+访问[BoAT区块链物联网模组技术及应用](https://aitos-io.github.io/BoAT-X-Framework/en-us/BoAT_Blockchain_IoT_Module_Technology_and_Application_en.pdf)。
+
+### 文档总汇
+文档总汇，请访问[BoAT文档](https://aitos-io.github.io/BoAT-X-Framework)。
+
+### 常见问题
+敬请期待。
+
