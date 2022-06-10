@@ -139,3 +139,15 @@ BoAT-X 社区相关信息：
 开发文档请参考 [BoAT documentation](https://aitos-io.github.io/BoAT-X-Framework)。
 
 提交Pull Requests请前往[Pull Requests](https://github.com/aitos-io/BoAT-X-Framework/pulls)。
+
+
+## 许可
+
+Apache License 2.0, 请访问[LICENSE](./LICENSE).
+
+
+## 水手们，欢迎前来开启BoAT奇幻漂流之旅
+
+**Open source by [aitos.io](http://www.aitos.io/)**
+
+[![aitos.io](https://aitos-io.github.io/BoAT-X-Framework/logo/aitos_logo_100.png)](http://www.aitos.io/)
