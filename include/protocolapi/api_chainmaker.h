@@ -24,7 +24,7 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 #define __API_CHAINMAKER_H__
 
 #include "boatiotsdk.h"
-
+#include "http2intf.h"
 /*! @defgroup eth-api boat chainmaker-API
  * @{
  */
