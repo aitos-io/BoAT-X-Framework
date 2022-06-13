@@ -28,7 +28,6 @@ wait for its receipt.
 #include "boatplatform_internal.h"
 #include "common/request.pb-c.h"
 #include "common/transaction.pb-c.h"
-#include "common/common.pb-c.h"
 
 BOAT_RESULT generateTxRequestPayloadPack(BoatHlchainmakerTx *tx_ptr, char *method, char* contract_name, BoatFieldVariable *output_ptr)
 {
