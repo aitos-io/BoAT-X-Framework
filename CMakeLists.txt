@@ -19,6 +19,7 @@ option(BOAT_PROTOCOL_USE_HLFABRIC "Enable compile the hlfabric blockchain protoc
 option(BOAT_PROTOCOL_USE_HWBCS "Enable compile the huawei blockchain protocol" ON)
 option(BOAT_DISCOVERY_PEER_QUERY "Enable node discover "                           ON)
 
+
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(BUILD_BOAT_TEST "Build boat test application" OFF)
 option(BUILD_BOAT_DEMO "Build boat demo application" ON)
@@ -83,7 +84,7 @@ set(PLATFORM_TARGET "linux-default")
 # The valid option value of SOFT_CRYPTO list as below:
 # - CRYPTO_DEFAULT      : default soft crypto algorithm
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
-set(SOFT_CRYPTO "CRYPTO_MBEDTLS")
+# set(SOFT_CRYPTO "CRYPTO_MBEDTLS")
 
 ########################################
 #add_subdirectory( ${CMAKE_SOURCE_DIR}/vendor/platform/${PLATFORM_TARGET}/externalCmake)
@@ -91,18 +92,25 @@ set(SOFT_CRYPTO "CRYPTO_MBEDTLS")
 message(STATUS "Platform using : " ${PLATFORM_TARGET})
 if( PLATFORM_TARGET STREQUAL "linux-default")
     message(STATUS "Platform using linux")
+    set(SOFT_CRYPTO "CRYPTO_MBEDTLS")
 elseif(PLATFORM_TARGET STREQUAL "Fibocom-L610")
     message(STATUS "Platform using Fibocom-L610")
+    set(SOFT_CRYPTO "CRYPTO_DEFAULT")
 elseif(PLATFORM_TARGET STREQUAL "Quectel-BG95")
     message(STATUS "Platform using Quectel-BG95")
+    set(SOFT_CRYPTO "CRYPTO_MBEDTLS")
 elseif(PLATFORM_TARGET STREQUAL "Neoway-N58")
     message(STATUS "Platform using Neoway-N58")
+    set(SOFT_CRYPTO "CRYPTO_DEFAULT")
 elseif(PLATFORM_TARGET STREQUAL "YanFei-CUIot-MZ-6")
     message(STATUS "Platform using YanFei-CUIot-MZ-6")
+    set(SOFT_CRYPTO "CRYPTO_DEFAULT")
 elseif(PLATFORM_TARGET STREQUAL "ChinaMobile-ML302")
     message(STATUS "Platform using ChinaMobile-ML302")
+    set(SOFT_CRYPTO "CRYPTO_DEFAULT")
 elseif(PLATFORM_TARGET STREQUAL "MTK-MT3620")
     message(STATUS "Platform using MTK-MT3620")
+    set(SOFT_CRYPTO "CRYPTO_MBEDTLS")
 else()
     message(FATAL_ERROR "Platform using ${PLATFORM_TARGET}, but not support")
 endif()
