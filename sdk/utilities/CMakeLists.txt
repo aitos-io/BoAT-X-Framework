@@ -1,6 +1,6 @@
 set(SUB_MODULE_NAME utilities-obj)
 
-set(FILE_SRC        boatutility.c)
+file(GLOB_RECURSE FILE_SRC     ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
 target_include_directories(${SUB_MODULE_NAME}
