@@ -18,6 +18,8 @@ option(BOAT_PROTOCOL_USE_FISCOBCOS "Enable compile the fiscobcos blockchain prot
 option(BOAT_PROTOCOL_USE_HLFABRIC "Enable compile the hlfabric blockchain protocol" ON )
 option(BOAT_PROTOCOL_USE_HWBCS "Enable compile the huawei blockchain protocol" ON)
 option(BOAT_DISCOVERY_PEER_QUERY "Enable node discover "                           ON)
+option(BOAT_PROTOCOL_USE_CHAINMAKER "Enable compile the chainmaker blockchain protocol" ON)
+
 
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
@@ -40,7 +42,7 @@ option(BUILD_BOAT_DEMO "Build boat demo application" ON)
  message(STATUS "has set BOAT_PROTOCOL_USE_FISCOBCOS " ${BOAT_PROTOCOL_USE_FISCOBCOS})
   message(STATUS "has set BOAT_PROTOCOL_USE_PLATONE " ${BOAT_PROTOCOL_USE_PLATONE})
 
-if( NOT (BOAT_PROTOCOL_USE_ETHEREUM OR BOAT_PROTOCOL_USE_PLATONE OR BOAT_PROTOCOL_USE_PLATON OR BOAT_PROTOCOL_USE_FISCOBCOS OR BOAT_PROTOCOL_USE_HLFABRIC OR BOAT_PROTOCOL_USE_HWBCS))
+if( NOT (BOAT_PROTOCOL_USE_ETHEREUM OR BOAT_PROTOCOL_USE_PLATONE OR BOAT_PROTOCOL_USE_PLATON OR BOAT_PROTOCOL_USE_FISCOBCOS OR BOAT_PROTOCOL_USE_HLFABRIC OR BOAT_PROTOCOL_USE_HWBCS OR BOAT_PROTOCOL_USE_CHAINMAKER))
     message(FATAL_ERROR "Select at least one chain")
 endif()
 
@@ -174,6 +176,12 @@ else()
     set(COMAAND_SCRIPTS_PARAM ${COMAAND_SCRIPTS_PARAM} BOAT_DISCOVERY_PEER_QUERY=0)
 endif()
 
+if(BOAT_PROTOCOL_USE_CHAINMAKER)
+    set(COMAAND_SCRIPTS_PARAM ${COMAAND_SCRIPTS_PARAM} BOAT_PROTOCOL_USE_CHAINMAKER=1)
+else()
+    set(COMAAND_SCRIPTS_PARAM ${COMAAND_SCRIPTS_PARAM} BOAT_PROTOCOL_USE_CHAINMAKER=0)
+endif()
+
 message(STATUS "set BOAT_PROTOCOL_USE_FISCOBCOS " ${BOAT_PROTOCOL_USE_FISCOBCOS})
 
 if(BOAT_PYTHON_EXECUTABLE)
@@ -223,6 +231,9 @@ include_directories(${PROJECT_SOURCE_DIR}/sdk/protocol/boathlfabric)
 endif()
 if(BOAT_PROTOCOL_USE_HWBCS)
 include_directories(${PROJECT_SOURCE_DIR}/sdk/protocol/boathwbcs)
+endif()
+if(BOAT_PROTOCOL_USE_CHAINMAKER)
+include_directories(${PROJECT_SOURCE_DIR}/sdk/protocol/boatchainmaker)
 endif()
 if(SOFT_CRYPTO STREQUAL "CRYPTO_DEFAULT")
 include_directories(${PROJECT_SOURCE_DIR}/vendor/common/crypto/crypto_default)
