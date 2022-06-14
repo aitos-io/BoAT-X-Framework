@@ -92,7 +92,6 @@ static int derive_mpi(const mbedtls_ecp_group *grp, mbedtls_mpi *x,
     if (mbedtls_mpi_cmp_mpi(x, &grp->N) >= 0)
         MBEDTLS_MPI_CHK(mbedtls_mpi_sub_mpi(x, x, &grp->N));
 
-cleanup:
     return(ret);
 }
 
@@ -175,7 +174,6 @@ int boat_mbedtls_ecp_read_key( mbedtls_ecp_group_id grp_id, mbedtls_ecp_keypair 
     }
 
 // #endif
-cleanup:
 
     if( ret != 0 )
         mbedtls_mpi_free( &key->d );
@@ -1170,7 +1168,6 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWa
 				// result = BOAT_ERROR;
 				BoatLog(BOAT_LOG_VERBOSE, "wallet private key[native] set...");
 				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
-				break;
 				break;
 			default:
 				BoatLog(BOAT_LOG_CRITICAL, "invalid private key format.");
