@@ -32,6 +32,10 @@ if(BOAT_PROTOCOL_USE_VENACHAIN)
 set(FILE_SRC    ${FILE_SRC} api_venachain.c)
 endif()
 
+if(BOAT_PROTOCOL_USE_CHAINMAKER)
+set(FILE_SRC    ${FILE_SRC} api_chainmaker.c)
+endif()
+
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
 
 
@@ -43,7 +47,13 @@ target_include_directories(${SUB_MODULE_NAME}
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/vendor/platform/include
     ${PROJECT_SOURCE_DIR}/sdk/protocol
+    if(BOAT_PROTOCOL_USE_HWBCS)
     ${PROJECT_SOURCE_DIR}/sdk/protocol/boathwbcs/protos
+    endif()
+    if(BOAT_PROTOCOL_USE_CHAINMAKER)
+    ${PROJECT_SOURCE_DIR}/sdk/protocol/boatchainmaker/protos
+    ${PROJECT_SOURCE_DIR}/sdk/protocol/boatchainmaker
+    endif()
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
