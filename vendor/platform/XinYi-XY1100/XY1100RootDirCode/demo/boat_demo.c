@@ -124,7 +124,7 @@ __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
         //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
-        UtilityHex2Bin( binFormatKey,
+        UtilityHexToBin( binFormatKey,
                     32,
                     "0xe55464c12b9e034ab00f7dddeb01874edcf514b3cd77a9ad0ad8796b4d3b1faf",
                     TRIMBIN_TRIM_NO,
