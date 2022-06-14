@@ -154,7 +154,7 @@ BUINT32 UtilityBinToHex(BOAT_OUT BCHAR *to_str,
                 continue;
             }
             
-            if (halfbyte >= 0x0 && halfbyte <= 0x9)
+            if (halfbyte <= 0x9)
             {
                 halfbytechar = halfbyte + '0';
             }
