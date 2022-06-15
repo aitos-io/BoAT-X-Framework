@@ -86,5 +86,5 @@ void BoatFree(void *mem_ptr)
 
 void BoatSleep(BUINT32 second)
 {
-    cm_sys_delay_us(second * 1000);
+    cm_sys_delay_us(second * 1000000);
 }
