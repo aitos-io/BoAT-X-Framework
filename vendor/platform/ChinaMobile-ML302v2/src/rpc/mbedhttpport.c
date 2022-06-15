@@ -30,7 +30,7 @@ provided by rpcport.
 */
 
 #include "boatinternal.h"
-
+#include "boatplatform_internal.h"
 #define RPC_USE_MBEDHTTPPORT 1
 
 #if RPC_USE_MBEDHTTPPORT == 1
@@ -38,8 +38,7 @@ provided by rpcport.
 //#include "rpcport.h"
 #include "mbedhttpport.h"
 
-#include "cm_http.h"
-
+#include "httpclient.h"
 
 /*!*****************************************************************************
 @brief Initialize mbed HTTP RPC context.
