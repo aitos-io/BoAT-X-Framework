@@ -87,7 +87,7 @@ static void virture_at_task(void)
 *  
 *  \details More details
 */
-void cm_sys_at_callback(void *param)
+static void  cm_sys_at_callback(void *param)
 {
 	osEventFlagsSet(at_task_flag, 0x00000001U);  
 }
@@ -100,7 +100,7 @@ void cm_sys_at_callback(void *param)
 *  
 *  \details More details
 */
-void test_vir_at_init(void)
+void boat_test_vir_at_init(void)
 {
 	osThreadAttr_t virat_task_attr = {0};
 	at_task_flag = osEventFlagsNew(0);
