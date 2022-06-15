@@ -526,6 +526,74 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalle
     return result;
 }
 
+static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletPriKeyCtx_config *config, 
+													             BoatWalletPriKeyCtx *pkCtx)
+{
+	BUINT8       pubKey65[65] = {0};
+	BOAT_RESULT  result = BOAT_SUCCESS;
+	KeypairNative keypair;
+
+	// 0- check input parameter
+	if ((config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL))
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "input parameter can not be NULL.");
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+	}
+
+	// 1- update private key
+	if (config->prikey_content.field_len > sizeof(pkCtx->extra_data.value))
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Error: length of injection key is too long.");
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+	}
+
+    result = UtilityPKCS2Native(config->prikey_content.field_ptr,&keypair);
+    if(result != BOAT_SUCCESS){
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> UtilityPKCS2Native err.");
+				UtilityFreeKeypair(keypair);
+        return result;
+    }
+
+	// memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
+	// pkCtx->extra_data.value_len = config->prikey_content.field_len;
+	memcpy(pkCtx->extra_data.value,keypair.prikey,keypair.prikeylen);
+	pkCtx->extra_data.value_len = keypair.prikeylen;
+
+	// 2- update private key format
+	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+	
+	// 3- update private key type
+	pkCtx->prikey_type   = config->prikey_type;
+
+	// 4- update private key index
+	// This field should update by 'key secure storage'(such as TE/SE).
+	// When algorithms are implemented by software, this field is default to 0, means
+	// that ignore this field.
+	pkCtx->prikey_index  = 0; 
+
+	// 5- update public key
+	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
+
+	// if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+	// {
+	// 	ecdsa_get_public_key65(&secp256k1, pkCtx->extra_data.value, pubKey65);
+	// 	memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
+	// }
+	// else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+	// {
+	// 	ecdsa_get_public_key65(&nist256p1, pkCtx->extra_data.value, pubKey65);
+	// 	memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
+	// }
+	// else 
+	// {
+	// 	BoatLog( BOAT_LOG_CRITICAL, "Invalid private key type." );
+	// 	result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
+	// }
+	memcpy(pkCtx->pubkey_content, keypair.pubkey, keypair.pubkeylen);
+	UtilityFreeKeypair(keypair);
+  return result;
+}
+
 
 BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
 {
@@ -547,8 +615,8 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWa
 		switch (config->prikey_format)
 		{
 			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
-				BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
-				result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
+				BoatLog(BOAT_LOG_NORMAL, "wallet private key[pkcs] set...");
+				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
 				BoatLog(BOAT_LOG_VERBOSE, "wallet private key[native] set...");
