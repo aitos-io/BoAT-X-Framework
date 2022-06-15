@@ -51,7 +51,7 @@
 
 #define GENERATE_KEY_REPEAT_TIMES	100
 
-
+/*
 uint32_t random32(void)
 {
 	static uint32_t seed = 0;
@@ -65,7 +65,7 @@ uint32_t random32(void)
 
 	return seed;
 }
-
+*/
 
 
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
@@ -550,9 +550,12 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
     result = UtilityPKCS2Native(config->prikey_content.field_ptr,&keypair);
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> UtilityPKCS2Native err.");
+				UtilityFreeKeypair(keypair);
         return result;
     }
 
+	// memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
+	// pkCtx->extra_data.value_len = config->prikey_content.field_len;
 	memcpy(pkCtx->extra_data.value,keypair.prikey,keypair.prikeylen);
 	pkCtx->extra_data.value_len = keypair.prikeylen;
 
@@ -571,10 +574,26 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 	// 5- update public key
 	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
 
+	// if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+	// {
+	// 	ecdsa_get_public_key65(&secp256k1, pkCtx->extra_data.value, pubKey65);
+	// 	memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
+	// }
+	// else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+	// {
+	// 	ecdsa_get_public_key65(&nist256p1, pkCtx->extra_data.value, pubKey65);
+	// 	memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
+	// }
+	// else 
+	// {
+	// 	BoatLog( BOAT_LOG_CRITICAL, "Invalid private key type." );
+	// 	result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
+	// }
 	memcpy(pkCtx->pubkey_content, keypair.pubkey, keypair.pubkeylen);
 	UtilityFreeKeypair(keypair);
-    return result;
+  return result;
 }
+
 
 BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
 {
