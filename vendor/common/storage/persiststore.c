@@ -110,7 +110,7 @@ BOAT_RESULT BoatPersistRead(const BCHAR *storage_name_str, BOAT_OUT void *data_p
     BUINT8  encrypted_array[len_to_read + 31]; // 31 for AES padding
 	BUINT32 encrypted_readLen;
     // Plain buffer
-    BUINT8  plain_array[len_to_read];
+    BUINT8  plain_array[len_to_read+31];
     BUINT32 plain_len = sizeof(plain_array);
 	
 	BUINT8  readDataTmp[len_to_read + 31 + 32 + 16 + 16];
@@ -151,7 +151,7 @@ BOAT_RESULT BoatPersistRead(const BCHAR *storage_name_str, BOAT_OUT void *data_p
 		/* decrypt data */
 		result = BoatAesDecrypt(salt_array, g_aes_key, encrypted_array, encrypted_readLen, plain_array);
 		// Check size of the decrypted data matches the length to read
-		if (result == BOAT_SUCCESS && plain_len == len_to_read)
+		if (result == BOAT_SUCCESS)
 		{
 			/* Calculate data hash from the decrypted data */
 			keccak_256(plain_array, BOAT_ROUNDUP(len_to_read, 16), data_hash_array);
