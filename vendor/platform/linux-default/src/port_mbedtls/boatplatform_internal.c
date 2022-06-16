@@ -96,6 +96,7 @@ static int derive_mpi(const mbedtls_ecp_group *grp, mbedtls_mpi *x,
         MBEDTLS_MPI_CHK(mbedtls_mpi_sub_mpi(x, x, &grp->N));
 	}
 
+cleanup:
     return(ret);
 }
 
@@ -198,6 +199,7 @@ int boat_mbedtls_ecp_read_key(mbedtls_ecp_group_id grp_id, mbedtls_ecp_keypair *
         mbedtls_mpi_free(&key->d);
 	}
 
+cleanup:
     return(ret);
 }
 
