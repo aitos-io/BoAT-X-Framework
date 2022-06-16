@@ -53,7 +53,7 @@ START_TEST(test_006GetBalance_0001GetSuccess)
 }
 END_TEST
 
-START_TEST(test_006GetBalance_0002GetSuccessNullAddress) 
+START_TEST(test_006GetBalance_0002GetWalletDefaultAddressSuccess) 
 {
     BOAT_RESULT result;
     BoatEthTx tx_ctx;
@@ -73,7 +73,6 @@ START_TEST(test_006GetBalance_0002GetSuccessNullAddress)
     cur_balance_wei = BoatEthWalletGetBalance(g_ethereum_wallet_ptr, NULL);
 	result          = BoatEthParseRpcResponseStringResult(cur_balance_wei, &parse_result);
 
-    ck_assert_ptr_eq(parse_result.field_ptr, NULL);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     BoatFree(parse_result.field_ptr);
@@ -185,7 +184,7 @@ Suite *make_transactions_suite(void)
  
     /* Test cases are added to the test set */
     tcase_add_test(tc_transaction_api, test_006GetBalance_0001GetSuccess); 
-    tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetSuccessNullAddress); 
+    tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetWalletDefaultAddressSuccess); 
     tcase_add_test(tc_transaction_api, test_006GetBalance_0003GetFailureNullWallet);
 
     tcase_add_test(tc_transaction_api, test_007Transfer_0001TransferSuccess); 
