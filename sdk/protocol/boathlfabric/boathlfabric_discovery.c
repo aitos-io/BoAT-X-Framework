@@ -521,8 +521,8 @@ BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
 	packedLength = discovery__signed_request__get_packed_size(&message);
 
 	/* step-6: packed length assignment */
-	tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len = packedLength + sizeof(grpcHeader);
-	if (tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN)
+	((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->sendBuf.field_len = packedLength + sizeof(grpcHeader);
+	if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->sendBuf.field_len > BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "packed length out of sendbuffer size limit.");
 		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricProposalTransactionPacked_exception);
@@ -536,7 +536,7 @@ BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
 		grpcHeader[i + 1] = (packedLength >> (32 - 8 * (i + 1))) & 0xFF;
 	}
 	/* ---generate packed data */
-	packedData = tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr;
+	packedData = ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->sendBuf.field_ptr;
 	memcpy(packedData, grpcHeader, sizeof(grpcHeader));
 	discovery__signed_request__pack(&message, &packedData[sizeof(grpcHeader)]);
 
@@ -598,34 +598,34 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoveryExec(BoatHlfabricTx *tx_ptr,
 				if(nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl == NULL){
 					return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 				}
-				tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl;
+				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->nodeUrl = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 
-				if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain != NULL)
+				if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain != NULL)
 				{
-					if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr != NULL)
+					if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr != NULL)
 					{
-						BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr);
+						BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr);
 					}
-					tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = 0;
-					BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain);
+					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = 0;
+					BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain);
 				}
 
-				tx_ptr->wallet_ptr->http2Context_ptr->hostName = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].hostName;
-				tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
-				tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length + 1;
-				tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = BoatMalloc(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
-				memset(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, 0x00, tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_len);
-				memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
-				// tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain[0].field_ptr = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content;
-				// BoatLog(BOAT_LOG_CRITICAL, "hostname : %s ", tx_ptr->wallet_ptr->http2Context_ptr->hostName);
+				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->hostName = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].hostName;
+				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
+				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length + 1;
+				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
+				memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
+				memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
+				// ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content;
+				// BoatLog(BOAT_LOG_CRITICAL, "hostname : %s ", ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->hostName);
 #endif
-				tx_ptr->wallet_ptr->http2Context_ptr->type = tx_ptr->var.type;
-				tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &tx_ptr->evaluateRes;
+				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->type = tx_ptr->var.type;
+				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->parseDataPtr = &tx_ptr->evaluateRes;
 				// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "http2SubmitRequest  :",
 				// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr,
 				// 					 tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len);
-				tx_ptr->wallet_ptr->http2Context_ptr->pathTmp = "/discovery.Discovery/Discover";
+				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->pathTmp = "/discovery.Discovery/Discover";
 				result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
 				if(result == BOAT_SUCCESS)
 				{
