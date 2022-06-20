@@ -31,8 +31,8 @@ http2intf.h is the header file for http2 interface.
  * @{
  */
 
-#define BOAT_TLS_SUPPORT                1 //!< If need client support TLS, set it to 1.
-#define BOAT_TLS_IDENTIFY_CLIENT        0 //!< If server need identify client, set it to 1.
+// #define BOAT_TLS_SUPPORT                1 //!< If need client support TLS, set it to 1.
+// #define BOAT_TLS_IDENTIFY_CLIENT        0 //!< If server need identify client, set it to 1.
 
 #define BOAT_HTTP2_SEND_BUF_MAX_LEN     8192 //!< The maximum length of HTTP2 send buffer
 
