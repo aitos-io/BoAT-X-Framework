@@ -1129,7 +1129,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 			// boat_throw(BOAT_ERROR, BoatSignature_exception);
 		}
 
-		mbedtls_ecp_mul(mbedtls_pk_ec(mbedtls_pkCtx), &mbedtls_pk_ec(mbedtls_pkCtx)->Q, &mbedtls_pk_ec(mbedtls_pkCtx)->d, &mbedtls_pk_ec(mbedtls_pkCtx)->grp.G, mbedtls_ctr_drbg_random, &ctr_drbg);
+		mbedtls_ecp_mul(&(mbedtls_pk_ec(mbedtls_pkCtx)->grp), &mbedtls_pk_ec(mbedtls_pkCtx)->Q, &mbedtls_pk_ec(mbedtls_pkCtx)->d, &mbedtls_pk_ec(mbedtls_pkCtx)->grp.G, mbedtls_ctr_drbg_random, &ctr_drbg);
 		mbedtls_ctr_drbg_free(&ctr_drbg);
 		mbedtls_entropy_free(&entropy);
 
