@@ -67,7 +67,7 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 	BUINT32 packedLength;
 	BUINT32 offset = 0;
 	BoatHwbcsEndorserResponse *parsePtr = NULL;
-	parsePtr = tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr;
+	parsePtr = ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->parseDataPtr;
 
 	BOAT_RESULT result = BOAT_SUCCESS;
 	// boat_try_declare;
@@ -214,9 +214,9 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 		grpcHeader[i + 1] = (packedLength >> (32 - 8 * (i + 1))) & 0xFF;
 	}
 	/* ---generate packed data */
-	tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len = packedLength + sizeof(grpcHeader);
-	memcpy(tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr, grpcHeader, sizeof(grpcHeader));
-	memcpy(&tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr[sizeof(grpcHeader)], packedData, packedLength);
+	((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->sendBuf.field_len = packedLength + sizeof(grpcHeader);
+	memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->sendBuf.field_ptr, grpcHeader, sizeof(grpcHeader));
+	memcpy(&((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->sendBuf.field_ptr[sizeof(grpcHeader)], packedData, packedLength);
 
 	/* boat catch handle */
 	boat_catch(hwbcsProposalTransactionPacked_exception)
