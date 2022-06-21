@@ -36,6 +36,10 @@ if(BOAT_PROTOCOL_USE_CHAINMAKER)
 set(FILE_SRC    ${FILE_SRC} api_chainmaker.c)
 endif()
 
+if(BOAT_PROTOCOL_USE_QUORUM)
+set(FILE_SRC    ${FILE_SRC} api_quorum.c)
+endif()
+
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
 
 
