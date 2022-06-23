@@ -27,6 +27,7 @@ This article describes the system requirements for BoAT Framework (C language ve
 |TA     |Trusted Application                                    |
 |ECDSA  |Elliptic Curve Digital Signature Algorithm             |
 |SHA2   |Secure Hash Algorithm 2                                |
+|RAM    |Random Access Memory                                   |
 
 
 ## Part 1- Storage Requirements
