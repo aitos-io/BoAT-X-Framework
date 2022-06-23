@@ -18,6 +18,7 @@
 |RNG    |Random Numeral Generator     |
 |RPC    |Remote Procedure Call        |
 |TEE    |Trusted Execution Environment|
+|RAM    |Random Access Memory         |
 
 
 ## BoAT设计目标
