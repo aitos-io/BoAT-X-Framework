@@ -6,8 +6,14 @@ set(VENACHAIN_DEMO_SRC         demo_venachain_mycontract.c)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/demo/demo_venachain/runtime)
 
 if(BOAT_PYTHON_EXECUTABLE)
-    execute_process(COMMAND ${BOAT_PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/venachainWASM2c.py ${PROJECT_SOURCE_DIR}/demo/demo_venachain/demo_contract/WASM/mycontract.cpp.abi.json 
+    execute_process(COMMAND ${BOAT_PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/venachainSolidity2c.py ${PROJECT_SOURCE_DIR}/demo/demo_venachain/demo_contract/Solidity/mycontract.cpp.abi.json 
                     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/demo/demo_venachain/demo_contract/Solidity
+                    RESULT_VARIABLE result)
+    if(${result} EQUAL 1)
+        message(FATAL_ERROR "run python gen.py boatconfig.h error")
+    endif()
+    execute_process(COMMAND ${BOAT_PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/venachainWASM2c.py ${PROJECT_SOURCE_DIR}/demo/demo_venachain/demo_contract/WASM/mycontract.cpp.abi.json 
+                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/demo/demo_venachain/demo_contract/WASM
                     RESULT_VARIABLE result)
     if(${result} EQUAL 1)
         message(FATAL_ERROR "run python gen.py boatconfig.h error")

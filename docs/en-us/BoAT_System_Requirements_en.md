@@ -32,7 +32,7 @@ This article describes the system requirements for BoAT Framework (C language ve
 
 ## Part 1- Storage Requirements
 
-To enable Ethereum/PlatONE/FISCO BCOS capabilities, the storage requirements of the C-language BoAT Framework (excluding static or shared dependent libraries such as the C library) are:
+To enable Ethereum/Venachain/FISCO BCOS capabilities, the storage requirements of the C-language BoAT Framework (excluding static or shared dependent libraries such as the C library) are:
 - Flash (code and read-only data): about 210kB
 - Flash (non-volatile RW data): hundreds of bytes
 - RAM (global variables, heap, stack): about 10kB

@@ -638,7 +638,7 @@ Please refer to the description of "transaction initialization" in [Ethereum tra
 + Set the Nonce field
 + Set the Data field
 + Send transaction  
-Please refer to the description of "send transaction" in [Ethereum transaction interface function implementation brief description](#brief-description-of-ethereum-transaction-interface-function-implementation)
+Please refer to the description of "send transaction" in [Ethereum/Polygon transaction interface function implementation brief description](#brief-description-of-ethereumpolygon-transaction-interface-function-implementation)
 + BoAT SDK de-initialization:  
 Please refer to the description of "BoAT SDK de-initialization" in [SDK Initialization/Deinitialization](#sdk-initialization-de-initialization)
 

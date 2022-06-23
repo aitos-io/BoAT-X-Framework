@@ -27,6 +27,105 @@ api_Quorum.c defines the Quorumereum wallet API for BoAT IoT SDK.
 #include "cJSON.h"
 #include "boatquorum/boatquorum.h"
 
+
+BOAT_RESULT BoatQuorumTxSetNonce(BoatQuorumTx *tx_ptr, BUINT64 nonce)
+{
+    BCHAR account_address_str[43];
+    Param_eth_getTransactionCount param_quorum_getTransactionCount;
+    BCHAR *tx_count_str;
+    BOAT_RESULT result;
+
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    if (nonce == BOAT_QUORUM_NONCE_AUTO)
+    {
+        /* Get transaction count from network
+           Return value of web3_getTransactionCount() is transaction count */
+        UtilityBinToHex(account_address_str, tx_ptr->wallet_ptr->account_info.address,
+                        BOAT_QUORUM_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA, 
+                        BIN2HEX_PREFIX_0x_YES, BOAT_FALSE); 
+        param_quorum_getTransactionCount.method_name_str  = "eth_getTransactionCount";
+        param_quorum_getTransactionCount.address_str      = account_address_str;
+        param_quorum_getTransactionCount.block_num_str    = "latest";
+
+        tx_count_str = web3_getTransactionCount(tx_ptr->wallet_ptr->web3intf_context_ptr,
+                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                                &param_quorum_getTransactionCount, &result);
+        if (tx_count_str == NULL)
+        { 
+            BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
+            return result;
+        }
+
+        result = BoatQuorumParseRpcResponseStringResult(tx_count_str,
+                                                     &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+        if (result != BOAT_SUCCESS)
+        { 
+            BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
+            return result;
+        }
+
+        /* Set nonce from transaction count */
+        tx_ptr->rawtx_fields.nonce.field_len = UtilityHexToBin(tx_ptr->rawtx_fields.nonce.field, 32,  
+                                                               (BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
+                                                               TRIMBIN_LEFTTRIM, BOAT_TRUE);
+    }
+    else
+    {
+        /* Set nonce */
+        tx_ptr->rawtx_fields.nonce.field_len = UtilityUint64ToBigend(tx_ptr->rawtx_fields.nonce.field,
+                                                                     nonce, TRIMBIN_LEFTTRIM);
+    }
+    return BOAT_SUCCESS;
+}
+
+
+BOAT_RESULT BoatQuorumTxSetGasLimit(BoatQuorumTx *tx_ptr, BoatFieldMax32B *gas_limit_ptr)
+{
+    if (tx_ptr == NULL || gas_limit_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    // Set gasLimit
+    memcpy(&tx_ptr->rawtx_fields.gaslimit, gas_limit_ptr, sizeof(BoatFieldMax32B));
+    return BOAT_SUCCESS;
+}
+
+
+BOAT_RESULT BoatQuorumTxSetPrivateFor(BoatQuorumTx *tx_ptr, BUINT8 public[BOAT_QUORUM_PUBLIC_KEY_SIZE])
+{
+    if (tx_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+    
+    // Set recipient's address
+    memcpy(&tx_ptr->rawtx_fields.privatefor, public, BOAT_QUORUM_PUBLIC_KEY_SIZE);
+    return BOAT_SUCCESS;    
+}
+
+
+BOAT_RESULT BoatQuorumTxSetRecipient(BoatQuorumTx *tx_ptr, BUINT8 address[BOAT_QUORUM_ADDRESS_SIZE])
+{
+    if (tx_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+    
+    // Set recipient's address
+    memcpy(&tx_ptr->rawtx_fields.recipient, address, BOAT_QUORUM_ADDRESS_SIZE);
+
+    return BOAT_SUCCESS;    
+}
+
 BoatQuorumWallet *BoatQuorumWalletInit(const BoatQuorumWalletConfig *config_ptr, BUINT32 config_size)
 {
     BoatQuorumWallet *wallet_ptr;
@@ -380,104 +479,6 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
     return BOAT_SUCCESS;
 }
 
-
-BOAT_RESULT BoatQuorumTxSetNonce(BoatQuorumTx *tx_ptr, BUINT64 nonce)
-{
-    BCHAR account_address_str[43];
-    Param_eth_getTransactionCount param_quorum_getTransactionCount;
-    BCHAR *tx_count_str;
-    BOAT_RESULT result;
-
-    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
-
-    if (nonce == BOAT_QUORUM_NONCE_AUTO)
-    {
-        /* Get transaction count from network
-           Return value of web3_getTransactionCount() is transaction count */
-        UtilityBinToHex(account_address_str, tx_ptr->wallet_ptr->account_info.address,
-                        BOAT_QUORUM_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA, 
-                        BIN2HEX_PREFIX_0x_YES, BOAT_FALSE); 
-        param_quorum_getTransactionCount.method_name_str  = "eth_getTransactionCount";
-        param_quorum_getTransactionCount.address_str      = account_address_str;
-        param_quorum_getTransactionCount.block_num_str    = "latest";
-
-        tx_count_str = web3_getTransactionCount(tx_ptr->wallet_ptr->web3intf_context_ptr,
-                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
-                                                &param_quorum_getTransactionCount, &result);
-        if (tx_count_str == NULL)
-        { 
-            BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
-            return result;
-        }
-
-        result = BoatQuorumParseRpcResponseStringResult(tx_count_str,
-                                                     &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
-        if (result != BOAT_SUCCESS)
-        { 
-            BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
-            return result;
-        }
-
-        /* Set nonce from transaction count */
-        tx_ptr->rawtx_fields.nonce.field_len = UtilityHexToBin(tx_ptr->rawtx_fields.nonce.field, 32,  
-                                                               (BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
-                                                               TRIMBIN_LEFTTRIM, BOAT_TRUE);
-    }
-    else
-    {
-        /* Set nonce */
-        tx_ptr->rawtx_fields.nonce.field_len = UtilityUint64ToBigend(tx_ptr->rawtx_fields.nonce.field,
-                                                                     nonce, TRIMBIN_LEFTTRIM);
-    }
-    return BOAT_SUCCESS;
-}
-
-
-BOAT_RESULT BoatQuorumTxSetGasLimit(BoatQuorumTx *tx_ptr, BoatFieldMax32B *gas_limit_ptr)
-{
-    if (tx_ptr == NULL || gas_limit_ptr == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
-
-    // Set gasLimit
-    memcpy(&tx_ptr->rawtx_fields.gaslimit, gas_limit_ptr, sizeof(BoatFieldMax32B));
-    return BOAT_SUCCESS;
-}
-
-
-BOAT_RESULT BoatQuorumTxSetPrivateFor(BoatQuorumTx *tx_ptr, BUINT8 public[BOAT_QUORUM_PUBLIC_KEY_SIZE])
-{
-    if (tx_ptr == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
-    
-    // Set recipient's address
-    memcpy(&tx_ptr->rawtx_fields.privatefor, public, BOAT_QUORUM_PUBLIC_KEY_SIZE);
-    return BOAT_SUCCESS;    
-}
-
-
-BOAT_RESULT BoatQuorumTxSetRecipient(BoatQuorumTx *tx_ptr, BUINT8 address[BOAT_QUORUM_ADDRESS_SIZE])
-{
-    if (tx_ptr == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
-    
-    // Set recipient's address
-    memcpy(&tx_ptr->rawtx_fields.recipient, address, BOAT_QUORUM_ADDRESS_SIZE);
-
-    return BOAT_SUCCESS;    
-}
 
 BOAT_RESULT BoatQuorumSendRawtxWithReceipt(BOAT_INOUT BoatQuorumTx *tx_ptr)
 {

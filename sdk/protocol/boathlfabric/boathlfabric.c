@@ -657,8 +657,8 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 	packedLength             = common__envelope__get_packed_size(&envelope);
 	
 	/* step-6: packed length assignment */
-	tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len = packedLength + sizeof(grpcHeader);
-	if( tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN )
+	((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->sendBuf.field_len = packedLength + sizeof(grpcHeader);
+	if( ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->sendBuf.field_len > BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN )
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "packed length out of sendbuffer size limit.");
 		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricProposalTransactionPacked_exception);
@@ -672,7 +672,7 @@ BOAT_RESULT hlfabricProposalTransactionPacked(BoatHlfabricTx *tx_ptr)
 		grpcHeader[i + 1] = (packedLength >> (32 - 8*(i+1)))&0xFF;
 	}
 	/* ---generate packed data */
-	packedData = tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr;
+	packedData = ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->sendBuf.field_ptr;
 	memcpy(packedData, grpcHeader, sizeof(grpcHeader));
 	common__envelope__pack(&envelope, &packedData[sizeof(grpcHeader)]);
 	
