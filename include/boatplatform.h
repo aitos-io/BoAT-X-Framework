@@ -16,7 +16,7 @@
 
 /**
 @brief platform interface
-@file boatPlatform.h contains boat platform port interface functions.
+@file boatplatform.h contains boat platform port interface functions.
 */
 
 #ifndef __BOATPLATFORM_H__
@@ -92,7 +92,7 @@ void *BoatMalloc(size_t size);
  *   \n It typically wraps calloc() in a linux or Windows system.
  *   \n For RTOS it depends on the specification of the RTOS.
  * @param[in] nmemb
- *   How many bytes of nmemb elements to allocate.
+ *   How many bytes of nmemb element to allocate.
  * @param[in] size
  *   How many nmemb elements to allocate.
  * @return
@@ -103,14 +103,15 @@ void *BoatCalloc(size_t nmemb, size_t size);
 
 
 /*!****************************************************************************
- * @brief Wrapper function for memory allocation
+ * @brief Wrapper function for memory de-allocation
  *
  * @details
  *   This function is a wrapper for dynamic memory de-allocation.
  *   \n It typically wraps free() in a linux or Windows system.
  *   \n For RTOS it depends on the specification of the RTOS.
  * @param[in] mem_ptr
- *   The address to free. The address must be the one returned by BoatMalloc().
+ *   The address to free. The address must be the one returned by BoatMalloc()\n
+ *  and BoatCalloc().
  ******************************************************************************/
 void BoatFree(void *mem_ptr);
 
