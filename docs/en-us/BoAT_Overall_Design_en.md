@@ -17,6 +17,7 @@ The intended readers of this article are: BoAT SDK detailed designers.
 |RNG    |Random Numeral Generator     |
 |RPC    |Remote Procedure Call        |
 |TEE    |Trusted Execution Environment|
+|RAM    |Random Access Memory         |
 
 
 ## BoAT Design Goals
