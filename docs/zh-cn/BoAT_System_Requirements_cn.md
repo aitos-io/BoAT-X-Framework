@@ -26,6 +26,7 @@
 |TA    |Trusted Application                                    |
 |ECDSA |Elliptic Curve Digital Signature Algorithm             |
 |SHA2  |Secure Hash Algorithm 2                                |
+|RAM   |Random Access Memory                                   |
 
 
 ## 存储需求
