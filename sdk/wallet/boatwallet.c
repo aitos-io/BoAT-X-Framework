@@ -207,7 +207,8 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
             }
             break;
         #endif
-        
+        default:
+            break;
     }
     return BOAT_SUCCESS;
 }
