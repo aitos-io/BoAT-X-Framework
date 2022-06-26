@@ -24,7 +24,7 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 #define __API_HLFABRIC_H__
 
 #include "boatiotsdk.h"
-#include "http2intf.h"
+// #include "http2intf.h"
 // #include "protocolapi/api_hlfabric_discovery.h"
 
 /*! @defgroup fabric-api boat fabric-API 
@@ -160,7 +160,7 @@ typedef struct TBoatHlfabricWallet
     // BoatHlfabricNetworkInfo   network_info; //!< Network information
 	BoatHlfabricNodesCfg network_info;
 	
-	struct Thttp2IntfContext  *http2Context_ptr; //!< http2 information
+	void  *http2Context_ptr; //!< http2 information
 }BoatHlfabricWallet;
 
 
@@ -237,6 +237,11 @@ typedef struct TBoatHlfabricVariable
 	BCHAR*                       creator_id;    //!< creator id 
 }BoatHlfabricVariable;
 
+typedef struct TfabricResponse
+{
+	BUINT32								httpResLen;
+	BUINT8 								*http2Res;
+}fabricResponse;
 
 //!@brief fabric transaction high level structure
 //! fabric transaction high level structure
@@ -245,7 +250,7 @@ typedef struct TBoatHlfabricTx
 	BoatHlfabricWallet*          wallet_ptr;       //!< Pointer of the transaction wallet
 	BoatHlfabricVariable         var;              //!< Necessary variable in transaction
 	BoatHlfabricEndorserResponse endorserResponse; //!< Endorser respond contents
-	Http2Response                evaluateRes;
+	fabricResponse                evaluateRes;
 }BoatHlfabricTx;
 
 

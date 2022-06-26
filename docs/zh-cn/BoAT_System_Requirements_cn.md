@@ -26,11 +26,12 @@
 |TA    |Trusted Application                                    |
 |ECDSA |Elliptic Curve Digital Signature Algorithm             |
 |SHA2  |Secure Hash Algorithm 2                                |
+|RAM   |Random Access Memory                                   |
 
 
 ## 存储需求
 
-仅支持以太坊/PlatONE/FISCO BCOS时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
+仅支持以太坊/Venachain/FISCO BCOS时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
 - Flash（代码和只读数据）：约210kB
 - Flash（持久性读写数据）：数百Bytes
 - RAM（全局变量、堆、栈）：约10kB
@@ -39,6 +40,11 @@
 - Flash（代码和只读数据）：约520kB
 - Flash（持久性读写数据）：数千Bytes
 - RAM（全局变量、堆、栈）：约30kB
+
+仅支持长安链时，BoAT Framework SDK（C语言版本）自身对存储的需求约为：
+- Flash（代码和只读数据）：约380kB
+- Flash（持久性读写数据）：数千Bytes
+- RAM（全局变量、堆、栈）：约40kB
 
 以上不含BoAT Framework SDK（C语言版本）所依赖的系统库，具体数值随不同区块链协议而有所不同。
 

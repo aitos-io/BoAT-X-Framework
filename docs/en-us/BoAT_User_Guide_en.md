@@ -34,6 +34,7 @@ FISCO-BCOS<br>
 Hyperledger Fabric<br>
 Huawei BCS<br>
 Chainmaker<br>
+Venachain<br>
 
 **Supported Target Operating System:**  
 Linux<br>
@@ -118,9 +119,9 @@ BoAT IoT Framework SDK depends on the following software:
 
 | Dependent software | requirements                                         | Build environment         | Target environment        |
 | :----------------- | :--------------------------------------------------- | :------------------------ | :------------------------ |
-| Host OS            | Linux，Or Cygwin on Windows                          | Required                  |                           |
+| Host OS            | Linux, Or Cygwin on Windows                          | Required                  |                           |
 | Target OS          | Linux                                                |                           | Required                  |
-| Compiler           | gcc，Need to support c99 (9.3.0 is tested)           | Required                  |                           |
+| Compiler           | gcc, Need to support c99 (9.3.0 is tested)           | Required                  |                           |
 | Cross-compiler     | arm-oe-linux-gnueabi-gcc (4.9.2 is tested)           | Required                  |                           |
 | Make               | GNU Make (4.3 is tested)                             | Required                  |                           |
 | Python             | Python 3.8.3 (Python 2.7 is also compatible)         | Required                  |                           |
@@ -196,10 +197,11 @@ BOAT_PROTOCOL_USE_HLFABRIC   ?= 1
 BOAT_PROTOCOL_USE_HWBCS      ?= 1
 BOAT_DISCOVERY_PEER_QUERY    ?= 1
 BOAT_PROTOCOL_USE_CHAINMAKER ?= 1
+BOAT_PROTOCOL_USE_VENACHAIN  ?= 1
 ````
 
 As needed, change the value of the corresponding variable to `1` or `0` to enable or disable the corresponding blockchain protocol. Or while compiling the SDK, use make \<BOAT_PROTOCOL_USE_XXX\>=<1|0> to enable or disable the corresponding blockchain protocol.  
-***Note：Since the PlatON, PlatONE, and FISCOBCOS blockchain wallet codes reuse the Ethereum wallet code in large numbers, it is necessary to enable Ethereum for any one of these three to be enabled.***  
+***Note：Since the PlatON, PlatONE, FISCOBCOS and Venachain blockchain wallet codes reuse the Ethereum wallet code in large numbers, it is necessary to enable Ethereum for any one of these three to be enabled.***  
 ***Note：Since the hw_bcs blockchain wallet codes reuse the fabric wallet code in large numbers, it is necessary to enable fabric for hw_bcs to be enabled.*** 
 - Log printing level adjustment
 If necessary, adjust the value of `BOAT_LOG_LEVEL` in the path \<SDKRoot\>/vendor/platform/\<platform_name\>/src/log/boatlog.h to adjust the printer type of the log.
@@ -217,6 +219,8 @@ The SDK provides the following tools to generate the corresponding C interface c
 |\<SDKRoot\>/tools/fiscobcos2c.py       |According to the ABI of FISCO-BCOS Solidity, generate C calling code |
 |\<SDKRoot\>/tools/platoneSolidity2c.py |Generate C calling code according to PlatONE (Solidity) ABI          |
 |\<SDKRoot\>/tools/platoneWASM2c.py     |Generate C calling code according to PlatONE (WASM) ABI              |
+|\<SDKRoot\>/tools/venachainSolidity2c.py |Generate C calling code according to Venachain (Solidity) ABI          |
+|\<SDKRoot\>/tools/venachainWASM2c.py     |Generate C calling code according to Venachain (WASM) ABI              |
 
 Contract programming languages generally support "object-oriented". However, since C language does not support "object-oriented" and cannot use a unified paradigm to transfer objects, only contract functions whose parameter types are consistent with the built-in types of C language can be converted into C calling code by tools. The specific input types of support contract functions are described in the [Contract Call (Automatically Generated)](#contract-call-automatically-generated) chapter.
 
@@ -228,6 +232,8 @@ Before making the call, you first need to compile the contract, and copy the ABI
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract        |Copy the ABI JSON file of FISCO-BCOS to this directory        |
 |\<SDKRoot\>/demo/demo_platone/demo_contract\Solidity |Copy PlatONE (Solidity) ABI JSON file to this directory       |
 |\<SDKRoot\>/demo/demo_platone/demo_contract\WASM     |Copy PlatONE (WASM) ABI JSON file to this directory           |
+|\<SDKRoot\>/demo/demo_venachain/demo_contract\Solidity |Copy Venachain (Solidity) ABI JSON file to this directory       |
+|\<SDKRoot\>/demo/demo_venachain/demo_contract\WASM     |Copy Venachain (WASM) ABI JSON file to this directory           |
 
 *Note: ABI's JSON file must have ".json" as the file name suffix.*  
 
@@ -396,7 +402,7 @@ When cross-compiling outside of Cygwin, in addition to the previous section, the
 
 ### Compile and Run Demo
 #### Preparation
-SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, Hyperledger Fabric ,HW-BCS and Chainmaker. Before running these demos, the corresponding blockchain node software needs to be installed if there is no known nodes. Also the smart contracts required by the demo needs to be deployed.
+SDK provides Demo based on Ethereum, PlatON, PlatONE, FISCO-BCOS, Hyperledger Fabric, HW-BCS, Chainmaker and Venachain. Before running these demos, the corresponding blockchain node software needs to be installed if there is no known nodes. Also the smart contracts required by the demo needs to be deployed.
 
 The smart contract used by the demo and its ABI JSON file are placed in:  
 
@@ -405,6 +411,7 @@ The smart contract used by the demo and its ABI JSON file are placed in:
 |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.sol   |\<SDKRoot\>/demo/demo_ethereum/demo_contract/StoreRead.json   |Ethereum demo   |
 |\<SDKRoot\>/demo/demo_platone/demo_contract/WASM/my_contract.cpp    |\<SDKRoot\>/demo/demo_platone/demo_contract/WASM/my_contract.cpp.abi.json    |PlatONE demo    |
 |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.sol |\<SDKRoot\>/demo/demo_fiscobcos/demo_contract/HelloWorld.json |FISCO-BCOS demo |
+|\<SDKRoot\>/demo/demo_venachain/demo_contract/WASM/mycontract.cpp    |\<SDKRoot\>/demo/demo_venachain/demo_contract/WASM/mycontract.cpp.abi.json    |Venachain demo   |
 
 
 Before running Ethereum's Demo, you need to install the Ethereum node simulator ganache, as well as the Ethereum smart contract compilation deployment tool truffle, could visit this website: https://truffleframework.com  .
@@ -415,6 +422,8 @@ In addition to using the ganache simulator, you can also use the Ethereum test n
 Before running the PlatON Demo, the PlatON node need to be installed. The specific process can be referred to this website: https://platon.network/  .  
 
 Before running the PlatONE Demo, you need to install the PlatONE node, as well as smart contract compilation and deployment tools,could visit this website: https://platone.wxblockchain.com  .
+
+Before running the Venachain Demo, you need to install the Venachain node, as well as smart contract compilation and deployment tools,could visit this website: https://venachain-docs.readthedocs.io/zh/latest/documents/quick/env.html  .
 
 Before running the FISCO-BCOS Demo, you need to install the FISCO-BCOS node and contract deployment.
 FISCO-BCOS source code and installation and deployment steps can visit this website: https://fisco-bcos-documentation.readthedocs.io
@@ -433,6 +442,7 @@ The Demo C code that calls the smart contract is placed in:
 | \<SDKRoot\>/demo/demo_fabric/demo_fabric_abac.c             | FABRIC demo use case            |
 | \<SDKRoot\>/demo/demo_hw_bcs/demo_hw_bcs.c                  | HW-BCS demo use case            |
 | \<SDKRoot\>/demo/demo_chainmaker/demo_chainmaker.c          | CHAINMAKER demo use case        |
+| \<SDKRoot\>/demo/demo_venachain/demo_venachain_mycontract.c          | Venachain demo use case        |
 
 Before compiling the Demo, you need to modify the following parts of the Demo C code:  
 - For ETHEREUM, PLATON, FISCO-BCOS, PLATONE:  
@@ -441,11 +451,13 @@ Before compiling the Demo, you need to modify the following parts of the Demo C 
 		- For ETHEREUM, set it to the private key of any account generated by ganache  
     - For PlatON, there is no need to modify the private key in the Demo  
 		- For PlatONE, there is no need to modify the private key in the Demo  
+    - For Venachain, there is no need to modify the private key in the Demo  
 		- For FISCO-BCOS, set it to the native format private key corresponding to the private key under <FISCO-BCOS_ROOT>/console/accounts  
-	3. If the demo needs to use the native private key, search for `pkcs_demoKey` and set the client private key as:  
+	3. If the demo needs to use the PKCS format private key, search for `pkcs_demoKey` and set the client private key as:  
 		- For Ethereum, set the PKCS format private key corresponding to the private key of any account generated by Ganache  
     - For PlatONE, there is no need to modify the private key in the Demo
 		- For PlatONE, there is no need to modify the private key in the Demo  
+    - For Venachain, there is no need to modify the private key in the Demo  
 		- For FISCO-BCOS, set it to the private key under <FISCO-BCOS_ROOT>/console/accounts  
 	4. Search for `demoRecipientAddress` and modify it to the deployment address of the Demo contract.  
 	
@@ -476,7 +488,7 @@ Execute the following commands in the \<SDKRoot\> directory to compile the SDK c
 ````
 $make demo
 ````
-The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum`,`platon`,`fisco-bcos`,`platone`,`fabric`,`hwbcs` or `chainmaker`.
+The generated Demo programs are located under the path \<SDKRoot\>/build/demo/demo_\<protocol\>/<demo_name>, and the <protocol> can be `ethereum`,`platon`,`fisco-bcos`,`platone`,`fabric`,`hwbcs`,`venachain` or `chainmaker`.
 
 
 ### Trouble Shooting in Compilation

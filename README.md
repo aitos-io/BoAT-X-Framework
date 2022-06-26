@@ -6,7 +6,7 @@
 
 
 ## Introduction
-Welcome to the official implementation and documents of BoAT-X Framework! 
+Welcome to the official implementation and documents of BoAT-X Framework!([中文版](./README_cn.md)) 
 
 **BoAT-X** is a blockchain application framework for IoT, a big portion dedicated to a family of BoAT components where **BoAT** stands for *Blockchain of AI Things* and **X** is a placeholder for a set of middleware components, services and tools that enable IoT devices to access blockchain services. BoAT-X depicts the vision of a boat transferring trustworthy information from the IoT data source to a data lake.
 

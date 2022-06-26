@@ -34,6 +34,17 @@ if(BOAT_PROTOCOL_USE_HWBCS)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boathwbcs-obj>)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:protos-hwbcs-obj>)
 endif()
+if(BOAT_PROTOCOL_USE_CHAINMAKER)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatchainmaker-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:http2intf-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:nghttps2-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:protos-chainmaker-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:protobuf-obj>)
+endif()
+if(BOAT_PROTOCOL_USE_QUORUM)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatquorum-obj>)
+endif()
+
 
 add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:wallet_obj>
                                     $<TARGET_OBJECTS:protocol_obj>

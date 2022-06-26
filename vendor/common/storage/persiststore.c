@@ -42,7 +42,7 @@ __BOATSTATIC const BUINT8 g_aes_key[32] = { 0x7F ,0x78, 0xBC, 0xEC, 0xD8, 0xBA, 
 BOAT_RESULT BoatPersistStore(const BCHAR *storage_name_str, const void *data_ptr, 
 							 BUINT32 data_len)
 {
-    // Storage format: | 16 byte salt | 32 byte hash | AES(data) | 1~31 byte AES paddiing |
+    // Storage format: | 16 byte salt | 32 byte hash | AES(data) | 1~31 byte AES padding |
     // Where, hash = keccak256(data)
 
     BUINT8  salt_array[BOAT_STORAGE_SALT_SIZE];
@@ -57,7 +57,7 @@ BOAT_RESULT BoatPersistStore(const BCHAR *storage_name_str, const void *data_ptr
 
    	if ((storage_name_str == NULL) || (data_ptr == NULL) || (data_len == 0))
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "storage_name or data cannot be NULL, data_len cannot be zero.");
+		BoatLog(BOAT_LOG_CRITICAL, "storage_name_str or data_ptr cannot be NULL, data_len cannot be zero.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
@@ -102,7 +102,7 @@ BOAT_RESULT BoatPersistStore(const BCHAR *storage_name_str, const void *data_ptr
 BOAT_RESULT BoatPersistRead(const BCHAR *storage_name_str, BOAT_OUT void *data_ptr, 
 							BUINT32 len_to_read)
 {
-    // Storage format: | 16 byte salt | 32 byte hash | AES(data) | 1~31 byte AES paddiing |
+    // Storage format: | 16 byte salt | 32 byte hash | AES(data) | 1~31 byte AES padding |
     // Where, hash = keccak256(data)
     BUINT8  salt_array[BOAT_STORAGE_SALT_SIZE];
     BUINT8  original_data_hash_array[32];
@@ -110,7 +110,7 @@ BOAT_RESULT BoatPersistRead(const BCHAR *storage_name_str, BOAT_OUT void *data_p
     BUINT8  encrypted_array[len_to_read + 31]; // 31 for AES padding
 	BUINT32 encrypted_readLen;
     // Plain buffer
-    BUINT8  plain_array[len_to_read];
+    BUINT8  plain_array[len_to_read+31];
     BUINT32 plain_len = sizeof(plain_array);
 	
 	BUINT8  readDataTmp[len_to_read + 31 + 32 + 16 + 16];
@@ -151,7 +151,7 @@ BOAT_RESULT BoatPersistRead(const BCHAR *storage_name_str, BOAT_OUT void *data_p
 		/* decrypt data */
 		result = BoatAesDecrypt(salt_array, g_aes_key, encrypted_array, encrypted_readLen, plain_array);
 		// Check size of the decrypted data matches the length to read
-		if (result == BOAT_SUCCESS && plain_len == len_to_read)
+		if (result == BOAT_SUCCESS)
 		{
 			/* Calculate data hash from the decrypted data */
 			keccak_256(plain_array, BOAT_ROUNDUP(len_to_read, 16), data_hash_array);
@@ -169,7 +169,7 @@ BOAT_RESULT BoatPersistRead(const BCHAR *storage_name_str, BOAT_OUT void *data_p
 		}
 		else
 		{
-			BoatLog(BOAT_LOG_CRITICAL, "Decrypted failed or the length is don't match.");
+			BoatLog(BOAT_LOG_CRITICAL, "Decrypted failed or the length doesn't match.");
 			result = BOAT_ERROR;
 		}
 	}

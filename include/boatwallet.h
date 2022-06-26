@@ -29,10 +29,13 @@ boatwallet.h is the SDK header file.
 
 #include "boattypes.h"
 
+#define BOAT_TLS_SUPPORT                1 //!< If need client support TLS, set it to 1.
+#define BOAT_TLS_IDENTIFY_CLIENT        0 //!< If server need identify client, set it to 1.
+
 //! @brief The generate mode of the used private key
 typedef enum
 {
-    BOAT_WALLET_PRIKEY_GENMODE_UNKNOWN = 0,         //!< Placeholder for unknown prikey format
+    BOAT_WALLET_PRIKEY_GENMODE_UNKNOWN = 0,         //!< Placeholder for unknown private key format
     BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION,  //!< The private key is injected externally
     BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION, //!< The private key is generated internally
 }BoatWalletPriKeyGenMode;
@@ -52,15 +55,15 @@ typedef enum
 //!       but it's still suggest to fill this field.
 typedef enum
 {
-    BOAT_WALLET_PRIKEY_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown signature algorithm
-	BOAT_WALLET_PRIKEY_TYPE_SECP256K1,    //!< secp256k1 algorithm
-	BOAT_WALLET_PRIKEY_TYPE_SECP256R1,    //!< secp256r1 algorithm
+    BOAT_WALLET_PRIKEY_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown ecliptic curve
+	BOAT_WALLET_PRIKEY_TYPE_SECP256K1,    //!< secp256k1 ecliptic curve
+	BOAT_WALLET_PRIKEY_TYPE_SECP256R1,    //!< secp256r1 ecliptic curve
 }BoatWalletPriKeyType;
 
 //!@brief format of public key
 typedef enum
 {
-	BOAT_WALLET_PUBKEY_FORMAT_UNKNOWN = 0, //!< Placeholder for unknown prikey
+	BOAT_WALLET_PUBKEY_FORMAT_UNKNOWN = 0, //!< Placeholder for unknown public key
     BOAT_WALLET_PUBKEY_FORMAT_NATIVE,      //!< The 64 bytes public key, it's a coordinate of an elliptic curve 
 }BoatWalletPubKeyFormat;
 

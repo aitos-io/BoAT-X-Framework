@@ -14,8 +14,8 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 				  -lrt\
 				  -lsubunit
                                 
-BOAT_CFLAGS +=  -DTEST_ETHEREUM_NODE_URL=\"$(ETHEREUM_NODE_URL)\"\
-				-DTEST_KEY_TYPE=\"$(KEY_TYPE)\"
+BOAT_CFLAGS +=  -DTEST_ETHEREUM_NODE_URL=\"$(ETHEREUM_NODE_URL)\" \
+				-DTEST_KEY_TYPE=\"$(KEY_TYPE)\" \
 				-I$(shell pwd)
 
 all: $(OBJECTS_DIR) $(OBJECTS)	

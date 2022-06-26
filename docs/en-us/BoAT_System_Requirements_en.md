@@ -27,11 +27,12 @@ This article describes the system requirements for BoAT Framework (C language ve
 |TA     |Trusted Application                                    |
 |ECDSA  |Elliptic Curve Digital Signature Algorithm             |
 |SHA2   |Secure Hash Algorithm 2                                |
+|RAM    |Random Access Memory                                   |
 
 
 ## Part 1- Storage Requirements
 
-To enable Ethereum/PlatONE/FISCO BCOS capabilities, the storage requirements of the C-language BoAT Framework (excluding static or shared dependent libraries such as the C library) are:
+To enable Ethereum/Venachain/FISCO BCOS capabilities, the storage requirements of the C-language BoAT Framework (excluding static or shared dependent libraries such as the C library) are:
 - Flash (code and read-only data): about 210kB
 - Flash (non-volatile RW data): hundreds of bytes
 - RAM (global variables, heap, stack): about 10kB
@@ -41,6 +42,10 @@ To enable HyperLedger Fabric capability, the storage requirements of the C-langu
 - Flash (non-volatile RW data): thousands of bytes
 - RAM (global variables, heap, stack): about 30kB
 
+To enable Chainmaker capability, the storage requirements of the C-language BoAT Framework (excluding static or shared dependent libraries such as the C library) are:
+- Flash (code and read-only data): about 380kB
+- Flash (non-volatile RW data): thousands of bytes
+- RAM (global variables, heap, stack): about 40kB
 
 In both cases, the storage requirements do not include the system libraries that the BoAT Framework SDK (C language version) relies on. The exact values may vary with different blockchain protocols.
 

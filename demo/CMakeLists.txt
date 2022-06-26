@@ -26,3 +26,11 @@ endif()
 if(BOAT_PROTOCOL_USE_VENACHAIN)
 add_subdirectory(demo_venachain)
 endif()
+
+if(BOAT_PROTOCOL_USE_CHAINMAKER)
+add_subdirectory(demo_chainmaker)
+endif()
+
+if(BOAT_PROTOCOL_USE_QUORUM)
+add_subdirectory(demo_quorum)
+endif()

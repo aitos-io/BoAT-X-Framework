@@ -69,7 +69,7 @@ static int ecdsa_signature_to_asn1(const mbedtls_mpi *r, const mbedtls_mpi *s,
     MBEDTLS_ASN1_CHK_ADD(len, mbedtls_asn1_write_mpi(&p, buf, r));
     MBEDTLS_ASN1_CHK_ADD(len, mbedtls_asn1_write_len(&p, buf, len));
     MBEDTLS_ASN1_CHK_ADD(len, mbedtls_asn1_write_tag(&p, buf,
-						  MBEDTLS_ASN1_CONSTRUCTED | MBEDTLS_ASN1_SEQUENCE));
+						 MBEDTLS_ASN1_CONSTRUCTED | MBEDTLS_ASN1_SEQUENCE));
 
     memcpy(sig, p, len);
     *slen = len;
@@ -86,11 +86,15 @@ static int derive_mpi(const mbedtls_ecp_group *grp, mbedtls_mpi *x,
 
     MBEDTLS_MPI_CHK(mbedtls_mpi_read_binary(x, buf, use_size));
     if (use_size * 8 > grp->nbits)
+	{
         MBEDTLS_MPI_CHK(mbedtls_mpi_shift_r(x, use_size * 8 - grp->nbits));
+	}
 
     /* While at it, reduce modulo N */
     if (mbedtls_mpi_cmp_mpi(x, &grp->N) >= 0)
+	{
         MBEDTLS_MPI_CHK(mbedtls_mpi_sub_mpi(x, x, &grp->N));
+	}
 
 cleanup:
     return(ret);
@@ -100,87 +104,103 @@ cleanup:
 /*
  * Get the type of a curve
  */
-mbedtls_ecp_curve_type boat_mbedtls_ecp_get_type( const mbedtls_ecp_group *grp )
+mbedtls_ecp_curve_type boat_mbedtls_ecp_get_type(const mbedtls_ecp_group *grp)
 {
-    if( grp->G.X.p == NULL )
-        return( MBEDTLS_ECP_TYPE_NONE );
+    if (grp->G.X.p == NULL)
+	{
+        return(MBEDTLS_ECP_TYPE_NONE);
+	}
 
-    if( grp->G.Y.p == NULL )
-        return( MBEDTLS_ECP_TYPE_MONTGOMERY );
+    if (grp->G.Y.p == NULL)
+	{
+        return(MBEDTLS_ECP_TYPE_MONTGOMERY);
+	}
     else
-        return( MBEDTLS_ECP_TYPE_SHORT_WEIERSTRASS );
+	{
+        return(MBEDTLS_ECP_TYPE_SHORT_WEIERSTRASS);
+	}
 }
 
 /*
  * Read a private key.
  */
-int boat_mbedtls_ecp_read_key( mbedtls_ecp_group_id grp_id, mbedtls_ecp_keypair *key,
-                          const unsigned char *buf, size_t buflen )
+int boat_mbedtls_ecp_read_key(mbedtls_ecp_group_id grp_id, mbedtls_ecp_keypair *key,
+                          	  const unsigned char *buf, size_t buflen)
 {
     int ret = 0;
 
-    if( key  == NULL ){
+    if (key == NULL)
+	{
 		return MBEDTLS_ERR_ECP_BAD_INPUT_DATA;
 	}
-    if( buf  == NULL ){
+    if (buf == NULL)
+	{
 		return MBEDTLS_ERR_ECP_BAD_INPUT_DATA;
 	}
 
-    if( ( ret = mbedtls_ecp_group_load( &key->grp, grp_id ) ) != 0 )
-        return( ret );
+    if ((ret = mbedtls_ecp_group_load(&key->grp, grp_id)) != 0)
+	{
+        return(ret);
+	}
 
     ret = MBEDTLS_ERR_ECP_FEATURE_UNAVAILABLE;
 
 #if defined(ECP_MONTGOMERY)
-    if( mbedtls_ecp_get_type( &key->grp ) == MBEDTLS_ECP_TYPE_MONTGOMERY )
+    if (mbedtls_ecp_get_type(&key->grp) == MBEDTLS_ECP_TYPE_MONTGOMERY)
     {
         /*
          * If it is Curve25519 curve then mask the key as mandated by RFC7748
          */
-        if( grp_id == MBEDTLS_ECP_DP_CURVE25519 )
+        if (grp_id == MBEDTLS_ECP_DP_CURVE25519)
         {
-            if( buflen != ECP_CURVE25519_KEY_SIZE )
+            if (buflen != ECP_CURVE25519_KEY_SIZE)
+			{
                 return MBEDTLS_ERR_ECP_INVALID_KEY;
+			}
 
-            MBEDTLS_MPI_CHK( mbedtls_mpi_read_binary_le( &key->d, buf, buflen ) );
+            MBEDTLS_MPI_CHK(mbedtls_mpi_read_binary_le(&key->d, buf, buflen));
 
             /* Set the three least significant bits to 0 */
-            MBEDTLS_MPI_CHK( mbedtls_mpi_set_bit( &key->d, 0, 0 ) );
-            MBEDTLS_MPI_CHK( mbedtls_mpi_set_bit( &key->d, 1, 0 ) );
-            MBEDTLS_MPI_CHK( mbedtls_mpi_set_bit( &key->d, 2, 0 ) );
+            MBEDTLS_MPI_CHK(mbedtls_mpi_set_bit(&key->d, 0, 0));
+            MBEDTLS_MPI_CHK(mbedtls_mpi_set_bit(&key->d, 1, 0));
+            MBEDTLS_MPI_CHK(mbedtls_mpi_set_bit(&key->d, 2, 0));
 
             /* Set the most significant bit to 0 */
             MBEDTLS_MPI_CHK(
-                    mbedtls_mpi_set_bit( &key->d,
-                                         ECP_CURVE25519_KEY_SIZE * 8 - 1, 0 )
-                    );
+                    mbedtls_mpi_set_bit(&key->d,
+                                        ECP_CURVE25519_KEY_SIZE * 8 - 1, 0)
+                   );
 
             /* Set the second most significant bit to 1 */
             MBEDTLS_MPI_CHK(
-                    mbedtls_mpi_set_bit( &key->d,
-                                         ECP_CURVE25519_KEY_SIZE * 8 - 2, 1 )
-                    );
+                    mbedtls_mpi_set_bit(&key->d,
+                                        ECP_CURVE25519_KEY_SIZE * 8 - 2, 1)
+                   );
         }
         else
+		{
             ret = MBEDTLS_ERR_ECP_FEATURE_UNAVAILABLE;
+		}
     }
 
 #endif
 // #if defined(ECP_SHORTWEIERSTRASS)
-    if( boat_mbedtls_ecp_get_type( &key->grp ) == MBEDTLS_ECP_TYPE_SHORT_WEIERSTRASS )
+    if (boat_mbedtls_ecp_get_type(&key->grp) == MBEDTLS_ECP_TYPE_SHORT_WEIERSTRASS)
     {
-        MBEDTLS_MPI_CHK( mbedtls_mpi_read_binary( &key->d, buf, buflen ) );
+        MBEDTLS_MPI_CHK(mbedtls_mpi_read_binary(&key->d, buf, buflen));
 
-        MBEDTLS_MPI_CHK( mbedtls_ecp_check_privkey( &key->grp, &key->d ) );
+        MBEDTLS_MPI_CHK(mbedtls_ecp_check_privkey(&key->grp, &key->d));
     }
 
 // #endif
+
+    if (ret != 0)
+	{
+        mbedtls_mpi_free(&key->d);
+	}
+
 cleanup:
-
-    if( ret != 0 )
-        mbedtls_mpi_free( &key->d );
-
-    return( ret );
+    return(ret);
 }
 
 /******************************************************************************
@@ -249,12 +269,16 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
 
     /* Fail cleanly on curves such as Curve25519 that can't be used for ECDSA */
     // if (ctx == NULL || !mbedtls_ecdsa_can_do(ctx->grp.id) || ctx->grp.N.p == NULL)
-	if (ctx == NULL  || ctx->grp.N.p == NULL)
-        return(MBEDTLS_ERR_ECP_BAD_INPUT_DATA);
+	if (ctx == NULL || ctx->grp.N.p == NULL)
+	{
+        return (MBEDTLS_ERR_ECP_BAD_INPUT_DATA);
+	}
 
     /* Make sure d is in range 1..n-1 */
     if (mbedtls_mpi_cmp_int(&ctx->d, 1) < 0 || mbedtls_mpi_cmp_mpi(&ctx->d, &ctx->grp.N) >= 0)
-        return(MBEDTLS_ERR_ECP_INVALID_KEY);
+	{
+        return (MBEDTLS_ERR_ECP_INVALID_KEY);
+	}
 
     mbedtls_ecp_point_init(&R);
     mbedtls_mpi_init(&k); 
@@ -292,18 +316,19 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
 			// 				p_rng_blind,
 			// 				NULL));
             // MBEDTLS_MPI_CHK(mbedtls_mpi_mod_mpi(&r, &R.X, &ctx->grp.N));
-			MBEDTLS_MPI_CHK( mbedtls_ecp_gen_keypair( &ctx->grp, &k, &R, f_rng, p_rng ) );
-            MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &r, &R.X, &ctx->grp.N ) );
+			MBEDTLS_MPI_CHK(mbedtls_ecp_gen_keypair(&ctx->grp, &k, &R, f_rng, p_rng));
+            MBEDTLS_MPI_CHK(mbedtls_mpi_mod_mpi(&r, &R.X, &ctx->grp.N));
 			
 			//-----------------------------------------------------------
 			// -boat:boat_ecdsPrefix update 
 			boat_ecdsPrefix = *(R.Y.p) & 1;
-            if (1 == mbedtls_mpi_cmp_mpi(&R.X, &ctx->grp.N)){// R.X > N
+            if (1 == mbedtls_mpi_cmp_mpi(&R.X, &ctx->grp.N))
+			{// R.X > N
                 boat_ecdsPrefix |= 2;
             }
 			//-----------------------------------------------------------
         }
-        while(mbedtls_mpi_cmp_int(&r, 0) == 0);
+        while (mbedtls_mpi_cmp_int(&r, 0) == 0);
 
         /*
          * Step 5: derive MPI from hashed message
@@ -319,16 +344,16 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
 		blind_tries = 0;
         do
         {
-            size_t n_size = ( ctx->grp.nbits + 7 ) / 8;
-            MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &t, n_size, f_rng, p_rng ) );
-            MBEDTLS_MPI_CHK( mbedtls_mpi_shift_r( &t, 8 * n_size - ctx->grp.nbits ) );
+            size_t n_size = (ctx->grp.nbits + 7) / 8;
+            MBEDTLS_MPI_CHK(mbedtls_mpi_fill_random(&t, n_size, f_rng, p_rng));
+            MBEDTLS_MPI_CHK(mbedtls_mpi_shift_r(&t, 8 * n_size - ctx->grp.nbits));
 
             /* See mbedtls_ecp_gen_keypair() */
-            if( ++blind_tries > 30 )
-                return( MBEDTLS_ERR_ECP_RANDOM_FAILED );
+            if (++blind_tries > 30)
+                return(MBEDTLS_ERR_ECP_RANDOM_FAILED);
         }
-        while( mbedtls_mpi_cmp_int( &t, 1 ) < 0 ||
-               mbedtls_mpi_cmp_mpi( &t, &ctx->grp.N ) >= 0 );
+        while (mbedtls_mpi_cmp_int(&t, 1) < 0 ||
+               mbedtls_mpi_cmp_mpi(&t, &ctx->grp.N) >= 0);
 
         /*
          * Step 6: compute s = (e + r * d) / k = t (e + rd) / (kt) mod n
@@ -342,7 +367,7 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
         MBEDTLS_MPI_CHK(mbedtls_mpi_mul_mpi(&s, &s, &e));
         MBEDTLS_MPI_CHK(mbedtls_mpi_mod_mpi(&s, &s, &ctx->grp.N));
     }
-    while(mbedtls_mpi_cmp_int(&s, 0) == 0);
+    while (mbedtls_mpi_cmp_int(&s, 0) == 0);
 
 	//-----------------------------------------------------------
 	// -boat: boat_ecdsPrefix update
@@ -350,7 +375,8 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
     mbedtls_mpi_init(&x);
     mbedtls_mpi_mul_int(&x, &s, 2);
 	// compare 2S with N
-	if (0 < mbedtls_mpi_cmp_mpi(&x, &ctx->grp.N)){
+	if (0 < mbedtls_mpi_cmp_mpi(&x, &ctx->grp.N))
+	{
 		mbedtls_mpi_sub_mpi(&s, &ctx->grp.N, &s); // -s should less than N/2
 		boat_ecdsPrefix ^= 1;
     }
@@ -389,14 +415,14 @@ BOAT_RESULT  BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 	result = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
 	if (result != 0)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec  mbedtls_ctr_drbg_seed.");
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ctr_drbg_seed.");
         boat_throw(result, hlfabricGenNonce_exception);
 	}
 	
 	result = mbedtls_ctr_drbg_random(&ctr_drbg, output, outputLen);
 	if (result != 0)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec  mbedtls_ctr_drbg_random(nonce).");
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ctr_drbg_random(nonce).");
 		boat_throw(result, hlfabricGenNonce_exception);
 	}
 
@@ -419,9 +445,9 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 						  const BUINT8 *digest, BUINT32 digestLen, 
 						  BoatSignatureResult *signatureResult, void *rsvd)
 {
-	mbedtls_entropy_context   entropy;
-    mbedtls_ctr_drbg_context  ctr_drbg;
-	mbedtls_pk_context        mbedtls_pkCtx;
+	mbedtls_entropy_context  entropy;
+    mbedtls_ctr_drbg_context ctr_drbg;
+	mbedtls_pk_context       mbedtls_pkCtx;
     mbedtls_ecdsa_context *ecPrikey = NULL;
 	BUINT8 signatureTmp[139];
 	size_t signatureTmpLen = 0;
@@ -446,7 +472,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	mbedtls_pk_init(&mbedtls_pkCtx);
 	
 	result = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
-	if(result != 0)
+	if (result != 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ctr_drbg_seed.");
         boat_throw(result, BoatSignature_exception);
@@ -472,7 +498,9 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 			BoatLog(BOAT_LOG_CRITICAL, "begin mbedtls_ecp_read_key ");
 			ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
 			if (ecPrikey != NULL)
+			{
 				mbedtls_ecp_keypair_init(ecPrikey);
+			}
 			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1, ecPrikey, prikeyCtx.extra_data.value, prikeyCtx.extra_data.value_len);
 			BoatLog(BOAT_LOG_CRITICAL, "boat_mbedtls_ecp_read_key result = %x ", result);
 		}
@@ -480,7 +508,9 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 		{
 			ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
 			if (ecPrikey != NULL)
+			{
 				mbedtls_ecp_keypair_init(ecPrikey);
+			}
 			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256R1, ecPrikey, prikeyCtx.extra_data.value, prikeyCtx.extra_data.value_len);
 			BoatLog(BOAT_LOG_CRITICAL, "boat_mbedtls_ecp_read_key result = %x ", result);
 		}
@@ -490,7 +520,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 			boat_throw(BOAT_ERROR_WALLET_KEY_TYPE_ERR, BoatSignature_exception);
 		}
 	}
-    if(result != BOAT_SUCCESS)
+    if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec mbedtls_pk_parse.");
         boat_throw(result, BoatSignature_exception);
@@ -502,7 +532,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 							 		 mbedtls_ctr_drbg_random, &ctr_drbg,
 							  		 mbedtls_ctr_drbg_random, &ctr_drbg, &ecdsPrefix);
 
-	if(result != 0)
+	if (result != 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec mbedtls_ecdsa_write_signature.");
 		boat_throw(result, BoatSignature_exception);
@@ -516,8 +546,8 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	memcpy(signatureResult->pkcs_sign, signatureTmp, signatureResult->pkcs_sign_length);
 	
 	signatureResult->native_format_used = true;
-	memcpy(	&signatureResult->native_sign[0],  raw_r, 32);
-	memcpy(	&signatureResult->native_sign[32], raw_s, 32);
+	memcpy(&signatureResult->native_sign[0],  raw_r, 32);
+	memcpy(&signatureResult->native_sign[32], raw_s, 32);
 
 	signatureResult->signPrefix_used = true;
 	signatureResult->signPrefix      = ecdsPrefix;
@@ -533,9 +563,11 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
 	mbedtls_pk_free(&mbedtls_pkCtx);
-	if (prikeyCtx.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_PKCS){
+	if (prikeyCtx.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_PKCS)
+	{
 		mbedtls_ecp_keypair_free(ecPrikey);
-		if(ecPrikey != NULL){
+		if (ecPrikey != NULL)
+		{
 			BoatFree(ecPrikey);
 		}
 	}
@@ -571,11 +603,11 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 }
 
 
-BOAT_RESULT  BoatWriteFile(const BCHAR *fileName, 
-						   BUINT8 *writeBuf, BUINT32 writeLen, void *rsvd)
+BOAT_RESULT BoatWriteFile(const BCHAR *fileName, 
+						  BUINT8 *writeBuf, BUINT32 writeLen, void *rsvd)
 {
-	FILE         *file_ptr;
-	BSINT32      count = 0;
+	FILE    *file_ptr;
+	BSINT32 count = 0;
 	
 	(void)rsvd;
 	
@@ -605,11 +637,11 @@ BOAT_RESULT  BoatWriteFile(const BCHAR *fileName,
 }
 
 
-BOAT_RESULT  BoatReadFile(const BCHAR *fileName, 
-						  BUINT8 *readBuf, BUINT32 readLen, void *rsvd)
+BOAT_RESULT BoatReadFile(const BCHAR *fileName, 
+						 BUINT8 *readBuf, BUINT32 readLen, void *rsvd)
 {
-	FILE         *file_ptr;
-	BSINT32      count = 0;
+	FILE    *file_ptr;
+	BSINT32 count = 0;
 	
 	(void)rsvd;
 	
@@ -638,7 +670,7 @@ BOAT_RESULT  BoatReadFile(const BCHAR *fileName,
 }
 
 
-BOAT_RESULT  BoatRemoveFile(const BCHAR *fileName, void *rsvd)
+BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 {
 	(void)rsvd;
 		
@@ -662,15 +694,15 @@ BOAT_RESULT  BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
-    int                 connectfd = -1;
-    char                ip[64];
-    char                port[8];
-    char                *ptr = NULL;
-    struct hostent      *he; 
-    struct sockaddr_in  server;
-    struct sockaddr     localaddr;
-    struct sockaddr_in  *localaddr_ptr;
-    socklen_t           addrlen = sizeof(struct sockaddr);
+    int                connectfd = -1;
+    char               ip[64];
+    char               port[8];
+    char               *ptr = NULL;
+    struct hostent     *he; 
+    struct sockaddr_in server;
+    struct sockaddr    localaddr;
+    struct sockaddr_in *localaddr_ptr;
+    socklen_t          addrlen = sizeof(struct sockaddr);
 
     (void)rsvd;
 
@@ -707,13 +739,13 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
     server.sin_port = htons(atoi(port));
     server.sin_addr = *((struct in_addr *)(he->h_addr_list[0])); 
 
-    if(connect(connectfd, (struct sockaddr *)&server,sizeof(struct sockaddr)) < 0)
+    if (connect(connectfd, (struct sockaddr *)&server,sizeof(struct sockaddr)) < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "connect() error");
         close(connectfd);
         return -1;
     }
-    if(0 != getsockname(connectfd, &localaddr, &addrlen))
+    if (0 != getsockname(connectfd, &localaddr, &addrlen))
     {
         BoatLog(BOAT_LOG_CRITICAL, "getsockname() error");
         close(connectfd);
@@ -736,11 +768,11 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 						BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
-	TTLSContext  *tlsContext_ptr = (TTLSContext *)tlsContext;
+	TTLSContext *tlsContext_ptr = (TTLSContext *)tlsContext;
 	mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
 	
-	BOAT_RESULT   result = BOAT_SUCCESS;
+	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
 
 	tlsContext_ptr->ssl     = BoatMalloc(sizeof(mbedtls_ssl_context));
@@ -895,11 +927,11 @@ void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 	close(sockfd);
 #if (BOAT_TLS_SUPPORT == 1)
 	// free tls releated
-	if(tlsContext != NULL)
+	if (tlsContext != NULL)
 	{
 		mbedtls_ssl_free(((TTLSContext*)tlsContext)->ssl);
 		BoatFree(((TTLSContext*)tlsContext)->ssl);
-		((TTLSContext*)tlsContext)->ssl     = NULL;
+		((TTLSContext*)tlsContext)->ssl = NULL;
 		
 		mbedtls_ssl_config_free(((TTLSContext*)tlsContext)->ssl_cfg);
 		BoatFree(((TTLSContext*)tlsContext)->ssl_cfg);
@@ -925,10 +957,10 @@ void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKeyCtx_config *config, 
 													       BoatWalletPriKeyCtx *pkCtx)
 {
-	mbedtls_entropy_context   entropy;
-    mbedtls_ctr_drbg_context  ctr_drbg;
-	mbedtls_pk_context        key;
-	BOAT_RESULT               result = BOAT_SUCCESS;
+	mbedtls_entropy_context  entropy;
+    mbedtls_ctr_drbg_context ctr_drbg;
+	mbedtls_pk_context       key;
+	BOAT_RESULT              result = BOAT_SUCCESS;
 	
 	if ((config == NULL) || (pkCtx == NULL))
 	{
@@ -996,7 +1028,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 	// This field should update by 'key secure storage'(such as TE/SE).
 	// When algorithms are implemented by software, this field is default to 0, means
 	// that ignore this field.
-	pkCtx->prikey_index  = 0;
+	pkCtx->prikey_index = 0;
 
 	// 5- update public key
 	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
@@ -1052,13 +1084,13 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 		pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
 		
 		// 3- update private key type
-		pkCtx->prikey_type   = config->prikey_type;
+		pkCtx->prikey_type = config->prikey_type;
 
 		// 4- update private key index
 		// This field should update by 'key secure storage'(such as TE/SE).
 		// When algorithms are implemented by software, this field is default to 0, means
 		// that ignore this field.
-		pkCtx->prikey_index  = 0; 
+		pkCtx->prikey_index = 0; 
 
 		// 5- update public key
 		// Ethereum series need NATIVE public key to calculate account address
@@ -1080,7 +1112,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 			// ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
 			// if (ecPrikey != NULL)
 			// 	mbedtls_ecp_keypair_init(ecPrikey);
-			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1,  mbedtls_pk_ec(mbedtls_pkCtx), config->prikey_content.field_ptr, config->prikey_content.field_len);
+			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec(mbedtls_pkCtx), config->prikey_content.field_ptr, config->prikey_content.field_len);
 			BoatLog(BOAT_LOG_VERBOSE, "boat_mbedtls_ecp_read_key result = %x ", result);
 		}
 		else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
@@ -1097,7 +1129,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 			// boat_throw(BOAT_ERROR, BoatSignature_exception);
 		}
 
-		mbedtls_ecp_mul( mbedtls_pk_ec(mbedtls_pkCtx), &mbedtls_pk_ec(mbedtls_pkCtx)->Q, &mbedtls_pk_ec(mbedtls_pkCtx)->d, &mbedtls_pk_ec(mbedtls_pkCtx)->grp.G, mbedtls_ctr_drbg_random, &ctr_drbg );
+		mbedtls_ecp_mul(&(mbedtls_pk_ec(mbedtls_pkCtx)->grp), &mbedtls_pk_ec(mbedtls_pkCtx)->Q, &mbedtls_pk_ec(mbedtls_pkCtx)->d, &mbedtls_pk_ec(mbedtls_pkCtx)->grp.G, mbedtls_ctr_drbg_random, &ctr_drbg);
 		mbedtls_ctr_drbg_free(&ctr_drbg);
 		mbedtls_entropy_free(&entropy);
 
@@ -1141,9 +1173,9 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 }
 
 
-BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
+BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
 {
-	BOAT_RESULT  result = BOAT_SUCCESS;
+	BOAT_RESULT result = BOAT_SUCCESS;
 	
 	if ((config == NULL) || (pkCtx == NULL))
 	{
@@ -1151,12 +1183,12 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWa
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
-	if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
+	if (config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
 	{
 		BoatLog(BOAT_LOG_VERBOSE, "The private key is generated internally...");
 		result = sBoatPort_keyCreate_internal_generation(config, pkCtx);
 	}
-	else if(config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION)
+	else if (config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION)
 	{
 		switch (config->prikey_format)
 		{
@@ -1170,7 +1202,6 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWa
 				// result = BOAT_ERROR;
 				BoatLog(BOAT_LOG_VERBOSE, "wallet private key[native] set...");
 				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
-				break;
 				break;
 			default:
 				BoatLog(BOAT_LOG_CRITICAL, "invalid private key format.");
@@ -1187,13 +1218,13 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWa
     return result;
 }
 
-BOAT_RESULT  BoatPort_keyQuery(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
+BOAT_RESULT BoatPort_keyQuery(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
 {	
 	//! @todo to be implemented
 	return BOAT_ERROR;
 }
 
-BOAT_RESULT  BoatPort_keyDelete(BoatWalletPriKeyCtx *pkCtx)
+BOAT_RESULT BoatPort_keyDelete(BoatWalletPriKeyCtx *pkCtx)
 {
 	//! @todo to be implemented
 	return BOAT_ERROR;
@@ -1203,10 +1234,10 @@ BOAT_RESULT  BoatPort_keyDelete(BoatWalletPriKeyCtx *pkCtx)
 /******************************************************************************
                               BOAT AES WARPPER
 *******************************************************************************/
-BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output)
+BOAT_RESULT BoatAesEncrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output)
 {
-	mbedtls_aes_context  ctx;
-	BUINT8  saltArrayTmp[16];
+	mbedtls_aes_context ctx;
+	BUINT8 saltArrayTmp[16];
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
 	/* aes init */
@@ -1227,9 +1258,9 @@ BOAT_RESULT  BoatAesEncrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *inpu
 	return result;
 }
 
-BOAT_RESULT  BoatAesDecrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output)
+BOAT_RESULT BoatAesDecrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output)
 {
-	mbedtls_aes_context  ctx;
+	mbedtls_aes_context ctx;
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
 	/* aes init */

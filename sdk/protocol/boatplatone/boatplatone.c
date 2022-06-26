@@ -86,7 +86,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
     }
 
     /**************************************************************************
-    * STEP 1: Construction RAW transaction without real v/r/s                 *
+    * STEP 1: Construct RAW transaction without real v/r/s                 *
     *         (See above description for details)                             *
     **************************************************************************/
     // Encode nonce

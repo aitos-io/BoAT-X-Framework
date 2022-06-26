@@ -35,6 +35,16 @@ add_subdirectory(boatvenachain)
 set(PROTOS  ${PROTOS} $<TARGET_OBJECTS:boatvenachain-obj>)
 endif()
 
+if(BOAT_PROTOCOL_USE_CHAINMAKER)
+add_subdirectory(boatchainmaker)
+set(PROTOS  ${PROTOS} $<TARGET_OBJECTS:boatchainmaker-obj>)
+endif()
+
+if(BOAT_PROTOCOL_USE_QUORUM)
+add_subdirectory(boatquorum)
+set(PROTOS  ${PROTOS} $<TARGET_OBJECTS:boatquorum-obj>)
+endif()
+
 add_library(protocol_obj    OBJECT  ${PROTOS})
 
 target_link_libraries(protocol_obj  ${PROTOS})

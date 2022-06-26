@@ -1,8 +1,10 @@
-set(SUB_MODULE_NAME utilities-obj)
+set(SUB_MODULE_NAME boatquorum-obj)
 
-file(GLOB_RECURSE FILE_SRC     ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
+set(FILE_SRC        boatquorum.c)
+
 
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
+
 target_include_directories(${SUB_MODULE_NAME}
     PRIVATE
     ${PROJECT_SOURCE_DIR}/sdk/include

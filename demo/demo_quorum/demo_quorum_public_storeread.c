@@ -52,7 +52,7 @@ const BCHAR * demoUrl = "127.0.0.1:22000";
 /**
  * transfer recipient address
  */
-const BCHAR *demo_recipient_address = "0x1349f3e1b8d71effb47b840594ff27da7e603d17";
+const BCHAR *demo_recipient_address = "0x1932c48b2bf8102ba33b4a6b545c32236e342f34";
 
 
 #define PRIVATE_TRUE  1
@@ -155,11 +155,11 @@ __BOATSTATIC BOAT_RESULT quorum_createPersistWallet(BCHAR *wallet_name)
     wallet_config.eip155_compatibility          = BOAT_FALSE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_QUORUM_NODE_URL_MAX_LEN - 1);
 
-    /* create platon wallet */
+    /* create quorum wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_QUORUM, wallet_name, &wallet_config, sizeof(BoatQuorumWalletConfig));
     if (index < 0)
     {
-        //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
 
