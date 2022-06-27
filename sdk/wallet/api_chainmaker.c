@@ -51,7 +51,7 @@ BUINT8 get_fibon_data(BUINT8 n) {
 	}
 }
 
-BOAT_RESULT array_to_str(BUINT8* array, BUINT8* str, char lenth)
+BOAT_RESULT array_to_str(BUINT8* array, BCHAR* str, char lenth)
 {
     char value_up;
     char value_down;
@@ -94,7 +94,7 @@ BOAT_RESULT array_to_str(BUINT8* array, BUINT8* str, char lenth)
 }
 
 
-BOAT_RESULT get_tx_id(BUINT8* tx_id_ptr)
+BOAT_RESULT get_tx_id(BCHAR* tx_id_ptr)
 {
 	//32 byte randrom generate
 	BoatFieldMax32B  random_data;
@@ -456,7 +456,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 {
 	Common__TxResponse *tx_response              = NULL;
 	Common__TransactionInfo* transactation_info = NULL;
-	BUINT8* invoke_tx_id                        = NULL;
+	BCHAR* invoke_tx_id                        = NULL;
 	BUINT8 sleep_second;
 
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -470,6 +470,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	}
 
 	invoke_tx_id = BoatMalloc(BOAT_TXID_LEN + 1);
+	memset(invoke_tx_id,0x00,BOAT_TXID_LEN + 1);
 	result = get_tx_id(invoke_tx_id);
 	if (result != BOAT_SUCCESS)
 	{
