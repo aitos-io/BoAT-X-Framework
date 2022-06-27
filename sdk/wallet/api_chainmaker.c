@@ -101,8 +101,8 @@ BOAT_RESULT get_tx_id(BUINT8* tx_id_ptr)
 	random_data.field_len = 32;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
-	BoatRandom(random_data.field, random_data.field_len, NULL);
-	if (random_data.field == NULL) 
+	result = BoatRandom(random_data.field, random_data.field_len, NULL);
+	if (result != BOAT_SUCCESS) 
 	{
 		return BOAT_ERROR;
 	}
