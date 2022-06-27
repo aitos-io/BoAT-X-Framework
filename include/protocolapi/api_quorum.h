@@ -127,7 +127,7 @@ typedef struct TBoatQuorumRawtxFields
     BoatFieldMax32B gasprice;     //!< gasprice in wei, uint256 in bigendian
     BoatFieldMax32B gaslimit;     //!< gaslimit, uint256 in bigendian
     BUINT8 recipient[BOAT_QUORUM_ADDRESS_SIZE]; //!< recipient's address, 160 bits
-    BUINT8 privatefor[BOAT_QUORUM_PUBLIC_KEY_SIZE];
+    BCHAR privatefor[BOAT_QUORUM_PUBLIC_KEY_SIZE];
     BoatFieldMax32B value;        //!< value to transfer, uint256 in bigendian
     BoatFieldVariable data;       //!< data to transfer, unformatted stream
     BoatFieldMax4B v;             //!< chain id or recovery identifier, @see RawtxPerform()
