@@ -72,7 +72,7 @@ boatutility.h is header file for utility functions.
 #define BoAT_ASN1_CONSTRUCTED             0x20
 #define BoAT_ASN1_CONTEXT_SPECIFIC        0x80
 
-#define MBEDTLS_OID_ISO_IDENTIFIED_ORG  0x2b
+// #define MBEDTLS_OID_ISO_IDENTIFIED_ORG  0x2b
 
 
 //!@brief Argument type for UtilityTrimBin(), UtilityHexToBin() and UtilityUint32ToBigend()
