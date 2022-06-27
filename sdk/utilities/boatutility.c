@@ -865,7 +865,7 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
     BUINT8 oid_sm2sm3[] = {0x2a,0x81,0x1c,0xcf,0x55,0x01,0x82,0x2d};
     BCHAR bytedata = 0;
     BUINT16 offset = 0 , len = 0 ,offset_level_3 = 0;
-    BUINT16 i = 0,j = 0;
+    BUINT16 j = 0;
     TLVStruct TLV_Level_1,TLV_Level_2,TLV_Level_3;
     begin = strstr(input,PRIKEY_PKCS_BEGIN);
     end= strstr(input,PRIKEY_PKCS_END);
