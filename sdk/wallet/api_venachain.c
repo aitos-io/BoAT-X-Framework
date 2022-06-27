@@ -171,7 +171,7 @@ BOAT_RESULT BoatVenachainTxSend(BoatVenachainTx *tx_ptr)
 BOAT_RESULT BoatVenachainTransfer(BoatVenachainTx *tx_ptr, BCHAR *value_hex_str)
 {
     BoatFieldMax32B   value;
-    BoatFieldVariable data;
+    // BoatFieldVariable data;
 //    BUINT64           tx_type_big;
     BOAT_RESULT       result;
    
