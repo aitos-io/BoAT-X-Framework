@@ -564,7 +564,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 {
 	TxType tx_type                  = TXTYPE_QUERY_USER_CONTRACT;
 	Common__TxResponse *tx_response = NULL;
-	BUINT8* query_tx_id             = NULL;
+	BCHAR* query_tx_id             = NULL;
 
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
