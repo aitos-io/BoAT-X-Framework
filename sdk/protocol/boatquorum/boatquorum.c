@@ -34,7 +34,6 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
 
     RlpObject tx_rlp_object;
     RlpObject nonce_rlp_object;
-    RlpObject from_rlp_object;
     RlpObject gasprice_rlp_object;
     RlpObject gaslimit_rlp_object;
     RlpObject recipient_rlp_object;
