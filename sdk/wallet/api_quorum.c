@@ -417,11 +417,11 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
         gasprice.field_len = sizeof("0x0");
         memcpy(&tx_ptr->rawtx_fields.gasprice, "0x0", sizeof("0x0"));
    
-    if (result != BOAT_SUCCESS)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "set gas price failed: %d.", result);
-        return result;
-    }
+    // if (result != BOAT_SUCCESS)
+    // {
+    //     BoatLog(BOAT_LOG_CRITICAL, "set gas price failed: %d.", result);
+    //     return result;
+    // }
 
     // Initialize gaslimit
     BoatFieldMax32B gaslimit;
