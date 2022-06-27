@@ -606,7 +606,7 @@ BOAT_RESULT QuorumSendFilltx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     param_quorum_fillTransaction.method_name_str = "eth_fillTransaction";
     param_quorum_fillTransaction.data            = data_hex;
     param_quorum_fillTransaction.to              = recipient_hex;
-    param_quorum_fillTransaction.privateFor      = tx_ptr->rawtx_fields.privatefor;
+    param_quorum_fillTransaction.privateFor      = (BCHAR*)&(tx_ptr->rawtx_fields.privatefor[0]);
  
     tx_hash_str = web3_fillTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
                                           tx_ptr->wallet_ptr->network_info.node_url_ptr,
