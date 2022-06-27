@@ -98,7 +98,7 @@ BOAT_RESULT BoatQuorumTxSetGasLimit(BoatQuorumTx *tx_ptr, BoatFieldMax32B *gas_l
 }
 
 
-BOAT_RESULT BoatQuorumTxSetPrivateFor(BoatQuorumTx *tx_ptr, BUINT8 public[BOAT_QUORUM_PUBLIC_KEY_SIZE])
+BOAT_RESULT BoatQuorumTxSetPrivateFor(BoatQuorumTx *tx_ptr, BCHAR public[BOAT_QUORUM_PUBLIC_KEY_SIZE])
 {
     if (tx_ptr == NULL)
     {
