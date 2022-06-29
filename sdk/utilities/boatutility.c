@@ -665,7 +665,10 @@ BBOOL UtilityStringIsHex(const BCHAR *input)
 BOAT_RESULT BoatFieldVariable_malloc_size_expand(BoatFieldVariable *mem, BUINT32 step_size)
 {	
 	//free before malloc to avoid allocate more memory at same time
-	BoatFree(mem->field_ptr);
+    if (mem->field_ptr != NULL)
+    {
+        BoatFree(mem->field_ptr);
+    }
 	
 	mem->field_len += step_size;
 	mem->field_ptr  = BoatMalloc(mem->field_len);
