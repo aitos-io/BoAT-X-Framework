@@ -341,7 +341,6 @@ BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_pt
 
     if (response_code == 200 || response_code == 201)
     {
-        mbedhttpport_context_ptr->http_response_body.string_ptr = BoatMalloc(response.response_content_len)
         if (mbedhttpport_context_ptr->http_response_body.string_ptr == NULL)
         {
             cm_httpclient_sync_free_data(http_handle);
