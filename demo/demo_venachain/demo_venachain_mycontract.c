@@ -14,7 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 #include "mycontract.cpp.abi.h"
-#include "protocolapi/api_venachain.h"
+#include "boatiotsdk.h"
+#include "boatconfig.h"
 
 /**
  * macro used to select wallet type:
