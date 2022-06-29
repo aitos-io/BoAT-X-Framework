@@ -213,7 +213,6 @@ START_TEST(test_001CreateWallet_0006CreateOneTimeWalletFailureShortSize)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
-    BoatIotSdkDeInit();
 }
 END_TEST
 
