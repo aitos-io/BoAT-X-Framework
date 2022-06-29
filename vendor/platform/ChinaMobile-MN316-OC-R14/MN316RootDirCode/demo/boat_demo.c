@@ -234,7 +234,7 @@ void cm_opencpu_entry(void)
     osThreadAttr_t attr = {
         .name = "boat task",
         .priority = osPriorityNormal2,
-        .stack_size = 1024,//WORD,size = 1024*4
+        .stack_size = 2048,//WORD,size = 1024*4
     };
 
     osThreadNew(boat_task_entry, NULL, (const osThreadAttr_t *)&attr);
