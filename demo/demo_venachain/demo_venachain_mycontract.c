@@ -16,6 +16,7 @@
 #include "mycontract.cpp.abi.h"
 #include "boatiotsdk.h"
 #include "boatconfig.h"
+#include "boatlog.h"
 
 /**
  * macro used to select wallet type:
