@@ -204,7 +204,7 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 
 	memset(writeBuf, 0, writeLen);
 
-	count = cm_flash_write(0, writeBuf, writeLen);
+	BUINT32 count = cm_flash_write(0, writeBuf, writeLen);
 	if (count != writeLen)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to remove flash");
