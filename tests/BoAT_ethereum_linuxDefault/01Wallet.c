@@ -76,6 +76,7 @@ START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *g_ethereum_wallet_ptr = NULL;
+    BoatIotSdkInit();
     BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
@@ -118,7 +119,6 @@ START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig)
 
     /* 3-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
-    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -161,6 +161,7 @@ START_TEST(test_001CreateWallet_0004CreateLoadWalletSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *g_ethereum_wallet_ptr = NULL;
+    BoatIotSdkInit();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
     /* 1. execute unit test */
@@ -194,7 +195,6 @@ START_TEST(test_001CreateWallet_0005CreateLoadWalletFailureNoExist)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
-    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -213,7 +213,6 @@ START_TEST(test_001CreateWallet_0006CreateOneTimeWalletFailureShortSize)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
-    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -232,7 +231,6 @@ START_TEST(test_001CreateWallet_0007CreateOneTimeWalletSuccessLongSize)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
-    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -249,13 +247,13 @@ START_TEST(test_001CreateWallet_0008CreateOneTimeWalletFailureProtocolUnknown)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
-    BoatIotSdkDeInit();
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0009CreateWalletWithInternalGeneration)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -274,6 +272,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0010CreateSixWallet)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
