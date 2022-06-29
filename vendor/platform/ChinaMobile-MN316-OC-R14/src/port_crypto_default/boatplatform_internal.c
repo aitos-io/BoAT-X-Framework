@@ -552,7 +552,7 @@ BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWal
 		{
 			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
 				BoatLog(BOAT_LOG_NORMAL, "wallet private key[pkcs] set...");
-				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);;
+				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
 				break;
 			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
 				BoatLog(BOAT_LOG_VERBOSE, "wallet private key[native] set...");
