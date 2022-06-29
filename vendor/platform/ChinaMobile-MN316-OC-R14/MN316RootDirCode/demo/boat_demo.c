@@ -232,7 +232,7 @@ void cm_opencpu_entry(void)
 {
 	cmd_task_flag = osEventFlagsNew(0);
     osThreadAttr_t attr = {
-        .name = "boat task",
+        .name = "boat_task",
         .priority = osPriorityNormal2,
         .stack_size = 2048,//WORD,size = 1024*4
     };
