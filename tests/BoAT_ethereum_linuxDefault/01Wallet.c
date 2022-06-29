@@ -76,6 +76,7 @@ START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *g_ethereum_wallet_ptr = NULL;
+    BoatIotSdkInit();
     BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
 
