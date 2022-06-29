@@ -257,13 +257,13 @@ Function: MbedHttpPortRequestSync()
     wrapper function. Typically it equals to strlen(response_str_ptr).
 
 *******************************************************************************/
+static  cm_httpclient_handle_t http_handle = NULL;
 BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_ptr,
                                     const BCHAR *request_str,
                                     BUINT32 request_len,
                                     BOAT_OUT BCHAR **response_str_ptr,
                                     BOAT_OUT BUINT32 *response_len_ptr)
 {
-    cm_httpclient_handle_t http_handle = NULL;
     cm_httpclient_cfg_t client_cfg;
     //client = {0};
     BSINT32 response_code;
