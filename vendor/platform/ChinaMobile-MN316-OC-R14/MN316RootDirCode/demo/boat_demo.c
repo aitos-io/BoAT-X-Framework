@@ -213,16 +213,6 @@ static void* boat_task_entry(void *args)
     init_asocket_module();
 
     osDelay(10);
-    struct tm cur_time = {0};
-    cm_rtc_get_time_tm(&cur_time);
-    cm_demo_printf("Boat Current time:%04d-%02d-%02d %02d:%02d:%02d\n", 
-        cur_time.tm_year,
-        cur_time.tm_mon,
-        cur_time.tm_mday,
-        cur_time.tm_hour,
-        cur_time.tm_min,
-        cur_time.tm_sec);
-
     boat_platone_entry();
 
     return (void *)0;
