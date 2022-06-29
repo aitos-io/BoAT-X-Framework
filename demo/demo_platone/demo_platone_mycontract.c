@@ -114,10 +114,12 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatPlatoneWalletConfig wallet_config = {0};
+    BoatPlatoneWalletConfig wallet_config;
     BUINT8 binFormatKey[32]               = {0};
 
     (void)binFormatKey; //avoid warning
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
