@@ -78,7 +78,7 @@ typedef enum
 //!@brief boat SDK signature result
 typedef struct TBoatSignatureResult
 {
-	BBOOL    native_format_used;  //!< ture: used, false:unused
+	BBOOL    native_format_used;  //!< true: used, false:unused
 	BUINT8   native_sign[64];
 	
 	BBOOL    pkcs_format_used;
