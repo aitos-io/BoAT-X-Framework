@@ -98,7 +98,7 @@ BOAT_RESULT BoatQuorumTxSetGasLimit(BoatQuorumTx *tx_ptr, BoatFieldMax32B *gas_l
 }
 
 
-BOAT_RESULT BoatQuorumTxSetPrivateFor(BoatQuorumTx *tx_ptr, BUINT8 public[BOAT_QUORUM_PUBLIC_KEY_SIZE])
+BOAT_RESULT BoatQuorumTxSetPrivateFor(BoatQuorumTx *tx_ptr, BCHAR public[BOAT_QUORUM_PUBLIC_KEY_SIZE])
 {
     if (tx_ptr == NULL)
     {
@@ -417,11 +417,11 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
         gasprice.field_len = sizeof("0x0");
         memcpy(&tx_ptr->rawtx_fields.gasprice, "0x0", sizeof("0x0"));
    
-    if (result != BOAT_SUCCESS)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "set gas price failed: %d.", result);
-        return result;
-    }
+    // if (result != BOAT_SUCCESS)
+    // {
+    //     BoatLog(BOAT_LOG_CRITICAL, "set gas price failed: %d.", result);
+    //     return result;
+    // }
 
     // Initialize gaslimit
     BoatFieldMax32B gaslimit;
