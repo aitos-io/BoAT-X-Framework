@@ -266,7 +266,6 @@ BOAT_RESULT MbedHttpPortRequestSync(MbedHttpPortContext *mbedhttpport_context_pt
     cm_httpclient_handle_t http_handle = NULL;
     cm_httpclient_cfg_t client_cfg;
     //client = {0};
-    httpclient_data_t client_data = {0};
     BSINT32 response_code;
     BSINT32 ret;
 
