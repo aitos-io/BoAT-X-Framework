@@ -111,10 +111,12 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
 __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatEthWalletConfig wallet_config = {0};
+    BoatEthWalletConfig wallet_config;
     BUINT8 binFormatKey[32]           = {0};
 
     (void)binFormatKey; //avoid warning
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
