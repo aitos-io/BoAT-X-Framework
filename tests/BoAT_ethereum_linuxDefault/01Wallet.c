@@ -48,7 +48,7 @@ BoatEthWalletConfig get_ethereum_wallet_settings()
 {
     //set user private key context
         
-    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+    if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
     {
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         UtilityHexToBin(binFormatKey, 32, ethereum_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
