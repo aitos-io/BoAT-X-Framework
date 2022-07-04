@@ -116,8 +116,10 @@ __BOATSTATIC BOAT_RESULT venachain_createOnetimeWallet()
 __BOATSTATIC BOAT_RESULT venachain_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatVenachainWalletConfig wallet_config = {0};
+    BoatVenachainWalletConfig wallet_config;
     BUINT8 binFormatKey[32]               = {0};
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
     (void)binFormatKey; //avoid warning
 
