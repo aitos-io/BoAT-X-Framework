@@ -49,7 +49,7 @@ const BCHAR * demoUrl = "127.0.0.1:22000";
 /*** transfer recipient address ***/
 const BCHAR *demoRecipientAddress = "0xf17f52151EbEF6C7334FAD080c5704D77216b732";
 
-#define USE_ONETIME_WALLET
+// #define USE_ONETIME_WALLET
 #define PRIVATE_TRUE  1
 #define PRIVATE_FALSE 0
 
