@@ -53,7 +53,7 @@
 
   打开`<ML302 Root>\Makefile`文件
   
-  在LDFLAGS += -T prebuilt/components/appstart/flashrun.ld.obj -Wl,-Map=firmware/$(strip $(HWVER))/8910DM_ML302.map之后新建一行添加以下内容：
+  在`LDFLAGS += -T prebuilt/components/appstart/flashrun.ld.obj -Wl,-Map=firmware/$(strip $(HWVER))/8910DM_ML302.map`之后新建一行添加以下内容：
   ```
   LDFLAGS += $(BOAT_BASE)/lib/libboatwallet.a $(BOAT_BASE)/lib/libboatvendor.a
   ```
