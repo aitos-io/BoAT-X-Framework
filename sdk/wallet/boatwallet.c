@@ -131,7 +131,7 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                 }
                 mbedtls_x509_crt m_certificate;
 	            mbedtls_x509_crt_init(&m_certificate);
-	            int status = mbedtls_x509_crt_parse(&m_certificate,fabric_config_ptr->accountCertContent.content, fabric_config_ptr->accountCertContent.length);
+	            int status = mbedtls_x509_crt_parse(&m_certificate,(unsigned char *)&(fabric_config_ptr->accountCertContent.content[0]), fabric_config_ptr->accountCertContent.length);
                 if (status != BOAT_SUCCESS)
                 {
                     BoatLog(BOAT_LOG_NORMAL, "persistent wallet account cert err. %x ",-status);
