@@ -53,7 +53,7 @@ const BCHAR *demoRecipientAddress = "0xf17f52151EbEF6C7334FAD080c5704D77216b732"
 #define PRIVATE_TRUE  1
 #define PRIVATE_FALSE 0
 
-BoatEthWallet *g_quorum_wallet_ptr;
+BoatQuorumWallet *g_quorum_wallet_ptr;
 
 
 #if defined(USE_ONETIME_WALLET)
@@ -202,7 +202,7 @@ BOAT_RESULT quorumGetBalance(BoatQuorumWallet *wallet_ptr)
 	return result;
 }
 
-BOAT_RESULT quorumTransfer(BoatEthWallet *wallet_ptr)
+BOAT_RESULT quorumTransfer(BoatQuorumWallet *wallet_ptr)
 {
     BOAT_RESULT result;
     BoatQuorumTx tx_ctx;
