@@ -66,8 +66,10 @@ BoatQuorumWallet *g_quorum_wallet_ptr;
 __BOATSTATIC BOAT_RESULT quorum_createOnetimeWallet()
 {
     BSINT32 index;
-    BoatQuorumWalletConfig wallet_config = {0};
+    BoatQuorumWalletConfig wallet_config;
     BUINT8 binFormatKey[32]              = {0};
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
     (void)binFormatKey; //avoid warning
     /* wallet_config value assignment */
@@ -120,10 +122,12 @@ __BOATSTATIC BOAT_RESULT quorum_createOnetimeWallet()
 __BOATSTATIC BOAT_RESULT quorum_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatQuorumWalletConfig wallet_config = {0};
+    BoatQuorumWalletConfig wallet_config;
     BUINT8 binFormatKey[32]           = {0};
 
     (void)binFormatKey; //avoid warning
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
     /* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
