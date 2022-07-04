@@ -194,7 +194,6 @@ __BOATSTATIC BOAT_RESULT quorum_loadPersistWallet(BCHAR *wallet_name)
 BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
 {
     BCHAR *result_str;
-    BUINT32 index;
     BoatQuorumTx tx_ctx;
     BOAT_RESULT result;
 
@@ -235,7 +234,6 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
 int main(int argc, char *argv[])
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-    boat_try_declare;
     /* step-1: Boat SDK initialization */
     BoatIotSdkInit();
 
