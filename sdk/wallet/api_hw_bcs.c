@@ -507,7 +507,10 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 	mbedtls_x509_crt m_certificate;
 	mbedtls_x509_crt_init(&m_certificate);
 	uint32_t status = mbedtls_x509_crt_parse(&m_certificate, (const unsigned char *)tx_ptr->wallet_ptr->account_info.cert.field_ptr, tx_ptr->wallet_ptr->account_info.cert.field_len);
-
+	if(status != 0){
+		BoatLog(BOAT_LOG_CRITICAL, "certificate parse failed.");
+		boat_throw(BOAT_ERROR, BoatHlfabricTxInit_exception);		
+	}
 	const mbedtls_x509_name *name = &m_certificate.subject;
 	char value[64];
 	size_t value_len;
