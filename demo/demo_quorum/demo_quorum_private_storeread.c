@@ -192,7 +192,7 @@ __BOATSTATIC BOAT_RESULT quorum_loadPersistWallet(BCHAR *wallet_name)
 BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
 {
     BCHAR *result_str;
-    BUINT32 index;
+    // BUINT32 index;
     BoatQuorumTx tx_ctx;
     BOAT_RESULT result;
     
