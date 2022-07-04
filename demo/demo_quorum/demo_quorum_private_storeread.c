@@ -207,7 +207,7 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
         BoatLog(BOAT_LOG_NORMAL, "BoatQuorumTxInit fails.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
-    char set_data[32] = {0};
+    BUINT8 set_data[32] = {0};
     set_data[0]= 9;
 
     result_str = SimpleStorage_set(&tx_ctx, set_data);
