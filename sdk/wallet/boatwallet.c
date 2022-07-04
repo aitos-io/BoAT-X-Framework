@@ -109,7 +109,7 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
         case BOAT_PROTOCOL_HWBCS:
             if (wallet_config_ptr != NULL)
             {
-                BoatHlfabricWalletConfig* fabric_config_ptr = wallet_config_ptr;
+                BoatHlfabricWalletConfig* fabric_config_ptr = (BoatHlfabricWalletConfig*)wallet_config_ptr;
                 if (fabric_config_ptr->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION &&
                     fabric_config_ptr->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
                 {
