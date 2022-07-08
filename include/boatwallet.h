@@ -69,7 +69,7 @@ typedef enum
 
 //!@brief The extension field of prikey context
 //!  This field is only used for secret key storage when secure storage environment is not available. 
-//!  \n The practice of the security specification is still to store it in TE/SE.
+//!  \n The practice of the security specification is still to store it in TEE/SE.
 typedef struct TBoatWalletExtraData
 {
     BUINT32  value_len;  //!< Length of the stored private key
