@@ -161,7 +161,7 @@ BOAT_RESULT BoatIotSdkInit(void);
  *   BoatIotSdkDeInit() MUST be called after use of BoAT IoT SDK.
  *   
  * @return 
- *   This function doesn't return any thing.
+ *   This function doesn't return anything.
  *
  * @see BoatIotSdkInit()
  ******************************************************************************/
@@ -238,7 +238,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
  *   The wallet index to unload.
  *
  * @return 
- *   This function doesn't return any thing.
+ *   This function doesn't return anything.
  *
  * @see BoatWalletCreate() BoatWalletDelete()
  ******************************************************************************/
