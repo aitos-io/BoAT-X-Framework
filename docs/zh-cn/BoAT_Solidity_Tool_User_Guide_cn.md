@@ -18,12 +18,13 @@
 |PlatONE  |fiscobcos2c.py           |
 |FISCO-BCOS  |platoneSolidity2c.py  |
 |Venachain  |venachainSolidity2c.py  |
+|Quorum  |Quorum2c.py  |
 
 ## 软件依赖
 @todo
 
 ## 使用说明
-通过工具生成Solidity合约的C接口文件时，需要根据相应的平台调用tools文件夹相应的合约版本，其中，`eth2c.py`，`fiscobcos2c.py`，`platoneSolidity2c.py`和`venachainSolidity2c.py`四个文件为相应链的合约脚本。  
+通过工具生成Solidity合约的C接口文件时，需要根据相应的平台调用tools文件夹相应的合约版本，其中，`eth2c.py`，`fiscobcos2c.py`，`platoneSolidity2c.py`，`venachainSolidity2c.py`和`Quorum2c.py`五个文件为相应链的合约脚本。  
 
 ### 输入文件生成
 
