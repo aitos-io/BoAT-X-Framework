@@ -727,7 +727,10 @@ class CFunctionGen():
             
             self.h_file_content += generated_declaration_block_str
             self.h_file_content += generated_include_block_str
+            self.h_file_content += '#ifndef SOLIDITY_TYPE_MAPPING \n'
+            self.h_file_content += '#define SOLIDITY_TYPE_MAPPING \n'
             self.h_file_content += generated_types_for_solidity_str
+            self.h_file_content += '#endif \n'
             
             for abi_item in self.abi_object['abi']:
                 if abi_item['type'] == 'function':
