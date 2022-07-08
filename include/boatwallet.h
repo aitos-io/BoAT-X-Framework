@@ -122,7 +122,7 @@ typedef struct TBoatWalletList
 //!@brief BoAT IoT SDK Context
 typedef struct TBoatIotSdkContext
 {
-    // Protocol specifiec properties are defined in protocol specific WalletInfo structure
+    // Protocol specific properties are defined in protocol specific WalletInfo structure
     BoatWalletList wallet_list[BOAT_MAX_WALLET_NUM];  //!< Wallet Info List
 }BoatIotSdkContext;
 
