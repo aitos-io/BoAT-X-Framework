@@ -38,13 +38,12 @@ static BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet
 
 
 
-BUINT8 get_fibon_data(BUINT8 n) {
-
+BUINT8 get_fibon_data(BUINT8 n) 
+{
 	if ((n == 1) || (n == 2) || (n == 0)) 
 	{
 		return 1;
 	}
-
 	else 
 	{
 		return get_fibon_data(n - 1) + get_fibon_data(n - 2);
@@ -60,34 +59,31 @@ BOAT_RESULT array_to_str(BUINT8* array, BCHAR* str, char lenth)
 
     if ((array == NULL) || (str == NULL))
     {
-    		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    	return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
     for (i = 0; i < lenth; i++)
     {
-    	   //up data 
+    	//up data 
         value_up = (array[i] & 0xf0) >> 4;
         if ((value_up >= 0) && (value_up <= 9)) 
         {
-
-             str[n++] = value_up + 0x30;
+            str[n++] = value_up + 0x30;
         }
         else if ((value_up >= 0xA) && (value_up <= 0xF)) 
         {
-
-             str[n++] = value_up + 0x57;
+            str[n++] = value_up + 0x57;
         }
 
         //low data
         value_down = array[i] & 0x0f;
         if ((value_down >= 0) && (value_down <= 9)) 
         {  
-
-             str[n++] = value_down + 0x30;
+            str[n++] = value_down + 0x30;
         }
         else if ((value_down >= 0xA) && (value_down <= 0xF)) 
         {
-             str[n++] = value_down + 0x57;
+            str[n++] = value_down + 0x57;
         }
     }
     return BOAT_SUCCESS;
@@ -257,10 +253,10 @@ BoatHlchainmakerWallet *BoatHlchainmakerWalletInit(const BoatHlchainmakerWalletC
 
 	boat_catch(BoatHlchainmakerWalletInitException)
 	{
-        	BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-        	BoatHlchainmakerWalletDeInit(wallet_ptr);
-          return NULL;
-    	}
+        BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+        BoatHlchainmakerWalletDeInit(wallet_ptr);
+        return NULL;
+    }
 
 	return wallet_ptr;
 }
@@ -283,7 +279,7 @@ void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr)
 	
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
 	/* tlsClinet_info DeInit */
-     if (wallet_ptr->tls_ca_cert_info.field_ptr!= NULL)
+    if (wallet_ptr->tls_ca_cert_info.field_ptr!= NULL)
 	{
 		BoatFree(wallet_ptr->tls_ca_cert_info.field_ptr);
 		wallet_ptr->tls_ca_cert_info.field_ptr = NULL;
@@ -463,8 +459,8 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	boat_try_declare;
 
 	TxType tx_type = TXTYPE_INVOKE_USER_CONTRACT; 
-	if ((tx_ptr == NULL) || (method == NULL) || (contract_name == NULL) || (invoke_response == NULL)){
-
+	if ((tx_ptr == NULL) || (method == NULL) || (contract_name == NULL) || (invoke_response == NULL))
+    {
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
 	}
@@ -479,23 +475,23 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	}
 
 	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, invoke_tx_id);
-	if (result != BOAT_SUCCESS) {
-
+	if (result != BOAT_SUCCESS) 
+    {
 		BoatLog(BOAT_LOG_CRITICAL, "hlchainmakerTransactionPacked failed");
 		boat_throw(result, BoatHlchainmakerContractInvoke);
 	}
 
 	result = BoatHlchainmakerTxRequest(tx_ptr, &tx_response);
-	if (result != BOAT_SUCCESS) {
-
+	if (result != BOAT_SUCCESS) 
+    {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerTxRequest failed");
 		boat_throw(result, BoatHlchainmakerContractInvoke);
 	}
 
 	invoke_response->gas_used = 0;
      invoke_response->code  = tx_response->code;
-	if (strlen(tx_response->message) < BOAT_RESPONSE_MESSAGE_MAX_LEN) {
-
+	if (strlen(tx_response->message) < BOAT_RESPONSE_MESSAGE_MAX_LEN) 
+    {
 		memset(invoke_response->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
 		memcpy(invoke_response->message, tx_response->message, strlen(tx_response->message));
 	}
@@ -505,13 +501,13 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		common__tx_response__free_unpacked(tx_response, NULL);
 	}
 
-	if (sync_result) {
-
+	if (sync_result) 
+    {
 		BoatHlchainmakerAddTxParam(tx_ptr, 2, "txId",invoke_tx_id);
 		result = hlchainmakerTransactionPacked(tx_ptr, "GET_TX_BY_TX_ID", "SYSTEM_CONTRACT_QUERY", TxType_QUERY_SYSTEM_CONTRACT, invoke_tx_id);
 
-		if (result == BOAT_SUCCESS) {
-
+		if (result == BOAT_SUCCESS) 
+        {
 			for (int i = 0; i < BOAT_RETRY_CNT; i++) 
 			{
 				sleep_second = get_fibon_data(i + 1);
@@ -524,7 +520,8 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 					boat_throw(result, BoatHlchainmakerContractInvoke);
 				}
 
-				if (tx_response->code == SUCCESS) {
+				if (tx_response->code == SUCCESS) 
+                {
 					transactation_info = common__transaction_info__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
 					invoke_response->gas_used = transactation_info->transaction->result->contract_result->gas_used;
 					if (tx_response != NULL)
@@ -549,7 +546,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	{
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
-    	}
+    }
 
 	if (invoke_tx_id != NULL) 
 	{
@@ -579,18 +576,21 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	get_tx_id(query_tx_id);
 
 	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, query_tx_id);
-	if (result != BOAT_SUCCESS) {
+	if (result != BOAT_SUCCESS) 
+    {
 		BoatLog(BOAT_LOG_CRITICAL, "hlchainmakerTransactionPacked failed");
 		boat_throw(result, BoatHlchainmakerContractQuery_exception);
 	}
 	
 	result = BoatHlchainmakerTxRequest(tx_ptr, &tx_response);
-	if (result != BOAT_SUCCESS) {
+	if (result != BOAT_SUCCESS) 
+    {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerTxRequest failed");
 		boat_throw(result, BoatHlchainmakerContractQuery_exception);
 	}
 
-	if (tx_response == NULL) {
+	if (tx_response == NULL) 
+    {
 		BoatLog(BOAT_LOG_CRITICAL, "tx_response is NULL");
 		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
 	}
@@ -630,7 +630,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	{
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
-    	}
+    }
 
 	if (query_tx_id != NULL)
 	{
@@ -648,7 +648,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 
 BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *node_url_ptr)
 {
-    	BOAT_RESULT result;
+    BOAT_RESULT result;
     
 	if ((wallet_ptr == NULL) || (node_url_ptr == NULL))
 	{
@@ -696,7 +696,7 @@ BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, c
 
 BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *host_name_ptr)
 {
-    	BOAT_RESULT result;
+    BOAT_RESULT result;
     
 	if ((wallet_ptr == NULL) || (host_name_ptr == NULL))
 	{
@@ -737,7 +737,7 @@ BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, 
 
 BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *chain_id_ptr)
 {
-    	BOAT_RESULT result;
+    BOAT_RESULT result;
     
 	if ((wallet_ptr == NULL) || (chain_id_ptr == NULL))
 	{
@@ -778,7 +778,7 @@ BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, c
 
 BOAT_RESULT BoatChainmakerWalletSetOrgId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *org_id_ptr)
 {
-    	BOAT_RESULT result;
+    BOAT_RESULT result;
     
 	if ((wallet_ptr == NULL) || (org_id_ptr == NULL))
 	{
