@@ -757,7 +757,7 @@ END_TEST
 
 START_TEST(test_002InitWallet_0009InitEthWalletWithNullConfig)
 {
-    BoatEthWallet *rtnVal;
+    BoatEthWallet *rtnVal = NULL;
 
     /* 1. execute unit test */
     rtnVal = BoatEthWalletInit(NULL, sizeof(BoatEthWalletConfig));
@@ -771,7 +771,7 @@ END_TEST
 
 START_TEST(test_002InitWallet_0010InitEthWalletWithSmallerSize)
 {
-    BoatEthWallet *rtnVal;
+    BoatEthWallet *rtnVal = NULL;
     BoatEthWalletConfig walletConfig = {0};
 
     /* 1. execute unit test */
@@ -786,7 +786,7 @@ END_TEST
 
 START_TEST(test_002InitWallet_0011InitEthWalletWithBiggerSize)
 {
-    BoatEthWallet *rtnVal;
+    BoatEthWallet *rtnVal = NULL;
     BoatEthWalletConfig walletConfig = {0};
 
     /* 1. execute unit test */
@@ -801,7 +801,7 @@ END_TEST
 
 START_TEST(test_002InitWallet_0012InitEthWalletSuccess)
 {
-    BoatEthWallet *rtnVal;
+    BoatEthWallet *rtnVal = NULL;
     BoatEthWalletConfig walletConfig = get_ethereum_wallet_settings();
 
     /* 1. execute unit test */
@@ -816,7 +816,7 @@ END_TEST
 
 START_TEST(test_002InitWallet_0013InitEthWalletGenerationKey)
 {
-    BoatEthWallet *rtnVal;
+    BoatEthWallet *rtnVal = NULL;
     BoatEthWalletConfig walletConfig;
 
     walletConfig.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -836,7 +836,7 @@ END_TEST
 
 START_TEST(test_002InitWallet_0014InitEthWalletWithWrongGenMode)
 {
-    BoatEthWallet *rtnVal;
+    BoatEthWallet *rtnVal = NULL;
     BoatEthWalletConfig walletConfig;
 
     walletConfig.prikeyCtx_config.prikey_genMode = 3;
@@ -854,7 +854,7 @@ END_TEST
 
 START_TEST(test_002InitWallet_0015InitEthWalletWithWrongKeyFormat)
 {
-    BoatEthWallet *rtnVal;
+    BoatEthWallet *rtnVal = NULL;
     BoatEthWalletConfig walletConfig;
 
     walletConfig.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -873,7 +873,7 @@ END_TEST
 
 START_TEST(test_002InitWallet_0016InitEthWalletWithWrongType)
 {
-    BoatEthWallet *rtnVal;
+    BoatEthWallet *rtnVal = NULL;
     BoatEthWalletConfig walletConfig;
 
     walletConfig.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
