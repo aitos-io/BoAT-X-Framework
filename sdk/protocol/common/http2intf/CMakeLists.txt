@@ -5,9 +5,9 @@ set(FILE_SRC        http2intf.c)
 
 
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
-target_link_libraries(${SUB_MODULE_NAME}  protos-obj nghttps2-obj)
+target_link_libraries(${SUB_MODULE_NAME}   nghttps2-obj)
 
-add_dependencies(${SUB_MODULE_NAME} protos-obj nghttps2-obj)
+add_dependencies(${SUB_MODULE_NAME}  nghttps2-obj)
 target_include_directories(${SUB_MODULE_NAME}
     PRIVATE
     ${PROJECT_SOURCE_DIR}/sdk/include
