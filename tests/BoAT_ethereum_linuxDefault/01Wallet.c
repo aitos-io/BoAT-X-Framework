@@ -349,6 +349,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0012CreateOnetimeWalletWithLoadExistedWallet)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.load_existed_wallet = BOAT_TRUE;
