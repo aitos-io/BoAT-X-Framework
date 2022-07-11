@@ -751,7 +751,7 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
-    BoatIotSdkDeInit();
+    BoatFree(wallet_ptr);
 }
 END_TEST
 
