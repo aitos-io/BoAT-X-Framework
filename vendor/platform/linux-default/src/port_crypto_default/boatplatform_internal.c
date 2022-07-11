@@ -549,7 +549,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 
-    result = UtilityPKCS2Native(config->prikey_content.field_ptr,&keypair);
+    result = UtilityPKCS2Native((BCHAR*)(config->prikey_content.field_ptr),&keypair);
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> UtilityPKCS2Native err.");
 	UtilityFreeKeypair(keypair);
