@@ -116,6 +116,8 @@ typedef struct
 	BUINT32 val[9];
 } utilityBignum256;
 
+
+//!@brief Keypair algorithm type for KeypairNative structure.
 typedef enum
 {
     KEYPAIT_ALG_UNKNOWN = 0,   
