@@ -729,9 +729,9 @@ BCHAR *TestABIContract_setIntArray(BoatEthTx *tx_ptr, BSINT32 *input, BUINT32 in
     (void) nonFixed_filled_length;
     BUINT32 nonFixed_actual_length;
     BUINT32 input_data_length = 0;
-    BUINT32 input_offset_location[inputLen];
-    BUINT32 input_filled_length[inputLen];
-    BUINT32 input_actual_length[inputLen];
+    // BUINT32 input_offset_location[inputLen];
+    // BUINT32 input_filled_length[inputLen];
+    // BUINT32 input_actual_length[inputLen];
     BSINT32 *input_ptr;
     BUINT32 i;
     (void) fixedsize_bytes32;

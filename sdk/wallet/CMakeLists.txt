@@ -55,6 +55,7 @@ target_include_directories(${SUB_MODULE_NAME}
     ${PROJECT_SOURCE_DIR}/sdk/protocol/boathwbcs/protos
     endif()
     if(BOAT_PROTOCOL_USE_CHAINMAKER)
+    ${PROJECT_SOURCE_DIR}/sdk/third-party/protobuf-c/include
     ${PROJECT_SOURCE_DIR}/sdk/protocol/boatchainmaker/protos
     ${PROJECT_SOURCE_DIR}/sdk/protocol/boatchainmaker
     endif()
