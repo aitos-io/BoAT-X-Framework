@@ -103,7 +103,7 @@ BOAT_RESULT BoatBech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *da
 
     if (output == NULL)
     {
-        BoatLog(BOAT_LOG_VERBOSE, "The pointer output cann't be NULL.");
+        BoatLog(BOAT_LOG_CRITICAL, "The pointer output cann't be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
@@ -193,7 +193,6 @@ BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BUINT8 *out)
     BSINT32 i;
     BSINT32 hrplen, datalen,outlen;
     const BCHAR *hrp;
-    BUINT8 *data, *expandHRPData;
     BUINT8 chksum[6];
     if (in == NULL || out == NULL)
     {
@@ -227,34 +226,24 @@ BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BUINT8 *out)
     {
         return -1;
     }
-    data = BoatMalloc(datalen);
-    if (data == NULL)
-    {
-        return -1;
-    }
+    BUINT8 data[datalen];
     for (i = 0; i < datalen; i++)
     {
-        *(data + i) = *(CHARSET_REV + *(in + separatorOffset + 1 + i));
+        data[i] = *(CHARSET_REV + *(in + separatorOffset + 1 + i));
     }
 
-    expandHRPData = BoatMalloc(hrplen * 2 + 1);
+    BUINT8 expandHRPData[hrplen * 2 + 1];
     BoatBech32Polymod(BoatExpandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, data, datalen, chksum);
-    BoatFree(expandHRPData);
 
     for (i = 0; i < 6; i++)
     {
         if (*(in + hrplen + 1 + datalen + i) != *(BECH32ALPHABET + chksum[i]))
         {
-            BoatLog(BOAT_LOG_VERBOSE, "PlatON address checksum is incorrect.");
-            if (data != NULL)
-            {
-                BoatFree(data);
-            }
+            BoatLog(BOAT_LOG_CRITICAL, "PlatON address checksum is incorrect.");
             return -1;
         }
     }
     outlen = BoatConvertBits(data, datalen, (BUINT8 *)out, 5, 8);
-    BoatFree(data);
     return outlen;
 }
 
