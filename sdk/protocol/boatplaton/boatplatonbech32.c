@@ -95,14 +95,19 @@ BUINT8 *BoatExpandHrp(const BCHAR *hrp, BUINT8 hrplen, BUINT8 *out)
     return out;
 }
 
-BUINT8 *BoatBech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, BUINT32 datalen)
+BOAT_RESULT BoatBech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, BUINT32 datalen, BUINT8 *output)
 {
     BUINT32 chk = 1;
     BUINT32 b,i,j,len;
-    BUINT8 *out = BoatMalloc(6);
     const BUINT8 *p;
 
-    memset(out, 0, 6);
+    if (output == NULL)
+    {
+        BoatLog(BOAT_LOG_VERBOSE, "The pointer output cann't be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    memset(output, 0, 6);
 
     for (i = 0; i < 3; i++)
     {
@@ -118,7 +123,7 @@ BUINT8 *BoatBech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, 
         }
         else if (i == 2)
         {
-            p = out;
+            p = output;
             len = 6;
         }
 
@@ -138,9 +143,9 @@ BUINT8 *BoatBech32Polymod(const BUINT8 *hrp, BUINT8 hrplen, const BUINT8 *data, 
 
     for (i = 0; i < 6; i++) 
     {
-        *(out + i) = (BUINT8)((chk >> (5 * (5 - i))) & 0x1F);
+        *(output + i) = (BUINT8)((chk >> (5 * (5 - i))) & 0x1F);
     }
-    return out;
+    return BOAT_SUCCESS;
 }
 
 BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BCHAR *out, const BCHAR *hrp, BUINT8 hrplen)
@@ -157,7 +162,7 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BCHAR *out, cons
     BUINT8 *base32Data;
     BUINT8 *expandHRPData;
     BUINT32 base32OutLen = (inlen / 5) * 8 + ((inlen % 5) * 8 + 4) / 5;
-    BUINT8 *bech32Chk;
+    BUINT8 bech32Chk[6];
     BUINT32 i;
 
     base32Data = BoatMalloc(base32OutLen);
@@ -170,7 +175,7 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BCHAR *out, cons
 
     expandHRPData = BoatMalloc(hrplen * 2 + 1);
 
-    bech32Chk = BoatBech32Polymod(BoatExpandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, base32Data, base32OutLen);
+    BoatBech32Polymod(BoatExpandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, base32Data, base32OutLen, bech32Chk);
 
     //out = BoatMalloc(hrplen + 1 + base32OutLen + 6 + 1);
     memcpy(out, hrp, hrplen);
@@ -182,13 +187,12 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BCHAR *out, cons
     }
     for (i = 0; i < 6; i++)
     {
-        *(out + hrplen + 1 + base32OutLen + i) = *(BECH32ALPHABET + *(bech32Chk + i));
+        *(out + hrplen + 1 + base32OutLen + i) = *(BECH32ALPHABET + bech32Chk[i]);
     }
     *(out + hrplen + 1 + base32OutLen + 6) = 0;
 
     BoatFree(expandHRPData);
     BoatFree(base32Data);
-    BoatFree(bech32Chk);
     
     return hrplen + 1 + base32OutLen + 6;
 }
@@ -199,7 +203,8 @@ BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BUINT8 *out)
     BSINT32 i;
     BSINT32 hrplen, datalen,outlen;
     const BCHAR *hrp;
-    BUINT8 *data, *chksum, *expandHRPData;
+    BUINT8 *data, *expandHRPData;
+    BUINT8 chksum[6];
     if (in == NULL || out == NULL)
     {
         return -1;
@@ -243,15 +248,14 @@ BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BUINT8 *out)
     }
 
     expandHRPData = BoatMalloc(hrplen * 2 + 1);
-    chksum = BoatBech32Polymod(BoatExpandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, data, datalen);
+    BoatBech32Polymod(BoatExpandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, data, datalen, chksum);
     BoatFree(expandHRPData);
 
     for (i = 0; i < 6; i++)
     {
-        if (*(in + hrplen + 1 + datalen + i) != *(BECH32ALPHABET + *(chksum + i)))
+        if (*(in + hrplen + 1 + datalen + i) != *(BECH32ALPHABET + chksum[i]))
         {
-            BoatLog(BOAT_LOG_NORMAL, "PlatON address checksum is incorrect.");
-            BoatFree(chksum);
+            BoatLog(BOAT_LOG_VERBOSE, "PlatON address checksum is incorrect.");
             if (data != NULL)
             {
                 BoatFree(data);
@@ -259,7 +263,6 @@ BSINT32 BoatPlatONBech32Decode(const BCHAR *in, BUINT32 inlen, BUINT8 *out)
             return -1;
         }
     }
-    BoatFree(chksum);
     outlen = BoatConvertBits(data, datalen, (BUINT8 *)out, 5, 8);
     BoatFree(data);
     return outlen;
