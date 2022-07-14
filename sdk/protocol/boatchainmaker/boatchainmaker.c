@@ -33,6 +33,7 @@ BOAT_RESULT generateTxRequestPayloadPack(BoatHlchainmakerTx *tx_ptr, char *metho
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	int i;
+    boat_try_declare;
 
 	BUINT32 packed_length_payload;
 	Common__TransactPayload transactPayload = COMMON__TRANSACT_PAYLOAD__INIT;
