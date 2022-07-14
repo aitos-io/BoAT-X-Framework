@@ -625,6 +625,23 @@ BBOOL UtilityStringIsHex(const BCHAR *input);
 *******************************************************************************/
 char *Utility_itoa(int num, char *str, int radix);
 
+/******************************************************************************
+* @brief Convert PKCS format key to Native format key
+*
+* @details
+*	 Convert a key in PKCS format to Native format
+*
+* @param[in] input
+* 	 The pointer to the input key in PKCS format
+* 
+* @param[out] keypair
+* 	 The pointer to the output native key pair
+*
+*
+* @return
+*   If the conversion is successful, return \c BOAT_SUCCESS, else
+*   return  BOAT_ERROR.
+*******************************************************************************/
 BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair);
 BCHAR* UtilityNative2PKCS(KeypairNative keypair);
 void UtilityFreeKeypair(KeypairNative keypair);
