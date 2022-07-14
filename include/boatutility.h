@@ -643,6 +643,20 @@ char *Utility_itoa(int num, char *str, int radix);
 *   return  BOAT_ERROR.
 *******************************************************************************/
 BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair);
+
+/******************************************************************************
+* @brief Convert the key pair in Native format to the key in PKCS certificate format
+*
+* @details
+*	 Convert a key pair in Native format to a key in PKCS certificate format
+*
+* @param[in] keypair
+* 	 The Native key pair that needs to be converted
+*
+* @return
+*   If the conversion is successful, return the key in PKCS format, else
+*   return  NULL.
+*******************************************************************************/
 BCHAR* UtilityNative2PKCS(KeypairNative keypair);
 void UtilityFreeKeypair(KeypairNative keypair);
 
