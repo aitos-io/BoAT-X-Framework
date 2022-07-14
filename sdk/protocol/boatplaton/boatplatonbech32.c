@@ -159,21 +159,14 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BCHAR *out, cons
         return -1;
     }
 
-    BUINT8 *base32Data;
-    BUINT8 *expandHRPData;
+    
+    BUINT8 expandHRPData[hrplen * 2 + 1];
     BUINT32 base32OutLen = (inlen / 5) * 8 + ((inlen % 5) * 8 + 4) / 5;
+    BUINT8 base32Data[base32OutLen];
     BUINT8 bech32Chk[6];
     BUINT32 i;
 
-    base32Data = BoatMalloc(base32OutLen);
-    if (base32Data == NULL)
-    {
-        return -1;
-    }
-
     BoatConvertBits(in, inlen, base32Data, 8, 5);
-
-    expandHRPData = BoatMalloc(hrplen * 2 + 1);
 
     BoatBech32Polymod(BoatExpandHrp(hrp, hrplen, expandHRPData), hrplen * 2 + 1, base32Data, base32OutLen, bech32Chk);
 
@@ -183,16 +176,13 @@ BSINT32 BoatPlatONBech32Encode(const BUINT8 *in, BUINT32 inlen, BCHAR *out, cons
 
     for (i = 0; i < base32OutLen; i++)
     {
-        *(out + hrplen + 1 + i) = *(BECH32ALPHABET + *(base32Data + i));
+        *(out + hrplen + 1 + i) = *(BECH32ALPHABET + base32Data[i]);
     }
     for (i = 0; i < 6; i++)
     {
         *(out + hrplen + 1 + base32OutLen + i) = *(BECH32ALPHABET + bech32Chk[i]);
     }
     *(out + hrplen + 1 + base32OutLen + 6) = 0;
-
-    BoatFree(expandHRPData);
-    BoatFree(base32Data);
     
     return hrplen + 1 + base32OutLen + 6;
 }
