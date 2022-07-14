@@ -137,6 +137,11 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 	packedLength = packedHeaderLength + payloadPacked.field_len;
 
 	hash_data.field_ptr = BoatMalloc(packedLength);
+    if (hash_data.field_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Failed to allocate memory.");
+        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+    }
 	hash_data.field_len = packedLength;
 	common__tx_header__pack__chainmaker(&tx_header, hash_data.field_ptr);
 	hash_data.field_ptr += packedHeaderLength;
