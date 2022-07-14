@@ -41,9 +41,18 @@ BOAT_RESULT generateTxRequestPayloadPack(BoatHlchainmakerTx *tx_ptr, char *metho
 	transactPayload.method                  = method;
 
 	transactPayload.parameters = (Common__KeyValuePair**)BoatMalloc(sizeof(Common__KeyValuePair*) * tx_ptr->trans_para.n_parameters);
-	for (i = 0; i < tx_ptr->trans_para.n_parameters; i++)
+	if (transactPayload.parameters == NULL)
+    {
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, cleanup);
+    }
+    
+    for (i = 0; i < tx_ptr->trans_para.n_parameters; i++)
 	{
 		Common__KeyValuePair* key_value_pair = BoatMalloc(sizeof(Common__KeyValuePair));
+        if (key_value_pair == NULL)
+        {
+            boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, cleanup);
+        }
 		memcpy(key_value_pair, &keyValuePair, sizeof(Common__KeyValuePair));
 		key_value_pair->key   = tx_ptr->trans_para.parameters[i].key;
 		key_value_pair->value = tx_ptr->trans_para.parameters[i].value;
@@ -54,15 +63,33 @@ BOAT_RESULT generateTxRequestPayloadPack(BoatHlchainmakerTx *tx_ptr, char *metho
 	/* pack the Common__TransactPayload */
 	packed_length_payload = common__transact_payload__get_packed_size(&transactPayload);
 	output_ptr->field_ptr = BoatMalloc(packed_length_payload);
+
+    if (output_ptr->field_ptr == NULL)
+    {
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, cleanup);
+    }
+
 	common__transact_payload__pack(&transactPayload, output_ptr->field_ptr);
 	output_ptr->field_len = packed_length_payload;
 
+    boat_catch(cleanup)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Failed to allocate memory.");
+        result = boat_exception;
+    }	
+
 	for (i = 0; i < transactPayload.n_parameters; i++)
 	{	
-		BoatFree(transactPayload.parameters[i]);
+		if (transactPayload.parameters[i] != NULL)
+        {
+            BoatFree(transactPayload.parameters[i]);
+        }
 	}	
-	BoatFree(transactPayload.parameters);	
-
+    if (transactPayload.parameters != NULL)
+    {
+        BoatFree(transactPayload.parameters);	
+    }
+	
 	return result;
 }
 
@@ -86,7 +113,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 	boat_try_declare;
 		
 	/* step-0: param in check */
-	if ((tx_ptr == NULL ) || (tx_ptr->wallet_ptr == NULL) || \
+	if ((tx_ptr == NULL) || (tx_ptr->wallet_ptr == NULL) || \
 		(tx_ptr->wallet_ptr->http2Context_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter should not be NULL.");
@@ -120,23 +147,23 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 	result = BoatHash(BOAT_HASH_SHA256,hash_data.field_ptr, 
 					   hash_data.field_len, hash, NULL, NULL);
 
-	if (result != BOAT_SUCCESS) {
-
+	if (result != BOAT_SUCCESS) 
+    {
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatHash.");
 		boat_throw(result, chainmakerProposalTransactionPacked_exception);
 	}
 
 	/* step-4: signature */
-	result = BoatSignature(tx_ptr->wallet_ptr->user_cert_prikey_info.prikeyCtx, hash, sizeof(hash), &signatureResult, NULL );
+	result = BoatSignature(tx_ptr->wallet_ptr->user_cert_prikey_info.prikeyCtx, hash, sizeof(hash), &signatureResult, NULL);
 
-	if( result != BOAT_SUCCESS ) {
-
+	if (result != BOAT_SUCCESS) 
+    {
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
 		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, chainmakerProposalTransactionPacked_exception);
 	}
 
-	if (!signatureResult.pkcs_format_used) {
-
+	if (!signatureResult.pkcs_format_used) 
+    {
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
 		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, chainmakerProposalTransactionPacked_exception);
 	}
@@ -151,7 +178,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 
 	/* step-6: packed length assignment */
 	tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len = packedLength + sizeof(grpcHeader);
-	if( tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN )
+	if (tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "packed length out of sendbuffer size limit.");
 	}
@@ -177,13 +204,13 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
      }
 
 	/* free malloc */
-    if (payloadPacked.field_ptr != NULL) {
-
+    if (payloadPacked.field_ptr != NULL) 
+    {
     	BoatFree(payloadPacked.field_ptr);
     }
 
-    if (hash_data.field_ptr != NULL) {
-    	
+    if (hash_data.field_ptr != NULL) 
+    {
     	BoatFree(hash_data.field_ptr);
     }
 	
