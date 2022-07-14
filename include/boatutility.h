@@ -136,6 +136,8 @@ typedef struct TLVStruct
 	BUINT8 *data;
 }TLVStruct;
 
+
+//!@brief A structure to native format keypair.
 typedef struct KeypairNative
 {
 	/* data */
