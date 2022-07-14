@@ -658,6 +658,17 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair);
 *   return  NULL.
 *******************************************************************************/
 BCHAR* UtilityNative2PKCS(KeypairNative keypair);
+
+/******************************************************************************
+* @brief Release key pair
+*
+* @details
+*	 Release a key pair in Native format
+*
+* @param[in] keypair
+* 	 The Native key pair that needs to be released
+*
+************************************************************/
 void UtilityFreeKeypair(KeypairNative keypair);
 
 /*! @}*/
