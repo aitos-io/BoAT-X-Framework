@@ -125,6 +125,8 @@ typedef enum
 	KEYPAIT_ALG_SECP256R1  ,
 	KEYPAIT_ALG_SM
 }KEYPAIT_ALG;
+
+//!@brief A structure to TLV format data.
 typedef struct TLVStruct
 {
 	/* data */
