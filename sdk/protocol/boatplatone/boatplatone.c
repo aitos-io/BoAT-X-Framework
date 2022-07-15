@@ -543,8 +543,7 @@ BOAT_RESULT PlatoneSendRawtx(BOAT_INOUT BoatPlatoneTx *tx_ptr)
     return result;
 }
 
-
-int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
+int Platone_get_Nodeinfo(const char *const monitor,nodesResult *result_out)
 {
     const cJSON *resolution = NULL;
     const cJSON *resolutions = NULL;
@@ -570,8 +569,13 @@ int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
 
     resolutions = cJSON_GetObjectItemCaseSensitive(monitor_json, "data");
     int num = cJSON_GetArraySize(resolutions);
-    BoatLog(BOAT_LOG_NORMAL,"num  = %d\n", num);
+    BoatLog(BOAT_LOG_NORMAL, "num  = %d\n", num);
     result_out->nodeInfo = BoatMalloc(num * sizeof(web3_nodeInfo));
+    if (result_out->nodeInfo == NULL)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Failed to allocate memory.");
+        goto end;
+    }
     cJSON_ArrayForEach(resolution, resolutions)
     {
         result_out->num ++;
