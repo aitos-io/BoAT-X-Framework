@@ -571,7 +571,7 @@ int Platone_get_Nodeinfo(const char * const monitor,nodesResult *result_out)
     resolutions = cJSON_GetObjectItemCaseSensitive(monitor_json, "data");
     int num = cJSON_GetArraySize(resolutions);
     BoatLog(BOAT_LOG_NORMAL,"num  = %d\n", num);
-    result_out->nodeInfo = BoatMalloc(num * sizeof(wbe3_nodeInfo));
+    result_out->nodeInfo = BoatMalloc(num * sizeof(web3_nodeInfo));
     cJSON_ArrayForEach(resolution, resolutions)
     {
         result_out->num ++;
