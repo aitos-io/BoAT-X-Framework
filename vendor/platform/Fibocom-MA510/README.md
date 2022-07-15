@@ -12,7 +12,7 @@
 
 1、拷贝BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<MA510 Root>/fibocom/example`下。
 
-2、在`<MA510 Root>/fibocom/example`下新建文件夹`boat_demo`,拷贝 BoAT-X-Framework/vendor/platform/Fibocom-MA510/MA510RootDirCode/demo下所有内容到`<MA510 Root>/fibocom/example/boat_demo`下。
+2、在`<MA510 Root>/fibocom/example`下新建文件夹`boat_demo`，拷贝 BoAT-X-Framework/vendor/platform/Fibocom-MA510/MA510RootDirCode/demo下所有内容到`<MA510 Root>/fibocom/example/boat_demo`下。
 
 
 拷贝后的目录和文件结构如下：
@@ -69,7 +69,7 @@ $TOOLCHAIN_PATH/clang++ -d -o $DEMO_ELF_OUTPUT_PATH/$DAM_ELF_NAME -target armv7m
 
   打开`<MA510 Root>/fibocom/example/BoAT-X-Framework/vendor/platform/Fibocom-MA510/external.env`文件
   
-  在`CC`和`AR`后面配置本地交叉编译器的实际路径,例如：
+  在`CC`和`AR`后面配置本地交叉编译器的实际路径，例如：
   ```
 CC := $(BOAT_BASE_DIR)/../../../llvmtools/4.0.3/bin/clang
 AR := $(BOAT_BASE_DIR)/../../../llvmtools/4.0.3/tools/bin/arm-ar
