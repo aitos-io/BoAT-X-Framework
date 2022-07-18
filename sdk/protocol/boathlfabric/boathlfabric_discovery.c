@@ -983,13 +983,17 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	tx_ptr->wallet_ptr->network_info.orderCfg.endorserNumber = discoverResult.discoverConfig.discoverOrders.num;
 	tx_ptr->wallet_ptr->network_info.orderCfg.endorser = BoatMalloc(discoverResult.discoverConfig.discoverOrders.num * sizeof(BoatHlfabricNodeInfoCfg));
 	if(tx_ptr->wallet_ptr->network_info.orderCfg.endorser == NULL){
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate orderCfg.endorser buffer.",i,j,k);
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate orderCfg.endorser buffer.");
 		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
 	}		
 	for ( i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
 	{
 		len = sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port) + strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host) + 1;
 		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(len+1);
+		if(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate orderCfg.endorser[%d].nodeUrl buffer.",i);
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+		}
 		memset(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl,0,len+1);
 		offset = 0;
 		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host, strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host));
