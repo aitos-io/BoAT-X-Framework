@@ -952,6 +952,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 				port = strchr(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, ':');
 				len = strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint) - strlen(port);
 				tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = BoatMalloc(len+1);
+				if(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName == NULL){
+					BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layoutCfg[%d].groupCfg[%d].endorser[%d].hostName buffer.",i,j,k);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+				}					
 				memset(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName,0,len+1);
 				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
 				len = strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint);
