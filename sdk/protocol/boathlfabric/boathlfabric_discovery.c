@@ -784,6 +784,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 				if (cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->has_value == true)
 					discoverResult.cc_res.layouts[j].groups[k].value = cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->value;
 				discoverResult.cc_res.layouts[j].groups[k].key = BoatMalloc(strlen(cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key)+1);
+				if(discoverResult.cc_res.layouts[j].groups[k].key == NULL){
+					BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate groups[%d].key buffer.",k);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);	
+				}
 				memset(discoverResult.cc_res.layouts[j].groups[k].key,0,strlen(cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key)+1);
 				memcpy(discoverResult.cc_res.layouts[j].groups[k].key, cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key, strlen(cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key));
 			}
