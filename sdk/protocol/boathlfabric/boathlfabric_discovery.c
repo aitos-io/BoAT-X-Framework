@@ -311,6 +311,10 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 		memcpy(ccQueryData + 2 + 2 + packedLength, chaincodeInvocationSpecBuffer, len);
 
 		configQueryData = BoatMalloc(packedLength + 4);
+		if(configQueryData == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate configQueryData buffer.");
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricDiscoveryPayloadDataPacked_exception);
+		}
 		resLen += packedLength + 4;
 		configQueryData[0] = 0x12;
 		configQueryData[1] = packedLength + 2;
