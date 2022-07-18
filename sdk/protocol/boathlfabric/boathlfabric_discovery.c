@@ -844,6 +844,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	Discovery__ConfigResult *config_result = discoveryResponse->results[1]->config_result;
 	discoverResult.discoverConfig.discoverMsps.num = config_result->n_msps;
 	discoverResult.discoverConfig.discoverMsps.discoverMspInfo = BoatMalloc(config_result->n_msps * sizeof(mspsInfo));
+	if(discoverResult.discoverConfig.discoverMsps.discoverMspInfo == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverMspInfo buffer.");
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);	
+	}
 	for ( i = 0; i < config_result->n_msps; i++)
 	{
 		discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name = BoatMalloc(strlen(config_result->msps[i]->key)+1);
