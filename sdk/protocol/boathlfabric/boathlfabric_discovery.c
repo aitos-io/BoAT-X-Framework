@@ -925,6 +925,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	}
 	tx_ptr->wallet_ptr->network_info.endorserLayoutNum = discoverResult.cc_res.num;
 	tx_ptr->wallet_ptr->network_info.layoutCfg = BoatMalloc(tx_ptr->wallet_ptr->network_info.endorserLayoutNum * sizeof(BoatHlfabricNodeLayoutCfg));
+	if(tx_ptr->wallet_ptr->network_info.layoutCfg == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layoutCfg buffer.");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);			
+	}
 	for ( i = 0; i < discoverResult.cc_res.num; i++)
 	{
 
