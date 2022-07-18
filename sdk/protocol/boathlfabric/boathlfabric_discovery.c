@@ -818,6 +818,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 						{
 							msp_serializedIdentity = msp__serialized_identity__unpack(NULL, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->identity.len, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->identity.data);
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID = BoatMalloc(strlen(msp_serializedIdentity->mspid)+1);
+							if(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID == NULL){
+								BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layouts[%d].groups[%d].endorsers[%d].MSPID buffer.",m,k,l);
+								boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);	
+							}
 							memset(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID,0,strlen(msp_serializedIdentity->mspid)+1);
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID, msp_serializedIdentity->mspid, strlen(msp_serializedIdentity->mspid));
 							// BoatLog(BOAT_LOG_CRITICAL, " endorsers[%d].MSPID  : %s ", l, discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID);
