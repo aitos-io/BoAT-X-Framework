@@ -178,6 +178,10 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverySignatureHeaderPacked(const BoatHlfabr
 	// {
 		packedLength = common__signature_header__get_packed_size(&signatureHeader);
 		output_ptr->field_ptr = BoatMalloc(packedLength + 3);
+		if(output_ptr->field_ptr == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
+		}
 		output_ptr->field_len = packedLength + 3;
 		common__signature_header__pack(&signatureHeader, output_ptr->field_ptr + 3);
 		output_ptr->field_ptr[0] = 0x0A;
