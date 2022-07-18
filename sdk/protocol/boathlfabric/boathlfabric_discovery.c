@@ -888,6 +888,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		{
 			/* code */
 			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host = BoatMalloc(strlen(config_result->orderers[i]->value->endpoint[j]->host)+1);
+			if(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverOrderinfo[%d].host buffer.",k);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);					
+			}
 			memset(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host,0,strlen(config_result->orderers[i]->value->endpoint[j]->host)+1);
 			memcpy(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host, config_result->orderers[i]->value->endpoint[j]->host, strlen(config_result->orderers[i]->value->endpoint[j]->host));
 			// discoverResult->discoverConfig.discoverOrders.discoverOrderinfo[k].port = config_result->orderers[i]->value->endpoint[j]->port;
