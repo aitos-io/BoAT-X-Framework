@@ -297,6 +297,10 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 		// peerQueryData[2 + 1 + packedLength] = 0;
 
 		ccQueryData = BoatMalloc(packedLength + 4 + len);
+		if(ccQueryData == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate ccQueryData buffer.");
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricDiscoveryPayloadDataPacked_exception);		
+		}
 		resLen += packedLength + 4 + len;
 		ccQueryData[0] = 0x12;
 		ccQueryData[1] = packedLength + 2 + len;
