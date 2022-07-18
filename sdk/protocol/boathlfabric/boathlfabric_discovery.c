@@ -828,6 +828,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 							len = hlfabricDiscoveryGetURL(cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.len, &offset);
 
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint = BoatMalloc(len+1);
+							if(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint == NULL){
+								BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layouts[%d].groups[%d].endorsers[%d].Endpoint buffer.",m,k,l);
+								boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);	
+							}
 							memset(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint,0,len+1);
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data + offset, len);
 							msp__serialized_identity__free_unpacked(msp_serializedIdentity,NULL);
