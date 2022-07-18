@@ -861,6 +861,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		{
 			discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCertLen = config_result->msps[i]->value->tls_root_certs[0].len;
 			discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert = BoatMalloc(config_result->msps[i]->value->tls_root_certs[0].len);
+			if(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverMspInfo[%d].tlsCert buffer.",i);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+			}
 			//memset(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert,0,config_result->msps[i]->value->tls_root_certs[0].len+1);
 			memcpy(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert, config_result->msps[i]->value->tls_root_certs[0].data, config_result->msps[i]->value->tls_root_certs[0].len);
 		}
