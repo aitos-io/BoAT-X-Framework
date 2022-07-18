@@ -698,7 +698,7 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	BUINT32 len = 0, offset = 0;
 	BCHAR *port;
 	int i,j,k,l,m;
-	// boat_try_declare;
+	boat_try_declare;
 
 	if (tx_ptr == NULL)
 	{
@@ -763,6 +763,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		n_layouts = cc_query_res->content[i]->n_layouts;
 		discoverResult.cc_res.num = n_layouts;
 		discoverResult.cc_res.layouts = BoatMalloc(n_layouts * sizeof(layoutInfo));
+		if(discoverResult.cc_res.layouts == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate cc_res.layouts buffer.");
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);		
+		}
 		for ( j = 0; j < n_layouts; j++)
 		{
 			n_quantities_by_group = cc_query_res->content[i]->layouts[j]->n_quantities_by_group;
@@ -935,6 +939,13 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 				memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.tlsOrgCertContent.content, discoverResult.discoverConfig.discoverMsps.discoverMspInfo[l].tlsCert, discoverResult.discoverConfig.discoverMsps.discoverMspInfo[l].tlsCertLen);
 			}
 		}
+	}
+
+		//! boat catch handle
+	boat_catch(BoatHlfabricDiscoverySubmit_exception)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+		result = boat_exception;
 	}
 	tx_ptr->endorserResponse.responseCount = 0;
 	DiscoveryResFree(discoverResult);
