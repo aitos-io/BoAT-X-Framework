@@ -851,6 +851,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	for ( i = 0; i < config_result->n_msps; i++)
 	{
 		discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name = BoatMalloc(strlen(config_result->msps[i]->key)+1);
+		if(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverMspInfo[%d].name buffer.",i);
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+		}
 		memset(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name,0,strlen(config_result->msps[i]->key)+1);
 		memcpy(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name, config_result->msps[i]->key, strlen(config_result->msps[i]->key));
 		if (config_result->msps[i]->value->n_tls_root_certs > 0)
