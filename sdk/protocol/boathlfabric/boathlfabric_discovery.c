@@ -324,6 +324,10 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 	}
 
 	output_ptr->field_ptr = BoatMalloc(resLen);
+	if(output_ptr->field_ptr == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr buffer.");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricDiscoveryPayloadDataPacked_exception);	
+	}
 	protos__chaincode_input__pack(&message, output_ptr->field_ptr + 2);
 
 	// if (peerQueryData != NULL)
