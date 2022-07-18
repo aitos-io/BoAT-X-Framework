@@ -237,15 +237,22 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 
 	// ProtobufCBinaryData argsTmp[BOAT_HLFABRIC_ARGS_MAX_NUM];
 	BUINT8 *chaincodeInvocationSpecBuffer = NULL;
+	BUINT8 *configQueryData = NULL;
+	BUINT8 *peerQueryData = NULL;
+	BUINT8 *ccQueryData = NULL;
 	BUINT16 packedLength;
 	Protos__ChaincodeInput message = PROTOS__CHAINCODE_INPUT__INIT;
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT16 resLen = 0, len = 0;
 	BUINT16 offset = 0;
-	// boat_try_declare;
+	boat_try_declare;
 
 	len = strlen(tx_ptr->var.chaincodeId.name);
 	chaincodeInvocationSpecBuffer = BoatMalloc(len + 6);
+	if(chaincodeInvocationSpecBuffer == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate chaincodeInvocationSpecBuffer buffer.");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricDiscoveryPayloadDataPacked_exception);
+	}
 	chaincodeInvocationSpecBuffer[0] = 0x0A;
 	chaincodeInvocationSpecBuffer[1] = len + 4;
 	chaincodeInvocationSpecBuffer[2] = 0x0A;
@@ -263,9 +270,7 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 
 	packedLength = protos__chaincode_input__get_packed_size(&message);
 	BoatLog(BOAT_LOG_CRITICAL, "packedLength = %d ", packedLength);
-	BUINT8 *configQueryData = NULL;
-	BUINT8 *peerQueryData = NULL;
-	BUINT8 *ccQueryData = NULL;
+
 	// if (DISCOVERY_CONFIG_QUERY == 1)
 	// {
 	// 	configQueryData = BoatMalloc(packedLength + 4);
@@ -327,7 +332,11 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 	}
 	output_ptr->field_len = resLen;
 
-
+	boat_catch(hlfabricDiscoveryPayloadDataPacked_exception)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+		result = boat_exception;
+	}
 	/* free malloc */
 	BoatFree(chaincodeInvocationSpecBuffer);
 	if (configQueryData != NULL)
