@@ -982,6 +982,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	}
 	tx_ptr->wallet_ptr->network_info.orderCfg.endorserNumber = discoverResult.discoverConfig.discoverOrders.num;
 	tx_ptr->wallet_ptr->network_info.orderCfg.endorser = BoatMalloc(discoverResult.discoverConfig.discoverOrders.num * sizeof(BoatHlfabricNodeInfoCfg));
+	if(tx_ptr->wallet_ptr->network_info.orderCfg.endorser == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate orderCfg.endorser buffer.",i,j,k);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+	}		
 	for ( i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
 	{
 		len = sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port) + strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host) + 1;
