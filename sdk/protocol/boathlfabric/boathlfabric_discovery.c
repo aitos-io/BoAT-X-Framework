@@ -942,6 +942,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		{
 			tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorserNumber = discoverResult.cc_res.layouts[i].groups[j].numEndorsers;
 			tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser = BoatMalloc(discoverResult.cc_res.layouts[i].groups[j].numEndorsers * sizeof(BoatHlfabricNodeInfoCfg));
+			if(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layoutCfg[%d].groupCfg[%d].endorser buffer.",i,j);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+			}			
 			tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].quantities = discoverResult.cc_res.layouts[i].groups[j].value;
 			for ( k = 0; k < discoverResult.cc_res.layouts[i].groups[j].numEndorsers; k++)
 			{
