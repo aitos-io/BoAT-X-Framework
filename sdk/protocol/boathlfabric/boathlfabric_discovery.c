@@ -772,6 +772,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 			n_quantities_by_group = cc_query_res->content[i]->layouts[j]->n_quantities_by_group;
 			discoverResult.cc_res.layouts[j].num = n_quantities_by_group;
 			discoverResult.cc_res.layouts[j].groups = BoatMalloc(n_quantities_by_group * sizeof(groupInfo));
+			if(discoverResult.cc_res.layouts[j].groups == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate groups buffer.");
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);		
+			}
 			for ( k = 0; k < n_quantities_by_group; k++)
 			{
 				discoverResult.cc_res.layouts[j].groups[k].numEndorsers = 0;
