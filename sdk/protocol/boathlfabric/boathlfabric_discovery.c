@@ -264,6 +264,10 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 
 	message.n_args = 1;
 	message.args = BoatMalloc((message.n_args) * sizeof(ProtobufCBinaryData));
+	if(message.args == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate message.args buffer.");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricDiscoveryPayloadDataPacked_exception);		
+	}
 
 	message.args[0].data = (BUINT8*)tx_ptr->var.channelId;
 	message.args[0].len = strlen(tx_ptr->var.channelId);
