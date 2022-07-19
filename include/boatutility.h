@@ -599,7 +599,7 @@ BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from);
 *	 The input string has to have a prefix "0x" ot "0X". The input data can be 
 *	 an odd number. And there can be no Spaces in the string.
 *
-* @param[in] mem
+* @param[in] input
 * 	 The string of hexadecimal representation
 *
 * @return
