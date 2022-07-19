@@ -377,8 +377,8 @@ Where \<Path_to_Cygwin\> is the absolute path of the Cygwin installation directo
 
 Then, modify `<SDKRoot>/vendor/platform/<platform_name>/external.env`, add the path to the dependent tool:
 
-# Commands
 ````
+# Commands
 CYGWIN_BASE := C:\cygwin64  # Modify to actual path to Cygwin
 BOAT_RM := $(CYGWIN_BASE)\bin\rm -rf
 BOAT_MKDIR := $(CYGWIN_BASE)\bin\mkdir
