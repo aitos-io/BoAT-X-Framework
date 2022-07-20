@@ -15,8 +15,8 @@
 |区块链  |脚本名字                   |
 |:-----  | :--------------          |
 |以太坊  |eth2c.py                   |
-|PlatONE  |fiscobcos2c.py           |
-|FISCO-BCOS  |platoneSolidity2c.py  |
+|PlatONE  |platoneSolidity2c.py           |
+|FISCO-BCOS  |fiscobcos2c.py  |
 |Venachain  |venachainSolidity2c.py  |
 |Quorum  |Quorum2c.py  |
 
