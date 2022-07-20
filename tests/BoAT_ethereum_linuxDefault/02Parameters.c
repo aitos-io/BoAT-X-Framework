@@ -272,6 +272,7 @@ START_TEST(test_004ParametersInit_0008TxInitFailureRecipientErrorHexFormat)
     rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
 		                   TEST_GAS_LIMIT, "0xABCDG");
 	ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
