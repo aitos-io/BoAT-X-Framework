@@ -190,6 +190,7 @@ START_TEST(test_004ParametersInit_0003TxInitSuccessNullGasPrice)
 	rtnVal = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, NULL, 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);	
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
