@@ -34,7 +34,8 @@ START_TEST(test_006GetBalance_0001GetSuccess)
 
     BoatIotSdkInit();
 
-    ethereumWalletPrepare();
+    result = ethereumWalletPrepare();
+    ck_assert(rtnVal == BOAT_SUCCESS);
 
     result = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
                            "0x333333",
@@ -46,6 +47,7 @@ START_TEST(test_006GetBalance_0001GetSuccess)
 	result          = BoatEthParseRpcResponseStringResult(cur_balance_wei, &parse_result);
 
     ck_assert_int_eq(result, BOAT_SUCCESS);
+    ck_assert_ptr_ne(parse_result.field_ptr, NULL);
 
     BoatFree(parse_result.field_ptr);
 
@@ -62,7 +64,8 @@ START_TEST(test_006GetBalance_0002GetWalletDefaultAddressSuccess)
 
     BoatIotSdkInit();
 
-    ethereumWalletPrepare();
+    result = ethereumWalletPrepare();
+    ck_assert(rtnVal == BOAT_SUCCESS);
 
     result = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
                            "0x333333",
@@ -73,6 +76,7 @@ START_TEST(test_006GetBalance_0002GetWalletDefaultAddressSuccess)
     cur_balance_wei = BoatEthWalletGetBalance(g_ethereum_wallet_ptr, NULL);
 	result          = BoatEthParseRpcResponseStringResult(cur_balance_wei, &parse_result);
 
+    ck_assert_ptr_ne(parse_result.field_ptr, NULL);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     BoatFree(parse_result.field_ptr);
@@ -95,8 +99,6 @@ START_TEST(test_006GetBalance_0003GetFailureNullWallet)
 }
 END_TEST
 
-
-
 START_TEST(test_007Transfer_0001TransferSuccess) 
 {
     BOAT_RESULT result;
@@ -104,7 +106,8 @@ START_TEST(test_007Transfer_0001TransferSuccess)
 
     BoatIotSdkInit();
 
-    ethereumWalletPrepare();
+    result = ethereumWalletPrepare();
+    ck_assert(rtnVal == BOAT_SUCCESS);
 
     result = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
                            "0x333333",
@@ -125,7 +128,8 @@ START_TEST(test_007Transfer_0002TransferFailureNullParam)
 
     BoatIotSdkInit();
 
-    ethereumWalletPrepare();
+    result = ethereumWalletPrepare();
+    ck_assert(rtnVal == BOAT_SUCCESS);
 
     result = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
                            "0x333333",
