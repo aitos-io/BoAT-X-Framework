@@ -128,7 +128,8 @@ START_TEST(test_007Transfer_0002TransferFailureNullParam)
 
     BoatIotSdkInit();
 
-    ethereumWalletPrepare();
+    result = ethereumWalletPrepare();
+    ck_assert(rtnVal == BOAT_SUCCESS);
 
     result = BoatEthTxInit(g_ethereum_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
                            "0x333333",
