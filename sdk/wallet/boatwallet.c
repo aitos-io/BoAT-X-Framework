@@ -113,20 +113,20 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                 if (fabric_config_ptr->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION &&
                     fabric_config_ptr->accountPriKey_config.prikey_genMode != BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_genMode err.");
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_genMode error.");
                     return BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
                 }
                 if (fabric_config_ptr->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256K1 &&
                     fabric_config_ptr->accountPriKey_config.prikey_type != BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_type err.");
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_type error.");
                     return BOAT_ERROR_WALLET_KEY_TYPE_ERR;
                 }
                 if (fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_PKCS &&
                     fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_NATIVE &&
                     fabric_config_ptr->accountPriKey_config.prikey_format != BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC)
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_format err.");
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet prikey_format error.");
                     return BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
                 }
                 mbedtls_x509_crt m_certificate;
@@ -134,7 +134,7 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
 	            int status = mbedtls_x509_crt_parse(&m_certificate,(unsigned char *)&(fabric_config_ptr->accountCertContent.content[0]), fabric_config_ptr->accountCertContent.length);
                 if (status != BOAT_SUCCESS)
                 {
-                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet account cert err. %x ",-status);
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet account cert error. %x ",-status);
                     return BOAT_ERROR;
                 }
                 for (int i = 0; i < fabric_config_ptr->nodesCfg.endorserLayoutNum; i++)
@@ -146,7 +146,7 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                             if (fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities == 0 ||
                             fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].quantities > fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorserNumber)
                             {
-                                BoatLog(BOAT_LOG_NORMAL, "quantities ERR ");
+                                BoatLog(BOAT_LOG_NORMAL, "quantities error");
                                 return BOAT_ERROR;
                             }
                         }
@@ -163,7 +163,7 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                             
                             if (UtilityStringLenCheck(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl) != BOAT_SUCCESS)
                             {
-                                BoatLog(BOAT_LOG_NORMAL, "url len check ERR ");
+                                BoatLog(BOAT_LOG_NORMAL, "url len check error");
                                 return BOAT_ERROR;
                             }
                             for (int l = 0; l < strlen(fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl); l++)
@@ -171,7 +171,7 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                                 /* code */
                                 if (fabric_config_ptr->nodesCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl[l] < 0x20)
                                 {
-                                    BoatLog(BOAT_LOG_NORMAL, "url code ERR ");
+                                    BoatLog(BOAT_LOG_NORMAL, "url code error");
                                     return BOAT_ERROR;
                                 }
                             }
@@ -189,7 +189,7 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                     }
                     if (UtilityStringLenCheck(fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl) != BOAT_SUCCESS)
                     {
-                        BoatLog(BOAT_LOG_NORMAL, "order url len check ERR ");
+                        BoatLog(BOAT_LOG_NORMAL, "order url len check error");
                         return BOAT_ERROR;
                     }
                     BoatLog(BOAT_LOG_NORMAL, "order url : %s ",fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl);
@@ -198,7 +198,7 @@ static BOAT_RESULT BoatWalletCreatParaCheck(BoatProtocolType protocol_type,const
                         /* code */
                         if (fabric_config_ptr->nodesCfg.orderCfg.endorser[i].nodeUrl[l] < 0x20)
                         {
-                            BoatLog(BOAT_LOG_NORMAL, "order url ode ERR ");
+                            BoatLog(BOAT_LOG_NORMAL, "order url ode error");
                             return BOAT_ERROR;
                         }
                     }

@@ -116,6 +116,8 @@ typedef struct
 	BUINT32 val[9];
 } utilityBignum256;
 
+
+//!@brief Keypair algorithm type for KeypairNative structure.
 typedef enum
 {
     KEYPAIT_ALG_UNKNOWN = 0,   
@@ -123,6 +125,8 @@ typedef enum
 	KEYPAIT_ALG_SECP256R1  ,
 	KEYPAIT_ALG_SM
 }KEYPAIT_ALG;
+
+//!@brief A structure to TLV format data.
 typedef struct TLVStruct
 {
 	/* data */
@@ -132,6 +136,8 @@ typedef struct TLVStruct
 	BUINT8 *data;
 }TLVStruct;
 
+
+//!@brief A structure to native format keypair.
 typedef struct KeypairNative
 {
 	/* data */
@@ -593,7 +599,7 @@ BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from);
 *	 The input string has to have a prefix "0x" ot "0X". The input data can be 
 *	 an odd number. And there can be no Spaces in the string.
 *
-* @param[in] mem
+* @param[in] input
 * 	 The string of hexadecimal representation
 *
 * @return
@@ -603,11 +609,72 @@ BUINT64 UtilityBuint8Buf2Uint64(BUINT8 *from);
 BBOOL UtilityStringIsHex(const BCHAR *input);
 
 
-
+/******************************************************************************
+* @brief convert integer to string
+*
+* @details
+*	 Convert the integer num to a string according to radix and store it 
+* 	 in the space pointed to by str
+*
+* @param[in] num
+* 	 The input integer
+* 
+* @param[out] str
+* 	 The pointer to the output string space
+*
+* @param[in] radix
+* 	 The converted base number, which can be decimal, hexadecimal, etc., 
+*	 in the range of 2-36
+*
+* @return
+*	Returns a pointer to str
+*******************************************************************************/
 char *Utility_itoa(int num, char *str, int radix);
 
+/******************************************************************************
+* @brief Convert PKCS format key to Native format key
+*
+* @details
+*	 Convert a key in PKCS format to Native format
+*
+* @param[in] input
+* 	 The pointer to the input key in PKCS format
+* 
+* @param[out] keypair
+* 	 The pointer to the output native key pair
+*
+*
+* @return
+*   If the conversion is successful, return \c BOAT_SUCCESS, else
+*   return  BOAT_ERROR.
+*******************************************************************************/
 BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair);
+
+/******************************************************************************
+* @brief Convert the key pair in Native format to the key in PKCS certificate format
+*
+* @details
+*	 Convert a key pair in Native format to a key in PKCS certificate format
+*
+* @param[in] keypair
+* 	 The Native key pair that needs to be converted
+*
+* @return
+*   If the conversion is successful, return the key in PKCS format, else
+*   return  NULL.
+*******************************************************************************/
 BCHAR* UtilityNative2PKCS(KeypairNative keypair);
+
+/******************************************************************************
+* @brief Release key pair
+*
+* @details
+*	 Release a key pair in Native format
+*
+* @param[in] keypair
+* 	 The Native key pair that needs to be released
+*
+************************************************************/
 void UtilityFreeKeypair(KeypairNative keypair);
 
 /*! @}*/

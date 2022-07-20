@@ -454,3 +454,41 @@ for (i = 0; i < 32; i++)
 
 #### int256[]类型
 参考[uint256[]类型](#uint256[]类型)，只是需要把相应的BUINT256改为BSINT256。
+
+#### bytesN[]类型
+N的范围为1~32。Solidity中的bytesN[]变成BbytesN类型和一个表示长度的BUINT32值。而一个BbytesN是由BUINT8[N]组成的数组。  
+Solidity函数：setData(bytes5[] data);  
+C语言函数：合约名_setData(Bbytes5 *data, BUINT32 datalen);  
+
+示例：  
+```
+Bbytes5 data[2];
+BUINT32 i;
+for (i = 0; i < 5; i++)
+{
+    data[0][i] = i;
+    data[1][i] = (32 - i) * 2;
+}
+合约名_setData(data, 2); 
+``` 
+
+注意，bytesN类型不涉及到端序和正负值的问题。
+
+#### bytesN[M]类型
+N的范围为1~32。Solidity中的bytesN[]变成BbytesN类型和一个表示长度的BUINT32值。而一个BbytesN是由BUINT8[N]组成的数组。  
+Solidity函数：setData(bytes5[] data);  
+C语言函数：合约名_setData(Bbytes5 *data, BUINT32 datalen);  
+
+示例：  
+```
+Bbytes5 data[2];
+BUINT32 i;
+for (i = 0; i < 5; i++)
+{
+    data[0][i] = i;
+    data[1][i] = (32 - i) * 2;
+}
+合约名_setData(data, 2); 
+``` 
+
+注意，bytesN类型不涉及到端序和正负值的问题。
