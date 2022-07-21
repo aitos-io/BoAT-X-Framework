@@ -313,16 +313,16 @@ Usually, the example of the customer code is provided in the module development 
 E.g. :  
 Assuming that in the original compilation environment, the Makefile of the example in customer source code is as follows:  
 
-````
+```
 .PHNOY: all  
 all:  
     $(CC) $(CFLAGS) example.c -o example.o 
 
 clean:  
 	-rm -rf example.o
-
-Adjusted to:
-
+```
+Adjusted to:  
+```
 .PHNOY: all boatiotsdkall boatiotsdkclean  
 all: boatiotsdkall  
     $(CC) $(CFLAGS) example.c -o example.o 
@@ -335,7 +335,7 @@ boatiotsdkall:
 
 boatiotsdkclean:
 	make -C boatiotsdk clean
-````
+```
 
 Among them, boatiotsdk is the directory where the SDK is located, and the -C parameter after make specifies to enter the boatiotsdk directory and then compile according to Makefile.
 
