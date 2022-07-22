@@ -661,6 +661,8 @@ START_TEST(test_002InitWallet_0005SetNodeUrlSuccess)
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
     BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
+
+    ck_assert_ptr_ne(wallet_ptr, NULL);
     
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
