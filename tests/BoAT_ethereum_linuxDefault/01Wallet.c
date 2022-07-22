@@ -587,12 +587,13 @@ START_TEST(test_001CreateWallet_0018DeletePersistWalletSuccess)
 }
 END_TEST
 
-
 START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 {
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
     BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
+    
+    ck_assert_ptr_ne(wallet_ptr, NULL);
     
     /* 1. execute unit test */
     rtnVal = BoatEthWalletSetEIP155Comp(wallet_ptr, wallet.eip155_compatibility);
@@ -627,6 +628,7 @@ START_TEST(test_002InitWallet_0003SetChainIdSuccess)
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
     BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     
+
     /* 1. execute unit test */
     rtnVal = BoatEthWalletSetChainId(wallet_ptr, wallet.chain_id);
     /* 2. verify test result */
