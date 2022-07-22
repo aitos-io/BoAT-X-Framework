@@ -1,5 +1,6 @@
 # Source and Objects
-SRC_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/rpc/*.o)
+SRC_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/rpc/*.o) 
+SRC_OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/cjson/*.o) 
 
 PORT_CRYPTO_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/keccak/*.o) \
 		  			  $(wildcard $(BOAT_BUILD_DIR)/vendor/common/storage/*.o) 
@@ -22,6 +23,7 @@ $(LIBNAME): boatvendor_objs
 boatvendor_objs:
 	make -C port_crypto_default all
 	make -C rpc all
+	make -C cjson all
 
 
 clean: $(CLEAN_SUBDIRS)
