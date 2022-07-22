@@ -745,6 +745,8 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
     char error_ethereum_node_url[EXCEED_STR_MAX_LEN];
+
+    ck_assert_ptr_ne(wallet_ptr, NULL);
 	
     for (int i = 0; i < EXCEED_STR_MAX_LEN; i++)
     {
