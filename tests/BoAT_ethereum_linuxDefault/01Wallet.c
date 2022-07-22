@@ -723,6 +723,8 @@ START_TEST(test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat)
     BSINT32 rtnVal;
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
     BoatEthWalletConfig wallet;
+
+    ck_assert_ptr_ne(wallet_ptr, NULL);
     
     /* 1. execute unit test */
     strncpy(wallet.node_url_str, "abcd", strlen("abcd"));
