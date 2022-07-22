@@ -628,6 +628,7 @@ START_TEST(test_002InitWallet_0003SetChainIdSuccess)
     BoatEthWallet *wallet_ptr = BoatMalloc(sizeof(BoatEthWallet));
     BoatEthWalletConfig wallet = get_ethereum_wallet_settings();
     
+    ck_assert_ptr_ne(wallet_ptr, NULL);
 
     /* 1. execute unit test */
     rtnVal = BoatEthWalletSetChainId(wallet_ptr, wallet.chain_id);
