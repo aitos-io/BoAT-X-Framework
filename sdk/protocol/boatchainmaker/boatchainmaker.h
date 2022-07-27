@@ -33,7 +33,7 @@ boatchainamaker.h is header file for RAW transaction construction and performing
  *   chainmaker transaction structure pointer
  * 
  * @param method 
- *   chainmaker invoke or save
+ *   chainmaker save: Call contract find_by_file_hash: Inquiry contract
  * 
  * @param contract_name 
  *   chainmaker contract_name
