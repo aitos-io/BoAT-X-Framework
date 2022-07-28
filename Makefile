@@ -37,7 +37,7 @@ ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_VENACHAIN), 0_1)
     $(error VENACHAIN depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_ETHEREUM' to 1 if enable VENACHAIN)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_QUORUM), 0_1)
-    $(error QUORUM depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_QUORUM' to 1 if enable QUORUM)
+    $(error QUORUM depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_ETHEREUM' to 1 if enable QUORUM)
 endif
 
 
