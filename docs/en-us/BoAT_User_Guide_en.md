@@ -1021,7 +1021,7 @@ The manual construction of transactions needs to follow the ABI interface of the
   Among them, the format of rlp_param_ptr follows the same rules as Step 3.
 
 
-  For the specific calling method, please refer to the automatically generated code of the Demo attached to the SDK, which is located under \<SDKRoot\>/contract/generated.
+  - For the specific calling method, please refer to the automatically generated code of the Demo attached to the SDK, which is located under `\<SDKRoot\>/demo/demo_platone/demo_contract/WASM` or `<SDKRoot\>/demo/demo_platone/demo_contract/Solidity`.
 
 **Example 3: Hyperledger Fabric transaction structure**  
 - **Step 1** Call BoatHlfabricTxInit() to initialize the transaction, The parameters are set based on actual usage.  
