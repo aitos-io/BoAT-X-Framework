@@ -968,9 +968,9 @@ The manual construction of transactions needs to follow the ABI interface of the
                                   BUINT8 *func_param_ptr,
                                   BUINT32 func_param_len);
   ```
-  Among them, the format of func_param_ptr follows the same rules as Step 3.
+  Among them, the format of func_param_ptr follows the same rules as Step 3.  
 
-**Example 2: PlatONE transaction structure
+**Example 2: PlatONE transaction structure**
 - **Step 1** Call BoatPlatONETxInit() to initialize the transaction, and the transaction type field is set according to the actual transaction type.
 
 - **Step 2** Set transaction parameter:
