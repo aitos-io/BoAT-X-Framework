@@ -481,6 +481,7 @@ int hdnode_public_ckd(HDNode *inout, uint32_t i) {
   return 1;
 }
 
+#if USE_ADDRESS_BASE58
 void hdnode_public_ckd_address_optimized(const curve_point *pub,
                                          const uint8_t *chain_code, uint32_t i,
                                          uint32_t version,
@@ -505,6 +506,7 @@ void hdnode_public_ckd_address_optimized(const curve_point *pub,
       break;
   }
 }
+#endif
 
 #if USE_BIP32_CACHE
 static bool private_ckd_cache_root_set = false;
@@ -585,6 +587,7 @@ int hdnode_private_ckd_cached(HDNode *inout, const uint32_t *i, size_t i_count,
 }
 #endif
 
+#if USE_ADDRESS_BASE58
 void hdnode_get_address_raw(HDNode *node, uint32_t version, uint8_t *addr_raw) {
   hdnode_fill_public_key(node);
   ecdsa_get_address_raw(node->public_key, version, node->curve->hasher_pubkey,
@@ -597,6 +600,7 @@ void hdnode_get_address(HDNode *node, uint32_t version, char *addr,
   ecdsa_get_address(node->public_key, version, node->curve->hasher_pubkey,
                     node->curve->hasher_base58, addr, addrsize);
 }
+#endif
 
 void hdnode_fill_public_key(HDNode *node) {
   if (node->public_key[0] != 0) return;
