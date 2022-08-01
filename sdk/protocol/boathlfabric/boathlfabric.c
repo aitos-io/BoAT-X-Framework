@@ -365,7 +365,7 @@ __BOATSTATIC BOAT_RESULT hlfabricProposalPayloadDataPacked(BoatHlfabricTx *tx_pt
  *   fabric transaction structure pointer
  *
  * @param[out] output_ptr 
- *   A structure pointer to store signature header protobuf serialize data and length. 
+ *   A structure pointer to store transaction payload data protobuf serialize data and length. 
  *   In internal of this function, the memory of store serialize data has been alloced,
  *   caller SHOULD NOT alloc memory for this pointer again.
  *
