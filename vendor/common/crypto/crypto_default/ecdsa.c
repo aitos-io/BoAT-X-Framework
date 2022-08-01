@@ -971,7 +971,6 @@ int ecdsa_verify(const ecdsa_curve *curve, HasherType hasher_sign,
   return res;
 }
 
-
 // returns 0 if verification succeeded
 int ecdsa_verify_digest(const ecdsa_curve *curve, const uint8_t *pub_key,
                         const uint8_t *sig, const uint8_t *digest) {
@@ -1039,7 +1038,6 @@ int ecdsa_verify_digest(const ecdsa_curve *curve, const uint8_t *pub_key,
   return result;
 }
 #endif
-
 
 #if USE_ECDSA_RECOVER_PUB
 // Compute public key from signature and recovery id.
