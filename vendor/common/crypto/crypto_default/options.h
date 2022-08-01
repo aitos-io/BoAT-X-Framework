@@ -61,7 +61,7 @@
 #define BIP39_CACHE_SIZE 4
 #endif
 
-// support Ethereum operations
+// support Ethereum operations (note: if set USE_ETHEREUM to 1, should also set USE_KECCAK to 1)
 #ifndef USE_ETHEREUM
 #define USE_ETHEREUM 0
 #endif
@@ -71,7 +71,7 @@
 #define USE_GRAPHENE 0
 #endif
 
-// support NEM operations
+// support NEM operations (note: if set USE_NEM to 1, should also set USE_KECCAK to 1)
 #ifndef USE_NEM
 #define USE_NEM 0
 #endif
@@ -88,12 +88,77 @@
 
 // support Keccak hashing
 #ifndef USE_KECCAK
-#define USE_KECCAK 1
+#define USE_KECCAK 0
 #endif
 
 // add way how to mark confidential data
 #ifndef CONFIDENTIAL
 #define CONFIDENTIAL
+#endif
+
+// support address generation, base58 encode/decode related functions
+#ifndef USE_ADDRESS_BASE58
+#define USE_ADDRESS_BASE58 0
+#endif
+
+// support ECDSA signature verification functions
+#ifndef USE_ECDSA_VERIFY
+#define USE_ECDSA_VERIFY 0
+#endif
+
+// support ECDSA public key recovery from signature function
+#ifndef USE_ECDSA_RECOVER_PUB
+#define USE_ECDSA_RECOVER_PUB 0
+#endif
+
+// support signature DER encode/decode related functions
+#ifndef USE_SIG_DER
+#define USE_SIG_DER 0
+#endif
+
+// support SHA2 hashing
+#ifndef USE_SHA2
+#define USE_SHA2 0
+#endif
+
+// support SHA2D hashing
+#ifndef USE_SHA2D
+#define USE_SHA2D 0
+#endif
+
+// support SHA2 RIPEMD hashing
+#ifndef USE_SHA2_RIPEMD
+#define USE_SHA2_RIPEMD 0
+#endif
+
+// support SHA3 hashing
+#ifndef USE_SHA3
+#define USE_SHA3 0
+#endif
+
+// support BLAKE hashing
+#ifndef USE_BLAKE
+#define USE_BLAKE 0
+#endif
+
+// support BLAKED hashing
+#ifndef USE_BLAKED
+#define USE_BLAKED 0
+#endif
+
+// support BLAKE RIPEMD hashing
+#ifndef USE_BLAKE_RIPEMD
+#define USE_BLAKE_RIPEMD 0
+#endif
+
+// support GROESTL hashing
+#ifndef USE_GROESTL
+#define USE_GROESTL 0
+#endif
+
+// support BLAKE2B hashing
+#ifndef USE_BLAKE2B
+#define USE_BLAKE2B 0
 #endif
 
 #endif

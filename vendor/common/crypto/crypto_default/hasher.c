@@ -30,25 +30,32 @@ void hasher_InitParam(Hasher *hasher, HasherType type, const void *param,
   hasher->param_size = param_size;
 
   switch (hasher->type) {
+#if USE_SHA2 || USE_SHA2D || USE_SHA2_RIPEMD
     case HASHER_SHA2:
     case HASHER_SHA2D:
     case HASHER_SHA2_RIPEMD:
       sha256_Init(&hasher->ctx.sha2);
       break;
-    case HASHER_SHA3:
-#if USE_KECCAK
-    case HASHER_SHA3K:
 #endif
+#if USE_SHA3 || USE_KECCAK
+    case HASHER_SHA3:
+    case HASHER_SHA3K:
       sha3_256_Init(&hasher->ctx.sha3);
       break;
+#endif
+#if USE_BLAKE || USE_BLAKED || USE_BLAKE_RIPEMD
     case HASHER_BLAKE:
     case HASHER_BLAKED:
     case HASHER_BLAKE_RIPEMD:
       blake256_Init(&hasher->ctx.blake);
       break;
+#endif
+#if USE_GROESTL
     case HASHER_GROESTLD_TRUNC:
       groestl512_Init(&hasher->ctx.groestl);
       break;
+#endif
+#if USE_BLAKE2B
     case HASHER_BLAKE2B:
       blake2b_Init(&hasher->ctx.blake2b, 32);
       break;
@@ -56,6 +63,9 @@ void hasher_InitParam(Hasher *hasher, HasherType type, const void *param,
       blake2b_InitPersonal(&hasher->ctx.blake2b, 32, hasher->param,
                            hasher->param_size);
       break;
+#endif
+    default:
+        break;
   }
 }
 
@@ -69,71 +79,101 @@ void hasher_Reset(Hasher *hasher) {
 
 void hasher_Update(Hasher *hasher, const uint8_t *data, size_t length) {
   switch (hasher->type) {
+#if USE_SHA2 || USE_SHA2D || USE_SHA2_RIPEMD
     case HASHER_SHA2:
     case HASHER_SHA2D:
     case HASHER_SHA2_RIPEMD:
       sha256_Update(&hasher->ctx.sha2, data, length);
       break;
-    case HASHER_SHA3:
-#if USE_KECCAK
-    case HASHER_SHA3K:
 #endif
+#if USE_SHA3 || USE_KECCAK
+    case HASHER_SHA3:
+    case HASHER_SHA3K:
       sha3_Update(&hasher->ctx.sha3, data, length);
       break;
+#endif
+#if USE_BLAKE || USE_BLAKED || USE_BLAKE_RIPEMD
     case HASHER_BLAKE:
     case HASHER_BLAKED:
     case HASHER_BLAKE_RIPEMD:
       blake256_Update(&hasher->ctx.blake, data, length);
       break;
+#endif
+#if USE_GROESTL
     case HASHER_GROESTLD_TRUNC:
       groestl512_Update(&hasher->ctx.groestl, data, length);
       break;
+#endif
+#if USE_BLAKE2B
     case HASHER_BLAKE2B:
     case HASHER_BLAKE2B_PERSONAL:
       blake2b_Update(&hasher->ctx.blake2b, data, length);
       break;
+#endif
+    default:
+        break;
   }
 }
 
 void hasher_Final(Hasher *hasher, uint8_t hash[HASHER_DIGEST_LENGTH]) {
   switch (hasher->type) {
+#if USE_SHA2
     case HASHER_SHA2:
       sha256_Final(&hasher->ctx.sha2, hash);
       break;
+#endif
+#if USE_SHA2D
     case HASHER_SHA2D:
       sha256_Final(&hasher->ctx.sha2, hash);
       hasher_Raw(HASHER_SHA2, hash, HASHER_DIGEST_LENGTH, hash);
       break;
+#endif
+#if USE_SHA2_RIPEMD
     case HASHER_SHA2_RIPEMD:
       sha256_Final(&hasher->ctx.sha2, hash);
       ripemd160(hash, HASHER_DIGEST_LENGTH, hash);
       break;
+#endif
+#if USE_SHA3
     case HASHER_SHA3:
       sha3_Final(&hasher->ctx.sha3, hash);
       break;
+#endif
 #if USE_KECCAK
     case HASHER_SHA3K:
       keccak_Final(&hasher->ctx.sha3, hash);
       break;
 #endif
+#if USE_BLAKE
     case HASHER_BLAKE:
       blake256_Final(&hasher->ctx.blake, hash);
       break;
+#endif
+#if USE_BLAKED
     case HASHER_BLAKED:
       blake256_Final(&hasher->ctx.blake, hash);
       hasher_Raw(HASHER_BLAKE, hash, HASHER_DIGEST_LENGTH, hash);
       break;
+#endif
+#if USE_BLAKE_RIPEMD
     case HASHER_BLAKE_RIPEMD:
       blake256_Final(&hasher->ctx.blake, hash);
       ripemd160(hash, HASHER_DIGEST_LENGTH, hash);
       break;
+#endif
+#if USE_GROESTL
     case HASHER_GROESTLD_TRUNC:
       groestl512_DoubleTrunc(&hasher->ctx.groestl, hash);
       break;
+#endif
+#if USE_BLAKE2B
     case HASHER_BLAKE2B:
     case HASHER_BLAKE2B_PERSONAL:
       blake2b_Final(&hasher->ctx.blake2b, hash, 32);
       break;
+#endif
+    default:
+        break;
   }
 }
 
