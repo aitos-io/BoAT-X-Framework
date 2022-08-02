@@ -97,7 +97,7 @@ BoAT Framework SDK（C语言版本）对操作系统没有特别要求，Linux�
 
 若硬件支持密码学运算加速，可以提高密码运算性能。
 
-支持以太坊/PlatONE/FISCO BCOS时，BoAT至少需要如下密码学运算：
+支持以太坊/Venachain/FISCO BCOS时，BoAT至少需要如下密码学运算：
 1. 椭圆曲线签名ECDSA（secp256k1曲线）
 2. Keccak-256（Keccak-256为SHA3-256的变种）
 
