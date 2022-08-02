@@ -23,6 +23,7 @@
 //FM650 head file
 #include "fibo_oe.h"
 
+#define BUF_SIZE        512
 
 /**
  * PKCS format demo key. The original private key of 'pkcs_demoKey' is 
@@ -169,6 +170,107 @@ BOAT_RESULT demo_call_BoAT()
     return result;
 }
 
+
+char *addr2str(fibo_data_call_addr_t *addr, char *buf, int len, int *pIsIpv6)
+{
+    char *ptr;
+    int i;
+    int isIpv6 = 0;
+
+    if(addr->valid_addr==0)
+    {
+        return NULL;
+    }
+    
+    if(addr->addr.ss_family == AF_INET6)
+    {
+        isIpv6 = 1;
+    }
+
+    if(pIsIpv6)
+    {
+        pIsIpv6[0] = isIpv6;
+    }
+    if(isIpv6==0)
+    {
+        snprintf(buf, len, "%d.%d.%d.%d", addr->addr.__ss_padding[0], 
+                addr->addr.__ss_padding[1],addr->addr.__ss_padding[2],addr->addr.__ss_padding[3]);
+    }
+    else {
+        inet_ntop(AF_INET6, &(addr->addr.__ss_padding), buf, len);
+    }
+
+    return buf;
+}
+
+void fibo_data_call_evt_cb(e_fibo_data_net_event_msg_id_t ind_flag, 
+    void                  *ind_msg_buf, 
+    uint32_t              ind_msg_len)
+{
+    fibo_data_call_indication_t *data_call_ind = (void *)ind_msg_buf;
+
+    switch(ind_flag)
+    {
+    case E_FIBO_DATA_NET_UP_EVENT:
+        {
+            int is_ipv6 = 0;
+            int idx = 0;
+            char *ptr = NULL;
+            char tmpBuf[BUF_SIZE] = {0};
+            fibo_data_call_addr_info_t *addr = NULL;
+            printf("DATA UP device name:%s,profile:%d,call_id:%d\n",data_call_ind->addr_info_list.iface_name,data_call_ind->profile_idx,data_call_ind->call_id);
+            for(idx = 0; idx < data_call_ind->addr_info_list.addr_info_num; idx ++)
+            {
+                addr = &data_call_ind->addr_info_list.addr_info[idx];
+
+                ptr = addr2str(&addr->iface_addr_s, tmpBuf, sizeof(tmpBuf), &is_ipv6);
+                if(ptr)
+                {
+                        printf("ipaddr : %s/%d \n", ptr, addr->iface_mask);
+                }
+                else
+                {
+                    printf("Failed to parse addr\n");
+                }
+
+                ptr = addr2str(&addr->gtwy_addr_s, tmpBuf, sizeof(tmpBuf), &is_ipv6);
+                if(ptr)
+                {
+                    printf("gateway : %s/%d \n", ptr, addr->gtwy_mask);
+                }
+                else
+                {
+                    printf("Failed to parse addr\n");
+                }
+
+                ptr = addr2str(&addr->dnsp_addr_s, tmpBuf, sizeof(tmpBuf), &is_ipv6);
+                if(ptr) {
+                    printf("Primary DNS : %s\n", ptr);
+                }
+                else
+                {
+                    printf("Failed to parse addr\n");
+                }
+
+                ptr = addr2str(&addr->dnss_addr_s, tmpBuf, sizeof(tmpBuf), &is_ipv6);
+                if(ptr) {
+                    printf("Secondary DNS : %s\n", ptr);
+                }
+                else
+                {
+                    printf("Failed to parse addr\n");
+                }
+            }
+            break;
+        }
+    case E_FIBO_DATA_NET_DOWN_EVENT:
+        printf("DATA DOWN profile:%d,call_id:%d,call_state:%d\n",data_call_ind->profile_idx,data_call_ind->call_id, data_call_ind->call_state);
+        break;
+    }
+
+}
+
+
 int main(int argc, char *argv[])
 {
     int ret = 0;
@@ -179,6 +281,15 @@ int main(int argc, char *argv[])
         FIBO_LOG(FIBO_LOG_ERROR,"ret = %d, fibo_sdk_init fail !!!!!!\n",ret);
         return ret;
     }
+
+    //init data client
+    ret = fibo_data_client_init(fibo_data_call_evt_cb);
+    if (ret != FIBO_NO_ERR)
+    {
+        FIBO_LOG(FIBO_LOG_ERROR,"ret = %d, fibo_data_client_init fail !!!!!!\n",ret);
+        goto end;
+    }
+
     //set apn config
     fibo_data_call_config_info_t apn;
     apn.profile_idx = 1;
@@ -197,7 +308,9 @@ int main(int argc, char *argv[])
     apn.tech_pref = 3;
     apn.tech_pref_valid = 1;
 
+    memset(apn.user_name,0U,sizeof(apn.user_name));
     apn.user_name_valid = 0;
+    memset(apn.password,0U,sizeof(apn.password));
     apn.password_valid = 0;
 
     apn.reconnect = 1;
@@ -206,7 +319,7 @@ int main(int argc, char *argv[])
     if (ret != FIBO_NO_ERR)
     {
         FIBO_LOG(FIBO_LOG_ERROR,"ret = %d, fibo_data_apn_set fail !!!!!!\n",ret);
-        goto end;
+        goto client_deinit;
     }
 
     //data call
@@ -225,9 +338,10 @@ stop_data_call:
     ret = fibo_data_call_stop(1);
     printf("fibo_data_call_stop ret=%d\n", ret);
 
-end:
+client_deinit:
     fibo_data_client_deinit();
     printf("fibo_data_client_deinit\n");
-
+end:
+    fibo_sdk_deinit();
     return ret;
 }
