@@ -19,6 +19,7 @@
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+#if USE_NEM 
 
 #include "nem.h"
 
@@ -506,3 +507,4 @@ bool nem_transaction_create_importance_transfer(
 
   return true;
 }
+#endif
