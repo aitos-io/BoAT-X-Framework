@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "my_contract.cpp.abi.h"
-#include "protocolapi/api_platone.h"
 
-/**
- * macro used to select wallet type:
- * - USE_ONETIME_WALLET          : create a one-time wallet
- * - USE_CREATE_PERSIST_WALLET   : create a persist wallet
- * - USE_LOAD_PERSIST_WALLET     : load a persist wallet
- * 
- * macro used to select private key format:
- * - USE_PRIKEY_FORMAT_INTERNAL_GENERATION       : key is internal generated
- * - USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS   : key is pkcs format via external injection
- * - USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE : key is native format via external injection
- */
+//BoAT head file
+#include "boatiotsdk.h"
+
+//demo contract head file
+#include "my_contract.cpp.abi.h"
+
+//FM650 head file
+#include "fibo_oe.h"
+
 
 /**
  * PKCS format demo key. The original private key of 'pkcs_demoKey' is 
@@ -56,7 +52,7 @@ const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
 BoatPlatoneWallet *g_platone_wallet_ptr;
 
 
-#if defined(USE_ONETIME_WALLET)
+
 __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 {
     BSINT32 index;
@@ -68,30 +64,9 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
     memset(&wallet_config,0,sizeof(wallet_config));
 
 	/* wallet_config value assignment */
-    #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
-        wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
-    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
-        wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
-        wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
-    #else  
-        /* default is internal generation */  
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    #endif
+    //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
+    wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
 	
     wallet_config.chain_id             = 1;
     wallet_config.eip155_compatibility = BOAT_FALSE;
@@ -108,80 +83,7 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
     
     return BOAT_SUCCESS;
 }
-#endif
 
-#if defined(USE_CREATE_PERSIST_WALLET)
-__BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
-{
-    BSINT32 index;
-    BoatPlatoneWalletConfig wallet_config;
-    BUINT8 binFormatKey[32]               = {0};
-
-    (void)binFormatKey; //avoid warning
-
-    memset(&wallet_config,0,sizeof(wallet_config));
-
-	/* wallet_config value assignment */
-    #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
-        wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
-    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
-        wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
-        wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
-    #else  
-        /* default is internal generation */  
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    #endif
-
-    wallet_config.chain_id             = 1;
-    wallet_config.eip155_compatibility = BOAT_FALSE;
-    strncpy(wallet_config.node_url_str, demoUrl, BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
-
-	/* create platone wallet */
-    index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, &wallet_config, sizeof(BoatPlatoneWalletConfig));
-    if (index < 0)
-	{
-        //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
-        return BOAT_ERROR_WALLET_CREATE_FAIL;
-    }
-
-    g_platone_wallet_ptr = BoatGetWalletByIndex(index);
-
-    return BOAT_SUCCESS;
-}
-#endif
-
-#if defined(USE_LOAD_PERSIST_WALLET)
-__BOATSTATIC BOAT_RESULT platone_loadPersistWallet(BCHAR *wallet_name)
-{
-	BSINT32 index;
-
-	/* create platone wallet */
-    index = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, wallet_name, NULL, sizeof(BoatPlatoneWalletConfig));
-    if (index < 0)
-	{
-        //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
-        return BOAT_ERROR_WALLET_CREATE_FAIL;
-    }
-    g_platone_wallet_ptr = BoatGetWalletByIndex(index);
-
-    return BOAT_SUCCESS;
-}
-#endif
 
 BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 {
@@ -228,28 +130,19 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     return BOAT_SUCCESS;
 }
 
-int main(int argc, char *argv[])
+
+BOAT_RESULT demo_call_BoAT()
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
     boat_try_declare;
+
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     
 	/* step-2: create platone wallet */
-#if defined(USE_ONETIME_WALLET)	
 	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
 	result = platone_createOnetimeWallet();
-#elif defined(USE_CREATE_PERSIST_WALLET)
-	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
-	result = platone_createPersistWallet("platone.cfg");
-#elif defined(USE_LOAD_PERSIST_WALLET)
-	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: load persist wallet.");
-	result = platone_loadPersistWallet("platone.cfg");
-#else
-	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
-	//return -1;
-    result = BOAT_ERROR;
-#endif	
+
     if (result != BOAT_SUCCESS)
 	{
 		 //BoatLog(BOAT_LOG_CRITICAL, "platoneWalletPrepare_create failed : %d.", result);
@@ -273,5 +166,68 @@ int main(int argc, char *argv[])
 	/* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
     
-    return 0;
+    return result;
+}
+
+int main(int argc, char *argv[])
+{
+    int ret = 0;
+    //init fibo sdk
+    ret = fibo_sdk_init("127.0.0.1");
+    if (ret != FIBO_NO_ERR)
+    {
+        FIBO_LOG(FIBO_LOG_ERROR,"ret = %d, fibo_sdk_init fail !!!!!!\n",ret);
+        return ret;
+    }
+    //set apn config
+    fibo_data_call_config_info_t apn;
+    apn.profile_idx = 1;
+    apn.profile_valid = 1;
+
+    apn.ip_family = 10;
+    apn.ip_family_valid = 1;
+
+    memset(apn.apn_name,0U,sizeof(apn.apn_name));
+    memcpy(apn.apn_name,"test",strlen("test"));
+    apn.apn_name_valid = 1;
+
+    apn.auth_pref = 0;
+    apn.auth_pref_valid = 1;
+
+    apn.tech_pref = 3;
+    apn.tech_pref_valid = 1;
+
+    apn.user_name_valid = 0;
+    apn.password_valid = 0;
+
+    apn.reconnect = 1;
+
+    ret = fibo_data_apn_set(&apn);
+    if (ret != FIBO_NO_ERR)
+    {
+        FIBO_LOG(FIBO_LOG_ERROR,"ret = %d, fibo_data_apn_set fail !!!!!!\n",ret);
+        goto end;
+    }
+
+    //data call
+    fibo_data_call_result_info_t result_info;
+    memset(&result_info, 0,sizeof(fibo_data_call_result_info_t));
+    ret = fibo_data_call_start(1, &result_info);
+    if (ret != FIBO_NO_ERR)
+    {
+        FIBO_LOG(FIBO_LOG_ERROR,"ret = %d, fibo_data_call_start fail !!!!!!\n",ret);
+        goto stop_data_call;
+    }
+
+    ret = demo_call_BoAT();
+
+stop_data_call:
+    ret = fibo_data_call_stop(1);
+    printf("fibo_data_call_stop ret=%d\n", ret);
+
+end:
+    fibo_data_client_deinit();
+    printf("fibo_data_client_deinit\n");
+
+    return ret;
 }
