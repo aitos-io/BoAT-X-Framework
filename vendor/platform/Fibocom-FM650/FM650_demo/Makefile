@@ -4,7 +4,7 @@ LDFLAGS += -lumdp -lumdpcommon
 LDFLAGS += -L../BoAT-X-Framework/lib -lboatwallet
 LDFLAGS += -L../BoAT-X-Framework/lib -lboatvendor
 LDFLAGS += -lpthread  -lrt 
-LDFLAGS += -lcurl
+LDFLAGS += ./libcurl.so.4.5.0
    
 OBJDIR = Object
 SRCS_DIR := $(wildcard ./*.c)
