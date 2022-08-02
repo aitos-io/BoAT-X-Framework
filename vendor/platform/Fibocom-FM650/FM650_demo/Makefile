@@ -12,7 +12,7 @@ SRCS_DIR := $(wildcard ./*.c)
 OBJS := $(addsuffix .o,$(addprefix $(OBJDIR)/,$(basename $(notdir $(SRCS_DIR)))))
 DEPENDS := $(addsuffix .d,$(OBJS))
   
-TARGET = boat_test
+TARGET = call_boat_test
 TARGET_EXE = $(OBJDIR)/$(TARGET)
 all: distclean $(TARGET_EXE)
  
