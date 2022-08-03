@@ -1006,7 +1006,6 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 	else
 	{
 
-		BoatLog(BOAT_LOG_CRITICAL, "sBoatPort_keyCreate_internal_generation 000");
 		// 1- update private key
 		memset(pkCtx->extra_data.value, 0, sizeof(pkCtx->extra_data.value));
 		// result += mbedtls_pk_write_key_pem(&key, pkCtx->extra_data.value, sizeof(pkCtx->extra_data.value));
@@ -1015,7 +1014,6 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 		// mbedtls_mpi_write_binary(&(mbedtls_pk_ec(key)->d),pkCtx->extra_data.value,sizeof(pkCtx->extra_data.value));
 		// memcpy(pkCtx->extra_data.value, mbedtls_pk_ec(key)->d.p, (mbedtls_pk_ec(key)->d.n) * (sizeof(mbedtls_mpi_uint)));
 		mbedtls_mpi_write_binary(&mbedtls_pk_ec(key)->d, pkCtx->extra_data.value, 32);
-		BoatLog(BOAT_LOG_CRITICAL, "sBoatPort_keyCreate_internal_generation 111");
 		// 2- update private key format
 		pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
 
