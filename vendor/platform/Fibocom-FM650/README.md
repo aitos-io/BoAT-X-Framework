@@ -114,7 +114,7 @@ EXTERNAL_INC := -I/home/linux/FM650/fg650-opensdk
    
    编译成功后，在`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/lib`下会生成静态库libboatvendor.a、libboatwallet.a。
    
-## 五、编译调用BoAT的demo
+## 五、编译并运行调用BoAT的demo
 
 ### 1、配置区块链信息（以PlatONE为例）
 
