@@ -449,11 +449,72 @@ BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, 
 }
 
 
+static int ssl_recv_unblock(INT32 sock, void *buf, INT32 size, INT32 timeout)
+{
+    struct timeval tm = {0};
+    fd_set rset;
+    BUINT8 *temp = buf;
+
+    int fd = fibo_ssl_sock_get_fd(sock);
+
+    int ret = fibo_ssl_sock_recv(sock, buf, size);
+    if (ret > 0)
+    {
+        // BoatLog(BOAT_LOG_VERBOSE, "recv data size:%d", ret);
+        return ret;
+    }
+    else if (ret < 0)
+    {
+        BoatLog(BOAT_LOG_VERBOSE, "recv data fail");
+        return ret;
+    }
+
+    FD_ZERO(&rset);
+    FD_SET(fd, &rset);
+    tm.tv_sec = timeout / 1000;
+    tm.tv_usec = (timeout % 1000) * 1000;
+
+    ret = select(fd + 1, &rset, NULL, NULL, timeout > 0 ? &tm : NULL);
+    if (ret < 0)
+    {
+        BoatLog(BOAT_LOG_VERBOSE, "select failed:%s", strerror(errno));
+        return -1;
+    }
+    else if (ret == 0)
+    {
+        BoatLog(BOAT_LOG_VERBOSE, "select timeout");
+        return -1;
+    }
+    else
+    {
+        BoatLog(BOAT_LOG_VERBOSE, "data coming");
+        ret = fibo_ssl_sock_recv(sock, buf, size);
+        if (ret >= 0)
+        {
+            // BoatLog(BOAT_LOG_VERBOSE, "recv data size:%d", ret);
+            return ret;
+        }
+        else if (ret < 0)
+        {
+            BoatLog(BOAT_LOG_VERBOSE, "recv data fail");
+            return ret;
+        }
+    }
+}
+
 BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
-	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
-	return -1;
+	BOAT_RESULT ret = BOAT_SUCCESS;
+#if (BOAT_TLS_SUPPORT == 1) 
+    // ret = fibo_ssl_sock_recv(sockfd, buf, len);
+    ret = ssl_recv_unblock(sockfd, buf, len,10*1000);
+    // BoatLog(BOAT_LOG_VERBOSE, "boat ssl receive = %d ", ret);
+
+    // if (ret == -1)
+    // {
+    //     BoatLog(BOAT_LOG_VERBOSE, "write ssl errcode = %d ", fibo_get_ssl_errcode());
+    // }
+    return ret;
 #else
 	return recv(sockfd, buf, len, 0);
 #endif	
@@ -462,10 +523,13 @@ BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *
 
 void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 {
-	close(sockfd);
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+	
+#if (BOAT_TLS_SUPPORT == 1) 
 	// free tls releated
 	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
+	fibo_ssl_sock_close(sockfd);
+#else
+	close(sockfd);
 #endif
 }
 #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
