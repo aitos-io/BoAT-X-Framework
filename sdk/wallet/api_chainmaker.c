@@ -14,10 +14,10 @@
  * limitations under the License.
  *****************************************************************************/
 
-/*!@brief Ethereum wallet API for BoAT IoT SDK
+/*!@brief chainmaker wallet API for BoAT IoT SDK
 
 @file
-api_chainmaker.c defines the Ethereum wallet API for BoAT IoT SDK.
+api_chainmaker.c defines the chainmaker wallet API for BoAT IoT SDK.
 */
 
 /* self-header include */
