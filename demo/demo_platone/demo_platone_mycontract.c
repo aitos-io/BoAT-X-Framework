@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "my_contract.cpp.abi.h"
-#include "protocolapi/api_platone.h"
+#include "boatiotsdk.h"
 
 /**
  * macro used to select wallet type:
