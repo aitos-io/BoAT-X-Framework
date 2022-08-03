@@ -1113,10 +1113,10 @@ The SDK uses files as a persistent storage method for the wallet. If the RTOS do
 
 If the memory of the target system is too tight to load, you can try to trim the memory. The points that can be cropped include:
 
-a) According to actual needs, in \<SDKRoot\>/makefile, close the blockchain protocol that does not need to be supported
-b) According to the actual situation, reduce the storage space BOAT_XXX_NODE_URL_MAX_LEN of the node URL string in \<SDKRoot\>/api_\<protocol\>.h
-c) According to actual needs, reduce the number of wallets BOAT_MAX_WALLET_NUM in \<SDKRoot\>/include/boatwallet.h
-d) According to the actual situation, reduce the maximum number of members supported in a LIST in \<SDKRoot\>/include/boatrlp.h MAX_RLP_LIST_DESC_NUM
+a) According to actual needs, in \<SDKRoot\>/makefile, close the blockchain protocol that does not need to be supported  
+b) According to the actual situation, reduce the storage space BOAT_XXX_NODE_URL_MAX_LEN of the node URL string in \<SDKRoot\>/api_\<protocol\>.h  
+c) According to actual needs, reduce the number of wallets BOAT_MAX_WALLET_NUM in \<SDKRoot\>/include/boatwallet.h  
+d) According to the actual situation, reduce the maximum number of members supported in a LIST in \<SDKRoot\>/include/boatrlp.h MAX_RLP_LIST_DESC_NUM  
 e) According to the actual situation, reduce the self-increment step size of web3 data buffer in <SDKRoot>/sdk/protocol/common/web3intf/web3intf.h WEB3_STRING_BUF_STEP_SIZE
 
 
