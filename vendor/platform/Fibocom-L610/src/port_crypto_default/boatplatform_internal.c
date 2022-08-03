@@ -33,14 +33,14 @@
 #include <string.h>
 
 /* net releated include */
-#if (PROTOCOL_USE_HLFABRIC == 1)
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
+//#if (PROTOCOL_USE_HLFABRIC == 1)
+// #include <sys/types.h>
+// #include <sys/socket.h>
+// #include <netinet/in.h>
+// #include <netdb.h>
+// #include <arpa/inet.h>
 
-#endif
+//#endif
 #include <sys/time.h>
 
 #if (PROTOCOL_USE_HLFABRIC == 1)
@@ -321,10 +321,10 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
     }
 }
 
-#if (PROTOCOL_USE_HLFABRIC == 1)
+#if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_CHAINMAKER == 1)
 /******************************************************************************
                               BOAT SOCKET WARPPER
-					        THIS ONLY USED BY FABRIC
+					        THIS ONLY USED BY FABRIC OR CHAINMAKER
 *******************************************************************************/
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
@@ -352,6 +352,28 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
     memcpy(ip  , address, (int)(ptr - address));
     memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
 
+#if (BOAT_TLS_SUPPORT == 1)
+    connectfd = fibo_ssl_sock_create();
+    if (connectfd == -1)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "socket() error");
+        return -1;
+    }
+    // BoatLog(BOAT_LOG_CRITICAL, "socket() OK");
+    BoatLog(BOAT_LOG_CRITICAL, "socket() connect IP : [%s] , port = %d ", ip, atoi(port));
+    if (fibo_ssl_sock_connect(connectfd, ip, atoi(port)) < 0)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "connect() error ,code = %d", fibo_get_ssl_errcode());
+        close(connectfd);
+        return -1;
+    }
+    ///获取ssl sock对应的socket fd
+    int fd = fibo_ssl_sock_get_fd(connectfd);
+
+    //设置sock fd为非阻塞
+    fibo_sock_lwip_fcntl(fd, F_SETFL, fibo_sock_lwip_fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+
+#else
     if ((he = gethostbyname(ip)) == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "gethostbyname() error");
@@ -391,7 +413,7 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
         BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.", 
         inet_ntoa(localaddr_ptr->sin_addr), htons(localaddr_ptr->sin_port));
     }
-
+#endif
     BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
 
     return connectfd;
