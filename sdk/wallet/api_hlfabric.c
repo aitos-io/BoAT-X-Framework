@@ -129,6 +129,11 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 						continue;
 					}
 					BoatLog(BOAT_LOG_CRITICAL, "http2SubmitRequest ok \n ");
+					//BoatLog(BOAT_LOG_CRITICAL, "http2SubmitRequest fabricHttp2res.httpResLen = %d \n ",fabricHttp2res.httpResLen);
+					if(fabricHttp2res.httpResLen < 5){
+						result = BOAT_ERROR;
+						continue;
+					}
 					proposalResponse = protos__proposal_response__unpack(NULL, fabricHttp2res.httpResLen  - 5, fabricHttp2res.http2Res + 5);
 					if(fabricHttp2res.httpResLen != 0)
 					{
