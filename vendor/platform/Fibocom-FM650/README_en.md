@@ -81,32 +81,96 @@ EXTERNAL_INC := -I/home/linux/FM650/fg650-opensdk
 
 ## Compile BoAT-X Framework Static library
 
-### 1. Compile BoAT-X Framework static library (under Linux)
+### 1. Configure the cross compiler
 
-   #### a. Configure the target platform in directory BoAT-X-Framework/Makefile
+   #### a. Open a terminal on Linux and go to the fibo-compiletool directory
    ```
-   PLATFORM_TARGET ?= XinYi-XY1100
+   cd <FM650 Root>/fibo-compiletool
    ```
 
-   #### b. Open a Linux shell, enter `<XY1100 Root>/userapp/BoAT-X-Framework` directory and compile BoAT static library
+   #### b. Make the cross-compilation instructions work on this terminal
    ```
-   cd <XY1100 Root>/userapp/BoAT-X-Framework
+   source environment-setup-aarch64-unisoc-linux
+   ```
+
+   After it takes effect successfully, execute `echo $CC` and `echo $AR` in the terminal to see the corresponding command content, and the subsequent compilation of the BoAT static library must also be completed in the terminal.
+
+
+### 2. Compile the BoAT static library
+
+  #### a. Configure the compilation information in the main Makefile, open `<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/Makefile`, and modify the following (Take PlatONE as an example):
+  ```
+   BOAT_PROTOCOL_USE_ETHEREUM   ?= 1
+   BOAT_PROTOCOL_USE_PLATONE    ?= 1
+
+   PLATFORM_TARGET ?= linux-default
+  ```
+
+  #### b. Compile the BoAT static library
+  ```
+   cd <FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework
    make clean
    make all
-   ```
+  ```
+  After successful compilation, the static libraries libboatvendor.a and libboatwallet.a will be generated under `<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/lib`.
 
-   After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<XY1100 Root>/userapp/BoAT-X-Framework/lib` directory.
+## Compile and run the demo calling BoAT
 
+### 1. Configure blockchain information (Take PlatONE as an example)
 
-### 2. Build the demo program of XY1100, generate .bin file for download
+  #### a. Configure the deployed or known available node address to the `demoUrl` variable in `<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/vendor/platform/linux-default/demo_platone_mycontract.c` ,for example:
+  ```
+  const BCHAR *demoUrl = "http://121.0.0.1:7545";
 
-   Demo code for accessing blockchain through BoAT-X Framework is in `<XY1100 Root>/userapp/demo/boat_demo/boat_demo.c`
+  ```
 
-   Open a Linux shell and build the demo:
-   ```
-   cd <XY1100 Root>/targets/xinyiNBSoc_M3/Makefile
-   make clean
-   make all
-   ```
-   The download image ram.bin and flash.bin will be generated in `<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/xinyiNBSoc_M3` if building is successful.
+  #### b. Configure the smart contract address deployed on the chain to `demoRecipientAddress` in `<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/vendor/platform/linux-default/demo_platone_mycontract.c` variable,for example:
+  ```
+  const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
+  ```
 
+### 2. Referring to smart contracts
+
+  #### a. Compile the smart contract ABI file into a c interface file according to the BoAT user manual
+
+  #### b. Refer to the smart contract c interface file in `<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/vendor/platform/linux-default/demo_platone_mycontract.c` and call the c interface of the contract, (with smart contract my_contract for example) for example:
+  ```
+  #include "my_contract.cpp.abi.h"
+  ```
+  ```
+  result_str = my_contract_cpp_abi_setName(&tx_ctx, "HelloWorld");
+  ```
+
+### 3. compile demo
+
+  #### a. Run `<FM650 Root>/build.sh` and configure the project
+  ```
+  ./build.sh project FG650_CN_OPENCPU_OPEN
+  ```
+
+  #### b. Compile fibo-sdk
+  ```
+  ./build.sh sdk
+  ```
+  After successful execution, the `Object` folder will be generated under `<FM650 Root>/fibo-sdk/umdp/example/boat_demo`, which contains the final executable file `call_boat_test`
+
+### 4. run demo
+
+  #### a. Power on the FM650 board and connect the PC via USB cable
+
+  #### b. Follow the board's documentation to turn on the ADB function
+
+  #### c. Open a terminal on the pc, and push the executable file `call_boat_test` to the board through ADB (take /home/user as an example)
+  ```
+  adb push call_boat_test /home/user
+  ```
+
+  #### d. Insert an available SIM card into the SIM card slot of the FM650
+
+  #### e. Open a terminal on the PC and run the demo in the FM650
+  ```
+  adb shell
+  cd /home/user
+  chmod +x call_boat_test
+  ./call_boat_test
+  ```
