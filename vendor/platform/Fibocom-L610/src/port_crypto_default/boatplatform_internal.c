@@ -420,13 +420,17 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 }
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
+#if (BOAT_TLS_SUPPORT == 1)	
 BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 						BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
-	
-	//! @todo BoatTlsInit implementation in crypto default.
-	return BOAT_ERROR;
+    int ret = 0;
+    fibo_set_ssl_chkmode(0);
+    ret = fibo_write_ssl_file("TRUSTFILE", caChain->field_ptr, strlen(caChain->field_ptr));
+	// ret = fibo_write_ssl_file("CAFILE", user_cert, sizeof(user_cert)-1);
+	// ret = fibo_write_ssl_file("CAKEY", user_key, sizeof(user_key)-1);
+    fibo_taskSleep(10000);
+    return BOAT_SUCCESS;
 }
 #endif
 
