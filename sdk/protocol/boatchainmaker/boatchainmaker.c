@@ -17,7 +17,7 @@
 /*!@brief Perform RAW transaction
 
 @file
-chaninmaker.c contains functions to construct a raw transaction, perform it and 
+boatchainmaker.c contains functions to construct a raw transaction, perform it and 
 wait for its receipt.
 */
 
