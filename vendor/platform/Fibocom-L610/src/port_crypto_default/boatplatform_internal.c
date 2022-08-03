@@ -87,6 +87,9 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 {
 	BUINT8 signatureTmp[64];
 	BUINT8 ecdsPrefix = 0;
+	BUINT8 pem_data[100] = {0};
+    BUINT32 offset = 0;
+	BCHAR str_signres[256] = {0};
 	
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
@@ -127,6 +130,19 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 
 	// signature result assign
 	memset(signatureResult, 0, sizeof(BoatSignatureResult));
+    pem_data[offset ++] = 0x30;
+    pem_data[offset ++] = 0x44;
+    pem_data[offset ++] = 0x02;
+    pem_data[offset ++] = 0x20;
+    memcpy(pem_data+offset,signatureTmp,32);
+    offset += 32;
+    pem_data[offset ++] = 0x02;
+    pem_data[offset ++] = 0x20;
+    memcpy(pem_data+offset,signatureTmp+32,32);
+    offset += 32;
+	signatureResult->pkcs_format_used = true;
+	signatureResult->pkcs_sign_length = offset;
+	memcpy(signatureResult->pkcs_sign, pem_data, signatureResult->pkcs_sign_length);
 	
 	signatureResult->native_format_used = true;
 	memcpy(signatureResult->native_sign, signatureTmp, 64);
