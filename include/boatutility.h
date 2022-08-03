@@ -37,8 +37,10 @@ boatutility.h is header file for utility functions.
 #define BOAT_STRING_MAX_LEN					     4096 
 
 
-#define PRIKEY_PKCS_BEGIN "-----BEGIN EC PRIVATE KEY-----"
-#define PRIKEY_PKCS_END   "-----END EC PRIVATE KEY-----"
+#define PRIKEY_EC_PKCS_BEGIN "-----BEGIN EC PRIVATE KEY-----"
+#define PRIKEY_EC_PKCS_END   "-----END EC PRIVATE KEY-----"
+#define PRIKEY_PKCS_BEGIN	"-----BEGIN PRIVATE KEY-----"
+#define PRIKEY_PKCS_END		"-----END PRIVATE KEY-----"
 
 /**
  * \name DER constants
