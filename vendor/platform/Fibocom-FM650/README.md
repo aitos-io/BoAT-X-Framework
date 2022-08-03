@@ -1,35 +1,38 @@
-# BoAT-X-Framework for 芯翼XinYi-XY1100整合说明
+# BoAT-X-Framework for Fibocom-FM650整合说明
 
 
 ## 一、前言
 
-本文档说明如何在XinYi-XY1100开发环境中整合BoAT-X-Framework、编译BoAT-X-Framework静态库以及生成demo程序。
+本文档说明如何在Fibocom-FM650开发环境中整合BoAT-X-Framework、编译BoAT-X-Framework静态库以及生成demo程序。
 
 
 ## 二、拷贝文件
 
-约定`<XY1100 Root>`是XinYi-XY1100平台SDK的根目录：
+约定`<FM650 Root>`是Fibocom-FM650平台SDK的根目录：
 
-1、拷贝 BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<XY1100 Root>/userapp`下。
+1、拷贝 BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<FM650 Root>/fibo-sdk/umdp/example`下。
 
-2、在`<XY1100 Root>/userapp/demo`下新建文件夹`boat_demo`，拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/boat_demo.c到`<XY1100 Root>/userapp/demo/boat_demo`下。
+2、在`<FM650 Root>/fibo-sdk/umdp/example`下新建文件夹`boat_demo`，拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/demo_platone_mycontract.c到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
 
-3、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.c到`<XY1100 Root>/userapp/demo/boat_demo`下。
+3、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/my_contract.cpp.abi.c到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
 
-4、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.h到`<XY1100 Root>/userapp/demo/boat_demo`下。
+4、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/my_contract.cpp.abi.h到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
 
-5、拷贝并覆盖 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/vendor/Makefile到`<XY1100 Root>/userapp/BoAT-X-Framework/vendor`下。
+5、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/Makefile到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
 
-6、拷贝并覆盖 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/storage/persiststore.c到`<XY1100 Root>/userapp/BoAT-X-Framework/vendor/common/storage`下。
+6、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/libcurl.so.4.5.0到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
+
+7、拷贝并覆盖 BoAT-X-Framework/vendor/platform/Fibocom-FM650/external.env到`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/vendor/platform/linux-default`下。
 
 
 拷贝后的目录和文件结构如下：
 ```
-<XY1100 Root>
+<FM650 Root>
 |
-|-- LICENSE
-|-- Makefile
-|-- README.md
+|-- build.sh
+|-- fibo-kernel
+|-- fibo-rootfs
+|-- fibo_sign_package
 |-- TCPIP
 |-- arch
 |-- examples
