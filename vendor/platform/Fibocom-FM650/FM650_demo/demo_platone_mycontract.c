@@ -42,7 +42,7 @@ const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a
 /**
  * test node url
  */
-const BCHAR *demoUrl = "http://116.236.47.90:7545";
+const BCHAR *demoUrl = "http://121.0.0.1:7545";
 
 /**
  * transfer recipient address
