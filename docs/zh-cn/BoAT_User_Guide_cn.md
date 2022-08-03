@@ -1061,18 +1061,18 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
 
 ## SDK往RTOS移植的建议
 若将SDK移植到RTOS上，一般应遵循以下几点:
-1. 解除对curl的依赖
+1. 解除对curl的依赖  
     curl是一个Linux下的通信协议库，在SDK中用于支持http/https通信。区块链节点通常采用http/https协议进行通信。
 
     对于采用RTOS的模组，应当在\<SDKRoot\>/vendor/platform/\<platform_name\>/src/rpc中增加对模组的http/https的接口的调用封装，并修改\<SDKRoot\>/vendor/platform/\<platform_name\>/scripts/gen.py，关闭RPC_USE_LIBCURL并设置新增的RPC USE OPTION
 
 
-2. 解除对文件系统的依赖
+2. 解除对文件系统的依赖  
 
     SDK中使用文件作为钱包的持久化保存方法。若RTOS不支持文件系统，应当修改\<SDKRoot\>/vendor/platform/\<platform_name\>/port_xx/boatplatform_internal.c中文件操作相关的`BoatGetFileSize`, `BoatWriteFile`, `BoatReadFile`, `BoatRemoveFile`四个函数，将读/写文件修改为系统支持的持久化方法。
 
 
-3. 内存裁剪
+3. 内存裁剪  
 
     若目标系统内存较为紧张，以致无法装入时，可以尝试对内存进行裁剪。可以裁剪的点包括：
 
