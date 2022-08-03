@@ -32,6 +32,7 @@
 /* net releated include */
 #include <sys/types.h>
 #include <string.h>
+#include <time.h>
 
 
 
@@ -90,6 +91,12 @@ void BoatSleep(BUINT32 second)
 {
     fibo_taskSleep(1000 * second);
 }
+long int BoatGetTimes()
+{
+	return time(NULL);
+}
+
+
 BUINT16 lwip_htons(BUINT16 x){
 	return PP_HTONS(x);
 }
