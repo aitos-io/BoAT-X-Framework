@@ -59,7 +59,7 @@ BOAT_RESULT BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 in
 	}
 	else if (type == BOAT_HASH_SHA256)
 	{
-		sha3_256(input, inputLen, hashed);
+		sha256_Raw(input, inputLen, hashed);
 		if (hashedLen != NULL)
 		{
 			*hashedLen = 32;
