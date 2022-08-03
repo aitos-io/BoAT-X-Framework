@@ -437,9 +437,12 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 
 BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+	BOAT_RESULT ret = BOAT_SUCCESS;
+#if (BOAT_TLS_SUPPORT == 1) 
 	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
-	return -1;
+	ret = fibo_ssl_sock_send(sockfd, buf, len);
+    //  BoatLog(BOAT_LOG_VERBOSE, "write ssl send = %d ", ret);
+    return ret;
 #else
 	return send(sockfd, buf, len, 0);	
 #endif	
