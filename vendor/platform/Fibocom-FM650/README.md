@@ -30,26 +30,30 @@
 <FM650 Root>
 |
 |-- build.sh
+|-- config.ini
 |-- fibo-kernel
 |-- fibo-rootfs
 |-- fibo_sign_package
-|-- TCPIP
-|-- arch
-|-- examples
-|-- kernel
-|-- output
-|-- sys_app
-|-- targets
-`-- userapp
-    |-- BoAT-X-Framework
-    |-- Inc
-    |-- Src
-    |-- module.mk    
-    |-- demo
-    |   |-- boat_demo
-    |   |   |-- boat_demo.c
-    |   |   |-- my_contract.c
-    |   |   |-- my_contract.h
+|-- curl
+|-- fibo-compiletool
+|-- fibo-ota
+|-- fibo-uboot
+`-- fibo-sdk
+    |-- Makefile
+    |-- umdp
+    |   |-- bin
+    |   |-- config
+    |   |-- include
+    |   |-- lib
+    |   |-- example
+    |   |   |-- Makefile
+    |   |   |-- BoAT-X-Framework
+    |   |   |-- boat_demo
+    |   |   |   |-- Makefile
+    |   |   |   |-- demo_platone_mycontract.c
+    |   |   |   |-- my_contract.cpp.abi.c
+    |   |   |   |-- my_contract.cpp.abi.h
+    |   |   |   |-- libcurl.so.4.5.0
 ```
 
 
