@@ -59,134 +59,117 @@
 
 ## 三、文件修改
 
-### 1、在module.mk中指定需要参与编译的demo源文件
 
-  打开`<XY1100 Root>/userapp/module.mk`文件
-  
-  在源文件添加处新添以下内容：
-  ```
-  C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/boat_demo.c
-  C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/my_contract.c
-  ```
+### 1、在Makefile中添加需要引用的BoAT头文件路径
 
-### 2、在module.mk中添加需要引用的头文件路径
-
-打开`<XY1100 Root>/userapp/module.mk`文件
+打开`<FM650 Root>/fibo-sdk/Makefile`文件
 
 在头文件路径添加处新添以下内容：
 ```
-    CFLAGS+= -I$(TOP_DIR)/TCPIP/net_tool/Dtls/mbedtls-2.6.0/include/mbedtls \
-             -I$(TOP_DIR)/userapp/BoAT-X-Framework/include \
-             -I$(TOP_DIR)/userapp/BoAT-X-Framework/vendor/platform/include \
-             -I$(TOP_DIR)/userapp/BoAT-X-Framework/sdk/include \
-             -I$(TOP_DIR)/userapp/BoAT-X-Framework/vendor/platform/XinYi-XY1100/src/log \
-             -I$(TOP_DIR)/userapp/BoAT-X-Framework/sdk/protocol/common/web3intf \
+export CFLAGS+=-I$(CUR_PATH)/umdp/example/BoAT-X-Framework/include
+export CFLAGS+=-I$(CUR_PATH)/umdp/example/BoAT-X-Framework/vendor/platform/include
+export CFLAGS+=-I$(CUR_PATH)/umdp/example/BoAT-X-Framework/vendor/platform/linux-default/src/log
 ```
 
-### 3、添加BoAT-X-Framework编译生成的静态库.a文件路径到XinYi-XY1100平台
+### 2、配置curl头文件路径
 
-打开`<XY1100 Root>/userapp/module.mk`文件
+  打开`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/vendor/platform/linux-default/external.env`文件
   
-  在文件最后添加以下内容：
-  ```
-    LDFLAGS+=-L$(TOP_DIR)/userapp/BoAT-X-Framework/lib/ -lboatwallet    
-    LDFLAGS+=-L$(TOP_DIR)/userapp/BoAT-X-Framework/lib/ -lboatvendor
-  ```
-
-### 4、配置BoAT-X-Framework的交叉编译环境
-
-  打开`<XY1100 Root>/userapp/BoAT-X-Framework/vendor/platform/XinYi-XY1100/external.env`文件
+  在`EXTERNAL_INC`后面配置FM650平台curl头文件的实际路径，例如：
+```
+EXTERNAL_INC := -I/home/linux/FM650/fg650-opensdk
+```
   
-  在`CC`和`AR`后面配置本地交叉编译器的实际路径
-  
-### 5、配置XinYi-XY1100平台的交叉编译环境
-  
-  打开`<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/makefile`文件
-  
-  在文件开头将本地交叉编译器的路径配置进环境变量中，示例如下：
-  ```
-  PATH := $(PATH):/home/tools/xinyigcc/gcc-arm-none-eabi-9-2019-q4-major/bin
-  ```
-
-### 6、在XinYi-XY1100平台中增加BoAT-X-Framework的功能支持选项
-
-打开`<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/feature.mk`文件
-
-在文件最后添加以下内容：
-```
-    BOATSDK_SUPPORT=y
-```
-
-### 7、在XinYi-XY1100平台中增加BoAT-X-Framework的编译参数
-
-打开`<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/makefile`文件
-
-在配置模块附加功能的位置添加以下内容：
-```
-    ifeq ($(BOATSDK_SUPPORT),y)
-        FLAGS+=-DBOATSDK_SUPPORT=1
-    endif
-```
-
-### 8、在XinYi-XY1100平台中配置mbedtls的宏选项
-
-打开`<XY1100 Root>/TCPIP/net_tool/Dtls/mbedtls_port/los_mbedtls_config.h`文件
-
-添加以下内容：
-```
-  #ifdef BOATSDK_SUPPORT
-
-  #define MBEDTLS_ECDSA_C
-  #define MBEDTLS_ECP_C
-  #define MBEDTLS_ASN1_WRITE_C
-  #define MBEDTLS_ECDH_C
-  #define MBEDTLS_PK_C
-  #define MBEDTLS_ECP_DP_SECP256K1_ENABLED
-
-  #define MBEDTLS_PLATFORM_STD_CALLOC        calloc
-  #define MBEDTLS_PLATFORM_STD_FREE            free
-
-
-  #define MBEDTLS_PEM_WRITE_C
-  #define MBEDTLS_PK_WRITE_C
-  #define MBEDTLS_BASE64_C
-  #define MBEDTLS_PK_PARSE_C
-  #define MBEDTLS_ASN1_PARSE_C
-
-  #define MBEDTLS_BIGNUM_C
-  #define MBEDTLS_OID_C
-  #define MBEDTLS_PEM_PARSE_C
-
-  #endif
-```
-
 ## 四、编译BoAT-X-Framework静态库
 
-### 1、在Linux下编译BoAT-X-Framework静态库.a文件
+### 1、配置交叉编译器
    
-   #### a、修改`<XY1100 Root>/userapp/BoAT-X-Framework/Makefile`中的target
+   #### a、在Linux上打开一个终端，进入到fibo-compiletool目录
    ```
-   PLATFORM_TARGET ?= XinYi-XY1100
+    cd <FM650 Root>/fibo-compiletool
+   ```
+
+   #### b、使交叉编译指令在该终端上生效
+   ```
+    source environment-setup-aarch64-unisoc-linux
+   ```
+   生效成功后，在该终端执行`echo $CC`和`echo $AR`会看到相应的命令内容，后续的BoAT静态库的编译也必须保证在该终端中完成。
+
+### 2、编译BoAT静态库
+
+   #### a、配置主Makefile中的编译信息，打开`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/Makefile`,修改以下内容（以PlatONE为例）：
+   ```
+   BOAT_PROTOCOL_USE_ETHEREUM   ?= 1
+   BOAT_PROTOCOL_USE_PLATONE    ?= 1
+
+   PLATFORM_TARGET ?= linux-default
    ```
    
-   #### b、打开Linux终端并进入BoAT-X-Framework目录编译BoAT静态库
+   #### b、编译BoAT静态库
    ```
-   cd <XY1100 Root>/userapp/BoAT-X-Framework
+   cd <FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework
    make clean
    make all
    ```
    
-   编译成功后，在`<XY1100 Root>/userapp/BoAT-X-Framework/lib`下会生成静态库libboatvendor.a、libboatwallet.a。
+   编译成功后，在`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/lib`下会生成静态库libboatvendor.a、libboatwallet.a。
    
+## 五、编译调用BoAT的demo
 
-### 2、编译XY1100演示demo程序，生成.bin下载文件
+### 1、配置区块链信息（以PlatONE为例）
 
-   通过BoAT-X-Framework访问区块链的演示代码，在`<XY1100 Root>/userapp/demo/boat_demo/boat_demo.c`
-   
-   打开Linux终端并进入`<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile`
-   ```
-   cd <XY1100 Root>/targets/xinyiNBSoc_M3/Makefile
-   make clean
-   make all
-   ```
-   编译成功会在`<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/xinyiNBSoc_M3`下生成ram.bin和flash.bin文件。
+  #### a、将部署好或者已知可用的节点地址配置给`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/vendor/platform/linux-default/demo_platone_mycontract.c`中的`demoUrl`变量，例如：
+  ```
+  const BCHAR *demoUrl = "http://121.0.0.1:7545";
+
+  ```
+  #### b、将已在链上部署好的智能合约地址配置给`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/vendor/platform/linux-default/demo_platone_mycontract.c`中的`demoRecipientAddress`变量，例如：
+  ```
+  const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
+  ```
+
+### 2、引用智能合约
+
+  #### a、按照BoAT用户手册将智能合约ABI文件编译成c接口文件
+
+  #### b、在`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/vendor/platform/linux-default/demo_platone_mycontract.c`中引用智能合约c接口文件并调用合约的c接口，（以智能合约my_contract为例）例如：
+  ```
+  #include "my_contract.cpp.abi.h"
+  ```
+  ```
+  result_str = my_contract_cpp_abi_setName(&tx_ctx, "HelloWorld");
+  ```
+
+### 3、编译demo
+
+  #### a、运行`<FM650 Root>/build.sh`并配置项目
+  ```
+  ./build.sh project FG650_CN_OPENCPU_OPEN
+  ```
+
+  #### b、编译fibo-sdk
+  ```
+  ./build.sh sdk
+  ```
+  执行成功后，会在`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下生成`Object`文件夹，其中包含最终生成的可执行文件`call_boat_test`
+
+### 4、运行demo
+
+  #### a、将FM650板子上电并通过USB线连接PC
+
+  #### b、按照板子的文档说明，打开ADB功能
+
+  #### c、在pc上打开一个终端，通过ADB将可执行文件`call_boat_test`push到板子内（以/home/user为例）
+  ```
+  adb push call_boat_test /home/user
+  ```
+
+  #### d、在FM650的SIM卡槽中插入一张可用的SIM卡
+
+  #### e、在PC上打开一个终端，并运行FM650中的demo
+  ```
+  adb shell
+  cd /home/user
+  chmod +x call_boat_test
+  ./call_boat_test
+  ```
