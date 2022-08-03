@@ -90,3 +90,10 @@ void BoatSleep(BUINT32 second)
 {
     fibo_taskSleep(1000 * second);
 }
+BUINT16 lwip_htons(BUINT16 x){
+	return PP_HTONS(x);
+}
+
+u32_t lwip_htonl(u32_t x){
+	return PP_HTONL(x);
+}
