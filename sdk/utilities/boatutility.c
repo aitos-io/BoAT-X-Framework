@@ -857,123 +857,337 @@ void UtilityFreeKeypair(KeypairNative keypair){
     keypair.pubkeylen = 0;
 }
 
-BOAT_RESULT UtilityPKCS2Native(BCHAR *input,KeypairNative *keypair){
+BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
+{
     BOAT_RESULT ret = BOAT_ERROR;
     BCHAR *begin = NULL;
     BCHAR *end = NULL;
     BCHAR *realdata = NULL;
     BUINT8 pkcsDataHex[160] = {0};
-    BUINT8 oid_secp256k1[] = {0x2b,0x81,0x04,0x00,0x0a};
-    BUINT8 oid_secp256r1[] = {0x2b,0x81,0x04,0x03,0x01,0x07};
-    BUINT8 oid_sm2sm3[] = {0x2a,0x81,0x1c,0xcf,0x55,0x01,0x82,0x2d};
+    BUINT8 oid_secp256k1[] = {0x00, 0x0a};
+    BUINT8 oid_secp256r1[] = {0x03, 0x01, 0x07};
+    BUINT8 oid_sm2sm3[] = {0x2a, 0x81, 0x1c, 0xcf, 0x55, 0x01, 0x82, 0x2d};
     BCHAR bytedata = 0;
-    BUINT16 offset = 0 , len = 0 ,offset_level_3 = 0;
+    BUINT16 offset = 0, len = 0, offset_level_3 = 0, offset_level_4 = 0,offset_level_5 = 0;
     BUINT16 j = 0;
-    TLVStruct TLV_Level_1,TLV_Level_2,TLV_Level_3;
-    begin = strstr(input,PRIKEY_PKCS_BEGIN);
-    end= strstr(input,PRIKEY_PKCS_END);
-    if(NULL == begin || NULL == end){
-        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native have no begin or end .");
-        return BOAT_ERROR;
-    }
-    offset = input - begin + strlen(PRIKEY_PKCS_BEGIN);
-    len = end - begin - strlen(PRIKEY_PKCS_BEGIN);
-    realdata = BoatMalloc(len);
-    for(int i = 0;i < len;i++){
-        bytedata = input[offset+i];
-        if(bytedata != ' ' && bytedata != 0x0A && bytedata != 0x0D){
-            realdata[j++] = bytedata;
+    TLVStruct TLV_Level_1, TLV_Level_2, TLV_Level_3, TLV_Level_4,TLV_Level_5;
+    if (strstr(input, PRIKEY_EC_PKCS_BEGIN) != NULL)
+    {
+        begin = strstr(input, PRIKEY_EC_PKCS_BEGIN);
+        end = strstr(input, PRIKEY_EC_PKCS_END);
+        if (NULL == begin || NULL == end)
+        {
+            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native have no begin or end .");
+            return BOAT_ERROR;
         }
-    }
-    len = BoAT_base64_decode(realdata,j,pkcsDataHex);
-    if(len  == 0){
-        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native base64 decode err .");
-        return BOAT_ERROR;
-    }
-    // BoatLog_hexdump(BOAT_LOG_VERBOSE, "pkcsDataHex : ", 
-	// 					pkcsDataHex, len);
+        offset = begin - input + strlen(PRIKEY_EC_PKCS_BEGIN);
+        len = end - begin - strlen(PRIKEY_EC_PKCS_BEGIN);
+        realdata = BoatMalloc(len);
+        for (int i = 0; i < len; i++)
+        {
+            bytedata = input[offset + i];
+            if (bytedata != ' ' && bytedata != 0x0A && bytedata != 0x0D)
+            {
+                realdata[j++] = bytedata;
+            }
+        }
 
-    ret = UtilityGetTLV(pkcsDataHex,len,&TLV_Level_1);
-    if(ret != BOAT_SUCCESS){
-         BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 1 err .");
-        return ret;
-    }
-    if(TLV_Level_1.tag != (BoAT_ASN1_CONSTRUCTED |BoAT_ASN1_SEQUENCE) ){
-        BoatLog(BOAT_LOG_NORMAL, "UtilityPKCS2Native tlv 1 tag err : %02x.",TLV_Level_1.tag);
-        return BOAT_ERROR;
-    }
-    offset = 0;
-    while(offset < TLV_Level_1.len){
-        ret = UtilityGetTLV(TLV_Level_1.data+offset,TLV_Level_1.len - offset,&TLV_Level_2);
-        if(ret != BOAT_SUCCESS){
-            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 2 err .");
+        len = BoAT_base64_decode(realdata, j, pkcsDataHex);
+        BoatFree(realdata);
+        if (len == 0)
+        {
+            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native base64 decode err .");
+            return BOAT_ERROR;
+        }
+        // BoatLog_hexdump(BOAT_LOG_VERBOSE, "pkcsDataHex : ",
+        // 					pkcsDataHex, len);
+
+        ret = UtilityGetTLV(pkcsDataHex, len, &TLV_Level_1);
+        if (ret != BOAT_SUCCESS)
+        {
+            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 1 err .");
             return ret;
         }
-        // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_2.tag = %02x .",TLV_Level_2.tag);
-        if(TLV_Level_2.tag == BoAT_ASN1_OCTET_STRING){
-            // (*keypair).prikey = TLV_Level_2.data;
-            (*keypair).prikey = BoatMalloc(TLV_Level_2.len);
-            memcpy((*keypair).prikey,TLV_Level_2.data,TLV_Level_2.len);
-            (*keypair).prikeylen = TLV_Level_2.len;
+        if (TLV_Level_1.tag != (BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_SEQUENCE))
+        {
+            BoatLog(BOAT_LOG_NORMAL, "UtilityPKCS2Native tlv 1 tag err : %02x.", TLV_Level_1.tag);
+            return BOAT_ERROR;
         }
-        if((TLV_Level_2.tag & 0xF0) == (BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_CONTEXT_SPECIFIC)){
-            while(offset_level_3 < TLV_Level_2.len){
-                ret = UtilityGetTLV(TLV_Level_2.data+offset_level_3,TLV_Level_2.len - offset_level_3,&TLV_Level_3);
-                if(ret != BOAT_SUCCESS){
-                    BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 3 err .");
-                    return ret;
-                }
-                // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_3.tag = %02x . datalen = %02x",TLV_Level_3.tag,TLV_Level_3.len);
-                if(TLV_Level_3.tag == BoAT_ASN1_OID){
-                    if(TLV_Level_3.len == sizeof(oid_secp256k1)){
-                        if(memcmp(TLV_Level_3.data,oid_secp256k1,sizeof(oid_secp256k1)) ==0 ){
-                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256k1 .");
-                             (*keypair).alg = KEYPAIT_ALG_SECP256K1;
-                             break;
-                        }else{
-                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_unknown.");
-                            (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
-                            break;
+        offset = 0;
+        while (offset < TLV_Level_1.len)
+        {
+            ret = UtilityGetTLV(TLV_Level_1.data + offset, TLV_Level_1.len - offset, &TLV_Level_2);
+            if (ret != BOAT_SUCCESS)
+            {
+                BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 2 err .");
+                return ret;
+            }
+            // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_2.tag = %02x .",TLV_Level_2.tag);
+            if (TLV_Level_2.tag == BoAT_ASN1_OCTET_STRING)
+            {
+                // (*keypair).prikey = TLV_Level_2.data;
+                (*keypair).prikey = BoatMalloc(TLV_Level_2.len);
+                memcpy((*keypair).prikey, TLV_Level_2.data, TLV_Level_2.len);
+                (*keypair).prikeylen = TLV_Level_2.len;
+            }
+            if ((TLV_Level_2.tag & 0xF0) == (BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_CONTEXT_SPECIFIC))
+            {
+                while (offset_level_3 < TLV_Level_2.len)
+                {
+                    ret = UtilityGetTLV(TLV_Level_2.data + offset_level_3, TLV_Level_2.len - offset_level_3, &TLV_Level_3);
+                    if (ret != BOAT_SUCCESS)
+                    {
+                        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 3 err .");
+                        return ret;
+                    }
+                    // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_3.tag = %02x . datalen = %02x",TLV_Level_3.tag,TLV_Level_3.len);
+                    if (TLV_Level_3.tag == BoAT_ASN1_OID)
+                    {
+                        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_3.len = %d ", TLV_Level_3.len);
+                        if (TLV_Level_3.len >= sizeof(oid_secp256r1))
+                        {
+                            if (memcmp(TLV_Level_3.data + TLV_Level_3.len - sizeof(oid_secp256k1), oid_secp256k1, sizeof(oid_secp256k1)) == 0)
+                            {
+                                BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256k1 .");
+                                (*keypair).alg = KEYPAIT_ALG_SECP256K1;
+                                break;
+                            }
+                            else if (memcmp(TLV_Level_3.data + TLV_Level_3.len - sizeof(oid_secp256r1), oid_secp256r1, sizeof(oid_secp256r1)) == 0)
+                            {
+                                BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256r1 .");
+                                (*keypair).alg = KEYPAIT_ALG_SECP256R1;
+                                break;
+                            }
+                            else if (TLV_Level_3.len >= sizeof(oid_sm2sm3))
+                            {
+                                if (memcmp(TLV_Level_3.data, oid_sm2sm3, sizeof(oid_sm2sm3) - 2) == 0)
+                                {
+                                    (*keypair).alg = KEYPAIT_ALG_SM;
+                                    BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_sm .");
+                                    break;
+                                }
+                                else
+                                {
+                                    (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
+                                    BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native unknown .");
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
+                                BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native unknown .");
+                                break;
+                            }
                         }
-                    }else if(TLV_Level_3.len == sizeof(oid_secp256r1)){
-                        if(memcmp(TLV_Level_3.data,oid_secp256r1,sizeof(oid_secp256r1)) ==0 ){
-                             (*keypair).alg = KEYPAIT_ALG_SECP256R1;
-                             BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256r1 .");
-                             break;
-                        }else{
-                            (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
-                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_unknown .");
-                            break;
-                        }
-                    }else if(TLV_Level_3.len >= sizeof(oid_sm2sm3) ){
-                        if(memcmp(TLV_Level_3.data,oid_sm2sm3,sizeof(oid_sm2sm3)-2) == 0){
-                            (*keypair).alg = KEYPAIT_ALG_SM;
-                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_sm .");
-                            break;
-                        }else{
+                        else
+                        {
                             (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
                             BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native unknown .");
                             break;
                         }
                     }
-                }else if(TLV_Level_3.tag == BoAT_ASN1_BIT_STRING){
-                    if(TLV_Level_3.len != 0x42){
-                        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native pubkeylen err : %02x  .",TLV_Level_3.len);
-                        return BOAT_ERROR;
+                    else if (TLV_Level_3.tag == BoAT_ASN1_BIT_STRING)
+                    {
+                        if (TLV_Level_3.len != 0x42)
+                        {
+                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native pubkeylen err : %02x  .", TLV_Level_3.len);
+                            return BOAT_ERROR;
+                        }
+                        (*keypair).pubkeylen = TLV_Level_3.len - 2;
+                        // (*keypair).pubkey = TLV_Level_3.data + 2;
+                        (*keypair).pubkey = BoatMalloc(TLV_Level_3.len - 2);
+                        memcpy((*keypair).pubkey, TLV_Level_3.data + 2, TLV_Level_3.len - 2);
+                        return BOAT_SUCCESS;
                     }
-                    (*keypair).pubkeylen = TLV_Level_3.len -2;
-                    // (*keypair).pubkey = TLV_Level_3.data + 2;
-                    (*keypair).pubkey = BoatMalloc(TLV_Level_3.len -2);
-                    memcpy((*keypair).pubkey,TLV_Level_3.data + 2,TLV_Level_3.len -2);
-                    return BOAT_SUCCESS;
+                    offset_level_3 += TLV_Level_3.len + TLV_Level_3.Llen + 1;
                 }
-                offset_level_3 += TLV_Level_3.len + TLV_Level_3.Llen +1;
+            }
+
+            offset += TLV_Level_2.len + TLV_Level_2.Llen + 1;
+        }
+    }
+    else if (strstr(input, PRIKEY_PKCS_BEGIN) != NULL)
+    { //"-----BEGIN PRIVATE KEY-----\n"
+        begin = strstr(input, PRIKEY_PKCS_BEGIN);
+        end = strstr(input, PRIKEY_PKCS_END);
+        if (NULL == begin || NULL == end)
+        {
+            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native have no begin or end .");
+            return BOAT_ERROR;
+        }
+        offset = begin - input + strlen(PRIKEY_PKCS_BEGIN);
+        len = end - begin - strlen(PRIKEY_PKCS_BEGIN);
+        realdata = BoatMalloc(len);
+        for (int i = 0; i < len; i++)
+        {
+            bytedata = input[offset + i];
+            if (bytedata != ' ' && bytedata != 0x0A && bytedata != 0x0D)
+            {
+                realdata[j++] = bytedata;
             }
         }
 
-        offset += TLV_Level_2.len + TLV_Level_2.Llen +1;
+        len = BoAT_base64_decode(realdata, j, pkcsDataHex);
+        BoatFree(realdata);
+        if (len == 0)
+        {
+            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native base64 decode err .");
+            return BOAT_ERROR;
+        }
+        // BoatLog_hexdump(BOAT_LOG_VERBOSE, "pkcsDataHex : ",
+        // 					pkcsDataHex, len);
 
+        ret = UtilityGetTLV(pkcsDataHex, len, &TLV_Level_1);
+        if (ret != BOAT_SUCCESS)
+        {
+            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 1 err .");
+            return ret;
+        }
+        if (TLV_Level_1.tag != (BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_SEQUENCE))
+        {
+            BoatLog(BOAT_LOG_NORMAL, "UtilityPKCS2Native tlv 1 tag err : %02x.", TLV_Level_1.tag);
+            return BOAT_ERROR;
+        }
+        offset = 0;
+        while (offset < TLV_Level_1.len)
+        {
+            ret = UtilityGetTLV(TLV_Level_1.data + offset, TLV_Level_1.len - offset, &TLV_Level_2);
+            if (ret != BOAT_SUCCESS)
+            {
+                BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 2 err .");
+                return ret;
+            }
+            // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_2.tag = %02x .",TLV_Level_2.tag);
+            if (TLV_Level_2.tag == BoAT_ASN1_OCTET_STRING)
+            {
+                // (*keypair).prikey = TLV_Level_2.data;
+                offset_level_3 = 0;
+                while (offset_level_3 < TLV_Level_2.len)
+                {
+                    ret = UtilityGetTLV(TLV_Level_2.data + offset_level_3, TLV_Level_2.len - offset_level_3, &TLV_Level_3);
+                    if (ret != BOAT_SUCCESS)
+                    {
+                        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 3 err .");
+                        return ret;
+                    }
+                    if (TLV_Level_3.tag == (BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_SEQUENCE))
+                    {
+                        offset_level_4 = 0;
+                        while (offset_level_4 < TLV_Level_3.len)
+                        {
+                            ret = UtilityGetTLV(TLV_Level_3.data + offset_level_4, TLV_Level_3.len - offset_level_4, &TLV_Level_4);
+                            if (ret != BOAT_SUCCESS)
+                            {
+                                BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 3 err .");
+                                return ret;
+                            }
+                            if (TLV_Level_4.tag == BoAT_ASN1_OCTET_STRING)
+                            {
+                                // (*keypair).prikey = TLV_Level_2.data;
+                                (*keypair).prikey = BoatMalloc(TLV_Level_4.len);
+                                memcpy((*keypair).prikey, TLV_Level_4.data, TLV_Level_4.len);
+                                BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native prikey TLV_Level_4.len = %d .", TLV_Level_4.len);
+                                (*keypair).prikeylen = TLV_Level_4.len;
+                            }
+                            if (TLV_Level_4.tag == 0xA1)
+                            {
+                                offset_level_5 = 0;
+                                while (offset_level_5 < TLV_Level_4.len)
+                                {
+                                    ret = UtilityGetTLV(TLV_Level_4.data + offset_level_5, TLV_Level_4.len - offset_level_5, &TLV_Level_5);
+                                    if (ret != BOAT_SUCCESS)
+                                    {
+                                        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 3 err .");
+                                        return ret;
+                                    }
+                                    BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_5 tag = %d , len = %d .", TLV_Level_5.tag, TLV_Level_5.len);
+                                    if (TLV_Level_5.tag == 0x03)
+                                    {
+                                        if (TLV_Level_5.len != 0x42)
+                                        {
+                                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native pubkeylen err : %02x  .", TLV_Level_5.len);
+                                            return BOAT_ERROR;
+                                        }
+                                        (*keypair).pubkeylen = TLV_Level_5.len - 2;
+                                        // (*keypair).pubkey = TLV_Level_3.data + 2;
+                                        (*keypair).pubkey = BoatMalloc(TLV_Level_5.len - 2);
+                                        memcpy((*keypair).pubkey, TLV_Level_5.data + 2, TLV_Level_5.len - 2);
+                                        return BOAT_SUCCESS;
+                                    }
+                                    offset_level_5 += TLV_Level_5.len + TLV_Level_5.Llen + 1;
+                                }
+                            }
+                            offset_level_4 += TLV_Level_4.len + TLV_Level_4.Llen + 1;
+                        }
+                    }
+                    offset_level_3 += TLV_Level_3.len + TLV_Level_3.Llen + 1;
+                }
+            }
+            if ((TLV_Level_2.tag & 0xF0) == (BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_SEQUENCE))
+            {
+                offset_level_3 = 0;
+                while (offset_level_3 < TLV_Level_2.len)
+                {
+                    ret = UtilityGetTLV(TLV_Level_2.data + offset_level_3, TLV_Level_2.len - offset_level_3, &TLV_Level_3);
+                    if (ret != BOAT_SUCCESS)
+                    {
+                        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native get tlv 3 err .");
+                        return ret;
+                    }
+                    // BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_3.tag = %02x . datalen = %02x",TLV_Level_3.tag,TLV_Level_3.len);
+                    if (TLV_Level_3.tag == BoAT_ASN1_OID)
+                    {
+                        BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native TLV_Level_3.len = %d ", TLV_Level_3.len);
+                        if (TLV_Level_3.len >= sizeof(oid_secp256r1))
+                        {
+                            if (memcmp(TLV_Level_3.data + TLV_Level_3.len - sizeof(oid_secp256k1), oid_secp256k1, sizeof(oid_secp256k1)) == 0)
+                            {
+                                BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256k1 .");
+                                (*keypair).alg = KEYPAIT_ALG_SECP256K1;
+                                break;
+                            }
+                            else if (memcmp(TLV_Level_3.data + TLV_Level_3.len - sizeof(oid_secp256r1), oid_secp256r1, sizeof(oid_secp256r1)) == 0)
+                            {
+                                BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_secp256r1 .");
+                                (*keypair).alg = KEYPAIT_ALG_SECP256R1;
+                                break;
+                            }
+                            else if (TLV_Level_3.len >= sizeof(oid_sm2sm3))
+                            {
+                                if (memcmp(TLV_Level_3.data, oid_sm2sm3, sizeof(oid_sm2sm3) - 2) == 0)
+                                {
+                                    (*keypair).alg = KEYPAIT_ALG_SM;
+                                    BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native oid_sm .");
+                                    break;
+                                }
+                                else
+                                {
+                                    (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
+                                    BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native unknown .");
+                                }
+                            }
+                            else
+                            {
+                                (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
+                                BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native unknown .");
+                            }
+                        }
+                        else
+                        {
+                            (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
+                            BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native unknown .");
+                        }
+                    }
+                    offset_level_3 += TLV_Level_3.len + TLV_Level_3.Llen + 1;
+                }
+            }
+
+            offset += TLV_Level_2.len + TLV_Level_2.Llen + 1;
+            BoatLog(BOAT_LOG_NORMAL, " offset = %d .", offset);
+        }
     }
+
     return ret;
 }
 
