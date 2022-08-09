@@ -97,7 +97,7 @@ EXTERNAL_INC := -I/home/linux/FM650/fg650-opensdk
 
 ### 2、编译BoAT静态库
 
-   #### a、配置主Makefile中的编译信息，打开`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/Makefile`,修改以下内容（以PlatONE为例）：
+   #### a、配置主Makefile中的编译信息，打开`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/Makefile`，修改以下内容（以PlatONE为例）：
    ```
    BOAT_PROTOCOL_USE_ETHEREUM   ?= 1
    BOAT_PROTOCOL_USE_PLATONE    ?= 1
