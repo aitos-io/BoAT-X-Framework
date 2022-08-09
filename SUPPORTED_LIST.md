@@ -38,6 +38,7 @@ L610                      |广和通 Fibocom   |LTE Cat.1             |UNISOC UI
 L718                      |广和通 Fibocom   |LTE Cat.4             |ZTE ZX7520 V3
 NL668                     |广和通 Fibocom   |LTE Cat.4 linux       |Qualcomm MDM9207
 FG150                     |广和通 Fibocom   |5G                    |Qualcomm SDX55
+FM650                     |广和通 Fibocom   |5G                    |UNISOC V510
 MA510                     |广和通 Fibocom   |LTE/Cat.M/NB2/EGPTS   |Qualcomm MDM9205
 CLM920_NC3                |域格 YuGe Tech   |LTE Cat.4             |Qualcomm MDM9207
 CLM920_RC3                |域格 YuGe Tech   |LTE Cat.1             |ASR1601
@@ -50,7 +51,6 @@ L506                      |移柯 MobileTek   |LTE Cat.4 linux       |Qualcomm M
 BF2                       |跃昉LeapFive     |WiFi                  |LeapFive BF2         |BF2是芯片型号 (BF2 is the chip model)
 SLM320                    |美格 MEIG        |LTE Cat.1             |UNISOC UIS8910DM
 Yanfei CUIoT-MZ-6         |联通 China Unicom|LTE Cat.1             |UNISOC UIS8910DM
-Yanfei CUIoT-5GMZ-6M      |联通 China Unicom|5G                    |UNISOC UDX710
 MN316                     |中移物联 China Mobile|NB-IoT            |Xinyi XY1100
 BeagleV-StarLight星光     |seeed, StarFive and beagleboard|Ethernet|StarFive JH7100      |BeagleV-StarLight星光 is a development board
 CA30B22                   |麦腾 m2motive    |5G                    |MTK MT2735
