@@ -64,7 +64,7 @@
 
 打开`<FM650 Root>/fibo-sdk/Makefile`文件
 
-在头文件路径添加处新添以下内容：
+在配置头文件目录的地方新添加以下内容：
 ```
 export CFLAGS+=-I$(CUR_PATH)/umdp/example/BoAT-X-Framework/include
 export CFLAGS+=-I$(CUR_PATH)/umdp/example/BoAT-X-Framework/vendor/platform/include
