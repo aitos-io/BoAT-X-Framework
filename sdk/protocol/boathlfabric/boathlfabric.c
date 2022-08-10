@@ -589,6 +589,11 @@ __BOATSTATIC BOAT_RESULT hlfabricPayloadPacked(BoatHlfabricTx *tx_ptr,
 	packedLength = common__payload__get_packed_size( &payload );
 	output_ptr->field_len = packedLength;
 	output_ptr->field_ptr = BoatMalloc(packedLength);
+	if( NULL == output_ptr->field_ptr )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricPayloadPacked_exception);
+	}
 	common__payload__pack( &payload, output_ptr->field_ptr );
 
 	/* boat catch handle */
