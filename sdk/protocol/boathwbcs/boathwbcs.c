@@ -145,7 +145,15 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 		result = boat_exception;
 	}
 	/* free malloc */
-	BoatFree(txPayload.data.data);
+	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL){
+		if(NULL != contractInvocation.args){
+			BoatFree(contractInvocation.args);
+		}
+		if(NULL != txPayload.data.data){
+			BoatFree(txPayload.data.data);
+		}
+	}
+
 	return result;
 }
 
