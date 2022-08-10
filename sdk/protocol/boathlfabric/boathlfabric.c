@@ -340,6 +340,11 @@ __BOATSTATIC BOAT_RESULT hlfabricProposalPayloadDataPacked(BoatHlfabricTx *tx_pt
     chaincodeProposalPayload.input.data = chaincodeInvocationSpecBuffer;
 	packedLength = protos__chaincode_proposal_payload__get_packed_size(&chaincodeProposalPayload);
 	output_ptr->field_ptr = BoatMalloc(packedLength);
+	if( NULL == output_ptr->field_ptr )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricProposalPayloadDataPacked_exception);
+	}
 	output_ptr->field_len = packedLength;
 	protos__chaincode_proposal_payload__pack(&chaincodeProposalPayload, output_ptr->field_ptr);	
 	
