@@ -112,6 +112,10 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 		packedLength = common__tx_payload__get_packed_size(&txPayload);
 		output_ptr->field_len = packedLength;
 		output_ptr->field_ptr = BoatMalloc(packedLength);
+		if(NULL == output_ptr->field_ptr){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        	boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hwbcsPayloadPacked_exception);		
+		}
 		common__tx_payload__pack(&txPayload, output_ptr->field_ptr);
 	}
 	else
@@ -123,6 +127,10 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 		}
 		output_ptr->field_len = packedLength;
 		output_ptr->field_ptr = BoatMalloc(packedLength);
+		if(NULL == output_ptr->field_ptr){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        	boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hwbcsPayloadPacked_exception);		
+		}
 		offset = 0;
 		for (int i = 0; i < parsePtr->responseCount; i++)
 		{
