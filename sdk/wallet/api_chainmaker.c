@@ -573,6 +573,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	}
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
 	query_tx_id = BoatMalloc(BOAT_TXID_LEN + 1);
+	memset(query_tx_id,0x00,BOAT_TXID_LEN + 1);
 	get_tx_id(query_tx_id);
 
 	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, query_tx_id);
