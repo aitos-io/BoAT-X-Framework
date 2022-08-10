@@ -92,6 +92,10 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 
 		txPayload.data.len = common__contract_invocation__get_packed_size(&contractInvocation);
 		txPayload.data.data = BoatMalloc(txPayload.data.len);
+		if(NULL == txPayload.data.data){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate txPayload.data.data.");
+        	boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hwbcsPayloadPacked_exception);		
+		}
 		common__contract_invocation__pack(&contractInvocation, txPayload.data.data);
 		/* payload head */
 		txhead.chain_id = tx_ptr->var.chaincodeId.name;
