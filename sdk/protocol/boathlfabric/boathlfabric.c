@@ -237,6 +237,11 @@ __BOATSTATIC BOAT_RESULT hlfabricChannelHeaderPacked(const BoatHlfabricTx *tx_pt
 	/* pack the channelHeader */
 	packedLength = common__channel_header__get_packed_size(&channelHeader);
 	output_ptr->field_ptr = BoatMalloc(packedLength);
+    if( NULL == output_ptr->field_ptr )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricChannelHeaderPacked_exception);
+	}
 	output_ptr->field_len = packedLength;
 	common__channel_header__pack(&channelHeader, output_ptr->field_ptr);
     
