@@ -477,6 +477,11 @@ __BOATSTATIC BOAT_RESULT hlfabricTransactionPayloadDataPacked(BoatHlfabricTx *tx
     transaction.actions   = &transactionAction_ptr;
 	transactionBufferLen  = protos__transaction__get_packed_size(&transaction);
 	output_ptr->field_ptr = BoatMalloc(transactionBufferLen);
+	if( NULL == output_ptr->field_ptr )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricTransactionPayloadDataPacked_exception);
+	}
 	output_ptr->field_len = transactionBufferLen;
 	protos__transaction__pack(&transaction, output_ptr->field_ptr);
 	
