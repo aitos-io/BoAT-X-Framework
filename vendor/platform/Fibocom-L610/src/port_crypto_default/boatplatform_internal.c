@@ -131,9 +131,19 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 	// signature result assign
 	memset(signatureResult, 0, sizeof(BoatSignatureResult));
     pem_data[offset ++] = 0x30;
-    pem_data[offset ++] = 0x44;
+    if((signatureTmp[0] & 0x80) == 0x80){
+        pem_data[offset ++] = 0x45;
+    }else{
+        pem_data[offset ++] = 0x44;
+    }
+
     pem_data[offset ++] = 0x02;
-    pem_data[offset ++] = 0x20;
+    if((signatureTmp[0] & 0x80) == 0x80){
+        pem_data[offset ++] = 0x21;
+        pem_data[offset ++] = 0x00;
+    }else{
+        pem_data[offset ++] = 0x20;
+    }
     memcpy(pem_data+offset,signatureTmp,32);
     offset += 32;
     pem_data[offset ++] = 0x02;
