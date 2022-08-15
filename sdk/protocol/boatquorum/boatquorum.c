@@ -188,6 +188,10 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     if (tx_ptr->is_private)
     {
         tx_ptr->rawtx_fields.data.field_ptr = BoatMalloc(64);
+        if(NULL == tx_ptr->rawtx_fields.data.field_ptr){
+            BoatLog(BOAT_LOG_CRITICAL, "Unable to dynamically allocate rawtx_fields.data ");
+            boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, EthSendRawtx_cleanup);
+        }
        UtilityHexToBin(tx_ptr->rawtx_fields.data.field_ptr, 64, (BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
        tx_ptr->rawtx_fields.data.field_len = 64;   
     }
