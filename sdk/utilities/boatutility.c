@@ -874,6 +874,11 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
     BUINT16 offset = 0, len = 0, offset_level_3 = 0, offset_level_4 = 0,offset_level_5 = 0;
     BUINT16 j = 0;
     TLVStruct TLV_Level_1, TLV_Level_2, TLV_Level_3, TLV_Level_4,TLV_Level_5;
+    (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
+    (*keypair).prikey = NULL;
+    (*keypair).prikeylen = 0;
+    (*keypair).pubkey = NULL;
+    (*keypair).pubkeylen = 0;
     if (strstr(input, PRIKEY_EC_PKCS_BEGIN) != NULL)
     {
         begin = strstr(input, PRIKEY_EC_PKCS_BEGIN);
