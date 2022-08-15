@@ -939,6 +939,12 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
             {
                 // (*keypair).prikey = TLV_Level_2.data;
                 (*keypair).prikey = BoatMalloc(TLV_Level_2.len);
+                if(NULL == (*keypair).prikey){
+                    if((*keypair).pubkey != NULL){
+                        BoatFree((*keypair).pubkey);
+                    }
+                    return BOAT_ERROR;
+                }
                 memcpy((*keypair).prikey, TLV_Level_2.data, TLV_Level_2.len);
                 (*keypair).prikeylen = TLV_Level_2.len;
             }
@@ -1009,6 +1015,12 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
                         (*keypair).pubkeylen = TLV_Level_3.len - 2;
                         // (*keypair).pubkey = TLV_Level_3.data + 2;
                         (*keypair).pubkey = BoatMalloc(TLV_Level_3.len - 2);
+                        if(NULL == (*keypair).pubkey){
+                            if((*keypair).prikey != NULL){
+                                BoatFree((*keypair).prikey);
+                            }
+                            return BOAT_ERROR;
+                        }
                         memcpy((*keypair).pubkey, TLV_Level_3.data + 2, TLV_Level_3.len - 2);
                         return BOAT_SUCCESS;
                     }
@@ -1102,6 +1114,12 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
                             {
                                 // (*keypair).prikey = TLV_Level_2.data;
                                 (*keypair).prikey = BoatMalloc(TLV_Level_4.len);
+                                if(NULL == (*keypair).prikey){
+                                    if((*keypair).pubkey != NULL){
+                                        BoatFree((*keypair).pubkey);
+                                    }
+                                    return BOAT_ERROR;
+                                }
                                 memcpy((*keypair).prikey, TLV_Level_4.data, TLV_Level_4.len);
                                 BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native prikey TLV_Level_4.len = %d .", TLV_Level_4.len);
                                 (*keypair).prikeylen = TLV_Level_4.len;
@@ -1128,6 +1146,12 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
                                         (*keypair).pubkeylen = TLV_Level_5.len - 2;
                                         // (*keypair).pubkey = TLV_Level_3.data + 2;
                                         (*keypair).pubkey = BoatMalloc(TLV_Level_5.len - 2);
+                                        if(NULL == (*keypair).pubkey){
+                                            if((*keypair).prikey != NULL){
+                                                BoatFree((*keypair).prikey);
+                                            }
+                                            return BOAT_ERROR;
+                                        }
                                         memcpy((*keypair).pubkey, TLV_Level_5.data + 2, TLV_Level_5.len - 2);
                                         return BOAT_SUCCESS;
                                     }
