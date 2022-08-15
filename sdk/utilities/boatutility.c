@@ -799,6 +799,9 @@ int add_TL_withOffset(BUINT8 bTag,BUINT8* pbBuff,BUINT32* nOffset,BUINT32 nLen)
     BUINT8 bTLV[10];
     BUINT8* buf  = NULL;
     buf = BoatMalloc(nLen);
+    if(NULL == buf){
+        return -1;
+    }
 
     memset(bTLV, 0, 10);
 
