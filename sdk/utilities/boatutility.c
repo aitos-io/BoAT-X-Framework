@@ -886,6 +886,10 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
         offset = begin - input + strlen(PRIKEY_EC_PKCS_BEGIN);
         len = end - begin - strlen(PRIKEY_EC_PKCS_BEGIN);
         realdata = BoatMalloc(len);
+        if(NULL == realdata){
+            BoatLog(BOAT_LOG_NORMAL, " fail to malloc realdata .");
+            return BOAT_ERROR;
+        }
         for (int i = 0; i < len; i++)
         {
             bytedata = input[offset + i];
@@ -1022,6 +1026,10 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
         offset = begin - input + strlen(PRIKEY_PKCS_BEGIN);
         len = end - begin - strlen(PRIKEY_PKCS_BEGIN);
         realdata = BoatMalloc(len);
+        if(NULL == realdata){
+            BoatLog(BOAT_LOG_NORMAL, " fail to malloc realdata .");
+            return BOAT_ERROR;
+        }
         for (int i = 0; i < len; i++)
         {
             bytedata = input[offset + i];
