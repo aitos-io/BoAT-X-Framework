@@ -106,11 +106,15 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->hostName = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].hostName;
 					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
 					if(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain == NULL){
-					BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate tlsCAchain buffer.");
-					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);	
+						BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate tlsCAchain buffer.");
+						boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);	
 					}				
 					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length + 1;
 					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
+					if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr){
+						BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate field_ptr buffer.");
+						boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);	
+					}
 					memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
 					memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
 
@@ -182,6 +186,10 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 							}
 							tx_ptr->evaluateRes.httpResLen = chaincodeEvent->response->payload.len;
 							tx_ptr->evaluateRes.http2Res = BoatMalloc(tx_ptr->evaluateRes.httpResLen);
+							if(NULL == tx_ptr->evaluateRes.http2Res){
+								BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate http2Res buffer.");
+								boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);									
+							}
 							memcpy(tx_ptr->evaluateRes.http2Res,chaincodeEvent->response->payload.data,chaincodeEvent->response->payload.len);
 							protos__chaincode_action__free_unpacked(chaincodeEvent,NULL);
 
@@ -226,8 +234,16 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 				BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain);
 			}
 			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
+			if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate tlsCAchain buffer.");
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);					
+			}
 			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = nodeCfg.orderCfg.tlsOrgCertContent.length + 1;
 			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
+			if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate field_ptr buffer.");
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);					
+			}
 			memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
 			memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, nodeCfg.orderCfg.tlsOrgCertContent.content, nodeCfg.orderCfg.tlsOrgCertContent.length);
 
