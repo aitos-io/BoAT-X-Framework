@@ -466,6 +466,10 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	}
 
 	invoke_tx_id = BoatMalloc(BOAT_TXID_LEN + 1);
+	if(NULL == invoke_tx_id){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to malloc invoke_tx_id");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractInvoke);
+	}
 	memset(invoke_tx_id,0x00,BOAT_TXID_LEN + 1);
 	result = get_tx_id(invoke_tx_id);
 	if (result != BOAT_SUCCESS)
