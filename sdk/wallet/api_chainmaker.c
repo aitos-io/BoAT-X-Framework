@@ -577,6 +577,10 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	}
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
 	query_tx_id = BoatMalloc(BOAT_TXID_LEN + 1);
+	if(NULL == query_tx_id){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to malloc query_tx_id");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);		
+	}
 	memset(query_tx_id,0x00,BOAT_TXID_LEN + 1);
 	get_tx_id(query_tx_id);
 
