@@ -134,7 +134,7 @@ BOAT_DEFINED_MACROS := #-DDEBUG_LOG
 
 # Target-specific Flags
 ifeq ($(COMPILER_TYPE), "ARM")
-    TARGET_SPEC_CFLAGS := -mthumb
+    TARGET_SPEC_CFLAGS := -mthumb -ffunction-sections -fdata-sections
     TARGET_SPEC_LIBS := 
     TARGET_SPEC_LINK_FLAGS :=
 else ifeq ($(COMPILER_TYPE), "LINUX")
