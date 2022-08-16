@@ -66,12 +66,19 @@
 uint32_t random32(void)
 {
 	
-	static uint32_t seed = 0;
-	// Linear congruential generator from Numerical Recipes
-	// https://en.wikipedia.org/wiki/Linear_congruential_generator
-	seed = 1664525 * seed + 1013904223;
+	qapi_Status_t status;
+	uint16_t randBuf[2]={0};
+	uint32_t rand32;
+	status = qapi_fibo_random_data_get(2,randBuf);
+	if(status != QAPI_OK)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to get random data.");
+		return 0;
+	}
+
+	memcpy(&rand32,randBuf,4);
 	
-	return seed;
+	return rand32;
 }
 
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
