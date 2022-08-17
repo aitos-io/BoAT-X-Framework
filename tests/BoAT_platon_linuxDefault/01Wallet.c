@@ -554,6 +554,8 @@ START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
     BSINT32 rtnVal;
     BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
+
+    ck_assert_ptr_ne(wallet_ptr, NULL);    
     
     /* 1. execute unit test */
     rtnVal = BoatEthWalletSetEIP155Comp(wallet_ptr, wallet.eip155_compatibility);
