@@ -250,6 +250,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0009CreateWalletWithInternalGeneration)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -268,6 +269,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0010CreateSixWallet)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -304,6 +306,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0011CreateSevenWallet)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -343,6 +346,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0012CreateOnetimeWalletWithLoadExistedWallet)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.load_existed_wallet = BOAT_TRUE;
@@ -375,14 +379,13 @@ START_TEST(test_001CreateWallet_0013UnloadWalletSuccess)
 
     BoatWalletUnload(0);
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
-
-    BoatIotSdkDeInit();
 }
 END_TEST
 
 START_TEST(test_001CreateWallet_0014UnloadInexistentWallet)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -405,6 +408,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0015CreateSixWalletUnloadOneSuccess)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -449,6 +453,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -497,6 +502,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -548,6 +554,8 @@ START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
     BSINT32 rtnVal;
     BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
+
+    ck_assert_ptr_ne(wallet_ptr, NULL);    
     
     /* 1. execute unit test */
     rtnVal = BoatEthWalletSetEIP155Comp(wallet_ptr, wallet.eip155_compatibility);
@@ -557,14 +565,13 @@ START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.eip155_compatibility == wallet.eip155_compatibility);
-    BoatIotSdkDeInit();
+    BoatFree(wallet_ptr);
 }
 END_TEST
 
 START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
 {
     BSINT32 rtnVal;
-    BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     
     /* 1. execute unit test */
@@ -574,8 +581,6 @@ START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
     /* 2-2. verify the global variables that be affected */
-    ck_assert(wallet_ptr->network_info.eip155_compatibility == BOAT_FALSE);
-    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -584,6 +589,8 @@ START_TEST(test_002InitWallet_0003SetChainIdSuccess)
     BSINT32 rtnVal;
     BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
+
+    ck_assert_ptr_ne(wallet_ptr, NULL);
     
     /* 1. execute unit test */
     rtnVal = BoatEthWalletSetChainId(wallet_ptr, wallet.chain_id);
@@ -593,7 +600,7 @@ START_TEST(test_002InitWallet_0003SetChainIdSuccess)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.chain_id == wallet.chain_id);
-    BoatIotSdkDeInit();
+    BoatFree(wallet_ptr); 
 }
 END_TEST
 
