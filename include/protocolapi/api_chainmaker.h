@@ -14,10 +14,10 @@
  * limitations under the License.
  *****************************************************************************/
 
-/*!@brief BoAT IoT SDK interface header file for ethereum
+/*!@brief BoAT IoT SDK interface header file for chainmaker
 
 @file
-api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
+api_chainmaker.h is header file for BoAT IoT SDK chainmaker's interface.
 */
 
 #ifndef __API_CHAINMAKER_H__
@@ -25,7 +25,7 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 
 #include "boatiotsdk.h"
 #include "http2intf.h"
-/*! @defgroup eth-api boat chainmaker-API
+/*! @defgroup chainmaker-api boat chainmaker-API
  * @{
  */
 #define BOAT_CHAINMAKER_TLS_SUPPORT               BOAT_TLS_SUPPORT //!< If need client support TLS, set it to 1.
