@@ -379,8 +379,6 @@ START_TEST(test_001CreateWallet_0013UnloadWalletSuccess)
 
     BoatWalletUnload(0);
     ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
-
-    BoatIotSdkDeInit();
 }
 END_TEST
 
