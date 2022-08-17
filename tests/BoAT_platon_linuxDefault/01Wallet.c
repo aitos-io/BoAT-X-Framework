@@ -269,6 +269,7 @@ END_TEST
 START_TEST(test_001CreateWallet_0010CreateSixWallet)
 {
     BSINT32 rtnVal;
+    BoatIotSdkInit();
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     extern BoatIotSdkContext g_boat_iot_sdk_context;
     wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
