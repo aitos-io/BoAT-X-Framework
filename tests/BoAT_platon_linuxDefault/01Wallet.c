@@ -572,7 +572,6 @@ END_TEST
 START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
 {
     BSINT32 rtnVal;
-    BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     
     /* 1. execute unit test */
@@ -582,7 +581,6 @@ START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
     /* 2-2. verify the global variables that be affected */
-    ck_assert(wallet_ptr->network_info.eip155_compatibility == BOAT_FALSE);
 }
 END_TEST
 
