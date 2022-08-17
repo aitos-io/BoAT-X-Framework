@@ -8,8 +8,6 @@ DESCRIPTION
 #include "my_contract.h"
 #include "softap_api.h"
 #include "boatconfig.h"
-#include "protocolapi/api_platone.h"
-
 #include "pem.h"
 
 static int g_boat_task_Handle = -1;
