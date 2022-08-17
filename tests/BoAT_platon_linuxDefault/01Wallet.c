@@ -583,7 +583,6 @@ START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.eip155_compatibility == BOAT_FALSE);
-    BoatIotSdkDeInit();
 }
 END_TEST
 
