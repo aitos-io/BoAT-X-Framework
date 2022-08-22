@@ -99,6 +99,8 @@ void nodeResFree(nodesResult *result_out)
             BoatFree(result_out->nodeInfo[i].IP);
         }
     }
+    BoatFree(result_out->nodeInfo);
+    result_out->nodeInfo = NULL;
     result_out->num = 0;
 }
 
