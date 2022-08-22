@@ -235,6 +235,10 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	transaction.approvals = &approval_messages;
 	packedLength = common__transaction__get_packed_size(&transaction);
 	packedData = BoatMalloc(packedLength);
+	if(NULL == packedData){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate packedData.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hwbcsProposalTransactionPacked_exception);	
+	}
 	common__transaction__pack(&transaction, packedData);
 	/* ---grpcHeader compute */
 	grpcHeader[0] = 0x00; //uncompressed
