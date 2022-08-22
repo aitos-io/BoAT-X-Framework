@@ -4,7 +4,8 @@
 
 ### 概述
 本文介绍BoAT IoT Framework SDK 2.x的功能和使用方法。  
-本文的预期读者为集成BoAT IoT Framework SDK的客户。
+本文的预期读者为集成BoAT IoT Framework SDK的客户。  
+本用户手册版本号为1.0.0。
 
 ### 缩写术语
 |术语   |解释                                        |
