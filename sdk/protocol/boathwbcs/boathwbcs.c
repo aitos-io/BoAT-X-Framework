@@ -192,7 +192,10 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 
 	/* step-2:  payload packed  */
 	result = hwbcsPayloadPacked(tx_ptr, &payloadPacked);
-
+	if(result != BOAT_SUCCESS){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec pack payload.");
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, hwbcsProposalTransactionPacked_exception);
+	}
 
 
 	/* --------> creator packed */
@@ -203,7 +206,8 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatHash.");
-		return BOAT_ERROR_COMMON_GEN_HASH_FAIL;
+		// return BOAT_ERROR_COMMON_GEN_HASH_FAIL;
+		boat_throw(BOAT_ERROR_COMMON_GEN_HASH_FAIL, hwbcsProposalTransactionPacked_exception);
 	}
 
 	/* step-4: signature */
@@ -212,13 +216,15 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
-		return BOAT_ERROR_COMMON_GEN_SIGN_FAIL;
+		// return BOAT_ERROR_COMMON_GEN_SIGN_FAIL;
+		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, hwbcsProposalTransactionPacked_exception);
 	}
 
 	if (!signatureResult.pkcs_format_used)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
-		return BOAT_ERROR_COMMON_GEN_SIGN_FAIL;
+		// return BOAT_ERROR_COMMON_GEN_SIGN_FAIL;
+		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, hwbcsProposalTransactionPacked_exception);
 	}
 	/* approvals */
 
@@ -259,8 +265,13 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	}
 
 	/* free malloc */
-	BoatFree(payloadPacked.field_ptr);
-	BoatFree(packedData);
+	if(NULL != payloadPacked.field_ptr){
+		BoatFree(payloadPacked.field_ptr);
+	}
+	if(NULL != packedData){
+		BoatFree(packedData);
+	}
+
 
 	return result;
 }
