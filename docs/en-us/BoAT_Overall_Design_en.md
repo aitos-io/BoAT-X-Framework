@@ -553,6 +553,9 @@ The commonly used PlatONE smart contract development language is C++. Like Ether
 ##### Tool for Generating C Language Interface of FISCO BCOS Smart Contract
 The common development language for FISCO BCOS smart contracts is Solidity. For details, please refer to [Tool for Generating C Language Interface of Ethereum Smart Contract](#tool-for-generating-c-language-interface-of-ethereum-smart-contract).  
 
+##### Tool for Generating C Language Interface of Venachain Smart Contract
+The commonly used Venachain smart contract development language is C++. Like Ethereum, the Venachain smart contract will also generate a JSON file describing the contract interface after being compiled. Its JSON field is the same as Ethereum's JSON field, and the correspondence between C language interface and JSON field is also consistent with Ethereum.
+
 
 ### Application
 
