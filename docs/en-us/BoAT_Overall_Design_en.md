@@ -471,6 +471,7 @@ General tools exist independently of each layer and are used to generate C langu
 + Tool used to generate C language interface of Ethereum smart contract
 + Tool used to generate C language interface of PlatONE smart contract
 + Tool used to generate C language interface of FISCO BCOS smart contract
++ Tool used to generate C language interface of Venachain smart contract
 
 #### Brief Description of General Tools
 
