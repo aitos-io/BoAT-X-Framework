@@ -17,7 +17,7 @@
 /*!@brief Header file for performing RAW transaction
 
 @file
-boatethereum.h is header file for RAW transaction construction and performing.
+boatquorum.h is header file for RAW transaction construction and performing.
 */
 
 #ifndef __BOATQUORUM_H__
