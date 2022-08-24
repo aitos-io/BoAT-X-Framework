@@ -295,8 +295,16 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 				BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain);
 			}
 			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
+			if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain){
+				BoatLog(BOAT_LOG_CRITICAL, " Fail to malloc tlsCAchain memory");
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+			}
 			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = nodeCfg.orderCfg.tlsOrgCertContent.length + 1;
 			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
+			if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr){
+				BoatLog(BOAT_LOG_CRITICAL, " Fail to malloc tlsCAchain field_ptr memory");
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+			}			
 			memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
 			memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, nodeCfg.orderCfg.tlsOrgCertContent.content, nodeCfg.orderCfg.tlsOrgCertContent.length);
 
