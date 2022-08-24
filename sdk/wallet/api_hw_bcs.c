@@ -235,6 +235,10 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 						memcpy(parsePtr->response[parsePtr->responseCount].payload.field_ptr, resData->payload.data, resData->payload.len);
 						tx_ptr->evaluateRes.httpResLen = commondTxData->response->payload.len;
 						tx_ptr->evaluateRes.http2Res = BoatMalloc(tx_ptr->evaluateRes.httpResLen);
+						if(NULL == tx_ptr->evaluateRes.http2Res){
+							BoatLog(BOAT_LOG_CRITICAL, " Fail to malloc http2Res memory");
+							boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+						}	
 						memcpy(tx_ptr->evaluateRes.http2Res,commondTxData->response->payload.data,commondTxData->response->payload.len);
 
 						// parsePtr->http2res.httpResLen = commondTxData->response->payload.len;
