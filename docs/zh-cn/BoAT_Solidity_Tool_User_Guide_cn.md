@@ -267,16 +267,20 @@ Solidity中的address[]变成BoatAddress *类型和一个表示长度的BUINT32�
 Solidity函数：setData(address[] data);  
 C语言函数：合约名_setData(BoatAddress *data, BUINT32 dataLen);  
 
+例如，拿以太坊地址0xA16502DDda899443eF54Ddd011eE39E1535c78dB作为输入举例。
 示例：  
 ```
 BoatAddress data[2];
 for (i = 0; i < 20; i++)
 {
     data[0][i] = i;
-    data[1][i] = 20 - i;
 }
+UtilityHexToBin(data[1], 20, "A16502DDda899443eF54Ddd011eE39E1535c78dB", TRIMBIN_TRIM_NO, BOAT_FALSE);
+UtilityChangeEndian(data[1], 20);
 合约名_setData(data, 2); 
 ```
+
+***注意：对ADDRESS地址需要进行端序转换***
 
 #### bool[N]类型
 Solidity中的bool[N]变成BUINT8 *类型。  
@@ -491,4 +495,21 @@ for (i = 0; i < 5; i++)
 合约名_setData(data, 2); 
 ``` 
 
-注意，bytesN类型不涉及到端序和正负值的问题。
+***注意：bytesN类型不涉及到端序和正负值的问题。***
+
+#### address类型
+Solidity中的address变成BoatAddress类型。  
+Solidity函数：setData(address data);  
+C语言函数：合约名_setData(BoatAddress data);  
+
+例如，拿以太坊地址0xA16502DDda899443eF54Ddd011eE39E1535c78dB作为输入举例。
+示例：
+```
+BoatAddress address;
+UtilityHexToBin(address, 20, "A16502DDda899443eF54Ddd011eE39E1535c78dB", TRIMBIN_TRIM_NO, BOAT_FALSE);
+UtilityChangeEndian(address, 20);
+result_str = 合约名_setData(address);
+合约名_setData(data); 
+```
+
+***注意：对ADDRESS地址需要进行端序转换***
