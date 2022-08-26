@@ -633,7 +633,7 @@ START_TEST(test_002InitWallet_0005SetNodeUrlSuccess)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert_str_eq(wallet_ptr->network_info.node_url_ptr, wallet.node_url_str);
-    BoatIotSdkDeInit();
+    BoatEthWalletDeInit(wallet_ptr);
 }
 END_TEST
 
