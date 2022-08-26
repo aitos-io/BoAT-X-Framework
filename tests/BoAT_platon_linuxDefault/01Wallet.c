@@ -615,9 +615,6 @@ START_TEST(test_002InitWallet_0004SetChainIdFailureNullParam)
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-
-    BoatIotSdkDeInit();
-
 }
 END_TEST
 
