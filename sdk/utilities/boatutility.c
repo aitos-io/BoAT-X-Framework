@@ -1257,6 +1257,9 @@ BCHAR* UtilityNative2PKCS(KeypairNative keypair){
     len += UtilityGetTLV_LL_from_len(len_level_2) + 1 + len_level_2; //pubkey
     len += UtilityGetTLV_LL_from_len(len) + 1 + len; //all hex data
     dataHex = BoatMalloc(len);
+    if(NULL == dataHex){
+        return NULL;
+    }
     memcpy(dataHex + offset,version,sizeof(version));
     offset += sizeof(version);
     memcpy(dataHex + offset ,keypair.prikey,keypair.prikeylen);
