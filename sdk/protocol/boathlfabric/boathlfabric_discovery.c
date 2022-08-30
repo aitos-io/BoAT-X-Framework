@@ -489,11 +489,6 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadPacked(BoatHlfabricTx *tx_ptr,
  * @param tx_ptr 
  *   fabric transaction structure pointer
  *
- * @param[out] output_ptr 
- *   A structure pointer to store nodes info, e.g. "hostname","port","TLScert".
- *   In internal of this function, the memory of store serialize data has been alloced,
- *   caller SHOULD NOT alloc memory for this pointer again.
- *
  * @return 
  *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
  ******************************************************************************/
