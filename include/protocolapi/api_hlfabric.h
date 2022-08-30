@@ -460,12 +460,6 @@ void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr );
  *
  * @param orgName_str 
  *   Organization name to be initialized.
- *
- * @param contract_name 
- *   contract name to be initialized.
- * 
- * @param creator_id 
- *   cteator id to be initialized.
  * 
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
