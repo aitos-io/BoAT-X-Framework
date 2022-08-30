@@ -592,13 +592,8 @@ BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
  * @param tx_ptr 
  *   Fabric transaction structure pointer
  *
- * @param nodeInfo 
-*    The first element address of nodeinfo structure.
- *  
- * @param nodeMaxNum 
- *   Support maxium node number.
- *   \n For endorser node, this param is equeal with the macro #BOAT_HLFABRIC_ENDORSER_MAX_NUM,
- *   for orderer node, this param is equeal with the macro #BOAT_HLFABRIC_ORDERER_MAX_NUM.
+ * @param nodeCfg 
+ *    The specified fabric node config structure.
  *
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a failed code.
