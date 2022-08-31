@@ -615,9 +615,6 @@ START_TEST(test_002InitWallet_0004SetChainIdFailureNullParam)
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-
-    BoatIotSdkDeInit();
-
 }
 END_TEST
 
@@ -636,7 +633,7 @@ START_TEST(test_002InitWallet_0005SetNodeUrlSuccess)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert_str_eq(wallet_ptr->network_info.node_url_ptr, wallet.node_url_str);
-    BoatIotSdkDeInit();
+    BoatEthWalletDeInit(wallet_ptr);
 }
 END_TEST
 
@@ -675,7 +672,7 @@ START_TEST(test_002InitWallet_0006SetNodeUrlFailureNullParam)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
-    BoatIotSdkDeInit();
+    BoatFree(wallet_ptr); 
 }
 END_TEST
 
@@ -695,7 +692,7 @@ START_TEST(test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
-    BoatIotSdkDeInit();
+    BoatFree(wallet_ptr);
 }
 END_TEST
 
@@ -719,7 +716,7 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 
     /* 2-2. verify the global variables that be affected */
     ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
-    BoatIotSdkDeInit();
+    BoatFree(wallet_ptr);
 }
 END_TEST
 
