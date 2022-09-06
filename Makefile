@@ -66,6 +66,7 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - MTK-MT3620                : MTK MT3620
 # - XinYi-XY1100              : XY1100
 # - Fibocom-MA510             : MA510
+# - XinYi-XY1100-R14          : XY1100 R14
 PLATFORM_TARGET ?= linux-default
 
 # Environment-specific Settings
