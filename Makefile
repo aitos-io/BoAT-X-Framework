@@ -213,6 +213,10 @@ endif
 # - CJSON_OUTTER  : externally provided by users
 CJSON_LIBRARY ?= CJSON_DEFAULT
 
+ifeq ($(PLATFORM_TARGET), XinYi-XY1100-R14)
+    CJSON_LIBRARY ?= CJSON_OUTTER
+endif
+
 ifeq ($(CJSON_LIBRARY), CJSON_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_SDK_DIR)/third-party/cJSON
 endif
