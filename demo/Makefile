@@ -76,6 +76,10 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker clean
 endif
+ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_venachain clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_QUORUM), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_quorum clean
+endif
 	-$(BOAT_RM) $(BOAT_BUILD_DIR)/demo
