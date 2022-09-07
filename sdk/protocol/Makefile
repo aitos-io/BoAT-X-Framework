@@ -76,7 +76,9 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_PLATONE), 1)
 	make -C boatplatone   clean
 endif
+ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS), 1)
 	make -C boatfiscobcos clean
+endif
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)	
 	make -C boathlfabric  clean
 endif
