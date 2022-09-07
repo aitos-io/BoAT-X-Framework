@@ -67,9 +67,15 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_fiscobcos clean
 endif
+ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_fabric clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_hw_bcs clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker clean
+endif
 	make -C $(BOAT_BASE_DIR)/demo/demo_venachain clean
 	make -C $(BOAT_BASE_DIR)/demo/demo_quorum clean
 	-$(BOAT_RM) $(BOAT_BUILD_DIR)/demo
