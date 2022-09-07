@@ -709,7 +709,7 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, error_ethereum_node_url);
+    rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, error_platon_node_url);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
