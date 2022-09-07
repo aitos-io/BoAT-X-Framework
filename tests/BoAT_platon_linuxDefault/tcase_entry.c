@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     // Suite *suite_paramters = make_parameters_suite();
     // Suite *suite_transaction = make_transactions_suite();
     // Suite *suite_contract  = make_contract_suite();
-    read_key_content(palton_private_key_buf);
+    read_key_content(platon_private_key_buf);
 
     /* create srunner and add first suite to it.
     The first suite in a suite runner is always added in function srunner_create,
