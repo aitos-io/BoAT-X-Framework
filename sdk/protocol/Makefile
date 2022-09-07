@@ -70,7 +70,9 @@ clean:
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)	
 	make -C boatethereum  clean
 endif
+ifeq ($(BOAT_PROTOCOL_USE_PLATON), 1)	
 	make -C boatplaton    clean
+endif
 	make -C boatplatone   clean
 	make -C boatfiscobcos clean
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)	
