@@ -767,7 +767,7 @@ END_TEST
 START_TEST(test_002InitWallet_0012InitPlatONWalletSuccess)
 {
     BoatPlatONWallet *rtnVal;
-    BoatPlatONWalletConfig walletConfig = get_ethereum_wallet_settings();
+    BoatPlatONWalletConfig walletConfig = get_platon_wallet_settings();
 
     /* 1. execute unit test */
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
