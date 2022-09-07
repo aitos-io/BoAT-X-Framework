@@ -43,7 +43,7 @@ BOAT_RESULT check_platon_wallet(BoatPlatONWallet *wallet_ptr)
 BoatPlatONWalletConfig get_platon_wallet_settings()
 {
     //set user private key context
-        
+    BoatPlatONWalletConfig wallet_config;
     if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
     {
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
