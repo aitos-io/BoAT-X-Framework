@@ -25,8 +25,8 @@ persiststore.c contains APIs for default persistent storage as a file.
 #include "boatlog.h"
 
 /*xinyi1100 header include */
-#include "softap_api.h"
-
+//#include "softap_api.h"
+#include "xy_api.h"
 
 /* mbedTLS header include */
 //#include "mbedtls/aes.h"
@@ -143,19 +143,18 @@ BOAT_RESULT BoatPersistRead( const BCHAR *storage_name_str, BOAT_OUT void *data_
 //	result += BoatReadFile( storage_name_str, readDataTmp, fileSize, NULL );
 
 	data_with_padding_len = BOAT_ROUNDUP(len_to_read, 16);
-
 	/* read data from xinyi1100-flash */
 	BoatLog(BOAT_LOG_CRITICAL, "call xy_Flash_Read.");
 	// Read salt
-    xy_Flash_Read(USER_FLASH_BASE + offsize, (unsigned char *)salt_array, BOAT_STORAGE_SALT_SIZE);
+    xy_flash_read(USER_FLASH_BASE + offsize, (unsigned char *)salt_array, BOAT_STORAGE_SALT_SIZE);
 	offsize += BOAT_STORAGE_SALT_SIZE;
 
     // Read original data hash
-    xy_Flash_Read(USER_FLASH_BASE + offsize, (unsigned char *)original_data_hash_array, sizeof(original_data_hash_array));
+    xy_flash_read(USER_FLASH_BASE + offsize, (unsigned char *)original_data_hash_array, sizeof(original_data_hash_array));
 	offsize += sizeof(original_data_hash_array);
 
     // Read rest of the file (encrypted data)
-    xy_Flash_Read(USER_FLASH_BASE + offsize, (unsigned char *)encrypted_array, data_with_padding_len);
+    xy_flash_read(USER_FLASH_BASE + offsize, (unsigned char *)encrypted_array, data_with_padding_len);
     offsize += len_to_read;
 
 	BoatLog(BOAT_LOG_CRITICAL, "plain_len = %d\n.",plain_len);
