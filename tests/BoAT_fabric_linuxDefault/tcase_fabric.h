@@ -14,14 +14,16 @@
  * limitations under the License.
  *****************************************************************************/
 
+#ifndef __TCASE_FABRIC_H__
+#define __TCASE_FABRIC_H__
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include "check.h"
-// #include "boatlog.h"
-// #include "boattypes.h"
-// #include "boatwallet.h"
+
 #include "boatiotsdk.h"
+#include "protocolapi/api_hlfabric_discovery.h"
 // #include "protocolapi/api_hlfabric.h"
 
 #define CERT_PRIKEY_LEN 1024
@@ -48,10 +50,14 @@
 
 
 
-char fabric_client_cert_buf[];
-char fabric_client_key_buf[];
-char fabric_org1_tls_cert_buf[];
-char fabric_org2_tls_cert_buf[];
-char fabric_order_tls_cert_buf[];
-char fabric_client_key_false_buf[];
-char fabric_client_cert_false_buf[];
+extern char fabric_client_cert_buf[];
+extern char fabric_client_key_buf[];
+extern char fabric_org1_tls_cert_buf[];
+extern char fabric_org2_tls_cert_buf[];
+extern char fabric_order_tls_cert_buf[];
+extern char fabric_client_key_false_buf[];
+extern char fabric_client_cert_false_buf[];
+
+
+
+#endif
