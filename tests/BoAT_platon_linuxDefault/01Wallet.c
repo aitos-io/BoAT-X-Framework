@@ -808,6 +808,7 @@ START_TEST(test_002InitWallet_0014InitPlatONWalletWithWrongGenMode)
     walletConfig.prikeyCtx_config.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
     walletConfig.prikeyCtx_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     walletConfig.eip155_compatibility = BOAT_FALSE;
+    walletConfig.load_existed_wallet = BOAT_FALSE;
 
     /* 1. execute unit test */
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
