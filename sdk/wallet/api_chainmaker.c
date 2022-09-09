@@ -38,19 +38,6 @@ static BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *walle
 static BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *node_url_ptr);
 
 
-
-BUINT8 get_fibon_data(BUINT8 n) 
-{
-	if ((n == 1) || (n == 2) || (n == 0)) 
-	{
-		return 1;
-	}
-	else 
-	{
-		return get_fibon_data(n - 1) + get_fibon_data(n - 2);
-	}
-}
-
 BOAT_RESULT array_to_str(BUINT8* array, BCHAR* str, char lenth)
 {
     char value_up;
@@ -480,7 +467,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 {
 	Common__TxResponse *tx_response              = NULL;
 	Common__TransactionInfo* transactation_info = NULL;
-	BCHAR* invoke_tx_id                        = NULL;
+	BCHAR invoke_tx_id[64]= {0};
 	BUINT8 sleep_second;
 
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -493,12 +480,6 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
 	}
 
-	invoke_tx_id = BoatMalloc(BOAT_TXID_LEN + 1);
-	if(NULL == invoke_tx_id){
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to malloc invoke_tx_id");
-		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractInvoke);
-	}
-	memset(invoke_tx_id,0x00,BOAT_TXID_LEN + 1);
 	result = get_tx_id(invoke_tx_id);
 	if (result != BOAT_SUCCESS)
 	{
@@ -571,12 +552,6 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
     }
-
-	if (invoke_tx_id != NULL) 
-	{
-		BoatFree(invoke_tx_id);
-		invoke_tx_id = NULL;
-	}
 	
 	return result;
 }							   
