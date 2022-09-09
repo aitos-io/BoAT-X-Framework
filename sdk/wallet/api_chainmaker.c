@@ -28,8 +28,8 @@ api_chainmaker.c defines the chainmaker wallet API for BoAT IoT SDK.
 #include "common/transaction.pb-c.h"
 #include "boatchainmaker/boatchainmaker.h"
 
+#define BOAT_TXID_LEN 65
 #define BOAT_RETRY_CNT 10
-#define BOAT_TXID_LEN 64
 #define BOAT_CHAINMAKER_MINE_INTERVAL                   3  //!< Mining Interval of the blockchain, in seconds
 
 static BOAT_RESULT BoatChainmakerWalletSetOrgId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *org_id_ptr);
@@ -467,7 +467,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 {
 	Common__TxResponse *tx_response              = NULL;
 	Common__TransactionInfo* transactation_info = NULL;
-	BCHAR invoke_tx_id[64]= {0};
+	BCHAR invoke_tx_id[BOAT_TXID_LEN]= {0};
 	BUINT8 sleep_second;
 
 	BOAT_RESULT result = BOAT_SUCCESS;
@@ -486,7 +486,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		BoatLog(BOAT_LOG_CRITICAL, "get_tx_id failed");
 		boat_throw(result, BoatHlchainmakerContractInvoke);
 	}
-
+	invoke_tx_id[BOAT_TXID_LEN - 1] = 0;
 	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, invoke_tx_id);
 	if (result != BOAT_SUCCESS) 
     {
@@ -560,7 +560,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 {
 	TxType tx_type                  = TXTYPE_QUERY_USER_CONTRACT;
 	Common__TxResponse *tx_response = NULL;
-	BCHAR* query_tx_id             = NULL;
+	BCHAR query_tx_id[BOAT_TXID_LEN]= {0};
 
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
@@ -571,13 +571,9 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
 	}
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
-	query_tx_id = BoatMalloc(BOAT_TXID_LEN + 1);
-	if(NULL == query_tx_id){
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to malloc query_tx_id");
-		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);		
-	}
-	memset(query_tx_id,0x00,BOAT_TXID_LEN + 1);
+
 	get_tx_id(query_tx_id);
+	query_tx_id[BOAT_TXID_LEN - 1] = 0;
 
 	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, query_tx_id);
 	if (result != BOAT_SUCCESS) 
@@ -635,12 +631,6 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
     }
-
-	if (query_tx_id != NULL)
-	{
-		BoatFree(query_tx_id);
-		query_tx_id = NULL;
-	}
 
 	if (tx_response != NULL)
 	{
