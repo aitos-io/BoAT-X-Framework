@@ -30,6 +30,7 @@ api_chainmaker.c defines the chainmaker wallet API for BoAT IoT SDK.
 
 #define BOAT_RETRY_CNT 10
 #define BOAT_TXID_LEN 64
+#define BOAT_CHAINMAKER_MINE_INTERVAL                   3  //!< Mining Interval of the blockchain, in seconds
 
 static BOAT_RESULT BoatChainmakerWalletSetOrgId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *org_id_ptr);
 static BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *chain_id_ptr);
@@ -337,7 +338,7 @@ BOAT_RESULT BoatHlChainmakerTxInit(const BoatHlchainmakerWallet* wallet_ptr, Boa
 	return result;
 }
 
-__BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, Common__TxResponse** tx_response)
+__BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, Common__TxResponse** tx_response, BBOOL sync_result)
 {
 	BOAT_RESULT result                  = BOAT_SUCCESS;
 	Common__TxResponse* tx_response_ptr = NULL;
@@ -362,20 +363,47 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 	tx_ptr->wallet_ptr->http2Context_ptr->pathTmp      = "/api.RpcNode/SendRequest";
 	tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &http2_response;
 
-	result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
-	if (result == BOAT_SUCCESS)
+	if (sync_result)
 	{
-		tx_response_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
-		if (tx_response_ptr != NULL)
+		for (BUINT8 i = 0; i < BOAT_RETRY_CNT; i++) 
 		{
-			BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
-			*tx_response = tx_response_ptr;
+			BoatSleep(BOAT_CHAINMAKER_MINE_INTERVAL);
+			result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
+			if (result == BOAT_SUCCESS)
+			{
+				tx_response_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
+				if (tx_response_ptr != NULL)
+				{
+					BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
+					*tx_response = tx_response_ptr;
+					break;
+				}
+				else
+				{
+					BoatLog(BOAT_LOG_NORMAL, "[http2] respond NULL");
+					*tx_response = NULL;
+					result = BOAT_ERROR;
+				}
+			}
 		}
-		else
+	}
+	else
+	{
+		result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
+		if (result == BOAT_SUCCESS)
 		{
-			BoatLog(BOAT_LOG_NORMAL, "[http2] respond NULL");
-			*tx_response = NULL;
-			result = BOAT_ERROR;
+			tx_response_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
+			if (tx_response_ptr != NULL)
+			{
+				BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
+				*tx_response = tx_response_ptr;
+			}
+			else
+			{
+				BoatLog(BOAT_LOG_NORMAL, "[http2] respond NULL");
+				*tx_response = NULL;
+				result = BOAT_ERROR;
+			}
 		}
 	}
 
@@ -485,7 +513,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		boat_throw(result, BoatHlchainmakerContractInvoke);
 	}
 
-	result = BoatHlchainmakerTxRequest(tx_ptr, &tx_response);
+	result = BoatHlchainmakerTxRequest(tx_ptr, &tx_response, BOAT_FALSE);
 	if (result != BOAT_SUCCESS) 
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerTxRequest failed");
@@ -512,34 +540,26 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 
 		if (result == BOAT_SUCCESS) 
         {
-			for (int i = 0; i < BOAT_RETRY_CNT; i++) 
+			result = BoatHlchainmakerTxRequest(tx_ptr, &tx_response, BOAT_TRUE);
+			if (result != BOAT_SUCCESS) 
 			{
-				sleep_second = get_fibon_data(i + 1);
-				BoatSleep(sleep_second);
+				BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerTxRequest sync failed");
+				boat_throw(result, BoatHlchainmakerContractInvoke);
+			}
 
-				result = BoatHlchainmakerTxRequest(tx_ptr, &tx_response);
-				if (result != BOAT_SUCCESS) 
+			if (tx_response->code == SUCCESS) 
+            {
+				transactation_info = common__transaction_info__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
+				invoke_response->gas_used = transactation_info->transaction->result->contract_result->gas_used;
+				if (tx_response != NULL)
 				{
-					BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerTxRequest sync failed");
-					boat_throw(result, BoatHlchainmakerContractInvoke);
+					common__tx_response__free_unpacked(tx_response, NULL);
+					tx_response = NULL;
 				}
-
-				if (tx_response->code == SUCCESS) 
-                {
-					transactation_info = common__transaction_info__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
-					invoke_response->gas_used = transactation_info->transaction->result->contract_result->gas_used;
-					if (tx_response != NULL)
-					{
-						common__tx_response__free_unpacked(tx_response, NULL);
-						tx_response = NULL;
-					}
-					if (transactation_info != NULL)
-					{
-						common__transaction_info__free_unpacked(transactation_info, NULL);
-						transactation_info = NULL;
-					}
-			
-					break;
+				if (transactation_info != NULL)
+				{
+					common__transaction_info__free_unpacked(transactation_info, NULL);
+					transactation_info = NULL;
 				}
 			}
 		}
@@ -591,7 +611,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 		boat_throw(result, BoatHlchainmakerContractQuery_exception);
 	}
 	
-	result = BoatHlchainmakerTxRequest(tx_ptr, &tx_response);
+	result = BoatHlchainmakerTxRequest(tx_ptr, &tx_response, BOAT_FALSE);
 	if (result != BOAT_SUCCESS) 
     {
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerTxRequest failed");
