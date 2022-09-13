@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-08-19 14:33:35
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-13 14:10:21
+ * @LastEditTime: 2022-09-13 15:38:14
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -105,7 +105,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoAT_Common_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format, BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen)
+BOAT_RESULT BoAT_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format, BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT8      pubKey65[65] = {0};
@@ -144,7 +144,7 @@ BOAT_RESULT BoAT_Common_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFo
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format , BoatKeypairKeypair *keypair)
+BOAT_RESULT BoAT_Keypair_generation(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format , BoatKeypairKeypair *keypair)
 {
 /* Valid private key value (as a UINT256) for Ethereum is [1, n-1], where n is
        0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 */
@@ -196,7 +196,7 @@ BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatKeypairPriKeyType type, 
 		BoatLog(BOAT_LOG_CRITICAL, "generate private key failed.");
 		return result;
 	}
-	result = BoAT_Common_getPubkey(type,format, keypair->prikey.value,keypair->prikey.value_len,keypair->pubkey.value,&keypair->pubkey.value_len);
+	result = BoAT_getPubkey(type,format, keypair->prikey.value,keypair->prikey.value_len,keypair->pubkey.value,&keypair->pubkey.value_len);
 
 	return result;
 } 
@@ -219,7 +219,7 @@ BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatKeypairPriKeyType type, 
  * @return {*}
  * @author: aitos
  */
-BOAT_RESULT BoAT_Common_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix)
+BOAT_RESULT BoAT_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	if(prikey == NULL || signature == NULL || Prefix == NULL ){

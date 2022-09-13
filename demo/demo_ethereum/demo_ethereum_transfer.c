@@ -254,12 +254,6 @@ int main(int argc, char *argv[])
 	BOAT_RESULT result = BOAT_SUCCESS;
     BoatIotKeypairContext walletList;
 	boat_try_declare;
-    BUINT8 prikey[] = {0x91,0x47,0x11,0x40,0xa2,0x8a,0x43,0xff,0x88,0x2b,0x9f,0xb6,0xab,0x2f,0x5a,0xdd,0x64,0x37,0xea,0xb7,0x63,0x15,0x0d,0xb0,0xff,0x75,0x80,0xad,0xab,0x48,0xe8,0x55};
-    BUINT8 pubkey[64] = {0};
-    BUINT32 len = 0;
-    result = BoAT_Common_getPubkey(BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1,BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE,prikey,sizeof(prikey),pubkey,&len);
-    BoatLog(BOAT_LOG_NORMAL,"get pubkey result = %d ",result);
-    BoatLog_hexdump(BOAT_LOG_NORMAL,"pubkey : ",pubkey,len);
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     

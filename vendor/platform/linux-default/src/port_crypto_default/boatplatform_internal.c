@@ -282,7 +282,7 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 		return BOAT_ERROR;
 	}
 
-	result = BoAT_Common_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format, prikey.value,prikey.value_len,digest,digestLen,signatureTmp,&signatureLen,&ecdsPrefix);
+	result = BoAT_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format, prikey.value,prikey.value_len,digest,digestLen,signatureTmp,&signatureLen,&ecdsPrefix);
 
 	if(result != BOAT_SUCCESS){
 		return result;
@@ -595,7 +595,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriK
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BoatKeypairKeypair keypair;
-	result = BoAT_Keypair_Common_internal_generation(config->prikey_type,config->prikey_format,&keypair);
+	result = BoAT_Keypair_generation(config->prikey_type,config->prikey_format,&keypair);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "generate private key failed.");
@@ -647,7 +647,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatKeypa
 
 
 	// 5- update public key
-	result = BoAT_Common_getPubkey(config->prikey_type,config->prikey_format, pkCtx->extraData.value,pkCtx->extraData.value_len,pkCtx->prikeyCtx.pubkey_content,&len);
+	result = BoAT_getPubkey(config->prikey_type,config->prikey_format, pkCtx->extraData.value,pkCtx->extraData.value_len,pkCtx->prikeyCtx.pubkey_content,&len);
 
     return result;
 }

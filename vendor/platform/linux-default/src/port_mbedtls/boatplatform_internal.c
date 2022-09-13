@@ -312,7 +312,7 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 		BoatLog(BOAT_LOG_CRITICAL, "get keypair prikey fail.");
 		return BOAT_ERROR;
 	}
-	result = BoAT_Common_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format,prikey.value,prikey.value_len,digest,digestLen,signature,&signaturelen,&ecdsPrefix);
+	result = BoAT_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format,prikey.value,prikey.value_len,digest,digestLen,signature,&signaturelen,&ecdsPrefix);
 	if(result != BOAT_SUCCESS){
 		BoatLog(BOAT_LOG_CRITICAL, "gen signature fail.");
 		return BOAT_ERROR;
@@ -880,7 +880,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatKeypair
 		pkCtx->prikeyCtx.prikey_type = config->prikey_type;
 
 	   // 4- updata pubkey 
-		result = BoAT_Common_getPubkey(config->prikey_type,config->prikey_format,config->prikey_content.field_ptr,
+		result = BoAT_getPubkey(config->prikey_type,config->prikey_format,config->prikey_content.field_ptr,
 		config->prikey_content.field_len,pkCtx->prikeyCtx.pubkey_content,&pubkeylen);
 		
     return result;

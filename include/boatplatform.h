@@ -162,7 +162,7 @@ long int BoatGetTimes();
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoAT_Common_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format, BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen);
+BOAT_RESULT BoAT_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format, BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen);
 
 
 /**
@@ -179,7 +179,7 @@ BOAT_RESULT BoAT_Common_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFo
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format , BoatKeypairKeypair *keypair);
+BOAT_RESULT BoAT_Keypair_generation(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format , BoatKeypairKeypair *keypair);
 
 
 /**
@@ -200,7 +200,7 @@ BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatKeypairPriKeyType type, 
  * @return {*}
  * @author: aitos
  */
-BOAT_RESULT BoAT_Common_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix);
+BOAT_RESULT BoAT_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix);
 
 /*! @}*/
 
