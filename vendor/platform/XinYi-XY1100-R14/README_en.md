@@ -1,26 +1,26 @@
-# BoAT-X Framework for XinYi-XY1100 Integration Guideline
+# BoAT-X Framework for XinYi-XY1100-R14 Integration Guideline
 
 
 ## About This Guideline
 
-This guide describes how to integrate BoAT-X Framework source code into XinYi-1100 SDK, compile BoAT-X Framework static library and build the demo program.
+This guide describes how to integrate BoAT-X Framework source code into XinYi-1100-R14 SDK, compile BoAT-X Framework static library and build the demo program.
 
 
 ## Copy files
 
-Assuming `<XY1100 Root>` to be the root directory of XinYi-XY1100 platform SDK:
+Assuming `<XY1100 Root>` to be the root directory of XinYi-XY1100-R14 platform SDK:
 
-1. Copy the entire BoAT-X-Framework directory into `<XY1100 Root>/userapp`.
+1. Copy the entire BoAT-X-Framework directory into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples`.
 
-2. Create a new folder `boat_demo` under `<XY1100 Root>/userapp/demo`, copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/boat_demo.c into `<XY1100 Root>/userapp/demo/boat_dem/`.
+2. Create a new folder `boat_demo` under `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples`, copy BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/boat_demo.c into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`.
 
-3. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.c into `<XY1100 Root>/userapp/demo/boat_demo`.
+3. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/my_contract.c into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`.
 
-4. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.h into `<XY1100 Root>/userapp/demo/boat_demo`.
+4. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/my_contract.h into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`.
 
-5. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/vendor/Makefile into /userapp/BoAT-X-Framework/vendor and overwrite the original file.
+5. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/vendor/Makefile into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/BoAT-X-Framework/vendor`.
 
-6. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/storage/persiststore.c into `<XY1100 Root>/userapp/BoAT-X-Framework/vendor/common/storage`.
+6. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/storage/persiststore.c into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/BoAT-X-Framework/vendor/common/storage`.
 
 
 After copying these files, the directory structure should look like:
@@ -30,94 +30,68 @@ After copying these files, the directory structure should look like:
 |
 |-- LICENSE
 |-- Makefile
-|-- README.md
-|-- TCPIP
-|-- arch
-|-- examples
-|-- kernel
-|-- output
-|-- sys_app
-|-- targets
-`-- userapp
-    |-- BoAT-X-Framework
-    |-- Inc
-    |-- Src
-    |-- module.mk    
-    |-- demo
-    |   |-- boat_demo
-    |   |   |-- boat_demo.c
-    |   |   |-- my_contract.c
-    |   |   |-- my_contract.h
+|-- readme_xy.txt
+|-- APPLIB
+|-- ARCH
+|-- DRIVERS
+|-- KERNEL
+|-- SYSAPP
+`-- TARGETS 
+    `-- xinyiNBSoC
+        |-- GCC-ARM    
+        `-- USERAPP
+            |-- basic
+            |-- doc
+            |-- userapp.mk
+            `-- examples
+                |-- examples.mk
+                |-- BoAT-X-Framework
+                |-- boat_demo   
 ```
 
 
 ## Files Modification
 
-### 1. Specify demo source files as inputs of Compilation in module.mk
+### 1. Specify demo source files as inputs of Compilation in examples.mk
 
-Open `<XY1100 Root>/userapp/module.mk` 
-Add the following two lines as below:
+Open `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/examples.mk` 
+Add the following line as below:
 ```
-C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/boat_demo.c
-C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/my_contract.c
+$(wildcard $(EXAMPLES_SRC_DIR)/boat_demo/*.c) \
 ```
 
 
-### 2. Add the header file path that needs to be quoted in module.mk
+### 2. Add the header file path that needs to be quoted in examples.mk
 
-Open `<XY1100 Root>/userapp/module.mk` 
+Open `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/examples.mk` 
 Add the following content in the header file path addition:
 ```
-CFLAGS+= -I$(TOP_DIR)/TCPIP/net_tool/Dtls/mbedtls-2.6.0/include/mbedtls \
--I$(TOP_DIR)/userapp/BoAT-X-Framework/include \
--I$(TOP_DIR)/userapp/BoAT-X-Framework/vendor/platform/include \
--I$(TOP_DIR)/userapp/BoAT-X-Framework/sdk/include \
--I$(TOP_DIR)/userapp/BoAT-X-Framework/vendor/platform/XinYi-XY1100/src/log \
--I$(TOP_DIR)/userapp/BoAT-X-Framework/sdk/protocol/common/web3intf \
+DEPS_PATH_EXAMPLES += $(EXAMPLES_SRC_DIR)/BoAT-X-Framework/include
+DEPS_PATH_EXAMPLES += $(EXAMPLES_SRC_DIR)/BoAT-X-Framework/vendor/platform/include
 ```
 
 
-### 3. Add the static library file path to XinYi-XY1100 platform
-Open `<XY1100 Root>/userapp/module.mk` 
-Add the following at the end of the file:
+### 3. Add the static library file path to XinYi-XY1100-R14 platform
+Open `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/userapp.mk` 
+Add the following in the location where the static library is linked:
 ```
-LDFLAGS+=-L$(TOP_DIR)/userapp/BoAT-X-Framework/lib/ -lboatwallet    
-LDFLAGS+=-L$(TOP_DIR)/userapp/BoAT-X-Framework/lib/ -lboatvendor
+SRCS_LIBS_INC += -L$(USERAPP_SRC_DIR)/examples/BoAT-X-Framework/lib/ -lboatwallet
+SRCS_LIBS_INC += -L$(USERAPP_SRC_DIR)/examples/BoAT-X-Framework/lib/ -lboatvendor
 ```
 
 ### 4. Configure the cross-compilation environment of BoAT-X-Framework
 Open `<XY1100 Root>/userapp/BoAT-X-Framework/vendor/platform/XinYi-XY1100/external.env` 
 Configure the actual path of the local cross compiler after `CC` and `AR`
 
-### 5. Configure the cross-compilation environment of XinYi-XY1100 platform
-Open `<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/makefile`
-Configure the path of the local cross compiler into the environment variable at the beginning of the file, such as:
-```
-PATH := $(PATH):/home/tools/xinyigcc/gcc-arm-none-eabi-9-2019-q4-major/bin
-```
+### 5. Configure the cross-compilation environment of XinYi-XY1100-R14 platform
+Configure the cross-compilation environment of XinYi-XY1100-R14 in the local PC according to the documentation requirements of XY1100-R14
 
-### 6. Add a funtion option to support BoAT-X-Framework in XinYi-XY1100 platform
-Open `<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/feature.mk`
-Add the following at the end of the file:
-```
-BOATSDK_SUPPORT=y
-```
 
-### 7. Increase the compilation parameters of BoAT-X-Framework in XinYi-XY1100 platform
-Open `<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/makefile`
-Add the following in the position of the additional functions of the configuration module:
-```
-ifeq ($(BOATSDK_SUPPORT),y)
-    FLAGS+=-DBOATSDK_SUPPORT=1
-endif
-```
-
-### 8. Configure the macro options of mbedtls in the XinYi-XY1100 platform
-Open `<XY1100 Root>/TCPIP/net_tool/Dtls/mbedtls_port/los_mbedtls_config.h`
+### 6. Configure the macro options of mbedtls in the XinYi-XY1100-R14 platform
+Open `<XY1100 Root>/APPLIB/Dtls/xy_dtls/inc/los_mbedtls_config.h`
 Add the following:
 ```
-  #ifdef BOATSDK_SUPPORT
-
+  #include "stdlib.h"
   #define MBEDTLS_ECDSA_C
   #define MBEDTLS_ECP_C
   #define MBEDTLS_ASN1_WRITE_C
@@ -138,38 +112,36 @@ Add the following:
   #define MBEDTLS_BIGNUM_C
   #define MBEDTLS_OID_C
   #define MBEDTLS_PEM_PARSE_C
-
-  #endif
 ```
 
 ## Compile BoAT-X Framework Static library
 
-### 1. Compile BoAT-X Framework static library (under Linux)
+### 1. Compile BoAT-X Framework static library (under Windows)
 
    #### a. Configure the target platform in directory BoAT-X-Framework/Makefile
    ```
-   PLATFORM_TARGET ?= XinYi-XY1100
+   PLATFORM_TARGET ?= XinYi-XY1100-R14
    ```
 
-   #### b. Open a Linux shell, enter `<XY1100 Root>/userapp/BoAT-X-Framework` directory and compile BoAT static library
+   #### b. Open a Cygwin shell, enter BoAT-X-Framework directory and compile BoAT static library
    ```
-   cd <XY1100 Root>/userapp/BoAT-X-Framework
+   cd <XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/BoAT-X-Framework
    make clean
    make all
    ```
 
-   After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<XY1100 Root>/userapp/BoAT-X-Framework/lib` directory.
+   After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/BoAT-X-Framework/lib` directory.
 
 
-### 2. Build the demo program of XY1100, generate .bin file for download
+### 2. Build the demo program of XY1100-R14, generate .mimgx file for download
 
-   Demo code for accessing blockchain through BoAT-X Framework is in `<XY1100 Root>/userapp/demo/boat_demo/boat_demo.c`
+   Demo code for accessing blockchain through BoAT-X Framework is in `XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo/boat_demo.c`
 
-   Open a Linux shell and build the demo:
+   Open a Windows cmd shell and build the demo:
    ```
-   cd <XY1100 Root>/targets/xinyiNBSoc_M3/Makefile
+   cd <XY1100 Root>
    make clean
    make all
    ```
-   The download image ram.bin and flash.bin will be generated in `<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile/xinyiNBSoc_M3` if building is successful.
+   After the compilation is successful, the arm.img, ram.bin and flash.bin files will be generated under `<XY1100 Root>/TARGETS/xinyiNBSoC/GCC-ARM/bin`, and the arm.img file will be copied to the baseline, through the Logview provided by the manufacturer The tool merges the baselines into the xinyiNBSoc.mimgx download file.
 
