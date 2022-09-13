@@ -288,7 +288,6 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
 	                     //t: temporary random number to counter side-channel attacks
 	int boat_ecdsPrefix;
 
-	BoatLog(BOAT_LOG_CRITICAL, "===> enter Boat_private_ecdsa_sign");
     /* Fail cleanly on curves such as Curve25519 that can't be used for ECDSA */
     // if (ctx == NULL || !mbedtls_ecdsa_can_do(ctx->grp.id) || ctx->grp.N.p == NULL)
 	if (ctx == NULL || ctx->grp.N.p == NULL)
@@ -309,7 +308,6 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
 	mbedtls_mpi_init(&r); 
 	mbedtls_mpi_init(&s);
 
-	BoatLog(BOAT_LOG_CRITICAL, "===> complate mbedtls mpi init");
     sign_tries = 0;
     do
     {
@@ -880,7 +878,6 @@ int boat_get_mbedtls_ecp_key(mbedtls_ecp_keypair *out_mbkey, BUINT8 *in_prikey)
         }
     }
 
-    BoatLog(BOAT_LOG_NORMAL, "== gen_privkey_fix ret=%d", ret);
     return(ret);
 }
 
@@ -896,16 +893,10 @@ void boat_get_public_key_byprikey(BUINT8 *priv_key, BUINT8 *pub_key)
 
     result = mbedtls_pk_setup(&prikeyCtx, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
 
-    BoatLog(BOAT_LOG_NORMAL, "== boat_get_public_key_byprikey result=%d", result);
-
     ecPrikey = ((mbedtls_ecp_keypair *) (prikeyCtx).pk_ctx);
 
     boat_get_mbedtls_ecp_key(ecPrikey, priv_key);
 
-    BoatLog(BOAT_LOG_NORMAL, "==pubkey d.n=%d", ecPrikey->d.n);
-    BoatLog(BOAT_LOG_NORMAL, "==pubkey d.s=%d", ecPrikey->d.s);
-
-    BoatLog(BOAT_LOG_NORMAL, "==pubkey grp.id=%d", ecPrikey->grp.id);
 
     mbedtls_ecp_mul(&ecPrikey->grp, 
                     &ecPrikey->Q, 
