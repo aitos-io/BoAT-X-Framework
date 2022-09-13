@@ -43,7 +43,7 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 //! from the public key and the public key is calculated from the private key.
 typedef struct TBoatEthAccountInfo
 {
-    BoatWalletPriKeyCtx prikeyCtx;         //!< prikey context                       
+    BoatKeypairPriKeyCtx prikeyCtx;         //!< prikey context                       
 
     BUINT8  address[BOAT_ETH_ADDRESS_SIZE];//!< Account address calculated from public key
 }BoatEthAccountInfo;

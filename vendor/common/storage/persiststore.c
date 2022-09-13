@@ -232,7 +232,7 @@ BOAT_RESULT BoATSoftRotNvramDec(BUINT8 const *data_ptr,BUINT32 data_len,BUINT8 *
     before the data could be flushed. 
     
 @param [in] storeFile
-	Select for store for wallet or account
+	Select for store for keypair or network
 
 @param [in] offset
     The offset byte in the NVRAM to write to. For example, assuming offset = 4,\n
@@ -294,7 +294,7 @@ BOAT_RESULT BoATStoreSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset,BUINT8
     are stored in the NVRAM and read no more than that.
 
 @param [in] storeFile
-	Select for reading from file of wallet or account
+	Select for reading from file of keypair or network
 
 @param [in] offset
     The offset byte in the NVRAM to read from. For example, assuming offset = 4,\n

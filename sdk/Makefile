@@ -31,7 +31,7 @@ OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/nghttp2/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/*.o) \
           $(wildcard $(BOAT_BUILD_DIR)/sdk/rlp/*.o) \
           $(wildcard $(BOAT_BUILD_DIR)/sdk/utilities/*.o) \
-          $(wildcard $(BOAT_BUILD_DIR)/sdk/wallet/*.o)
+          $(wildcard $(BOAT_BUILD_DIR)/sdk/keypair/*.o)
 
 ifeq ($(CJSON_LIBRARY), CJSON_DEFAULT)
     OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/cJSON/*.o)

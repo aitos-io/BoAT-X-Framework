@@ -441,9 +441,9 @@ cleanup:
 /**
  * @description: 
  * 	This function get pubkey from prikey;
- * @param {BoatWalletPriKeyType} type
+ * @param {BoatKeypairPriKeyType} type
  * 	now only support ecdsa and will support other alg such as SM
- * @param {BoatWalletPriKeyFormat} format
+ * @param {BoatKeypairPriKeyFormat} format
  * 	support native and native
  * @param {BUINT8} *prikey
  * 	prikey inut
@@ -459,7 +459,7 @@ cleanup:
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoAT_Common_getPubkey(BoatWalletPriKeyType type, BoatWalletPriKeyFormat format,BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen)
+BOAT_RESULT BoAT_Common_getPubkey(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format,BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	mbedtls_ctr_drbg_context ctr_drbg;
@@ -471,7 +471,7 @@ BOAT_RESULT BoAT_Common_getPubkey(BoatWalletPriKeyType type, BoatWalletPriKeyFor
 	}
 	mbedtls_pk_init(&mbedtls_pkCtx);
 
-	if (format == BOAT_WALLET_PRIKEY_FORMAT_PKCS)
+	if (format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
 	{
 		result = mbedtls_pk_parse_key(&mbedtls_pkCtx, prikey,
 									  prikeyLen, NULL, 0);
@@ -486,19 +486,19 @@ BOAT_RESULT BoAT_Common_getPubkey(BoatWalletPriKeyType type, BoatWalletPriKeyFor
 		mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->Q.Y, &pubkey[32], 32);
 		*pubkeyLen = 64;
 	}
-	else if (format == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+	else if (format == BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE)
 	{
 		mbedtls_ctr_drbg_init(&ctr_drbg);
 		mbedtls_entropy_init(&entropy);
 		result += mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
 		result += mbedtls_pk_setup(&mbedtls_pkCtx, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
-		if (type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+		if (type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1)
 		{
 			BoatLog(BOAT_LOG_VERBOSE, "begin boat_mbedtls_ecp_read_key ");
 			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec(mbedtls_pkCtx), prikey, prikeyLen);
 			BoatLog(BOAT_LOG_VERBOSE, "boat_mbedtls_ecp_read_key result = %x ", result);
 		}
-		else if (type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+		else if (type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1)
 		{
 			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(mbedtls_pkCtx), prikey, prikeyLen);
 			BoatLog(BOAT_LOG_VERBOSE, "boat_mbedtls_ecp_read_key result = %x ", result);
@@ -539,18 +539,18 @@ BOAT_RESULT BoAT_Common_getPubkey(BoatWalletPriKeyType type, BoatWalletPriKeyFor
 /**
  * @description: 
  * 	This function gen keypair .
- * @param {BoatWalletPriKeyType} type
+ * @param {BoatKeypairPriKeyType} type
  * 	now only support ecdsa and will support other alg such as SM
- * @param {BoatWalletPriKeyFormat} format
+ * @param {BoatKeypairPriKeyFormat} format
  * 	support native and pkcs
- * @param {BoatWalletKeypair} *keypair
+ * @param {BoatKeypairKeypair} *keypair
  * @return {*}
  *  This function returns BoAT_SUCCESS if successfully executed.
  *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatWalletPriKeyType type, BoatWalletPriKeyFormat format , BoatWalletKeypair *keypair)
+BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format , BoatKeypairKeypair *keypair)
 {
 	mbedtls_entropy_context  entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
@@ -570,12 +570,12 @@ BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatWalletPriKeyType type, B
 	result += mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
     result += mbedtls_pk_setup(&key, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
 	
-	if (type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+	if (type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1)
 	{
 		result += mbedtls_ecp_gen_key(MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec(key),
 									  mbedtls_ctr_drbg_random, &ctr_drbg);
 	}
-	else if (type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+	else if (type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1)
 	{
 		result += mbedtls_ecp_gen_key(MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(key),
 									  mbedtls_ctr_drbg_random, &ctr_drbg);
@@ -586,7 +586,7 @@ BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatWalletPriKeyType type, B
 		result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
 	}
 
-	if (format == BOAT_WALLET_PRIKEY_FORMAT_PKCS)
+	if (format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
 	{
 		// 1- update private key
 		memset(keypair->prikey.value, 0, sizeof(keypair->prikey.value));
@@ -620,9 +620,9 @@ BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatWalletPriKeyType type, B
 /**
  * @description: 
  * 	This function gen signature by digest.
- * @param[in] {BoatWalletPriKeyType} type
+ * @param[in] {BoatKeypairPriKeyType} type
  * 	support ecdsa now.
- * @param[in] {BoatWalletPriKeyFormat} format
+ * @param[in] {BoatKeypairPriKeyFormat} format
  * 	support native and pkcs
  * @param[in] {BUINT8} *prikey
  * 	private key
@@ -637,7 +637,7 @@ BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatWalletPriKeyType type, B
  * @return {*}
  * @author: aitos
  */
-BOAT_RESULT BoAT_Common_sign(BoatWalletPriKeyType type,BoatWalletPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix)
+BOAT_RESULT BoAT_Common_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix)
 {
 	mbedtls_entropy_context  entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
@@ -669,7 +669,7 @@ BOAT_RESULT BoAT_Common_sign(BoatWalletPriKeyType type,BoatWalletPriKeyFormat fo
         boat_throw(result, BoatSignature_exception);
     }
 	
-	if (format == BOAT_WALLET_PRIKEY_FORMAT_PKCS)
+	if (format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
 	{
 		/* get prikey content according to prikey index */
 		//sBoat_get_prikey_content(prikeyCtx,);
@@ -684,7 +684,7 @@ BOAT_RESULT BoAT_Common_sign(BoatWalletPriKeyType type,BoatWalletPriKeyFormat fo
 	{
 		// BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
 		// boat_throw(BOAT_ERROR, BoatSignature_exception);
-		if (type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+		if (type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1)
 		{
 			BoatLog(BOAT_LOG_CRITICAL, "begin mbedtls_ecp_read_key ");
 			ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
@@ -695,7 +695,7 @@ BOAT_RESULT BoAT_Common_sign(BoatWalletPriKeyType type,BoatWalletPriKeyFormat fo
 			result = boat_mbedtls_ecp_read_key(MBEDTLS_ECP_DP_SECP256K1, ecPrikey,prikey, prikeylen);
 			BoatLog(BOAT_LOG_CRITICAL, "boat_mbedtls_ecp_read_key result = %x ", result);
 		}
-		else if (type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+		else if (type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1)
 		{
 			ecPrikey = BoatCalloc(1, sizeof(mbedtls_ecp_keypair));
 			if (ecPrikey != NULL)
@@ -745,7 +745,7 @@ BOAT_RESULT BoAT_Common_sign(BoatWalletPriKeyType type,BoatWalletPriKeyFormat fo
 	mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
 	mbedtls_pk_free(&mbedtls_pkCtx);
-	if (format != BOAT_WALLET_PRIKEY_FORMAT_PKCS)
+	if (format != BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
 	{
 		mbedtls_ecp_keypair_free(ecPrikey);
 		if (ecPrikey != NULL)

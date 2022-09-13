@@ -1,3 +1,10 @@
+/*
+ * @Description: 
+ * @Author: aitos
+ * @Date: 2022-08-19 14:33:35
+ * @LastEditors: 
+ * @LastEditTime: 2022-09-13 14:02:17
+ */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
  *
@@ -29,7 +36,7 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #include <unistd.h>
 #include <string.h>
 
-#include "boatwallet.h"
+#include "boatkeypair.h"
 #include "boaterrcode.h"
 #include "boattypes.h"
 #include "boatexception.h"

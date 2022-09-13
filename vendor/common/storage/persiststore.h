@@ -32,7 +32,7 @@ extern "C" {
 #define BOAT_FILE_STOREDATA	"boat_wallet_file"
 #define BOAT_STORAGE_KEYPAIR_OFFSET 0
 #define BOAT_STORAGE_KEYPAIR_MAXLEN BOAT_KEYPAIR_NUM_LEN+BOAT_KEYPAIR_ALL_LEN_MAX+ \
-                                    BOAT_MAX_WALLET_NUM* \
+                                    BOAT_MAX_KEYPAIR_NUM* \
                                     (BOAT_KEYPAIR_INDEX_LEN+ \
                                     BOAT_KEYPAIR_NAME_LEN_MAX+ \
                                     BOAT_KEYPAIR_FORMAT_LEN+ \
@@ -56,7 +56,7 @@ extern "C" {
  * @LastEditTime: 2022-08-30 11:06:40
  */
 
-//! @brief The store file for wallet or account
+//! @brief The store file for keypair or network
 typedef enum
 {
     BOAT_STORE_KEYPAIR,  //!< to store keypair data
@@ -79,7 +79,7 @@ typedef enum
     before the data could be flushed. 
 
 @param [in] storeFile
-	Select for store for wallet or account
+	Select for store for keypair or network
 
 @param [in] offset
     The offset byte in the NVRAM to write to. For example, assuming offset = 4,\n
@@ -110,7 +110,7 @@ BOAT_RESULT BoATStoreSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset,BUINT8
     are stored in the NVRAM and read no more than that.
 
 @param [in] storeFile
-	Select for reading from file of wallet or account
+	Select for reading from file of keypair or network
 
 @param [in] offset
     The offset byte in the NVRAM to read from. For example, assuming offset = 4,\n

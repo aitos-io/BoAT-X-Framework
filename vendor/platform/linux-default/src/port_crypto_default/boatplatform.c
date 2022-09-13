@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-08-19 14:33:35
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-08 16:14:26
+ * @LastEditTime: 2022-09-13 14:10:21
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -89,7 +89,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
 /**
  * @description: 
  * 	This function get pubkey from prikey;
- * @param {BoatWalletPriKeyType} type
+ * @param {BoatKeypairPriKeyType} type
  * 	now only support ecdsa and will support other alg such as SM
  * @param {BUINT8} *prikey
  * 	prikey inut
@@ -105,17 +105,17 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoAT_Common_getPubkey(BoatWalletPriKeyType type,BoatWalletPriKeyFormat format, BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen)
+BOAT_RESULT BoAT_Common_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format, BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT8      pubKey65[65] = {0};
-	if (type== BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+	if (type== BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1)
 	{
 		ecdsa_get_public_key65(&secp256k1, prikey, pubKey65);
 		memcpy(pubkey, &pubKey65[1], 64);
 		*pubkeyLen = 64;
 	}
-	else if (type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+	else if (type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1)
 	{
 		ecdsa_get_public_key65(&nist256p1, prikey,pubKey65);
 		memcpy(pubkey, &pubKey65[1], 64);
@@ -133,18 +133,18 @@ BOAT_RESULT BoAT_Common_getPubkey(BoatWalletPriKeyType type,BoatWalletPriKeyForm
 /**
  * @description: 
  * 	This function gen keypair .
- * @param {BoatWalletPriKeyType} type
+ * @param {BoatKeypairPriKeyType} type
  * 	now only support ecdsa and will support other alg such as SM
- * @param {BoatWalletPriKeyFormat} format
+ * @param {BoatKeypairPriKeyFormat} format
  * 	support native and pkcs
- * @param {BoatWalletKeypair} *keypair
+ * @param {BoatKeypairKeypair} *keypair
  * @return {*}
  *  This function returns BoAT_SUCCESS if successfully executed.
  *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatWalletPriKeyType type, BoatWalletPriKeyFormat format , BoatWalletKeypair *keypair)
+BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format , BoatKeypairKeypair *keypair)
 {
 /* Valid private key value (as a UINT256) for Ethereum is [1, n-1], where n is
        0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 */
@@ -204,7 +204,7 @@ BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatWalletPriKeyType type, B
 /**
  * @description: 
  * 	This function gen signature by digest.
- * @param[in] {BoatWalletPriKeyType} type
+ * @param[in] {BoatKeypairPriKeyType} type
  * 	support ecdsa now.
  * @param[in] {BUINT8} *prikey
  * 	private key
@@ -219,13 +219,13 @@ BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatWalletPriKeyType type, B
  * @return {*}
  * @author: aitos
  */
-BOAT_RESULT BoAT_Common_sign(BoatWalletPriKeyType type,BoatWalletPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix)
+BOAT_RESULT BoAT_Common_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	if(prikey == NULL || signature == NULL || Prefix == NULL ){
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
-	if (type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+	if (type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1)
 	{
 		result = ecdsa_sign_digest(&secp256k1,      // const ecdsa_curve *curve
 								   prikey,        // const uint8_t *priv_key
@@ -235,7 +235,7 @@ BOAT_RESULT BoAT_Common_sign(BoatWalletPriKeyType type,BoatWalletPriKeyFormat fo
 								   NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
 								   );
 	}
-	else if (type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+	else if (type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1)
 	{
 		result = ecdsa_sign_digest(&nist256p1,      // const ecdsa_curve *curve
 								   prikey,        // const uint8_t *priv_key

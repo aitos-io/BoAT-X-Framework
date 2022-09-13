@@ -23,7 +23,7 @@
 #include "boatplatform_internal.h"
 #include "boatiotsdk.h"
 #include "boattypes.h"
-#include "boatwallet.h"
+#include "boatkeypair.h"
 
 #include "keccak.h"
 #include "persiststore.h"
@@ -62,18 +62,18 @@
  * @description: 
  * 	This function get prikey by index from Nvram.
  * @param[in] {BUINT8} index
- * @param[out] {BoatWalletExtraData} *prikey
+ * @param[out] {BoatKeypairExtraData} *prikey
  * @return {*}
  *   This function returns BOAT_SUCCESS if success.\n
  *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
  *   for details.
  * @author: aitos
  */
-static BOAT_RESULT BoAT_GetPirkeyByIndex(BUINT8 index,BoatWalletExtraData *prikey){
+static BOAT_RESULT BoAT_GetPirkeyByIndex(BUINT8 index,BoatKeypairExtraData *prikey){
 	BOAT_RESULT result = BOAT_SUCCESS;
-	BUINT8 walletNum = 0 , walletIndex = 0;
+	BUINT8 keypairNum = 0 , keypairIndex = 0;
 	BUINT32 offset = 0 , offset_obj = 0;
-	BUINT32  walletLength = 0 , walletLengthLen = 0 , paramLength = 0 , paramLengthLen = 0;
+	BUINT32  keypairLength = 0 , keypairLengthLen = 0 , paramLength = 0 , paramLengthLen = 0;
 	BUINT8 lengthBytes[3] = {0};
 	BUINT8 ciphertext[512] = {0};
 	BoatStoreType storetype;
@@ -81,137 +81,137 @@ static BOAT_RESULT BoAT_GetPirkeyByIndex(BUINT8 index,BoatWalletExtraData *prike
 		BoatLog(BOAT_LOG_NORMAL,"prikey must not be NULL");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
-	if(index == 0){  // onetime wallet
+	if(index == 0){  // onetime keypair
         storetype = BOAT_STORE_TYPE_RAM;
     }else{
         storetype = BOAT_STORE_TYPE_FLASH;
     }
 
-	result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,&walletNum,1,storetype);
-    /* if read Nvram failed , no wallet */
-    if(result != BOAT_SUCCESS || walletNum == 0){
-		BoatLog(BOAT_LOG_NORMAL," have no wallet , result = %d , walletnum = %d  ",result,walletNum);
+	result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,&keypairNum,1,storetype);
+    /* if read Nvram failed , no keypair */
+    if(result != BOAT_SUCCESS || keypairNum == 0){
+		BoatLog(BOAT_LOG_NORMAL," have no keypair , result = %d , keypairnum = %d  ",result,keypairNum);
         return BOAT_ERROR;
     }
 	offset ++ ;
-	for (BUINT8 i = 0; i < walletNum; i++)
+	for (BUINT8 i = 0; i < keypairNum; i++)
 	{
 		
-		/* wallet length */
+		/* keypair length */
 		result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
 		if(result != BOAT_SUCCESS){
-			BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] length fail " , i);
+			BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] length fail " , i);
 			return result;
 		}
-		walletLength = UtilityGetLVData_L(lengthBytes);
-        if(walletLength < 0){
-            BoatLog(BOAT_LOG_NORMAL,"wallet data length err ");
+		keypairLength = UtilityGetLVData_L(lengthBytes);
+        if(keypairLength < 0){
+            BoatLog(BOAT_LOG_NORMAL,"keypair data length err ");
             return BOAT_ERROR;
         }
-        walletLengthLen = UtilityGetTLV_LL_from_len(walletLength);
-		offset += walletLengthLen;
+        keypairLengthLen = UtilityGetTLV_LL_from_len(keypairLength);
+		offset += keypairLengthLen;
 		offset_obj = offset;
-		/* wallet index */
+		/* keypair index */
 		result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
 		if(result != BOAT_SUCCESS){
-			BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] index fail " , i);
+			BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] index fail " , i);
 			return result;
 		}
 		paramLength = UtilityGetLVData_L(lengthBytes);
 		if(paramLength != 1){
-            BoatLog(BOAT_LOG_NORMAL,"wallet index length err ");
+            BoatLog(BOAT_LOG_NORMAL,"keypair index length err ");
             return BOAT_ERROR;
         }
-		walletIndex = lengthBytes[1];
-		if(walletIndex == index){
+		keypairIndex = lengthBytes[1];
+		if(keypairIndex == index){
 			offset += 2;
-			if(offset - offset_obj > walletLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL,"wallet name offset over the length of this walet ");
+			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
+				BoatLog(BOAT_LOG_NORMAL,"keypair name offset over the length of this walet ");
 				return BOAT_ERROR;
 			}
-			/* wallet name */
+			/* keypair name */
 			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] index fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] index fail " , i);
 				return result;
 			}
 			paramLength = UtilityGetLVData_L(lengthBytes);
 			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"wallet name length err ");
+            	BoatLog(BOAT_LOG_NORMAL,"keypair name length err ");
             	return BOAT_ERROR;
         	}
 			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
 			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > walletLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL," wallet format offset over the length of this walet ");
+			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
+				BoatLog(BOAT_LOG_NORMAL," keypair format offset over the length of this walet ");
 				return BOAT_ERROR;
 			}
-			/* wallet PriKeyFormat */
+			/* keypair PriKeyFormat */
 			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] prikey format fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] prikey format fail " , i);
 				return result;
 			}
 			paramLength = UtilityGetLVData_L(lengthBytes);
 			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"wallet prike format length err ");
+            	BoatLog(BOAT_LOG_NORMAL,"keypair prike format length err ");
             	return BOAT_ERROR;
         	}
 			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
 			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > walletLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL," wallet type offset over the length of this walet ");
+			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
+				BoatLog(BOAT_LOG_NORMAL," keypair type offset over the length of this walet ");
 				return BOAT_ERROR;
 			}
-			/* wallet prikey type */
+			/* keypair prikey type */
 			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] prikey type fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] prikey type fail " , i);
 				return result;
 			}
 			paramLength = UtilityGetLVData_L(lengthBytes);
 			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"wallet prike type length err ");
+            	BoatLog(BOAT_LOG_NORMAL,"keypair prike type length err ");
             	return BOAT_ERROR;
         	}
 			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
 			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > walletLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL,"wallet pubkey offset over the length of this walet ");
+			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
+				BoatLog(BOAT_LOG_NORMAL,"keypair pubkey offset over the length of this walet ");
 				return BOAT_ERROR;
 			}
-			/* wallet pubkey */
+			/* keypair pubkey */
 			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] pubkey fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] pubkey fail " , i);
 				return result;
 			}
 			paramLength = UtilityGetLVData_L(lengthBytes);
 			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"wallet pubkey length err ");
+            	BoatLog(BOAT_LOG_NORMAL,"keypair pubkey length err ");
             	return BOAT_ERROR;
         	}
 			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
 			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > walletLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL," wallet prikey offset over the length of this walet ");
+			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
+				BoatLog(BOAT_LOG_NORMAL," keypair prikey offset over the length of this walet ");
 				return BOAT_ERROR;
 			}
-			/* wallet prikey */
+			/* keypair prikey */
 			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] pubkey fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] pubkey fail " , i);
 				return result;
 			}
 			paramLength = UtilityGetLVData_L(lengthBytes);
 			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"wallet pubkey length err ");
+            	BoatLog(BOAT_LOG_NORMAL,"keypair pubkey length err ");
             	return BOAT_ERROR;
         	}
 			BoatLog(BOAT_LOG_NORMAL," ciphertext of prkey len = %d ",paramLength);
 			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
 			offset += paramLengthLen;
-			if(offset - offset_obj + paramLength > walletLength){  // offset over the length of this walet
+			if(offset - offset_obj + paramLength > keypairLength){  // offset over the length of this walet
 				BoatLog(BOAT_LOG_NORMAL," prikey 1 offset over the length of this walet ");
 				return BOAT_ERROR;
 			}
@@ -221,22 +221,22 @@ static BOAT_RESULT BoAT_GetPirkeyByIndex(BUINT8 index,BoatWalletExtraData *prike
 			}
 			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,ciphertext,paramLength,storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] prikey fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] prikey fail " , i);
 				return result;
 			}
 			BoatLog_hexdump(BOAT_LOG_NORMAL,"ciphertext : ",ciphertext,paramLength);
 			/*  dec */
 			result = BoATSoftRotNvramDec(ciphertext,paramLength,&(prikey->value[0]),&(prikey->value_len));
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"dec wallet[%d] prikey fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"dec keypair[%d] prikey fail " , i);
 				return result;
 			}
 			BoatLog(BOAT_LOG_NORMAL,"11111");
 			BoatLog_hexdump(BOAT_LOG_NORMAL," prikey->value : ",prikey->value,32);
 			BoatLog(BOAT_LOG_NORMAL,"22222");
 			return result;
-		}else{ // the next wallet
-			offset += walletLength;
+		}else{ // the next keypair
+			offset += keypairLength;
 		}
 	}
 	return BOAT_ERROR;
@@ -284,11 +284,11 @@ BOAT_RESULT  BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 }
 
 
-BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
+BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx, 
 						  const BUINT8 *digest, BUINT32 digestLen, 
 						  BoatSignatureResult *signatureResult, void *rsvd)
 {
-	BoatWalletExtraData prikey;
+	BoatKeypairExtraData prikey;
 	BUINT8 signature[64] = {0};
 	BUINT8 signatureTmp[139];
 	BUINT32 signaturelen = 0;
@@ -307,9 +307,9 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
-	result = BoAT_GetPirkeyByIndex(prikeyCtx.wallet_index,&prikey);
+	result = BoAT_GetPirkeyByIndex(prikeyCtx.keypair_index,&prikey);
 	if(result != BOAT_SUCCESS){
-		BoatLog(BOAT_LOG_CRITICAL, "get wallet prikey fail.");
+		BoatLog(BOAT_LOG_CRITICAL, "get keypair prikey fail.");
 		return BOAT_ERROR;
 	}
 	result = BoAT_Common_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format,prikey.value,prikey.value_len,digest,digestLen,signature,&signaturelen,&ecdsPrefix);
@@ -766,8 +766,8 @@ void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
-static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKeyCtx_config *config, 
-													       BoatWalletDataCtx *pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriKeyCtx_config *config, 
+													       BoatKeypairDataCtx *pkCtx)
 {
 	mbedtls_entropy_context  entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
@@ -787,12 +787,12 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 	result += mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
     result += mbedtls_pk_setup(&key, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
 	
-	if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+	if (config->prikey_type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1)
 	{
 		result += mbedtls_ecp_gen_key(MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec(key),
 									  mbedtls_ctr_drbg_random, &ctr_drbg);
 	}
-	else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+	else if (config->prikey_type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1)
 	{
 		result += mbedtls_ecp_gen_key(MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(key),
 									  mbedtls_ctr_drbg_random, &ctr_drbg);
@@ -803,14 +803,14 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 		result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
 	}
 
-	if (config->prikey_format == BOAT_WALLET_PRIKEY_FORMAT_PKCS)
+	if (config->prikey_format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
 	{
 		// 1- update private key
 		memset(pkCtx->extraData.value, 0, sizeof(pkCtx->extraData.value));
 		result += mbedtls_pk_write_key_pem(&key, pkCtx->extraData.value, sizeof(pkCtx->extraData.value));
 
 		// 2- update private key format
-		pkCtx->prikeyCtx.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
+		pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
 
 		// 3- update private key type
 		pkCtx->prikeyCtx.prikey_type = config->prikey_type;
@@ -827,7 +827,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
 		// memcpy(pkCtx->extra_data.value, mbedtls_pk_ec(key)->d.p, (mbedtls_pk_ec(key)->d.n) * (sizeof(mbedtls_mpi_uint)));
 		mbedtls_mpi_write_binary(&mbedtls_pk_ec(key)->d, pkCtx->extraData.value, 32);
 		// 2- update private key format
-		pkCtx->prikeyCtx.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+		pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
 
 		// 3- update private key type
 		pkCtx->prikeyCtx.prikey_type = config->prikey_type;
@@ -851,8 +851,8 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKe
     return result;
 }
 
-static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletPriKeyCtx_config *config, 
-															   BoatWalletDataCtx *pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatKeypairPriKeyCtx_config *config, 
+															   BoatKeypairDataCtx *pkCtx)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT32 pubkeylen = 0;
@@ -887,7 +887,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 }
 
 
-BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWalletDataCtx *pkCtx)
+BOAT_RESULT BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatKeypairDataCtx *pkCtx)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
@@ -897,24 +897,24 @@ BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWal
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	
-	if (config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
+	if (config->prikey_genMode == BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION)
 	{
 		BoatLog(BOAT_LOG_VERBOSE, "The private key is generated internally...");
 		result = sBoatPort_keyCreate_internal_generation(config, pkCtx);
 	}
-	else if (config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION)
+	else if (config->prikey_genMode == BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION)
 	{
 		switch (config->prikey_format)
 		{
-			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
-				BoatLog(BOAT_LOG_VERBOSE, "wallet private key[pkcs] set...");
+			case BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS:
+				BoatLog(BOAT_LOG_VERBOSE, "keypair private key[pkcs] set...");
 				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
 				break;
-			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
-			case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
+			case BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE:
+			case BOAT_KEYPAIR_PRIKEY_FORMAT_MNEMONIC:
 				// BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
 				// result = BOAT_ERROR;
-				BoatLog(BOAT_LOG_VERBOSE, "wallet private key[native] set...");
+				BoatLog(BOAT_LOG_VERBOSE, "keypair private key[native] set...");
 				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
 				break;
 			default:
@@ -932,13 +932,13 @@ BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWal
     return result;
 }
 
-BOAT_RESULT BoatPort_keyQuery(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
+BOAT_RESULT BoatPort_keyQuery(const BoatKeypairPriKeyCtx_config *config, BoatKeypairPriKeyCtx *pkCtx)
 {	
 	//! @todo to be implemented
 	return BOAT_ERROR;
 }
 
-BOAT_RESULT BoatPort_keyDelete(BoatWalletPriKeyCtx *pkCtx)
+BOAT_RESULT BoatPort_keyDelete(BoatKeypairPriKeyCtx *pkCtx)
 {
 	//! @todo to be implemented
 	return BOAT_ERROR;

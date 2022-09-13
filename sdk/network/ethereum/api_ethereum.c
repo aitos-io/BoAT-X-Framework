@@ -51,7 +51,7 @@ BoatEthWallet *BoatEthWalletInit(BUINT8 walletIndex,BUINT8 networkIndex)
 		BoatLog(BOAT_LOG_CRITICAL, "wallet memory malloc falied.");
         return NULL;
     }
-    result = BoATWallet_GetWalletByIndex(&(wallet_ptr->account_info.prikeyCtx),walletIndex);
+    result = BoATKeypair_GetKeypairByIndex(&(wallet_ptr->account_info.prikeyCtx),walletIndex);
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_CRITICAL, "get wallet by index fail");
         return NULL;
@@ -86,10 +86,10 @@ void BoatEthWalletDeInit(BoatEthWallet *wallet_ptr)
 {
     if (wallet_ptr != NULL)
     {
-        if (wallet_ptr->account_info.prikeyCtx.wallet_name != NULL)
+        if (wallet_ptr->account_info.prikeyCtx.keypair_name != NULL)
         {
-            BoatFree(wallet_ptr->account_info.prikeyCtx.wallet_name);
-            wallet_ptr->account_info.prikeyCtx.wallet_name = NULL;
+            BoatFree(wallet_ptr->account_info.prikeyCtx.keypair_name);
+            wallet_ptr->account_info.prikeyCtx.keypair_name = NULL;
         }
 
         web3_deinit(wallet_ptr->web3intf_context_ptr);

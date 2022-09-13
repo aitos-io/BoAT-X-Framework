@@ -28,7 +28,7 @@
 #include <stddef.h>
 #include "boattypes.h"
 #include "boaterrcode.h"
-#include "boatwallet.h"
+#include "boatkeypair.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -146,7 +146,7 @@ long int BoatGetTimes();
 /**
  * @description: 
  * 	This function get pubkey from prikey;
- * @param {BoatWalletPriKeyType} type
+ * @param {BoatKeypairPriKeyType} type
  * 	now only support ecdsa and will support other alg such as SM
  * @param {BUINT8} *prikey
  * 	prikey inut
@@ -162,30 +162,30 @@ long int BoatGetTimes();
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoAT_Common_getPubkey(BoatWalletPriKeyType type,BoatWalletPriKeyFormat format, BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen);
+BOAT_RESULT BoAT_Common_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format, BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen);
 
 
 /**
  * @description: 
  * 	This function gen keypair .
- * @param {BoatWalletPriKeyType} type
+ * @param {BoatKeypairPriKeyType} type
  * 	now only support ecdsa and will support other alg such as SM
- * @param {BoatWalletPriKeyFormat} format
+ * @param {BoatKeypairPriKeyFormat} format
  * 	support native and pkcs
- * @param {BoatWalletKeypair} *keypair
+ * @param {BoatKeypairKeypair} *keypair
  * @return {*}
  *  This function returns BoAT_SUCCESS if successfully executed.
  *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatWalletPriKeyType type, BoatWalletPriKeyFormat format , BoatWalletKeypair *keypair);
+BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format , BoatKeypairKeypair *keypair);
 
 
 /**
  * @description: 
  * 	This function gen signature by digest.
- * @param[in] {BoatWalletPriKeyType} type
+ * @param[in] {BoatKeypairPriKeyType} type
  * 	support ecdsa now.
  * @param[in] {BUINT8} *prikey
  * 	private key
@@ -200,7 +200,7 @@ BOAT_RESULT BoAT_Keypair_Common_internal_generation(BoatWalletPriKeyType type, B
  * @return {*}
  * @author: aitos
  */
-BOAT_RESULT BoAT_Common_sign(BoatWalletPriKeyType type,BoatWalletPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix);
+BOAT_RESULT BoAT_Common_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix);
 
 /*! @}*/
 

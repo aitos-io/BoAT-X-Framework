@@ -14,16 +14,16 @@
  * limitations under the License.
  *****************************************************************************/
 
-/*!@brief Boatwallet SDK header file
+/*!@brief Boatkeypair SDK header file
 
 @file
-boatwallet.h is the SDK header file.
+boatkeypair.h is the SDK header file.
 */
 
-#ifndef __BOATWALLET_H__
-#define __BOATWALLET_H__
+#ifndef __BOATKEYPAIR_H__
+#define __BOATKEYPAIR_H__
 
-/*! @defgroup wallet boat wallet API
+/*! @defgroup keypair boat keypair API
  * @{
  */
 
@@ -42,7 +42,7 @@ boatwallet.h is the SDK header file.
 #define BOAT_KEYPAIR_PRIKEY_LEN     33 // L + prikey   
 
 
-#define BOAT_MAX_WALLET_NUM 5
+#define BOAT_MAX_KEYPAIR_NUM 5
 
 /*
  * @Description: 
@@ -57,95 +57,95 @@ boatwallet.h is the SDK header file.
 //! @brief The generate mode of the used private key
 typedef enum
 {
-    BOAT_WALLET_PRIKEY_GENMODE_UNKNOWN = 0,         //!< Placeholder for unknown private key format
-    BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION,  //!< The private key is injected externally
-    BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION, //!< The private key is generated internally
-}BoatWalletPriKeyGenMode;
+    BOAT_KEYPAIR_PRIKEY_GENMODE_UNKNOWN = 0,         //!< Placeholder for unknown private key format
+    BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION,  //!< The private key is injected externally
+    BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION, //!< The private key is generated internally
+}BoatKeypairPriKeyGenMode;
 
 //! @brief The format of the externally injected private key
-//! This field will be actived when BOAT_WALLET_PRIKEY_FORMAT_EXTERN_INJECTION be selected.
+//! This field will be actived when BOAT_KEYPAIR_PRIKEY_FORMAT_EXTERN_INJECTION be selected.
 typedef enum
 {
-    BOAT_WALLET_PRIKEY_FORMAT_UNKNOWN = 0,     //!< Placeholder for unknown prikey format
-    BOAT_WALLET_PRIKEY_FORMAT_PKCS,            //!< Contain PEM and DER format
-    BOAT_WALLET_PRIKEY_FORMAT_NATIVE,          //!< The 32 bytes format private key
-    BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC,        //!< Mnemonic words that meet BIP39 format
-}BoatWalletPriKeyFormat;
+    BOAT_KEYPAIR_PRIKEY_FORMAT_UNKNOWN = 0,     //!< Placeholder for unknown prikey format
+    BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS,            //!< Contain PEM and DER format
+    BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE,          //!< The 32 bytes format private key
+    BOAT_KEYPAIR_PRIKEY_FORMAT_MNEMONIC,        //!< Mnemonic words that meet BIP39 format
+}BoatKeypairPriKeyFormat;
 
 //! Type of private key
 //! @note For PKCS format private key, the key type is already included in it,
 //!       but it's still suggest to fill this field.
 typedef enum
 {
-    BOAT_WALLET_PRIKEY_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown ecliptic curve
-	BOAT_WALLET_PRIKEY_TYPE_SECP256K1,    //!< secp256k1 ecliptic curve
-	BOAT_WALLET_PRIKEY_TYPE_SECP256R1,    //!< secp256r1 ecliptic curve
-}BoatWalletPriKeyType;
+    BOAT_KEYPAIR_PRIKEY_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown ecliptic curve
+	BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1,    //!< secp256k1 ecliptic curve
+	BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1,    //!< secp256r1 ecliptic curve
+}BoatKeypairPriKeyType;
 
 
 
 //!@brief The extension field of prikey context
 //!  This field is only used for secret key storage when secure storage environment is not available. 
 //!  \n The practice of the security specification is still to store it in TEE/SE.
-typedef struct TBoatWalletExtraData
+typedef struct TBoatKeypairExtraData
 {
     BUINT32  value_len;  //!< Length of the stored private key
     BUINT8   value[512]; //!< Private key content when a secure storage environment is not available
-}BoatWalletExtraData;
+}BoatKeypairExtraData;
 
-typedef struct TBoatWalletKeypair
+typedef struct TBoatKeypairKeypair
 {
-   BoatWalletExtraData prikey;  // wallet prikey
-   BoatWalletExtraData pubkey; // wallet pubkey
-}BoatWalletKeypair;
+   BoatKeypairExtraData prikey;  // keypair prikey
+   BoatKeypairExtraData pubkey; // keypair pubkey
+}BoatKeypairKeypair;
 
 
-//!@brief Boat wallet private key context
-typedef struct TBoatWalletPriKeyCtx
+//!@brief Boat keypair private key context
+typedef struct TBoatKeypairPriKeyCtx
 {
-    BUINT8                  wallet_index;       //!< Index of wallet
-    BCHAR*                  wallet_name;        //!< name of wallet
-	BoatWalletPriKeyFormat  prikey_format;      //!< Format of private key
-	BoatWalletPriKeyType    prikey_type;        //!< Type of private key, SDK according to this field to execute corresponding signature
+    BUINT8                  keypair_index;       //!< Index of keypair
+    BCHAR*                  keypair_name;        //!< name of keypair
+	BoatKeypairPriKeyFormat  prikey_format;      //!< Format of private key
+	BoatKeypairPriKeyType    prikey_type;        //!< Type of private key, SDK according to this field to execute corresponding signature
 	
     BUINT8                  pubkey_content[64]; //!< Content of public key, current only native format be supported.
     
-}BoatWalletPriKeyCtx;
+}BoatKeypairPriKeyCtx;
 
 
-//!@brief Boat wallet config context  
-typedef struct TBoatWalletPriKeyCtx_config
+//!@brief Boat keypair config context  
+typedef struct TBoatKeypairPriKeyCtx_config
 {
-	BoatWalletPriKeyGenMode  prikey_genMode;        //!< Generate mode of private key
-	BoatWalletPriKeyFormat   prikey_format;         //!< Format of private key
-    BoatWalletPriKeyType     prikey_type;           //!< Type of private key
+	BoatKeypairPriKeyGenMode  prikey_genMode;        //!< Generate mode of private key
+	BoatKeypairPriKeyFormat   prikey_format;         //!< Format of private key
+    BoatKeypairPriKeyType     prikey_type;           //!< Type of private key
     BoatFieldVariable        prikey_content;        //!< The externally injected private key contents.
                                                     //!< \n A pointer to externally injected private key content, the content of this 
-													//!< field point to  will be COPYED to the corresponding field of the wallet, 
+													//!< field point to  will be COPYED to the corresponding field of the keypair, 
 													//!< if user dynamically allocated space for this pointer, then the user should 
-	                                                //!< free it after BoatWalletCreate invoked. 
+	                                                //!< free it after BoatKeypairCreate invoked. 
 													//!< @note For content of type string, such as PEM format data, the length includes 
                                                     //!< the terminating null byte.
-}BoatWalletPriKeyCtx_config;
+}BoatKeypairPriKeyCtx_config;
 
 
-//!@brief Boat wallet data context
-typedef struct TBoatWalletDataCtx
+//!@brief Boat keypair data context
+typedef struct TBoatKeypairDataCtx
 {
-    BoatWalletPriKeyCtx prikeyCtx;             //!< wallet key content , not contain prikey data
-    BoatWalletExtraData extraData;             //!< prikey data , only used for storing wallet data, delete content immediately after storing;
-                                               //!< this parameter could be used for onetime wallet, 
-}BoatWalletDataCtx;
+    BoatKeypairPriKeyCtx prikeyCtx;             //!< keypair key content , not contain prikey data
+    BoatKeypairExtraData extraData;             //!< prikey data , only used for storing keypair data, delete content immediately after storing;
+                                               //!< this parameter could be used for onetime keypair, 
+}BoatKeypairDataCtx;
 
 
 
 //!@brief BoAT IoT SDK Context
-typedef struct TBoatIotWalletContext
+typedef struct TBoatIotKeypairContext
 {
-    BUINT8 walletNum;
-    // Protocol specific properties are defined in protocol specific WalletInfo structure
-    BoatWalletDataCtx wallets[BOAT_MAX_WALLET_NUM];  //!< Wallet Info List
-}BoatIotWalletContext;
+    BUINT8 keypairNum;
+    // Protocol specific properties are defined in protocol specific KeypairInfo structure
+    BoatKeypairDataCtx keypairs[BOAT_MAX_KEYPAIR_NUM];  //!< Keypair Info List
+}BoatIotKeypairContext;
 
 
 #ifdef __cplusplus
@@ -190,40 +190,40 @@ void BoatIotSdkDeInit(void);
 
 /**
  * @description: 
- * This function creat wallet
- * @param[in] {BoatWalletPriKeyCtx_config} walletConfig
- * @param[in] {BCHAR} *walletName
- *  If walletName is NULL , BoAT will slect one testing name.
+ * This function creat keypair
+ * @param[in] {BoatKeypairPriKeyCtx_config} keypairConfig
+ * @param[in] {BCHAR} *keypairName
+ *  If keypairName is NULL , BoAT will slect one testing name.
  * @param[in] {BoatStoreType} storeType
- *  For onetime wallet or test , select store in ram .
- *  For persistent wallet ,slect store in flash.
+ *  For onetime keypair or test , select store in ram .
+ *  For persistent keypair ,slect store in flash.
  * @return 
- *   This function returns wallet index if creat wallet successfully.\n
+ *   This function returns keypair index if creat keypair successfully.\n
  *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatWalletCreate(BoatWalletPriKeyCtx_config *walletConfig,BCHAR *walletName,BoatStoreType storeType);
+BOAT_RESULT BoatKeypairCreate(BoatKeypairPriKeyCtx_config *keypairConfig,BCHAR *keypairName,BoatStoreType storeType);
 
 
 /**
  * @description: 
- *  This function get persistent wallet list
- * @param[out] {BoatIotWalletContext} *walletList
+ *  This function get persistent keypair list
+ * @param[out] {BoatIotKeypairContext} *keypairList
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
  *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoATWallet_GetWalletList(BoatIotWalletContext *walletList);
+BOAT_RESULT BoATKeypair_GetKeypairList(BoatIotKeypairContext *keypairList);
 
 
 
 /**
  * @description: 
- *  This function deletes the wallet which walletIndex equals index.
- *  This function will delete the wallet data in Nvram.
+ *  This function deletes the keypair which keypairIndex equals index.
+ *  This function will delete the keypair data in Nvram.
  * @param {BUINT8} index
  *  the index want to delete
  * @return {*}
@@ -232,34 +232,34 @@ BOAT_RESULT BoATWallet_GetWalletList(BoatIotWalletContext *walletList);
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoATIotWalletDelete(BUINT8 index);
+BOAT_RESULT BoATIotKeypairDelete(BUINT8 index);
 
 /**
  * @description: 
- *  This function use to free BoatIotWalletContext param.
- * @param[in] {BoatIotWalletContext} walletList
+ *  This function use to free BoatIotKeypairContext param.
+ * @param[in] {BoatIotKeypairContext} keypairList
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
  *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoATWallet_FreeWalletContext(BoatIotWalletContext walletList);
+BOAT_RESULT BoATKeypair_FreeKeypairContext(BoatIotKeypairContext keypairList);
 
 
 /**
  * @description: 
- *  This function read wallet data from Nvram by index. Not read prikey content.
- * @param {BoatWalletPriKeyCtx} *PriKeyCtx
+ *  This function read keypair data from Nvram by index. Not read prikey content.
+ * @param {BoatKeypairPriKeyCtx} *PriKeyCtx
  * @param {BUINT8} index
- *  the wallet index want to read
+ *  the keypair index want to read
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
  *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoATWallet_GetWalletByIndex(BoatWalletPriKeyCtx *PriKeyCtx ,BUINT8 index);
+BOAT_RESULT BoATKeypair_GetKeypairByIndex(BoatKeypairPriKeyCtx *PriKeyCtx ,BUINT8 index);
 
 
 

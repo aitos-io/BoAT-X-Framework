@@ -3,7 +3,7 @@
 #SOURCES = $(wildcard *.c)
 # SOURCES =  boatversion.c
 SOURCES = $(wildcard *.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/account
+OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/network
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 		  
 .PHONY: all  network_ethereum network_hlfabric

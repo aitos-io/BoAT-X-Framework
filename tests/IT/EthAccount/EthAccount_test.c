@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-04 11:28:58
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-06 20:18:07
+ * @LastEditTime: 2022-09-13 14:37:50
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -23,7 +23,7 @@
 #include "boatconfig.h"
 #include "boatiotsdk.h"
 #include "boatlog.h"
-#include "account_ethereum.h"
+#include "network_ethereum.h"
 
 /**
  * test node url
@@ -32,17 +32,17 @@
 const BCHAR * demoUrl = "http://192.168.132.190:7545";
 
 // #if defined(USE_ONETIME_WALLET) 
-__BOATSTATIC BOAT_RESULT createOnetimeAccount()
+__BOATSTATIC BOAT_RESULT createOnetimeNetwork()
 {
     BSINT32 index;
-    BoatEthAccountConfig account_config = {0};
+    BoatEthNetworkConfig network_config = {0};
 
-    account_config.chain_id             = 1;
-    account_config.eip155_compatibility = BOAT_FALSE;
-    strncpy(account_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
+    network_config.chain_id             = 1;
+    network_config.eip155_compatibility = BOAT_FALSE;
+    strncpy(network_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
 	/* create ethereum wallet */
-    index = BoatEthAccountCreate( &account_config, BOAT_STORE_TYPE_RAM);
+    index = BoatEthNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
     if (index < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
@@ -57,17 +57,17 @@ __BOATSTATIC BOAT_RESULT createOnetimeAccount()
 // #endif
 
 // #if defined(USE_CREATE_PERSIST_WALLET)
-__BOATSTATIC BOAT_RESULT createPersistAccount(void)
+__BOATSTATIC BOAT_RESULT createPersistNetwork(void)
 {
     BSINT32 index;
-    BoatEthAccountConfig account_config = {0};
+    BoatEthNetworkConfig network_config = {0};
 
-    account_config.chain_id             = 1;
-    account_config.eip155_compatibility = BOAT_FALSE;
-    strncpy(account_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
+    network_config.chain_id             = 1;
+    network_config.eip155_compatibility = BOAT_FALSE;
+    strncpy(network_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
 	/* create ethereum wallet */
-    index = BoatEthAccountCreate( &account_config, BOAT_STORE_TYPE_FLASH);
+    index = BoatEthNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
     if (index < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
@@ -81,55 +81,54 @@ __BOATSTATIC BOAT_RESULT createPersistAccount(void)
 int main(int argc, char *argv[])
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-    BoatIotAccountContext accountList;
+    BoatEthNetworkContext networkList;
     boat_try_declare;
     BoatLog(BOAT_LOG_NORMAL,"begin to test ");
-    result = createOnetimeAccount();
+    result = createOnetimeNetwork();
     BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
-    result = createPersistAccount();
+    result = createPersistNetwork();
     if(result != BOAT_SUCCESS)
 	{
 		 BoatLog(BOAT_LOG_CRITICAL, "wallet creat failed: %d.", result);
         boat_throw(result, ethereum_storeread_demo_catch);
 	}
-    result = createPersistAccount();
+    result = createPersistNetwork();
     if(result != BOAT_SUCCESS)
 	{
 		 BoatLog(BOAT_LOG_CRITICAL, "wallet creat failed: %d.", result);
         boat_throw(result, ethereum_storeread_demo_catch);
 	}
-    result = createPersistAccount();
+    result = createPersistNetwork();
     if(result != BOAT_SUCCESS)
 	{
 		 BoatLog(BOAT_LOG_CRITICAL, "wallet creat failed: %d.", result);
         boat_throw(result, ethereum_storeread_demo_catch);
 	}
-    result = BoATEthAccountDelete(2);
+    result = BoATEthNetworkDelete(2);
 
     if(result != BOAT_SUCCESS)
 	{
 		 BoatLog(BOAT_LOG_CRITICAL, "wallet delete failed: %d.", result);
         boat_throw(result, ethereum_storeread_demo_catch);
 	}
-
-    result = BoATEth_GetAccountList(&accountList);
+    result = BoATEth_GetNetworkList(&networkList);
     if(result != BOAT_SUCCESS)
 	{
 		 BoatLog(BOAT_LOG_CRITICAL, "get wallet list failed: %d.", result);
         boat_throw(result, ethereum_storeread_demo_catch);
 	}
 
-    for (size_t i = 0; i < accountList.accountNum; i++)
+    for (size_t i = 0; i < networkList.networkNum; i++)
     {
         /* code */
-        BoatLog(BOAT_LOG_NORMAL , "account[%d].index = %d ",i,accountList.accounts[i].accountIndex);
-        BoatLog(BOAT_LOG_NORMAL , "account[%d].chainID  = %d ",i,accountList.accounts[i].chain_id);
-        BoatLog(BOAT_LOG_NORMAL , "account[%d].eip55 = %d ",i,accountList.accounts[i].eip155_compatibility);
-        BoatLog(BOAT_LOG_NORMAL , "account[%d].url = %s ",i,accountList.accounts[i].node_url_str);
+        BoatLog(BOAT_LOG_NORMAL , "network[%d].index = %d ",i,networkList.networks[i].networkIndex);
+        BoatLog(BOAT_LOG_NORMAL , "network[%d].chainID  = %d ",i,networkList.networks[i].chain_id);
+        BoatLog(BOAT_LOG_NORMAL , "network[%d].eip55 = %d ",i,networkList.networks[i].eip155_compatibility);
+        BoatLog(BOAT_LOG_NORMAL , "network[%d].url = %s ",i,networkList.networks[i].node_url_str);
     }
-    BoATEth_FreeAccountContext(accountList);
+    BoATEth_FreeNetworkContext(networkList);
     
-        result = BoATEthAccountDelete(0);
+        result = BoATEthNetworkDelete(0);
 
     if(result != BOAT_SUCCESS)
 	{
@@ -138,26 +137,26 @@ int main(int argc, char *argv[])
 	}
 
 
-    result = BoATEth_GetAccountList(&accountList);
+    result = BoATEth_GetNetworkList(&networkList);
     if(result != BOAT_SUCCESS)
 	{
 		 BoatLog(BOAT_LOG_CRITICAL, "get wallet list failed: %d.", result);
         boat_throw(result, ethereum_storeread_demo_catch);
 	}
 
-    for (size_t i = 0; i < accountList.accountNum; i++)
+    for (size_t i = 0; i < networkList.networkNum; i++)
     {
         /* code */
-        BoatLog(BOAT_LOG_NORMAL , "account[%d].index = %d ",i,accountList.accounts[i].accountIndex);
-        BoatLog(BOAT_LOG_NORMAL , "account[%d].chainID  = %d ",i,accountList.accounts[i].chain_id);
-        BoatLog(BOAT_LOG_NORMAL , "account[%d].eip55 = %d ",i,accountList.accounts[i].eip155_compatibility);
-        BoatLog(BOAT_LOG_NORMAL , "account[%d].url = %s ",i,accountList.accounts[i].node_url_str);
+        BoatLog(BOAT_LOG_NORMAL , "network[%d].index = %d ",i,networkList.networks[i].networkIndex);
+        BoatLog(BOAT_LOG_NORMAL , "network[%d].chainID  = %d ",i,networkList.networks[i].chain_id);
+        BoatLog(BOAT_LOG_NORMAL , "network[%d].eip55 = %d ",i,networkList.networks[i].eip155_compatibility);
+        BoatLog(BOAT_LOG_NORMAL , "network[%d].url = %s ",i,networkList.networks[i].node_url_str);
     }
-    BoATEth_FreeAccountContext(accountList);
+    BoATEth_FreeNetworkContext(networkList);
 
 
 
-    BoatLog(BOAT_LOG_CRITICAL, "account test success: ");
+    BoatLog(BOAT_LOG_CRITICAL, "network test success: ");
     boat_catch(ethereum_storeread_demo_catch)
     {
     }

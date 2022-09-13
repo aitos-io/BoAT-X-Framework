@@ -110,12 +110,12 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
                   $(EXTERNAL_INC)
 
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM),1)         
-BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/account/ethereum \
+BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/ethereum \
                 -I$(BOAT_SDK_DIR)/protocol/boatethereum 
 endif
 
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC),1)         
-BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/account/hlfabric \
+BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/hlfabric \
                 -I$(BOAT_SDK_DIR)/protocol/boathlfabric \  
 endif
 
@@ -155,7 +155,7 @@ endif
 # SOFT_CRYPTO ?= CRYPTO_MBEDTLS
 
 ifeq ($(PLATFORM_TARGET), linux-default)
-    SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else ifeq ($(PLATFORM_TARGET), Fibocom-L610) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else ifeq ($(PLATFORM_TARGET), Quectel-BG95) 
