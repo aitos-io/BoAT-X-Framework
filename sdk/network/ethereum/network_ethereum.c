@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-06 14:38:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-09 11:31:17
+ * @LastEditTime: 2022-09-13 15:22:06
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -160,6 +160,33 @@ __BOATSTATIC BOAT_RESULT BoATEth_GetNetworkFromNvram(BoatEthNetworkData *Network
             BoatLog(BOAT_LOG_NORMAL,"Read network url fail , errorcode = %d ",result);
             return result;
         }
+        offset += paramDataLength; 
+        /* protocolType */
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthbytes,sizeof(lengthbytes),storeType);
+        if(result != BOAT_SUCCESS){
+            BoatLog(BOAT_LOG_NORMAL,"Read network protocoltype length fail , errorcode = %d ",result);
+            return result;
+        }
+        paramDataLength = UtilityGetLVData_L(lengthbytes);
+        if(paramDataLength < 0){
+            BoatLog(BOAT_LOG_NORMAL,"network protocoltype  length err ");
+            return BOAT_ERROR;
+        }
+        paramDataLengthLen = UtilityGetTLV_LL_from_len(paramDataLength);
+        offset += paramDataLengthLen;
+        if(offset - offset_obj + paramDataLength > networkDataLength ){
+            BoatLog(BOAT_LOG_NORMAL,"network protocoltype data err ");
+            return BOAT_ERROR;
+        }
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)(&Networkdata->protocolType),paramDataLength,storeType);
+        if(result != BOAT_SUCCESS){
+            BoatLog(BOAT_LOG_NORMAL,"Read network protocoltype fail , errorcode = %d ",result);
+            return result;
+        }
+        offset += paramDataLength; 
+
+        /* end */
+
         *outlen = (networkDataLength + networkDataLengthLen);
 
     return result;
@@ -247,6 +274,7 @@ BOAT_RESULT BoATEth_FreeNetworkContext(BoatEthNetworkContext networkList)
         networkList.networks[i].chain_id = 0;
         networkList.networks[i].eip155_compatibility = BOAT_FALSE;
         memset(networkList.networks[i].node_url_str,0x00,sizeof(networkList.networks[i].node_url_str));
+        networkList.networks[i].protocolType = BOAT_PROTOCOL_UNKNOWN;
     }
     networkList.networkNum = 0;
     return BOAT_SUCCESS;
@@ -271,6 +299,7 @@ __BOATSTATIC BOAT_RESULT BoATEth_Init_BoatEthNetworkContext(BoatEthNetworkContex
         mNetworkList->networks[i].chain_id = 0;
         mNetworkList->networks[i].eip155_compatibility = BOAT_FALSE;
         memset(mNetworkList->networks[i].node_url_str,0x00,sizeof(mNetworkList->networks[i].node_url_str));
+        mNetworkList->networks[i].protocolType = BOAT_PROTOCOL_UNKNOWN;
     }
     return BOAT_SUCCESS;
 }
@@ -361,6 +390,10 @@ __BOATSTATIC BOAT_RESULT BoATEth_Get_NetworkData_Len(BoatEthNetworkData *network
     paramLength = strlen(networkData->node_url_str);
     paramLengthLen  = UtilityGetTLV_LL_from_len(paramLength);
     networkLength += (paramLength + paramLengthLen);
+    /*  protocoltype */
+    paramLength = sizeof(networkData->protocolType);
+    paramLengthLen  = UtilityGetTLV_LL_from_len(paramLength);
+    networkLength += (paramLength + paramLengthLen);
     /* all the data*/
     paramLengthLen  = UtilityGetTLV_LL_from_len(networkLength);
     networkLength +=  paramLengthLen;
@@ -428,6 +461,14 @@ __BOATSTATIC BOAT_RESULT BoATEth_Get_Network_Data(BoatEthNetworkData *mNetworkDa
         BoatLog(BOAT_LOG_NORMAL,"get wallet pubkey LV fail");
     return BOAT_ERROR;
     }
+    /*  network protocoltype */
+    memcpy(data+offset,&(mNetworkDataCtx->protocolType),sizeof(mNetworkDataCtx->protocolType));
+    result = add_L_withOffset(data,&offset,sizeof(mNetworkDataCtx->protocolType));
+    if(result < BOAT_SUCCESS){
+        BoatLog(BOAT_LOG_NORMAL,"get network protocol type LV fail");
+        return BOAT_ERROR;
+    }
+
     /* all the data*/
     networkLength = offset;
     offset = 0;
@@ -454,6 +495,7 @@ BOAT_RESULT BoATEthNetworkDataInit(BoatEthNetworkData *mNetworkDataCtx){
     mNetworkDataCtx->chain_id = 0;
     mNetworkDataCtx->eip155_compatibility = BOAT_FALSE;
     memset(mNetworkDataCtx->node_url_str,0x00,sizeof(mNetworkDataCtx->node_url_str));
+    mNetworkDataCtx->protocolType = BOAT_PROTOCOL_UNKNOWN;
     return BOAT_SUCCESS;
 }
 
@@ -569,6 +611,7 @@ BOAT_RESULT BoatEthNetworkCreate(BoatEthNetworkConfig *networkConfig,BoatStoreTy
     mNetworkDataCtx.chain_id = networkConfig->chain_id;
     mNetworkDataCtx.eip155_compatibility = networkConfig->eip155_compatibility;
     strcpy(mNetworkDataCtx.node_url_str,networkConfig->node_url_str);
+    mNetworkDataCtx.protocolType = BOAT_PROTOCOL_ETHEREUM;
     result = BoATEth_NetworkDataCtx_Store(&mNetworkDataCtx,storeType);
     if(result != BOAT_SUCCESS){
         return result;
@@ -801,12 +844,12 @@ BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData ,BUINT8 in
 			/* network chainID */
 			result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] index fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get network[%d] chainID fail " , i);
 				return result;
 			}
 			paramLength = UtilityGetLVData_L(lengthBytes);
 			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"wallet name length err ");
+            	BoatLog(BOAT_LOG_NORMAL,"network chainID length err ");
             	return BOAT_ERROR;
         	}
 			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
@@ -816,7 +859,7 @@ BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData ,BUINT8 in
 			}
             result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)&(networkData->chain_id),paramLength,storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] name  fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get network[%d] chainID  fail " , i);
 				return result;
 			}
 			offset += paramLength ;
@@ -824,12 +867,12 @@ BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData ,BUINT8 in
 			/* network eip155 */
 			result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] prikey format fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get network[%d] prikey format fail " , i);
 				return result;
 			}
 			paramLength = UtilityGetLVData_L(lengthBytes);
 			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"wallet prike format length err ");
+            	BoatLog(BOAT_LOG_NORMAL,"network prike format length err ");
             	return BOAT_ERROR;
         	}
 			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
@@ -839,19 +882,19 @@ BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData ,BUINT8 in
 			}
             result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8 *)&(networkData->eip155_compatibility),paramLength,storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] prikey format  fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get network[%d] prikey format  fail " , i);
 				return result;
 			}
 			offset += paramLength ;
 			/* network url */
 			result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] prikey type fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get network[%d] url fail " , i);
 				return result;
 			}
 			paramLength = UtilityGetLVData_L(lengthBytes);
 			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"wallet prike type length err ");
+            	BoatLog(BOAT_LOG_NORMAL,"network url length err ");
             	return BOAT_ERROR;
         	}
 			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
@@ -861,7 +904,29 @@ BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData ,BUINT8 in
 			}
             result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8 *)networkData->node_url_str,paramLength,storetype);
 			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] prikey type  fail " , i);
+				BoatLog(BOAT_LOG_NORMAL,"get network[%d] url  fail " , i);
+				return result;
+			}
+			offset += paramLength ;
+            /* protocol type */
+			result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
+			if(result != BOAT_SUCCESS){
+				BoatLog(BOAT_LOG_NORMAL,"get network[%d] protocoltype fail " , i);
+				return result;
+			}
+			paramLength = UtilityGetLVData_L(lengthBytes);
+			if(paramLength < 0){
+            	BoatLog(BOAT_LOG_NORMAL,"network protocol type length err ");
+            	return BOAT_ERROR;
+        	}
+			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
+            offset += paramLengthLen;
+            if(offset - offset_obj + paramLength > networkLength){  // offset over the length of this walet
+				return BOAT_ERROR;
+			}
+            result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8 *)(&networkData->protocolType),paramLength,storetype);
+			if(result != BOAT_SUCCESS){
+				BoatLog(BOAT_LOG_NORMAL,"get network[%d] protocol type  fail " , i);
 				return result;
 			}
 			offset += paramLength ;
