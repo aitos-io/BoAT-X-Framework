@@ -138,15 +138,14 @@ int httpclient_conn(httpclient_t *client, char *host)
         DBG("getaddrinfo != 0, return HTTPCLIENT_UNRESOLVED_DNS");
         return HTTPCLIENT_UNRESOLVED_DNS;
     }
-    DBG("000000");
+
     /* Try the sockaddrs until a connection succeeds */
     ret = HTTPCLIENT_UNRESOLVED_DNS;
     for ( cur = addr_list; cur != NULL; cur = cur->ai_next ) {
         client->socket = (int) socket( cur->ai_family, cur->ai_socktype,
                                         cur->ai_protocol );
-        DBG("11111");
+
         if ( client->socket < 0 ) {
-            DBG("client->socket < 0 ");
             ret = HTTPCLIENT_ERROR_CONN;
             continue;
         }
@@ -157,7 +156,6 @@ int httpclient_conn(httpclient_t *client, char *host)
            // lwip_setsockopt(client->socket, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
         }
         if ( connect( client->socket, cur->ai_addr, (int)cur->ai_addrlen ) == 0 ) {
-            DBG("connect( client->socket, cur->ai_addr, (int)cur->ai_addrlen ) == 0 ");
             ret = 0;
             break;
         }
@@ -452,8 +450,7 @@ int httpclient_recv(httpclient_t *client, char *buf, int min_len, int max_len, i
 
     while (readLen < max_len) {
         buf[readLen] = '\0';
-        if (client->is_http) {
-        DBG("==recv client->is_http");    
+        if (client->is_http) {  
         #if 0
             if (readLen < min_len) {
                 ret = recv(client->socket, buf + readLen, min_len - readLen, 0);
@@ -472,8 +469,6 @@ int httpclient_recv(httpclient_t *client, char *buf, int min_len, int max_len, i
             }
         #else
             ret = recv(client->socket, buf + readLen, max_len - readLen, 0);
-            DBG("==recv %d data",ret);
-            DBG("==recv msg: %s",buf);
         #endif
         }
 
@@ -481,10 +476,8 @@ int httpclient_recv(httpclient_t *client, char *buf, int min_len, int max_len, i
             readLen += ret;
             break;
         } else if (ret == 0) {
-            DBG("==recv complate");
             break;
         } else if (ret == HTTPCLIENT_CLOSED) {
-            DBG("==http close");
             return HTTPCLIENT_CLOSED;
         } else {
             ERR("Connection error (recv returned %d)", ret);
@@ -492,8 +485,6 @@ int httpclient_recv(httpclient_t *client, char *buf, int min_len, int max_len, i
             return HTTPCLIENT_ERROR_CONN;
         }
     }
-
-    DBG("Read %d bytes", readLen);
     *p_read_len = readLen;
     buf[readLen] = '\0';
 
@@ -505,7 +496,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
     int count = 0;
     int templen = 0;
     int crlf_pos;
-    //?a��?��?�㨹???��     
+   
 	static char remain_buf[512] = {0};
 	static int remain_len = 0;
 	if(remain_len > 0 && remain_len < 512)
