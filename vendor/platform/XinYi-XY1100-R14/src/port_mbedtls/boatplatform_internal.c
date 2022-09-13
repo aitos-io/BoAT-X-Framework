@@ -339,9 +339,8 @@ static BOAT_RESULT Boat_private_ecdsa_sign(mbedtls_ecdsa_context *ctx,
 			// 				p_rng_blind,
 			// 				NULL));
             // MBEDTLS_MPI_CHK(mbedtls_mpi_mod_mpi(&r, &R.X, &ctx->grp.N));
-			BoatLog(BOAT_LOG_CRITICAL, "===> ready to run mbedtls_ecp_gen_keypair");
+
 			MBEDTLS_MPI_CHK(mbedtls_ecp_gen_keypair(&ctx->grp, &k, &R, f_rng, p_rng));
-			BoatLog(BOAT_LOG_CRITICAL, "===> complate  mbedtls_ecp_gen_keypair");
 
             MBEDTLS_MPI_CHK(mbedtls_mpi_mod_mpi(&r, &R.X, &ctx->grp.N));
 			
@@ -618,7 +617,7 @@ BOAT_RESULT  BoatWriteFile(const BCHAR *fileName,
 	/*
 	* ATTENTION!!! At present, every write starts from the base address!!!
 	*/
-	xy_printf("call xy_Flash_Write \n");
+
 	xy_flash_write(USER_FLASH_BASE,writeBuf,writeLen);
 
 	/* write to file-system */
@@ -946,8 +945,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 	{
 		result = mbedtls_pk_parse_key(&mbedtls_pkCtx, config->prikey_content.field_ptr,
 									  config->prikey_content.field_len, NULL, 0);
-		BoatLog(BOAT_LOG_NORMAL, "prikey = %s",config->prikey_content.field_ptr);							  
-		BoatLog(BOAT_LOG_NORMAL, "prikey_len = %d,result = %x.",config->prikey_content.field_len,result);
+
 		if (result != BOAT_SUCCESS)
 		{
 			mbedtls_pk_free(&mbedtls_pkCtx);
