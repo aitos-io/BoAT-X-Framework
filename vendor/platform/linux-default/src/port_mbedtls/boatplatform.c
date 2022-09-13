@@ -669,18 +669,18 @@ BOAT_RESULT BoAT_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,
         boat_throw(result, BoatSignature_exception);
     }
 	
-	if (format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
-	{
-		/* get prikey content according to prikey index */
-		//sBoat_get_prikey_content(prikeyCtx,);
-		//! @todo function todo
+	// if (format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
+	// {
+	// 	/* get prikey content according to prikey index */
+	// 	//sBoat_get_prikey_content(prikeyCtx,);
+	// 	//! @todo function todo
 		
-		/* parse is prikey content */
-		result = mbedtls_pk_parse_key(&mbedtls_pkCtx, prikey,
-									  prikeylen, NULL, 0);
-		ecPrikey = mbedtls_pk_ec(mbedtls_pkCtx);
-	}
-	else
+	// 	/* parse is prikey content */
+	// 	result = mbedtls_pk_parse_key(&mbedtls_pkCtx, prikey,
+	// 								  prikeylen, NULL, 0);
+	// 	ecPrikey = mbedtls_pk_ec(mbedtls_pkCtx);
+	// }
+	// else
 	{
 		// BoatLog(BOAT_LOG_CRITICAL, "UN-SUPPORT PRIVATE KEY FORMAT YET.");
 		// boat_throw(BOAT_ERROR, BoatSignature_exception);

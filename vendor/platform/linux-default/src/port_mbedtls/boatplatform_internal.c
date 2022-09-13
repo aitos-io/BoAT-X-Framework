@@ -803,20 +803,20 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriK
 		result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
 	}
 
-	if (config->prikey_format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
-	{
-		// 1- update private key
-		memset(pkCtx->extraData.value, 0, sizeof(pkCtx->extraData.value));
-		result += mbedtls_pk_write_key_pem(&key, pkCtx->extraData.value, sizeof(pkCtx->extraData.value));
+	// if (config->prikey_format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
+	// {
+	// 	// 1- update private key
+	// 	memset(pkCtx->extraData.value, 0, sizeof(pkCtx->extraData.value));
+	// 	result += mbedtls_pk_write_key_pem(&key, pkCtx->extraData.value, sizeof(pkCtx->extraData.value));
 
-		// 2- update private key format
-		pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
+	// 	// 2- update private key format
+	// 	pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
 
-		// 3- update private key type
-		pkCtx->prikeyCtx.prikey_type = config->prikey_type;
-	}
-	else
-	{
+	// 	// 3- update private key type
+	// 	pkCtx->prikeyCtx.prikey_type = config->prikey_type;
+	// }
+	// else
+	// {
 
 		// 1- update private key
 		memset(pkCtx->extraData.value, 0, sizeof(pkCtx->extraData.value));
@@ -832,7 +832,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriK
 		// 3- update private key type
 		pkCtx->prikeyCtx.prikey_type = config->prikey_type;
 		pkCtx->extraData.value_len = (mbedtls_pk_ec(key)->d.n) * (sizeof(mbedtls_mpi_uint));
-	}
+	// }
 
 	// 4- update private key index
 	// This field should update by 'key secure storage'(such as TE/SE).
@@ -856,25 +856,37 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatKeypair
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT32 pubkeylen = 0;
-
+	mbedtls_pk_context mbedtls_pkCtx;
+	boat_try_declare;
 	// 0- check input parameter
 	if ((config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "input parameter can not be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
-
-	// 1- update private key
-		if (config->prikey_content.field_len > sizeof(pkCtx->extraData.value))
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "Error: length of injection key is too long.");
-			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-		}
+	if(config->prikey_format == BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE){
 		memcpy(pkCtx->extraData.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
 		pkCtx->extraData.value_len = config->prikey_content.field_len;
-
+	}else if(config->prikey_format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS){
+		mbedtls_pk_init(&mbedtls_pkCtx);
+		result = mbedtls_pk_parse_key(&mbedtls_pkCtx, config->prikey_content.field_ptr,
+									  config->prikey_content.field_len, NULL, 0);
+		if (result != BOAT_SUCCESS)
+		{
+			mbedtls_pk_free(&mbedtls_pkCtx);
+			BoatLog(BOAT_LOG_CRITICAL, "Error: pkcs key parse failed.");
+			boat_throw(BOAT_ERROR, BoatGetkeypair_exception);
+		}
+		// 1- update private key
+		mbedtls_mpi_write_binary(&mbedtls_pk_ec(mbedtls_pkCtx)->d, pkCtx->extraData.value, 32);
+		pkCtx->extraData.value_len = (mbedtls_pk_ec(mbedtls_pkCtx)->d.n) * (sizeof(mbedtls_mpi_uint));
+	}else{
+			BoatLog(BOAT_LOG_CRITICAL, "Error: format failed.");
+			boat_throw(BOAT_ERROR, BoatGetkeypair_exception);
+	}
+	
 		// 2- update private key format
-		pkCtx->prikeyCtx.prikey_format = config->prikey_format;
+		pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
 		
 		// 3- update private key type
 		pkCtx->prikeyCtx.prikey_type = config->prikey_type;
@@ -882,7 +894,16 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatKeypair
 	   // 4- updata pubkey 
 		result = BoAT_getPubkey(config->prikey_type,config->prikey_format,config->prikey_content.field_ptr,
 		config->prikey_content.field_len,pkCtx->prikeyCtx.pubkey_content,&pubkeylen);
-		
+	/* boat catch handle */
+	boat_catch(BoatGetkeypair_exception)
+	{
+        BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+        result = boat_exception;
+    }
+	if(config->prikey_format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS){
+		mbedtls_pk_free(&mbedtls_pkCtx);
+	}
+
     return result;
 }
 
