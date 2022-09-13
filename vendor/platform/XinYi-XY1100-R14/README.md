@@ -138,7 +138,7 @@ DEPS_PATH_EXAMPLES += $(EXAMPLES_SRC_DIR)/BoAT-X-Framework/vendor/platform/inclu
    编译成功后，在`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/BoAT-X-Framework/lib`下会生成静态库libboatvendor.a、libboatwallet.a。
    
 
-### 2、编译XY1100演示demo程序，生成.mimgx下载文件
+### 2、编译XY1100-R14演示demo程序，生成.mimgx下载文件
 
    通过BoAT-X-Framework访问区块链的演示代码，在`XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo/boat_demo.c`
    
