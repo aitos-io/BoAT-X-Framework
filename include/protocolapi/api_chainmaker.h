@@ -33,7 +33,7 @@ api_chainmaker.h is header file for BoAT IoT SDK chainmaker's interface.
 #define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN  8192 //!< The maximum length of HTTP2 send buffer
 #define BOAT_HLCHAINMAKER_ARGS_MAX_NUM            10
 #define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN     100
-#define BOAT_RESPONSE_MESSAGE_MAX_LEN             10
+#define BOAT_RESPONSE_MESSAGE_MAX_LEN             2048
 #define BAOT_CHAINMAKER_NODE_STR_LEN              127
 // call a pre created user contract, tx included in block
 // query a pre-created user contract, tx not included in block
