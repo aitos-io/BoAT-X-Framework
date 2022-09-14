@@ -236,17 +236,20 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length
  * @details
  *  This function used to excute invoke process.
  * 
+ * @param tx_ptr 
+ *  Chainmaker transaction structure pointer.
+ * 
  * @param method 
- *   Chainmaker transaction structure pointer.
+ * 	The pointer to Chainmaker contract method name.
  * 
  * @param contract_name 
- *   Chainmaker contarct name.
+ *  Chainmaker contarct name.
  * 
  * @param sync_result 
- *   Get invoke gas.
+ *  Get invoke gas.
  * 
  * @param invoke_response 
- *   Node response data.
+ *  Node response data.
  *
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
@@ -256,19 +259,22 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 
 /*!****************************************************************************
  * @brief 
- *   Invoke transaction.
+ *   Contract query.
  *
  * @details
- *  This function used to excute invoke process.
+ *  This function used to query contract.
+ * 
+ * @param tx_ptr 
+ *  Chainmaker transaction structure pointer.
  * 
  * @param method 
- *   Chainmaker transaction structure pointer.
+ *  The pointer to Chainmaker contract method name.
  * 
  * @param contract_name 
- *   Chainmaker contarct name.
+ *  Chainmaker contarct name.
  * 
- * @param invoke_response 
- *   Node response data.
+ * @param query_response 
+ *  Query response data.
  *
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.

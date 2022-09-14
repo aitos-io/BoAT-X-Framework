@@ -1257,6 +1257,9 @@ BCHAR* UtilityNative2PKCS(KeypairNative keypair){
     len += UtilityGetTLV_LL_from_len(len_level_2) + 1 + len_level_2; //pubkey
     len += UtilityGetTLV_LL_from_len(len) + 1 + len; //all hex data
     dataHex = BoatMalloc(len);
+    if(NULL == dataHex){
+        return NULL;
+    }
     memcpy(dataHex + offset,version,sizeof(version));
     offset += sizeof(version);
     memcpy(dataHex + offset ,keypair.prikey,keypair.prikeylen);
@@ -1283,6 +1286,12 @@ BCHAR* UtilityNative2PKCS(KeypairNative keypair){
     offset = 0;
     add_TL_withOffset((BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_SEQUENCE) ,dataHex,&offset,len); //all
     outStr = BoatMalloc(offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6) ;
+    if(NULL == outStr){
+        if(dataHex != NULL){
+            BoatFree(dataHex);
+        }
+        return NULL;
+    }
     memset(outStr,0,offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6);
     len = BoAT_base64_encode(dataHex,offset,outStr+strlen(PRIKEY_PKCS_BEGIN)+2);
     memcpy(outStr,PRIKEY_PKCS_BEGIN,strlen(PRIKEY_PKCS_BEGIN));

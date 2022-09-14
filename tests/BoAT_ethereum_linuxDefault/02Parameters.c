@@ -32,7 +32,7 @@ BOAT_RESULT ethereumWalletPrepare(void)
     //set user private key context
     memset(&wallet_config, 0, sizeof(wallet_config));
         
-    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+    if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
     {
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         UtilityHexToBin(binFormatKey, 32, ethereum_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
@@ -329,8 +329,9 @@ START_TEST(test_005ParametersSet_0002SetNonceSuccess)
 	
 	rtnVal = BoatEthTxSetNonce(&tx_ptr, 0xA1);	
 	BoatFieldMax32B NONCE;
+    memset(NONCE.field, 0, 32);
 	NONCE.field_len = UtilityHexToBin(NONCE.field, 32, "0xA1",
-					                  TRIMBIN_LEFTTRIM, BOAT_TRUE);
+	 				                  TRIMBIN_LEFTTRIM, BOAT_TRUE);
     ck_assert(rtnVal == BOAT_SUCCESS);
 	ck_assert_str_eq(tx_ptr.rawtx_fields.nonce.field, NONCE.field);
     BoatIotSdkDeInit();

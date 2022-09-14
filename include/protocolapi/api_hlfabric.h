@@ -381,19 +381,6 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr,
  *   hostname is the CN field of endorser certificate, it is valid when TLS 
  *   be enabled only.
  *
- * @param endorserNumber
- *   Number of endorser to be set.
- *
- * @param ordererInfo_ptr
- *   First member address of orderer node info array, the array include node 
- *   URL and node hostname. 
- *   \n Node URL is orderer addresss in "IP/domain name:port" format; node 
- *   hostname is the CN field of orderer certificate, it is valid when TLS 
- *   be enabled only.
- *
- * @param ordererNumber
- *   Number of orderer to be set.
- *
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
  ******************************************************************************/
@@ -460,12 +447,6 @@ void BoatHlfabricWalletDeInit( BoatHlfabricWallet *wallet_ptr );
  *
  * @param orgName_str 
  *   Organization name to be initialized.
- *
- * @param contract_name 
- *   contract name to be initialized.
- * 
- * @param creator_id 
- *   cteator id to be initialized.
  * 
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.

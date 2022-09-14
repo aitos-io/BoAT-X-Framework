@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "tcase_fabric.h"
-#include "protocolapi/api_hlfabric_discovery.h"
+
 #define EXCEED_STR_MAX_LEN 4097
 extern BoatIotSdkContext g_boat_iot_sdk_context;
 

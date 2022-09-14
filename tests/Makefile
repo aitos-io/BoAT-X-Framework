@@ -3,9 +3,9 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/tests
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-.PHONY: tests_BoAT_chainmaker_linuxDefault tests_BoAT_ethereum_linuxDefault tests_BoAT_fabric_linuxDefault tests_BoAT_palton_linuxDefault cleanchaimakerlinux cleanethereumlinux cleanfabriclinux cleanplatonlinux
+.PHONY: tests_BoAT_chainmaker_linuxDefault tests_BoAT_ethereum_linuxDefault tests_BoAT_fabric_linuxDefault tests_BoAT_platon_linuxDefault cleanchaimakerlinux cleanethereumlinux cleanfabriclinux cleanplatonlinux
 
-all: tests_BoAT_chainmaker_linuxDefault tests_BoAT_ethereum_linuxDefault tests_BoAT_fabric_linuxDefault tests_BoAT_palton_linuxDefault $(OBJECTS_DIR) $(OBJECTS)
+all: tests_BoAT_chainmaker_linuxDefault tests_BoAT_ethereum_linuxDefault tests_BoAT_fabric_linuxDefault tests_BoAT_platon_linuxDefault $(OBJECTS_DIR) $(OBJECTS)
 
 tests_BoAT_chainmaker_linuxDefault:
 ifeq ($(BOAT_TEST_USE_CHAINMAKER), 1)
@@ -23,7 +23,10 @@ ifeq ($(BOAT_TEST_USE_FABRIC), 1)
 endif	
 
 tests_BoAT_platon_linuxDefault:
+ifeq ($(BOAT_TEST_USE_PLATON), 1)	
 	make -C  BoAT_platon_linuxDefault all
+endif	
+	
 
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)

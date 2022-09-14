@@ -543,6 +543,10 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 	if (value_len)
 	{
 		tx_ptr->var.creator_id = BoatMalloc(value_len + 1);
+		if(NULL == tx_ptr->var.creator_id){
+			BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxInit_exception);
+		}
 		memcpy(tx_ptr->var.creator_id,value,value_len);
 	}
 
