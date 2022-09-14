@@ -486,6 +486,12 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		common__tx_response__free_unpacked(tx_response, NULL);
 	}
 
+	if (invoke_response->code != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "invoke without sync failed");
+		boat_throw(result, BoatHlchainmakerContractInvoke);
+	}
+
 	if (sync_result) 
     {
 		BoatHlchainmakerAddTxParam(tx_ptr, 2, "txId",invoke_tx_id);
