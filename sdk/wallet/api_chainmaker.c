@@ -30,53 +30,24 @@ api_chainmaker.c defines the chainmaker wallet API for BoAT IoT SDK.
 
 #define BOAT_TXID_LEN 65
 #define BOAT_RETRY_CNT 10
-#define BOAT_CHAINMAKER_MINE_INTERVAL                   3  //!< Mining Interval of the blockchain, in seconds
+#define BOAT_CHAINMAKER_MINE_INTERVAL    3  //!< Mining Interval of the blockchain, in seconds
 
 static BOAT_RESULT BoatChainmakerWalletSetOrgId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *org_id_ptr);
 static BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *chain_id_ptr);
 static BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *host_name_ptr);
 static BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *node_url_ptr);
 
-
-BOAT_RESULT array_to_str(BUINT8* array, BCHAR* str, char lenth)
+void hex_to_str(BUINT8 *hex_data,  BUINT32 hex_len, BUINT8 *str_data)
 {
-    char value_up;
-    char value_down;
-    int i = 0;
-    int n = 0;
+    BUINT32 num;
+    BUINT32 pos_index = 0;
 
-    if ((array == NULL) || (str == NULL))
+    for (num = 0; num < hex_len; num++)
     {
-    	return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+        sprintf(str_data + pos_index,  "%02x", hex_data[num]);
+        pos_index += 2;
     }
-
-    for (i = 0; i < lenth; i++)
-    {
-    	//up data 
-        value_up = (array[i] & 0xf0) >> 4;
-        if ((value_up >= 0) && (value_up <= 9)) 
-        {
-            str[n++] = value_up + 0x30;
-        }
-        else if ((value_up >= 0xA) && (value_up <= 0xF)) 
-        {
-            str[n++] = value_up + 0x57;
-        }
-
-        //low data
-        value_down = array[i] & 0x0f;
-        if ((value_down >= 0) && (value_down <= 9)) 
-        {  
-            str[n++] = value_down + 0x30;
-        }
-        else if ((value_down >= 0xA) && (value_down <= 0xF)) 
-        {
-            str[n++] = value_down + 0x57;
-        }
-    }
-    return BOAT_SUCCESS;
 }
-
 
 BOAT_RESULT get_tx_id(BCHAR* tx_id_ptr)
 {
@@ -91,7 +62,7 @@ BOAT_RESULT get_tx_id(BCHAR* tx_id_ptr)
 		return BOAT_ERROR;
 	}
 
-	result = array_to_str(random_data.field, tx_id_ptr, random_data.field_len);
+	hex_to_str(random_data.field, random_data.field_len, tx_id_ptr);
 	return result;
 }
 
@@ -486,6 +457,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		BoatLog(BOAT_LOG_CRITICAL, "get_tx_id failed");
 		boat_throw(result, BoatHlchainmakerContractInvoke);
 	}
+
 	invoke_tx_id[BOAT_TXID_LEN - 1] = 0;
 	result = hlchainmakerTransactionPacked(tx_ptr, method, contract_name, tx_type, invoke_tx_id);
 	if (result != BOAT_SUCCESS) 
