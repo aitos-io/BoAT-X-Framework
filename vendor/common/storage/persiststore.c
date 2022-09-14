@@ -258,12 +258,18 @@ BOAT_RESULT BoATStoreSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset,BUINT8
 	if(storeFile == BOAT_STORE_KEYPAIR){
 		rambuf = RAM_BOAT_DATA;
 		offset_base  = BOAT_STORAGE_KEYPAIR_OFFSET;
+		if(offset + data_len > BOAT_STORAGE_KEYPAIR_MAXLEN){
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+		}
 	}else if(storeFile == BOAT_STORE_NETWORK){
 		rambuf = RAM_BOAT_NETWORK_DATA;
 		offset_base = BOAT_STORAGE_NETWORK_OFFSET;
 	}else{
 		rambuf = RAM_BOAT_PRIKEY_DATA;
 		offset_base = BOAT_STORAGE_PRIKEY_OFFSET;
+		if(offset + data_len > BOAT_STORAGE_PRIKEY_MAXLEN){
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+		}
 	}
 
    	if ( (data_ptr == NULL) || (data_len == 0) || (storeType == BOAT_STORE_TYPE_UNKNOWN))
@@ -322,12 +328,18 @@ BOAT_RESULT BoatReadSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset, BUINT8
 	if(storeFile == BOAT_STORE_KEYPAIR){
 		rambuf = RAM_BOAT_DATA;
 		offset_base  = BOAT_STORAGE_KEYPAIR_OFFSET;
+		if(offset + len_to_read > BOAT_STORAGE_KEYPAIR_MAXLEN){
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+		}
 	}else if(storeFile == BOAT_STORE_NETWORK){
 		rambuf = RAM_BOAT_NETWORK_DATA;
 		offset_base = BOAT_STORAGE_NETWORK_OFFSET;
 	}else{
 		rambuf = RAM_BOAT_PRIKEY_DATA;
 		offset_base = BOAT_STORAGE_PRIKEY_OFFSET;
+		if(offset + len_to_read > BOAT_STORAGE_PRIKEY_MAXLEN){
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+		}
 	}
 
 

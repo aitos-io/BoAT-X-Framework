@@ -4,7 +4,7 @@ SOURCES = $(wildcard *.c)
 # SOURCES = boatwallet.c 
 
 
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/account/ethereum
+OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/network/ethereum
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 

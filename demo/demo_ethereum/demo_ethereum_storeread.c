@@ -60,6 +60,7 @@ BUINT8 networkIndex = 0;
 #if defined(USE_ONETIME_WALLET) 
 __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
 {
+    BOAT_RESULT result = BOAT_SUCCESS;
     BoatKeypairPriKeyCtx_config keypair_config = {0};
     BUINT8 binFormatKey[32]           = {0};
 
@@ -93,18 +94,20 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
 
 
 	/* create ethereum keypair */
-    keypairIndex = BoatKeypairCreate( &keypair_config, "keypairOnetime",BOAT_STORE_TYPE_RAM);
-    if (keypairIndex < 0)
+    result = BoatKeypairCreate( &keypair_config, "keypairOnetime",BOAT_STORE_TYPE_RAM);
+    if (result < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time keypair failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
+    keypairIndex = result;
     
     return BOAT_SUCCESS;
 }
 
 __BOATSTATIC BOAT_RESULT createOnetimeNetwork()
 {
+    BOAT_RESULT result = BOAT_SUCCESS;
     BoatEthNetworkConfig network_config = {0};
 
     network_config.chain_id             = 1;
@@ -112,12 +115,13 @@ __BOATSTATIC BOAT_RESULT createOnetimeNetwork()
     strncpy(network_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
 	/* create ethereum wallet */
-    networkIndex = BoatEthNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
-    if (networkIndex < 0)
+    result = BoatEthNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
+    if (result < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
+    networkIndex = result;
     
     return BOAT_SUCCESS;
 }
@@ -130,6 +134,7 @@ __BOATSTATIC BOAT_RESULT createOnetimeNetwork()
 
 __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *keypair_name)
 {
+    BOAT_RESULT result = BOAT_SUCCESS;
     BoatKeypairPriKeyCtx_config keypair_config = {0};
     BUINT8 binFormatKey[32]           = {0};
 
@@ -163,19 +168,20 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *keypair_name)
 
     // BoatLog(BOAT_LOG_NORMAL,"prikey genmode = %d ",keypair_config.prikey_genMode);
 	/* create ethereum keypair */
-    keypairIndex = BoatKeypairCreate( &keypair_config , keypair_name,BOAT_STORE_TYPE_FLASH);
-    if (keypairIndex < 0)
+    result = BoatKeypairCreate( &keypair_config , keypair_name,BOAT_STORE_TYPE_FLASH);
+    if (result < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create persist keypair failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-
+    keypairIndex = result;
 
     return BOAT_SUCCESS;
 }
 
 __BOATSTATIC BOAT_RESULT createPersistNetwork(void)
 {
+    BOAT_RESULT result = BOAT_SUCCESS;
     BoatEthNetworkConfig network_config = {0};
 
     network_config.chain_id             = 1;
@@ -183,13 +189,13 @@ __BOATSTATIC BOAT_RESULT createPersistNetwork(void)
     strncpy(network_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
 	/* create ethereum wallet */
-    networkIndex = BoatEthNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
-    if (networkIndex < 0)
+    result = BoatEthNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
+    if (result < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-
+    networkIndex = result;
     return BOAT_SUCCESS;
 }
 
@@ -264,9 +270,11 @@ int main(int argc, char *argv[])
 #if defined(USE_ONETIME_WALLET)
     //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
     result = ethereum_createOnetimeWallet();
+    result = createOnetimeNetwork();
 #elif defined(USE_CREATE_PERSIST_WALLET)
     //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
     result = ethereum_createPersistWallet("eth.cfg");
+    result = createPersistNetwork();
 #else
     //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
     //return -1;
