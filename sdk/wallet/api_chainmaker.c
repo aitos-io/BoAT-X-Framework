@@ -28,7 +28,7 @@ api_chainmaker.c defines the chainmaker wallet API for BoAT IoT SDK.
 #include "common/transaction.pb-c.h"
 #include "boatchainmaker/boatchainmaker.h"
 
-#define BOAT_TXID_LEN 64
+#define BOAT_TXID_LEN 65
 #define BOAT_RETRY_CNT 10
 #define BOAT_CHAINMAKER_MINE_INTERVAL    3  //!< Mining Interval of the blockchain, in seconds
 
@@ -65,7 +65,6 @@ BOAT_RESULT get_tx_id(BCHAR* tx_id_ptr)
 	hex_to_str(random_data.field, random_data.field_len, tx_id_ptr);
 	return result;
 }
-
 
 BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatHlchainmakerWallet *wallet_ptr,
 											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
@@ -630,12 +629,6 @@ BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, c
 	if ((wallet_ptr == NULL) || (node_url_ptr == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or node_url_ptr cannot be NULL.");
-		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-	}
-
-	if (strchr(node_url_ptr, ':') == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "node URL has a invalid format: %s.", node_url_ptr);
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
