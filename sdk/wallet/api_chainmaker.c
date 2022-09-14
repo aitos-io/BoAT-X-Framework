@@ -28,7 +28,7 @@ api_chainmaker.c defines the chainmaker wallet API for BoAT IoT SDK.
 #include "common/transaction.pb-c.h"
 #include "boatchainmaker/boatchainmaker.h"
 
-#define BOAT_TXID_LEN 65
+#define BOAT_TXID_LEN 64
 #define BOAT_RETRY_CNT 10
 #define BOAT_CHAINMAKER_MINE_INTERVAL    3  //!< Mining Interval of the blockchain, in seconds
 
@@ -434,7 +434,7 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length
 }
 		
 
-BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatInvokeResponse *invoke_response)
+BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatResponseData *response_data)
 {
 	Common__TxResponse *tx_response              = NULL;
 	Common__TransactionInfo* transactation_info = NULL;
@@ -445,7 +445,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	boat_try_declare;
 
 	TxType tx_type = TXTYPE_INVOKE_USER_CONTRACT; 
-	if ((tx_ptr == NULL) || (method == NULL) || (contract_name == NULL) || (invoke_response == NULL))
+	if ((tx_ptr == NULL) || (method == NULL) || (contract_name == NULL) || (response_data == NULL))
     {
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
@@ -473,12 +473,12 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		boat_throw(result, BoatHlchainmakerContractInvoke);
 	}
 
-	invoke_response->gas_used = 0;
-     invoke_response->code  = tx_response->code;
+	response_data->gas_used = 0;
+    response_data->code  = tx_response->code;
 	if (strlen(tx_response->message) < BOAT_RESPONSE_MESSAGE_MAX_LEN) 
     {
-		memset(invoke_response->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
-		memcpy(invoke_response->message, tx_response->message, strlen(tx_response->message));
+		memset(response_data->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
+		memcpy(response_data->message, tx_response->message, strlen(tx_response->message));
 	}
 
 	if (tx_response != NULL)
@@ -486,7 +486,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 		common__tx_response__free_unpacked(tx_response, NULL);
 	}
 
-	if (invoke_response->code != BOAT_SUCCESS)
+	if (response_data->code != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "invoke without sync failed");
 		boat_throw(result, BoatHlchainmakerContractInvoke);
@@ -509,7 +509,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 			if (tx_response->code == SUCCESS) 
             {
 				transactation_info = common__transaction_info__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
-				invoke_response->gas_used = transactation_info->transaction->result->contract_result->gas_used;
+				response_data->gas_used = transactation_info->transaction->result->contract_result->gas_used;
 				if (tx_response != NULL)
 				{
 					common__tx_response__free_unpacked(tx_response, NULL);
@@ -534,7 +534,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	return result;
 }							   
 
-BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatQueryResponse *query_response)
+BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatResponseData *response_data)
 {
 	TxType tx_type                  = TXTYPE_QUERY_USER_CONTRACT;
 	Common__TxResponse *tx_response = NULL;
@@ -543,7 +543,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
 
-	if ((tx_ptr == NULL) || (method == NULL) || (contract_name == NULL) || (query_response == NULL))  
+	if ((tx_ptr == NULL) || (method == NULL) || (contract_name == NULL) || (response_data == NULL))  
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
 		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
@@ -573,8 +573,8 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 		boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
 	}
 
-	query_response->gas_used = 0;
-	query_response->code     = tx_response->code;
+	response_data->gas_used = 0;
+	response_data->code     = tx_response->code;
 
 	if (strlen(tx_response->message) > BOAT_RESPONSE_MESSAGE_MAX_LEN) 
 	{
@@ -582,12 +582,12 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
 	}
 
-	memset(query_response->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
-	memcpy(query_response->message, tx_response->message, strlen(tx_response->message));
+	memset(response_data->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
+	memcpy(response_data->message, tx_response->message, strlen(tx_response->message));
 
-	memset(query_response->contract_result, 0, BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN);
+	memset(response_data->contract_result, 0, BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN);
 
-	if (query_response->code == BOAT_SUCCESS)
+	if (response_data->code == BOAT_SUCCESS)
 	{
 		if (tx_response->contract_result->code == BOAT_SUCCESS)
 		{
@@ -598,14 +598,14 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 					BoatLog(BOAT_LOG_CRITICAL, "tx_response->contract_result->result.datais too long");
 					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
 				}
-				memcpy(query_response->contract_result, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
+				memcpy(response_data->contract_result, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
 			}
-			query_response->gas_used = tx_response->contract_result->gas_used;
+			response_data->gas_used = tx_response->contract_result->gas_used;
 		}
 	}
 	else
 	{
-		memcpy(query_response->contract_result, "NULL", strlen("NULL"));
+		memcpy(response_data->contract_result, "NULL", strlen("NULL"));
 	}
 
 	/* boat catch handle */
