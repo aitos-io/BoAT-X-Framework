@@ -586,14 +586,14 @@ BOAT_RESULT BoAT_Keypair_generation(BoatKeypairPriKeyType type, BoatKeypairPriKe
 		result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
 	}
 
-	if (format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
-	{
-		// 1- update private key
-		memset(keypair->prikey.value, 0, sizeof(keypair->prikey.value));
-		result += mbedtls_pk_write_key_pem(&key, keypair->prikey.value, sizeof(keypair->prikey.value));
-	}
-	else
-	{
+	// if (format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
+	// {
+	// 	// 1- update private key
+	// 	memset(keypair->prikey.value, 0, sizeof(keypair->prikey.value));
+	// 	result += mbedtls_pk_write_key_pem(&key, keypair->prikey.value, sizeof(keypair->prikey.value));
+	// }
+	// else
+	// {
 
 		// 1- update private key
 		memset(keypair->prikey.value, 0, sizeof(keypair->prikey.value));
@@ -602,7 +602,7 @@ BOAT_RESULT BoAT_Keypair_generation(BoatKeypairPriKeyType type, BoatKeypairPriKe
 
 		// 3- update private key type
 		keypair->prikey.value_len = (mbedtls_pk_ec(key)->d.n) * (sizeof(mbedtls_mpi_uint));
-	}
+	// }
 
 	// 5- update public key
 	mbedtls_mpi_write_binary(&mbedtls_pk_ec(key)->Q.X, &keypair->pubkey.value[0],  32);
@@ -745,14 +745,14 @@ BOAT_RESULT BoAT_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,
 	mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
 	mbedtls_pk_free(&mbedtls_pkCtx);
-	if (format != BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
-	{
+	// if (format != BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
+	// {
 		mbedtls_ecp_keypair_free(ecPrikey);
 		if (ecPrikey != NULL)
 		{
 			BoatFree(ecPrikey);
 		}
-	}
+	// }
 	return result;
 }
 

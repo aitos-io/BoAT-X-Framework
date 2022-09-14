@@ -1,11 +1,11 @@
 # Select one of the crypto-dep and platform
 
-.PHONY:all mbedTLS crypto_default keccak storage platform
+.PHONY:all mbedTLS crypto_default keccak storage keystore platform 
 
 ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
-    BUILD_DEP :=  storage crypto_default platform
+    BUILD_DEP :=  storage crypto_default keystore platform 
 else ifeq ($(SOFT_CRYPTO), CRYPTO_MBEDTLS)
-    BUILD_DEP :=  keccak  storage mbedTLS platform
+    BUILD_DEP :=  keccak  storage mbedTLS keystore platform 
 else
     BUILD_DEP :=
 endif
@@ -26,6 +26,9 @@ storage:
 
 platform:
 	make -C $(BOAT_BASE_DIR)/vendor/platform all
+
+keystore:
+	make -C $(BOAT_BASE_DIR)/vendor/keystore all
 	
 clean:
 	make -C $(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS clean

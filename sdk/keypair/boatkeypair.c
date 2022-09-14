@@ -23,6 +23,7 @@
 
 #include "persiststore.h"
 #include "cJSON.h"
+#include "boatkeystore.h"
 
 #if RPC_USE_LIBCURL == 1
 #include "curl/curl.h"
@@ -596,11 +597,11 @@ __BOATSTATIC BOAT_RESULT BoATKeypair_Get_DataCtx_Len(BoatKeypairDataCtx *mKeypai
     paramLength = sizeof(mKeypairDataCtx->prikeyCtx.pubkey_content);
     paramLengthLen  = UtilityGetTLV_LL_from_len(paramLength);
     keypairLength += (paramLength + paramLengthLen);
-    /* keypair prikey */
-    //*data_len + 31 + 32 + 16 + 16
-    paramLength = mKeypairDataCtx->extraData.value_len + 31 + 32 + 16 + 16;
-    paramLengthLen  = UtilityGetTLV_LL_from_len(paramLength);
-    keypairLength += (paramLength + paramLengthLen);
+    // /* keypair prikey */
+    // //*data_len + 31 + 32 + 16 + 16
+    // paramLength = mKeypairDataCtx->extraData.value_len + 31 + 32 + 16 + 16;
+    // paramLengthLen  = UtilityGetTLV_LL_from_len(paramLength);
+    // keypairLength += (paramLength + paramLengthLen);
     /* all the data*/
     paramLengthLen  = UtilityGetTLV_LL_from_len(keypairLength);
     keypairLength +=  paramLengthLen;
@@ -629,7 +630,6 @@ __BOATSTATIC BOAT_RESULT BoATKeypair_Get_DataCtx_Len(BoatKeypairDataCtx *mKeypai
 __BOATSTATIC BOAT_RESULT BoATKeypair_Get_DataCtx_Data(BoatKeypairDataCtx *mKeypairDataCtx,BUINT8 *data,BUINT32 *datalen)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-    BUINT32 paramLength = 0;
     BUINT32 keypairLength = 0,offset = 0;
     if(mKeypairDataCtx == NULL){
         BoatLog(BOAT_LOG_NORMAL,"keypair data is NULL");
@@ -677,17 +677,17 @@ __BOATSTATIC BOAT_RESULT BoATKeypair_Get_DataCtx_Data(BoatKeypairDataCtx *mKeypa
         BoatLog(BOAT_LOG_NORMAL,"get keypair pubkey LV fail");
     return BOAT_ERROR;
     }
-    /* keypair prikey */
-    BUINT8 dataEnc[mKeypairDataCtx->extraData.value_len + 31 + 32 + 16 + 16];
-    BoatLog_hexdump(BOAT_LOG_NORMAL,"prikey : ",mKeypairDataCtx->extraData.value,mKeypairDataCtx->extraData.value_len);
-    result = BoATSoftRotNvramEnc(mKeypairDataCtx->extraData.value,mKeypairDataCtx->extraData.value_len,dataEnc,&paramLength);
-    BoatLog_hexdump(BOAT_LOG_NORMAL,"prikey cip : ",dataEnc,paramLength);
-    memcpy(data + offset , dataEnc,paramLength);
-    result = add_L_withOffset(data,&offset,paramLength);
-    if(result < BOAT_SUCCESS){
-    BoatLog(BOAT_LOG_NORMAL,"get keypair prikey LV fail");
-    return BOAT_ERROR;
-    }
+    // /* keypair prikey */
+    // BUINT8 dataEnc[mKeypairDataCtx->extraData.value_len + 31 + 32 + 16 + 16];
+    // BoatLog_hexdump(BOAT_LOG_NORMAL,"prikey : ",mKeypairDataCtx->extraData.value,mKeypairDataCtx->extraData.value_len);
+    // result = BoATSoftRotNvramEnc(mKeypairDataCtx->extraData.value,mKeypairDataCtx->extraData.value_len,dataEnc,&paramLength);
+    // BoatLog_hexdump(BOAT_LOG_NORMAL,"prikey cip : ",dataEnc,paramLength);
+    // memcpy(data + offset , dataEnc,paramLength);
+    // result = add_L_withOffset(data,&offset,paramLength);
+    // if(result < BOAT_SUCCESS){
+    // BoatLog(BOAT_LOG_NORMAL,"get keypair prikey LV fail");
+    // return BOAT_ERROR;
+    // }
     /* all the data*/
     keypairLength = offset;
     offset = 0;
@@ -874,7 +874,7 @@ BOAT_RESULT BoatKeypairCreate(BoatKeypairPriKeyCtx_config *keypairConfig,BCHAR *
     if(result != BOAT_SUCCESS){
         return result;
     }
-    BoatLog(BOAT_LOG_NORMAL,"BoatPort_keyCreate success ");
+    BoatLog(BOAT_LOG_NORMAL,"BoatPort_keyCreate success , index = %d ",keypairIndex);
     if(keypairName == NULL){
         mKeypairDataCtx.prikeyCtx.keypair_name = BoatMalloc(strlen("keypair")+2);// keypair+index+/0
         memcpy(mKeypairDataCtx.prikeyCtx.keypair_name,"keypair",strlen("keypair"));
@@ -884,14 +884,23 @@ BOAT_RESULT BoatKeypairCreate(BoatKeypairPriKeyCtx_config *keypairConfig,BCHAR *
         mKeypairDataCtx.prikeyCtx.keypair_name = BoatMalloc(strlen(keypairName)+1);
         strcpy(mKeypairDataCtx.prikeyCtx.keypair_name,keypairName);
     }
+    BoatLog(BOAT_LOG_NORMAL,"creat keypair 000 index = %d ",keypairIndex);
     mKeypairDataCtx.prikeyCtx.keypair_index = keypairIndex;
     result = BoATKeypair_DataCtx_Store(&mKeypairDataCtx,storeType);
     if(result != BOAT_SUCCESS){
         return result;
     }
+    BoatLog(BOAT_LOG_NORMAL,"creat keypair 111 index = %d ",keypairIndex);
+    result = BoAT_Keystore_store_prikey(mKeypairDataCtx.prikeyCtx.keypair_index,mKeypairDataCtx.extraData.value,mKeypairDataCtx.extraData.value_len);
+    if(result != BOAT_SUCCESS){
+        BoatLog(BOAT_LOG_NORMAL,"keystore store prikey fail , ret = %d ",result);
+        return result;
+    }
+    BoatLog(BOAT_LOG_NORMAL,"creat keypair 222 index = %d ",keypairIndex);
     memset(mKeypairDataCtx.extraData.value,0x00,mKeypairDataCtx.extraData.value_len);
 
     BoATIotKeypairDeInit(&mKeypairDataCtx);
+    BoatLog(BOAT_LOG_NORMAL,"creat keypair index = %d ",keypairIndex);
     return keypairIndex;
 
 }

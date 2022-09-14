@@ -296,6 +296,8 @@ BOAT_RESULT EthSendRawtx(BOAT_INOUT BoatEthTx *tx_ptr)
     {
         memcpy(tx_ptr->rawtx_fields.sig.r32B, &signatureResultTmp.native_sign[0]  ,32);
         memcpy(tx_ptr->rawtx_fields.sig.s32B, &signatureResultTmp.native_sign[32] ,32);
+        BoatLog_hexdump(BOAT_LOG_NORMAL,"sig.r32B : ",tx_ptr->rawtx_fields.sig.r32B,32);
+        BoatLog_hexdump(BOAT_LOG_NORMAL,"sig.s32B : ",tx_ptr->rawtx_fields.sig.s32B,32);
     }
 
     if (signatureResultTmp.signPrefix_used)

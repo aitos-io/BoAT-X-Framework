@@ -29,6 +29,9 @@ persiststore.h contains APIs declaration for default persistent storage as a fil
 extern "C" {
 #endif
 
+#define BOAT_KEYSTORE_PRIKEY_LEN  1+16+32+32+16  // L : 1byte , 16: 16bytes random , 32 : hash , 32 : prikey ,16 : padding
+#define BOAT_KEYSTORE_PRIKEYINDEX_LEN 2 // 01+INDEX
+
 #define BOAT_FILE_STOREDATA	"boat_wallet_file"
 #define BOAT_STORAGE_KEYPAIR_OFFSET 0
 #define BOAT_STORAGE_KEYPAIR_MAXLEN BOAT_KEYPAIR_NUM_LEN+BOAT_KEYPAIR_ALL_LEN_MAX+ \
@@ -37,11 +40,14 @@ extern "C" {
                                     BOAT_KEYPAIR_NAME_LEN_MAX+ \
                                     BOAT_KEYPAIR_FORMAT_LEN+ \
                                     BOAT_KEYPAIR_TYPE_LEN + \
-                                    BOAT_KEYPAIR_PUBKEY_LEN + \
-                                    BOAT_KEYPAIR_PRIKEY_LEN \
+                                    BOAT_KEYPAIR_PUBKEY_LEN  \
                                     )
 
-#define BOAT_STORAGE_NETWORK_OFFSET BOAT_STORAGE_KEYPAIR_OFFSET+BOAT_STORAGE_KEYPAIR_MAXLEN + 128  // reserved 128 bytes
+#define BOAT_STORAGE_PRIKEY_OFFSET BOAT_STORAGE_KEYPAIR_OFFSET+BOAT_STORAGE_KEYPAIR_MAXLEN + 128  // reserved 128 bytes
+#define BOAT_STORAGE_PRIKEY_MAXLEN BOAT_MAX_KEYPAIR_NUM*(BOAT_KEYSTORE_PRIKEYINDEX_LEN+BOAT_KEYSTORE_PRIKEY_LEN)
+
+#define BOAT_STORAGE_NETWORK_OFFSET BOAT_STORAGE_PRIKEY_OFFSET+BOAT_STORAGE_PRIKEY_MAXLEN + 128  // reserved 128 bytes
+
 
 /*! @defgroup persiststore boat persiststore
  * @{
@@ -61,6 +67,7 @@ typedef enum
 {
     BOAT_STORE_KEYPAIR,  //!< to store keypair data
     BOAT_STORE_NETWORK, //!< to store network data
+    BOAT_STORE_PRIKEY,  //!< to store prikey data
 }BoatStoreFile;
 
 /*!****************************************************************************

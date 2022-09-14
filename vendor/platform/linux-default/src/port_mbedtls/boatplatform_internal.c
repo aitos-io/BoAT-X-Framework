@@ -27,6 +27,7 @@
 
 #include "keccak.h"
 #include "persiststore.h"
+#include "boatkeystore.h"
 
 /* mbedTLS header include */
 #include "mbedtls/entropy.h"
@@ -56,193 +57,6 @@
 // for TTLSContext structure
 #include "http2intf.h"
 #endif
-
-
-/**
- * @description: 
- * 	This function get prikey by index from Nvram.
- * @param[in] {BUINT8} index
- * @param[out] {BoatKeypairExtraData} *prikey
- * @return {*}
- *   This function returns BOAT_SUCCESS if success.\n
- *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
- *   for details.
- * @author: aitos
- */
-static BOAT_RESULT BoAT_GetPirkeyByIndex(BUINT8 index,BoatKeypairExtraData *prikey){
-	BOAT_RESULT result = BOAT_SUCCESS;
-	BUINT8 keypairNum = 0 , keypairIndex = 0;
-	BUINT32 offset = 0 , offset_obj = 0;
-	BUINT32  keypairLength = 0 , keypairLengthLen = 0 , paramLength = 0 , paramLengthLen = 0;
-	BUINT8 lengthBytes[3] = {0};
-	BUINT8 ciphertext[512] = {0};
-	BoatStoreType storetype;
-	if(prikey == NULL){
-		BoatLog(BOAT_LOG_NORMAL,"prikey must not be NULL");
-		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-	}
-	if(index == 0){  // onetime keypair
-        storetype = BOAT_STORE_TYPE_RAM;
-    }else{
-        storetype = BOAT_STORE_TYPE_FLASH;
-    }
-
-	result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,&keypairNum,1,storetype);
-    /* if read Nvram failed , no keypair */
-    if(result != BOAT_SUCCESS || keypairNum == 0){
-		BoatLog(BOAT_LOG_NORMAL," have no keypair , result = %d , keypairnum = %d  ",result,keypairNum);
-        return BOAT_ERROR;
-    }
-	offset ++ ;
-	for (BUINT8 i = 0; i < keypairNum; i++)
-	{
-		
-		/* keypair length */
-		result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-		if(result != BOAT_SUCCESS){
-			BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] length fail " , i);
-			return result;
-		}
-		keypairLength = UtilityGetLVData_L(lengthBytes);
-        if(keypairLength < 0){
-            BoatLog(BOAT_LOG_NORMAL,"keypair data length err ");
-            return BOAT_ERROR;
-        }
-        keypairLengthLen = UtilityGetTLV_LL_from_len(keypairLength);
-		offset += keypairLengthLen;
-		offset_obj = offset;
-		/* keypair index */
-		result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-		if(result != BOAT_SUCCESS){
-			BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] index fail " , i);
-			return result;
-		}
-		paramLength = UtilityGetLVData_L(lengthBytes);
-		if(paramLength != 1){
-            BoatLog(BOAT_LOG_NORMAL,"keypair index length err ");
-            return BOAT_ERROR;
-        }
-		keypairIndex = lengthBytes[1];
-		if(keypairIndex == index){
-			offset += 2;
-			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL,"keypair name offset over the length of this walet ");
-				return BOAT_ERROR;
-			}
-			/* keypair name */
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] index fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"keypair name length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL," keypair format offset over the length of this walet ");
-				return BOAT_ERROR;
-			}
-			/* keypair PriKeyFormat */
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] prikey format fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"keypair prike format length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL," keypair type offset over the length of this walet ");
-				return BOAT_ERROR;
-			}
-			/* keypair prikey type */
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] prikey type fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"keypair prike type length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL,"keypair pubkey offset over the length of this walet ");
-				return BOAT_ERROR;
-			}
-			/* keypair pubkey */
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] pubkey fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"keypair pubkey length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL," keypair prikey offset over the length of this walet ");
-				return BOAT_ERROR;
-			}
-			/* keypair prikey */
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] pubkey fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"keypair pubkey length err ");
-            	return BOAT_ERROR;
-        	}
-			BoatLog(BOAT_LOG_NORMAL," ciphertext of prkey len = %d ",paramLength);
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-			offset += paramLengthLen;
-			if(offset - offset_obj + paramLength > keypairLength){  // offset over the length of this walet
-				BoatLog(BOAT_LOG_NORMAL," prikey 1 offset over the length of this walet ");
-				return BOAT_ERROR;
-			}
-			if(paramLength > 512){
-				BoatLog(BOAT_LOG_NORMAL,"read data length is more than 512");
-				return BOAT_ERROR;
-			}
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,ciphertext,paramLength,storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] prikey fail " , i);
-				return result;
-			}
-			BoatLog_hexdump(BOAT_LOG_NORMAL,"ciphertext : ",ciphertext,paramLength);
-			/*  dec */
-			result = BoATSoftRotNvramDec(ciphertext,paramLength,&(prikey->value[0]),&(prikey->value_len));
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"dec keypair[%d] prikey fail " , i);
-				return result;
-			}
-			BoatLog(BOAT_LOG_NORMAL,"11111");
-			BoatLog_hexdump(BOAT_LOG_NORMAL," prikey->value : ",prikey->value,32);
-			BoatLog(BOAT_LOG_NORMAL,"22222");
-			return result;
-		}else{ // the next keypair
-			offset += keypairLength;
-		}
-	}
-	return BOAT_ERROR;
-}
-
-
 
 
 BOAT_RESULT  BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
@@ -288,7 +102,6 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 						  const BUINT8 *digest, BUINT32 digestLen, 
 						  BoatSignatureResult *signatureResult, void *rsvd)
 {
-	BoatKeypairExtraData prikey;
 	BUINT8 signature[64] = {0};
 	BUINT8 signatureTmp[139];
 	BUINT32 signaturelen = 0;
@@ -307,12 +120,13 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
-	result = BoAT_GetPirkeyByIndex(prikeyCtx.keypair_index,&prikey);
-	if(result != BOAT_SUCCESS){
-		BoatLog(BOAT_LOG_CRITICAL, "get keypair prikey fail.");
-		return BOAT_ERROR;
-	}
-	result = BoAT_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format,prikey.value,prikey.value_len,digest,digestLen,signature,&signaturelen,&ecdsPrefix);
+	// result = BoAT_GetPirkeyByIndex(prikeyCtx.keypair_index,&prikey);
+	// if(result != BOAT_SUCCESS){
+	// 	BoatLog(BOAT_LOG_CRITICAL, "get keypair prikey fail.");
+	// 	return BOAT_ERROR;
+	// }
+	// result = BoAT_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format,prikey.value,prikey.value_len,digest,digestLen,signature,&signaturelen,&ecdsPrefix);
+	result = BoAT_Keystore_Sign(prikeyCtx.prikey_type,prikeyCtx.keypair_index,digest,digestLen,signature,&signaturelen,&ecdsPrefix);
 	if(result != BOAT_SUCCESS){
 		BoatLog(BOAT_LOG_CRITICAL, "gen signature fail.");
 		return BOAT_ERROR;
@@ -766,89 +580,114 @@ void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
+// static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriKeyCtx_config *config, 
+// 													       BoatKeypairDataCtx *pkCtx)
+// {
+// 	mbedtls_entropy_context  entropy;
+//     mbedtls_ctr_drbg_context ctr_drbg;
+// 	mbedtls_pk_context       key;
+// 	BOAT_RESULT              result = BOAT_SUCCESS;
+	
+// 	if ((config == NULL) || (pkCtx == NULL))
+// 	{
+// 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
+// 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+// 	}
+	
+//     mbedtls_entropy_init(&entropy);
+//     mbedtls_ctr_drbg_init(&ctr_drbg);
+// 	mbedtls_pk_init(&key);
+
+// 	result += mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
+//     result += mbedtls_pk_setup(&key, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
+	
+// 	if (config->prikey_type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1)
+// 	{
+// 		result += mbedtls_ecp_gen_key(MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec(key),
+// 									  mbedtls_ctr_drbg_random, &ctr_drbg);
+// 	}
+// 	else if (config->prikey_type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1)
+// 	{
+// 		result += mbedtls_ecp_gen_key(MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(key),
+// 									  mbedtls_ctr_drbg_random, &ctr_drbg);
+// 	}
+// 	else
+// 	{
+// 		BoatLog(BOAT_LOG_CRITICAL, "unknown private keytype...");
+// 		result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
+// 	}
+
+// 	// if (config->prikey_format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
+// 	// {
+// 	// 	// 1- update private key
+// 	// 	memset(pkCtx->extraData.value, 0, sizeof(pkCtx->extraData.value));
+// 	// 	result += mbedtls_pk_write_key_pem(&key, pkCtx->extraData.value, sizeof(pkCtx->extraData.value));
+
+// 	// 	// 2- update private key format
+// 	// 	pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
+
+// 	// 	// 3- update private key type
+// 	// 	pkCtx->prikeyCtx.prikey_type = config->prikey_type;
+// 	// }
+// 	// else
+// 	// {
+
+// 		// 1- update private key
+// 		memset(pkCtx->extraData.value, 0, sizeof(pkCtx->extraData.value));
+// 		// result += mbedtls_pk_write_key_pem(&key, pkCtx->extra_data.value, sizeof(pkCtx->extra_data.value));
+// 		// mbedtls_pk_ec(key)->d.
+
+// 		// mbedtls_mpi_write_binary(&(mbedtls_pk_ec(key)->d),pkCtx->extra_data.value,sizeof(pkCtx->extra_data.value));
+// 		// memcpy(pkCtx->extra_data.value, mbedtls_pk_ec(key)->d.p, (mbedtls_pk_ec(key)->d.n) * (sizeof(mbedtls_mpi_uint)));
+// 		mbedtls_mpi_write_binary(&mbedtls_pk_ec(key)->d, pkCtx->extraData.value, 32);
+// 		// 2- update private key format
+// 		pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
+
+// 		// 3- update private key type
+// 		pkCtx->prikeyCtx.prikey_type = config->prikey_type;
+// 		pkCtx->extraData.value_len = (mbedtls_pk_ec(key)->d.n) * (sizeof(mbedtls_mpi_uint));
+// 	// }
+
+// 	// 4- update private key index
+// 	// This field should update by 'key secure storage'(such as TE/SE).
+// 	// When algorithms are implemented by software, this field is default to 0, means
+// 	// that ignore this field.
+
+// 	// 5- update public key
+// 	mbedtls_mpi_write_binary(&mbedtls_pk_ec(key)->Q.X, &pkCtx->prikeyCtx.pubkey_content[0],  32);
+//     mbedtls_mpi_write_binary(&mbedtls_pk_ec(key)->Q.Y, &pkCtx->prikeyCtx.pubkey_content[32], 32);
+
+// 	// clear
+//     mbedtls_entropy_free(&entropy);
+//     mbedtls_ctr_drbg_free(&ctr_drbg);
+// 	mbedtls_pk_free(&key);
+	
+//     return result;
+// }
+
 static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriKeyCtx_config *config, 
 													       BoatKeypairDataCtx *pkCtx)
 {
-	mbedtls_entropy_context  entropy;
-    mbedtls_ctr_drbg_context ctr_drbg;
-	mbedtls_pk_context       key;
-	BOAT_RESULT              result = BOAT_SUCCESS;
-	
-	if ((config == NULL) || (pkCtx == NULL))
+	BOAT_RESULT result = BOAT_SUCCESS;
+	BoatKeypairKeypair keypair;
+	// result = BoAT_Keypair_generation(config->prikey_type,config->prikey_format,&keypair);
+	result = BoAT_Keystore_Gen_Keypair(config->prikey_type,&keypair);
+	if (result != BOAT_SUCCESS)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
-		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-	}
-	
-    mbedtls_entropy_init(&entropy);
-    mbedtls_ctr_drbg_init(&ctr_drbg);
-	mbedtls_pk_init(&key);
-
-	result += mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
-    result += mbedtls_pk_setup(&key, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
-	
-	if (config->prikey_type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1)
-	{
-		result += mbedtls_ecp_gen_key(MBEDTLS_ECP_DP_SECP256K1, mbedtls_pk_ec(key),
-									  mbedtls_ctr_drbg_random, &ctr_drbg);
-	}
-	else if (config->prikey_type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1)
-	{
-		result += mbedtls_ecp_gen_key(MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(key),
-									  mbedtls_ctr_drbg_random, &ctr_drbg);
-	}
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "unknown private keytype...");
-		result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
+		BoatLog(BOAT_LOG_CRITICAL, "generate private key failed.");
+		return result;
 	}
 
-	// if (config->prikey_format == BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS)
-	// {
-	// 	// 1- update private key
-	// 	memset(pkCtx->extraData.value, 0, sizeof(pkCtx->extraData.value));
-	// 	result += mbedtls_pk_write_key_pem(&key, pkCtx->extraData.value, sizeof(pkCtx->extraData.value));
-
-	// 	// 2- update private key format
-	// 	pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
-
-	// 	// 3- update private key type
-	// 	pkCtx->prikeyCtx.prikey_type = config->prikey_type;
-	// }
-	// else
-	// {
-
-		// 1- update private key
-		memset(pkCtx->extraData.value, 0, sizeof(pkCtx->extraData.value));
-		// result += mbedtls_pk_write_key_pem(&key, pkCtx->extra_data.value, sizeof(pkCtx->extra_data.value));
-		// mbedtls_pk_ec(key)->d.
-
-		// mbedtls_mpi_write_binary(&(mbedtls_pk_ec(key)->d),pkCtx->extra_data.value,sizeof(pkCtx->extra_data.value));
-		// memcpy(pkCtx->extra_data.value, mbedtls_pk_ec(key)->d.p, (mbedtls_pk_ec(key)->d.n) * (sizeof(mbedtls_mpi_uint)));
-		mbedtls_mpi_write_binary(&mbedtls_pk_ec(key)->d, pkCtx->extraData.value, 32);
-		// 2- update private key format
-		pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
-
-		// 3- update private key type
-		pkCtx->prikeyCtx.prikey_type = config->prikey_type;
-		pkCtx->extraData.value_len = (mbedtls_pk_ec(key)->d.n) * (sizeof(mbedtls_mpi_uint));
-	// }
-
-	// 4- update private key index
-	// This field should update by 'key secure storage'(such as TE/SE).
-	// When algorithms are implemented by software, this field is default to 0, means
-	// that ignore this field.
-
-	// 5- update public key
-	mbedtls_mpi_write_binary(&mbedtls_pk_ec(key)->Q.X, &pkCtx->prikeyCtx.pubkey_content[0],  32);
-    mbedtls_mpi_write_binary(&mbedtls_pk_ec(key)->Q.Y, &pkCtx->prikeyCtx.pubkey_content[32], 32);
-
-	// clear
-    mbedtls_entropy_free(&entropy);
-    mbedtls_ctr_drbg_free(&ctr_drbg);
-	mbedtls_pk_free(&key);
+	// 2- update private key format
+	pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
 	
-    return result;
+	// 3- update private key type
+	pkCtx->prikeyCtx.prikey_type   = config->prikey_type;
+	pkCtx->extraData.value_len = keypair.prikey.value_len;
+	memcpy(pkCtx->extraData.value,keypair.prikey.value,keypair.prikey.value_len);
+	memcpy(pkCtx->prikeyCtx.pubkey_content, keypair.pubkey.value, 64);
+
+	return result;
 }
 
 static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatKeypairPriKeyCtx_config *config, 

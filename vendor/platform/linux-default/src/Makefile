@@ -1,7 +1,8 @@
 # Source and Objects
 SRC_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/rpc/*.o) 
 
-PORT_CRYPTO_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/common/storage/*.o) 
+PORT_CRYPTO_OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/vendor/common/storage/*.o ) \
+					 $(wildcard $(BOAT_BUILD_DIR)/vendor/keystore/*.o) 
 
 ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
     PORT_CRYPTO_OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/vendor/common/crypto/crypto_default/*.o) \

@@ -39,7 +39,7 @@ boatkeypair.h is the SDK header file.
 #define BOAT_KEYPAIR_FORMAT_LEN     5  // L + format   0401000000
 #define BOAT_KEYPAIR_TYPE_LEN       5  // L + type     0401000000
 #define BOAT_KEYPAIR_PUBKEY_LEN     65 // L + pubkey   
-#define BOAT_KEYPAIR_PRIKEY_LEN     33 // L + prikey   
+// #define BOAT_KEYPAIR_PRIKEY_LEN     33 // L + prikey   
 
 
 #define BOAT_MAX_KEYPAIR_NUM 5
@@ -100,7 +100,7 @@ typedef struct TBoatKeypairKeypair
 }BoatKeypairKeypair;
 
 
-//!@brief Boat keypair private key context
+//!@brief Boat keypair  key context
 typedef struct TBoatKeypairPriKeyCtx
 {
     BUINT8                  keypair_index;       //!< Index of keypair

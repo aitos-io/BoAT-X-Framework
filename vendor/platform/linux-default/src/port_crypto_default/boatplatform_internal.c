@@ -32,6 +32,7 @@
 #include "nist256p1.h"
 #include "bignum.h"
 #include "persiststore.h"
+#include "boatkeystore.h"
 
 /* net releated include */
 #if (PROTOCOL_USE_HLFABRIC == 1)
@@ -65,182 +66,6 @@ uint32_t random32(void)
 	return seed;
 }
 
-/**
- * @description: 
- * 	This function get prikey by index from Nvram.
- * @param[in] {BUINT8} index
- * @param[out] {BoatKeypairExtraData} *prikey
- * @return {*}
- *   This function returns BOAT_SUCCESS if success.\n
- *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
- *   for details.
- * @author: aitos
- */
-static BOAT_RESULT BoAT_GetPirkeyByIndex(BUINT8 index,BoatKeypairExtraData *prikey){
-	BOAT_RESULT result = BOAT_SUCCESS;
-	BUINT8 keypairNum = 0 , keypairIndex = 0;
-	BUINT32 offset = 0 , offset_obj = 0;
-	BUINT32  keypairLength = 0 , keypairLengthLen = 0 , paramLength = 0 , paramLengthLen = 0;
-	BUINT8 lengthBytes[3] = {0};
-	BUINT8 ciphertext[512] = {0};
-	BoatStoreType storetype;
-	if(prikey == NULL){
-		BoatLog(BOAT_LOG_NORMAL,"prikey must not be NULL");
-		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-	}
-	if(index == 0){  // onetime keypair
-        storetype = BOAT_STORE_TYPE_RAM;
-    }else{
-        storetype = BOAT_STORE_TYPE_FLASH;
-    }
-	result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,&keypairNum,1,storetype);
-    /* if read Nvram failed , no keypair */
-    if(result != BOAT_SUCCESS || keypairNum == 0){
-        return BOAT_ERROR;
-    }
-	offset ++ ;
-	for (BUINT8 i = 0; i < keypairNum; i++)
-	{
-		
-		/* keypair length */
-		result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-		if(result != BOAT_SUCCESS){
-			BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] length fail " , i);
-			return result;
-		}
-		keypairLength = UtilityGetLVData_L(lengthBytes);
-        if(keypairLength < 0){
-            BoatLog(BOAT_LOG_NORMAL,"keypair data length err ");
-            return BOAT_ERROR;
-        }
-        keypairLengthLen = UtilityGetTLV_LL_from_len(keypairLength);
-		offset += keypairLengthLen;
-		offset_obj = offset;
-		/* keypair index */
-		result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-		if(result != BOAT_SUCCESS){
-			BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] index fail " , i);
-			return result;
-		}
-		paramLength = UtilityGetLVData_L(lengthBytes);
-		if(paramLength != 1){
-            BoatLog(BOAT_LOG_NORMAL,"keypair index length err ");
-            return BOAT_ERROR;
-        }
-		keypairIndex = lengthBytes[1];
-		if(keypairIndex == index){
-			offset += 2;
-			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-			/* keypair name */
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] index fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"keypair name length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-			/* keypair PriKeyFormat */
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] prikey format fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"keypair prike format length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-			/* keypair prikey type */
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] prikey type fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"keypair prike type length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-			/* keypair pubkey */
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] pubkey fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"keypair pubkey length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-			offset += (paramLength + paramLengthLen);
-			if(offset - offset_obj > keypairLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-			/* keypair prikey */
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] pubkey fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"keypair pubkey length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-			offset += paramLengthLen;
-			if(offset - offset_obj + paramLength > keypairLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-			if(paramLength > 512){
-				return BOAT_ERROR;
-			}
-			result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR,offset,ciphertext,paramLength,storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get keypair[%d] prikey fail " , i);
-				return result;
-			}
-			BoatLog_hexdump(BOAT_LOG_NORMAL,"ciphertext : ",ciphertext,paramLength);
-			/*  dec */
-			result = BoATSoftRotNvramDec(ciphertext,paramLength,&(prikey->value[0]),&(prikey->value_len));
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"dec keypair[%d] prikey fail " , i);
-				return result;
-			}
-			BoatLog(BOAT_LOG_NORMAL,"11111");
-			BoatLog_hexdump(BOAT_LOG_NORMAL," prikey->value : ",prikey->value,32);
-			BoatLog(BOAT_LOG_NORMAL,"22222");
-			return result;
-		}else{ // the next keypair
-			offset += keypairLength;
-		}
-	}
-	return BOAT_ERROR;
-}
-
-
-
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 {	
 	/* param check */
@@ -262,10 +87,11 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 						  const BUINT8 *digest, BUINT32 digestLen, 
 						  BoatSignatureResult *signatureResult, void *rsvd)
 {
-	BUINT8 signatureTmp[64];
+	BUINT8 signature[64] = {0};
+	BUINT8 signatureTmp[139];
+	BUINT32 signatureTmpLen = 0;
 	BUINT8 ecdsPrefix = 0;
 	BUINT32 signatureLen = 0;
-	BoatKeypairExtraData prikey;
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
 	(void)rsvd;
@@ -276,26 +102,47 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
-	result = BoAT_GetPirkeyByIndex(prikeyCtx.keypair_index,&prikey);
-	if(result != BOAT_SUCCESS){
-		BoatLog(BOAT_LOG_CRITICAL, "get keypair prikey fail.");
-		return BOAT_ERROR;
-	}
+	// result = BoAT_GetPirkeyByIndex(prikeyCtx.keypair_index,&prikey);
+	// if(result != BOAT_SUCCESS){
+	// 	BoatLog(BOAT_LOG_CRITICAL, "get keypair prikey fail.");
+	// 	return BOAT_ERROR;
+	// }
 
-	result = BoAT_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format, prikey.value,prikey.value_len,digest,digestLen,signatureTmp,&signatureLen,&ecdsPrefix);
+	// result = BoAT_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format, prikey.value,prikey.value_len,digest,digestLen,signatureTmp,&signatureLen,&ecdsPrefix);
 
+	result = BoAT_Keystore_Sign(prikeyCtx.prikey_type,prikeyCtx.keypair_index,digest,digestLen,signature,&signatureLen,&ecdsPrefix);
 	if(result != BOAT_SUCCESS){
 		return result;
 	}
 
+	// // signature result assign
+	// memset(signatureResult, 0, sizeof(BoatSignatureResult));
+	
+	// signatureResult->native_format_used = true;
+	// memcpy(signatureResult->native_sign, signatureTmp, 64);
+
+	// signatureResult->signPrefix_used = true;
+	// signatureResult->signPrefix      = ecdsPrefix;
+
+	/* convert r,s to asn.1 */
+	result = utility_signature_to_asn1(signature,signatureLen,signatureTmp,&signatureTmpLen);
+	if(result != BOAT_SUCCESS){
+		BoatLog(BOAT_LOG_CRITICAL, "signature to asn.1  fail.");
+		return BOAT_ERROR;
+	}
 	// signature result assign
 	memset(signatureResult, 0, sizeof(BoatSignatureResult));
+
+	signatureResult->pkcs_format_used = true;
+	signatureResult->pkcs_sign_length = signatureTmpLen;
+	memcpy(signatureResult->pkcs_sign, signatureTmp, signatureResult->pkcs_sign_length);
 	
 	signatureResult->native_format_used = true;
-	memcpy(signatureResult->native_sign, signatureTmp, 64);
+	memcpy(&signatureResult->native_sign[0],  signature, 64);
 
 	signatureResult->signPrefix_used = true;
 	signatureResult->signPrefix      = ecdsPrefix;
+
 
 	return result;
 }
@@ -595,7 +442,8 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriK
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BoatKeypairKeypair keypair;
-	result = BoAT_Keypair_generation(config->prikey_type,config->prikey_format,&keypair);
+	// result = BoAT_Keypair_generation(config->prikey_type,config->prikey_format,&keypair);
+	result = BoAT_Keystore_Gen_Keypair(config->prikey_type,&keypair);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "generate private key failed.");
