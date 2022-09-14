@@ -739,6 +739,40 @@ int add_L_withOffset(BUINT8* pbBuff,BUINT32* nOffset,BUINT32 nLen);
  */
 BOAT_RESULT utility_signature_to_asn1(BUINT8 *signature , BUINT32 signaturelen,BUINT8 *out,BUINT32 *outlen);
 
+
+/**
+ * @description: 
+ *  This function get  num of keypair / network / prikey object from 4 bytes.
+ *  the format of 4 bytes data like this:
+ *  0xAA 0x55 num crc
+ *  crc is the XOR result of the first 3 bytes of data  
+ * @param[in] {BUINT8} temp
+ *  the 4 bytes data
+ * @param[out] {BUINT8} *num
+ *  quantity of keypair/network/prikey objects
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT utility_check_NumBytes(BUINT8 temp[4],BUINT8 *num);
+
+
+/**
+ * @description: 
+ *  This function get  4 bytes data of  keypair / network / prikey object by num.
+ *  the format of 4 bytes data like this:
+ *  0xAA 0x55 num crc
+ *  crc is the XOR result of the first 3 bytes of data  
+ * @param {BUINT8} num
+ * @param {BUINT8} temp
+ * @return {*}
+ *  This function have no return.
+ * @author: aitos
+ */
+void utility_get_NumBytes(BUINT8 num,BUINT8 temp[4]);
+
 /*! @}*/
 
 #ifdef __cplusplus

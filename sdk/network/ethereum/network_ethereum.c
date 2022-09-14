@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-06 14:38:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-13 15:22:06
+ * @LastEditTime: 2022-09-14 12:07:22
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -209,16 +209,24 @@ BOAT_RESULT BoATEth_GetNetworkList(BoatEthNetworkContext *networkList)
     BUINT8 index = 0;
     BUINT32 networkDataLength = 0  ;
     BUINT32 offset = 0 ;
-    // BUINT8 lengthbytes[3] = {0};
+    BUINT8 networknumBytes[4] = {0};
     /* persistent network  */
-    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,&networkNum,1,BOAT_STORE_TYPE_FLASH);
+    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),BOAT_STORE_TYPE_FLASH);
     /* if read Nvram failed , no network */
     if(result != BOAT_SUCCESS){
         networkNum = 0;
         // return BOAT_SUCCESS;
+    }else{
+        result = utility_check_NumBytes(networknumBytes,&networkNum);
+        if(result != BOAT_SUCCESS){
+            BoatLog(BOAT_LOG_NORMAL,"check network num fail");
+            // return result;
+            networkNum = 0;
+            result = BOAT_SUCCESS;
+        }
     }
     (*networkList).networkNum = networkNum;
-    offset += 1;
+    offset += sizeof(networknumBytes);
     for (int i = 0; i < networkNum; i++)
     {
         /* code */
@@ -231,10 +239,18 @@ BOAT_RESULT BoATEth_GetNetworkList(BoatEthNetworkContext *networkList)
     }
     /* onetime network  */
     offset = 0;
-    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,&networkNum,1,BOAT_STORE_TYPE_RAM);
+    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),BOAT_STORE_TYPE_RAM);
     if(result != BOAT_SUCCESS){
         networkNum = 0;
         // return BOAT_SUCCESS;
+    }else{
+        result = utility_check_NumBytes(networknumBytes,&networkNum);
+        if(result != BOAT_SUCCESS){
+            // BoatLog(BOAT_LOG_NORMAL,"check network num fail");
+            // return result;
+            networkNum = 0;
+            result = BOAT_SUCCESS;
+        }
     }
     networkList->networkNum += networkNum;
     offset += 1;
@@ -519,18 +535,27 @@ __BOATSTATIC BOAT_RESULT BoATEth_NetworkDataCtx_Store(BoatEthNetworkData *mNetwo
     BUINT8 networkNum = 0;
     BUINT32 networkLength = 0 ,networkLengthLen = 0, offset = 0 ;
     BUINT8 lengthbytes[3] = {0};
+    BUINT8 networknumBytes[4] = {0};
     // BUINT8 testbuf[1024] = {0};
     BUINT8 *networkData = NULL;
 
-    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,&networkNum,1,storeType);
+    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),storeType);
     /* if read Nvram failed , no network */
     if(result != BOAT_SUCCESS){
         networkNum = 0;
+    }else{
+        result = utility_check_NumBytes(networknumBytes,&networkNum);
+        if(result != BOAT_SUCCESS){
+            // BoatLog(BOAT_LOG_NORMAL,"check network num fail");
+            // return result;
+            networkNum = 0;
+            result = BOAT_SUCCESS;
+        }
     }
     if(networkNum >= BOAT_MAX_NETWORK_NUM){
         return BOAT_ERROR;
     }
-    offset += 1;
+    offset += sizeof(networknumBytes);
     for (int i = 0; i < networkNum; i++)
     {
         /* network length */
@@ -569,7 +594,8 @@ __BOATSTATIC BOAT_RESULT BoATEth_NetworkDataCtx_Store(BoatEthNetworkData *mNetwo
     }
     BoatFree(networkData);
     networkNum ++;
-    result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,0,&networkNum,1,storeType);
+    utility_get_NumBytes(networkNum,networknumBytes);
+    result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,0,networknumBytes,sizeof(networknumBytes),storeType);
     return result;
 }
 
@@ -641,6 +667,7 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
     BUINT32 offset = 0, offset_moveFrom = 0 , offset_moveTo = 0;
     BUINT32 networkLength = 0 , networkLengthLen = 0 , paramLength = 0 , paramLengthLen = 0 ;
     BUINT8 lengthBytes[3] = {0};
+    BUINT8 networknumBytes[4] = {0};
     BUINT8 *networkData = NULL;
     if(index >= BOAT_MAX_NETWORK_NUM){
         return BOAT_ERROR;
@@ -650,16 +677,20 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
     */
     if(index == 0){
         /* set network_num of onetime network to 0 */
-        memset(lengthBytes,0x00,sizeof(lengthBytes));
-        result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,0,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_RAM);
+        memset(networknumBytes,0x00,sizeof(networknumBytes));
+        result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,0,networknumBytes,sizeof(networknumBytes),BOAT_STORE_TYPE_RAM);
         return result;
     }else{ // persistent network
-        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,&networkNum,1,BOAT_STORE_TYPE_FLASH);
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),BOAT_STORE_TYPE_FLASH);
     /* if read Nvram failed , no network */
+    if(result != BOAT_SUCCESS){
+        return result;
+    }
+    result = utility_check_NumBytes(networknumBytes,&networkNum);
     if(result != BOAT_SUCCESS || networkNum == 0){
         return result;
     }
-    offset ++;
+    offset += sizeof(networknumBytes);
     for ( i = 0; i < networkNum; i++)
     {
         /* read each network length */
@@ -700,7 +731,8 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
         return BOAT_ERROR;
     }
     networkNumNew = networkNum -1;
-    result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,0,&networkNumNew,sizeof(networkNumNew),BOAT_STORE_TYPE_FLASH); // only need to reset network length bytes
+    utility_get_NumBytes(networkNumNew,networknumBytes);
+    result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,0,networknumBytes,sizeof(networknumBytes),BOAT_STORE_TYPE_FLASH); // only need to reset network length bytes
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_NORMAL,"delete network fail ");
         return result;
@@ -711,7 +743,8 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
         result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH); // only need to reset network length bytes
         if(result != BOAT_SUCCESS){
             /* recover networkNum */
-        result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,&networkNum,sizeof(networkNum),BOAT_STORE_TYPE_FLASH); 
+            utility_get_NumBytes(networkNum,networknumBytes);
+        result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),BOAT_STORE_TYPE_FLASH); 
         if(result != BOAT_SUCCESS){
             BoatLog(BOAT_LOG_NORMAL,"delete network fail ");
             return result;
@@ -758,7 +791,9 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
         BoatFree(networkData);
         if(result != BOAT_SUCCESS){
             /* recover networkNum */
-            result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,&networkNum,sizeof(networkNum),BOAT_STORE_TYPE_FLASH); 
+            utility_get_NumBytes(networkNum,networknumBytes);
+            offset = 0;
+            result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),BOAT_STORE_TYPE_FLASH); 
             if(result != BOAT_SUCCESS){
             BoatLog(BOAT_LOG_NORMAL,"delete network fail ");
             return result;
@@ -792,6 +827,7 @@ BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData ,BUINT8 in
 	BUINT32 offset = 0 , offset_obj = 0;
 	BUINT32  networkLength = 0 , networkLengthLen = 0 , paramLength = 0 , paramLengthLen = 0;
 	BUINT8 lengthBytes[3] = {0};
+    BUINT8 networknumBytes[4] = {0};
     BoatStoreType storetype;
 
     if(index == 0){  // onetime wallet
@@ -800,12 +836,16 @@ BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData ,BUINT8 in
         storetype = BOAT_STORE_TYPE_FLASH;
     }
 
-	result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,&networkNum,1,storetype);
+	result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),storetype);
     /* if read Nvram failed , no wallet */
+    if(result != BOAT_SUCCESS){
+        return result;
+    }
+    result = utility_check_NumBytes(networknumBytes,&networkNum);
     if(result != BOAT_SUCCESS || networkNum == 0){
         return BOAT_ERROR;
     }
-	offset ++ ;
+	offset += sizeof(networknumBytes) ;
 	for (BUINT8 i = 0; i < networkNum; i++)
 	{
 		

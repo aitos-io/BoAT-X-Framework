@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-13 16:37:32
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-14 10:42:56
+ * @LastEditTime: 2022-09-14 12:10:06
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -43,6 +43,7 @@ static BOAT_RESULT BoAT_GetPirkeyByIndex(BUINT8 index,BoatKeypairExtraData *prik
 	BUINT32 offset = 0;
 	BUINT32  paramLength = 0 , paramLengthLen = 0;
 	BUINT8 lengthBytes[3] = {0};
+    BUINT8 prikeynumBytes[4] = {0};
 	BUINT8 ciphertext[BOAT_KEYSTORE_PRIKEY_LEN] = {0};
 	BoatStoreType storetype;
 	if(prikey == NULL){
@@ -54,13 +55,17 @@ static BOAT_RESULT BoAT_GetPirkeyByIndex(BUINT8 index,BoatKeypairExtraData *prik
     }else{
         storetype = BOAT_STORE_TYPE_FLASH;
     }
-	result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset,&prikeyNum,1,storetype);
-    offset++;
+	result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset,prikeynumBytes,sizeof(prikeynumBytes),storetype);
+    if(result != BOAT_SUCCESS){
+        return result;
+    }
+    result = utility_check_NumBytes(prikeynumBytes,&prikeyNum);
     BoatLog(BOAT_LOG_NORMAL,"prikey num = %d",prikeyNum);
     /* if read Nvram failed , no keypair */
     if(result != BOAT_SUCCESS || prikeyNum == 0){
         return BOAT_ERROR;
     }
+    offset += sizeof(prikeynumBytes);
 	for (BUINT8 i = 0; i < prikeyNum; i++)
 	{
 		/* prikey index */
@@ -200,6 +205,7 @@ BOAT_RESULT BoAT_Keystore_Sign(BoatKeypairPriKeyType type,BUINT8 prikeyIndex, co
 BOAT_RESULT BoAT_Keystore_store_prikey(BUINT8 keypairIndex,BUINT8 *prikey,BUINT32 prikeyLen){
     BOAT_RESULT result = BOAT_SUCCESS;
     BUINT8 lengthBytes[3] = {0};
+    BUINT8 prikeynumBytes[4] = {0};
     BUINT8 storebuf[4+BOAT_KEYSTORE_PRIKEY_LEN] = {0};
     BUINT8 index = 0,prikeyNum = 0;
     BUINT32 offset = 0,storeOffset = 0;
@@ -210,17 +216,25 @@ BOAT_RESULT BoAT_Keystore_store_prikey(BUINT8 keypairIndex,BUINT8 *prikey,BUINT3
     }else{
         storeType = BOAT_STORE_TYPE_FLASH;
     }
-    result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset,&prikeyNum,sizeof(prikeyNum),storeType);
+    result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset,prikeynumBytes,sizeof(prikeynumBytes),storeType);
     if(result != BOAT_SUCCESS ){
         BoatLog(BOAT_LOG_NORMAL,"read prikey num fail,ret = %d ",result);
         // return result;
         prikeyNum = 0;
+    }else{
+        result = utility_check_NumBytes(prikeynumBytes,&prikeyNum);
+        if(result != BOAT_SUCCESS){
+            // BoatLog(BOAT_LOG_NORMAL,"check prikey num fail");
+            // return result;
+            prikeyNum = 0;
+            result = BOAT_SUCCESS;
+        }
     }
     if(prikeyNum >= BOAT_MAX_KEYPAIR_NUM){
         return result;
     }
     BoatLog(BOAT_LOG_NORMAL,"read prikey num  = %d ",prikeyNum);
-    offset ++;
+    offset += sizeof(prikeynumBytes);
     for (size_t i = 0; i < prikeyNum; i++)
     {
         /* index */
@@ -281,7 +295,8 @@ BOAT_RESULT BoAT_Keystore_store_prikey(BUINT8 keypairIndex,BUINT8 *prikey,BUINT3
     }
     prikeyNum ++;
     offset = 0;
-    result = BoATStoreSoftRotNvram(BOAT_STORE_PRIKEY,offset,(BUINT8*)&prikeyNum,sizeof(prikeyNum),storeType);
+    utility_get_NumBytes(prikeyNum,prikeynumBytes);
+    result = BoATStoreSoftRotNvram(BOAT_STORE_PRIKEY,offset,prikeynumBytes,sizeof(prikeynumBytes),storeType);
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_NORMAL,"store prikey data err ");
     }

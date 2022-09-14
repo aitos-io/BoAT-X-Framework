@@ -1437,3 +1437,61 @@ BOAT_RESULT utility_signature_to_asn1(BUINT8 *signature , BUINT32 signaturelen,B
     *outlen = offset;
     return result;
 }
+
+/**
+ * @description: 
+ *  This function get  num of keypair / network / prikey object from 4 bytes.
+ *  the format of 4 bytes data like this:
+ *  0xAA 0x55 num crc
+ *  crc is the XOR result of the first 3 bytes of data  
+ * @param[in] {BUINT8} temp
+ *  the 4 bytes data
+ * @param[out] {BUINT8} *num
+ *  quantity of keypair/network/prikey objects
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT utility_check_NumBytes(BUINT8 temp[4],BUINT8 *num)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+    BUINT8 crc = 0;
+    if(temp[0] != 0xAA || temp[1] != 0x55){
+        return BOAT_ERROR;
+    }
+    crc = temp[0]^temp[1];
+    crc = crc^temp[2];
+    if(crc != temp[3]){
+        return BOAT_ERROR;
+    }
+    *num = temp[2];
+    return result;
+}
+
+/**
+ * @description: 
+ *  This function get  4 bytes data of  keypair / network / prikey object by num.
+ *  the format of 4 bytes data like this:
+ *  0xAA 0x55 num crc
+ *  crc is the XOR result of the first 3 bytes of data  
+ * @param {BUINT8} num
+ * @param {BUINT8} temp
+ * @return {*}
+ *  This function have no return.
+ * @author: aitos
+ */
+void utility_get_NumBytes(BUINT8 num,BUINT8 temp[4])
+{
+    BUINT8 crc = 0;
+    temp[0] = 0xAA;
+    temp[1] = 0x55;
+    temp[2] = num;
+    crc = temp[0] ^ temp[1];
+    crc = crc ^ temp[2];
+    temp[3] = crc;
+    return;
+}
+
+
