@@ -71,7 +71,7 @@ void user_task_init()
 }
 ```
 
-### 2. Add the header file path that needs to be quoted in examples.mk
+### 3. Add the header file path that needs to be quoted in examples.mk
 
 Open `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/examples.mk` 
 Add the following content in the header file path addition:
@@ -81,7 +81,7 @@ DEPS_PATH_EXAMPLES += $(EXAMPLES_SRC_DIR)/BoAT-X-Framework/vendor/platform/inclu
 ```
 
 
-### 3. Add the static library file path to XinYi-XY1100-R14 platform
+### 4. Add the static library file path to XinYi-XY1100-R14 platform
 Open `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/userapp.mk` 
 Add the following in the location where the static library is linked:
 ```
@@ -89,15 +89,15 @@ SRCS_LIBS_INC += -L$(USERAPP_SRC_DIR)/examples/BoAT-X-Framework/lib/ -lboatwalle
 SRCS_LIBS_INC += -L$(USERAPP_SRC_DIR)/examples/BoAT-X-Framework/lib/ -lboatvendor
 ```
 
-### 4. Configure the cross-compilation environment of BoAT-X-Framework
+### 5. Configure the cross-compilation environment of BoAT-X-Framework
 Open `<XY1100 Root>/userapp/BoAT-X-Framework/vendor/platform/XinYi-XY1100/external.env` 
 Configure the actual path of the local cross compiler after `CC` and `AR`
 
-### 5. Configure the cross-compilation environment of XinYi-XY1100-R14 platform
+### 6. Configure the cross-compilation environment of XinYi-XY1100-R14 platform
 Configure the cross-compilation environment of XinYi-XY1100-R14 in the local PC according to the documentation requirements of XY1100-R14
 
 
-### 6. Configure the macro options of mbedtls in the XinYi-XY1100-R14 platform
+### 7. Configure the macro options of mbedtls in the XinYi-XY1100-R14 platform
 Open `<XY1100 Root>/APPLIB/Dtls/xy_dtls/inc/los_mbedtls_config.h`
 Add the following:
 ```
