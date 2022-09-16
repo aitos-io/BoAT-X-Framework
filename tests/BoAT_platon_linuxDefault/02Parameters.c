@@ -178,6 +178,22 @@ START_TEST(test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx)
 }
 END_TEST
 
+START_TEST(test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat)
+{
+	BSINT32 rtnVal;
+    BoatPlatONTx tx_ptr;
+
+    BoatIotSdkInit();
+
+    rtnVal = platonWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   "0x123G", TEST_RECIPIENT_ADDRESS, hrp);
+	ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_parameters_suite(void)
 {
     /* Create Suite */
@@ -197,6 +213,7 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_param_api, test_004ParametersInit_0003TxInitSuccessNullGasPrice); 
     tcase_add_test(tc_param_api, test_004ParametersInit_0004TxInitFailureErrorGasPriceHexFormat); 
     tcase_add_test(tc_param_api, test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat); 
 
     return s_param;
 }
