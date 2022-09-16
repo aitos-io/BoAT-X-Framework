@@ -509,7 +509,44 @@ BoatAddress address;
 UtilityHexToBin(address, 20, "A16502DDda899443eF54Ddd011eE39E1535c78dB", TRIMBIN_TRIM_NO, BOAT_FALSE);
 UtilityChangeEndian(address, 20);
 result_str = 合约名_setData(address);
-合约名_setData(data); 
 ```
 
 ***注意：对ADDRESS地址需要进行端序转换***
+
+#### bool类型
+Solidity中的bool变成BUINT8类型即C语言中的unsigned char类型。  
+Solidity函数：setData(address data);  
+C语言函数：合约名_setData(BoatAddress data);  
+```
+BUINT8 condition;
+condition = BOAT_TRUE;
+result_str = 合约名_setData(condition);
+```
+
+#### uint8类型
+该类型具备C语言的对应类型，为BUINT8。剩下的参考bool类型。
+
+#### uint16类型
+该类型具备C语言的对应类型，为BUINT16。剩下的参考bool类型。
+
+#### uint32类型
+该类型具备C语言的对应类型，为BUINT32。剩下的参考bool类型。
+
+#### uint64类型
+该类型具备C语言的对应类型，为BUINT64。剩下的参考bool类型。
+
+***注意：对于unsigned long long int为32位的运行环境，暂不能支持该类型***
+
+#### sint8类型
+该类型具备C语言的对应类型，为BSINT8。剩下的参考bool类型。
+
+#### sint16类型
+该类型具备C语言的对应类型，为BSINT16。剩下的参考bool类型。
+
+#### sint32类型
+该类型具备C语言的对应类型，为BSINT32。剩下的参考bool类型。
+
+#### sint64类型
+该类型具备C语言的对应类型，为BSINT32。剩下的参考bool类型。
+
+***注意：对于long long int为32位的运行环境，暂不能支持该类型***

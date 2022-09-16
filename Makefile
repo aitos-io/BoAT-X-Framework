@@ -64,8 +64,9 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
 # - ChinaMobile-ML302v2       : China Mobile's LTE Cat.1 module API version 2
 # - MTK-MT3620                : MTK MT3620
-# - XinYi-XY1100              : XY1100
+# - XinYi-XY1100              : XY1100 R13
 # - Fibocom-MA510             : MA510
+# - XinYi-XY1100-R14          : XY1100 R14
 PLATFORM_TARGET ?= linux-default
 
 # Environment-specific Settings
@@ -173,6 +174,8 @@ else ifeq ($(PLATFORM_TARGET), ChinaMobile-ML302v2)
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else ifeq ($(PLATFORM_TARGET), XinYi-XY1100) 
     SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+else ifeq ($(PLATFORM_TARGET), XinYi-XY1100-R14) 
+    SOFT_CRYPTO ?= CRYPTO_MBEDTLS
 else ifeq ($(PLATFORM_TARGET), MTK-MT3620) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else ifeq ($(PLATFORM_TARGET), Fibocom-MA510) 
@@ -209,6 +212,10 @@ endif
 # - CJSON_DEFAULT : default cJSON library
 # - CJSON_OUTTER  : externally provided by users
 CJSON_LIBRARY ?= CJSON_DEFAULT
+
+ifeq ($(PLATFORM_TARGET), XinYi-XY1100-R14)
+    CJSON_LIBRARY ?= CJSON_OUTTER
+endif
 
 ifeq ($(CJSON_LIBRARY), CJSON_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_SDK_DIR)/third-party/cJSON

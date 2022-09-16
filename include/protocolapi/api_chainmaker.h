@@ -32,8 +32,8 @@ api_chainmaker.h is header file for BoAT IoT SDK chainmaker's interface.
 #define BOAT_CHAINMAKER_CERT_MAX_LEN              1024
 #define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN  8192 //!< The maximum length of HTTP2 send buffer
 #define BOAT_HLCHAINMAKER_ARGS_MAX_NUM            10
-#define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN     100
-#define BOAT_RESPONSE_MESSAGE_MAX_LEN             10
+#define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN     128
+#define BOAT_RESPONSE_MESSAGE_MAX_LEN             2048
 #define BAOT_CHAINMAKER_NODE_STR_LEN              127
 // call a pre created user contract, tx included in block
 // query a pre-created user contract, tx not included in block
@@ -85,19 +85,14 @@ typedef enum TBoatresponseCode {
 } BoatresponseCode;
 
 
-typedef struct TBoatInvokeResponse {	
+typedef struct TBoatResponseData {	
 
 		BoatresponseCode code;
 		char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
+        char contract_result[BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN];
 		BUINT32 gas_used;
-} BoatInvokeResponse;
+} BoatResponseData;
 
-typedef struct TBoatQueryResponse {	
-    BoatresponseCode code;
-		char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
-		char contract_result[BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN];
-		BUINT32 gas_used;
-} BoatQueryResponse;
 
 //! chainmaker certificate information config structure
 typedef struct TBoatHlchainmakerCertInfoCfg {
@@ -254,7 +249,7 @@ BOAT_RESULT BoatHlchainmakerAddTxParam(BoatHlchainmakerTx *tx_ptr, BUINT8 length
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatInvokeResponse *invoke_response);
+BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatResponseData *response_data);
 
 
 /*!****************************************************************************
@@ -279,7 +274,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatQueryResponse *query_response);
+BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* method, char* contract_name, BoatResponseData *response_data);
 /*!****************************************************************************
  * @brief 
  *   chainmaker wallet de-initialize.
