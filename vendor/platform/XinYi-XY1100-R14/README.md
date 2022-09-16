@@ -60,6 +60,19 @@
   $(wildcard $(EXAMPLES_SRC_DIR)/boat_demo/*.c) \
   ```
 
+### 2、注册demo的入口函数
+打开`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/basic/src/main.c`文件，对demo的入口函数做外部声明之后，将demo入口函数添加至`user_task_init`函数中.以`boat_demo.c`为例，入口函数为`void boat_task_demo_init()`,可以参照如下代码进行注册：
+```
+extern void boat_task_demo_init();
+
+void user_task_init()
+{
+  boat_task_demo_init();
+}
+
+```
+
+
 ### 2、在examples.mk中添加需要引用的头文件路径
 
 打开`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/examples.mk`文件
