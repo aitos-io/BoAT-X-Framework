@@ -263,6 +263,24 @@ START_TEST(test_004ParametersInit_0010TxInitFailureNullhrp)
 }
 END_TEST
 
+START_TEST(test_004ParametersInit_0011TxInitFailureLonghrp)
+{
+	BSINT32 rtnVal;
+    BoatPlatONTx tx_ptr;
+
+    BoatIotSdkInit();
+
+    rtnVal = platonWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+    rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS, "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_parameters_suite(void)
 {
     /* Create Suite */
@@ -287,6 +305,7 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_param_api, test_004ParametersInit_0008TxInitFailureRecipientErrorHexFormat); 
     tcase_add_test(tc_param_api, test_004ParametersInit_0009TxInitFailureRecipientLongLength); 
     tcase_add_test(tc_param_api, test_004ParametersInit_0010TxInitFailureNullhrp); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0011TxInitFailureLonghrp); 
 
     return s_param;
 }
