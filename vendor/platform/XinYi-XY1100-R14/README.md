@@ -72,8 +72,7 @@ void user_task_init()
 
 ```
 
-
-### 2、在examples.mk中添加需要引用的头文件路径
+### 3、在examples.mk中添加需要引用的头文件路径
 
 打开`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/examples.mk`文件
 
@@ -83,7 +82,7 @@ DEPS_PATH_EXAMPLES += $(EXAMPLES_SRC_DIR)/BoAT-X-Framework/include
 DEPS_PATH_EXAMPLES += $(EXAMPLES_SRC_DIR)/BoAT-X-Framework/vendor/platform/include
 ```
 
-### 3、添加BoAT-X-Framework编译生成的静态库.a文件路径到XinYi-XY1100-R14平台
+### 4、添加BoAT-X-Framework编译生成的静态库.a文件路径到XinYi-XY1100-R14平台
 
 打开`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/userapp.mk`文件
   
@@ -93,17 +92,17 @@ DEPS_PATH_EXAMPLES += $(EXAMPLES_SRC_DIR)/BoAT-X-Framework/vendor/platform/inclu
   SRCS_LIBS_INC += -L$(USERAPP_SRC_DIR)/examples/BoAT-X-Framework/lib/ -lboatvendor
   ```
 
-### 4、配置BoAT-X-Framework的交叉编译环境
+### 5、配置BoAT-X-Framework的交叉编译环境
 
   打开`<XY1100 Root>/userapp/BoAT-X-Framework/vendor/platform/XinYi-XY1100/external.env`文件
   
   在`CC`和`AR`后面配置本地交叉编译器的实际路径
   
-### 5、配置XinYi-XY1100-R14平台的交叉编译环境
+### 6、配置XinYi-XY1100-R14平台的交叉编译环境
   
     按照XY1100-R14的文档要求在本地PC中配置好XinYi-XY1100-R14的交叉编译环境
 
-### 6、在XinYi-XY1100-R14平台中配置mbedtls的宏选项
+### 7、在XinYi-XY1100-R14平台中配置mbedtls的宏选项
 
 打开`<XY1100 Root>/APPLIB/Dtls/xy_dtls/inc/los_mbedtls_config.h`文件
 
