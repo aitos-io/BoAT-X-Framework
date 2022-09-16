@@ -91,7 +91,7 @@ END_TEST
 START_TEST(test_004ParametersInit_0002TxInitFailureNullParam)
 {
     BSINT32 rtnVal;
-    BoatEthTx tx_ptr;
+    BoatPlatONTx tx_ptr;
 
     BoatIotSdkInit();
 
@@ -129,6 +129,23 @@ START_TEST(test_004ParametersInit_0002TxInitFailureNullParam)
 }
 END_TEST
 
+START_TEST(test_004ParametersInit_0003TxInitSuccessNullGasPrice)
+{
+	BSINT32 rtnVal;
+    BoatPlatONTx tx_ptr;
+
+    BoatIotSdkInit();
+
+    rtnVal = platonWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+	rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, NULL, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS, hrp);	
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_parameters_suite(void)
 {
     /* Create Suite */
@@ -145,6 +162,7 @@ Suite *make_parameters_suite(void)
     /* Test cases are added to the test set */
     tcase_add_test(tc_param_api, test_004ParametersInit_0001TxInitSuccess); 
     tcase_add_test(tc_param_api, test_004ParametersInit_0002TxInitFailureNullParam); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0003TxInitSuccessNullGasPrice); 
 
     return s_param;
 }
