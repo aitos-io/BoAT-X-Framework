@@ -60,6 +60,16 @@ Add the following line as below:
 $(wildcard $(EXAMPLES_SRC_DIR)/boat_demo/*.c) \
 ```
 
+### 2.Register demo's entry-point function
+Open `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/basic/src/main.c`, make an external declaration of the demo entry function, and add the demo entry function to the `user_task_init` function. Use `boat_demo.c `For example, the entry function is `void boat_task_demo_init()`, which can be registered by referring to the following code:
+```
+extern void boat_task_demo_init();
+
+void user_task_init()
+{
+  boat_task_demo_init();
+}
+```
 
 ### 2. Add the header file path that needs to be quoted in examples.mk
 
