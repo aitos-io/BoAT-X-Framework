@@ -281,6 +281,26 @@ START_TEST(test_004ParametersInit_0011TxInitFailureLonghrp)
 }
 END_TEST
 
+START_TEST(test_005ParametersSet_0001GetNonceFromNetworkSuccess)
+{
+    BSINT32 rtnVal;
+    BoatPlatONTx tx_ptr;
+
+    BoatIotSdkInit();
+
+    rtnVal = platonWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+	
+    rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS, hrp);
+    ck_assert(rtnVal == BOAT_SUCCESS);
+
+	rtnVal = BoatEthTxSetNonce(&tx_ptr, BOAT_ETH_NONCE_AUTO);	
+    ck_assert(rtnVal == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_parameters_suite(void)
 {
     /* Create Suite */
@@ -305,7 +325,9 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_param_api, test_004ParametersInit_0008TxInitFailureRecipientErrorHexFormat); 
     tcase_add_test(tc_param_api, test_004ParametersInit_0009TxInitFailureRecipientLongLength); 
     tcase_add_test(tc_param_api, test_004ParametersInit_0010TxInitFailureNullhrp); 
-    tcase_add_test(tc_param_api, test_004ParametersInit_0011TxInitFailureLonghrp); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0011TxInitFailureLonghrp);
+
+    tcase_add_test(tc_param_api, test_005ParametersSet_0001GetNonceFromNetworkSuccess); 
 
     return s_param;
 }
