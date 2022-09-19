@@ -36,7 +36,8 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/*.o) \
 				$(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/protos/*/*.o) \
-		  		$(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/protos/*/*/*.o) 
+		  		$(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/protos/*/*/*.o) \
+				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/hlfabric/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathwbcs/*.o) \

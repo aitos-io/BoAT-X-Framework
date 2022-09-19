@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-09 11:24:55
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-09 12:00:16
+ * @LastEditTime: 2022-09-16 17:01:27
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -84,11 +84,103 @@ typedef struct TBoatHlfabricNetworkConfig
 
 //!@brief fabric network  structure
 //! fabric network  structure
-typedef struct TBoatHlfabricNetwork
+typedef struct TBoatHlfabricNetworkData
 {
+	BUINT8 index;
 	BoatHlfabricCertInfoCfg     accountCertContent;   //!< certificate content of account
 	BoatHlfabricCertInfoCfg     tlsClientCertContent; //!< certificate content of TLS 	
 	BoatHlfabricNodesCfg 		nodesCfg;
-}BoatHlfabricNetwork;
+}BoatHlfabricNetworkData;
+
+typedef struct TBoatHlfabricNetworkContext
+{
+	/* data */
+	BUINT8 networkNum;
+	BoatHlfabricNetworkData networks[BOAT_MAX_NETWORK_NUM];  //fabirc networks
+}BoatHlfabricNetworkContext;
+
+
+/**
+ * @description: 
+ *  This function get network list ,include persistent networks and onetime network
+ * @param[out] {BoatHlfabricNetworkContext} *networkList
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoATHlfabric_GetNetworkList(BoatHlfabricNetworkContext *networkList);
+
+/**
+ * @description: 
+ *  This function reset every param in BoatHlfabricNetworkData;
+ *  if someone have malloced memory , free the memory;
+ * @param {BoatHlfabricNetworkData} networkData
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoATHlfabric_FreeNetworkData(BoatHlfabricNetworkData networkData);
+
+/**
+ * @description: 
+ *  This function use to free BoatHlfabricNetworkContext param.
+ * @param[in] {BoatHlfabricNetworkContext} networkList
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoATHlfabric_FreeNetworkContext(BoatHlfabricNetworkContext networkList);
+
+/**
+ * @description: 
+ * This function creat fabric network
+ * @param[in] {BoatHlfabricNetworkConfig} networkConfig
+ * @param[in] {BoatStoreType} storeType
+ *  For onetime network or test , select store in ram .
+ *  For persistent network ,slect store in flash.
+ * @return 
+ *   This function returns network index if creat network successfully.\n
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *   for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoatHlfabricNetworkCreate(BoatHlfabricNetworkConfig *networkConfig,BoatStoreType storeType);
+
+
+/**
+ * @description: 
+ *  This function delete the network which networkIndex equals index.
+ *  This function will delete the network data in Nvram.
+ * @param {BUINT8} index
+ *  the index want to delete
+ * @return {*}
+ *   This function returns BOAT_SUCCESS if delete successfully.\n
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *   for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoATHlfabricNetworkDelete(BUINT8 index);
+
+
+/**
+ * @description: 
+ *  This function read network data from Nvram by index.
+ * @param {BoatHlfabricNetworkData} *networkData
+ * @param {BUINT8} index
+ *  the network index want to read
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoATHlfabric_GetNetworkByIndex(BoatHlfabricNetworkData *networkData ,BUINT8 index);
+
 
 #endif

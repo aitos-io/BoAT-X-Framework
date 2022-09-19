@@ -69,7 +69,7 @@ typedef enum
 //!fabric key pairs structure
 typedef struct TBoatHlfabricKeyPair
 {
-	BoatWalletPriKeyCtx  prikeyCtx; //!< @NOTE This field MUST BE placed in the first member of the structure
+	BoatKeypairPriKeyCtx  prikeyCtx; //!< @NOTE This field MUST BE placed in the first member of the structure
 	                                //!< because in function BoatWalletCreate(), 
 }BoatHlfabricKeyPair;
 
@@ -96,7 +96,7 @@ typedef struct TBoatHlfabricWallet
 	BoatHlfabricTlsCAchain    tlsCAchain;   //!< tls rootCA certificate list
 #endif /* end of BOAT_HLFABRIC_TLS_SUPPORT */
     // BoatHlfabricNetworkInfo   network_info; //!< Network information
-	BoatHlfabricNetwork network_info;
+	BoatHlfabricNetworkData network_info;
 	
 	void  *http2Context_ptr; //!< http2 information
 }BoatHlfabricWallet;
@@ -203,29 +203,6 @@ extern "C" {
 #endif
 
 
-/*!****************************************************************************
- * @brief 
- *   Set fabric transaction related private key index and certificate information.
- * 
- * @details
- *   This function used to set transaction releated key pairs information.
- *   The private key format is PCKS#8. for fabric, the default used curve is SECP256R1.
- *
- * @param wallet_ptr
- *   Fabric wallet pointer.
- *
- * @param prikeyCtx_config
- *   The private key information to be settings.
- *
- * @param certContent
- *   The content of the certificate to be settings.
- *
- * @return
- *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
- ******************************************************************************/
-BOAT_RESULT BoatHlfabricWalletSetAccountInfo(BoatHlfabricWallet *wallet_ptr, 
-											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											 const BoatHlfabricCertInfoCfg certContent);
 
 
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
@@ -282,29 +259,6 @@ BOAT_RESULT BoatHlfabricWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr,
 #endif
 
 
-/*!****************************************************************************
- * @brief 
- *   Set fabric network information.
- * 
- * @details
- *   This function used to set fabric network information, which include 
- *   endorser and orderor node network information.
- *
- * @param wallet_ptr 
- *   Fabric wallet pointer.
- *
- * @param endorserInfo_ptr
- *   First member address of endorser node info array, the array include node 
- *   URL and node hostname. 
- *   \n Node URL is endorser addresss in "IP/domain name:port" format; node 
- *   hostname is the CN field of endorser certificate, it is valid when TLS 
- *   be enabled only.
- *
- * @return 
- *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
- ******************************************************************************/
-BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr, 
-							const BoatHlfabricNodesCfg endorserInfo_ptr );
 
 
 /*!****************************************************************************
@@ -315,8 +269,8 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
  *   This function used to initinal fabric wallet, include alloc wallet structrue
  *   memory, setup fabric account information, TLS information and network information.
  *
- * @param config_ptr
- *   The fabric wallet configuration structure pointer.
+ * @param keypairIndex
+ *   The keypair index.
  *
  * @param config_size 
  *   The fabric wallet configuration structure size.
@@ -324,8 +278,7 @@ BOAT_RESULT BoatHlfabricWalletSetNetworkInfo( BoatHlfabricWallet *wallet_ptr,
  * @return
  *   If initinal success, return fabric wallet pointer, otherwise return \c NULL.
  ******************************************************************************/
-BoatHlfabricWallet *BoatHlfabricWalletInit(const BoatHlfabricWalletConfig *config_ptr, 
-										   BUINT32 config_size);
+BoatHlfabricWallet *BoatHlfabricWalletInit(BUINT8 keypairIndex,BUINT8 networkIndex);
 
 
 /*!****************************************************************************
@@ -477,7 +430,7 @@ BOAT_RESULT BoatHlfabricTxEvaluate(BoatHlfabricTx *tx_ptr);
 BOAT_RESULT BoatHlfabricTxSubmit(BoatHlfabricTx *tx_ptr);
 
 
-void fabricWalletConfigFree(BoatHlfabricWalletConfig wallet_config);
+void fabricWalletConfigFree(BoatHlfabricNetworkConfig wallet_config);
 
 #ifdef __cplusplus
 }

@@ -61,10 +61,10 @@ BoatEthWallet *BoatEthWalletInit(BUINT8 walletIndex,BUINT8 networkIndex)
         BoatLog(BOAT_LOG_CRITICAL, "get network by index fail");
         return NULL;
     }
-    if(wallet_ptr->network_info.protocolType != BOAT_PROTOCOL_ETHEREUM){
-        BoatLog(BOAT_LOG_CRITICAL, "this network is not for eth ");
-        return NULL;
-    }
+    // if(wallet_ptr->network_info.protocolType != BOAT_PROTOCOL_ETHEREUM){
+    //     BoatLog(BOAT_LOG_CRITICAL, "this network is not for eth ");
+    //     return NULL;
+    // }
     /* Init Web3 interface */
     wallet_ptr->web3intf_context_ptr = web3_init();
 

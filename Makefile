@@ -10,7 +10,7 @@ BOAT_PROTOCOL_USE_ETHEREUM   ?= 1
 BOAT_PROTOCOL_USE_PLATON     ?= 0
 BOAT_PROTOCOL_USE_PLATONE    ?= 0
 BOAT_PROTOCOL_USE_FISCOBCOS  ?= 0
-BOAT_PROTOCOL_USE_HLFABRIC   ?= 0
+BOAT_PROTOCOL_USE_HLFABRIC   ?= 1
 BOAT_PROTOCOL_USE_HWBCS      ?= 0
 BOAT_PROTOCOL_USE_CHAINMAKER ?= 0
 BOAT_DISCOVERY_PEER_QUERY    ?= 0
@@ -98,7 +98,9 @@ endif
 
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC),1)         
 BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/hlfabric \
-                -I$(BOAT_SDK_DIR)/protocol/boathlfabric \  
+                -I$(BOAT_SDK_DIR)/protocol/boathlfabric  \
+                -I$(BOAT_SDK_DIR)/protocol/common/http2intf \
+                -I$(BOAT_SDK_DIR)/protocol/boathlfabric/protos
 endif
 
 

@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-06 14:38:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-14 12:07:22
+ * @LastEditTime: 2022-09-16 16:01:55
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -161,29 +161,6 @@ __BOATSTATIC BOAT_RESULT BoATEth_GetNetworkFromNvram(BoatEthNetworkData *Network
             return result;
         }
         offset += paramDataLength; 
-        /* protocolType */
-        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthbytes,sizeof(lengthbytes),storeType);
-        if(result != BOAT_SUCCESS){
-            BoatLog(BOAT_LOG_NORMAL,"Read network protocoltype length fail , errorcode = %d ",result);
-            return result;
-        }
-        paramDataLength = UtilityGetLVData_L(lengthbytes);
-        if(paramDataLength < 0){
-            BoatLog(BOAT_LOG_NORMAL,"network protocoltype  length err ");
-            return BOAT_ERROR;
-        }
-        paramDataLengthLen = UtilityGetTLV_LL_from_len(paramDataLength);
-        offset += paramDataLengthLen;
-        if(offset - offset_obj + paramDataLength > networkDataLength ){
-            BoatLog(BOAT_LOG_NORMAL,"network protocoltype data err ");
-            return BOAT_ERROR;
-        }
-        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)(&Networkdata->protocolType),paramDataLength,storeType);
-        if(result != BOAT_SUCCESS){
-            BoatLog(BOAT_LOG_NORMAL,"Read network protocoltype fail , errorcode = %d ",result);
-            return result;
-        }
-        offset += paramDataLength; 
 
         /* end */
 
@@ -207,9 +184,11 @@ BOAT_RESULT BoATEth_GetNetworkList(BoatEthNetworkContext *networkList)
     BOAT_RESULT result = BOAT_SUCCESS;
     BUINT8 networkNum = 0;
     BUINT8 index = 0;
-    BUINT32 networkDataLength = 0  ;
+    BUINT32 networkDataLength = 0 ,networkDataLengthLen = 0 ;
     BUINT32 offset = 0 ;
     BUINT8 networknumBytes[4] = {0};
+    BUINT8 lengthBytes[3] = {0};
+    BoatProtocolType protocolType = BOAT_PROTOCOL_UNKNOWN;
     /* persistent network  */
     result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),BOAT_STORE_TYPE_FLASH);
     /* if read Nvram failed , no network */
@@ -229,13 +208,33 @@ BOAT_RESULT BoATEth_GetNetworkList(BoatEthNetworkContext *networkList)
     offset += sizeof(networknumBytes);
     for (int i = 0; i < networkNum; i++)
     {
-        /* code */
-        result = BoATEth_GetNetworkFromNvram(&(networkList->networks[index++]),offset,BOAT_STORE_TYPE_FLASH,&networkDataLength);
+        /* protocol type */
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8 *)&protocolType,sizeof(protocolType),BOAT_STORE_TYPE_FLASH);
         if(result != BOAT_SUCCESS){
             return result;
         }
-        offset += networkDataLength;
-
+        offset += sizeof(protocolType);   //protocol type
+        offset += sizeof(BUINT8);         // index
+        if(protocolType == BOAT_PROTOCOL_ETHEREUM){  // eth
+            result = BoATEth_GetNetworkFromNvram(&(networkList->networks[index++]),offset,BOAT_STORE_TYPE_FLASH,&networkDataLength);
+            if(result != BOAT_SUCCESS){
+                return result;
+            }
+            offset += networkDataLength;
+        }else{
+            result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
+            if(result != BOAT_SUCCESS){
+                return result;
+            }
+            networkDataLength = UtilityGetLVData_L(lengthBytes);
+            if(networkDataLength < 0){
+                BoatLog(BOAT_LOG_NORMAL,"network data  length err ");
+                return BOAT_ERROR;
+            }
+            networkDataLengthLen = UtilityGetTLV_LL_from_len(networkDataLength);
+            offset += (networkDataLength+networkDataLengthLen);
+            
+        }
     }
     /* onetime network  */
     offset = 0;
@@ -253,16 +252,36 @@ BOAT_RESULT BoATEth_GetNetworkList(BoatEthNetworkContext *networkList)
         }
     }
     networkList->networkNum += networkNum;
-    offset += 1;
+    offset += sizeof(networknumBytes);
     for (int i = 0; i < networkNum; i++)
     {
-        /* code */
-        result = BoATEth_GetNetworkFromNvram(&(networkList->networks[index++]),offset,BOAT_STORE_TYPE_RAM,&networkDataLength);
+        /* protocol type */
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8 *)&protocolType,sizeof(protocolType),BOAT_STORE_TYPE_RAM);
         if(result != BOAT_SUCCESS){
             return result;
         }
-        offset += networkDataLength;
-
+        offset += sizeof(protocolType);   //protocol type
+        offset += sizeof(BUINT8);         // index
+        if(protocolType == BOAT_PROTOCOL_ETHEREUM){  // eth
+            result = BoATEth_GetNetworkFromNvram(&(networkList->networks[index++]),offset,BOAT_STORE_TYPE_RAM,&networkDataLength);
+            if(result != BOAT_SUCCESS){
+                return result;
+            }
+            offset += networkDataLength;
+        }else{
+            result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_RAM);
+            if(result != BOAT_SUCCESS){
+                return result;
+            }
+            networkDataLength = UtilityGetLVData_L(lengthBytes);
+            if(networkDataLength < 0){
+                BoatLog(BOAT_LOG_NORMAL,"network data  length err ");
+                return BOAT_ERROR;
+            }
+            networkDataLengthLen = UtilityGetTLV_LL_from_len(networkDataLength);
+            offset += (networkDataLength+networkDataLengthLen);
+            
+        }
     }
 
     return result;
@@ -290,35 +309,33 @@ BOAT_RESULT BoATEth_FreeNetworkContext(BoatEthNetworkContext networkList)
         networkList.networks[i].chain_id = 0;
         networkList.networks[i].eip155_compatibility = BOAT_FALSE;
         memset(networkList.networks[i].node_url_str,0x00,sizeof(networkList.networks[i].node_url_str));
-        networkList.networks[i].protocolType = BOAT_PROTOCOL_UNKNOWN;
     }
     networkList.networkNum = 0;
     return BOAT_SUCCESS;
 }
 
-/**
- * @description: 
- *  This function initialize network list
- * @param[inout] {BoatEthNetworkContext} *mNetworkList
- * @return 
- *   This function returns BOAT_SUCCESS if initialization is successful.\n
- *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
- *   for details.
- * @author: aitos
- */
-__BOATSTATIC BOAT_RESULT BoATEth_Init_BoatEthNetworkContext(BoatEthNetworkContext *mNetworkList){
-    mNetworkList->networkNum = 0;
-    for (int i = 0; i < BOAT_MAX_NETWORK_NUM; i++)
-    {
-        /* code */
-        mNetworkList->networks[i].networkIndex = 0;
-        mNetworkList->networks[i].chain_id = 0;
-        mNetworkList->networks[i].eip155_compatibility = BOAT_FALSE;
-        memset(mNetworkList->networks[i].node_url_str,0x00,sizeof(mNetworkList->networks[i].node_url_str));
-        mNetworkList->networks[i].protocolType = BOAT_PROTOCOL_UNKNOWN;
-    }
-    return BOAT_SUCCESS;
-}
+// /**
+//  * @description: 
+//  *  This function initialize network list
+//  * @param[inout] {BoatEthNetworkContext} *mNetworkList
+//  * @return 
+//  *   This function returns BOAT_SUCCESS if initialization is successful.\n
+//  *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+//  *   for details.
+//  * @author: aitos
+//  */
+// __BOATSTATIC BOAT_RESULT BoATEth_Init_BoatEthNetworkContext(BoatEthNetworkContext *mNetworkList){
+//     mNetworkList->networkNum = 0;
+//     for (int i = 0; i < BOAT_MAX_NETWORK_NUM; i++)
+//     {
+//         /* code */
+//         mNetworkList->networks[i].networkIndex = 0;
+//         mNetworkList->networks[i].chain_id = 0;
+//         mNetworkList->networks[i].eip155_compatibility = BOAT_FALSE;
+//         memset(mNetworkList->networks[i].node_url_str,0x00,sizeof(mNetworkList->networks[i].node_url_str));
+//     }
+//     return BOAT_SUCCESS;
+// }
 
 /**
  * @description: 
@@ -332,38 +349,69 @@ __BOATSTATIC BOAT_RESULT BoATEth_Init_BoatEthNetworkContext(BoatEthNetworkContex
 __BOATSTATIC BOAT_RESULT BoATEth_GetFreeNetworkIndex_From_Persistent(void)
 {
     BOAT_RESULT result = BOAT_ERROR;
-    // BUINT8 flag = 0;
-    int i ,j;
-    BoatEthNetworkContext networkList;
-    BoATEth_Init_BoatEthNetworkContext(&networkList);
-    result = BoATEth_GetNetworkList(&networkList);
+    BUINT8 networkNum = 0;
+    BUINT8 i = 0 , j =0;
+    BUINT32 networkDataLength = 0 ,networkDataLengthLen = 0 ;
+    BUINT32 offset = 0 ;
+    BUINT8 networknumBytes[4] = {0};
+    BUINT8 lengthBytes[3] = {0};
+    BUINT8 indexBytes[BOAT_MAX_NETWORK_NUM] = {0};
+    /* persistent network num */
+    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),BOAT_STORE_TYPE_FLASH);
+    /* if read Nvram failed , no network */
     if(result != BOAT_SUCCESS){
-        BoatLog(BOAT_LOG_NORMAL,"get network list fail");
+        networkNum = 0;
+        // return BOAT_SUCCESS;
+    }else{
+        result = utility_check_NumBytes(networknumBytes,&networkNum);
+        if(result != BOAT_SUCCESS){
+            BoatLog(BOAT_LOG_NORMAL,"check network num fail");
+            // return result;
+            networkNum = 0;
+            result = BOAT_SUCCESS;
+        }
     }
-    if(networkList.networkNum == BOAT_MAX_NETWORK_NUM){
-        BoATEth_FreeNetworkContext(networkList);
+    if(networkNum >= BOAT_MAX_NETWORK_NUM){
         return BOAT_ERROR;
     }
-    for (i = 0; i < BOAT_MAX_NETWORK_NUM; i++)
+    offset += sizeof(networknumBytes);
+    for (size_t i = 0; i < networkNum; i++)
+    {
+        /* protocol type */
+        offset += sizeof(BoatProtocolType);
+        /* index */
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,&indexBytes[i],sizeof(BUINT8),BOAT_STORE_TYPE_FLASH);
+        if(result != BOAT_SUCCESS){
+            return result;
+        }
+        offset += sizeof(BUINT8);
+        /* network length */
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
+        if(result != BOAT_SUCCESS){
+            return result;
+        }
+        networkDataLength = UtilityGetLVData_L(lengthBytes);
+        if(networkDataLength < 0){
+            BoatLog(BOAT_LOG_NORMAL,"network data  length err ");
+            return BOAT_ERROR;
+        }
+        networkDataLengthLen = UtilityGetTLV_LL_from_len(networkDataLength);
+        offset += (networkDataLength + networkDataLengthLen);
+    }
+    for ( i = 0; i < BOAT_MAX_NETWORK_NUM; i++)
     {
         /* code */
-        for ( j = 0; j < networkList.networkNum; j++)
+        for ( j = 0; j < networkNum; j++)
         {
             /* code */
-            if(networkList.networks[j].networkIndex == (i+1))
+            if(indexBytes[j] == (i+1))
             {
                 break;
             }
         }
-        if(j == networkList.networkNum){
-            BoATEth_FreeNetworkContext(networkList);
+        if(j == networkNum){
             return i+1;
         }
-    }
-    BoATEth_FreeNetworkContext(networkList);
-    if(networkList.networkNum == 0){
-        BoatLog(BOAT_LOG_NORMAL,"have no network");
-        return 0;
     }
     return BOAT_ERROR;
 }
@@ -404,10 +452,6 @@ __BOATSTATIC BOAT_RESULT BoATEth_Get_NetworkData_Len(BoatEthNetworkData *network
     networkLength += (paramLength + paramLengthLen);
     /* acount url*/
     paramLength = strlen(networkData->node_url_str);
-    paramLengthLen  = UtilityGetTLV_LL_from_len(paramLength);
-    networkLength += (paramLength + paramLengthLen);
-    /*  protocoltype */
-    paramLength = sizeof(networkData->protocolType);
     paramLengthLen  = UtilityGetTLV_LL_from_len(paramLength);
     networkLength += (paramLength + paramLengthLen);
     /* all the data*/
@@ -477,13 +521,6 @@ __BOATSTATIC BOAT_RESULT BoATEth_Get_Network_Data(BoatEthNetworkData *mNetworkDa
         BoatLog(BOAT_LOG_NORMAL,"get wallet pubkey LV fail");
     return BOAT_ERROR;
     }
-    /*  network protocoltype */
-    memcpy(data+offset,&(mNetworkDataCtx->protocolType),sizeof(mNetworkDataCtx->protocolType));
-    result = add_L_withOffset(data,&offset,sizeof(mNetworkDataCtx->protocolType));
-    if(result < BOAT_SUCCESS){
-        BoatLog(BOAT_LOG_NORMAL,"get network protocol type LV fail");
-        return BOAT_ERROR;
-    }
 
     /* all the data*/
     networkLength = offset;
@@ -511,7 +548,6 @@ BOAT_RESULT BoATEthNetworkDataInit(BoatEthNetworkData *mNetworkDataCtx){
     mNetworkDataCtx->chain_id = 0;
     mNetworkDataCtx->eip155_compatibility = BOAT_FALSE;
     memset(mNetworkDataCtx->node_url_str,0x00,sizeof(mNetworkDataCtx->node_url_str));
-    mNetworkDataCtx->protocolType = BOAT_PROTOCOL_UNKNOWN;
     return BOAT_SUCCESS;
 }
 
@@ -534,11 +570,12 @@ __BOATSTATIC BOAT_RESULT BoATEth_NetworkDataCtx_Store(BoatEthNetworkData *mNetwo
     BOAT_RESULT result = BOAT_SUCCESS;
     BUINT8 networkNum = 0;
     BUINT32 networkLength = 0 ,networkLengthLen = 0, offset = 0 ;
+    BoatProtocolType protocol = BOAT_PROTOCOL_ETHEREUM;
     BUINT8 lengthbytes[3] = {0};
     BUINT8 networknumBytes[4] = {0};
     // BUINT8 testbuf[1024] = {0};
     BUINT8 *networkData = NULL;
-
+    boat_try_declare;
     result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),storeType);
     /* if read Nvram failed , no network */
     if(result != BOAT_SUCCESS){
@@ -553,21 +590,25 @@ __BOATSTATIC BOAT_RESULT BoATEth_NetworkDataCtx_Store(BoatEthNetworkData *mNetwo
         }
     }
     if(networkNum >= BOAT_MAX_NETWORK_NUM){
-        return BOAT_ERROR;
+        boat_throw(BOAT_ERROR,eth_exception);
     }
     offset += sizeof(networknumBytes);
     for (int i = 0; i < networkNum; i++)
     {
+        /* protocol type */
+        offset += sizeof(protocol);
+        /* network index */
+        offset += sizeof(BUINT8);
         /* network length */
         result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthbytes,sizeof(lengthbytes),storeType);
         if(result != BOAT_SUCCESS){
             BoatLog(BOAT_LOG_NONE,"read network length fail");
-            return result;
+            boat_throw(result,eth_exception);
         }
         networkLength = UtilityGetLVData_L(lengthbytes);
         if(networkLength < 0){
             BoatLog(BOAT_LOG_NORMAL,"network data length err ");
-            return BOAT_ERROR;
+           boat_throw(result,eth_exception);
         }
         networkLengthLen = UtilityGetTLV_LL_from_len(networkLength);
         offset += (networkLength + networkLengthLen);
@@ -575,27 +616,46 @@ __BOATSTATIC BOAT_RESULT BoATEth_NetworkDataCtx_Store(BoatEthNetworkData *mNetwo
     /* get network data */
     result = BoATEth_Get_NetworkData_Len(mNetworkDataCtx,&networkLength);
     if(result < BOAT_SUCCESS){
-        return result;
+        boat_throw(result,eth_exception);
     }
     networkData = BoatMalloc(networkLength);
     if(networkData == NULL){
-        return BOAT_ERROR;
+        boat_throw(BOAT_ERROR,eth_exception);
     }
     result = BoATEth_Get_Network_Data(mNetworkDataCtx,networkData,&networkLength);
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_NONE," get network data fail ");
-        BoatFree(networkData);
-        return result;
+        boat_throw(result,eth_exception);
     }
+    /* protocol type */
+    result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)&protocol,sizeof(protocol),storeType);
+    if(result != BOAT_SUCCESS){
+        boat_throw(result,eth_exception);
+    }
+    offset += sizeof(protocol);
+    /* network index */
+    result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)&mNetworkDataCtx->networkIndex,sizeof(mNetworkDataCtx->networkIndex),storeType);
+    if(result != BOAT_SUCCESS){
+        boat_throw(result,eth_exception);
+    }
+    offset += sizeof(mNetworkDataCtx->networkIndex);
+
     /* store network data */
     result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,networkData,networkLength,storeType);
     if(result != BOAT_SUCCESS){
-        return result;
+        boat_throw(result,eth_exception);
     }
-    BoatFree(networkData);
     networkNum ++;
     utility_get_NumBytes(networkNum,networknumBytes);
     result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,0,networknumBytes,sizeof(networknumBytes),storeType);
+	boat_catch(eth_exception)
+	{
+        BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+        result = boat_exception;
+    }
+    if(networkData != NULL){
+        BoatFree(networkData);
+    }
     return result;
 }
 
@@ -637,7 +697,6 @@ BOAT_RESULT BoatEthNetworkCreate(BoatEthNetworkConfig *networkConfig,BoatStoreTy
     mNetworkDataCtx.chain_id = networkConfig->chain_id;
     mNetworkDataCtx.eip155_compatibility = networkConfig->eip155_compatibility;
     strcpy(mNetworkDataCtx.node_url_str,networkConfig->node_url_str);
-    mNetworkDataCtx.protocolType = BOAT_PROTOCOL_ETHEREUM;
     result = BoATEth_NetworkDataCtx_Store(&mNetworkDataCtx,storeType);
     if(result != BOAT_SUCCESS){
         return result;
@@ -669,6 +728,7 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
     BUINT8 lengthBytes[3] = {0};
     BUINT8 networknumBytes[4] = {0};
     BUINT8 *networkData = NULL;
+    BoatProtocolType protocolType = BOAT_PROTOCOL_UNKNOWN;
     if(index >= BOAT_MAX_NETWORK_NUM){
         return BOAT_ERROR;
     }
@@ -693,8 +753,18 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
     offset += sizeof(networknumBytes);
     for ( i = 0; i < networkNum; i++)
     {
+        /* protocol type */
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)&protocolType,sizeof(protocolType),BOAT_STORE_TYPE_FLASH);
+        if(result != BOAT_SUCCESS){
+            return result;
+        }
+        /* network index */
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset+sizeof(protocolType),(BUINT8*)&networkIndex,sizeof(networkIndex),BOAT_STORE_TYPE_FLASH);
+        if(result != BOAT_SUCCESS){
+            return result;
+        }
         /* read each network length */
-        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset+sizeof(protocolType)+sizeof(networkIndex),lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
         if(result != BOAT_SUCCESS ){
             return result;
         }
@@ -704,25 +774,14 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
             return BOAT_ERROR;
         }
         networkLengthLen = UtilityGetTLV_LL_from_len(networkLength);
-        // offset += networkLengthLen;
-        /* network index  */
-        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset + networkLengthLen,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
-        if(result != BOAT_SUCCESS ){
-            return result;
-        }
-        paramLength = UtilityGetLVData_L(lengthBytes);
-        if(paramLength != 1){
-            BoatLog(BOAT_LOG_NORMAL,"network index length err ");
-            return BOAT_ERROR;
-        }
-        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset + networkLengthLen + 1,&networkIndex,sizeof(networkIndex),BOAT_STORE_TYPE_FLASH);
-        if(result != BOAT_SUCCESS ){
-            BoatLog(BOAT_LOG_NORMAL,"read network index err ");
-            return result;
-        }
-        if(networkIndex == index){
+
+        BoatLog(BOAT_LOG_NORMAL,"networkindex = %d ,index = %d ",networkIndex,index);
+        BoatLog(BOAT_LOG_NORMAL,"protocol type = %d ",protocolType);
+        if((networkIndex == index) && (protocolType == BOAT_PROTOCOL_ETHEREUM)){
             break;
         }
+        offset += sizeof(protocolType);
+        offset += sizeof(networkIndex);
         offset += (networkLengthLen + networkLength);
     }
     BoatLog(BOAT_LOG_NORMAL,"i= %d ",i);
@@ -755,13 +814,19 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
     }else{
         offset_moveTo = offset;
         // the next network
+        offset += sizeof(protocolType);
+        offset += sizeof(networkIndex);
         offset += (networkLengthLen + networkLength);
         offset_moveFrom = offset;
         i++;  
         networkLength = 0;
         for ( ; i < networkNum; i++)
         {
-            /* code */
+            /* protocol type*/
+            offset += sizeof(protocolType);
+            /* network index */
+            offset += sizeof(networkIndex);
+            /* network data */
             result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
             if(result != BOAT_SUCCESS ){
                 return result;
@@ -773,6 +838,7 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
             }
             paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
             offset += (paramLengthLen + paramLength);
+            networkLength += (sizeof(protocolType)+sizeof(networkIndex));
             networkLength += (paramLengthLen + paramLength);
         }
         // all the networks'length after index network
@@ -824,10 +890,11 @@ BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData ,BUINT8 in
 {
     BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT8 networkNum = 0 , networkIndex = 0;
-	BUINT32 offset = 0 , offset_obj = 0;
-	BUINT32  networkLength = 0 , networkLengthLen = 0 , paramLength = 0 , paramLengthLen = 0;
+	BUINT32 offset = 0 ;
+	BUINT32  networkLength = 0 , networkLengthLen = 0 ;
 	BUINT8 lengthBytes[3] = {0};
     BUINT8 networknumBytes[4] = {0};
+    BoatProtocolType protocolType = BOAT_PROTOCOL_UNKNOWN;
     BoatStoreType storetype;
 
     if(index == 0){  // onetime wallet
@@ -846,135 +913,47 @@ BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData ,BUINT8 in
         return BOAT_ERROR;
     }
 	offset += sizeof(networknumBytes) ;
+    BoatLog(BOAT_LOG_NORMAL,"network num = %d ",networkNum);
 	for (BUINT8 i = 0; i < networkNum; i++)
 	{
-		
-		/* wallet length */
-		result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
-		if(result != BOAT_SUCCESS){
-			BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] length fail " , i);
-			return result;
-		}
-		networkLength = UtilityGetLVData_L(lengthBytes);
-        if(networkLength < 0){
-            BoatLog(BOAT_LOG_NORMAL,"wallet data length err ");
-            return BOAT_ERROR;
+		/* protocol type */
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)&protocolType,sizeof(protocolType),storetype);
+        if(result != BOAT_SUCCESS){
+            return result;
         }
-        networkLengthLen = UtilityGetTLV_LL_from_len(networkLength);
-		offset += networkLengthLen;
-		offset_obj = offset;
-		/* network index */
-		result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
-		if(result != BOAT_SUCCESS){
-			BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] index fail " , i);
-			return result;
-		}
-		paramLength = UtilityGetLVData_L(lengthBytes);
-		if(paramLength != 1){
-            BoatLog(BOAT_LOG_NORMAL,"wallet index length err ");
-            return BOAT_ERROR;
+        offset += sizeof(protocolType);
+        /* network index */
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)&networkIndex,sizeof(networkIndex),storetype);
+        if(result != BOAT_SUCCESS){
+            return result;
         }
-		networkIndex = lengthBytes[1];
-		if(networkIndex == index){
-            networkData->networkIndex = index;
-			offset += 2;
-			if(offset - offset_obj > networkLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-			/* network chainID */
-			result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get network[%d] chainID fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"network chainID length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-            offset += paramLengthLen;
-            if(offset - offset_obj + paramLength > networkLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-            result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)&(networkData->chain_id),paramLength,storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get network[%d] chainID  fail " , i);
-				return result;
-			}
-			offset += paramLength ;
-			
-			/* network eip155 */
-			result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get network[%d] prikey format fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"network prike format length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-            offset += paramLengthLen;
-            if(offset - offset_obj + paramLength > networkLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-            result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8 *)&(networkData->eip155_compatibility),paramLength,storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get network[%d] prikey format  fail " , i);
-				return result;
-			}
-			offset += paramLength ;
-			/* network url */
-			result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get network[%d] url fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"network url length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-            offset += paramLengthLen;
-            if(offset - offset_obj + paramLength > networkLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-            result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8 *)networkData->node_url_str,paramLength,storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get network[%d] url  fail " , i);
-				return result;
-			}
-			offset += paramLength ;
-            /* protocol type */
-			result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get network[%d] protocoltype fail " , i);
-				return result;
-			}
-			paramLength = UtilityGetLVData_L(lengthBytes);
-			if(paramLength < 0){
-            	BoatLog(BOAT_LOG_NORMAL,"network protocol type length err ");
-            	return BOAT_ERROR;
-        	}
-			paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
-            offset += paramLengthLen;
-            if(offset - offset_obj + paramLength > networkLength){  // offset over the length of this walet
-				return BOAT_ERROR;
-			}
-            result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8 *)(&networkData->protocolType),paramLength,storetype);
-			if(result != BOAT_SUCCESS){
-				BoatLog(BOAT_LOG_NORMAL,"get network[%d] protocol type  fail " , i);
-				return result;
-			}
-			offset += paramLength ;
-			
-			return result;
-		}else{ // the next network
-			offset += networkLength;
-		}
+        offset += sizeof(networkIndex);
+        BoatLog(BOAT_LOG_NORMAL,"networkindex = %d , index = %d ",networkIndex,index);
+        BoatLog(BOAT_LOG_NORMAL,"protocol type = %d ",protocolType);
+        /* check protocolType and index */
+        if((networkIndex == index)&&(protocolType == BOAT_PROTOCOL_ETHEREUM)){
+            BoatLog(BOAT_LOG_NORMAL,"begin to read the network that index = %d ",index);
+            result = BoATEth_GetNetworkFromNvram(networkData,offset,storetype,&networkLengthLen);
+            if(result != BOAT_SUCCESS){
+                BoatLog(BOAT_LOG_NORMAL,"read network data fail");
+                return result;
+            }
+            return BOAT_SUCCESS;
+        }else{
+            /* network length */
+		    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
+		    if(result != BOAT_SUCCESS){
+			    BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] length fail " , i);
+			    return result;
+		    }
+		    networkLength = UtilityGetLVData_L(lengthBytes);
+            if(networkLength < 0){
+                BoatLog(BOAT_LOG_NORMAL,"wallet data length err ");
+                return BOAT_ERROR;
+            }
+            networkLengthLen = UtilityGetTLV_LL_from_len(networkLength);
+            offset += (networkLength + networkLengthLen);
+        }
 	}
     return BOAT_ERROR;
 }

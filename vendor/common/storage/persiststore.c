@@ -33,7 +33,7 @@ persiststore.c contains APIs for default persistent storage as a file.
 #define BOAT_STORAGE_SALT_SIZE 16
 // #define BOAT_NETWORK_FILE_STOREDATA	"boat_network_file"
 BUINT8 RAM_BOAT_DATA[1024] = {0};
-BUINT8 RAM_BOAT_NETWORK_DATA[1024] = {0};
+BUINT8 RAM_BOAT_NETWORK_DATA[4096] = {0};
 BUINT8 RAM_BOAT_PRIKEY_DATA[1024] = {0};
 
 // AES KEY FOR DEVELOPMENT ONLY. DO NOT USE IT FOR PRODUCTION.
@@ -254,18 +254,22 @@ BOAT_RESULT BoATSoftRotNvramDec(BUINT8 const *data_ptr,BUINT32 data_len,BUINT8 *
 BOAT_RESULT BoATStoreSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset,BUINT8 const *data_ptr,BUINT32 data_len,BoatStoreType storeType){
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT32 offset_base = 0;
+	BUINT32 rambufLen = 0;
 	BUINT8 * rambuf;
 	if(storeFile == BOAT_STORE_KEYPAIR){
 		rambuf = RAM_BOAT_DATA;
+		rambufLen = sizeof(RAM_BOAT_DATA);
 		offset_base  = BOAT_STORAGE_KEYPAIR_OFFSET;
 		if(offset + data_len > BOAT_STORAGE_KEYPAIR_MAXLEN){
 			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}
 	}else if(storeFile == BOAT_STORE_NETWORK){
 		rambuf = RAM_BOAT_NETWORK_DATA;
+		rambufLen = sizeof(RAM_BOAT_NETWORK_DATA);
 		offset_base = BOAT_STORAGE_NETWORK_OFFSET;
 	}else{
 		rambuf = RAM_BOAT_PRIKEY_DATA;
+		rambufLen = sizeof(RAM_BOAT_PRIKEY_DATA);
 		offset_base = BOAT_STORAGE_PRIKEY_OFFSET;
 		if(offset + data_len > BOAT_STORAGE_PRIKEY_MAXLEN){
 			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
@@ -280,7 +284,7 @@ BOAT_RESULT BoATStoreSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset,BUINT8
 	if(storeType == BOAT_STORE_TYPE_FLASH){
 		result = BoatWriteStorage(offset_base + offset,(BUINT8*)data_ptr,data_len,NULL);
 	}else if(storeType == BOAT_STORE_TYPE_RAM){
-		if(offset + data_len > sizeof(RAM_BOAT_DATA)){
+		if(offset + data_len > rambufLen){
 			result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}else{
 			memcpy(rambuf+offset,data_ptr,data_len);
@@ -324,18 +328,22 @@ BOAT_RESULT BoATStoreSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset,BUINT8
 BOAT_RESULT BoatReadSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset, BUINT8 *data_ptr, BUINT32 len_to_read ,BoatStoreType storeType){
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT32 offset_base = 0;
+	BUINT32 rambufLen= 0;
 	BUINT8 * rambuf;
 	if(storeFile == BOAT_STORE_KEYPAIR){
 		rambuf = RAM_BOAT_DATA;
+		rambufLen = sizeof(RAM_BOAT_DATA);
 		offset_base  = BOAT_STORAGE_KEYPAIR_OFFSET;
 		if(offset + len_to_read > BOAT_STORAGE_KEYPAIR_MAXLEN){
 			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}
 	}else if(storeFile == BOAT_STORE_NETWORK){
 		rambuf = RAM_BOAT_NETWORK_DATA;
+		rambufLen = sizeof(RAM_BOAT_NETWORK_DATA);
 		offset_base = BOAT_STORAGE_NETWORK_OFFSET;
 	}else{
 		rambuf = RAM_BOAT_PRIKEY_DATA;
+		rambufLen = sizeof(RAM_BOAT_PRIKEY_DATA);
 		offset_base = BOAT_STORAGE_PRIKEY_OFFSET;
 		if(offset + len_to_read > BOAT_STORAGE_PRIKEY_MAXLEN){
 			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
@@ -351,7 +359,7 @@ BOAT_RESULT BoatReadSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset, BUINT8
 	if(storeType == BOAT_STORE_TYPE_FLASH){
 		result = BoatReadStorage(offset_base + offset,data_ptr,len_to_read,NULL);
 	}else{
-		if(offset + len_to_read > sizeof(RAM_BOAT_DATA)){
+		if(offset + len_to_read > rambufLen){
 			result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}else{
 			memcpy(data_ptr,rambuf+offset,len_to_read);
