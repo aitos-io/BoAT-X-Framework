@@ -137,8 +137,7 @@ int main(int argc, char *argv[])
 {
 	BOAT_RESULT           result  = BOAT_SUCCESS;
 	BoatHlchainmakerTx    tx_ptr;
-	BoatInvokeResponse     invoke_response;
-	BoatQueryResponse      query_response;
+	BoatResponseData      response_data;
 	boat_try_declare;
 
 	/* step-1: Boat SDK initialization */
@@ -170,13 +169,13 @@ int main(int argc, char *argv[])
 	}
 
 	/* step-5: execute invoke command */
-	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", true, &invoke_response); 
+	result = BoatHlchainmakerContractInvoke(&tx_ptr, "save","fact", true, &response_data); 
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerContractInvoke() failed.");
 		boat_throw(result, chainmaker_demo_catch);
 	}
-	BoatLog( BOAT_LOG_CRITICAL, "response code = %d, message = %s, gas_used = %d\n", invoke_response.code, invoke_response.message, invoke_response.gas_used);
+	BoatLog( BOAT_LOG_CRITICAL, "response code = %d, message = %s, gas_used = %d\n", response_data.code, response_data.message, response_data.gas_used);
 
 	/* step-6: add query parameters*/
 	BoatSleep(2);
@@ -188,14 +187,14 @@ int main(int argc, char *argv[])
 	}
 
 	/* step-7: execute query command*/
-	result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &query_response);
+	result = BoatHlchainmakerContractQuery(&tx_ptr, "find_by_file_hash","fact", &response_data);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatHlchainmakerContractQuery() failed.");
 		boat_throw(result, chainmaker_demo_catch);
 	}
 	BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, gas_used = %d\n", 
-			query_response.code, query_response.message, query_response.contract_result, query_response.gas_used);
+			response_data.code, response_data.message, response_data.contract_result, response_data.gas_used);
 
 	boat_catch(chainmaker_demo_catch)
     {
