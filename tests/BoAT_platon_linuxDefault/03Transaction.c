@@ -23,6 +23,8 @@
 #define TEST_IS_SYNC_TX             BOAT_TRUE
 #define TEST_RECIPIENT_ADDRESS      "lat159js9hw63x2y8m65mhgprm3eu9f4c7xmv3lym4"
 
+const BCHAR *hrp = "lat";
+
 extern BoatPlatONWalletConfig get_platon_wallet_settings();
 
 START_TEST(test_006GetBalance_0001GetSuccess) 
@@ -99,6 +101,27 @@ START_TEST(test_006GetBalance_0003GetFailureNullWallet)
 }
 END_TEST
 
+START_TEST(test_007Transfer_0001TransferSuccess) 
+{
+    BOAT_RESULT result;
+    BoatPlatONTx tx_ctx;
+
+    BoatIotSdkInit();
+
+    result = platonWalletPrepare();
+    ck_assert(result == BOAT_SUCCESS);
+
+    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
+                           "0x333333",
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatPlatONTransfer(&tx_ctx, "0x1");
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
 
 Suite *make_transactions_suite(void)
 {
@@ -117,6 +140,8 @@ Suite *make_transactions_suite(void)
     tcase_add_test(tc_transaction_api, test_006GetBalance_0001GetSuccess); 
     tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetWalletDefaultAddressSuccess); 
     tcase_add_test(tc_transaction_api, test_006GetBalance_0003GetFailureNullWallet); 
+
+    tcase_add_test(tc_transaction_api, test_007Transfer_0001TransferSuccess); 
     
     return s_transaction;
 }
