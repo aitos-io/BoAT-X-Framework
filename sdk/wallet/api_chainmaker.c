@@ -329,17 +329,29 @@ __BOATSTATIC BOAT_RESULT BoatHlchainmakerTxRequest(BoatHlchainmakerTx *tx_ptr, C
 			if (result == BOAT_SUCCESS)
 			{
 				tx_response_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
-				if (tx_response_ptr != NULL)
+				if (tx_response_ptr == NULL)
 				{
-					BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
+					BoatLog(BOAT_LOG_NORMAL, "[http2] respond NULL");
+					*tx_response = NULL;
+					result = BOAT_ERROR;
+					break;
+				}
+				
+				if (tx_response_ptr->code == BOAT_SUCCESS)
+				{
 					*tx_response = tx_response_ptr;
 					break;
 				}
 				else
 				{
-					BoatLog(BOAT_LOG_NORMAL, "[http2] respond NULL");
-					*tx_response = NULL;
-					result = BOAT_ERROR;
+					BoatLog(BOAT_LOG_NORMAL, "querying contract.");
+					common__tx_response__free_unpacked(tx_response_ptr, NULL);
+					if (http2_response.http2Res != NULL) 
+					{
+						BoatFree(http2_response.http2Res);
+						http2_response.http2Res = NULL;
+						http2_response.httpResLen = 0;
+					}
 				}
 			}
 		}
