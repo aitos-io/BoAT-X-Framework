@@ -226,7 +226,7 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 						}
 
 						parsePtr->response[parsePtr->responseCount].contentPtr = proposalResponse;
-						parsePtr->response[parsePtr->responseCount].responseType = HWBCS_TYPE_PROPOSAL;
+						parsePtr->response[parsePtr->responseCount].responseType = (BoatHlfabricType)HWBCS_TYPE_PROPOSAL;
 						parsePtr->response[parsePtr->responseCount].payload.field_len = resData->payload.len;
 						parsePtr->response[parsePtr->responseCount].payload.field_ptr = BoatMalloc(resData->payload.len);
 						if(NULL == parsePtr->response[parsePtr->responseCount].payload.field_ptr){
