@@ -145,6 +145,36 @@ START_TEST(test_007Transfer_0002TransferFailureNullParam)
 }
 END_TEST
 
+START_TEST(test_007Transfer_0003TransferWithSpecifyChainIDSuccess) 
+{
+    BSINT32 rtnVal;
+    BOAT_RESULT result;
+    BoatPlatONTx tx_ctx;
+
+    BoatIotSdkInit();
+
+    BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
+    
+    wallet.eip155_compatibility = BOAT_TRUE;
+    wallet.chain_id = TEST_EPLATON_CHAIN_ID;
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATON, NULL, &wallet, sizeof(BoatPlatONWalletConfig));
+    ck_assert_int_eq(rtnVal, 0);
+
+    g_platon_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+
+    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
+                           "0x333333",
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatPlatONTransfer(&tx_ctx, "0x1");
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_transactions_suite(void)
 {
     /* Create Suite */
@@ -165,6 +195,7 @@ Suite *make_transactions_suite(void)
 
     tcase_add_test(tc_transaction_api, test_007Transfer_0001TransferSuccess); 
     tcase_add_test(tc_transaction_api, test_007Transfer_0002TransferFailureNullParam); 
+    tcase_add_test(tc_transaction_api, test_007Transfer_0003TransferWithSpecifyChainIDSuccess); 
     
     return s_transaction;
 }
