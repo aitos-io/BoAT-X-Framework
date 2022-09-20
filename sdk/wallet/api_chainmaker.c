@@ -37,7 +37,7 @@ static BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet
 static BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *host_name_ptr);
 static BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *node_url_ptr);
 
-void hex_to_str(BUINT8 *hex_data,  BUINT32 hex_len, BUINT8 *str_data)
+void hex_to_str(BUINT8 *hex_data,  BUINT32 hex_len, BCHAR *str_data)
 {
     BUINT32 num;
     BUINT32 pos_index = 0;
