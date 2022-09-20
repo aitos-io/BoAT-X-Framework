@@ -85,6 +85,21 @@ START_TEST(test_006GetBalance_0002GetWalletDefaultAddressSuccess)
 }
 END_TEST
 
+START_TEST(test_006GetBalance_0003GetFailureNullWallet) 
+{
+    BCHAR *cur_balance_wei = NULL;
+
+    BoatIotSdkInit();
+
+    cur_balance_wei = BoatPlatONWalletGetBalance(NULL, NULL);
+
+    ck_assert_ptr_eq(cur_balance_wei, NULL);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+
 Suite *make_transactions_suite(void)
 {
     /* Create Suite */
@@ -101,6 +116,7 @@ Suite *make_transactions_suite(void)
     /* Test cases are added to the test set */
     tcase_add_test(tc_transaction_api, test_006GetBalance_0001GetSuccess); 
     tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetWalletDefaultAddressSuccess); 
+    tcase_add_test(tc_transaction_api, test_006GetBalance_0003GetFailureNullWallet); 
     
     return s_transaction;
 }
