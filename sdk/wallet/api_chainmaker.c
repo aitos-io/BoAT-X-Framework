@@ -516,7 +516,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 				boat_throw(result, BoatHlchainmakerContractInvoke);
 			}
 
-			if (tx_response->code == SUCCESS) 
+			if (tx_response->code == BOAT_SUCCESS) 
             {
 				transactation_info = common__transaction_info__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
 				response_data->gas_used = transactation_info->transaction->result->contract_result->gas_used;
