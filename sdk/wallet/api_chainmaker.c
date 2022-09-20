@@ -450,7 +450,6 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	Common__TxResponse *tx_response              = NULL;
 	Common__TransactionInfo* transactation_info = NULL;
 	BCHAR invoke_tx_id[BOAT_TXID_LEN]= {0};
-	BUINT8 sleep_second;
 
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
