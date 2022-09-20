@@ -64,7 +64,8 @@ __BOATSTATIC size_t boat_find_oid_value_in_name(const mbedtls_x509_name *name, c
             for(size_t i = 0; i < bytes_to_write; i++)
             {
                 char c = name->val.p[i];
-                if (c < 32 || c == 127 || (c > 128 && c < 160))
+                // if (c < 32 || c == 127 || (c > 128 && c < 160))
+				if (c < 32 || c == 127 )
                 {
                     value[i] = '?';
                 } else
