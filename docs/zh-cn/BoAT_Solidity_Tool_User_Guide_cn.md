@@ -15,15 +15,16 @@
 |区块链  |脚本名字                   |
 |:-----  | :--------------          |
 |以太坊  |eth2c.py                   |
-|PlatONE  |fiscobcos2c.py           |
-|FISCO-BCOS  |platoneSolidity2c.py  |
+|PlatONE  |platoneSolidity2c.py           |
+|FISCO-BCOS  |fiscobcos2c.py  |
 |Venachain  |venachainSolidity2c.py  |
+|Quorum  |Quorum2c.py  |
 
 ## 软件依赖
 @todo
 
 ## 使用说明
-通过工具生成Solidity合约的C接口文件时，需要根据相应的平台调用tools文件夹相应的合约版本，其中，`eth2c.py`，`fiscobcos2c.py`，`platoneSolidity2c.py`和`venachainSolidity2c.py`四个文件为相应链的合约脚本。  
+通过工具生成Solidity合约的C接口文件时，需要根据相应的平台调用tools文件夹相应的合约版本，其中，`eth2c.py`，`fiscobcos2c.py`，`platoneSolidity2c.py`，`venachainSolidity2c.py`和`Quorum2c.py`五个文件为相应链的合约脚本。  
 
 ### 输入文件生成
 
@@ -453,3 +454,41 @@ for (i = 0; i < 32; i++)
 
 #### int256[]类型
 参考[uint256[]类型](#uint256[]类型)，只是需要把相应的BUINT256改为BSINT256。
+
+#### bytesN[]类型
+N的范围为1~32。Solidity中的bytesN[]变成BbytesN类型和一个表示长度的BUINT32值。而一个BbytesN是由BUINT8[N]组成的数组。  
+Solidity函数：setData(bytes5[] data);  
+C语言函数：合约名_setData(Bbytes5 *data, BUINT32 datalen);  
+
+示例：  
+```
+Bbytes5 data[2];
+BUINT32 i;
+for (i = 0; i < 5; i++)
+{
+    data[0][i] = i;
+    data[1][i] = (32 - i) * 2;
+}
+合约名_setData(data, 2); 
+``` 
+
+注意，bytesN类型不涉及到端序和正负值的问题。
+
+#### bytesN[M]类型
+N的范围为1~32。Solidity中的bytesN[]变成BbytesN类型和一个表示长度的BUINT32值。而一个BbytesN是由BUINT8[N]组成的数组。  
+Solidity函数：setData(bytes5[] data);  
+C语言函数：合约名_setData(Bbytes5 *data, BUINT32 datalen);  
+
+示例：  
+```
+Bbytes5 data[2];
+BUINT32 i;
+for (i = 0; i < 5; i++)
+{
+    data[0][i] = i;
+    data[1][i] = (32 - i) * 2;
+}
+合约名_setData(data, 2); 
+``` 
+
+注意，bytesN类型不涉及到端序和正负值的问题。

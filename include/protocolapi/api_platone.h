@@ -90,17 +90,17 @@ typedef struct TBoatPlatoneTx
     BoatPlatoneRawtxFields rawtx_fields;      //!< RAW transaction fields
 }BoatPlatoneTx;
 
-typedef struct T_wbe3_nodeInfo
+typedef struct T_web3_nodeInfo
 {
     char * IP;
     BUINT32 rpcPort;
     
-}wbe3_nodeInfo;
+}web3_nodeInfo;
 
 typedef struct T_nodesResult
 {
     BUINT8 num;
-    wbe3_nodeInfo *nodeInfo;
+    web3_nodeInfo *nodeInfo;
 }nodesResult;
 
 

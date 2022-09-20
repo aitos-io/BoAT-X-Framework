@@ -178,6 +178,10 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoverySignatureHeaderPacked(const BoatHlfabr
 	// {
 		packedLength = common__signature_header__get_packed_size(&signatureHeader);
 		output_ptr->field_ptr = BoatMalloc(packedLength + 3);
+		if(output_ptr->field_ptr == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
+		}
 		output_ptr->field_len = packedLength + 3;
 		common__signature_header__pack(&signatureHeader, output_ptr->field_ptr + 3);
 		output_ptr->field_ptr[0] = 0x0A;
@@ -233,15 +237,22 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 
 	// ProtobufCBinaryData argsTmp[BOAT_HLFABRIC_ARGS_MAX_NUM];
 	BUINT8 *chaincodeInvocationSpecBuffer = NULL;
+	BUINT8 *configQueryData = NULL;
+	BUINT8 *peerQueryData = NULL;
+	BUINT8 *ccQueryData = NULL;
 	BUINT16 packedLength;
 	Protos__ChaincodeInput message = PROTOS__CHAINCODE_INPUT__INIT;
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT16 resLen = 0, len = 0;
 	BUINT16 offset = 0;
-	// boat_try_declare;
+	boat_try_declare;
 
 	len = strlen(tx_ptr->var.chaincodeId.name);
 	chaincodeInvocationSpecBuffer = BoatMalloc(len + 6);
+	if(chaincodeInvocationSpecBuffer == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate chaincodeInvocationSpecBuffer buffer.");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricDiscoveryPayloadDataPacked_exception);
+	}
 	chaincodeInvocationSpecBuffer[0] = 0x0A;
 	chaincodeInvocationSpecBuffer[1] = len + 4;
 	chaincodeInvocationSpecBuffer[2] = 0x0A;
@@ -253,15 +264,17 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 
 	message.n_args = 1;
 	message.args = BoatMalloc((message.n_args) * sizeof(ProtobufCBinaryData));
+	if(message.args == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate message.args buffer.");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricDiscoveryPayloadDataPacked_exception);		
+	}
 
 	message.args[0].data = (BUINT8*)tx_ptr->var.channelId;
 	message.args[0].len = strlen(tx_ptr->var.channelId);
 
 	packedLength = protos__chaincode_input__get_packed_size(&message);
 	BoatLog(BOAT_LOG_CRITICAL, "packedLength = %d ", packedLength);
-	BUINT8 *configQueryData = NULL;
-	BUINT8 *peerQueryData = NULL;
-	BUINT8 *ccQueryData = NULL;
+
 	// if (DISCOVERY_CONFIG_QUERY == 1)
 	// {
 	// 	configQueryData = BoatMalloc(packedLength + 4);
@@ -284,6 +297,10 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 		// peerQueryData[2 + 1 + packedLength] = 0;
 
 		ccQueryData = BoatMalloc(packedLength + 4 + len);
+		if(ccQueryData == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate ccQueryData buffer.");
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricDiscoveryPayloadDataPacked_exception);		
+		}
 		resLen += packedLength + 4 + len;
 		ccQueryData[0] = 0x12;
 		ccQueryData[1] = packedLength + 2 + len;
@@ -294,6 +311,10 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 		memcpy(ccQueryData + 2 + 2 + packedLength, chaincodeInvocationSpecBuffer, len);
 
 		configQueryData = BoatMalloc(packedLength + 4);
+		if(configQueryData == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate configQueryData buffer.");
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricDiscoveryPayloadDataPacked_exception);
+		}
 		resLen += packedLength + 4;
 		configQueryData[0] = 0x12;
 		configQueryData[1] = packedLength + 2;
@@ -303,6 +324,10 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 	}
 
 	output_ptr->field_ptr = BoatMalloc(resLen);
+	if(output_ptr->field_ptr == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr buffer.");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricDiscoveryPayloadDataPacked_exception);	
+	}
 	protos__chaincode_input__pack(&message, output_ptr->field_ptr + 2);
 
 	// if (peerQueryData != NULL)
@@ -323,7 +348,11 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadDataPacked(BoatHlfabricTx *tx_p
 	}
 	output_ptr->field_len = resLen;
 
-
+	boat_catch(hlfabricDiscoveryPayloadDataPacked_exception)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+		result = boat_exception;
+	}
 	/* free malloc */
 	BoatFree(chaincodeInvocationSpecBuffer);
 	if (configQueryData != NULL)
@@ -421,6 +450,10 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadPacked(BoatHlfabricTx *tx_ptr,
 
 	output_ptr->field_len = packedLength;
 	output_ptr->field_ptr = BoatMalloc(packedLength);
+	if(output_ptr->field_ptr == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr buffer.");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricPayloadPacked_exception);	
+	}
 	memcpy(output_ptr->field_ptr, signatureHeaderPacked.field_ptr, signatureHeaderPacked.field_len);
 	memcpy(output_ptr->field_ptr + signatureHeaderPacked.field_len, payloadDataPacked.field_ptr, payloadDataPacked.field_len);
 
@@ -613,8 +646,16 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricDiscoveryExec(BoatHlfabricTx *tx_ptr,
 
 				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->hostName = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].hostName;
 				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
+				if(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain == NULL){
+					BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate tlsCAchain buffer.");
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);	
+				}
 				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length + 1;
 				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
+				if(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr == NULL){
+					BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate tlsCAchain[0].field_ptr buffer.");
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);		
+				}
 				memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
 				memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
 				// ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content;
@@ -657,7 +698,7 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	BUINT32 len = 0, offset = 0;
 	BCHAR *port;
 	int i,j,k,l,m;
-	// boat_try_declare;
+	boat_try_declare;
 
 	if (tx_ptr == NULL)
 	{
@@ -722,11 +763,19 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		n_layouts = cc_query_res->content[i]->n_layouts;
 		discoverResult.cc_res.num = n_layouts;
 		discoverResult.cc_res.layouts = BoatMalloc(n_layouts * sizeof(layoutInfo));
+		if(discoverResult.cc_res.layouts == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate cc_res.layouts buffer.");
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);		
+		}
 		for ( j = 0; j < n_layouts; j++)
 		{
 			n_quantities_by_group = cc_query_res->content[i]->layouts[j]->n_quantities_by_group;
 			discoverResult.cc_res.layouts[j].num = n_quantities_by_group;
 			discoverResult.cc_res.layouts[j].groups = BoatMalloc(n_quantities_by_group * sizeof(groupInfo));
+			if(discoverResult.cc_res.layouts[j].groups == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate groups buffer.");
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);		
+			}
 			for ( k = 0; k < n_quantities_by_group; k++)
 			{
 				discoverResult.cc_res.layouts[j].groups[k].numEndorsers = 0;
@@ -735,6 +784,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 				if (cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->has_value == true)
 					discoverResult.cc_res.layouts[j].groups[k].value = cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->value;
 				discoverResult.cc_res.layouts[j].groups[k].key = BoatMalloc(strlen(cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key)+1);
+				if(discoverResult.cc_res.layouts[j].groups[k].key == NULL){
+					BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate groups[%d].key buffer.",k);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);	
+				}
 				memset(discoverResult.cc_res.layouts[j].groups[k].key,0,strlen(cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key)+1);
 				memcpy(discoverResult.cc_res.layouts[j].groups[k].key, cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key, strlen(cc_query_res->content[i]->layouts[j]->quantities_by_group[k]->key));
 			}
@@ -757,16 +810,28 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 						BUINT8 n_peers = discoverResult.cc_res.layouts[m].groups[k].numEndorsers;
 
 						discoverResult.cc_res.layouts[m].groups[k].endorsers = BoatMalloc(n_peers * sizeof(Endorsers));
+						if(discoverResult.cc_res.layouts[m].groups[k].endorsers == NULL){
+							BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layouts[%d].groups[%d].endorsers buffer.",m,k);
+							boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);	
+						}
 						for ( l = 0; l < n_peers; l++)
 						{
 							msp_serializedIdentity = msp__serialized_identity__unpack(NULL, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->identity.len, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->identity.data);
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID = BoatMalloc(strlen(msp_serializedIdentity->mspid)+1);
+							if(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID == NULL){
+								BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layouts[%d].groups[%d].endorsers[%d].MSPID buffer.",m,k,l);
+								boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);	
+							}
 							memset(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID,0,strlen(msp_serializedIdentity->mspid)+1);
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID, msp_serializedIdentity->mspid, strlen(msp_serializedIdentity->mspid));
 							// BoatLog(BOAT_LOG_CRITICAL, " endorsers[%d].MSPID  : %s ", l, discoverResult.cc_res.layouts[m].groups[k].endorsers[l].MSPID);
 							len = hlfabricDiscoveryGetURL(cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.len, &offset);
 
 							discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint = BoatMalloc(len+1);
+							if(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint == NULL){
+								BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layouts[%d].groups[%d].endorsers[%d].Endpoint buffer.",m,k,l);
+								boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);	
+							}
 							memset(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint,0,len+1);
 							memcpy(discoverResult.cc_res.layouts[m].groups[k].endorsers[l].Endpoint, cc_query_res->content[i]->endorsers_by_groups[j]->value->peers[l]->membership_info->payload.data + offset, len);
 							msp__serialized_identity__free_unpacked(msp_serializedIdentity,NULL);
@@ -779,15 +844,27 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	Discovery__ConfigResult *config_result = discoveryResponse->results[1]->config_result;
 	discoverResult.discoverConfig.discoverMsps.num = config_result->n_msps;
 	discoverResult.discoverConfig.discoverMsps.discoverMspInfo = BoatMalloc(config_result->n_msps * sizeof(mspsInfo));
+	if(discoverResult.discoverConfig.discoverMsps.discoverMspInfo == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverMspInfo buffer.");
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);	
+	}
 	for ( i = 0; i < config_result->n_msps; i++)
 	{
 		discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name = BoatMalloc(strlen(config_result->msps[i]->key)+1);
+		if(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverMspInfo[%d].name buffer.",i);
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+		}
 		memset(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name,0,strlen(config_result->msps[i]->key)+1);
 		memcpy(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name, config_result->msps[i]->key, strlen(config_result->msps[i]->key));
 		if (config_result->msps[i]->value->n_tls_root_certs > 0)
 		{
 			discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCertLen = config_result->msps[i]->value->tls_root_certs[0].len;
 			discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert = BoatMalloc(config_result->msps[i]->value->tls_root_certs[0].len);
+			if(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverMspInfo[%d].tlsCert buffer.",i);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+			}
 			//memset(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert,0,config_result->msps[i]->value->tls_root_certs[0].len+1);
 			memcpy(discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert, config_result->msps[i]->value->tls_root_certs[0].data, config_result->msps[i]->value->tls_root_certs[0].len);
 		}
@@ -800,6 +877,10 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		discoverResult.discoverConfig.discoverOrders.num += config_result->orderers[i]->value->n_endpoint;
 	}
 	discoverResult.discoverConfig.discoverOrders.discoverOrderinfo = BoatMalloc(discoverResult.discoverConfig.discoverOrders.num * sizeof(orderInfo));
+	if(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverOrderinfo buffer.",i);
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);			
+	}
 	for ( i = 0; i < config_result->n_orderers; i++)
 	{
 		/* code */
@@ -807,11 +888,19 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		{
 			/* code */
 			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host = BoatMalloc(strlen(config_result->orderers[i]->value->endpoint[j]->host)+1);
+			if(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverOrderinfo[%d].host buffer.",k);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);					
+			}
 			memset(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host,0,strlen(config_result->orderers[i]->value->endpoint[j]->host)+1);
 			memcpy(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].host, config_result->orderers[i]->value->endpoint[j]->host, strlen(config_result->orderers[i]->value->endpoint[j]->host));
 			// discoverResult->discoverConfig.discoverOrders.discoverOrderinfo[k].port = config_result->orderers[i]->value->endpoint[j]->port;
 			Utility_itoa(config_result->orderers[i]->value->endpoint[j]->port, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].port, 10);
 			discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].name = BoatMalloc(strlen(config_result->orderers[i]->key)+1);
+			if(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].name == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverOrderinfo[%d].name buffer.",k);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);					
+			}
 			memset(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k].name,0,strlen(config_result->orderers[i]->key)+1);
 			memcpy(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[k++].name, config_result->orderers[i]->key, strlen(config_result->orderers[i]->key));
 		}
@@ -836,25 +925,45 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	}
 	tx_ptr->wallet_ptr->network_info.endorserLayoutNum = discoverResult.cc_res.num;
 	tx_ptr->wallet_ptr->network_info.layoutCfg = BoatMalloc(tx_ptr->wallet_ptr->network_info.endorserLayoutNum * sizeof(BoatHlfabricNodeLayoutCfg));
+	if(tx_ptr->wallet_ptr->network_info.layoutCfg == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layoutCfg buffer.");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);			
+	}
 	for ( i = 0; i < discoverResult.cc_res.num; i++)
 	{
 
 		tx_ptr->wallet_ptr->network_info.layoutCfg[i].endorserGroupNum = discoverResult.cc_res.layouts[i].num;
 		tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg = BoatMalloc(discoverResult.cc_res.layouts[i].num * sizeof(BoatHlfabricNodeGroupCfg));
+		if(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layoutCfg[%d].groupCfg buffer.",i);
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+		}
 		for ( j = 0; j < discoverResult.cc_res.layouts[i].num; j++)
 		{
 			tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorserNumber = discoverResult.cc_res.layouts[i].groups[j].numEndorsers;
 			tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser = BoatMalloc(discoverResult.cc_res.layouts[i].groups[j].numEndorsers * sizeof(BoatHlfabricNodeInfoCfg));
+			if(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser == NULL){
+				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layoutCfg[%d].groupCfg[%d].endorser buffer.",i,j);
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+			}			
 			tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].quantities = discoverResult.cc_res.layouts[i].groups[j].value;
 			for ( k = 0; k < discoverResult.cc_res.layouts[i].groups[j].numEndorsers; k++)
 			{
 				port = strchr(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, ':');
 				len = strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint) - strlen(port);
 				tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName = BoatMalloc(len+1);
+				if(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName == NULL){
+					BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layoutCfg[%d].groupCfg[%d].endorser[%d].hostName buffer.",i,j,k);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+				}					
 				memset(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName,0,len+1);
 				memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].hostName, discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint, len);
 				len = strlen(discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint);
 				tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl = BoatMalloc(len+1);
+				if(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl == NULL){
+					BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate layoutCfg[%d].groupCfg[%d].endorser[%d].nodeUrl buffer.",i,j,k);
+					boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+				}				
 				memset(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl,0,len+1);
 				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl, IP, strlen(IP));
 				// memcpy(tx_ptr->wallet_ptr->network_info.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl + strlen(IP), port, strlen(port));
@@ -873,10 +982,18 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	}
 	tx_ptr->wallet_ptr->network_info.orderCfg.endorserNumber = discoverResult.discoverConfig.discoverOrders.num;
 	tx_ptr->wallet_ptr->network_info.orderCfg.endorser = BoatMalloc(discoverResult.discoverConfig.discoverOrders.num * sizeof(BoatHlfabricNodeInfoCfg));
+	if(tx_ptr->wallet_ptr->network_info.orderCfg.endorser == NULL){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate orderCfg.endorser buffer.");
+		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+	}		
 	for ( i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
 	{
 		len = sizeof(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port) + strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host) + 1;
 		tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl = BoatMalloc(len+1);
+		if(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl == NULL){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate orderCfg.endorser[%d].nodeUrl buffer.",i);
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);				
+		}
 		memset(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl,0,len+1);
 		offset = 0;
 		memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.endorser[i].nodeUrl + offset, discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host, strlen(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host));
@@ -894,6 +1011,13 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 				memcpy(tx_ptr->wallet_ptr->network_info.orderCfg.tlsOrgCertContent.content, discoverResult.discoverConfig.discoverMsps.discoverMspInfo[l].tlsCert, discoverResult.discoverConfig.discoverMsps.discoverMspInfo[l].tlsCertLen);
 			}
 		}
+	}
+
+		//! boat catch handle
+	boat_catch(BoatHlfabricDiscoverySubmit_exception)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+		result = boat_exception;
 	}
 	tx_ptr->endorserResponse.responseCount = 0;
 	DiscoveryResFree(discoverResult);

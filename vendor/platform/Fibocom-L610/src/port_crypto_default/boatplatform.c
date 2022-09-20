@@ -32,6 +32,7 @@
 /* net releated include */
 #include <sys/types.h>
 #include <string.h>
+#include <time.h>
 
 
 
@@ -58,7 +59,7 @@ BOAT_RESULT BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 in
 	}
 	else if (type == BOAT_HASH_SHA256)
 	{
-		sha3_256(input, inputLen, hashed);
+		sha256_Raw(input, inputLen, hashed);
 		if (hashedLen != NULL)
 		{
 			*hashedLen = 32;
@@ -89,4 +90,17 @@ void BoatFree(void *mem_ptr)
 void BoatSleep(BUINT32 second)
 {
     fibo_taskSleep(1000 * second);
+}
+long int BoatGetTimes()
+{
+	return time(NULL);
+}
+
+
+BUINT16 lwip_htons(BUINT16 x){
+	return PP_HTONS(x);
+}
+
+u32_t lwip_htonl(u32_t x){
+	return PP_HTONL(x);
 }

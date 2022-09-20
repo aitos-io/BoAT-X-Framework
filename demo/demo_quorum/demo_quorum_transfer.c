@@ -49,19 +49,21 @@ const BCHAR * demoUrl = "127.0.0.1:22000";
 /*** transfer recipient address ***/
 const BCHAR *demoRecipientAddress = "0xf17f52151EbEF6C7334FAD080c5704D77216b732";
 
-#define USE_ONETIME_WALLET
+// #define USE_ONETIME_WALLET
 #define PRIVATE_TRUE  1
 #define PRIVATE_FALSE 0
 
-BoatEthWallet *g_quorum_wallet_ptr;
+BoatQuorumWallet *g_quorum_wallet_ptr;
 
 
 #if defined(USE_ONETIME_WALLET)
 __BOATSTATIC BOAT_RESULT quorum_createOnetimeWallet()
 {
     BSINT32 index;
-    BoatQuorumWalletConfig wallet_config = {0};
+    BoatQuorumWalletConfig wallet_config;
     BUINT8 binFormatKey[32]              = {0};
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
     (void)binFormatKey; //avoid warning
     /* wallet_config value assignment */
@@ -115,8 +117,10 @@ __BOATSTATIC BOAT_RESULT quorum_createOnetimeWallet()
 __BOATSTATIC BOAT_RESULT quorum_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatQuorumWalletConfig wallet_config = {0};
+    BoatQuorumWalletConfig wallet_config;
     BUINT8 binFormatKey[32]           = {0};
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
     (void)binFormatKey; //avoid warning
 
@@ -202,7 +206,7 @@ BOAT_RESULT quorumGetBalance(BoatQuorumWallet *wallet_ptr)
 	return result;
 }
 
-BOAT_RESULT quorumTransfer(BoatEthWallet *wallet_ptr)
+BOAT_RESULT quorumTransfer(BoatQuorumWallet *wallet_ptr)
 {
     BOAT_RESULT result;
     BoatQuorumTx tx_ctx;

@@ -191,7 +191,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(parse_result.field_ptr))/2);
     memset(nodeManagerAddr,0x00,strlen((BCHAR*)(parse_result.field_ptr))/2);
     // hex2array(parse_result.field_ptr+2,strlen((BCHAR*)(parse_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
-    UtilityHexToBin(nodeManagerAddr,strlen((BCHAR*)(parse_result.field_ptr))/2,parse_result.field_ptr,TRIMBIN_TRIM_NO,BOAT_FALSE);
+    UtilityHexToBin((BUINT8 *)nodeManagerAddr,strlen((BCHAR*)(parse_result.field_ptr))/2,(BCHAR *)parse_result.field_ptr,TRIMBIN_TRIM_NO,BOAT_FALSE);
  // Construct the REQUEST
 	do{
 		malloc_size_expand_flag = false;
@@ -252,7 +252,7 @@ BCHAR *web3_eth_call_getNodesManagerAddr(Web3IntfContext *web3intf_context_ptr,
     nodeManagerAddr = BoatMalloc(strlen((BCHAR*)(parse_result.field_ptr)) / 2);
     memset(nodeManagerAddr, 0x00, strlen((BCHAR*)(parse_result.field_ptr)) / 2);
     // hex2array(parse_result.field_ptr+2,strlen((BCHAR*)(parse_result.field_ptr))-2,(BUINT8*)nodeManagerAddr);
-    UtilityHexToBin(nodeManagerAddr, strlen((BCHAR*)(parse_result.field_ptr)) / 2, parse_result.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    UtilityHexToBin((BUINT8 *)nodeManagerAddr, strlen((BCHAR*)(parse_result.field_ptr)) / 2, (BCHAR*)parse_result.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
  // Construct the REQUEST
     
     // web3_parse_fatherNamejson_result(nodeManagerAddr,"data", "externalIP", &parse_result);

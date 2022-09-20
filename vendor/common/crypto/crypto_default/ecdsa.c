@@ -798,6 +798,7 @@ int ecdsa_uncompress_pubkey(const ecdsa_curve *curve, const uint8_t *pub_key,
   return 1;
 }
 
+#if USE_ADDRESS_BASE58
 void ecdsa_get_pubkeyhash(const uint8_t *pub_key, HasherType hasher_pubkey,
                           uint8_t *pubkeyhash) {
   uint8_t h[HASHER_DIGEST_LENGTH] = {0};
@@ -874,6 +875,7 @@ int ecdsa_address_decode(const char *addr, uint32_t version,
              20 + prefix_len &&
          address_check_prefix(out, version);
 }
+#endif
 
 void compress_coords(const curve_point *cp, uint8_t *compressed) {
   compressed[0] = bn_is_odd(&cp->y) ? 0x03 : 0x02;
@@ -952,6 +954,7 @@ int ecdsa_validate_pubkey(const ecdsa_curve *curve, const curve_point *pub) {
   return 1;
 }
 
+#if USE_ECDSA_VERIFY
 // uses secp256k1 curve
 // pub_key - 65 bytes uncompressed key
 // signature - 64 bytes signature
@@ -966,60 +969,6 @@ int ecdsa_verify(const ecdsa_curve *curve, HasherType hasher_sign,
   int res = ecdsa_verify_digest(curve, pub_key, sig, hash);
   memzero(hash, sizeof(hash));
   return res;
-}
-
-// Compute public key from signature and recovery id.
-// returns 0 if the key is successfully recovered
-int ecdsa_recover_pub_from_sig(const ecdsa_curve *curve, uint8_t *pub_key,
-                               const uint8_t *sig, const uint8_t *digest,
-                               int recid) {
-  bignum256 r = {0}, s = {0}, e = {0};
-  curve_point cp = {0}, cp2 = {0};
-
-  // read r and s
-  bn_read_be(sig, &r);
-  bn_read_be(sig + 32, &s);
-  if (!bn_is_less(&r, &curve->order) || bn_is_zero(&r)) {
-    return 1;
-  }
-  if (!bn_is_less(&s, &curve->order) || bn_is_zero(&s)) {
-    return 1;
-  }
-  // cp = R = k * G (k is secret nonce when signing)
-  memcpy(&cp.x, &r, sizeof(bignum256));
-  if (recid & 2) {
-    bn_add(&cp.x, &curve->order);
-    if (!bn_is_less(&cp.x, &curve->prime)) {
-      return 1;
-    }
-  }
-  // compute y from x
-  uncompress_coords(curve, recid & 1, &cp.x, &cp.y);
-  if (!ecdsa_validate_pubkey(curve, &cp)) {
-    return 1;
-  }
-  // e = -digest
-  bn_read_be(digest, &e);
-  bn_mod(&e, &curve->order);
-  bn_subtract(&curve->order, &e, &e);
-  // r = r^-1
-  bn_inverse(&r, &curve->order);
-  // e = -digest * r^-1
-  bn_multiply(&r, &e, &curve->order);
-  bn_mod(&e, &curve->order);
-  // s = s * r^-1
-  bn_multiply(&r, &s, &curve->order);
-  bn_mod(&s, &curve->order);
-  // cp = s * r^-1 * k * G
-  point_multiply(curve, &s, &cp, &cp);
-  // cp2 = -digest * r^-1 * G
-  scalar_multiply(curve, &e, &cp2);
-  // cp = (s * r^-1 * k - digest * r^-1) * G = Pub
-  point_add(curve, &cp2, &cp);
-  pub_key[0] = 0x04;
-  bn_write_be(&cp.x, pub_key + 1);
-  bn_write_be(&cp.y, pub_key + 33);
-  return 0;
 }
 
 // returns 0 if verification succeeded
@@ -1088,7 +1037,65 @@ int ecdsa_verify_digest(const ecdsa_curve *curve, const uint8_t *pub_key,
   // all OK
   return result;
 }
+#endif
 
+#if USE_ECDSA_RECOVER_PUB
+// Compute public key from signature and recovery id.
+// returns 0 if the key is successfully recovered
+int ecdsa_recover_pub_from_sig(const ecdsa_curve* curve, uint8_t* pub_key,
+    const uint8_t* sig, const uint8_t* digest,
+    int recid) {
+    bignum256 r = { 0 }, s = { 0 }, e = { 0 };
+    curve_point cp = { 0 }, cp2 = { 0 };
+
+    // read r and s
+    bn_read_be(sig, &r);
+    bn_read_be(sig + 32, &s);
+    if (!bn_is_less(&r, &curve->order) || bn_is_zero(&r)) {
+        return 1;
+    }
+    if (!bn_is_less(&s, &curve->order) || bn_is_zero(&s)) {
+        return 1;
+    }
+    // cp = R = k * G (k is secret nonce when signing)
+    memcpy(&cp.x, &r, sizeof(bignum256));
+    if (recid & 2) {
+        bn_add(&cp.x, &curve->order);
+        if (!bn_is_less(&cp.x, &curve->prime)) {
+            return 1;
+        }
+    }
+    // compute y from x
+    uncompress_coords(curve, recid & 1, &cp.x, &cp.y);
+    if (!ecdsa_validate_pubkey(curve, &cp)) {
+        return 1;
+    }
+    // e = -digest
+    bn_read_be(digest, &e);
+    bn_mod(&e, &curve->order);
+    bn_subtract(&curve->order, &e, &e);
+    // r = r^-1
+    bn_inverse(&r, &curve->order);
+    // e = -digest * r^-1
+    bn_multiply(&r, &e, &curve->order);
+    bn_mod(&e, &curve->order);
+    // s = s * r^-1
+    bn_multiply(&r, &s, &curve->order);
+    bn_mod(&s, &curve->order);
+    // cp = s * r^-1 * k * G
+    point_multiply(curve, &s, &cp, &cp);
+    // cp2 = -digest * r^-1 * G
+    scalar_multiply(curve, &e, &cp2);
+    // cp = (s * r^-1 * k - digest * r^-1) * G = Pub
+    point_add(curve, &cp2, &cp);
+    pub_key[0] = 0x04;
+    bn_write_be(&cp.x, pub_key + 1);
+    bn_write_be(&cp.y, pub_key + 33);
+    return 0;
+}
+#endif
+
+#if USE_SIG_DER
 int ecdsa_sig_to_der(const uint8_t *sig, uint8_t *der) {
   int i = 0;
   uint8_t *p = der, *len = NULL, *len1 = NULL, *len2 = NULL;
@@ -1196,3 +1203,4 @@ int ecdsa_sig_from_der(const uint8_t *der, size_t der_len, uint8_t sig[64]) {
 
   return 0;
 }
+#endif

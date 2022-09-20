@@ -46,6 +46,7 @@ int read_key_content(char* key_ptr)
         {
             return -1;
         }
+        BoatLog(BOAT_LOG_VERBOSE, "Current key type is native");
     }
     else
     {
@@ -54,6 +55,7 @@ int read_key_content(char* key_ptr)
         {
             return -1;
         }
+        BoatLog(BOAT_LOG_VERBOSE, "Current key type is PKCS");
     }
     len = read(fd, key_ptr, 1024);
     if (len < 0)

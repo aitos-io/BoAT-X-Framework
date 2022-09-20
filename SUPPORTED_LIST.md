@@ -38,6 +38,7 @@ L610                      |广和通 Fibocom   |LTE Cat.1             |UNISOC UI
 L718                      |广和通 Fibocom   |LTE Cat.4             |ZTE ZX7520 V3
 NL668                     |广和通 Fibocom   |LTE Cat.4 linux       |Qualcomm MDM9207
 FG150                     |广和通 Fibocom   |5G                    |Qualcomm SDX55
+FM650                     |广和通 Fibocom   |5G                    |UNISOC V510
 MA510                     |广和通 Fibocom   |LTE/Cat.M/NB2/EGPTS   |Qualcomm MDM9205
 CLM920_NC3                |域格 YuGe Tech   |LTE Cat.4             |Qualcomm MDM9207
 CLM920_RC3                |域格 YuGe Tech   |LTE Cat.1             |ASR1601

@@ -70,12 +70,16 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 	parsePtr = ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->parseDataPtr;
 
 	BOAT_RESULT result = BOAT_SUCCESS;
-	// boat_try_declare;
+	boat_try_declare;
 	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL)
 	{
 		/* contractInvocation info*/
 		contractInvocation.contract_name = tx_ptr->var.contract_name;
 		contractInvocation.args = BoatMalloc((tx_ptr->var.args.nArgs - 1) * sizeof(ProtobufCBinaryData));
+		if(NULL == contractInvocation.args){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate contractInvocation.args.");
+        	boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hwbcsPayloadPacked_exception);		
+		}
 		contractInvocation.func_name = tx_ptr->var.args.args[0];
 		contractInvocation.n_args = tx_ptr->var.args.nArgs - 1;
 
@@ -88,6 +92,10 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 
 		txPayload.data.len = common__contract_invocation__get_packed_size(&contractInvocation);
 		txPayload.data.data = BoatMalloc(txPayload.data.len);
+		if(NULL == txPayload.data.data){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate txPayload.data.data.");
+        	boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hwbcsPayloadPacked_exception);		
+		}
 		common__contract_invocation__pack(&contractInvocation, txPayload.data.data);
 		/* payload head */
 		txhead.chain_id = tx_ptr->var.chaincodeId.name;
@@ -104,6 +112,10 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 		packedLength = common__tx_payload__get_packed_size(&txPayload);
 		output_ptr->field_len = packedLength;
 		output_ptr->field_ptr = BoatMalloc(packedLength);
+		if(NULL == output_ptr->field_ptr){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        	boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hwbcsPayloadPacked_exception);		
+		}
 		common__tx_payload__pack(&txPayload, output_ptr->field_ptr);
 	}
 	else
@@ -115,6 +127,10 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 		}
 		output_ptr->field_len = packedLength;
 		output_ptr->field_ptr = BoatMalloc(packedLength);
+		if(NULL == output_ptr->field_ptr){
+			BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        	boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hwbcsPayloadPacked_exception);		
+		}
 		offset = 0;
 		for (int i = 0; i < parsePtr->responseCount; i++)
 		{
@@ -122,9 +138,22 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 			offset += parsePtr->response[i].payload.field_len;
 		}
 	}
-
+	/* boat catch handle */
+	boat_catch(hwbcsPayloadPacked_exception)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+		result = boat_exception;
+	}
 	/* free malloc */
-	BoatFree(txPayload.data.data);
+	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL){
+		if(NULL != contractInvocation.args){
+			BoatFree(contractInvocation.args);
+		}
+		if(NULL != txPayload.data.data){
+			BoatFree(txPayload.data.data);
+		}
+	}
+
 	return result;
 }
 

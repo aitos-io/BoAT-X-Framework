@@ -66,8 +66,10 @@ BoatQuorumWallet *g_quorum_wallet_ptr;
 __BOATSTATIC BOAT_RESULT quorum_createOnetimeWallet()
 {
     BSINT32 index;
-    BoatQuorumWalletConfig wallet_config = {0};
+    BoatQuorumWalletConfig wallet_config;
     BUINT8 binFormatKey[32]              = {0};
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
     (void)binFormatKey; //avoid warning
     /* wallet_config value assignment */
@@ -120,10 +122,12 @@ __BOATSTATIC BOAT_RESULT quorum_createOnetimeWallet()
 __BOATSTATIC BOAT_RESULT quorum_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatQuorumWalletConfig wallet_config = {0};
+    BoatQuorumWalletConfig wallet_config;
     BUINT8 binFormatKey[32]           = {0};
 
     (void)binFormatKey; //avoid warning
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
     /* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
@@ -192,7 +196,7 @@ __BOATSTATIC BOAT_RESULT quorum_loadPersistWallet(BCHAR *wallet_name)
 BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
 {
     BCHAR *result_str;
-    BUINT32 index;
+    // BUINT32 index;
     BoatQuorumTx tx_ctx;
     BOAT_RESULT result;
     
@@ -207,7 +211,7 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
         BoatLog(BOAT_LOG_NORMAL, "BoatQuorumTxInit fails.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
-    char set_data[32] = {0};
+    BUINT8 set_data[32] = {0};
     set_data[0]= 9;
 
     result_str = SimpleStorage_set(&tx_ctx, set_data);
@@ -231,7 +235,7 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
 int main(int argc, char *argv[])
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-    boat_try_declare;
+    // boat_try_declare;
     /* step-1: Boat SDK initialization */
     BoatIotSdkInit();
 

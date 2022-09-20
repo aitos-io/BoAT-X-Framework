@@ -135,6 +135,11 @@ __BOATSTATIC BOAT_RESULT hlfabricSignatureHeaderPacked(const BoatHlfabricTx *tx_
 	/* pack the signatureHeader */
 	packedLength = common__signature_header__get_packed_size(&signatureHeader);
 	output_ptr->field_ptr = BoatMalloc(packedLength);
+    if(NULL == output_ptr->field_ptr)
+	{
+        BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr buffer.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricSignatureHeaderPacked_exception);
+    }
 	output_ptr->field_len = packedLength;
 	common__signature_header__pack(&signatureHeader, output_ptr->field_ptr);
     
@@ -232,6 +237,11 @@ __BOATSTATIC BOAT_RESULT hlfabricChannelHeaderPacked(const BoatHlfabricTx *tx_pt
 	/* pack the channelHeader */
 	packedLength = common__channel_header__get_packed_size(&channelHeader);
 	output_ptr->field_ptr = BoatMalloc(packedLength);
+    if( NULL == output_ptr->field_ptr )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricChannelHeaderPacked_exception);
+	}
 	output_ptr->field_len = packedLength;
 	common__channel_header__pack(&channelHeader, output_ptr->field_ptr);
     
@@ -263,7 +273,7 @@ __BOATSTATIC BOAT_RESULT hlfabricChannelHeaderPacked(const BoatHlfabricTx *tx_pt
  *   fabric transaction structure pointer
  *
  * @param[out] output_ptr 
- *   A structure pointer to store signature header protobuf serialize data and length. 
+ *   A structure pointer to store payload protobuf serialize data and length. 
  *   In internal of this function, the memory of store serialize data has been alloced,
  *   caller SHOULD NOT alloc memory for this pointer again.
  *
@@ -330,6 +340,11 @@ __BOATSTATIC BOAT_RESULT hlfabricProposalPayloadDataPacked(BoatHlfabricTx *tx_pt
     chaincodeProposalPayload.input.data = chaincodeInvocationSpecBuffer;
 	packedLength = protos__chaincode_proposal_payload__get_packed_size(&chaincodeProposalPayload);
 	output_ptr->field_ptr = BoatMalloc(packedLength);
+	if( NULL == output_ptr->field_ptr )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricProposalPayloadDataPacked_exception);
+	}
 	output_ptr->field_len = packedLength;
 	protos__chaincode_proposal_payload__pack(&chaincodeProposalPayload, output_ptr->field_ptr);	
 	
@@ -365,7 +380,7 @@ __BOATSTATIC BOAT_RESULT hlfabricProposalPayloadDataPacked(BoatHlfabricTx *tx_pt
  *   fabric transaction structure pointer
  *
  * @param[out] output_ptr 
- *   A structure pointer to store signature header protobuf serialize data and length. 
+ *   A structure pointer to store transaction payload data protobuf serialize data and length. 
  *   In internal of this function, the memory of store serialize data has been alloced,
  *   caller SHOULD NOT alloc memory for this pointer again.
  *
@@ -462,6 +477,11 @@ __BOATSTATIC BOAT_RESULT hlfabricTransactionPayloadDataPacked(BoatHlfabricTx *tx
     transaction.actions   = &transactionAction_ptr;
 	transactionBufferLen  = protos__transaction__get_packed_size(&transaction);
 	output_ptr->field_ptr = BoatMalloc(transactionBufferLen);
+	if( NULL == output_ptr->field_ptr )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricTransactionPayloadDataPacked_exception);
+	}
 	output_ptr->field_len = transactionBufferLen;
 	protos__transaction__pack(&transaction, output_ptr->field_ptr);
 	
@@ -569,6 +589,11 @@ __BOATSTATIC BOAT_RESULT hlfabricPayloadPacked(BoatHlfabricTx *tx_ptr,
 	packedLength = common__payload__get_packed_size( &payload );
 	output_ptr->field_len = packedLength;
 	output_ptr->field_ptr = BoatMalloc(packedLength);
+	if( NULL == output_ptr->field_ptr )
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate output_ptr->field_ptr.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hlfabricPayloadPacked_exception);
+	}
 	common__payload__pack( &payload, output_ptr->field_ptr );
 
 	/* boat catch handle */

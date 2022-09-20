@@ -69,7 +69,7 @@ typedef enum
 
 //!@brief The extension field of prikey context
 //!  This field is only used for secret key storage when secure storage environment is not available. 
-//!  \n The practice of the security specification is still to store it in TE/SE.
+//!  \n The practice of the security specification is still to store it in TEE/SE.
 typedef struct TBoatWalletExtraData
 {
     BUINT32  value_len;  //!< Length of the stored private key
@@ -122,7 +122,7 @@ typedef struct TBoatWalletList
 //!@brief BoAT IoT SDK Context
 typedef struct TBoatIotSdkContext
 {
-    // Protocol specifiec properties are defined in protocol specific WalletInfo structure
+    // Protocol specific properties are defined in protocol specific WalletInfo structure
     BoatWalletList wallet_list[BOAT_MAX_WALLET_NUM];  //!< Wallet Info List
 }BoatIotSdkContext;
 
@@ -161,7 +161,7 @@ BOAT_RESULT BoatIotSdkInit(void);
  *   BoatIotSdkDeInit() MUST be called after use of BoAT IoT SDK.
  *   
  * @return 
- *   This function doesn't return any thing.
+ *   This function doesn't return anything.
  *
  * @see BoatIotSdkInit()
  ******************************************************************************/
@@ -238,7 +238,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
  *   The wallet index to unload.
  *
  * @return 
- *   This function doesn't return any thing.
+ *   This function doesn't return anything.
  *
  * @see BoatWalletCreate() BoatWalletDelete()
  ******************************************************************************/

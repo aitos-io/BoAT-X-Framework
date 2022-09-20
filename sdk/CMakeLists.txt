@@ -6,7 +6,10 @@ add_subdirectory(wallet)
 add_subdirectory(third-party)
 add_subdirectory(protocol)
 add_subdirectory(utilities)
+
+if(BOAT_PROTOCOL_USE_ETHEREUM)
 add_subdirectory(rlp)
+endif()
 
 if(BOAT_PROTOCOL_USE_VENACHAIN)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatvenachain-obj>)
@@ -19,6 +22,7 @@ set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatplaton-obj>)
 endif()
 if(BOAT_PROTOCOL_USE_ETHEREUM)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatethereum-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatrlp-obj>)
 endif()
 if(BOAT_PROTOCOL_USE_FISCOBCOS)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatfiscobcos-obj>)
@@ -51,7 +55,6 @@ add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:wallet_obj>
                                     $<TARGET_OBJECTS:utilities-obj>
                                     $<TARGET_OBJECTS:web3intf-obj>
                                     $<TARGET_OBJECTS:cjson-obj>
-                                    $<TARGET_OBJECTS:boatrlp-obj>
                                     ${TARGET})
 
 

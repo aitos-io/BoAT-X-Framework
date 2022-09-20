@@ -37,7 +37,7 @@ ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_VENACHAIN), 0_1)
     $(error VENACHAIN depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_ETHEREUM' to 1 if enable VENACHAIN)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_QUORUM), 0_1)
-    $(error QUORUM depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_QUORUM' to 1 if enable QUORUM)
+    $(error QUORUM depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_ETHEREUM' to 1 if enable QUORUM)
 endif
 
 
@@ -62,6 +62,7 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - Neoway-N58                : Neoway's LTE Cat.1 module
 # - YanFei-CUIot-MZ-6         : China Unicom's LTE Cat.1 module
 # - ChinaMobile-ML302         : China Mobile's LTE Cat.1 module
+# - ChinaMobile-ML302v2       : China Mobile's LTE Cat.1 module API version 2
 # - MTK-MT3620                : MTK MT3620
 # - XinYi-XY1100              : XY1100
 # - Fibocom-MA510             : MA510
@@ -167,6 +168,8 @@ else ifeq ($(PLATFORM_TARGET), Neoway-N58)
 else ifeq ($(PLATFORM_TARGET), YanFei-CUIot-MZ-6) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else ifeq ($(PLATFORM_TARGET), ChinaMobile-ML302) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else ifeq ($(PLATFORM_TARGET), ChinaMobile-ML302v2) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else ifeq ($(PLATFORM_TARGET), XinYi-XY1100) 
     SOFT_CRYPTO ?= CRYPTO_MBEDTLS

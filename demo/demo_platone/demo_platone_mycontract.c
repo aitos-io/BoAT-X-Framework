@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "my_contract.cpp.abi.h"
-#include "protocolapi/api_platone.h"
+#include "boatiotsdk.h"
 
 /**
  * macro used to select wallet type:
@@ -60,10 +60,12 @@ BoatPlatoneWallet *g_platone_wallet_ptr;
 __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 {
     BSINT32 index;
-    BoatPlatoneWalletConfig wallet_config = {0};
+    BoatPlatoneWalletConfig wallet_config;
     BUINT8 binFormatKey[32]               = {0};
 
     (void)binFormatKey; //avoid warning
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
@@ -112,10 +114,12 @@ __BOATSTATIC BOAT_RESULT platone_createOnetimeWallet()
 __BOATSTATIC BOAT_RESULT platone_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatPlatoneWalletConfig wallet_config = {0};
+    BoatPlatoneWalletConfig wallet_config;
     BUINT8 binFormatKey[32]               = {0};
 
     (void)binFormatKey; //avoid warning
+
+    memset(&wallet_config,0,sizeof(wallet_config));
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
@@ -201,7 +205,7 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
     for (BSINT32 i = 0; i < result_out.num; i++)
     {
         /* code */
-        printf( "node[%d] : IP[%s],port[%d]. \n",i,result_out.nodeInfo[i].IP,result_out.nodeInfo[i].rpcPort);
+        //BoatLog(BOAT_LOG_NORMAL, "node[%d] : IP[%s],port[%d]. \n",i,result_out.nodeInfo[i].IP,result_out.nodeInfo[i].rpcPort);
     }
     nodeResFree(&result_out);
 

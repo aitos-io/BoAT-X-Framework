@@ -486,34 +486,31 @@ $make demo
 
 
 ### 编译中的常见问题
-1.  编译中提示类似“Makefile: 120: *** 缺失分隔符。 停止”的信息。  
+1. 编译中提示类似“Makefile: 120: *** 缺失分隔符。 停止”的信息。  
 该问题一般是因为Makefile中的target下的命令不是以Tab（ASCII码0x09）开头引起。注意按Tab键时，文本编辑器可能将Tab字符替换为若干空格。应将文本编辑器设置为不要用空格替代Tab。
 
 2. 编译中提示“curl/curl.h”找不到  
 该问题是因为系统中未安装curl及其开发文件引起。对于在Linux发行版上做Host编译而言，注意只安装curl包不够，还需要安装其开发文件包。开发文件包在不同的Linux发行版中有不同的名称，通常会命名为类似curl-devel，或者libcurl。具体请参照所使用的Linux发行版的软件包管理工具。    
 
+   如果curl采用源码编译，且未安装到系统目录，则应在external.env中指定其搜索路径，并在链接时指定curl库所在路径。  
 
-如果curl采用源码编译，且未安装到系统目录，则应在external.env中指定其搜索路径，并在链接时指定curl库所在路径。  
-
-
-在交叉编译中，尤其要注意搜索路径和库应指向交叉编译环境中的头文件和库，而不应指向执行编译的Host上的路径。
+   在交叉编译中，尤其要注意搜索路径和库应指向交叉编译环境中的头文件和库，而不应指向执行编译的Host上的路径。
 
 3. 交叉编译链接时提示字节序、位宽或ELF格式不匹配  
 该问题通常是因为交叉编译中，部分库引用了Host的库，而Obj文件则是由交叉编译产生，或者，部分库为32位，另一部分为64位。应仔细核查所有库的路径，避免Host与Target的库混合链接，或者不同位宽的库混合链接。
 
+   可以使用如下命令查看库文件是ARM版本还是x86版本，以及位宽：  
+   ```
+   $file \<lib或obj文件名\>
+   ```
 
-可以使用如下命令查看库文件是ARM版本还是x86版本，以及位宽：  
-```
-$file \<lib或obj文件名\>
-```
 4. 编译中提示可执行文件找不到，或者参数错误  
 常见提示:  
 'make'不是内部或外部命令，也不是可运行的程序或批处理文件。  
 mkdir… 命令语法不正确。  
 FIND: 参数格式不正确  
 
-
-该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[以Windows为编译环境](#以windows为编译环境)章节安装Cygwin和配置Makefile。
+   该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[以Windows为编译环境](#以windows为编译环境)章节安装Cygwin和配置Makefile。
 
 
 ## 编程模型
@@ -1064,18 +1061,18 @@ https://github.com/aitos-io/BoAT-X-Framework/issues/355
 
 ## SDK往RTOS移植的建议
 若将SDK移植到RTOS上，一般应遵循以下几点:
-1. 解除对curl的依赖
+1. 解除对curl的依赖  
     curl是一个Linux下的通信协议库，在SDK中用于支持http/https通信。区块链节点通常采用http/https协议进行通信。
 
     对于采用RTOS的模组，应当在\<SDKRoot\>/vendor/platform/\<platform_name\>/src/rpc中增加对模组的http/https的接口的调用封装，并修改\<SDKRoot\>/vendor/platform/\<platform_name\>/scripts/gen.py，关闭RPC_USE_LIBCURL并设置新增的RPC USE OPTION
 
 
-2. 解除对文件系统的依赖
+2. 解除对文件系统的依赖  
 
     SDK中使用文件作为钱包的持久化保存方法。若RTOS不支持文件系统，应当修改\<SDKRoot\>/vendor/platform/\<platform_name\>/port_xx/boatplatform_internal.c中文件操作相关的`BoatGetFileSize`, `BoatWriteFile`, `BoatReadFile`, `BoatRemoveFile`四个函数，将读/写文件修改为系统支持的持久化方法。
 
 
-3. 内存裁剪
+3. 内存裁剪  
 
     若目标系统内存较为紧张，以致无法装入时，可以尝试对内存进行裁剪。可以裁剪的点包括：
 

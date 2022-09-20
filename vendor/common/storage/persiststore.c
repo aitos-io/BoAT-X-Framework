@@ -111,7 +111,7 @@ BOAT_RESULT BoatPersistRead(const BCHAR *storage_name_str, BOAT_OUT void *data_p
 	BUINT32 encrypted_readLen;
     // Plain buffer
     BUINT8  plain_array[len_to_read+31];
-    BUINT32 plain_len = sizeof(plain_array);
+    // BUINT32 plain_len = sizeof(plain_array);
 	
 	BUINT8  readDataTmp[len_to_read + 31 + 32 + 16 + 16];
     BUINT32 readDataIndex;

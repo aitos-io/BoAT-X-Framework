@@ -531,7 +531,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalle
 static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletPriKeyCtx_config *config, 
 													             BoatWalletPriKeyCtx *pkCtx)
 {
-	BUINT8       pubKey65[65] = {0};
+	// BUINT8       pubKey65[65] = {0};
 	BOAT_RESULT  result = BOAT_SUCCESS;
 	KeypairNative keypair;
 
@@ -549,7 +549,7 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 
-    result = UtilityPKCS2Native(config->prikey_content.field_ptr,&keypair);
+    result = UtilityPKCS2Native((BCHAR*)(config->prikey_content.field_ptr),&keypair);
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> UtilityPKCS2Native err.");
 	UtilityFreeKeypair(keypair);

@@ -33,14 +33,14 @@
 #include <string.h>
 
 /* net releated include */
-#if (PROTOCOL_USE_HLFABRIC == 1)
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
+//#if (PROTOCOL_USE_HLFABRIC == 1)
+// #include <sys/types.h>
+// #include <sys/socket.h>
+// #include <netinet/in.h>
+// #include <netdb.h>
+// #include <arpa/inet.h>
 
-#endif
+//#endif
 #include <sys/time.h>
 
 #if (PROTOCOL_USE_HLFABRIC == 1)
@@ -87,6 +87,9 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 {
 	BUINT8 signatureTmp[64];
 	BUINT8 ecdsPrefix = 0;
+	BUINT8 pem_data[100] = {0};
+    BUINT32 offset = 0;
+	BCHAR str_signres[256] = {0};
 	
 	BOAT_RESULT result = BOAT_SUCCESS;
 	
@@ -127,6 +130,29 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 
 	// signature result assign
 	memset(signatureResult, 0, sizeof(BoatSignatureResult));
+    pem_data[offset ++] = 0x30;
+    if((signatureTmp[0] & 0x80) == 0x80){
+        pem_data[offset ++] = 0x45;
+    }else{
+        pem_data[offset ++] = 0x44;
+    }
+
+    pem_data[offset ++] = 0x02;
+    if((signatureTmp[0] & 0x80) == 0x80){
+        pem_data[offset ++] = 0x21;
+        pem_data[offset ++] = 0x00;
+    }else{
+        pem_data[offset ++] = 0x20;
+    }
+    memcpy(pem_data+offset,signatureTmp,32);
+    offset += 32;
+    pem_data[offset ++] = 0x02;
+    pem_data[offset ++] = 0x20;
+    memcpy(pem_data+offset,signatureTmp+32,32);
+    offset += 32;
+	signatureResult->pkcs_format_used = true;
+	signatureResult->pkcs_sign_length = offset;
+	memcpy(signatureResult->pkcs_sign, pem_data, signatureResult->pkcs_sign_length);
 	
 	signatureResult->native_format_used = true;
 	memcpy(signatureResult->native_sign, signatureTmp, 64);
@@ -305,10 +331,10 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
     }
 }
 
-#if (PROTOCOL_USE_HLFABRIC == 1)
+#if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_CHAINMAKER == 1)
 /******************************************************************************
                               BOAT SOCKET WARPPER
-					        THIS ONLY USED BY FABRIC
+					        THIS ONLY USED BY FABRIC OR CHAINMAKER
 *******************************************************************************/
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
@@ -336,6 +362,28 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
     memcpy(ip  , address, (int)(ptr - address));
     memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
 
+#if (BOAT_TLS_SUPPORT == 1)
+    connectfd = fibo_ssl_sock_create();
+    if (connectfd == -1)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "socket() error");
+        return -1;
+    }
+    // BoatLog(BOAT_LOG_CRITICAL, "socket() OK");
+    BoatLog(BOAT_LOG_CRITICAL, "socket() connect IP : [%s] , port = %d ", ip, atoi(port));
+    if (fibo_ssl_sock_connect(connectfd, ip, atoi(port)) < 0)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "connect() error ,code = %d", fibo_get_ssl_errcode());
+        close(connectfd);
+        return -1;
+    }
+    ///获取ssl sock对应的socket fd
+    int fd = fibo_ssl_sock_get_fd(connectfd);
+
+    //设置sock fd为非阻塞
+    fibo_sock_lwip_fcntl(fd, F_SETFL, fibo_sock_lwip_fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+
+#else
     if ((he = gethostbyname(ip)) == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "gethostbyname() error");
@@ -375,40 +423,108 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
         BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.", 
         inet_ntoa(localaddr_ptr->sin_addr), htons(localaddr_ptr->sin_port));
     }
-
+#endif
     BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
 
     return connectfd;
 }
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
+#if (BOAT_TLS_SUPPORT == 1)	
 BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 						BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
-	
-	//! @todo BoatTlsInit implementation in crypto default.
-	return BOAT_ERROR;
+    int ret = 0;
+    fibo_set_ssl_chkmode(0);
+    ret = fibo_write_ssl_file("TRUSTFILE", caChain->field_ptr, strlen(caChain->field_ptr));
+	// ret = fibo_write_ssl_file("CAFILE", user_cert, sizeof(user_cert)-1);
+	// ret = fibo_write_ssl_file("CAKEY", user_key, sizeof(user_key)-1);
+    fibo_taskSleep(10000);
+    return BOAT_SUCCESS;
 }
 #endif
 
 
 BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+	BOAT_RESULT ret = BOAT_SUCCESS;
+#if (BOAT_TLS_SUPPORT == 1) 
 	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
-	return -1;
+	ret = fibo_ssl_sock_send(sockfd, buf, len);
+    //  BoatLog(BOAT_LOG_VERBOSE, "write ssl send = %d ", ret);
+    return ret;
 #else
 	return send(sockfd, buf, len, 0);	
 #endif	
 }
 
 
+static int ssl_recv_unblock(INT32 sock, void *buf, INT32 size, INT32 timeout)
+{
+    struct timeval tm = {0};
+    fd_set rset;
+    BUINT8 *temp = buf;
+
+    int fd = fibo_ssl_sock_get_fd(sock);
+
+    int ret = fibo_ssl_sock_recv(sock, buf, size);
+    if (ret > 0)
+    {
+        // BoatLog(BOAT_LOG_VERBOSE, "recv data size:%d", ret);
+        return ret;
+    }
+    else if (ret < 0)
+    {
+        BoatLog(BOAT_LOG_VERBOSE, "recv data fail");
+        return ret;
+    }
+
+    FD_ZERO(&rset);
+    FD_SET(fd, &rset);
+    tm.tv_sec = timeout / 1000;
+    tm.tv_usec = (timeout % 1000) * 1000;
+
+    ret = select(fd + 1, &rset, NULL, NULL, timeout > 0 ? &tm : NULL);
+    if (ret < 0)
+    {
+        BoatLog(BOAT_LOG_VERBOSE, "select failed:%s", strerror(errno));
+        return -1;
+    }
+    else if (ret == 0)
+    {
+        BoatLog(BOAT_LOG_VERBOSE, "select timeout");
+        return -1;
+    }
+    else
+    {
+        BoatLog(BOAT_LOG_VERBOSE, "data coming");
+        ret = fibo_ssl_sock_recv(sock, buf, size);
+        if (ret >= 0)
+        {
+            // BoatLog(BOAT_LOG_VERBOSE, "recv data size:%d", ret);
+            return ret;
+        }
+        else if (ret < 0)
+        {
+            BoatLog(BOAT_LOG_VERBOSE, "recv data fail");
+            return ret;
+        }
+    }
+}
+
 BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
-	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
-	return -1;
+	BOAT_RESULT ret = BOAT_SUCCESS;
+#if (BOAT_TLS_SUPPORT == 1) 
+    // ret = fibo_ssl_sock_recv(sockfd, buf, len);
+    ret = ssl_recv_unblock(sockfd, buf, len,10*1000);
+    // BoatLog(BOAT_LOG_VERBOSE, "boat ssl receive = %d ", ret);
+
+    // if (ret == -1)
+    // {
+    //     BoatLog(BOAT_LOG_VERBOSE, "write ssl errcode = %d ", fibo_get_ssl_errcode());
+    // }
+    return ret;
 #else
 	return recv(sockfd, buf, len, 0);
 #endif	
@@ -417,10 +533,13 @@ BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *
 
 void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 {
-	close(sockfd);
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+	
+#if (BOAT_TLS_SUPPORT == 1) 
 	// free tls releated
 	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
+	fibo_ssl_sock_close(sockfd);
+#else
+	close(sockfd);
 #endif
 }
 #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */

@@ -53,7 +53,7 @@ extern "C" {
  *   the origin data length of hash computation.
  *
  * @param[out] hashed
- *   compute hash result. Caller should provide enough space to store it.
+ *   computed hash result. Caller should provide enough space to store it.
  *
  * @param[out] hashedLen
  *   computed hash length. If Don't need this param, set it NULL.

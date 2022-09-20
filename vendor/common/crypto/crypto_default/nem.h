@@ -19,6 +19,7 @@
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+#if USE_NEM 
 
 #ifndef __NEM_H__
 #define __NEM_H__
@@ -152,5 +153,7 @@ bool nem_transaction_create_importance_transfer(
     nem_transaction_ctx *ctx, uint8_t network, uint32_t timestamp,
     const ed25519_public_key signer, uint64_t fee, uint32_t deadline,
     uint32_t mode, const ed25519_public_key remote);
+
+#endif
 
 #endif
