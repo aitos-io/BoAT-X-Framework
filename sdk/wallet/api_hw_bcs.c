@@ -601,7 +601,7 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr)
 	BoatLog(BOAT_LOG_NORMAL, "Evaluate will execute...");
 
 	/* submit query */
-	tx_ptr->var.type = HWBCS_TYPE_PROPOSAL;
+	tx_ptr->var.type = (BoatHlfabricType)HWBCS_TYPE_PROPOSAL;
 	// urlTmp[0] = tx_ptr->wallet_ptr->network_info.endorser[0];
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_EVALUATE);
 
