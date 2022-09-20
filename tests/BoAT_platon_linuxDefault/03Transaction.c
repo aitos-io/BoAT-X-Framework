@@ -123,6 +123,28 @@ START_TEST(test_007Transfer_0001TransferSuccess)
 }
 END_TEST
 
+START_TEST(test_007Transfer_0002TransferFailureNullParam) 
+{
+    BOAT_RESULT result;
+    BoatPlatONTx tx_ctx;
+
+    BoatIotSdkInit();
+
+    result = platonWalletPrepare();
+    ck_assert(result == BOAT_SUCCESS);
+
+    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
+                           "0x333333",
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatPlatONTransfer(&tx_ctx, NULL);
+    ck_assert_int_eq(result, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_transactions_suite(void)
 {
     /* Create Suite */
@@ -142,6 +164,7 @@ Suite *make_transactions_suite(void)
     tcase_add_test(tc_transaction_api, test_006GetBalance_0003GetFailureNullWallet); 
 
     tcase_add_test(tc_transaction_api, test_007Transfer_0001TransferSuccess); 
+    tcase_add_test(tc_transaction_api, test_007Transfer_0002TransferFailureNullParam); 
     
     return s_transaction;
 }
