@@ -100,7 +100,10 @@ ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC),1)
 BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/hlfabric \
                 -I$(BOAT_SDK_DIR)/protocol/boathlfabric  \
                 -I$(BOAT_SDK_DIR)/protocol/common/http2intf \
-                -I$(BOAT_SDK_DIR)/protocol/boathlfabric/protos
+                -I$(BOAT_SDK_DIR)/protocol/boathlfabric/protos \
+                -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
+                -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include
+
 endif
 
 

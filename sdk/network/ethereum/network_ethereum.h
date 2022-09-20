@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-06 14:49:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-16 09:51:52
+ * @LastEditTime: 2022-09-20 15:49:25
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -37,7 +37,6 @@ boatwallet.h is the SDK header file.
 #include "boattypes.h"
 
 #define BOAT_ETH_NODE_URL_MAX_LEN                127 //!< Maxmum length for node's URL
-#define BOAT_MAX_NETWORK_NUM 5
 
 
 //!@brief ECDSA signature struct

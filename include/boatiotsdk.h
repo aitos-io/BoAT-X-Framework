@@ -2,8 +2,8 @@
  * @Description: 
  * @Author: aitos
  * @Date: 2022-08-19 14:33:35
- * @LastEditors: 
- * @LastEditTime: 2022-09-13 14:02:17
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-20 15:49:55
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -44,6 +44,8 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #include "boatrlp.h"
 #include "boatplatform.h"
 #include "boatconfig.h"
+
+#define BOAT_MAX_NETWORK_NUM 5
 
 #if PROTOCOL_USE_ETHEREUM == 1
 #include "protocolapi/api_ethereum.h"

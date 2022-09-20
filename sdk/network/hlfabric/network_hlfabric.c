@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-09 11:24:55
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-19 17:15:13
+ * @LastEditTime: 2022-09-19 18:09:51
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -287,19 +287,16 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_GetNetworkFromNvram(BoatHlfabricNetworkDat
     }
 
     /* unpacket network data */
-    BoatLog(BOAT_LOG_NORMAL,"networkDataLength = %d",networkDataLength);
     protobuf_network = common__fabric_network_data__unpack(NULL,networkDataLength,networkcontent);
     if(protobuf_network == NULL){
         BoatLog(BOAT_LOG_NORMAL,"unpack networkdata fail ");
         boat_throw(BOAT_ERROR, hlfabricGetnetworkdata_exception);
     }
-    BoatLog(BOAT_LOG_NORMAL,"fabric network data unpack ok");
     result = BoATHlfabric_getNetworkFromProto(Networkdata,protobuf_network);
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_NORMAL,"fail to get network from protobuf struct");
         boat_throw(BOAT_ERROR,hlfabricGetnetworkdata_exception);
     }
-    BoatLog(BOAT_LOG_NORMAL,"fabric network 000");
     *outlen = (networkDataLength + networkDataLengthLen);
     
 	/* boat catch handle */
@@ -829,7 +826,6 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_Get_Network_Data(BoatHlfabricNetworkData *
     }
     offset = 0;
     result = add_L_withOffset(networkbuf,&offset,networkLength);
-    BoatLog(BOAT_LOG_NORMAL,"test ccc ,len = %d ",offset);
     *data = networkbuf;
     *datalen = offset;
     	/* boat catch handle */
@@ -1003,12 +999,10 @@ BOAT_RESULT BoatHlfabricNetworkCreate(BoatHlfabricNetworkConfig *networkConfig,B
         networkIndex = 0;  // the index of onetimenetwork is always 0
     }
 
-    BoatLog(BOAT_LOG_NORMAL,"network index = %d ",networkIndex);
     mNetworkDataCtx.index = networkIndex;
     mNetworkDataCtx.accountCertContent = networkConfig->accountCertContent;
     mNetworkDataCtx.tlsClientCertContent = networkConfig->tlsClientCertContent;
     mNetworkDataCtx.nodesCfg = networkConfig->nodesCfg;
-    BoatLog(BOAT_LOG_NORMAL,"begin to store network data");
     result = BoATHlfabric_NetworkDataCtx_Store(&mNetworkDataCtx,storeType);
     if(result != BOAT_SUCCESS){
         return result;
@@ -1086,8 +1080,6 @@ BOAT_RESULT BoATHlfabricNetworkDelete(BUINT8 index)
         }
         networkLengthLen = UtilityGetTLV_LL_from_len(networkLength);
 
-        BoatLog(BOAT_LOG_NORMAL,"networkindex = %d ,index = %d ",networkIndex,index);
-        BoatLog(BOAT_LOG_NORMAL,"protocol type = %d ",protocolType);
         if((networkIndex == index) && (protocolType == BOAT_PROTOCOL_HLFABRIC)){
             break;
         }
