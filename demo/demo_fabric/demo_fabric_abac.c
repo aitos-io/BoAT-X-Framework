@@ -145,7 +145,6 @@ __BOATSTATIC BOAT_RESULT fabric_createOnetimeWallet()
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     keypairIndex = result;
-    BoatLog(BOAT_LOG_NORMAL," creat keypair index = %d ",keypairIndex);
     return BOAT_SUCCESS;
 }
 
@@ -235,12 +234,18 @@ int main(int argc, char *argv[])
     BoatIotSdkInit();
 	
 	/* step-2: prepare wallet */
-	fabric_createOnetimeWallet();
-	fabricWalletPrepare();
+	result = fabric_createOnetimeWallet();
+	if(result < BOAT_ERROR){
+		boat_throw(result, fabric_key_network_catch);
+	}
+	result = fabricWalletPrepare();
+	if(result < BOAT_ERROR){
+		boat_throw(result, fabric_key_network_catch);
+	}
 	g_fabric_wallet_ptr = BoatHlfabricWalletInit(keypairIndex,networkIndex);
 	if(g_fabric_wallet_ptr == NULL){
 		
-		boat_throw(result, fabric_demo_catch);
+		boat_throw(result, fabric_key_network_catch);
 	}
 	/* step-3: fabric transaction structure initialization */
 	result = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
@@ -297,7 +302,10 @@ int main(int argc, char *argv[])
     }	
 	/* step-7: fabric transaction structure Deinitialization */
 	BoatHlfabricTxDeInit(&tx_ptr);
-	
+    boat_catch(fabric_key_network_catch)
+    {
+        BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
+    }		
 	/* step-8: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
 	// fabricWalletConfigFree(networkConfig);
