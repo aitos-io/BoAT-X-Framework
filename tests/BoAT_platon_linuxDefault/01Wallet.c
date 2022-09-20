@@ -549,6 +549,41 @@ START_TEST(test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0018DeletePersistWalletSuccess) 
+{
+    BSINT32 rtnVal;
+    BoatPlatONWallet *g_platon_wallet_ptr = NULL;
+
+    BoatIotSdkInit();
+    BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATON, "platon", &wallet, sizeof(BoatPlatONWalletConfig));
+    
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 0);
+
+    rtnVal = BoatWalletDelete("platon");
+
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATON, "platon", NULL, sizeof(BoatPlatONWalletConfig));
+    
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_PERSISTER_READ_FAIL);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == false);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
 {
     BSINT32 rtnVal;
@@ -808,6 +843,7 @@ START_TEST(test_002InitWallet_0014InitPlatONWalletWithWrongGenMode)
     walletConfig.prikeyCtx_config.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
     walletConfig.prikeyCtx_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     walletConfig.eip155_compatibility = BOAT_FALSE;
+    walletConfig.load_existed_wallet = BOAT_FALSE;
 
     /* 1. execute unit test */
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
@@ -902,6 +938,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0015CreateSixWalletUnloadOneSuccess);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0018DeletePersistWalletSuccess);
     
     tcase_add_test(tc_wallet_api, test_002InitWallet_0001SetEIP155CompSuccess);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0002SetEIP155CompFailureNullParam);

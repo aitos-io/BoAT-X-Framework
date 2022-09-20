@@ -872,6 +872,8 @@ START_TEST(test_002InitWallet_0015InitEthWalletWithWrongKeyFormat)
     walletConfig.prikeyCtx_config.prikey_format = 4;
     walletConfig.prikeyCtx_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     walletConfig.eip155_compatibility = BOAT_FALSE;
+    walletConfig.load_existed_wallet = BOAT_FALSE;
+
 
     /* 1. execute unit test */
     rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatEthWalletConfig));
