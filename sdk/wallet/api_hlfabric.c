@@ -80,6 +80,20 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
 		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, BoatHlfabricTxProposal_exception);
 	}
+#if(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+		if(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr != NULL){
+			BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr);
+		}
+		((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_len = tx_ptr->wallet_ptr->network_info.accountClientTlsPrikey.value_len +1;
+		((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_len);
+		strcpy((BCHAR*)((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr,(BCHAR*)tx_ptr->wallet_ptr->network_info.accountClientTlsPrikey.value);
+		if(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr != NULL){
+			BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr);
+		}
+		((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_len = tx_ptr->wallet_ptr->network_info.accountClientTlsCert.length +1;
+		((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_len);
+		strcpy((BCHAR*)((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr,tx_ptr->wallet_ptr->network_info.accountClientTlsCert.content);
+#endif
 
 	if (tx_ptr->var.type == HLFABRIC_TYPE_PROPOSAL)
 	{
@@ -93,30 +107,30 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->nodeUrl = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 
-					if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain != NULL)
+					// if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain != NULL)
 					{
-						if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr != NULL)
+						if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr != NULL)
 						{
-							BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr);
+							BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr);
 						}
-						((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = 0;
-						BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain);
+						((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_len = 0;
+						// BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain);
 					}
 
 					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->hostName = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].hostName;
-					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
-					if(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain == NULL){
-						BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate tlsCAchain buffer.");
-						boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);	
-					}				
-					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length + 1;
-					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
-					if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr){
+					// ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
+					// if(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain == NULL){
+					// 	BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate tlsCAchain buffer.");
+					// 	boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);	
+					// }				
+					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_len = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length + 1;
+					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_len);
+					if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr){
 						BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate field_ptr buffer.");
 						boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);	
 					}
-					memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
-					memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
+					memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_len);
+					memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
 
 #endif
 
@@ -224,28 +238,28 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 
 			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->hostName = nodeCfg.orderCfg.endorser[i].hostName;
 			// ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = nodeCfg.orderCfg.tlsOrgCertContent.content;
-			if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain != NULL)
+			// if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain != NULL)
 			{
-				if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr != NULL)
+				if (((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr != NULL)
 				{
-					BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr);
+					BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr);
 				}
-				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = 0;
-				BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain);
+				((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_len = 0;
+				// BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain);
 			}
-			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
-			if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain){
-				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate tlsCAchain buffer.");
-				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);					
-			}
-			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = nodeCfg.orderCfg.tlsOrgCertContent.length + 1;
-			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
-			if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr){
+			// ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
+			// if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain){
+			// 	BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate tlsCAchain buffer.");
+			// 	boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);					
+			// }
+			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_len = nodeCfg.orderCfg.tlsOrgCertContent.length + 1;
+			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_len);
+			if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr){
 				BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate field_ptr buffer.");
 				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxProposal_exception);					
 			}
-			memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
-			memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, nodeCfg.orderCfg.tlsOrgCertContent.content, nodeCfg.orderCfg.tlsOrgCertContent.length);
+			memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_len);
+			memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr, nodeCfg.orderCfg.tlsOrgCertContent.content, nodeCfg.orderCfg.tlsOrgCertContent.length);
 
 #endif
 
@@ -336,54 +350,6 @@ __BOATSTATIC BOAT_RESULT BoatHlfabricTxExec(BoatHlfabricTx *tx_ptr,
 
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo(BoatHlfabricWallet *wallet_ptr,
-											   const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											   const BoatHlfabricCertInfoCfg certContent)
-{
-	BOAT_RESULT result = BOAT_SUCCESS;
-	boat_try_declare;
-
-	if (wallet_ptr == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-	}
-
-	/* initialization */
-	memset(&wallet_ptr->tlsClinet_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx));
-	wallet_ptr->tlsClinet_info.cert.field_ptr = NULL;
-	wallet_ptr->tlsClinet_info.cert.field_len = 0;
-
-	/* prikey context assignment */
-	memcpy(&wallet_ptr->tlsClinet_info.prikeyCtx,
-		   &prikeyCtx_config.private_KeyCtx, sizeof(BoatWalletPriKeyCtx));
-
-	/* cert assignment */
-	wallet_ptr->tlsClinet_info.cert.field_ptr = BoatMalloc(certContent.length);
-	if (wallet_ptr->tlsClinet_info.cert.field_ptr == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricWalletSetTlsInfo_exception);
-	}
-	memcpy(wallet_ptr->tlsClinet_info.cert.field_ptr, certContent.content, certContent.length);
-	wallet_ptr->tlsClinet_info.cert.field_len = certContent.length;
-
-	/* boat catch handle */
-	boat_catch(BoatHlfabricWalletSetTlsInfo_exception)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-		result = boat_exception;
-		/* free malloc param Deinit */
-		BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
-		wallet_ptr->tlsClinet_info.cert.field_len = 0;
-	}
-
-	return result;
-}
-#endif
-
-
 
 
 /**
@@ -420,24 +386,11 @@ BoatHlfabricWallet *BoatHlfabricWalletInit(BUINT8 keypairIndex,BUINT8 networkInd
         return NULL;
     }
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
-#if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-	wallet_ptr->tlsClinet_info.cert.field_ptr = NULL;
-	wallet_ptr->tlsClinet_info.cert.field_len = 0;
-#endif
 	wallet_ptr->tlsCAchain.ca.field_len = 0;
 	wallet_ptr->tlsCAchain.ca.field_ptr = NULL;
 #endif
 
 	wallet_ptr->http2Context_ptr = NULL;
-	/* tlsClinet_info assignment */
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
-#if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-	result += BoatHlfabricWalletSetTlsClientInfo(wallet_ptr, config_ptr->tlsPriKey_config,
-												 config_ptr->tlsClientCertContent);
-#endif
-	/* tlsRootCa_info assignment */
-	//BoatHlfabricWalletSetRootCaInfo(wallet_ptr, config_ptr->rootCaContent, config_ptr->rootCaNumber);
-#endif
 	/* network_info assignment */
 	// result += BoatHlfabricWalletSetNetworkInfo(wallet_ptr, config_ptr->nodesCfg);
 	/* http2Context_ptr assignment */
@@ -471,10 +424,6 @@ void BoatHlfabricWalletDeInit(BoatHlfabricWallet *wallet_ptr)
 
 	/* tlsClinet_info DeInit */
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
-#if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-	BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
-	wallet_ptr->tlsClinet_info.cert.field_len = 0;
-#endif /* #if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1) */
 	// for c99, free(NULL) will return directly, so here
 	// use BOAT_HLFABRIC_ROOTCA_MAX_NUM as cyclic maximum is acceptable.
 	if(wallet_ptr->tlsCAchain.ca.field_ptr != NULL){

@@ -392,8 +392,8 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 
 
 #if (BOAT_TLS_SUPPORT == 1)	
-BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
-						BSINT32 socketfd, void *tlsContext, void *rsvd)
+BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,const BoatFieldVariable clientPrikey,
+						const BoatFieldVariable clientCert,BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
 	
 	//! @todo BoatTlsInit implementation in crypto default.

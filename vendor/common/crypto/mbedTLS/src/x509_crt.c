@@ -1111,6 +1111,7 @@ static int x509_crt_parse_der_core( mbedtls_x509_crt *crt,
             MBEDTLS_ASN1_CONSTRUCTED | MBEDTLS_ASN1_SEQUENCE ) ) != 0 )
     {
         mbedtls_x509_crt_free( crt );
+        
         return( MBEDTLS_ERR_X509_INVALID_FORMAT );
     }
 

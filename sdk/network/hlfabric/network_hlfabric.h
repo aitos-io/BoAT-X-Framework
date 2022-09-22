@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-09 11:24:55
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-16 17:01:27
+ * @LastEditTime: 2022-09-21 12:12:19
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -27,8 +27,15 @@
 #define __NETWORK_HLFABRIC_H__
 
 
-
+#include "boatiotsdk.h"
 #include "boattypes.h"
+
+#define BOAT_HLFABRIC_TLS_SUPPORT                BOAT_TLS_SUPPORT //!< If need client support TLS, set it to 1.
+#define BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT        BOAT_TLS_IDENTIFY_CLIENT //!< If server need identify client, set it to 1.
+
+                                                   //!< This macro valid only BOAT_HLFABRIC_TLS_SUPPORT has
+                                                   //!< set to 1. 
+												   //!< @note This macro is reserved for future.
 
 #define BOAT_HLFABRIC_NODE_URL_MAX_LEN           127  //!< Maxmum length of node's URL
 #define BOAT_HLFABRIC_HOSTNAME_MAX_LEN           127  //!< Maxmum length of hostname
@@ -78,6 +85,10 @@ typedef struct TBoatHlfabricNodesCfg{
 typedef struct TBoatHlfabricNetworkConfig
 {
 	BoatHlfabricCertInfoCfg     accountCertContent;   //!< certificate content of account
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+	BoatKeypairExtraData        accountClientTlsPrikey;
+	BoatHlfabricCertInfoCfg     accountClientTlsCert;
+#endif
 	BoatHlfabricCertInfoCfg     tlsClientCertContent; //!< certificate content of TLS 	
 	BoatHlfabricNodesCfg 		nodesCfg;
 }BoatHlfabricNetworkConfig;
@@ -88,6 +99,10 @@ typedef struct TBoatHlfabricNetworkData
 {
 	BUINT8 index;
 	BoatHlfabricCertInfoCfg     accountCertContent;   //!< certificate content of account
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+	BoatKeypairExtraData        accountClientTlsPrikey;
+	BoatHlfabricCertInfoCfg     accountClientTlsCert;
+#endif
 	BoatHlfabricCertInfoCfg     tlsClientCertContent; //!< certificate content of TLS 	
 	BoatHlfabricNodesCfg 		nodesCfg;
 }BoatHlfabricNetworkData;

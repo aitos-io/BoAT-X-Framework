@@ -46,6 +46,31 @@ const BCHAR *fabric_client_democert = "-----BEGIN CERTIFICATE-----\n"
 "wFbiCN1EwHqROzJgGMiatSOARqndHJpeX03w0qeSew==\n"
 									  "-----END CERTIFICATE-----\n";
 
+#if(BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+
+const BCHAR *fabric_client_tls_prikey = "-----BEGIN PRIVATE KEY-----\n"
+"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgHFtvXWryUMKKUHKJ\n"
+"3ajXvSG1aPvZnCvC1m57KjlSh1qhRANCAARi2dKHWoicjhXDeX/oGgMzh1oimvJy\n"
+"TZXp4b3coeZfPcmxrWJEU4ZbVvYOKxOfp7LnYyBc8ct/KM37ultOD7zK\n"
+									 "-----END PRIVATE KEY-----\n";
+
+const BCHAR *fabric_client_tls_cert = "-----BEGIN CERTIFICATE-----\n"
+"MIICOzCCAeGgAwIBAgIQfuVAt3+dJm873ZX/by2dpTAKBggqhkjOPQQDAjB2MQsw\n"
+"CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\n"
+"YW5jaXNjbzEZMBcGA1UEChMQb3JnMS5leGFtcGxlLmNvbTEfMB0GA1UEAxMWdGxz\n"
+"Y2Eub3JnMS5leGFtcGxlLmNvbTAeFw0yMjA1MDYwMzAxMDBaFw0zMjA1MDMwMzAx\n"
+"MDBaMFsxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH\n"
+"Ew1TYW4gRnJhbmNpc2NvMR8wHQYDVQQDDBZVc2VyMUBvcmcxLmV4YW1wbGUuY29t\n"
+"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYtnSh1qInI4Vw3l/6BoDM4daIpry\n"
+"ck2V6eG93KHmXz3Jsa1iRFOGW1b2DisTn6ey52MgXPHLfyjN+7pbTg+8yqNsMGow\n"
+"DgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAM\n"
+"BgNVHRMBAf8EAjAAMCsGA1UdIwQkMCKAIBMm4MmGOC/2t1UTvnVvf5St1fbxyMam\n"
+"CoUPXIdX0BVNMAoGCCqGSM49BAMCA0gAMEUCIQDJTu1jVW3ZqOqXq7B4vPMHdN5s\n"
+"FYaxtCge3bdCgkjcNQIgRs1rFgxlFq7bkloGBucO/H43sG4wX4MDK4V4IfQVUkY=\n"
+									  "-----END CERTIFICATE-----\n";
+
+#endif
+
 const BCHAR *fabric_org1_tlsCert = "-----BEGIN CERTIFICATE-----\n"
 "MIICVzCCAf6gAwIBAgIRAOgZn4I4jGSdGbBD4m2VoVUwCgYIKoZIzj0EAwIwdjEL\n"
 "MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\n"
@@ -206,6 +231,12 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 	memcpy(networkConfig.nodesCfg.orderCfg.endorser[0].nodeUrl,fabric_demo_order1_url,strlen(fabric_demo_order1_url));
 	memcpy(networkConfig.nodesCfg.orderCfg.endorser[0].hostName,fabric_demo_order1_hostName,strlen(fabric_demo_order1_hostName)+1);
 
+#if(BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1 )
+	networkConfig.accountClientTlsPrikey.value_len = strlen(fabric_client_tls_prikey);
+	strcpy((BCHAR*)networkConfig.accountClientTlsPrikey.value,fabric_client_tls_prikey);
+	networkConfig.accountClientTlsCert.length = strlen(fabric_client_tls_cert);
+	strcpy((BCHAR*)networkConfig.accountClientTlsCert.content,fabric_client_tls_cert);
+#endif
 	/* create fabric wallet */
 #if defined(USE_ONETIME_WALLET)
 	index = BoatHlfabricNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
@@ -247,6 +278,7 @@ int main(int argc, char *argv[])
 		
 		boat_throw(result, fabric_key_network_catch);
 	}
+	
 	/* step-3: fabric transaction structure initialization */
 	result = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
 	if (result != BOAT_SUCCESS)

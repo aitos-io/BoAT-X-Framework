@@ -248,6 +248,12 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd);
  *
  * @param caChain 
  *   rootCA certificate content list address.
+ * 
+ * @param clientPrikey 
+ * 	client tls prikey
+ * 
+ * @param clientCert 
+ * 	client tls cert
  *
  * @param socketfd 
  *   The raw socket connection file descriptor.
@@ -261,8 +267,8 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd);
  * @return 
  *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code
  ******************************************************************************/
-BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
-						BSINT32 socketfd, void *tlsContext, void *rsvd);
+BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,const BoatFieldVariable clientPrikey,
+						const BoatFieldVariable clientCert,BSINT32 socketfd, void *tlsContext, void *rsvd);
 #endif
 
 

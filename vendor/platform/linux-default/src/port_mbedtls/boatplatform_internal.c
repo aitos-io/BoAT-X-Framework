@@ -391,12 +391,16 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 
 
 #if (BOAT_TLS_SUPPORT == 1)	
-BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
-						BSINT32 socketfd, void *tlsContext, void *rsvd)
+BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,const BoatFieldVariable clientPrikey,
+						const BoatFieldVariable clientCert,BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
 	TTLSContext *tlsContext_ptr = (TTLSContext *)tlsContext;
 	mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+	mbedtls_x509_crt clientTlscert;
+    mbedtls_pk_context clientTlspkey;
+#endif
 	
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
@@ -426,12 +430,18 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
 		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 	
+	
     mbedtls_entropy_init(&entropy);
     mbedtls_ctr_drbg_init(&ctr_drbg);
 	mbedtls_net_init(tlsContext_ptr->ssl_net);
 	mbedtls_ssl_init(tlsContext_ptr->ssl);
 	mbedtls_ssl_config_init(tlsContext_ptr->ssl_cfg);
 	mbedtls_x509_crt_init(tlsContext_ptr->ssl_crt);
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+	mbedtls_x509_crt_init( &clientTlscert );
+    mbedtls_pk_init( &clientTlspkey );
+#endif
+
 	result = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, NULL, 0);
     if (result != BOAT_SUCCESS)
 	{
@@ -449,20 +459,7 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
     }
 
 	mbedtls_ssl_conf_rng(tlsContext_ptr->ssl_cfg, mbedtls_ctr_drbg_random, &ctr_drbg);
-
-	// for(int i = 0; i < BOAT_HLFABRIC_ROOTCA_MAX_NUM; i++)
-	// {
-	// 	if (((caChain + i) != NULL) && ((caChain + i)->field_ptr != NULL)) 
-	// 	{
-	// 		result += mbedtls_x509_crt_parse(tlsContext_ptr->ssl_crt, (caChain + i)->field_ptr, (caChain + i)->field_len);
-	// 	}
-	// }
-
-	// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "tlsCAchain  :",
-	// 	caChain[0].field_ptr,
-	// 	caChain[0].field_len);
-
-	result += mbedtls_x509_crt_parse(tlsContext_ptr->ssl_crt, caChain[0].field_ptr, caChain[0].field_len);
+	result += mbedtls_x509_crt_parse(tlsContext_ptr->ssl_crt, caChain.field_ptr, caChain.field_len);
 	if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Failed to execute x509_crt_parse: -%x\n", -result);
@@ -470,6 +467,28 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
     }
 
 	mbedtls_ssl_conf_ca_chain(tlsContext_ptr->ssl_cfg, tlsContext_ptr->ssl_crt, NULL);
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+	result = mbedtls_x509_crt_parse( &clientTlscert,(const unsigned char *) clientCert.field_ptr,clientCert.field_len);
+    if( result != BOAT_SUCCESS )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, " failed\n  !  mbedtls_x509_crt_parse returned %x\n\n", -result );
+        boat_throw(result, BoatTlsInit_exception);
+    }
+
+	result =  mbedtls_pk_parse_key( &clientTlspkey, (const unsigned char *) clientPrikey.field_ptr,
+                         clientPrikey.field_len, NULL, 0 );
+    if( result != BOAT_SUCCESS )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, " failed\n  !  mbedtls_pk_parse_key returned %x\n\n", -result );
+        boat_throw(result, BoatTlsInit_exception);
+    }
+    if( ( result = mbedtls_ssl_conf_own_cert( tlsContext_ptr->ssl_cfg, &clientTlscert, &clientTlspkey ) ) != 0 )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, " failed\n  ! mbedtls_ssl_conf_own_cert returned %d\n\n", result );
+        boat_throw(result, BoatTlsInit_exception);
+    }
+#endif
+
 	mbedtls_ssl_conf_authmode(tlsContext_ptr->ssl_cfg, MBEDTLS_SSL_VERIFY_REQUIRED);
 	result = mbedtls_ssl_setup(tlsContext_ptr->ssl, tlsContext_ptr->ssl_cfg);
 	if (result != BOAT_SUCCESS)
@@ -493,6 +512,24 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
         BoatLog(BOAT_LOG_CRITICAL, "Failed to execute ssl_handshake: -%x\n", -result);
         boat_throw(result, BoatTlsInit_exception);
     }
+
+	/* In real life, we would have used MBEDTLS_SSL_VERIFY_REQUIRED so that the
+     * handshake would not succeed if the peer's cert is bad.  Even if we used
+     * MBEDTLS_SSL_VERIFY_OPTIONAL, we would bail out here if ret != 0 */
+    if( ( result = mbedtls_ssl_get_verify_result( tlsContext_ptr->ssl ) ) != 0 )
+    {
+        char vrfy_buf[512];
+
+        BoatLog(BOAT_LOG_CRITICAL, " failed\n" );
+
+        mbedtls_x509_crt_verify_info( vrfy_buf, sizeof( vrfy_buf ), "  ! ", result );
+
+        BoatLog(BOAT_LOG_CRITICAL, "%s\n", vrfy_buf );
+    }
+    else
+        BoatLog(BOAT_LOG_CRITICAL, " ok\n" );
+
+
 	BoatLog(BOAT_LOG_NORMAL, "ret = ssl_handshake SUCCESSED!");
 	
 	/* boat catch handle */

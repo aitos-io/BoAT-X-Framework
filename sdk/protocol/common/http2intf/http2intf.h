@@ -61,10 +61,13 @@ typedef struct Thttp2IntfContext{
 	BCHAR               *nodeUrl;     //!< example: orderer.example.com:7050
 #if (BOAT_TLS_SUPPORT == 1)
 	BCHAR               *hostName;    //!< CN field in remote certificate. example: orderer.example.com
-	BoatFieldVariable   *tlsCAchain;  //!< rootCA certificate content list
-	
+	BoatFieldVariable   tlsCAchain;  //!< rootCA certificate content list
 	void*               tlsContext;   //!< TLS releated context, it has a strong correlation
                                       //!< with specific TLS libraries
+#if(BOAT_TLS_IDENTIFY_CLIENT == 1)
+	BoatFieldVariable   tlsPrikey;  //!< prikey content list
+	BoatFieldVariable   tlsCert;  //!< cert content list
+#endif
 #endif	
 	BoatFieldVariable   sendBuf;      //!< http2 send buffer.NOTE:there is no receive buffer here,
 	                                  //!< cause the receive buffer be maintained by nghttp2 lib.

@@ -36,12 +36,7 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 #define BOAT_HLFABRIC_ENDORSER_MAX_NUM           10  //!< Support endorser max number
 #define BOAT_HLFABRIC_ORDERER_MAX_NUM            4   //!< Support orderer max number
 
-#define BOAT_HLFABRIC_TLS_SUPPORT                BOAT_TLS_SUPPORT //!< If need client support TLS, set it to 1.
-#define BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT        BOAT_TLS_IDENTIFY_CLIENT //!< If server need identify client, set it to 1.
 
-                                                   //!< This macro valid only BOAT_HLFABRIC_TLS_SUPPORT has
-                                                   //!< set to 1. 
-												   //!< @note This macro is reserved for future.
 
 #define BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN     8192 //!< The maximum length of HTTP2 send buffer
 
@@ -90,9 +85,6 @@ typedef struct TBoatHlfabricWallet
 {
 	BoatHlfabricKeyPair   account_info; //!< Account information
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
-#if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-	BoatHlfabricKeyPair       tlsClinet_info;//!< tls information
-#endif /* end of BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT */
 	BoatHlfabricTlsCAchain    tlsCAchain;   //!< tls rootCA certificate list
 #endif /* end of BOAT_HLFABRIC_TLS_SUPPORT */
     // BoatHlfabricNetworkInfo   network_info; //!< Network information
@@ -203,60 +195,6 @@ extern "C" {
 #endif
 
 
-
-
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
-/*!****************************************************************************
- * @brief 
- *   Set TLS key pairs of client.
- *
- * @details
- *   This function used to set TLS key pairs of client. If server needs to 
- *   authenticate the client, this function needs to be enabled.
- *
- * @param wallet_ptr 
- *   Fabric wallet pointer.
- *
- * @param prikeyCtx_config 
- *   The private key information to be settings.
- *
- * @param certContent
- *   The content of the certificate to be settings.
- *
- * @return 
- *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
- *
- *@note This function is reserved for future. DO NOT use it in your application.
- ******************************************************************************/
-BOAT_RESULT BoatHlfabricWalletSetTlsClientInfo( BoatHlfabricWallet *wallet_ptr, 
-											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											    const BoatHlfabricCertInfoCfg certContent );
-#endif
-
-
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
-/*!****************************************************************************
- * @brief Set root CA certificate for TLS connection.
- * 
- * @details
- *   Set root CA certificate for TLS connection.
- *
- * @param wallet_ptr 
- *   Fabric wallet pointer.
- *
- * @param rootCaContent
- *   Array of root CA certificate content.
- *
- * @param rootCaNumber
- *   Number of root CA certificate to be set.
- *
- * @return 
- *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
- ******************************************************************************/
-BOAT_RESULT BoatHlfabricWalletSetRootCaInfo(BoatHlfabricWallet *wallet_ptr, 
-											const BoatHlfabricCertInfoCfg *rootCaContent,
-											BUINT32 rootCaNumber);
-#endif
 
 
 

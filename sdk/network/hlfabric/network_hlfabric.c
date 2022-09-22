@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-09 11:24:55
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-19 18:09:51
+ * @LastEditTime: 2022-09-21 15:24:42
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -46,6 +46,10 @@ BOAT_RESULT BoATHlfabric_FreeNetworkData(BoatHlfabricNetworkData networkData)
     networkData.index = 0;
     networkData.accountCertContent.length = 0;
     networkData.tlsClientCertContent.length = 0;
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+        networkData.accountClientTlsPrikey.value_len = 0;
+        networkData.accountClientTlsCert.length = 0;
+#endif
     /* layout */
     for (size_t i = 0; i < networkData.nodesCfg.endorserLayoutNum; i++)
     {
@@ -219,7 +223,21 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_getNetworkFromProto(BoatHlfabricNetworkDat
         strcpy(Networkdata->nodesCfg.orderCfg.endorser[i].nodeUrl,network_proto->ordercfg->endorser[i]->nodeurl);
     }
     
-    
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+        if(strlen(network_proto->accountclienttlsprikey) -1 > sizeof(Networkdata->accountClientTlsPrikey.value)){
+            BoatLog(BOAT_LOG_NORMAL,"account client tls prikey len exceed");
+            boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY,hlfabric_exception);
+        }
+        Networkdata->accountClientTlsPrikey.value_len = strlen(network_proto->accountclienttlsprikey);
+        strcpy((BCHAR*)Networkdata->accountClientTlsPrikey.value,network_proto->accountclienttlsprikey);
+
+        if(strlen(network_proto->accountclienttlscert) -1 > sizeof(Networkdata->accountClientTlsCert.content)){
+            BoatLog(BOAT_LOG_NORMAL,"account client tls cert len exceed");
+            boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY,hlfabric_exception);
+        }
+        Networkdata->accountClientTlsCert.length = strlen(network_proto->accountclienttlscert);
+        strcpy((BCHAR*)Networkdata->accountClientTlsCert.content,network_proto->accountclienttlscert);
+#endif    
 
 
 	/* boat catch handle */
@@ -808,6 +826,12 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_Get_Network_Data(BoatHlfabricNetworkData *
         endorserCfg[i]->nodeurl = networkData->nodesCfg.orderCfg.endorser[i].nodeUrl;
     }
     protobuf_network.ordercfg->endorser = endorserCfg;
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+    protobuf_network.accountclienttlsprikey = (BCHAR*)networkData->accountClientTlsPrikey.value;
+    protobuf_network.accountclienttlscert = (BCHAR*)networkData->accountClientTlsCert.content;
+
+#endif
+
     networkLength = common__fabric_network_data__get_packed_size(&protobuf_network);
     if(networkLength <= 0){
         BoatLog(BOAT_LOG_NORMAL,"fail to get packed size of network");
@@ -891,7 +915,6 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_NetworkDataCtx_Store(BoatHlfabricNetworkDa
     // BUINT8 testbuf[1024] = {0};
     BUINT8 *networkData = NULL;
     boat_try_declare;
-
     result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),storeType);
     /* if read Nvram failed , no network */
     if(result != BOAT_SUCCESS){
@@ -1001,7 +1024,10 @@ BOAT_RESULT BoatHlfabricNetworkCreate(BoatHlfabricNetworkConfig *networkConfig,B
 
     mNetworkDataCtx.index = networkIndex;
     mNetworkDataCtx.accountCertContent = networkConfig->accountCertContent;
-    mNetworkDataCtx.tlsClientCertContent = networkConfig->tlsClientCertContent;
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+    mNetworkDataCtx.accountClientTlsCert = networkConfig->accountClientTlsCert;
+    mNetworkDataCtx.accountClientTlsPrikey = networkConfig->accountClientTlsPrikey;
+#endif
     mNetworkDataCtx.nodesCfg = networkConfig->nodesCfg;
     result = BoATHlfabric_NetworkDataCtx_Store(&mNetworkDataCtx,storeType);
     if(result != BOAT_SUCCESS){

@@ -44,6 +44,8 @@ struct  Common__FabricNetworkData
   ProtobufCMessage base;
   uint32_t index;
   char *accountcertcontent;
+  char *accountclienttlsprikey;
+  char *accountclienttlscert;
   char *tlsclientcertcontent;
   /*
    * fabricNodesCfg nodes = 4;
@@ -55,7 +57,7 @@ struct  Common__FabricNetworkData
 };
 #define COMMON__FABRIC_NETWORK_DATA__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&common__fabric_network_data__descriptor) \
-    , 0, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, NULL }
+    , 0, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, NULL }
 
 
 struct  Common__FabricNodesCfg
