@@ -1,0 +1,25 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.accesscontrol";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/accesscontrol";
+
+package accesscontrol;
+
+// Serialized member of blockchain
+message SerializedMember {
+    // organization identifier of the member
+    string org_id = 1;
+
+    // member identity related info bytes
+    bytes member_info = 2;
+
+    // use cert compression
+    // todo: is_full_cert -> compressed
+    bool is_full_cert = 3;
+}

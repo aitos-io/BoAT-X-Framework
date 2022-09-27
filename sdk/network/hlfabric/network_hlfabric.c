@@ -459,6 +459,7 @@ BOAT_RESULT BoATHlfabric_GetNetworkList(BoatHlfabricNetworkContext *networkList)
  *  for details.
  * @author: aitos
  */
+
 BOAT_RESULT BoATHlfabric_FreeNetworkContext(BoatHlfabricNetworkContext networkList)
 {
     if(networkList.networkNum == 0){

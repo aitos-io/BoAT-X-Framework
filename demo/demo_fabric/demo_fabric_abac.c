@@ -156,9 +156,7 @@ __BOATSTATIC BOAT_RESULT fabric_createOnetimeWallet()
 	keypair_config.prikey_content.field_ptr = (BUINT8 *)fabric_client_demokey;
 	keypair_config.prikey_content.field_len = strlen(fabric_client_demokey) + 1; //length contain terminator
 
-
-
-	/* create ethereum keypair */
+	/* create chainmaker keypair */
 #if defined(USE_ONETIME_WALLET)
     result = BoatKeypairCreate( &keypair_config, "keypairOnetime",BOAT_STORE_TYPE_RAM);
 #elif defined(USE_CREATE_PERSIST_WALLET)
@@ -251,8 +249,6 @@ __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 		return BOAT_ERROR_WALLET_CREATE_FAIL;
 	}
 
-	networkIndex = index;
-	fabricWalletConfigFree(networkConfig);
 	return index;
 }
 

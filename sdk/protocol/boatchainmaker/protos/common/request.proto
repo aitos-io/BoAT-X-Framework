@@ -1,0 +1,226 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.common";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/common";
+
+package common;
+
+import "common/contract.proto";
+import "accesscontrol/member.proto";
+
+// transaction request proposed by user
+message TxRequest {
+  // header of the request
+  TxHeader header = 1;
+
+  // payload of the request, can be unmarshalled according to tx_type in header
+  bytes payload = 2;
+
+  // signature of [header bytes || payload bytes]
+  bytes signature = 3;
+}
+
+// header of the request
+message TxHeader {
+  // blockchain identifier
+  string chain_id = 1;
+
+  // sender identifier
+  accesscontrol.SerializedMember sender = 2;
+
+  // transaction type
+  TxType tx_type = 3;
+
+  // transaction id set by sender, should be unique
+  string tx_id = 4;
+
+  // transaction timestamp, in unix timestamp format, seconds
+  int64 timestamp = 5;
+
+  // expiration timestamp in unix timestamp format
+  // after that the transaction is invalid if it is not included in block yet
+  int64 expiration_time = 6;
+}
+
+// transaction type definition
+enum TxType {
+  // call a pre created user contract, tx included in block
+  INVOKE_USER_CONTRACT = 0;
+
+  // query a pre-created user contract, tx not included in block
+  QUERY_USER_CONTRACT = 1;
+
+  // create, upgrade, freeze, unfreeze, revoke a user contract, tx included in block
+  MANAGE_USER_CONTRACT = 2;
+
+  // call a system contract, tx included in block
+  INVOKE_SYSTEM_CONTRACT = 7;
+
+  // query a system contract, tx not included in block
+  QUERY_SYSTEM_CONTRACT = 3;
+
+  // update chain config, tx included in block
+  UPDATE_CHAIN_CONFIG = 4;
+
+  // subscribe block info, tx not included in block
+  SUBSCRIBE_BLOCK_INFO = 5;
+
+  // subscribe tx info, tx not included in block
+  SUBSCRIBE_TX_INFO = 6;
+
+  //subscribe contract event info, tx not included in block
+  SUBSCRIBE_CONTRACT_EVENT_INFO = 8;
+
+  // archive block
+  ARCHIVE_FULL_BLOCK = 9;
+
+  // restore archived block
+  RESTORE_FULL_BLOCK = 10;
+}
+
+// query type transaction payload
+// TxType: QUERY_USER_CONTRACT & QUERY_SYSTEM_CONTRACT
+message QueryPayload {
+  // smart contract name
+  string contract_name = 1;
+
+  // query method
+  string method = 2;
+
+  // query parameters in k-v format
+  repeated KeyValuePair parameters = 3;
+}
+
+// transact type transaction payload
+// TxType: INVOKE_USER_CONTRACT
+message TransactPayload {
+  // smart contract name
+  string contract_name = 1;
+
+  // invoke method
+  string method = 2;
+
+  // invoke parameters in k-v format
+  repeated KeyValuePair parameters = 3;
+}
+
+// config update type transaction payload
+// TxType: UPDATE_CHAIN_CONFIG
+message SystemContractPayload {
+  // endorsement signature with chain_id, redundant with TxHeader
+  string chain_id = 1;
+
+  // smart contract name
+  string contract_name = 2;
+
+  // update method
+  string method = 3;
+
+  // update parameters in k-v format
+  repeated KeyValuePair parameters = 4;
+
+  // config sequence, starts from 0 (genesis config)
+  uint64 sequence = 5;
+
+  // multi-sign, signature of [SystemContractPayload] with endorsement = nil
+  repeated EndorsementEntry endorsement = 6;
+}
+
+// contract management type transaction payload
+// TxType: MANAGE_USER_CONTRACT
+message ContractMgmtPayload {
+  // endorsement signature with chain_id, redundant with TxHeader
+  string chain_id = 1;
+
+  // smart contract id
+  ContractId contract_id = 2;
+
+  // contract management method, see ManageUserContractFunction
+  string method = 3;
+
+  // parameters in k-v format
+  repeated KeyValuePair parameters = 4;
+
+  // compiled byte code
+  bytes byte_code = 5;
+
+  // multi-sign, signature of [ContractMgmtPayload] with endorsement = nil
+  repeated EndorsementEntry endorsement = 6;
+}
+
+// endorsement info, including a signer and his signature
+message EndorsementEntry {
+  accesscontrol.SerializedMember signer = 1;
+  bytes signature = 2;
+}
+
+// a k-v pair
+message KeyValuePair {
+  string key = 1;
+  string value = 2;
+}
+// subscribe contract event payload
+// TxType: SUBSCRIBE_CONTRACT_EVENT_INFO
+message SubscribeContractEventPayload {
+
+  //event topic
+  string topic = 1;
+  //contract name
+  string contractName = 2 ;
+}
+// subscribe block type transaction payload
+// TxType: SUBSCRIBE_BLOCK_INFO
+message SubscribeBlockPayload {
+  // start block height:
+  // < -1: invalid
+  // == -1: subscribe with latest block
+  // >= 0：starts with the block height
+  int64 start_block = 1;
+
+  // end block height:
+  // < -1: invalid
+  // == -1: subscribe with latest block
+  // >= 0：ends with the block height
+  int64 end_block = 2;
+
+  // include rw set in block or not
+  bool with_rw_set = 3;
+}
+
+// subscribe transaction type transaction payload
+// TxType: SUBSCRIBE_TX_INFO
+message SubscribeTxPayload {
+  // start block height:
+  // < -1: invalid
+  // == -1: subscribe with latest block
+  // >= 0：starts with the block height
+  int64 start_block = 1;
+
+  // end block height:
+  // < -1: invalid
+  // == -1: subscribe with latest block
+  // >= 0：ends with the block height
+  int64 end_block = 2;
+
+  // subscribe this type only
+  // if null, subscribe all transaction types
+  TxType tx_type = 3;
+
+  // subscribe these transaction ids only
+  // if null, subscribe all transactions
+  repeated string tx_ids = 4;
+}
+
+message ArchiveBlockPayload {
+  int64 block_height = 1;
+}
+
+message RestoreBlockPayload {
+  bytes full_block = 1;
+}
