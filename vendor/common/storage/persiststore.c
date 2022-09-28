@@ -36,6 +36,8 @@ BUINT8 RAM_BOAT_DATA[1024] = {0};
 
 #if(PROTOCOL_USE_HLFABRIC == 1)
 	BUINT8 RAM_BOAT_NETWORK_DATA[5120] = {0};
+#elif(PROTOCOL_USE_CHAINMAKER == 1)
+	BUINT8 RAM_BOAT_NETWORK_DATA[2048] = {0};
 #else
 	BUINT8 RAM_BOAT_NETWORK_DATA[1024] = {0};
 #endif
@@ -291,6 +293,7 @@ BOAT_RESULT BoATStoreSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset,BUINT8
 		result = BoatWriteStorage(offset_base + offset,(BUINT8*)data_ptr,data_len,NULL);
 	}else if(storeType == BOAT_STORE_TYPE_RAM){
 		if(offset + data_len > rambufLen){
+
 			result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}else{
 			memcpy(rambuf+offset,data_ptr,data_len);
@@ -366,6 +369,7 @@ BOAT_RESULT BoatReadSoftRotNvram(BoatStoreFile storeFile ,BUINT32 offset, BUINT8
 		result = BoatReadStorage(offset_base + offset,data_ptr,len_to_read,NULL);
 	}else{
 		if(offset + len_to_read > rambufLen){
+			BoatLog(BOAT_LOG_CRITICAL, "len_to_read is larger than rambufLen");
 			result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}else{
 			memcpy(data_ptr,rambuf+offset,len_to_read);

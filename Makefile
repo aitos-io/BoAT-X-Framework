@@ -106,7 +106,6 @@ BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/hlfabric \
 
 endif
 
-
 ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)         
 BOAT_INCLUDE += -I$(BOAT_SDK_DIR)/network/chainmaker \
                 -I$(BOAT_SDK_DIR)/protocol/boatchainmaker  \

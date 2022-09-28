@@ -26,6 +26,8 @@ const BCHAR* chainmaker_client_sign_prikey = "-----BEGIN EC PRIVATE KEY-----\n"
 "CYCeeChl4OBno9aCLc5BvFk4tmKDdOp96g==\n"
 "-----END EC PRIVATE KEY-----\n";
 
+const BCHAR *native_demoKey = "0xec9a400b7f92cc6af153a5909aaf1729deeb49bc22369130268382654008e177";
+
 const BCHAR* chainmaker_clinet_tls_prikey = "-----BEGIN EC PRIVATE KEY-----\n"
 "MHcCAQEEIOyaQAt/ksxq8VOlkJqvFyne60m8IjaRMCaDgmVACOF3oAoGCCqGSM49\n"
 "AwEHoUQDQgAEvhmUZnXAdpVPAmXTIcP3XVAXxUJtmL20xatRqkW7Kyg8Ghlg4jVW\n"
@@ -74,10 +76,9 @@ BCHAR *chainmaker_org_id     = "wx-org1.chainmaker.org";
 
 BoatChainmakerWallet *g_chaninmaker_wallet_ptr;
 BoatChainmakerWallet  wallet_config = {0};
-BUINT8 keypairIndex = 0;
-BUINT8 networkIndex = 0;
+BUINT8 keypair_index = 0;
+BUINT8 network_index = 0;
 
-#define USE_ONETIME_WALLET
 __BOATSTATIC BOAT_RESULT chainmaker_create_keypair()
 {
     BoatKeypairPriKeyCtx_config keypair_config = {0};
@@ -87,16 +88,25 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_keypair()
     (void)binFormatKey; //avoid warning
 
     /* keypair_config value assignment */
+    // keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+    // keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1;
+    // keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
+    // keypair_config.prikey_content.field_ptr = (BUINT8 *)chainmaker_client_sign_prikey;
+    // keypair_config.prikey_content.field_len = strlen(chainmaker_client_sign_prikey) + 1; //length contain terminator
+
     keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+    keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
     keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1;
-    keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
-    keypair_config.prikey_content.field_ptr = (BUINT8 *)chainmaker_client_sign_prikey;
-    keypair_config.prikey_content.field_len = strlen(chainmaker_client_sign_prikey) + 1; //length contain terminator
+    UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    keypair_config.prikey_content.field_ptr = binFormatKey;
+    keypair_config.prikey_content.field_len = 32;
 
     /* create ethereum keypair */
 #if defined(USE_ONETIME_WALLET)
+
     result = BoatKeypairCreate(&keypair_config, "keypairOnetime", BOAT_STORE_TYPE_RAM);
 #elif defined(USE_CREATE_PERSIST_WALLET)
+    BoatLog(BOAT_LOG_NORMAL, "create keypair persist");
     result = BoatKeypairCreate(&keypair_config, "keypairPersist", BOAT_STORE_TYPE_FLASH);
 #endif
 
@@ -104,7 +114,7 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_keypair()
     {
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-    keypairIndex = result;
+    keypair_index = result;
     return BOAT_SUCCESS;
 }
 
@@ -112,7 +122,7 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_keypair()
 __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
 {
     BOAT_RESULT index;
-    BoatChainmakerNetworkData networkConfig;
+    BoatChainmakerNetworkData networkConfig = {0};
 
     //set user cert context
     networkConfig.client_sign_cert_content.length = strlen(chainmaker_client_sign_cert) + 1;
@@ -130,6 +140,7 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
     {
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT ;
     }
+
     strncpy(networkConfig.node_url,  chainmaker_node_url,  strlen(chainmaker_node_url));
     strncpy(networkConfig.host_name, chainmaker_host_name, strlen(chainmaker_host_name));
     strncpy(networkConfig.chain_id,  chainmaker_chain_id,  strlen(chainmaker_chain_id));
@@ -156,8 +167,11 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
 
 #if defined(USE_ONETIME_WALLET)
     index = BoatChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
+
 #elif defined(USE_CREATE_PERSIST_WALLET)
+    BoatLog(BOAT_LOG_NORMAL, "startting create persist wallet");
     index = BoatChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
+
 #else
     return BOAT_ERROR;
 #endif
@@ -165,17 +179,15 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
     {
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
+    network_index = index;
 
     return index;
 }
 
-
-
-
 int main(int argc, char *argv[])
 {
     BOAT_RESULT           result  = BOAT_SUCCESS;
-    BoatChainmakerTx    tx_ptr;
+    BoatChainmakerTx      tx_ptr;
     BoatResponseData      response_data;
     boat_try_declare;
 
@@ -184,20 +196,21 @@ int main(int argc, char *argv[])
 
     /* step-2: prepare keypair and network*/
     result = chainmaker_create_keypair();
-    if (result != BOAT_SUCCESS)
+    if (result < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "chainmaker create keypair failed.");
         boat_throw(result, chainmaker_demo_catch);;
     }
 
-     result = chainmaker_create_network();
-    if (result != BOAT_SUCCESS)
+    result = chainmaker_create_network();
+    if (result < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "chainmaker create network failed.");
         boat_throw(result, chainmaker_demo_catch);;
     }
 
-    g_chaninmaker_wallet_ptr = BoatChainmakerWalletInit(keypairIndex, networkIndex);
+    BoatLog(BOAT_LOG_CRITICAL, "wallet init keypair_index =%d, network_index = %d\n",keypair_index, network_index);
+    g_chaninmaker_wallet_ptr = BoatChainmakerWalletInit(keypair_index, network_index);
 
     /* step-3: Chainmaker transaction structure initialization */
     result = BoatChainmakerTxInit(g_chaninmaker_wallet_ptr, &tx_ptr);

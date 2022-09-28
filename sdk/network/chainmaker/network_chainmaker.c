@@ -112,7 +112,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_getNetworkFromProto(BoatChainmakerNetwor
 /**
  * @description: 
  *  This function get the network data of chainmaker from Nvram;
- *  after reading data from Nvram , unpacked the data to fabric struct;
+ *  after reading data from Nvram , unpacked the data to chainmaker struct;
  * @param {BoatChainmakerNetworkData} *Networkdata
  * @param {BUINT32} startAddr
  * @param {BoatStoreType} storeType
@@ -177,9 +177,9 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_GetNetworkFromNvram(BoatChainmakerNetwor
     }
     *outlen = (networkDataLength + networkDataLengthLen);
     
-	/* boat catch handle */
-	boat_catch(chainmakerGetnetworkdata_exception)
-	{
+    /* boat catch handle */
+    boat_catch(chainmakerGetnetworkdata_exception)
+    {
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
     }
@@ -241,7 +241,7 @@ BOAT_RESULT BoATChainmaker_GetNetworkList(BoatChainmakerNetworkContext *networkL
         }
         offset += sizeof(protocolType);   //protocol type
         offset += sizeof(BUINT8);         // index
-        if(protocolType == BOAT_PROTOCOL_HLFABRIC){  // fabric
+        if(protocolType == BOAT_PROTOCOL_CHAINMAKER){  // chainmaker
             result = BoATChainmaker_GetNetworkFromNvram(&(networkList->networks[index++]),offset,BOAT_STORE_TYPE_FLASH,&networkDataLength);
             if(result != BOAT_SUCCESS){
                 return result;
@@ -287,7 +287,7 @@ BOAT_RESULT BoATChainmaker_GetNetworkList(BoatChainmakerNetworkContext *networkL
         }
         offset += sizeof(protocolType);   //protocol type
         offset += sizeof(BUINT8);         // index
-        if(protocolType == BOAT_PROTOCOL_HLFABRIC){  // fabric
+        if(protocolType == BOAT_PROTOCOL_CHAINMAKER){  // chainmaker
             result = BoATChainmaker_GetNetworkFromNvram(&(networkList->networks[index++]),offset,BOAT_STORE_TYPE_RAM,&networkDataLength);
             if(result != BOAT_SUCCESS){
                 return result;
@@ -422,14 +422,19 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_Get_Network_Data(BoatChainmakerNetworkDa
         BoatLog(BOAT_LOG_NORMAL,"networkData is NULL");
         return BOAT_ERROR;
     }
-    protobuf_network.index = networkData->index;
+    protobuf_network.index     = networkData->index;
+    protobuf_network.node_url  = networkData->node_url;
+    protobuf_network.host_name = networkData->host_name;
+    protobuf_network.chain_id  = networkData->chain_id;
+    protobuf_network.org_id    = networkData->org_id;
+
     protobuf_network.client_sign_cert_content = networkData->client_sign_cert_content.content;
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)     
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)     
     protobuf_network.client_tls_cert_content = (BCHAR*)networkData->client_tls_cert_content.content;
 #endif
 
-#if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
     protobuf_network.client_tls_privkey_vlaue = (BCHAR*)networkData->client_tls_privkey_vlaue.value;
 #endif
 
@@ -454,9 +459,9 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_Get_Network_Data(BoatChainmakerNetworkDa
     result = add_L_withOffset(networkbuf,&offset,networkLength);
     *data = networkbuf;
     *datalen = offset;
-    	/* boat catch handle */
-	boat_catch(chainmaker_exception)
-	{
+        /* boat catch handle */
+    boat_catch(chainmaker_exception)
+    {
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
         if(networkbuf != NULL){
@@ -505,27 +510,27 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_NetworkDataCtx_Store(BoatChainmakerNetwo
     BOAT_RESULT result = BOAT_SUCCESS;
     BUINT8 networkNum = 0;
     BUINT32 networkLength = 0 ,networkLengthLen = 0, offset = 0 ;
-    BoatProtocolType protocol = BOAT_PROTOCOL_HLFABRIC;
+    BoatProtocolType protocol = BOAT_PROTOCOL_CHAINMAKER;
     BUINT8 lengthbytes[3] = {0};
     BUINT8 networknumBytes[4] = {0};
-    // BUINT8 testbuf[1024] = {0};
     BUINT8 *networkData = NULL;
     boat_try_declare;
-    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),storeType);
+    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK, offset, networknumBytes, sizeof(networknumBytes), storeType);
+
     /* if read Nvram failed , no network */
     if(result != BOAT_SUCCESS){
+        BoatLog(BOAT_LOG_NORMAL, "no network exist");
         networkNum = 0;
     }else{
         result = utility_check_NumBytes(networknumBytes,&networkNum);
         if(result != BOAT_SUCCESS){
-            // BoatLog(BOAT_LOG_NORMAL,"check network num fail");
-            // return result;
             networkNum = 0;
             result = BOAT_SUCCESS;
         }
+        BoatLog(BOAT_LOG_NORMAL, "read networkNum = %d\n", networkNum);
     }
     if(networkNum >= BOAT_MAX_NETWORK_NUM){
-        boat_throw(BOAT_ERROR,hlfabric_exception);
+        boat_throw(BOAT_ERROR, chainmaker_exception);
     }
     offset += sizeof(networknumBytes);
     for (int i = 0; i < networkNum; i++)
@@ -538,45 +543,46 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_NetworkDataCtx_Store(BoatChainmakerNetwo
         result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthbytes,sizeof(lengthbytes),storeType);
         if(result != BOAT_SUCCESS){
             BoatLog(BOAT_LOG_NONE,"read network length fail");
-            boat_throw(result,hlfabric_exception);
+            boat_throw(result, chainmaker_exception);
         }
         networkLength = UtilityGetLVData_L(lengthbytes);
         if(networkLength < 0){
             BoatLog(BOAT_LOG_NORMAL,"network data length err ");
-            boat_throw(BOAT_ERROR,hlfabric_exception);
+            boat_throw(BOAT_ERROR, chainmaker_exception);
         }
         networkLengthLen = UtilityGetTLV_LL_from_len(networkLength);
         offset += (networkLength + networkLengthLen);
     }
+
     /* get network data */
-    result = BoATChainmaker_Get_Network_Data(mNetworkDataCtx,&networkData,&networkLength);
+    result = BoATChainmaker_Get_Network_Data(mNetworkDataCtx, &networkData,&networkLength);
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_NONE," get network data fail ");
-        boat_throw(result,hlfabric_exception);
+        boat_throw(result, chainmaker_exception);
     }
     /* protocol type */
     result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)&protocol,sizeof(protocol),storeType);
     if(result != BOAT_SUCCESS){
-        boat_throw(result,hlfabric_exception);
+        boat_throw(result, chainmaker_exception);
     }
     offset += sizeof(protocol);
     /* network index */
     result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)&mNetworkDataCtx->index,sizeof(mNetworkDataCtx->index),storeType);
     if(result != BOAT_SUCCESS){
-        boat_throw(result,hlfabric_exception);
+        boat_throw(result, chainmaker_exception);
     }
     offset += sizeof(mNetworkDataCtx->index);
     BoatLog(BOAT_LOG_NORMAL,"store chainmaker network, networkLength = %d ",networkLength);
     /* store network data */
     result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,offset,networkData,networkLength,storeType);
     if(result != BOAT_SUCCESS){
-        boat_throw(result,hlfabric_exception);
+        boat_throw(result, chainmaker_exception);
     }
     networkNum ++;
     utility_get_NumBytes(networkNum,networknumBytes);
     result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK,0,networknumBytes,sizeof(networknumBytes),storeType);
-    boat_catch(hlfabric_exception)
-	{
+    boat_catch(chainmaker_exception)
+    {
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
     }
@@ -601,6 +607,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_NetworkDataCtx_Store(BoatChainmakerNetwo
  */
 BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig, BoatStoreType storeType)
 {
+
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatChainmakerNetworkData mNetworkDataCtx ;
     BUINT8 networkIndex = 0;
@@ -616,16 +623,22 @@ BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig
         networkIndex = result;  // from 1 to BOAT_MAX_NETWORK_NUM
     }else{
         networkIndex = 0;  // the index of onetimenetwork is always 0
+        BoatLog(BOAT_LOG_NORMAL, "network create ontime");
     }
 
     mNetworkDataCtx.index = networkIndex;
+
+    strcpy(mNetworkDataCtx.node_url, networkConfig->node_url);
+    strcpy(mNetworkDataCtx.host_name,networkConfig->host_name);
+    strcpy(mNetworkDataCtx.chain_id, networkConfig->chain_id);
+    strcpy(mNetworkDataCtx.org_id,   networkConfig->org_id);
     mNetworkDataCtx.client_sign_cert_content = networkConfig->client_sign_cert_content;
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
     mNetworkDataCtx.client_tls_cert_content = networkConfig->client_tls_cert_content;
 #endif
 
-#if (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
      mNetworkDataCtx.client_tls_privkey_vlaue = networkConfig->client_tls_privkey_vlaue;
 #endif
 
@@ -633,7 +646,7 @@ BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig
     if(result != BOAT_SUCCESS){
         return result;
     }
-    BoatLog(BOAT_LOG_NORMAL,"network creat success");
+    BoatLog(BOAT_LOG_NORMAL,"network creat success networkIndex = %d\n", networkIndex);
     return networkIndex;
 }
 
@@ -706,7 +719,7 @@ BOAT_RESULT BoATChainmakerNetworkDelete(BUINT8 index)
         }
         networkLengthLen = UtilityGetTLV_LL_from_len(networkLength);
 
-        if((networkIndex == index) && (protocolType == BOAT_PROTOCOL_HLFABRIC)){
+        if((networkIndex == index) && (protocolType == BOAT_PROTOCOL_CHAINMAKER)){
             break;
         }
         offset += sizeof(protocolType);
@@ -817,10 +830,10 @@ BOAT_RESULT BoATChainmakerNetworkDelete(BUINT8 index)
 BOAT_RESULT BoATChainmaker_GetNetworkByIndex(BoatChainmakerNetworkData *networkData ,BUINT8 index)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-	BUINT8 networkNum = 0 , networkIndex = 0;
-	BUINT32 offset = 0 ;
-	BUINT32  networkLength = 0 , networkLengthLen = 0 ;
-	BUINT8 lengthBytes[3] = {0};
+    BUINT8 networkNum = 0 , networkIndex = 0;
+    BUINT32 offset = 0 ;
+    BUINT32  networkLength = 0 , networkLengthLen = 0 ;
+    BUINT8 lengthBytes[3] = {0};
     BUINT8 networknumBytes[4] = {0};
     BoatProtocolType protocolType = BOAT_PROTOCOL_UNKNOWN;
     BoatStoreType storetype;
@@ -831,20 +844,22 @@ BOAT_RESULT BoATChainmaker_GetNetworkByIndex(BoatChainmakerNetworkData *networkD
         storetype = BOAT_STORE_TYPE_FLASH;
     }
 
-	result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,networknumBytes,sizeof(networknumBytes),storetype);
+    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK, offset, networknumBytes, sizeof(networknumBytes), storetype);
     /* if read Nvram failed , no wallet */
     if(result != BOAT_SUCCESS){
         return result;
     }
-    result = utility_check_NumBytes(networknumBytes,&networkNum);
+    
+    result = utility_check_NumBytes(networknumBytes, &networkNum);
     if(result != BOAT_SUCCESS || networkNum == 0){
         return BOAT_ERROR;
     }
-	offset += sizeof(networknumBytes) ;
+    offset += sizeof(networknumBytes) ;
     BoatLog(BOAT_LOG_NORMAL,"network num = %d ",networkNum);
-	for (BUINT8 i = 0; i < networkNum; i++)
-	{
-		/* protocol type */
+     
+    for (BUINT8 i = 0; i < networkNum; i++)
+    {
+        /* protocol type */
         result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,(BUINT8*)&protocolType,sizeof(protocolType),storetype);
         if(result != BOAT_SUCCESS){
             return result;
@@ -872,12 +887,12 @@ BOAT_RESULT BoATChainmaker_GetNetworkByIndex(BoatChainmakerNetworkData *networkD
         }else{
 
             /* network length */
-		    result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
-		    if(result != BOAT_SUCCESS){
-			    BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] length fail " , i);
-			    return result;
-		    }
-		    networkLength = UtilityGetLVData_L(lengthBytes);
+            result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK,offset,lengthBytes,sizeof(lengthBytes),storetype);
+            if(result != BOAT_SUCCESS){
+                BoatLog(BOAT_LOG_NORMAL,"get wallet[%d] length fail " , i);
+                return result;
+            }
+            networkLength = UtilityGetLVData_L(lengthBytes);
             if(networkLength < 0){
                 BoatLog(BOAT_LOG_NORMAL,"wallet data length err ");
                 return BOAT_ERROR;
@@ -885,6 +900,6 @@ BOAT_RESULT BoATChainmaker_GetNetworkByIndex(BoatChainmakerNetworkData *networkD
             networkLengthLen = UtilityGetTLV_LL_from_len(networkLength);
             offset += (networkLength + networkLengthLen);
         }
-	}
+    }
     return BOAT_ERROR;
 }

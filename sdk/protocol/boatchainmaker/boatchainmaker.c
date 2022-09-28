@@ -158,10 +158,8 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatHash.");
 		boat_throw(result, chainmakerProposalTransactionPacked_exception);
 	}
-
 	/* step-4: signature */
 	result = BoatSignature(tx_ptr->wallet_ptr->account_info.prikeyCtx, hash, sizeof(hash), &signatureResult, NULL);
-
 	if (result != BOAT_SUCCESS) 
     {
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");

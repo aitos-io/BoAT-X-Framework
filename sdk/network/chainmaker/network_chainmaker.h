@@ -48,8 +48,8 @@ typedef struct TBoatChainmakerCertInfoCfg{
 } BoatChainmakerCertInfoCfg;
 
 
-//!@brief fabric network  structure
-//! fabric network  structure
+//!@brief chainmaker network  structure
+//! chainmaker network  structure
 typedef struct TBoatChainmakerNetworkData
 {
 	BUINT8 index;
@@ -59,7 +59,6 @@ typedef struct TBoatChainmakerNetworkData
     BCHAR    host_name[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
     BCHAR    chain_id[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
     BCHAR    org_id[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
-    BCHAR    node_url_str[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
     BoatChainmakerCertInfoCfg     client_tls_cert_content;

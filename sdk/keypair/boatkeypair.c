@@ -883,8 +883,10 @@ BOAT_RESULT BoatKeypairCreate(BoatKeypairPriKeyCtx_config *keypairConfig,BCHAR *
     BUINT8 keypairIndex = 0;
     result = BoATIotKeypairInit(&mKeypairDataCtx);
     if(result != BOAT_SUCCESS){
+        BoatLog(BOAT_LOG_NORMAL, "BoATIotKeypairInit fail");
         return result;
     }
+
     if(storeType == BOAT_STORE_TYPE_FLASH){
         result = BoATKeypair_GetFreeIndex_From_Persistent();
         if(result < BOAT_SUCCESS){
