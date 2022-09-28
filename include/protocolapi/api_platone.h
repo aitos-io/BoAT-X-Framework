@@ -71,7 +71,7 @@ typedef struct TBoatPlatoneWallet
 }BoatPlatoneWallet;
 
 //!@brief ECDSA signature struct
-typedef struct TBoatEthTxFieldSig
+typedef struct TBoatPlatoneTxFieldSig
 {
     union
     {

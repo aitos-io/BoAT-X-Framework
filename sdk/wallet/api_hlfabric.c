@@ -610,6 +610,9 @@ void BoatHlfabricTxDeInit(BoatHlfabricTx *tx_ptr)
 	{
 		BoatFree(tx_ptr->evaluateRes.http2Res);
 	}
+	if(tx_ptr->wallet_ptr != NULL){
+		BoatHlfabricWalletDeInit(tx_ptr->wallet_ptr);
+	}
 
 	/* endorserResponse DeInit */
 	//DO NOTHING:THIS FIELD HAD FREE AFTER EVERY TRANSCATION COMPLETED

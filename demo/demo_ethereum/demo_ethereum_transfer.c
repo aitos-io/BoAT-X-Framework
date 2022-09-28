@@ -40,13 +40,13 @@ const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const BCHAR *native_demoKey = "0x372d173ca6ab5896dcf5d56b6fc26d572eeb761e3eb121c9ec6da283166a0a4d";
+const BCHAR *native_demoKey = "0x3b9b4d33addd2ad9cb311de4260b31375b22f2ede5edf6ea1a30e8ef66ab6372";
 
 /**
  * test node url
  */
 
-const BCHAR * demoUrl = "http://127.0.0.1:7545";
+const BCHAR * demoUrl = "http://172.20.255.199:7545";
 
 
 /**
@@ -294,6 +294,7 @@ int main(int argc, char *argv[])
 
     BoatLog(BOAT_LOG_NORMAL,"eth wallet init begin num = %d",walletList.keypairNum);
     BoatLog(BOAT_LOG_NORMAL,"eth wallet init walletIndex = %d ,networkIndex = %d ",keypairIndex,networkIndex);
+    BoATKeypair_FreeKeypairContext(walletList);
     g_ethereum_wallet_ptr = BoatEthWalletInit(keypairIndex,networkIndex);
     if(g_ethereum_wallet_ptr == NULL){
         BoatLog(BOAT_LOG_NORMAL,"BoatEthWalletInit fail");
