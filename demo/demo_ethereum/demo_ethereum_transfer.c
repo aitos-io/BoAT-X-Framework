@@ -61,7 +61,8 @@ BoatEthWallet *g_ethereum_wallet_ptr;
 __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
 {
     BSINT32 index;
-    BoatEthWalletConfig wallet_config = {0};
+    BoatEthWalletConfig wallet_config;
+    memset(&wallet_config,0U,sizeof(BoatEthWalletConfig));
     BUINT8 binFormatKey[32]           = {0};
 
     (void)binFormatKey; //avoid warning
