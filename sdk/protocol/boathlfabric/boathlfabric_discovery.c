@@ -868,7 +868,7 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 	}
 	discoverResult.discoverConfig.discoverOrders.discoverOrderinfo = BoatMalloc(discoverResult.discoverConfig.discoverOrders.num * sizeof(orderInfo));
 	if(NULL == discoverResult.discoverConfig.discoverOrders.discoverOrderinfo){
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverOrderinfo buffer.",i);
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverOrderinfo buffer.");
 		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);			
 	}
 	for ( i = 0; i < config_result->n_orderers; i++)

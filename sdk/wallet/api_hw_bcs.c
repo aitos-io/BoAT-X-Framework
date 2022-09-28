@@ -64,7 +64,8 @@ __BOATSTATIC size_t boat_find_oid_value_in_name(const mbedtls_x509_name *name, c
             for(size_t i = 0; i < bytes_to_write; i++)
             {
                 char c = name->val.p[i];
-                if (c < 32 || c == 127 || (c > 128 && c < 160))
+                // if (c < 32 || c == 127 || (c > 128 && c < 160))
+				if (c < 32 || c == 127 )
                 {
                     value[i] = '?';
                 } else
@@ -139,7 +140,7 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
 		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, BoatHwbcsTxProposal_exception);
 	}
-	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL)
+	if (tx_ptr->var.type == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 	{
 		for (i = 0; i < nodeCfg.endorserLayoutNum; i++)
 		{
@@ -225,7 +226,7 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 						}
 
 						parsePtr->response[parsePtr->responseCount].contentPtr = proposalResponse;
-						parsePtr->response[parsePtr->responseCount].responseType = HWBCS_TYPE_PROPOSAL;
+						parsePtr->response[parsePtr->responseCount].responseType = (BoatHlfabricType)HWBCS_TYPE_PROPOSAL;
 						parsePtr->response[parsePtr->responseCount].payload.field_len = resData->payload.len;
 						parsePtr->response[parsePtr->responseCount].payload.field_ptr = BoatMalloc(resData->payload.len);
 						if(NULL == parsePtr->response[parsePtr->responseCount].payload.field_ptr){
@@ -600,14 +601,14 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr)
 	BoatLog(BOAT_LOG_NORMAL, "Evaluate will execute...");
 
 	/* submit query */
-	tx_ptr->var.type = HWBCS_TYPE_PROPOSAL;
+	tx_ptr->var.type = (BoatHlfabricType)HWBCS_TYPE_PROPOSAL;
 	// urlTmp[0] = tx_ptr->wallet_ptr->network_info.endorser[0];
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_EVALUATE);
 
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
 	{
-		if (tx_ptr->endorserResponse.response[i].responseType == HWBCS_TYPE_PROPOSAL)
+		if (tx_ptr->endorserResponse.response[i].responseType == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 		{
 			common__transaction__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
 			if (tx_ptr->endorserResponse.response[i].payload.field_len != 0)
@@ -641,7 +642,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
 
 	/* invoke-step1: submit proposal to endorer */
-	tx_ptr->var.type = HWBCS_TYPE_PROPOSAL;
+	tx_ptr->var.type = (BoatHlfabricType)HWBCS_TYPE_PROPOSAL;
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
@@ -649,7 +650,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	}
 	BoatLog(BOAT_LOG_NORMAL, "Submit proposal OK ...");
 	/* invoke-step2: submit transaction to orderer */
-	tx_ptr->var.type = HWBCS_TYPE_TRANSACTION;
+	tx_ptr->var.type = (BoatHlfabricType)HWBCS_TYPE_TRANSACTION;
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
@@ -658,7 +659,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
 	{
-		if (tx_ptr->endorserResponse.response[i].responseType == HWBCS_TYPE_PROPOSAL)
+		if (tx_ptr->endorserResponse.response[i].responseType == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 		{
 			common__transaction__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
 		}
