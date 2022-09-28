@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "StoreRead.h"
+#include "my_contract.cpp.abi.h"
+#include "boatiotsdk.h"
+#include "boatlog.h"
 
 /**
  * macro used to select wallet type:
@@ -39,47 +41,48 @@ const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const BCHAR *native_demoKey = "0xf1395a1fc3f74f0c867b61292e28e0f6cc98a095535fd6bf04e4169ebc047e61";
+const BCHAR *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
 
 /**
  * test node url
  */
-const BCHAR * demoUrl = "http://127.0.0.1:7545";
-
+const BCHAR *demoUrl = "http://116.236.47.90:7545";
 
 /**
  * transfer recipient address
  */
-const BCHAR *demoRecipientAddress = "0xDED9ea325f8D657614f0F96444ca9DF1d7E2f27c";
+const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45";
 
 
-BoatEthWallet *g_ethereum_wallet_ptr;
+BoatPlatoneWallet *g_platone_wallet_ptr;
 BUINT8 keypairIndex = 0;
 BUINT8 networkIndex = 0;
 
-#if defined(USE_ONETIME_WALLET) 
-__BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
+
+#if defined(USE_ONETIME_WALLET)
+__BOATSTATIC BOAT_RESULT platone_createOnetimeKeypair()
 {
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatKeypairPriKeyCtx_config keypair_config = {0};
-    BUINT8 binFormatKey[32]           = {0};
+    BUINT8 binFormatKey[32]               = {0};
 
     (void)binFormatKey; //avoid warning
 
-	/* keypair_config value assignment */
+
+	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> keypair format: internal generated.");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
         keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
         keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> keypair format: external injection[pkcs].");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
         keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
         keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
         keypair_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
         keypair_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> keypair format: external injection[native].");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
         keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
         keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
@@ -91,9 +94,9 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
         keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
         keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
     #endif
+	
 
-
-	/* create ethereum keypair */
+	/* create platone wallet */
     result = BoatKeypairCreate( &keypair_config, "keypairOnetime",BOAT_STORE_TYPE_RAM);
     if (result < 0)
 	{
@@ -108,14 +111,14 @@ __BOATSTATIC BOAT_RESULT ethereum_createOnetimeWallet()
 __BOATSTATIC BOAT_RESULT createOnetimeNetwork()
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-    BoatEthNetworkConfig network_config = {0};
+    BoatPlatoneNetworkConfig network_config = {0};
 
     network_config.chain_id             = 1;
     network_config.eip155_compatibility = BOAT_FALSE;
-    strncpy(network_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
+    strncpy(network_config.node_url_str, demoUrl, BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
 
-	/* create ethereum wallet */
-    result = BoatEthNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
+	/* create platone network */
+    result = BoatPlatoneNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
     if (result < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
@@ -126,34 +129,32 @@ __BOATSTATIC BOAT_RESULT createOnetimeNetwork()
     return BOAT_SUCCESS;
 }
 
-
-
 #endif
 
 #if defined(USE_CREATE_PERSIST_WALLET)
-
-__BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *keypair_name)
+__BOATSTATIC BOAT_RESULT platone_createPersistKeypair(BCHAR *keypair_name)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatKeypairPriKeyCtx_config keypair_config = {0};
-    BUINT8 binFormatKey[32]           = {0};
+    BUINT8 binFormatKey[32]               = {0};
 
     (void)binFormatKey; //avoid warning
 
-    /* keypair_config value assignment */
+
+	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> keypair format: internal generated.");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
         keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
         keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> keypair format: external injection[pkcs].");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
         keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
         keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
         keypair_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
         keypair_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> keypair format: external injection[native].");
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
         keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
         keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
@@ -166,8 +167,9 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *keypair_name)
         keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
     #endif
 
-    // BoatLog(BOAT_LOG_NORMAL,"prikey genmode = %d ",keypair_config.prikey_genMode);
-	/* create ethereum keypair */
+
+
+	/* create platone wallet */
     result = BoatKeypairCreate( &keypair_config , keypair_name,BOAT_STORE_TYPE_FLASH);
     if (result < 0)
 	{
@@ -182,14 +184,14 @@ __BOATSTATIC BOAT_RESULT ethereum_createPersistWallet(BCHAR *keypair_name)
 __BOATSTATIC BOAT_RESULT createPersistNetwork(void)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
-    BoatEthNetworkConfig network_config = {0};
+    BoatPlatoneNetworkConfig network_config = {0};
 
     network_config.chain_id             = 1;
     network_config.eip155_compatibility = BOAT_FALSE;
-    strncpy(network_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
+    strncpy(network_config.node_url_str, demoUrl, BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
 
-	/* create ethereum wallet */
-    result = BoatEthNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
+	/* create platone neetwork */
+    result = BoatPlatoneNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
     if (result < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
@@ -199,114 +201,105 @@ __BOATSTATIC BOAT_RESULT createPersistNetwork(void)
     return BOAT_SUCCESS;
 }
 
-
 #endif
 
 
 
-BOAT_RESULT ethereum_call_ReadStore(BoatEthWallet *wallet_ptr)
+
+
+
+BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 {
     BCHAR *result_str;
-    BUINT32 list_len;
-    BUINT32 index_u256_big[32/4];
-    BUINT32 index;
-    BoatEthTx tx_ctx;
+    BoatPlatoneTx tx_ctx;
     BOAT_RESULT result;
-    BoatFieldVariable parse_result = {NULL, 0};
-    
+    nodesResult result_out = {0,NULL};
+
     /* Set Contract Address */
-    result = BoatEthTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
-						   "0x333333",
-						   (BCHAR *)demoRecipientAddress);
+    result = BoatPlatoneTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
+							   "0x333333",
+							   (BCHAR *)demoRecipientAddress,
+							   BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
 
     if (result != BOAT_SUCCESS)
 	{
-        //BoatLog(BOAT_LOG_NORMAL, "BoatEthTxInit fails.");
+        //BoatLog(BOAT_LOG_NORMAL, "BoatPlatoneTxInit fails.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
-    
-    result_str = StoreRead_saveList(&tx_ctx, (BUINT8*)"HelloWorld");
-    //BoatLog(BOAT_LOG_NORMAL, "saveList returns: %s", result_str);
-    
-    if (result_str != NULL)
+    result_str = BoatPlatoneGetNodesInfo(&tx_ctx,&result_out);
+    for (BSINT32 i = 0; i < result_out.num; i++)
     {
-        result_str = StoreRead_readListLength(&tx_ctx);
-        result = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
-        if (result == BOAT_SUCCESS && result_str != NULL)
-        {
-            //BoatLog(BOAT_LOG_NORMAL, "readListLength returns: %s", result_str);
-            
-            UtilityHexToBin((BUINT8*)index_u256_big, sizeof(index_u256_big),
-							(BCHAR*)parse_result.field_ptr, TRIMBIN_TRIM_NO, BOAT_FALSE);
-            UtilityChangeEndian(index_u256_big, sizeof(index_u256_big));
-            list_len = index_u256_big[0];      
-            for (index = 0; index < list_len; index++)
-            {
-                result_str = StoreRead_readListByIndex(&tx_ctx, index);
-                result     = BoatEthParseRpcResponseStringResult(result_str, &parse_result);
-                if (result == BOAT_SUCCESS && result_str != NULL)
-                {
-                    //BoatLog(BOAT_LOG_NORMAL, "readListByIndex returns: %s", parse_result.field_ptr);
-                }
-                else 
-                {
-                    return BOAT_ERROR;
-                }
-            }
-        }
+        /* code */
+        BoatLog(BOAT_LOG_NORMAL, "node[%d] : IP[%s],port[%d]. \n",i,result_out.nodeInfo[i].IP,result_out.nodeInfo[i].rpcPort);
     }
+    nodeResFree(&result_out);
 
+    result_str = my_contract_cpp_abi_setName(&tx_ctx, "HelloWorld");
+    if (result_str == NULL)
+	{
+        //BoatLog(BOAT_LOG_NORMAL, "my_contract_cpp_abi_setName failed: %s.", result_str);
+		return BOAT_ERROR;
+    }
+	//BoatLog(BOAT_LOG_NORMAL, "setName returns: %s", result_str);
+    
+    result_str = my_contract_cpp_abi_getName(&tx_ctx);
+    if (result_str == NULL)
+	{
+        //BoatLog(BOAT_LOG_NORMAL, "my_contract_cpp_abi_getName failed: %s.", result_str);
+		return BOAT_ERROR;
+    }
+	//BoatLog(BOAT_LOG_NORMAL, "getName returns: %s", result_str);
+	
     return BOAT_SUCCESS;
 }
 
 int main(int argc, char *argv[])
 {
-    BOAT_RESULT result = BOAT_SUCCESS;
+	BOAT_RESULT result = BOAT_SUCCESS;
     boat_try_declare;
-    /* step-1: Boat SDK initialization */
+	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
     
-    /* step-2: create ethereum wallet */
-#if defined(USE_ONETIME_WALLET)
-    //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
-    result = ethereum_createOnetimeWallet();
+	/* step-2: create platone wallet */
+#if defined(USE_ONETIME_WALLET)	
+	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
+	result = platone_createOnetimeKeypair();
     result = createOnetimeNetwork();
 #elif defined(USE_CREATE_PERSIST_WALLET)
-    //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
-    result = ethereum_createPersistWallet("eth.cfg");
+	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
+	result = platone_createPersistKeypair("platone.cfg");
     result = createPersistNetwork();
 #else
-    //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
-    //return -1;
+	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
+	//return -1;
     result = BOAT_ERROR;
-#endif
+#endif	
     if (result != BOAT_SUCCESS)
 	{
-		 //BoatLog(BOAT_LOG_CRITICAL, "ethereumWalletPrepare_create failed: %d.", result);
+		 //BoatLog(BOAT_LOG_CRITICAL, "platoneWalletPrepare_create failed : %d.", result);
 		//return -1;
-        boat_throw(result, ethereum_storeread_demo_catch);
+        boat_throw(result, platone_demo_catch);
 	}
-    g_ethereum_wallet_ptr = BoatEthWalletInit(keypairIndex,networkIndex);
-    if(g_ethereum_wallet_ptr == NULL){
-        // BoatLog(BOAT_LOG_NORMAL,"BoatEthWalletInit fail");
-        boat_throw(BOAT_ERROR, ethereum_storeread_demo_catch);
+    g_platone_wallet_ptr = BoatPlatoneWalletInit(keypairIndex,networkIndex);
+    if(g_platone_wallet_ptr == NULL){
+        // BoatLog(BOAT_LOG_NORMAL,"BoatPlatoneWalletInit fail");
+        boat_throw(BOAT_ERROR, platone_demo_catch);
     }
-    /* step-3: execute 'ethereum_call_ReadStore' */
-    result = ethereum_call_ReadStore(g_ethereum_wallet_ptr);
+	/* step-3: execute 'platone_call_mycontract' */
+	result = platone_call_mycontract(g_platone_wallet_ptr);
     if (result != BOAT_SUCCESS)
-    {
-        //BoatLog(BOAT_LOG_NORMAL, "ethereum readStore access Failed: %d.", result);
+	{
+        //BoatLog(BOAT_LOG_NORMAL, "platone mycontract access Failed: %d.", result);
     }
-    else
-    {
-        //BoatLog(BOAT_LOG_NORMAL, "ethereum readStore access Passed.");
+	else
+	{
+        //BoatLog(BOAT_LOG_NORMAL, "platone mycontract access Passed.");
     }
-    boat_catch(ethereum_storeread_demo_catch)
+	boat_catch(platone_demo_catch)
     {
     }
-    BoatEthWalletDeInit(g_ethereum_wallet_ptr);
 	/* step-4: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
     
-    return result;
+    return 0;
 }

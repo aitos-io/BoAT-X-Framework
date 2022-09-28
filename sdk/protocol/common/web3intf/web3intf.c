@@ -125,7 +125,7 @@ void web3_deinit(Web3IntfContext *web3intf_context_ptr)
 
 BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
                                 BCHAR *node_url_str,
-                                const Param_eth_getTransactionCount *param_ptr,
+                                const Param_web3_getTransactionCount *param_ptr,
                                 BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
@@ -311,7 +311,7 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
 
 BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
                        BCHAR *node_url_str,
-                       const Param_eth_getBalance *param_ptr,
+                       const Param_web3_getBalance *param_ptr,
                        BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
@@ -406,7 +406,7 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
 
 BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
                                BCHAR *node_url_str,
-                               const Param_eth_sendRawTransaction *param_ptr,
+                               const Param_web3_sendRawTransaction *param_ptr,
                                BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
@@ -500,7 +500,7 @@ BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
 
 BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
 						 BCHAR *node_url_str,
-						 const Param_eth_getStorageAt *param_ptr,
+						 const Param_web3_getStorageAt *param_ptr,
                          BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
@@ -597,7 +597,7 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
 
 BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
 										BCHAR *node_url_str,
-										const Param_eth_getTransactionReceipt *param_ptr,
+										const Param_web3_getTransactionReceipt *param_ptr,
                                         BOAT_RESULT *web3Result)
 {
     BCHAR  *rpc_response_str;
@@ -691,7 +691,7 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
 
 BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
                  BCHAR *node_url_str,
-                 const Param_eth_call *param_ptr,
+                 const Param_web3_call *param_ptr,
                  BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;

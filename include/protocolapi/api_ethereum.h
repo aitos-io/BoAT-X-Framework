@@ -65,6 +65,21 @@ typedef struct TBoatEthWallet
 }BoatEthWallet;
 
 
+//!@brief ECDSA signature struct
+typedef struct TBoatEthTxFieldSig
+{
+    union
+    {
+        struct
+        {
+            BUINT8 r32B[32]; //!< r part of the signature
+            BUINT8 s32B[32]; //!< s part of the signature
+        };
+        BUINT8 sig64B[64];   //!< consecutive signature composed of r+s
+    };
+    BUINT8 r_len;            //!< Effective length of r, either 0 for unsigned tx and 32 for signed tx
+    BUINT8 s_len;            //!< Effective length of s, either 0 for unsigned tx and 32 for signed tx
+}BoatEthTxFieldSig;
 
 
 
@@ -602,6 +617,46 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str);
  *   of the error codes.
  ******************************************************************************/
 BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr);
+
+
+/**
+ * @description: 
+ *  This function changes the URL of Ethereum wallet to new URL;
+ * @param {BoatEthWallet} *wallet_ptr
+ * @param {BCHAR *} newUrl
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoatEthWalletChangeNodeUrl(BoatEthWallet *wallet_ptr,BCHAR * newUrl);
+
+/**
+ * @description: 
+ *  This function changes the chainID of Ethereum wallet to new chainID;
+ * @param {BoatEthWallet} *wallet_ptr
+ * @param {BUINT32} newChainID
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoatEthWalletChangeChainID(BoatEthWallet *wallet_ptr,BUINT32 newChainID);
+
+/**
+ * @description: 
+ *  This function changes the eip155 compatibility of Ethereum wallet to new compatibility;
+ * @param {BoatEthWallet} *wallet_ptr
+ * @param {BBOOL} eip155_compatibility
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoatEthWalletChangeEIP155Comp(BoatEthWallet *wallet_ptr, BBOOL eip155_compatibility);
 
 /*! @}*/
 

@@ -40,46 +40,46 @@ typedef struct TWeb3IntfContext
 }Web3IntfContext;
 
 //!@brief Parameter for web3_getTransactionCount()
-typedef struct TParam_eth_getTransactionCount
+typedef struct TParam_web3_getTransactionCount
 {
     BCHAR *method_name_str; //!< String of this method name, e.g. Ethereum "eth_getTransactionCount" PlatON "platon_getTransactionCount"
     BCHAR *address_str; //!< String of Ethereum 20-byte address,or PlatON bech32 address, e.g. Ethereum "0x123456..." PlatON "lax1gp7h8k9ynm4ct5ev73j4qlwhr4g8zqxpnkqrx3"
     BCHAR *block_num_str;  //!< String of either block number or one of "latest", "earliest" and "pending"
-}Param_eth_getTransactionCount;
+}Param_web3_getTransactionCount;
 
 //!@brief Parameter for web3_getBalance()
-typedef struct TParam_eth_getBalance
+typedef struct TParam_web3_getBalance
 {
     BCHAR *method_name_str; //!< String of this method name, e.g. Ethereum "eth_getTransactionCount" PlatON "platon_getTransactionCount"
     BCHAR *address_str;  //!< String of 20-byte Ethereum address, e.g. "0x123456..."
     BCHAR *block_num_str;//!< String of either block number or one of "latest", "earliest" and "pending"
-}Param_eth_getBalance;
+}Param_web3_getBalance;
 
 //!@brief Parameter for web3_sendRawTransaction()
-typedef struct TParam_eth_sendRawTransaction
+typedef struct TParam_web3_sendRawTransaction
 {
     BCHAR *method_name_str; //!< String of this method name, e.g. Ethereum "eth_getTransactionCount" PlatON "platon_getTransactionCount"
     BCHAR *signedtx_str;  //!< String of the signed transaction in HEX with "0x" prefixed
-}Param_eth_sendRawTransaction;
+}Param_web3_sendRawTransaction;
 
 //!@brief Parameter for web3_getStorageAt()
-typedef struct TParam_eth_getStorageAt
+typedef struct TParam_web3_getStorageAt
 {
     BCHAR *method_name_str; //!< String of this method name, e.g. Ethereum "eth_getTransactionCount" PlatON "platon_getTransactionCount"
     BCHAR *address_str;   //!< String of 20-byte Ethereum address, e.g. "0x123456..."
     BCHAR *position_str;  //!< String of storage position
     BCHAR *block_num_str; //!< String of either block number or one of "latest", "earliest" and "pending"
-}Param_eth_getStorageAt;
+}Param_web3_getStorageAt;
 
 //!@brief Parameter for web3_getTransactionReceiptStatus()
-typedef struct TParam_eth_getTransactionReceipt
+typedef struct TParam_web3_getTransactionReceipt
 {
     BCHAR *method_name_str; //!< String of this method name, e.g. Ethereum "eth_getTransactionCount" PlatON "platon_getTransactionCount"
     BCHAR *tx_hash_str; //!< String of 32-byte transaction hash, e.g. "0x123456..."
-}Param_eth_getTransactionReceipt;
+}Param_web3_getTransactionReceipt;
 
 //!@brief Parameter for web3_call()
-typedef struct TParam_eth_call
+typedef struct TParam_web3_call
 {
     BCHAR *method_name_str; //!< String of this method name, e.g. Ethereum "eth_getTransactionCount" PlatON "platon_getTransactionCount"
     BCHAR *to;       //!< The address of the contract.
@@ -87,7 +87,7 @@ typedef struct TParam_eth_call
     BCHAR *gasPrice; //!< The gasPrice in wei.
     BCHAR *data;     //!< The function selector followed by parameters.
     BCHAR *block_num_str;  //!< String of either block number or one of "latest", "earliest" and "pending"
-}Param_eth_call;
+}Param_web3_call;
 
 
 
@@ -233,7 +233,7 @@ void web3_deinit(Web3IntfContext *web3intf_context_ptr);
  ******************************************************************************/
 BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
                                 BCHAR *node_url_str,
-                                const Param_eth_getTransactionCount *param_ptr,
+                                const Param_web3_getTransactionCount *param_ptr,
                                 BOAT_RESULT *web3Result);
 
 
@@ -285,7 +285,7 @@ BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
  ******************************************************************************/
 BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
                        BCHAR *node_url_str,
-                       const Param_eth_getBalance *param_ptr,
+                       const Param_web3_getBalance *param_ptr,
                        BOAT_RESULT *web3Result);
 
 
@@ -337,7 +337,7 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
  ******************************************************************************/
 BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
                                BCHAR *node_url_str,
-                               const Param_eth_sendRawTransaction *param_ptr,
+                               const Param_web3_sendRawTransaction *param_ptr,
                                BOAT_RESULT *web3Result);
 
 
@@ -443,7 +443,7 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
  ******************************************************************************/
 BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
 						 BCHAR *node_url_str,
-						 const Param_eth_getStorageAt *param_ptr,
+						 const Param_web3_getStorageAt *param_ptr,
                          BOAT_RESULT *web3Result);
 
 
@@ -512,7 +512,7 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
  ******************************************************************************/
 BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
 										BCHAR *node_url_str,
-										const Param_eth_getTransactionReceipt *param_ptr,
+										const Param_web3_getTransactionReceipt *param_ptr,
                                         BOAT_RESULT *web3Result);
 
 
@@ -579,17 +579,8 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
  ******************************************************************************/
 BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
                  BCHAR *node_url_str,
-                 const Param_eth_call *param_ptr,
+                 const Param_web3_call *param_ptr,
                  BOAT_RESULT *web3Result);
-
-
-
-
-
-
-
-
-
 
 
 

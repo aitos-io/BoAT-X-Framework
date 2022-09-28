@@ -16,13 +16,15 @@ OBJECTS = $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/*.o) \
 		  $(wildcard $(BOAT_BUILD_DIR)/sdk/wallet/*.o)
 
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM),1)
-	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatethereum/*.o) 
+	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatethereum/*.o) \
+			   $(wildcard $(BOAT_BUILD_DIR)/sdk/network/ethereum/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_PLATON),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatplaton/*.o) 
 endif
 ifeq ($(BOAT_PROTOCOL_USE_PLATONE),1)
-	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatplatone/*.o) 
+	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatplatone/*.o) \
+				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/platone/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatfiscobcos/*.o) 
@@ -63,9 +65,6 @@ endif
 
 ifeq ($(CJSON_LIBRARY), CJSON_DEFAULT)
     OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/cJSON/*.o)
-endif
-ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM),1)
-	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/network/ethereum/*.o)
 endif
 
 LIBNAME = $(BOAT_LIB_DIR)/libboatwallet.a

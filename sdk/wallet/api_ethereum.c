@@ -111,7 +111,7 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
                              // owner's or the one converted from alt_address_str
     BCHAR address_str[43];   // Address in string format, converted from address_ptr
     
-    Param_eth_getBalance param_eth_getBalance;
+    Param_web3_getBalance param_web3_getBalance;
     BCHAR *tx_balance_str;
     BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -141,12 +141,12 @@ BCHAR *BoatEthWalletGetBalance(BoatEthWallet *wallet_ptr, BCHAR *alt_address_str
     // Return value of web3_getBalance() is balance in wei
     UtilityBinToHex(address_str, address_ptr, BOAT_ETH_ADDRESS_SIZE,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-    param_eth_getBalance.method_name_str = "eth_getBalance";               
-    param_eth_getBalance.address_str     = address_str;
-    param_eth_getBalance.block_num_str   = "latest";
+    param_web3_getBalance.method_name_str = "eth_getBalance";               
+    param_web3_getBalance.address_str     = address_str;
+    param_web3_getBalance.block_num_str   = "latest";
     tx_balance_str = web3_getBalance(wallet_ptr->web3intf_context_ptr,
 									 wallet_ptr->network_info.node_url_str,
-									 &param_eth_getBalance, &result);
+									 &param_web3_getBalance, &result);
 
     if (tx_balance_str == NULL)
     {
@@ -295,7 +295,7 @@ BOAT_RESULT BoatEthTxInit(BoatEthWallet *wallet_ptr,
 BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce)
 {
     BCHAR account_address_str[43];
-    Param_eth_getTransactionCount param_eth_getTransactionCount;
+    Param_web3_getTransactionCount param_web3_getTransactionCount;
     BCHAR *tx_count_str;
     BOAT_RESULT result;
 
@@ -312,12 +312,12 @@ BOAT_RESULT BoatEthTxSetNonce(BoatEthTx *tx_ptr, BUINT64 nonce)
 		UtilityBinToHex(account_address_str, tx_ptr->wallet_ptr->account_info.address,
 						BOAT_ETH_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA, 
 						BIN2HEX_PREFIX_0x_YES, BOAT_FALSE); 
-        param_eth_getTransactionCount.method_name_str  = "eth_getTransactionCount";
-		param_eth_getTransactionCount.address_str      = account_address_str;
-		param_eth_getTransactionCount.block_num_str    = "latest";
+        param_web3_getTransactionCount.method_name_str  = "eth_getTransactionCount";
+		param_web3_getTransactionCount.address_str      = account_address_str;
+		param_web3_getTransactionCount.block_num_str    = "latest";
 		tx_count_str = web3_getTransactionCount(tx_ptr->wallet_ptr->web3intf_context_ptr,
 												tx_ptr->wallet_ptr->network_info.node_url_str,
-												&param_eth_getTransactionCount, &result);
+												&param_web3_getTransactionCount, &result);
         if (tx_count_str == NULL)
         { 
             BoatLog(BOAT_LOG_CRITICAL, "Fail to get transaction count from network.");
@@ -542,7 +542,7 @@ BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr, BCHAR *func_proto_str,
     // +4 for function selector, *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
     BCHAR data_str[(func_param_len + 4) * 2 + 3]; // Compiler MUST support C99 to allow variable-size local array
  
-    Param_eth_call param_eth_call;
+    Param_web3_call param_web3_call;
     BOAT_RESULT result = BOAT_SUCCESS;
     BCHAR *retval_str;
 
@@ -576,11 +576,11 @@ BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr, BCHAR *func_proto_str,
     UtilityBinToHex(recipient_hexstr, tx_ptr->rawtx_fields.recipient,
 					BOAT_ETH_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA,
 					BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-    param_eth_call.to = recipient_hexstr;
+    param_web3_call.to = recipient_hexstr;
 
     // Function call consumes zero gas but gasLimit and gasPrice must be specified.
-    param_eth_call.gas = "0x1fffff";
-    param_eth_call.gasPrice = "0x8250de00";
+    param_web3_call.gas = "0x1fffff";
+    param_web3_call.gasPrice = "0x8250de00";
 
 	BoatHash(BOAT_HASH_KECCAK256, (BUINT8*)func_proto_str, 
 			 strlen(func_proto_str), function_selector, &hashLenDummy, NULL);
@@ -593,12 +593,12 @@ BCHAR *BoatEthCallContractFunc(BoatEthTx *tx_ptr, BCHAR *func_proto_str,
 	// e.g. "0x12345678" is a function selector prefixed
     UtilityBinToHex(data_str+10, func_param_ptr, func_param_len,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
-    param_eth_call.method_name_str = "eth_call";
-    param_eth_call.data            = data_str;
-    param_eth_call.block_num_str   = "latest";
+    param_web3_call.method_name_str = "eth_call";
+    param_web3_call.data            = data_str;
+    param_web3_call.block_num_str   = "latest";
     retval_str = web3_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
                            tx_ptr->wallet_ptr->network_info.node_url_str,
-                           &param_eth_call, &result);
+                           &param_web3_call, &result);
     if (retval_str == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "web3 call fail, result = %d ",result);
@@ -663,7 +663,7 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
 {
     BCHAR tx_hash_str[67];
     BCHAR *tx_status_str;
-    Param_eth_getTransactionReceipt param_eth_getTransactionReceipt;
+    Param_web3_getTransactionReceipt param_web3_getTransactionReceipt;
     BSINT32 tx_mined_timeout;
 
     BOAT_RESULT result = BOAT_SUCCESS;
@@ -671,14 +671,14 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
     UtilityBinToHex(tx_hash_str, tx_ptr->tx_hash.field, tx_ptr->tx_hash.field_len,
 					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
     tx_mined_timeout = BOAT_ETH_WAIT_PENDING_TX_TIMEOUT;
-    param_eth_getTransactionReceipt.method_name_str = "eth_getTransactionReceipt";
-    param_eth_getTransactionReceipt.tx_hash_str = tx_hash_str;
+    param_web3_getTransactionReceipt.method_name_str = "eth_getTransactionReceipt";
+    param_web3_getTransactionReceipt.tx_hash_str = tx_hash_str;
 
     do{
         BoatSleep(BOAT_ETH_MINE_INTERVAL); // Sleep waiting for the block being mined 
         tx_status_str = web3_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
 														 tx_ptr->wallet_ptr->network_info.node_url_str,
-														 &param_eth_getTransactionReceipt, &result);
+														 &param_web3_getTransactionReceipt, &result);
         if (tx_status_str == NULL)
         {
             BoatLog(BOAT_LOG_NORMAL, "Fail to get transaction receipt due to RPC failure.");
@@ -728,3 +728,81 @@ BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr)
 
     return result;
 }
+
+/**
+ * @description: 
+ *  This function changes the URL of Ethereum wallet to new URL;
+ * @param {BoatEthWallet} *wallet_ptr
+ * @param {BCHAR *} newUrl
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoatEthWalletChangeNodeUrl(BoatEthWallet *wallet_ptr,BCHAR * newUrl)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+    if(wallet_ptr == NULL || newUrl == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+    if (strlen(newUrl) >= sizeof(wallet_ptr->network_info.node_url_str))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "node URL length out of limit: %s.", newUrl);
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+    strcpy(wallet_ptr->network_info.node_url_str,newUrl);
+    return result;
+}
+
+/**
+ * @description: 
+ *  This function changes the chainID of Ethereum wallet to new chainID;
+ * @param {BoatEthWallet} *wallet_ptr
+ * @param {BUINT32} newChainID
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoatEthWalletChangeChainID(BoatEthWallet *wallet_ptr,BUINT32 newChainID)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+    if(wallet_ptr == NULL )
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+    wallet_ptr->network_info.chain_id = newChainID;
+    return result;
+}
+
+
+/**
+ * @description: 
+ *  This function changes the eip155 compatibility of Ethereum wallet to new compatibility;
+ * @param {BoatEthWallet} *wallet_ptr
+ * @param {BBOOL} eip155_compatibility
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoatEthWalletChangeEIP155Comp(BoatEthWallet *wallet_ptr, BBOOL eip155_compatibility)
+{
+    if (wallet_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    // Set EIP-155 Compatibility
+    wallet_ptr->network_info.eip155_compatibility = eip155_compatibility;
+	
+    return BOAT_SUCCESS;
+}
+

@@ -728,19 +728,29 @@ char *Utility_itoa(int num, char *str, int radix)
     从数组中获取第一个tlv格式数据。默认tag的长度都是一个字节。
 */
 
+// int UtilityGetTLV_LL(BUINT8 *input,BUINT32 len){
+//     //input[0] 是tag
+//     if(input[1] < 0x0080){
+//         return 1;
+//     }else if(input[1] == 0x81){
+//         return 2;
+//     }else if(input[1] == 0x82){
+//         return 3;
+//     }else{
+//         return -1;
+//     }
+
+// }
+
 int UtilityGetTLV_LL(BUINT8 *input,BUINT32 len){
     //input[0] 是tag
-    if(input[1] < 0x0080){
+    if((input[1] & 0x80) == 0){
         return 1;
-    }else if(input[1] == 0x81){
-        return 2;
-    }else if(input[1] == 0x82){
-        return 3;
     }else{
-        return -1;
+        return (input[1]&0x7F);
     }
-
 }
+
 
 /**
  * @description: 
@@ -762,9 +772,23 @@ int UtilityGetTLV_LL_from_len(BUINT32 len){
 
 }
 
+// int UtilityGetTLV_L(BUINT8 *input,BUINT32 len){
+//     //input[0] 是tag
+//     if(input[1] <= 0x0080){
+//         return input[1];
+//     }else if(input[1] == 0x81){
+//         return input[2];
+//     }else if(input[1] == 0x82){
+//         return ((input[2] << 8 )| input[3]);
+//     }else{
+//         return -1;
+//     }
+
+// }
 int UtilityGetTLV_L(BUINT8 *input,BUINT32 len){
     //input[0] 是tag
-    if(input[1] <= 0x0080){
+    // 目前只考虑最长两个字节的实际长度
+    if((input[1] & 0x80 ) == 0x00){
         return input[1];
     }else if(input[1] == 0x81){
         return input[2];
@@ -775,6 +799,8 @@ int UtilityGetTLV_L(BUINT8 *input,BUINT32 len){
     }
 
 }
+
+
 /**
  * @description: 
  *  This function gets the real length of data according to length bytes.
@@ -787,7 +813,8 @@ int UtilityGetTLV_L(BUINT8 *input,BUINT32 len){
  */
 int UtilityGetLVData_L(BUINT8 *input){
     //input[0] 是tag
-    if(input[0] <= 0x0080){
+    // 目前只考虑两个字节的实际长度
+    if((input[0] & 0x80) == 0x00){
         return input[0];
     }else if(input[0] == 0x81){
         return input[1];
