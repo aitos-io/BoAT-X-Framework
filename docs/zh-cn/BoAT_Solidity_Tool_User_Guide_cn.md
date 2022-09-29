@@ -515,8 +515,8 @@ result_str = 合约名_setData(address);
 
 #### bool类型
 Solidity中的bool变成BUINT8类型即C语言中的unsigned char类型。  
-Solidity函数：setData(address data);  
-C语言函数：合约名_setData(BoatAddress data);  
+Solidity函数：setData(bool data);  
+C语言函数：合约名_setData(BUINT8 data);  
 ```
 BUINT8 condition;
 condition = BOAT_TRUE;
