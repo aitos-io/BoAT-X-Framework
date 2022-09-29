@@ -34,9 +34,9 @@ set(FILE_SRC    ${COMMON_SRC_FILE}
 
 add_library(protos-obj  OBJECT  ${FILE_SRC})
 
-target_link_libraries(protos-obj  protobuf-obj)
+# target_link_libraries(protos-obj  protobuf-obj)
 
-add_dependencies(protos-obj protobuf-obj)
+# add_dependencies(protos-obj protobuf-obj)
 
 
 
