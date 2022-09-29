@@ -2,6 +2,8 @@
 set(MODULE_NAME boatwallet)
 
 
+add_subdirectory(keypair)
+add_subdirectory(network)
 add_subdirectory(wallet)
 add_subdirectory(third-party)
 add_subdirectory(protocol)
@@ -16,6 +18,7 @@ set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatvenachain-obj>)
 endif()
 if(BOAT_PROTOCOL_USE_PLATONE)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatplatone-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:network_platone_obj>)
 endif()
 if(BOAT_PROTOCOL_USE_PLATON)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatplaton-obj>)
@@ -23,6 +26,7 @@ endif()
 if(BOAT_PROTOCOL_USE_ETHEREUM)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatethereum-obj>)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatrlp-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:network_eth_obj>)
 endif()
 if(BOAT_PROTOCOL_USE_FISCOBCOS)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatfiscobcos-obj>)
@@ -33,6 +37,7 @@ set(TARGET  ${TARGET} $<TARGET_OBJECTS:http2intf-obj>)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:nghttps2-obj>)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:protos-obj>)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:protobuf-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:network_hlfabric_obj>)
 endif()
 if(BOAT_PROTOCOL_USE_HWBCS)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boathwbcs-obj>)
@@ -50,7 +55,8 @@ set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatquorum-obj>)
 endif()
 
 
-add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:wallet_obj>
+add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:keypair_obj>
+                                    $<TARGET_OBJECTS:wallet_obj>
                                     $<TARGET_OBJECTS:protocol_obj>
                                     $<TARGET_OBJECTS:utilities-obj>
                                     $<TARGET_OBJECTS:web3intf-obj>

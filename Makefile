@@ -6,9 +6,9 @@ BOAT_BUILD_DIR := $(BOAT_BASE_DIR)/build
 
 # Set chain support
 # Set to 1 to enable releated chain, to 0 to disable
-BOAT_PROTOCOL_USE_ETHEREUM   ?= 0
+BOAT_PROTOCOL_USE_ETHEREUM   ?= 1
 BOAT_PROTOCOL_USE_PLATON     ?= 0
-BOAT_PROTOCOL_USE_PLATONE    ?= 1
+BOAT_PROTOCOL_USE_PLATONE    ?= 0
 BOAT_PROTOCOL_USE_FISCOBCOS  ?= 0
 BOAT_PROTOCOL_USE_HLFABRIC   ?= 0
 BOAT_PROTOCOL_USE_HWBCS      ?= 0
@@ -100,7 +100,7 @@ ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC),1)
 BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/hlfabric \
                 -I$(BOAT_SDK_DIR)/protocol/boathlfabric  \
                 -I$(BOAT_SDK_DIR)/protocol/common/http2intf \
-                -I$(BOAT_SDK_DIR)/protocol/boathlfabric/protos \
+                -I$(BOAT_SDK_DIR)/third-party/protos \
                 -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
                 -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include
 
@@ -147,7 +147,7 @@ endif
 # SOFT_CRYPTO ?= CRYPTO_MBEDTLS
 
 ifeq ($(PLATFORM_TARGET), linux-default)
-    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+    SOFT_CRYPTO ?= CRYPTO_MBEDTLS
 else ifeq ($(PLATFORM_TARGET), Fibocom-L610) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else ifeq ($(PLATFORM_TARGET), Quectel-BG95) 

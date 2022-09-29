@@ -47,4 +47,4 @@ endif()
 
 add_library(protocol_obj    OBJECT  ${PROTOS})
 
-target_link_libraries(protocol_obj  ${PROTOS})
+# target_link_libraries(protocol_obj  ${PROTOS})

@@ -37,8 +37,6 @@ ifeq ($(BOAT_PROTOCOL_USE_QUORUM),1)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/*.o) \
-				$(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/protos/*/*.o) \
-		  		$(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/protos/*/*/*.o) \
 				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/hlfabric/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
@@ -51,7 +49,9 @@ ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
 endif
 
 ifneq ($(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS)_$(BOAT_PROTOCOL_USE_CHAINMAKER),0_0_0)
-	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/nghttp2/*.o) \
+	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/protos/*/*.o) \
+		  	   $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/protos/*/*/*.o) \
+			   $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/nghttp2/*.o) \
 			   $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/protobuf-c/*.o) \
 			   $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/common/http2intf/*.o)
 endif
@@ -60,6 +60,7 @@ ifneq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATON)_$(BOAT_PROTOCOL
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/common/web3intf/*.o) \
 				$(wildcard $(BOAT_BUILD_DIR)/sdk/rlp/*.o) 
 endif
+
 
 
 

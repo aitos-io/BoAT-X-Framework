@@ -1,6 +1,6 @@
-set(SUB_MODULE_NAME         keypair_obj)
+set(SUB_MODULE_NAME         keystore_soft_obj)
 
-set(FILE_SRC    boatkeypair.c)
+set(FILE_SRC    boat_keystore.c)
 
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
 
