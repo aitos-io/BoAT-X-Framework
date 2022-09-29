@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-09-13 16:37:32
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-19 18:07:04
+ * @LastEditTime: 2022-09-29 17:11:17
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -288,7 +288,8 @@ BOAT_RESULT BoAT_Keystore_store_prikey(BUINT8 keypairIndex,BUINT8 *prikey,BUINT3
     }
     result = BoATStoreSoftRotNvram(BOAT_STORE_PRIKEY,offset,storebuf,storeOffset,storeType);
     if(result != BOAT_SUCCESS){
-        BoatLog(BOAT_LOG_NORMAL,"store prikey data err ");
+        BoatLog(BOAT_LOG_NORMAL,"store prikey data err , ret = %d ",result);
+        return result;
     }
     prikeyNum ++;
     offset = 0;
