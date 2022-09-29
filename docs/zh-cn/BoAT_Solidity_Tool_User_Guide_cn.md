@@ -141,7 +141,7 @@
 
 例如原数据为正数0x1234，放入BUINT128或BUINT256中时，data[0] = 0x34, data[1] = 0x12，其他赋值为0。
 
-但是当原数据类型为BSINT128或BSINT256，且数据为负数时，相应的值为原码的补码并加一。当原数据为BSINT128且值为-1000时，相应的16进制表示为0xFFFF FFFF FFFF FC18,此时data[0] = 0x18, data[1] =0xFC，以此类推。BSINT256也是同样。
+但是当原数据类型为BSINT128或BSINT256，且数据为负数时，相应的值为原码的补码并加一。当原数据为BSINT128且值为-1000时，相应的16进制表示为0xFFFF FFFF FFFF FFFF FFFF FFFF FFFF FC18,此时data[0] = 0x18, data[1] =0xFC，以此类推。BSINT256也是同样。
 ```  
 以下例子中，生成的C语言函数均省去交易类型
 #### string类型
