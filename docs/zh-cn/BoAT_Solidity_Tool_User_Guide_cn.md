@@ -592,7 +592,7 @@ result_str = 合约名_setData(si128);
 
 #### sint256和int类型
 在Solidity中，这两种类型是等价的。
-Solidity中的sint256变成BSINT8长度32的数组。  
+Solidity中的sint256变成BUINT8长度32的数组。  
 Solidity函数：setData(sint256 data);  
 C语言函数：合约名_setData(BSINT256 data);  
 假设我们要给合约设置的值是-1000。
