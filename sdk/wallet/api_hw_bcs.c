@@ -140,7 +140,7 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
 		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, BoatHwbcsTxProposal_exception);
 	}
-	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL)
+	if (tx_ptr->var.type == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 	{
 		for (i = 0; i < nodeCfg.endorserLayoutNum; i++)
 		{
@@ -608,7 +608,7 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr)
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
 	{
-		if (tx_ptr->endorserResponse.response[i].responseType == HWBCS_TYPE_PROPOSAL)
+		if (tx_ptr->endorserResponse.response[i].responseType == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 		{
 			common__transaction__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
 			if (tx_ptr->endorserResponse.response[i].payload.field_len != 0)
@@ -659,7 +659,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
 	{
-		if (tx_ptr->endorserResponse.response[i].responseType == HWBCS_TYPE_PROPOSAL)
+		if (tx_ptr->endorserResponse.response[i].responseType == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 		{
 			common__transaction__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
 		}

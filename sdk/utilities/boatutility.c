@@ -770,7 +770,8 @@ int UtilityGetTLV_L(BUINT8 *input,BUINT32 len){
 
 BOAT_RESULT UtilityGetTLV(BUINT8 *input,BUINT32 inputlen,TLVStruct *tlv){
     BOAT_RESULT ret = BOAT_SUCCESS;
-    BUINT32 offset = 0,len = 0;
+    BUINT32 offset = 0;
+    int len = 0;
     int ll = 0;
 
     ll = UtilityGetTLV_LL(input,inputlen);
