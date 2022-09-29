@@ -537,6 +537,33 @@ result_str = 合约名_setData(condition);
 
 ***注意：对于unsigned long long int为32位的运行环境，暂不能支持该类型***
 
+#### uint128类型
+Solidity中的uint128变成BUINT8长度16的数组。  
+Solidity函数：setData(uint128 data);  
+C语言函数：合约名_setData(BUINT128 data);  
+假设我们要给合约设置的值是0x1234。
+```
+BUINT128 ui128;
+ui128[0] = 0x34;
+ui128[1] = 0x12;
+result_str = 合约名_setData(ui128);
+```
+
+#### uint256和uint类型
+在Solidity中，这两种类型是等价的。
+Solidity中的uint256变成BUINT8长度32的数组。  
+Solidity函数：setData(uint256 data);  
+C语言函数：合约名_setData(BUINT256 data);  
+假设我们要给合约设置的值是1000000。
+```
+BUINT256 ui256;
+ui256[0] = 0x00;
+ui256[1] = 0xE1;
+ui256[2] = 0xF5;
+ui256[3] = 0x05;
+result_str = 合约名_setData(ui256);
+```
+
 #### sint8类型
 该类型具备C语言的对应类型，为BSINT8。剩下的参考bool类型。
 
@@ -550,3 +577,32 @@ result_str = 合约名_setData(condition);
 该类型具备C语言的对应类型，为BSINT32。剩下的参考bool类型。
 
 ***注意：对于long long int为32位的运行环境，暂不能支持该类型***
+
+#### sint128类型
+Solidity中的sint128变成BUINT8长度16的数组。  
+Solidity函数：setData(sint128 data);  
+C语言函数：合约名_setData(BSINT128 data);  
+假设我们要给合约设置的值是0x1234。
+```
+BSINT128 si128;
+si128[0] = 0x34;
+si128[1] = 0x12;
+result_str = 合约名_setData(si128);
+```
+
+#### sint256和int类型
+在Solidity中，这两种类型是等价的。
+Solidity中的sint256变成BSINT8长度32的数组。  
+Solidity函数：setData(sint256 data);  
+C语言函数：合约名_setData(BSINT256 data);  
+假设我们要给合约设置的值是-1000。
+```
+BUINT256 ui256;
+ui256[0] = 0x18;
+ui256[1] = 0xFC;
+ui256[2] = 0xFF;
+ui256[3] = 0xFF;
+...
+ui256[31] = 0xFF;
+result_str = 合约名_setData(ui256);
+```
