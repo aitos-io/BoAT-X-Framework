@@ -606,3 +606,19 @@ ui256[3] = 0xFF;
 ui256[31] = 0xFF;
 result_str = 合约名_setData(ui256);
 ```
+
+#### bytesN类型
+其中N为1~32中的数字。
+Solidity中的bytesN变成BUINT8长度N的数组。  
+Solidity函数：setData(bytesN data);  
+C语言函数：合约名_setData(BbytesN data);  
+假设N的值为5
+```
+Bbytes5 data;
+data[0] = 0x10;
+data[1] = 0x20;
+data[2] = 0x30;
+data[3] = 0x40;
+data[4] = 0x50;
+result_str = 合约名_setData(data);
+```
