@@ -171,7 +171,7 @@ BOAT_RESULT BoatVenachainParseRpcResponseResult(const BCHAR *json_string,
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
-	return eth_parse_json_result(json_string, child_name, result_out);
+	return venachain_parse_json_result(json_string, child_name, result_out);
 }
 
 
@@ -533,77 +533,56 @@ BOAT_RESULT BoatVenachainTxSend(BoatVenachainTx *tx_ptr)
 }
 
 
-BCHAR *BoatVenachainCallContractFunc(BoatVenachainTx *tx_ptr, BCHAR *func_proto_str,
-							   BUINT8 *func_param_ptr, BUINT32 func_param_len)
+BCHAR *BoatVenachainCallContractFunc(BoatVenachainTx *tx_ptr, BUINT8 *rlp_param_ptr,
+								   BUINT32 rlp_param_len)
 {
-    BUINT8 function_selector[32];
-	BUINT8 hashLenDummy;
+    // *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
+    BCHAR data_str[rlp_param_len*2 + 3]; // Compiler MUST support C99 to allow variable-size local array
 	
-    // +4 for function selector, *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
-    BCHAR data_str[(func_param_len + 4) * 2 + 3]; // Compiler MUST support C99 to allow variable-size local array
- 
-    Param_web3_call param_web3_call;
+    Param_web3_call param_venachain_call;
     BOAT_RESULT result = BOAT_SUCCESS;
     BCHAR *retval_str;
 
-    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return NULL;
-    }
-    
-    if (func_param_ptr == NULL && func_param_len != 0)
+    if (rlp_param_ptr == NULL && rlp_param_len != 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
     }
 
-	if (func_param_len > BOAT_STRING_MAX_LEN)
+	if (rlp_param_len > BOAT_STRING_MAX_LEN)
 	{
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
 	}
 
-    if ((BOAT_SUCCESS != UtilityStringLenCheck(func_proto_str)) && \
-        (BOAT_SUCCESS != UtilityStringLenCheck((BCHAR*)func_param_ptr)))
+    if (BOAT_SUCCESS != UtilityStringLenCheck((BCHAR*)rlp_param_ptr))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
-    }    
-
-    BCHAR recipient_hexstr[BOAT_VENACHAIN_ADDRESS_SIZE * 2 + 3];
-    
-    UtilityBinToHex(recipient_hexstr, tx_ptr->rawtx_fields.recipient,
-					BOAT_VENACHAIN_ADDRESS_SIZE, BIN2HEX_LEFTTRIM_UNFMTDATA,
-					BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-    param_web3_call.to = recipient_hexstr;
-
-    // Function call consumes zero gas but gasLimit and gasPrice must be specified.
-    param_web3_call.gas = "0x1fffff";
-    param_web3_call.gasPrice = "0x8250de00";
-
-	BoatHash(BOAT_HASH_KECCAK256, (BUINT8*)func_proto_str, 
-			 strlen(func_proto_str), function_selector, &hashLenDummy, NULL);
-
-    // Set function selector
-    UtilityBinToHex(data_str, function_selector, 4,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-
-    // Set function parameters.param1 '+10' means skip function selector prefixed
-	// e.g. "0x12345678" is a function selector prefixed
-    UtilityBinToHex(data_str+10, func_param_ptr, func_param_len,
-					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
-    param_web3_call.method_name_str = "eth_call";
-    param_web3_call.data            = data_str;
-    param_web3_call.block_num_str   = "latest";
-    retval_str = web3_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
-                           tx_ptr->wallet_ptr->network_info.node_url_str,
-                           &param_web3_call, &result);
-    if (retval_str == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "web3 call fail, result = %d ",result);
     }
 
+    BCHAR recipient_hexstr[BOAT_VENACHAIN_ADDRESS_SIZE*2+3];
+    
+    UtilityBinToHex(recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_VENACHAIN_ADDRESS_SIZE,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
+    param_venachain_call.to = recipient_hexstr;
+
+    // Function call consumes zero gas but gasLimit and gasPrice must be specified.
+    param_venachain_call.gas      = "0x1fffff";
+    param_venachain_call.gasPrice = "0x8250de00";
+
+    // Set function parameters
+    UtilityBinToHex(data_str, rlp_param_ptr, rlp_param_len,
+					BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
+    param_venachain_call.method_name_str = "eth_call";
+    param_venachain_call.data = data_str;
+    param_venachain_call.block_num_str = "latest";
+    retval_str = web3_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
+                           tx_ptr->wallet_ptr->network_info.node_url_str,
+                           &param_venachain_call,&result);
+    if (retval_str == NULL){
+        BoatLog(BOAT_LOG_CRITICAL, "web3 call fail, result = %d ",result);
+    }
     return retval_str;
 }
 
