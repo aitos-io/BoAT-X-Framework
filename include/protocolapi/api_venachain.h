@@ -33,7 +33,7 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 #define BOAT_VENACHAIN_MINE_INTERVAL                   3  //!< Mining Interval of the blockchain, in seconds
 #define BOAT_VENACHAIN_WAIT_PENDING_TX_TIMEOUT         30 //!< Timeout waiting for a transaction being mined, in seconds
 
-
+#define BOAT_VENACHAIN_NODE_URL_MAX_LEN           127
 
 #define BOAT_VENACHAIN_NONCE_AUTO                      0xFFFFFFFFFFFFFFFF
 #define BOAT_VENACHAIN_ADDRESS_SIZE                    20
@@ -547,20 +547,13 @@ BOAT_RESULT BoatVenachainTxSend(BoatVenachainTx *tx_ptr);
  * @param[in] tx_ptr
  *   Transaction pointer
  *
- * @param[in] func_proto_str
- *   A string representing the prototype of the called function.\n
- *   Note: uint is treated as uint256.\n
- *   e.g.: for the contract function:\n
- *       function readListByIndex(uint index) public view returns (bytes32 event_)\n
- *   its prototype is "readListByIndex(uint256)"
- *
- * @param[in] func_param_ptr
+ * @param[in] rlp_param_ptr
  *   A byte stream containing the parameters to pass to the function.\n
- *   The layout conforms to Ethereum ABI: https://solidity.readthedocs.io/en/develop/abi-spec.html\n
- *   If <func_param_ptr> is NULL, this function doesn't take any parameter.
+ *   The stream is encoded in RLP format including the function name followed by
+ *   all parameters.
  *
- * @param[in] func_param_len
- *   Length of <func_param_ptr> in byte.
+ * @param[in] rlp_param_len
+ *   Length of <rlp_param_ptr> in byte.
  *	
  * @return
  *   This function returns a HEX string representing the return value of the\n
@@ -570,9 +563,8 @@ BOAT_RESULT BoatVenachainTxSend(BoatVenachainTx *tx_ptr);
  * @see BoatVenachainTxSend()
  ******************************************************************************/
 BCHAR *BoatVenachainCallContractFunc(BoatVenachainTx *tx_ptr,
-								BCHAR *func_proto_str,
-								BUINT8 *func_param_ptr,
-								BUINT32 func_param_len);
+								BUINT8 *rlp_param_ptr,
+								BUINT32 rlp_param_len);
 
 
 /*!****************************************************************************
