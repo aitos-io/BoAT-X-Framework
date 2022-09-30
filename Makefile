@@ -14,7 +14,7 @@ BOAT_PROTOCOL_USE_HLFABRIC   ?= 0
 BOAT_PROTOCOL_USE_HWBCS      ?= 0
 BOAT_PROTOCOL_USE_CHAINMAKER ?= 0
 BOAT_DISCOVERY_PEER_QUERY    ?= 0
-BOAT_PROTOCOL_USE_VENACHAIN  ?= 0
+BOAT_PROTOCOL_USE_VENACHAIN  ?= 1
 BOAT_PROTOCOL_USE_QUORUM     ?= 0
 
 # Chain config check
@@ -111,6 +111,10 @@ BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/platone \
                 -I$(BOAT_SDK_DIR)/protocol/boatplatone
 endif
 
+ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN),1)         
+BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/venachain \
+                -I$(BOAT_SDK_DIR)/protocol/boatvenachain
+endif
 
 BOAT_CSTD_FLAGS := -std=c99
 #BOAT_OPTIMIZATION_FLAGS := -g #-Os 

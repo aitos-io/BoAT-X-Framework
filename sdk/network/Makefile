@@ -6,9 +6,9 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/network
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 		  
-.PHONY: all  network_ethereum network_hlfabric network_platone
+.PHONY: all  network_ethereum network_hlfabric network_platone network_venachain
 
-all:  network_ethereum network_hlfabric network_platone $(OBJECTS_DIR) $(OBJECTS)
+all:  network_ethereum network_hlfabric network_platone network_venachain $(OBJECTS_DIR) $(OBJECTS)
 
 network_ethereum:
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
@@ -23,6 +23,11 @@ endif
 network_platone:
 ifeq ($(BOAT_PROTOCOL_USE_PLATONE), 1)
 	make -C  platone all
+endif
+
+network_venachain:
+ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
+	make -C  venachain all
 endif
 
 $(OBJECTS_DIR):
@@ -43,4 +48,6 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_PLATONE), 1)
 	make -C  platone clean
 endif
-
+ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
+	make -C  venachain clean
+endif

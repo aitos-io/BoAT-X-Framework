@@ -30,7 +30,8 @@ ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatfiscobcos/*.o) 
 endif
 ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN),1)
-	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatvenachain/*.o) 
+	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatvenachain/*.o) \
+				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/venachain/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_QUORUM),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatquorum/*.o) 
