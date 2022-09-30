@@ -4,7 +4,7 @@
 
 ### 概述
 
-本文介绍tools文件夹下的Solidity生成各类语言的工具的接口调用说明。  
+本文介绍由tools文件夹下Python脚本根据智能合约的JSON文件生成后的C语言函数各种参数调用方法。 
 本文的预期读者为使用Solidity合约的客户。  
 
 ## 功能介绍
@@ -139,9 +139,9 @@
 注意：
 当合约使用u128、u256、s128和s256四种类型时，由于C语言不支持相应的类型，需要使用UINT8的数组拼接而成。而BUINT128, BUINT256, BSINT128和BSINT256采用小端模式，即是指数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中。  
 
-例如原数据为正数0x1234，放入BUINT128或BUINT256中时，data[0] = 0x32, data[1] = 0x12，其他赋值为0。
+例如原数据为正数0x1234，放入BUINT128或BUINT256中时，data[0] = 0x34, data[1] = 0x12，其他赋值为0。
 
-但是当原数据类型为BSINT128或BSINT256，且数据为负数时，相应的值为原码的补码并加一。当原数据为BSINT128且值为-1000时，相应的16进制表示为0xFFFF FFFF FFFF FC18,此时data[0] = 0x18, data[1] =0xFC，以此类推。BSINT256也是同样。
+但是当原数据类型为BSINT128或BSINT256，且数据为负数时，相应的值为原码的补码并加一。当原数据为BSINT128且值为-1000时，相应的16进制表示为0xFFFF FFFF FFFF FFFF FFFF FFFF FFFF FC18,此时data[0] = 0x18, data[1] =0xFC，以此类推。BSINT256也是同样。
 ```  
 以下例子中，生成的C语言函数均省去交易类型
 #### string类型
@@ -267,16 +267,20 @@ Solidity中的address[]变成BoatAddress *类型和一个表示长度的BUINT32�
 Solidity函数：setData(address[] data);  
 C语言函数：合约名_setData(BoatAddress *data, BUINT32 dataLen);  
 
+例如，拿以太坊地址0xA16502DDda899443eF54Ddd011eE39E1535c78dB作为输入举例。
 示例：  
 ```
 BoatAddress data[2];
 for (i = 0; i < 20; i++)
 {
     data[0][i] = i;
-    data[1][i] = 20 - i;
 }
+UtilityHexToBin(data[1], 20, "A16502DDda899443eF54Ddd011eE39E1535c78dB", TRIMBIN_TRIM_NO, BOAT_FALSE);
+UtilityChangeEndian(data[1], 20);
 合约名_setData(data, 2); 
 ```
+
+***注意：对ADDRESS地址需要进行端序转换***
 
 #### bool[N]类型
 Solidity中的bool[N]变成BUINT8 *类型。  
@@ -491,4 +495,130 @@ for (i = 0; i < 5; i++)
 合约名_setData(data, 2); 
 ``` 
 
-注意，bytesN类型不涉及到端序和正负值的问题。
+***注意：bytesN类型不涉及到端序和正负值的问题。***
+
+#### address类型
+Solidity中的address变成BoatAddress类型。  
+Solidity函数：setData(address data);  
+C语言函数：合约名_setData(BoatAddress data);  
+
+例如，拿以太坊地址0xA16502DDda899443eF54Ddd011eE39E1535c78dB作为输入举例。
+示例：
+```
+BoatAddress address;
+UtilityHexToBin(address, 20, "A16502DDda899443eF54Ddd011eE39E1535c78dB", TRIMBIN_TRIM_NO, BOAT_FALSE);
+UtilityChangeEndian(address, 20);
+result_str = 合约名_setData(address);
+```
+
+***注意：对ADDRESS地址需要进行端序转换***
+
+#### bool类型
+Solidity中的bool变成BUINT8类型即C语言中的unsigned char类型。  
+Solidity函数：setData(bool data);  
+C语言函数：合约名_setData(BUINT8 data);  
+```
+BUINT8 condition;
+condition = BOAT_TRUE;
+result_str = 合约名_setData(condition);
+```
+
+#### uint8类型
+该类型具备C语言的对应类型，为BUINT8。剩下的参考bool类型。
+
+#### uint16类型
+该类型具备C语言的对应类型，为BUINT16。剩下的参考bool类型。
+
+#### uint32类型
+该类型具备C语言的对应类型，为BUINT32。剩下的参考bool类型。
+
+#### uint64类型
+该类型具备C语言的对应类型，为BUINT64。剩下的参考bool类型。
+
+***注意：对于unsigned long long int为32位的运行环境，暂不能支持该类型***
+
+#### uint128类型
+Solidity中的uint128变成BUINT8长度16的数组。  
+Solidity函数：setData(uint128 data);  
+C语言函数：合约名_setData(BUINT128 data);  
+假设我们要给合约设置的值是0x1234。
+```
+BUINT128 ui128;
+ui128[0] = 0x34;
+ui128[1] = 0x12;
+result_str = 合约名_setData(ui128);
+```
+
+#### uint256和uint类型
+在Solidity中，这两种类型是等价的。
+Solidity中的uint256变成BUINT8长度32的数组。  
+Solidity函数：setData(uint256 data);  
+C语言函数：合约名_setData(BUINT256 data);  
+假设我们要给合约设置的值是1000000。
+```
+BUINT256 ui256;
+ui256[0] = 0x00;
+ui256[1] = 0xE1;
+ui256[2] = 0xF5;
+ui256[3] = 0x05;
+result_str = 合约名_setData(ui256);
+```
+
+#### sint8类型
+该类型具备C语言的对应类型，为BSINT8。剩下的参考bool类型。
+
+#### sint16类型
+该类型具备C语言的对应类型，为BSINT16。剩下的参考bool类型。
+
+#### sint32类型
+该类型具备C语言的对应类型，为BSINT32。剩下的参考bool类型。
+
+#### sint64类型
+该类型具备C语言的对应类型，为BSINT32。剩下的参考bool类型。
+
+***注意：对于long long int为32位的运行环境，暂不能支持该类型***
+
+#### sint128类型
+Solidity中的sint128变成BUINT8长度16的数组。  
+Solidity函数：setData(sint128 data);  
+C语言函数：合约名_setData(BSINT128 data);  
+假设我们要给合约设置的值是0x1234。
+```
+BSINT128 si128;
+si128[0] = 0x34;
+si128[1] = 0x12;
+result_str = 合约名_setData(si128);
+```
+
+#### sint256和int类型
+在Solidity中，这两种类型是等价的。
+Solidity中的sint256变成BUINT8长度32的数组。  
+Solidity函数：setData(sint256 data);  
+C语言函数：合约名_setData(BSINT256 data);  
+假设我们要给合约设置的值是-1000。
+```
+BUINT256 ui256;
+ui256[0] = 0x18;
+ui256[1] = 0xFC;
+ui256[2] = 0xFF;
+ui256[3] = 0xFF;
+...
+ui256[31] = 0xFF;
+result_str = 合约名_setData(ui256);
+```
+
+#### bytesN类型
+其中N为1~32中的数字。
+Solidity中的bytesN变成BUINT8长度N的数组。  
+Solidity函数：setData(bytesN data);  
+C语言函数：合约名_setData(BbytesN data);  
+假设N的值为5
+```
+Bbytes5 data;
+data[0] = 0x10;
+data[1] = 0x20;
+data[2] = 0x30;
+data[3] = 0x40;
+data[4] = 0x50;
+result_str = 合约名_setData(data);
+```

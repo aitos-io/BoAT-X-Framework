@@ -67,10 +67,18 @@ $(OBJECTS_DIR)/%.o:%.c
 clean:
 	-$(BOAT_RM) $(OBJECTS)
 	make -C common clean
+ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)	
 	make -C boatethereum  clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_PLATON), 1)	
 	make -C boatplaton    clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_PLATONE), 1)
 	make -C boatplatone   clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS), 1)
 	make -C boatfiscobcos clean
+endif
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)	
 	make -C boathlfabric  clean
 endif

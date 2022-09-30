@@ -770,7 +770,8 @@ int UtilityGetTLV_L(BUINT8 *input,BUINT32 len){
 
 BOAT_RESULT UtilityGetTLV(BUINT8 *input,BUINT32 inputlen,TLVStruct *tlv){
     BOAT_RESULT ret = BOAT_SUCCESS;
-    BUINT32 offset = 0,len = 0;
+    BUINT32 offset = 0;
+    int len = 0;
     int ll = 0;
 
     ll = UtilityGetTLV_LL(input,inputlen);
@@ -799,6 +800,9 @@ int add_TL_withOffset(BUINT8 bTag,BUINT8* pbBuff,BUINT32* nOffset,BUINT32 nLen)
     BUINT8 bTLV[10];
     BUINT8* buf  = NULL;
     buf = BoatMalloc(nLen);
+    if(NULL == buf){
+        return -1;
+    }
 
     memset(bTLV, 0, 10);
 
@@ -871,6 +875,11 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
     BUINT16 offset = 0, len = 0, offset_level_3 = 0, offset_level_4 = 0,offset_level_5 = 0;
     BUINT16 j = 0;
     TLVStruct TLV_Level_1, TLV_Level_2, TLV_Level_3, TLV_Level_4,TLV_Level_5;
+    (*keypair).alg = KEYPAIT_ALG_UNKNOWN;
+    (*keypair).prikey = NULL;
+    (*keypair).prikeylen = 0;
+    (*keypair).pubkey = NULL;
+    (*keypair).pubkeylen = 0;
     if (strstr(input, PRIKEY_EC_PKCS_BEGIN) != NULL)
     {
         begin = strstr(input, PRIKEY_EC_PKCS_BEGIN);
@@ -883,6 +892,10 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
         offset = begin - input + strlen(PRIKEY_EC_PKCS_BEGIN);
         len = end - begin - strlen(PRIKEY_EC_PKCS_BEGIN);
         realdata = BoatMalloc(len);
+        if(NULL == realdata){
+            BoatLog(BOAT_LOG_NORMAL, " fail to malloc realdata .");
+            return BOAT_ERROR;
+        }
         for (int i = 0; i < len; i++)
         {
             bytedata = input[offset + i];
@@ -927,6 +940,12 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
             {
                 // (*keypair).prikey = TLV_Level_2.data;
                 (*keypair).prikey = BoatMalloc(TLV_Level_2.len);
+                if(NULL == (*keypair).prikey){
+                    if((*keypair).pubkey != NULL){
+                        BoatFree((*keypair).pubkey);
+                    }
+                    return BOAT_ERROR;
+                }
                 memcpy((*keypair).prikey, TLV_Level_2.data, TLV_Level_2.len);
                 (*keypair).prikeylen = TLV_Level_2.len;
             }
@@ -997,6 +1016,12 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
                         (*keypair).pubkeylen = TLV_Level_3.len - 2;
                         // (*keypair).pubkey = TLV_Level_3.data + 2;
                         (*keypair).pubkey = BoatMalloc(TLV_Level_3.len - 2);
+                        if(NULL == (*keypair).pubkey){
+                            if((*keypair).prikey != NULL){
+                                BoatFree((*keypair).prikey);
+                            }
+                            return BOAT_ERROR;
+                        }
                         memcpy((*keypair).pubkey, TLV_Level_3.data + 2, TLV_Level_3.len - 2);
                         return BOAT_SUCCESS;
                     }
@@ -1019,6 +1044,10 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
         offset = begin - input + strlen(PRIKEY_PKCS_BEGIN);
         len = end - begin - strlen(PRIKEY_PKCS_BEGIN);
         realdata = BoatMalloc(len);
+        if(NULL == realdata){
+            BoatLog(BOAT_LOG_NORMAL, " fail to malloc realdata .");
+            return BOAT_ERROR;
+        }
         for (int i = 0; i < len; i++)
         {
             bytedata = input[offset + i];
@@ -1086,6 +1115,12 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
                             {
                                 // (*keypair).prikey = TLV_Level_2.data;
                                 (*keypair).prikey = BoatMalloc(TLV_Level_4.len);
+                                if(NULL == (*keypair).prikey){
+                                    if((*keypair).pubkey != NULL){
+                                        BoatFree((*keypair).pubkey);
+                                    }
+                                    return BOAT_ERROR;
+                                }
                                 memcpy((*keypair).prikey, TLV_Level_4.data, TLV_Level_4.len);
                                 BoatLog(BOAT_LOG_NORMAL, " UtilityPKCS2Native prikey TLV_Level_4.len = %d .", TLV_Level_4.len);
                                 (*keypair).prikeylen = TLV_Level_4.len;
@@ -1112,6 +1147,12 @@ BOAT_RESULT UtilityPKCS2Native(BCHAR *input, KeypairNative *keypair)
                                         (*keypair).pubkeylen = TLV_Level_5.len - 2;
                                         // (*keypair).pubkey = TLV_Level_3.data + 2;
                                         (*keypair).pubkey = BoatMalloc(TLV_Level_5.len - 2);
+                                        if(NULL == (*keypair).pubkey){
+                                            if((*keypair).prikey != NULL){
+                                                BoatFree((*keypair).prikey);
+                                            }
+                                            return BOAT_ERROR;
+                                        }
                                         memcpy((*keypair).pubkey, TLV_Level_5.data + 2, TLV_Level_5.len - 2);
                                         return BOAT_SUCCESS;
                                     }
@@ -1217,6 +1258,9 @@ BCHAR* UtilityNative2PKCS(KeypairNative keypair){
     len += UtilityGetTLV_LL_from_len(len_level_2) + 1 + len_level_2; //pubkey
     len += UtilityGetTLV_LL_from_len(len) + 1 + len; //all hex data
     dataHex = BoatMalloc(len);
+    if(NULL == dataHex){
+        return NULL;
+    }
     memcpy(dataHex + offset,version,sizeof(version));
     offset += sizeof(version);
     memcpy(dataHex + offset ,keypair.prikey,keypair.prikeylen);
@@ -1243,6 +1287,12 @@ BCHAR* UtilityNative2PKCS(KeypairNative keypair){
     offset = 0;
     add_TL_withOffset((BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_SEQUENCE) ,dataHex,&offset,len); //all
     outStr = BoatMalloc(offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6) ;
+    if(NULL == outStr){
+        if(dataHex != NULL){
+            BoatFree(dataHex);
+        }
+        return NULL;
+    }
     memset(outStr,0,offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6);
     len = BoAT_base64_encode(dataHex,offset,outStr+strlen(PRIKEY_PKCS_BEGIN)+2);
     memcpy(outStr,PRIKEY_PKCS_BEGIN,strlen(PRIKEY_PKCS_BEGIN));

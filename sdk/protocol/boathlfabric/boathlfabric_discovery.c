@@ -489,11 +489,6 @@ __BOATSTATIC BOAT_RESULT hlfabricDiscoveryPayloadPacked(BoatHlfabricTx *tx_ptr,
  * @param tx_ptr 
  *   fabric transaction structure pointer
  *
- * @param[out] output_ptr 
- *   A structure pointer to store nodes info, e.g. "hostname","port","TLScert".
- *   In internal of this function, the memory of store serialize data has been alloced,
- *   caller SHOULD NOT alloc memory for this pointer again.
- *
  * @return 
  *   Return \c BOAT_SUCCESS if packed successed, otherwise return a failed code. 
  ******************************************************************************/
@@ -592,13 +587,8 @@ BOAT_RESULT hlfabricProposalDiscoveryTransactionPacked(BoatHlfabricTx *tx_ptr)
  * @param tx_ptr 
  *   Fabric transaction structure pointer
  *
- * @param nodeInfo 
-*    The first element address of nodeinfo structure.
- *  
- * @param nodeMaxNum 
- *   Support maxium node number.
- *   \n For endorser node, this param is equeal with the macro #BOAT_HLFABRIC_ENDORSER_MAX_NUM,
- *   for orderer node, this param is equeal with the macro #BOAT_HLFABRIC_ORDERER_MAX_NUM.
+ * @param nodeCfg 
+ *    The specified fabric node config structure.
  *
  * @return 
  *   Return \c BOAT_SUCCESS if set successed, otherwise return a failed code.
@@ -877,8 +867,8 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit(BoatHlfabricTx *tx_ptr, const BoatHlfabr
 		discoverResult.discoverConfig.discoverOrders.num += config_result->orderers[i]->value->n_endpoint;
 	}
 	discoverResult.discoverConfig.discoverOrders.discoverOrderinfo = BoatMalloc(discoverResult.discoverConfig.discoverOrders.num * sizeof(orderInfo));
-	if(discoverResult.discoverConfig.discoverOrders.discoverOrderinfo){
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverOrderinfo buffer.",i);
+	if(NULL == discoverResult.discoverConfig.discoverOrders.discoverOrderinfo){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate discoverOrderinfo buffer.");
 		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricDiscoverySubmit_exception);			
 	}
 	for ( i = 0; i < config_result->n_orderers; i++)

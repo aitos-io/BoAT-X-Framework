@@ -592,7 +592,10 @@ int Platone_get_Nodeinfo(const char *const monitor,nodesResult *result_out)
                 int parse_result_str_len = strlen(parse_result_str);
                 
                 result_out->nodeInfo[result_out->num-1].IP = malloc(parse_result_str_len);
-               
+               if(NULL == result_out->nodeInfo[result_out->num-1].IP){
+                    BoatLog(BOAT_LOG_NORMAL, "Failed to allocate memory.");
+                    goto end;
+               }
             //    memcpy((char*)result_out->nodeInfo[result_out->num-1].IP, parse_result_str,parse_result_str_len);
                 strcpy(result_out->nodeInfo[result_out->num-1].IP, parse_result_str);
             }

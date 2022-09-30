@@ -120,7 +120,7 @@ struct  Common__Transaction
 };
 #define COMMON__TRANSACTION__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&common__transaction__descriptor) \
-    ,  0,{0,NULL},NULL, 0,NULL }
+    ,  0,NULL,{0,NULL}, 0,NULL }
 
 
 struct  Common__TxPayload

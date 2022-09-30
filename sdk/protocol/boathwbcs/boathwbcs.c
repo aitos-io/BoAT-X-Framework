@@ -71,7 +71,7 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
-	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL)
+	if (tx_ptr->var.type == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 	{
 		/* contractInvocation info*/
 		contractInvocation.contract_name = tx_ptr->var.contract_name;
@@ -145,7 +145,7 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 		result = boat_exception;
 	}
 	/* free malloc */
-	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL){
+	if (tx_ptr->var.type == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL){
 		if(NULL != contractInvocation.args){
 			BoatFree(contractInvocation.args);
 		}
@@ -179,7 +179,7 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	}
 
 	/* step-1: generate nonce once for proposal */
-	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL)
+	if (tx_ptr->var.type == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 	{
 		tx_ptr->var.nonce.field_len = 8;
 		result = BoatRandom(tx_ptr->var.nonce.field, tx_ptr->var.nonce.field_len, NULL);
@@ -192,7 +192,10 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 
 	/* step-2:  payload packed  */
 	result = hwbcsPayloadPacked(tx_ptr, &payloadPacked);
-
+	if(result != BOAT_SUCCESS){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec pack payload.");
+		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, hwbcsProposalTransactionPacked_exception);
+	}
 
 
 	/* --------> creator packed */
@@ -203,7 +206,8 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatHash.");
-		return BOAT_ERROR_COMMON_GEN_HASH_FAIL;
+		// return BOAT_ERROR_COMMON_GEN_HASH_FAIL;
+		boat_throw(BOAT_ERROR_COMMON_GEN_HASH_FAIL, hwbcsProposalTransactionPacked_exception);
 	}
 
 	/* step-4: signature */
@@ -212,13 +216,15 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
-		return BOAT_ERROR_COMMON_GEN_SIGN_FAIL;
+		// return BOAT_ERROR_COMMON_GEN_SIGN_FAIL;
+		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, hwbcsProposalTransactionPacked_exception);
 	}
 
 	if (!signatureResult.pkcs_format_used)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Fail to find expect signature.");
-		return BOAT_ERROR_COMMON_GEN_SIGN_FAIL;
+		// return BOAT_ERROR_COMMON_GEN_SIGN_FAIL;
+		boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, hwbcsProposalTransactionPacked_exception);
 	}
 	/* approvals */
 
@@ -235,6 +241,10 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	transaction.approvals = &approval_messages;
 	packedLength = common__transaction__get_packed_size(&transaction);
 	packedData = BoatMalloc(packedLength);
+	if(NULL == packedData){
+		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate packedData.");
+        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, hwbcsProposalTransactionPacked_exception);	
+	}
 	common__transaction__pack(&transaction, packedData);
 	/* ---grpcHeader compute */
 	grpcHeader[0] = 0x00; //uncompressed
@@ -255,8 +265,13 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	}
 
 	/* free malloc */
-	BoatFree(payloadPacked.field_ptr);
-	BoatFree(packedData);
+	if(NULL != payloadPacked.field_ptr){
+		BoatFree(payloadPacked.field_ptr);
+	}
+	if(NULL != packedData){
+		BoatFree(packedData);
+	}
+
 
 	return result;
 }

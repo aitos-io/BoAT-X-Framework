@@ -4,7 +4,8 @@
 
 ### Overview
 This article introduces the functions and usage of BoAT IoT Framework SDK 2.x.  
-The intended readers of this guide are customers who integrate the BoAT IoT Framework SDK.
+The intended readers of this guide are customers who integrate the BoAT IoT Framework SDK.  
+The user manual version is 1.0.0.
 
 ### Abbreviated Terms
 |Term |Explanation                                |

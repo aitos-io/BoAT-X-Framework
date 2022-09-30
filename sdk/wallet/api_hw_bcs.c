@@ -64,7 +64,8 @@ __BOATSTATIC size_t boat_find_oid_value_in_name(const mbedtls_x509_name *name, c
             for(size_t i = 0; i < bytes_to_write; i++)
             {
                 char c = name->val.p[i];
-                if (c < 32 || c == 127 || (c > 128 && c < 160))
+                // if (c < 32 || c == 127 || (c > 128 && c < 160))
+				if (c < 32 || c == 127 )
                 {
                     value[i] = '?';
                 } else
@@ -139,7 +140,7 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 		BoatLog(BOAT_LOG_CRITICAL, "[%s]:packed failed.", tx_ptr->var.args.args[0]);
 		boat_throw(BOAT_ERROR_COMMON_PROTO_PACKET_FAIL, BoatHwbcsTxProposal_exception);
 	}
-	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL)
+	if (tx_ptr->var.type == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 	{
 		for (i = 0; i < nodeCfg.endorserLayoutNum; i++)
 		{
@@ -163,8 +164,16 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 
 					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->hostName = nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].hostName;
 					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
+					if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain){
+						BoatLog(BOAT_LOG_CRITICAL, " Fail to malloc tlsCAchain memory");
+						boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+					}
 					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length + 1;
 					((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
+					if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr){
+						BoatLog(BOAT_LOG_CRITICAL, " Fail to malloc tlsCAchain field_ptr memory");
+						boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+					}
 					memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
 					memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
 // 			BoatLog_hexasciidump(BOAT_LOG_NORMAL, "tlsCAchain  :",
@@ -217,12 +226,20 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 						}
 
 						parsePtr->response[parsePtr->responseCount].contentPtr = proposalResponse;
-						parsePtr->response[parsePtr->responseCount].responseType = HWBCS_TYPE_PROPOSAL;
+						parsePtr->response[parsePtr->responseCount].responseType = (BoatHlfabricType)HWBCS_TYPE_PROPOSAL;
 						parsePtr->response[parsePtr->responseCount].payload.field_len = resData->payload.len;
 						parsePtr->response[parsePtr->responseCount].payload.field_ptr = BoatMalloc(resData->payload.len);
+						if(NULL == parsePtr->response[parsePtr->responseCount].payload.field_ptr){
+							BoatLog(BOAT_LOG_CRITICAL, " Fail to malloc payload field_ptr memory");
+							boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+						}						
 						memcpy(parsePtr->response[parsePtr->responseCount].payload.field_ptr, resData->payload.data, resData->payload.len);
 						tx_ptr->evaluateRes.httpResLen = commondTxData->response->payload.len;
 						tx_ptr->evaluateRes.http2Res = BoatMalloc(tx_ptr->evaluateRes.httpResLen);
+						if(NULL == tx_ptr->evaluateRes.http2Res){
+							BoatLog(BOAT_LOG_CRITICAL, " Fail to malloc http2Res memory");
+							boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+						}	
 						memcpy(tx_ptr->evaluateRes.http2Res,commondTxData->response->payload.data,commondTxData->response->payload.len);
 
 						// parsePtr->http2res.httpResLen = commondTxData->response->payload.len;
@@ -279,8 +296,16 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 				BoatFree(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain);
 			}
 			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain = BoatMalloc(sizeof(BoatFieldVariable));
+			if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain){
+				BoatLog(BOAT_LOG_CRITICAL, " Fail to malloc tlsCAchain memory");
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+			}
 			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len = nodeCfg.orderCfg.tlsOrgCertContent.length + 1;
 			((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr = BoatMalloc(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
+			if(NULL == ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr){
+				BoatLog(BOAT_LOG_CRITICAL, " Fail to malloc tlsCAchain field_ptr memory");
+				boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsTxProposal_exception);
+			}			
 			memset(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, 0x00, ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
 			memcpy(((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr, nodeCfg.orderCfg.tlsOrgCertContent.content, nodeCfg.orderCfg.tlsOrgCertContent.length);
 
@@ -519,6 +544,10 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 	if (value_len)
 	{
 		tx_ptr->var.creator_id = BoatMalloc(value_len + 1);
+		if(NULL == tx_ptr->var.creator_id){
+			BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
+			boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlfabricTxInit_exception);
+		}
 		memcpy(tx_ptr->var.creator_id,value,value_len);
 	}
 
@@ -572,14 +601,14 @@ BOAT_RESULT BoatHwbcsTxEvaluate(BoatHwbcsTx *tx_ptr)
 	BoatLog(BOAT_LOG_NORMAL, "Evaluate will execute...");
 
 	/* submit query */
-	tx_ptr->var.type = HWBCS_TYPE_PROPOSAL;
+	tx_ptr->var.type = (BoatHlfabricType)HWBCS_TYPE_PROPOSAL;
 	// urlTmp[0] = tx_ptr->wallet_ptr->network_info.endorser[0];
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_EVALUATE);
 
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
 	{
-		if (tx_ptr->endorserResponse.response[i].responseType == HWBCS_TYPE_PROPOSAL)
+		if (tx_ptr->endorserResponse.response[i].responseType == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 		{
 			common__transaction__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
 			if (tx_ptr->endorserResponse.response[i].payload.field_len != 0)
@@ -613,7 +642,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
 
 	/* invoke-step1: submit proposal to endorer */
-	tx_ptr->var.type = HWBCS_TYPE_PROPOSAL;
+	tx_ptr->var.type = (BoatHlfabricType)HWBCS_TYPE_PROPOSAL;
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
@@ -621,7 +650,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	}
 	BoatLog(BOAT_LOG_NORMAL, "Submit proposal OK ...");
 	/* invoke-step2: submit transaction to orderer */
-	tx_ptr->var.type = HWBCS_TYPE_TRANSACTION;
+	tx_ptr->var.type = (BoatHlfabricType)HWBCS_TYPE_TRANSACTION;
 	result = BoatHwbcsTxExec(tx_ptr, tx_ptr->wallet_ptr->network_info, HWBCS_FUN_SUBMIT);
 	if (result != BOAT_SUCCESS)
 	{
@@ -630,7 +659,7 @@ BOAT_RESULT BoatHwbcsTxSubmit(BoatHwbcsTx *tx_ptr)
 	/* free the unpacked response data */
 	for (int i = 0; i < tx_ptr->endorserResponse.responseCount; i++)
 	{
-		if (tx_ptr->endorserResponse.response[i].responseType == HWBCS_TYPE_PROPOSAL)
+		if (tx_ptr->endorserResponse.response[i].responseType == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
 		{
 			common__transaction__free_unpacked(tx_ptr->endorserResponse.response[i].contentPtr, NULL);
 		}

@@ -197,7 +197,7 @@ BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
     BoatQuorumTx tx_ctx;
     BOAT_RESULT result;
 
-    printf("quorum_call_ReadStore start\n");
+    BoatLog(BOAT_LOG_NORMAL, "quorum_call_ReadStore start.");
     
     /* Set Contract Address */
     result = BoatQuorumTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, PRIVATE_FALSE, "0x0",
