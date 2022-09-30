@@ -8,13 +8,13 @@ BOAT_BUILD_DIR := $(BOAT_BASE_DIR)/build
 # Set to 1 to enable releated chain, to 0 to disable
 BOAT_PROTOCOL_USE_ETHEREUM   ?= 0
 BOAT_PROTOCOL_USE_PLATON     ?= 0
-BOAT_PROTOCOL_USE_PLATONE    ?= 1
+BOAT_PROTOCOL_USE_PLATONE    ?= 0
 BOAT_PROTOCOL_USE_FISCOBCOS  ?= 0
 BOAT_PROTOCOL_USE_HLFABRIC   ?= 0
 BOAT_PROTOCOL_USE_HWBCS      ?= 0
 BOAT_PROTOCOL_USE_CHAINMAKER ?= 0
 BOAT_DISCOVERY_PEER_QUERY    ?= 0
-BOAT_PROTOCOL_USE_VENACHAIN  ?= 0
+BOAT_PROTOCOL_USE_VENACHAIN  ?= 1
 BOAT_PROTOCOL_USE_QUORUM     ?= 0
 
 # Chain config check
@@ -111,6 +111,10 @@ BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/platone \
                 -I$(BOAT_SDK_DIR)/protocol/boatplatone
 endif
 
+ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN),1)         
+BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/venachain \
+                -I$(BOAT_SDK_DIR)/protocol/boatvenachain
+endif
 
 BOAT_CSTD_FLAGS := -std=c99
 #BOAT_OPTIMIZATION_FLAGS := -g #-Os 
