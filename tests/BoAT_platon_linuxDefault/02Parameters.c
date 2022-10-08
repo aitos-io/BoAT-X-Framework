@@ -53,7 +53,7 @@ BOAT_RESULT platonWalletPrepare(void)
 
 	wallet_config.chain_id             = TEST_PLATON_CHAIN_ID;
     wallet_config.eip155_compatibility = TEST_EIP155_COMPATIBILITY;
-    strncpy(wallet_config.node_url_str, TEST_PLATON_CHAIN_ID, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
+    strncpy(wallet_config.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
     index = BoatWalletCreate(BOAT_PROTOCOL_PLATON, NULL, &wallet_config, sizeof(BoatPlatONWalletConfig));
 

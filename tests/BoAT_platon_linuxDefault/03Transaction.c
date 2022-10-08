@@ -37,13 +37,12 @@ START_TEST(test_006GetBalance_0001GetSuccess)
     result = platonWalletPrepare();
     ck_assert(result == BOAT_SUCCESS);
 
-    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
-                           "0x333333",
+    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, TEST_GAS_PRICE,
+                           TEST_GAS_LIMIT,
                            (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-
-    cur_balance_wei = BoatPlatONWalletGetBalance(g_platon_wallet_ptr, TEST_RECIPIENT_ADDRESS);
+    cur_balance_wei = BoatPlatONWalletGetBalance(g_platon_wallet_ptr, "lat");
 	result          = BoatPlatONParseRpcResponseStringResult(cur_balance_wei, &parse_result);
 
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -55,10 +54,9 @@ START_TEST(test_006GetBalance_0001GetSuccess)
 }
 END_TEST
 
-START_TEST(test_006GetBalance_0002GetWalletDefaultAddressSuccess) 
+START_TEST(test_006GetBalance_0002GetSuccessNullAddress) 
 {
     BOAT_RESULT result;
-    BoatPlatONTx tx_ctx;
     BCHAR *cur_balance_wei = NULL;
     BoatFieldVariable parse_result = {NULL, 0};
 
@@ -67,19 +65,9 @@ START_TEST(test_006GetBalance_0002GetWalletDefaultAddressSuccess)
     result = platonWalletPrepare();
     ck_assert(result == BOAT_SUCCESS);
 
-    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
-                           "0x333333",
-                           (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
-    ck_assert_int_eq(result, BOAT_SUCCESS);
-
-
     cur_balance_wei = BoatPlatONWalletGetBalance(g_platon_wallet_ptr, NULL);
-	result          = BoatPlatONParseRpcResponseStringResult(cur_balance_wei, &parse_result);
 
-    ck_assert_ptr_ne(parse_result.field_ptr, NULL);
-    ck_assert_int_eq(result, BOAT_SUCCESS);
-
-    BoatFree(parse_result.field_ptr);
+    ck_assert_ptr_eq(cur_balance_wei, NULL);
 
     BoatIotSdkDeInit();
 }
@@ -91,7 +79,7 @@ START_TEST(test_006GetBalance_0003GetFailureNullWallet)
 
     BoatIotSdkInit();
 
-    cur_balance_wei = BoatPlatONWalletGetBalance(NULL, NULL);
+    cur_balance_wei = BoatPlatONWalletGetBalance(NULL, "lat");
 
     ck_assert_ptr_eq(cur_balance_wei, NULL);
 
@@ -109,7 +97,7 @@ START_TEST(test_007Transfer_0001TransferSuccess)
     result = platonWalletPrepare();
     ck_assert(result == BOAT_SUCCESS);
 
-    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
+    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, NULL,
                            "0x333333",
                            (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -131,7 +119,7 @@ START_TEST(test_007Transfer_0002TransferFailureNullParam)
     result = platonWalletPrepare();
     ck_assert(result == BOAT_SUCCESS);
 
-    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
+    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, NULL,
                            "0x333333",
                            (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -161,7 +149,7 @@ START_TEST(test_007Transfer_0003TransferWithSpecifyChainIDSuccess)
 
     g_platon_wallet_ptr = BoatGetWalletByIndex(rtnVal);
 
-    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
+    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, NULL,
                            "0x333333",
                            (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -189,7 +177,7 @@ Suite *make_transactions_suite(void)
  
     /* Test cases are added to the test set */
     tcase_add_test(tc_transaction_api, test_006GetBalance_0001GetSuccess); 
-    tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetWalletDefaultAddressSuccess); 
+    tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetSuccessNullAddress); 
     tcase_add_test(tc_transaction_api, test_006GetBalance_0003GetFailureNullWallet); 
 
     tcase_add_test(tc_transaction_api, test_007Transfer_0001TransferSuccess); 
