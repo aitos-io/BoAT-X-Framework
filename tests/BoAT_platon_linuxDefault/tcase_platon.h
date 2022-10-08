@@ -30,3 +30,4 @@ extern char platon_private_key_buf[1024];
 extern BoatPlatONWallet *g_platon_wallet_ptr;
 extern BoatPlatONWalletConfig wallet_config;
 extern BUINT8 binFormatKey[32];
+extern BCHAR *hrp;

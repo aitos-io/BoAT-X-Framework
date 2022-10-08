@@ -26,7 +26,7 @@
 BoatPlatONWallet *g_platon_wallet_ptr;
 BoatPlatONWalletConfig wallet_config = {0};
 
-const BCHAR *hrp = "lat";
+BCHAR *hrp = "lat";
 
 BOAT_RESULT platonWalletPrepare(void)
 {
@@ -430,6 +430,7 @@ Suite *make_parameters_suite(void)
     /* Create test cases */
     TCase *tc_param_api = tcase_create("param_api");
 
+    tcase_set_timeout(tc_param_api,50);       
 
     /* Add a test case to the Suite */
     suite_add_tcase(s_param, tc_param_api);      

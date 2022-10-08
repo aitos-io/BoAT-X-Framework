@@ -23,8 +23,6 @@
 #define TEST_IS_SYNC_TX             BOAT_TRUE
 #define TEST_RECIPIENT_ADDRESS      "lat159js9hw63x2y8m65mhgprm3eu9f4c7xmv3lym4"
 
-const BCHAR *hrp = "lat";
-
 extern BoatPlatONWalletConfig get_platon_wallet_settings();
 
 START_TEST(test_006GetBalance_0001GetSuccess) 
@@ -184,6 +182,7 @@ Suite *make_transactions_suite(void)
     /* Create test cases */
     TCase *tc_transaction_api = tcase_create("transaction_api");
 
+    tcase_set_timeout(tc_transaction_api,50);       
 
     /* Add a test case to the Suite */
     suite_add_tcase(s_transaction, tc_transaction_api);      
