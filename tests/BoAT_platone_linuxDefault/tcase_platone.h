@@ -22,3 +22,5 @@
 #include "boattypes.h"
 #include "boatwallet.h"
 #include "protocolapi/api_platone.h"
+
+extern char platone_private_key_buf[1024];
