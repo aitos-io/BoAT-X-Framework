@@ -829,7 +829,7 @@ START_TEST(test_002InitWallet_0013InitPlatONWalletGenerationKey)
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_ne(rtnVal,NULL);
-
+    BoatPlatONWalletDeInit(rtnVal);
     /* 2-2. verify the global variables that be affected */ 
 }
 END_TEST
@@ -855,6 +855,7 @@ END_TEST
 
 START_TEST(test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat)
 {
+    BoatLog(BOAT_LOG_VERBOSE, "test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat");
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig;
 
@@ -862,17 +863,19 @@ START_TEST(test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat)
     walletConfig.prikeyCtx_config.prikey_format = 4;
     walletConfig.prikeyCtx_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     walletConfig.eip155_compatibility = BOAT_FALSE;
+    walletConfig.load_existed_wallet = BOAT_FALSE;
 
     /* 1. execute unit test */
     rtnVal = BoatPlatONWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_ne(rtnVal,NULL);
+    ck_assert_ptr_eq(rtnVal,NULL);
 }
 END_TEST
 
 START_TEST(test_002InitWallet_0016InitPlatONWalletWithWrongType)
 {
+    BoatLog(BOAT_LOG_VERBOSE, "test_002InitWallet_0016InitPlatONWalletWithWrongType");
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig;
 
@@ -880,6 +883,7 @@ START_TEST(test_002InitWallet_0016InitPlatONWalletWithWrongType)
     walletConfig.prikeyCtx_config.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
     walletConfig.prikeyCtx_config.prikey_type = 3;
     walletConfig.eip155_compatibility = BOAT_FALSE;
+    walletConfig.load_existed_wallet = BOAT_FALSE;
 
     /* 1. execute unit test */
     rtnVal = BoatPlatONWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
