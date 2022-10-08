@@ -895,8 +895,22 @@ END_TEST
 
 START_TEST(test_003DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
+    BSINT32 rtnVal;
+
+    BoatIotSdkInit();
+    BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATON, "platon", &wallet, sizeof(BoatPlatONWalletConfig));
+
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 0);
+
     BoatWalletDelete(NULL);
     ck_assert_int_eq(access("platon", F_OK), 0);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
