@@ -41,7 +41,7 @@ START_TEST(test_006GetBalance_0001GetSuccess)
 
     result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
                            "0x333333",
-                           (BCHAR *)TEST_RECIPIENT_ADDRESS);
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
 
@@ -71,7 +71,7 @@ START_TEST(test_006GetBalance_0002GetWalletDefaultAddressSuccess)
 
     result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
                            "0x333333",
-                           (BCHAR *)TEST_RECIPIENT_ADDRESS);
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
 
@@ -135,7 +135,7 @@ START_TEST(test_007Transfer_0002TransferFailureNullParam)
 
     result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
                            "0x333333",
-                           (BCHAR *)TEST_RECIPIENT_ADDRESS);
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     result = BoatPlatONTransfer(&tx_ctx, NULL);
@@ -156,7 +156,7 @@ START_TEST(test_007Transfer_0003TransferWithSpecifyChainIDSuccess)
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     
     wallet.eip155_compatibility = BOAT_TRUE;
-    wallet.chain_id = TEST_EPLATON_CHAIN_ID;
+    wallet.chain_id = TEST_PLATON_CHAIN_ID;
     /* 1. execute unit test */
     rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATON, NULL, &wallet, sizeof(BoatPlatONWalletConfig));
     ck_assert_int_eq(rtnVal, 0);
