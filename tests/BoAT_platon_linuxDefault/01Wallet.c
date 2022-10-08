@@ -628,7 +628,7 @@ START_TEST(test_002InitWallet_0003SetChainIdSuccess)
     ck_assert_ptr_ne(wallet_ptr, NULL);
     
     /* 1. execute unit test */
-    rtnVal = BoatPlatONWalletSetEIP155Comp(wallet_ptr, wallet.chain_id);
+    rtnVal = BoatPlatONWalletSetChainId(wallet_ptr, wallet.chain_id);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
