@@ -661,7 +661,7 @@ START_TEST(test_002InitWallet_0005SetNodeUrlSuccess)
     
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatPlatONWalletSetChainId(wallet_ptr, wallet.node_url_str);
+    rtnVal = BoatPlatONWalletSetNodeUrl(wallet_ptr, wallet.node_url_str);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
