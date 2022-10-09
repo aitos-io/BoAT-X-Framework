@@ -895,6 +895,34 @@ START_TEST(test_002InitWallet_0016InitPlatoneWalletWithWrongType)
 }
 END_TEST
 
+START_TEST(test_003DeleteWallet_0001DeleteWalletFailureNullFleName) 
+{
+    BSINT32 rtnVal;
+
+    BoatIotSdkInit();
+    BoatPlatoneWalletConfig wallet = get_platone_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, "platone", &wallet, sizeof(BoatPlatoneWalletConfig));
+
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 0);
+
+    BoatWalletDelete(NULL);
+    ck_assert_int_eq(access("platone", F_OK), 0);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile) 
+{
+    BoatWalletDelete("platone_no_exist");
+    ck_assert_int_eq(access("platone", F_OK), 0);
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -941,6 +969,9 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0014InitPlatoneWalletWithWrongGenMode);  
     tcase_add_test(tc_wallet_api, test_002InitWallet_0015InitPlatoneWalletWithWrongKeyFormat);  
     tcase_add_test(tc_wallet_api, test_002InitWallet_0016InitPlatoneWalletWithWrongType);  
+
+    tcase_add_test(tc_wallet_api, test_003DeleteWallet_0001DeleteWalletFailureNullFleName);  
+    tcase_add_test(tc_wallet_api, test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile);  
 
     return s_wallet;
 }
