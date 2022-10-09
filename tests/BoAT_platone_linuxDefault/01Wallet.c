@@ -803,6 +803,21 @@ START_TEST(test_002InitWallet_0011InitPlatoneWalletWithBiggerSize)
 }
 END_TEST
 
+START_TEST(test_002InitWallet_0012InitPlatoneWalletSuccess)
+{
+    BoatPlatoneWallet *rtnVal;
+    BoatPlatoneWalletConfig walletConfig = get_platone_wallet_settings();
+
+    /* 1. execute unit test */
+    rtnVal = BoatPlatoneWalletInit(&walletConfig, sizeof(BoatPlatoneWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_ne(rtnVal,NULL);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -844,6 +859,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0009InitPlatoneWalletWithNullConfig);  
     tcase_add_test(tc_wallet_api, test_002InitWallet_0010InitPlatoneWalletWithSmallerSize);  
     tcase_add_test(tc_wallet_api, test_002InitWallet_0011InitPlatoneWalletWithBiggerSize);  
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0012InitPlatoneWalletSuccess);  
 
     return s_wallet;
 }
