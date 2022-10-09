@@ -588,6 +588,26 @@ START_TEST(test_001CreateWallet_0018DeletePersistWalletSuccess)
 }
 END_TEST
 
+START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
+{
+    BSINT32 rtnVal;
+    BoatPlatoneWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatoneWallet));
+    BoatPlatoneWalletConfig wallet = get_platone_wallet_settings();
+
+    ck_assert_ptr_ne(wallet_ptr, NULL);    
+    
+    /* 1. execute unit test */
+    rtnVal = BoatPlatoneWalletSetEIP155Comp(wallet_ptr, wallet.eip155_compatibility);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(wallet_ptr->network_info.eip155_compatibility == wallet.eip155_compatibility);
+    BoatFree(wallet_ptr);
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -617,6 +637,8 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne);  
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne);  
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0018DeletePersistWalletSuccess);  
+
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0001SetEIP155CompSuccess);  
 
     return s_wallet;
 }
