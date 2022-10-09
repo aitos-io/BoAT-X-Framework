@@ -593,7 +593,7 @@ START_TEST(test_002InitWallet_0001SetEIP155CompSuccess)
     ck_assert_ptr_ne(wallet_ptr, NULL);    
     
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletSetEIP155Comp(wallet_ptr, wallet.eip155_compatibility);
+    rtnVal = BoatPlatONWalletSetEIP155Comp(wallet_ptr, wallet.eip155_compatibility);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
@@ -610,7 +610,7 @@ START_TEST(test_002InitWallet_0002SetEIP155CompFailureNullParam)
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletSetEIP155Comp(NULL, wallet.eip155_compatibility);
+    rtnVal = BoatPlatONWalletSetEIP155Comp(NULL, wallet.eip155_compatibility);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -628,7 +628,7 @@ START_TEST(test_002InitWallet_0003SetChainIdSuccess)
     ck_assert_ptr_ne(wallet_ptr, NULL);
     
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletSetChainId(wallet_ptr, wallet.chain_id);
+    rtnVal = BoatPlatONWalletSetChainId(wallet_ptr, wallet.chain_id);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
@@ -645,7 +645,7 @@ START_TEST(test_002InitWallet_0004SetChainIdFailureNullParam)
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
     
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletSetChainId(NULL, wallet.chain_id);
+    rtnVal = BoatPlatONWalletSetChainId(NULL, wallet.chain_id);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -661,14 +661,14 @@ START_TEST(test_002InitWallet_0005SetNodeUrlSuccess)
     
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, wallet.node_url_str);
+    rtnVal = BoatPlatONWalletSetNodeUrl(wallet_ptr, wallet.node_url_str);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 
     /* 2-2. verify the global variables that be affected */
     ck_assert_str_eq(wallet_ptr->network_info.node_url_ptr, wallet.node_url_str);
-    BoatEthWalletDeInit(wallet_ptr);
+    BoatPlatONWalletDeInit(wallet_ptr);
 }
 END_TEST
 
@@ -680,7 +680,7 @@ START_TEST(test_002InitWallet_0006SetNodeUrlFailureNullParam)
     
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatEthWalletSetNodeUrl(NULL, wallet.node_url_str);
+    rtnVal = BoatPlatONWalletSetNodeUrl(NULL, wallet.node_url_str);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -690,7 +690,7 @@ START_TEST(test_002InitWallet_0006SetNodeUrlFailureNullParam)
 
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, NULL);
+    rtnVal = BoatPlatONWalletSetNodeUrl(wallet_ptr, NULL);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -700,7 +700,7 @@ START_TEST(test_002InitWallet_0006SetNodeUrlFailureNullParam)
 
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatEthWalletSetNodeUrl(NULL, NULL);
+    rtnVal = BoatPlatONWalletSetNodeUrl(NULL, NULL);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -713,21 +713,21 @@ END_TEST
 
 START_TEST(test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat)
 {
-    // BSINT32 rtnVal;
-    // BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
-    // BoatPlatONWalletConfig wallet;
+    BSINT32 rtnVal;
+    BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
+    BoatPlatONWalletConfig wallet;
     
-    // /* 1. execute unit test */
-    // strncpy(wallet.node_url_str, "abcd", strlen("abcd"));
-    // wallet_ptr->network_info.node_url_ptr = NULL;
-    // rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, wallet.node_url_str);
-    // /* 2. verify test result */
-    // /* 2-1. verify the return value */
-    // ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    /* 1. execute unit test */
+    strncpy(wallet.node_url_str, "abcd", strlen("abcd"));
+    wallet_ptr->network_info.node_url_ptr = NULL;
+    rtnVal = BoatPlatONWalletSetNodeUrl(wallet_ptr, wallet.node_url_str);
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    // /* 2-2. verify the global variables that be affected */
-    // ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
-    // BoatFree(wallet_ptr);
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
+    BoatFree(wallet_ptr);
 }
 END_TEST
 
@@ -744,7 +744,7 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 
     /* 1. execute unit test */
     wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatEthWalletSetNodeUrl(wallet_ptr, error_platon_node_url);
+    rtnVal = BoatPlatONWalletSetNodeUrl(wallet_ptr, error_platon_node_url);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -760,7 +760,7 @@ START_TEST(test_002InitWallet_0009InitPlatONWalletWithNullConfig)
     BoatPlatONWallet *rtnVal;
 
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletInit(NULL, sizeof(BoatPlatONWalletConfig));
+    rtnVal = BoatPlatONWalletInit(NULL, sizeof(BoatPlatONWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_eq(rtnVal,NULL);
@@ -775,7 +775,7 @@ START_TEST(test_002InitWallet_0010InitPlatONWalletWithSmallerSize)
     BoatPlatONWalletConfig walletConfig = {0};
 
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig) - 1);
+    rtnVal = BoatPlatONWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig) - 1);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_eq(rtnVal,NULL);
@@ -790,7 +790,7 @@ START_TEST(test_002InitWallet_0011InitPlatONWalletWithBiggerSize)
     BoatPlatONWalletConfig walletConfig = {0};
 
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig) + 1);
+    rtnVal = BoatPlatONWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig) + 1);
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_eq(rtnVal,NULL);
@@ -805,7 +805,7 @@ START_TEST(test_002InitWallet_0012InitPlatONWalletSuccess)
     BoatPlatONWalletConfig walletConfig = get_platon_wallet_settings();
 
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
+    rtnVal = BoatPlatONWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_ne(rtnVal,NULL);
@@ -825,11 +825,11 @@ START_TEST(test_002InitWallet_0013InitPlatONWalletGenerationKey)
     walletConfig.eip155_compatibility = BOAT_FALSE;
 
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
+    rtnVal = BoatPlatONWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_ne(rtnVal,NULL);
-
+    BoatPlatONWalletDeInit(rtnVal);
     /* 2-2. verify the global variables that be affected */ 
 }
 END_TEST
@@ -846,7 +846,7 @@ START_TEST(test_002InitWallet_0014InitPlatONWalletWithWrongGenMode)
     walletConfig.load_existed_wallet = BOAT_FALSE;
 
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
+    rtnVal = BoatPlatONWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_eq(rtnVal,NULL);
@@ -855,6 +855,7 @@ END_TEST
 
 START_TEST(test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat)
 {
+    BoatLog(BOAT_LOG_VERBOSE, "test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat");
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig;
 
@@ -862,17 +863,19 @@ START_TEST(test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat)
     walletConfig.prikeyCtx_config.prikey_format = 4;
     walletConfig.prikeyCtx_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     walletConfig.eip155_compatibility = BOAT_FALSE;
+    walletConfig.load_existed_wallet = BOAT_FALSE;
 
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
+    rtnVal = BoatPlatONWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_ne(rtnVal,NULL);
+    ck_assert_ptr_eq(rtnVal,NULL);
 }
 END_TEST
 
 START_TEST(test_002InitWallet_0016InitPlatONWalletWithWrongType)
 {
+    BoatLog(BOAT_LOG_VERBOSE, "test_002InitWallet_0016InitPlatONWalletWithWrongType");
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig;
 
@@ -880,9 +883,10 @@ START_TEST(test_002InitWallet_0016InitPlatONWalletWithWrongType)
     walletConfig.prikeyCtx_config.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
     walletConfig.prikeyCtx_config.prikey_type = 3;
     walletConfig.eip155_compatibility = BOAT_FALSE;
+    walletConfig.load_existed_wallet = BOAT_FALSE;
 
     /* 1. execute unit test */
-    rtnVal = BoatEthWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
+    rtnVal = BoatPlatONWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
     ck_assert_ptr_eq(rtnVal,NULL);
@@ -891,8 +895,22 @@ END_TEST
 
 START_TEST(test_003DeleteWallet_0001DeleteWalletFailureNullFleName) 
 {
+    BSINT32 rtnVal;
+
+    BoatIotSdkInit();
+    BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATON, "platon", &wallet, sizeof(BoatPlatONWalletConfig));
+
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 0);
+
     BoatWalletDelete(NULL);
     ck_assert_int_eq(access("platon", F_OK), 0);
+    BoatIotSdkDeInit();
 }
 END_TEST
 
@@ -917,6 +935,8 @@ Suite *make_wallet_suite(void)
 
     /* Create test cases */
     TCase *tc_wallet_api = tcase_create("wallet_api");
+
+    tcase_set_timeout(tc_wallet_api,50);       
 
     /* Add a test case to the Suite */
     suite_add_tcase(s_wallet, tc_wallet_api);       

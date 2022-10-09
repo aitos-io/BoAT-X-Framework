@@ -15,17 +15,15 @@
  *****************************************************************************/
 
 #include "check.h"
-#include "tcase_platon.h"
+#include "tcase_platone.h"
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdio.h>
 
 /* extern suite declaration */
 extern Suite *make_wallet_suite(void);
-extern Suite *make_parameters_suite(void);
-extern Suite *make_transactions_suite(void);
 
-char platon_private_key_buf[1024];
+char platone_private_key_buf[1024];
 
 int read_key_content(char* key_ptr)
 {       
@@ -37,21 +35,23 @@ int read_key_content(char* key_ptr)
         return -1;
     }
 
-    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
+    if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
     {
-        fd = open("../../../tests/BoAT_platon_linuxDefault/pri_key/native.key", O_RDONLY);
+        fd = open("../../../tests/BoAT_platone_linuxDefault/pri_key/native.key", O_RDONLY);
         if (fd < 0)
         {
             return -1;
         }
+        BoatLog(BOAT_LOG_VERBOSE, "Current key type is native");
     }
     else
     {
-        fd = open("../../../tests/BoAT_platon_linuxDefault/pri_key/pkcs_key.key", O_RDONLY);
+        fd = open("../../../tests/BoAT_platone_linuxDefault/pri_key/pkcs_key.key", O_RDONLY);
         if (fd < 0)
         {
             return -1;
         }
+        BoatLog(BOAT_LOG_VERBOSE, "Current key type is PKCS");
     }
     len = read(fd, key_ptr, 1024);
     if (len < 0)
@@ -69,10 +69,8 @@ int main(int argc, char *argv[])
 
     /* new adding test suite should create in here */
     Suite *suite_wallet    = make_wallet_suite();
-    Suite *suite_paramters = make_parameters_suite();
-    Suite *suite_transaction = make_transactions_suite();
 
-    read_key_content(platon_private_key_buf);
+    read_key_content(platone_private_key_buf);
 
     /* create srunner and add first suite to it.
     The first suite in a suite runner is always added in function srunner_create,
@@ -81,9 +79,6 @@ int main(int argc, char *argv[])
     /* set generate test log in running path */
     srunner_set_log(sr, "test_statistics_report.txt");
     /* add other suite to srunner, more test suite should be add in here */
-    srunner_add_suite(sr, suite_paramters);
-
-    srunner_add_suite(sr, suite_transaction);
 
     /* start to run all test case */
     srunner_run_all(sr, CK_NORMAL);
