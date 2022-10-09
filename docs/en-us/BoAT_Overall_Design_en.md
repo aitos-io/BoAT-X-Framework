@@ -240,7 +240,7 @@ When designing the data structure and code implementation of FISCO BCOS, the inh
   1. blockLimit
   2. chainId
   3. groupId
-  4. extraData
+  4. extraData  
 Therefore, in the design of the data structure, a possible design idea is shown in Figure 4-4.  
 ![A possible design idea of FISCO BCOS data structure](./images/BoAT_Overall_Design_en-F4-4-FISCOBCOS_Data_Structure.png)  
 Figure 4-4 A possible design idea of data structure  
