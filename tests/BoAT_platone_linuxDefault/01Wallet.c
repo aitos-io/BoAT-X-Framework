@@ -818,6 +818,26 @@ START_TEST(test_002InitWallet_0012InitPlatoneWalletSuccess)
 }
 END_TEST
 
+START_TEST(test_002InitWallet_0013InitPlatoneWalletGenerationKey)
+{
+    BoatPlatoneWallet *rtnVal;
+    BoatPlatoneWalletConfig walletConfig;
+
+    walletConfig.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    walletConfig.prikeyCtx_config.prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
+    walletConfig.prikeyCtx_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+    walletConfig.eip155_compatibility = BOAT_FALSE;
+
+    /* 1. execute unit test */
+    rtnVal = BoatPlatoneWalletInit(&walletConfig, sizeof(BoatPlatoneWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_ne(rtnVal,NULL);
+    BoatPlatoneWalletDeInit(rtnVal);
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -860,6 +880,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0010InitPlatoneWalletWithSmallerSize);  
     tcase_add_test(tc_wallet_api, test_002InitWallet_0011InitPlatoneWalletWithBiggerSize);  
     tcase_add_test(tc_wallet_api, test_002InitWallet_0012InitPlatoneWalletSuccess);  
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0013InitPlatoneWalletGenerationKey);  
 
     return s_wallet;
 }
