@@ -122,6 +122,41 @@ START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0003CreatePersistWalletSuccess) 
+{
+    BSINT32 rtnVal;
+    BoatPlatoneWallet *g_platone_wallet_ptr = NULL;
+
+    BoatIotSdkInit();
+    BoatPlatoneWalletConfig wallet = get_platone_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, "platone", &wallet, sizeof(BoatPlatoneWalletConfig));
+
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 0);
+    ck_assert_int_eq(access("platone", F_OK), 0);
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, "platone", &wallet, sizeof(BoatPlatoneWalletConfig));
+    
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, 1);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == true);
+
+    g_platone_wallet_ptr = BoatGetWalletByIndex(rtnVal);
+    ck_assert(g_platone_wallet_ptr != NULL);
+    //ck_assert(check_platon_wallet(g_platon_wallet_ptr) == BOAT_SUCCESS);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -135,6 +170,7 @@ Suite *make_wallet_suite(void)
     /* Test cases are added to the test set */
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0001CreateOneTimeWalletSuccess);  
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig);  
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0003CreatePersistWalletSuccess);  
 
     return s_wallet;
 }
