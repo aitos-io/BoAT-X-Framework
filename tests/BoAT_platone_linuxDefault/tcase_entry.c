@@ -35,7 +35,7 @@ int read_key_content(char* key_ptr)
         return -1;
     }
 
-    if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
+    if (TEST_KEY_TYPE == BOAT_WALLET_PRIKEY_FORMAT_NATIVE)
     {
         fd = open("../../../tests/BoAT_platone_linuxDefault/pri_key/native.key", O_RDONLY);
         if (fd < 0)
