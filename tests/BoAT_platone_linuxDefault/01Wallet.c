@@ -181,6 +181,24 @@ START_TEST(test_001CreateWallet_0004CreateLoadWalletSuccess)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0005CreateLoadWalletFailureNoExist) 
+{
+    BSINT32 rtnVal;
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, "platone_no_exist", NULL, sizeof(BoatPlatoneWalletConfig));
+    
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_PERSISTER_READ_FAIL);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
+    //ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == false);
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -196,6 +214,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0002CreateOneTimeWalletFailureNullConfig);  
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0003CreatePersistWalletSuccess);  
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0004CreateLoadWalletSuccess);  
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0005CreateLoadWalletFailureNoExist);  
 
     return s_wallet;
 }
