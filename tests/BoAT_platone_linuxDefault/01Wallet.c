@@ -759,6 +759,20 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 }
 END_TEST
 
+START_TEST(test_002InitWallet_0009InitPlatoneWalletWithNullConfig)
+{
+    BoatPlatoneWallet *rtnVal;
+
+    /* 1. execute unit test */
+    rtnVal = BoatPlatoneWalletInit(NULL, sizeof(BoatPlatoneWalletConfig));
+    /* 2. verify test result */
+    /* 2-1. verify the return value */
+    ck_assert_ptr_eq(rtnVal,NULL);
+
+    /* 2-2. verify the global variables that be affected */ 
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -797,6 +811,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0006SetNodeUrlFailureNullParam);  
     tcase_add_test(tc_wallet_api, test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat);  
     tcase_add_test(tc_wallet_api, test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit);  
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0009InitPlatoneWalletWithNullConfig);  
 
     return s_wallet;
 }
