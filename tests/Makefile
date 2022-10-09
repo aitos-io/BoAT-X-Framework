@@ -3,9 +3,9 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/tests
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-.PHONY: tests_BoAT_chainmaker_linuxDefault tests_BoAT_ethereum_linuxDefault tests_BoAT_fabric_linuxDefault tests_BoAT_platon_linuxDefault cleanchaimakerlinux cleanethereumlinux cleanfabriclinux cleanplatonlinux
+.PHONY: tests_BoAT_chainmaker_linuxDefault tests_BoAT_ethereum_linuxDefault tests_BoAT_fabric_linuxDefault tests_BoAT_platon_linuxDefault cleanchaimakerlinux cleanethereumlinux cleanfabriclinux cleanplatonlinux cleanplatonelinux
 
-all: tests_BoAT_chainmaker_linuxDefault tests_BoAT_ethereum_linuxDefault tests_BoAT_fabric_linuxDefault tests_BoAT_platon_linuxDefault $(OBJECTS_DIR) $(OBJECTS)
+all: tests_BoAT_chainmaker_linuxDefault tests_BoAT_ethereum_linuxDefault tests_BoAT_fabric_linuxDefault tests_BoAT_platon_linuxDefault tests_BoAT_platone_linuxDefault $(OBJECTS_DIR) $(OBJECTS)
 
 tests_BoAT_chainmaker_linuxDefault:
 ifeq ($(BOAT_TEST_USE_CHAINMAKER), 1)
@@ -26,6 +26,11 @@ tests_BoAT_platon_linuxDefault:
 ifeq ($(BOAT_TEST_USE_PLATON), 1)	
 	make -C  BoAT_platon_linuxDefault all
 endif	
+
+tests_BoAT_platone_linuxDefault:
+ifeq ($(BOAT_TEST_USE_PLATONE), 1)	
+	make -C  BoAT_platone_linuxDefault all
+endif	
 	
 
 $(OBJECTS_DIR):
@@ -34,7 +39,7 @@ $(OBJECTS_DIR):
 $(OBJECTS_DIR)/%.o:%.c
 	$(CC)  -c  $(BOAT_CFLAGS)  $< -o $@
 
-clean: cleanchaimakerlinux cleanethereumlinux
+clean: cleanchaimakerlinux cleanethereumlinux cleanfabriclinux cleanplatonlinux cleanplatonelinux
 	-$(BOAT_RM) $(OBJECTS)
 
 cleanchaimakerlinux:
@@ -48,3 +53,6 @@ cleanfabriclinux:
 
 cleanplatonlinux:
 	make -C BoAT_platon_linuxDefault clean
+
+cleanplatonelinux:
+	make -C BoAT_platone_linuxDefault clean

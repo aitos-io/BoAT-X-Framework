@@ -21,13 +21,6 @@
 #include "boatlog.h"
 #include "boattypes.h"
 #include "boatwallet.h"
-#include "protocolapi/api_platon.h"
+#include "protocolapi/api_platone.h"
 
-extern BOAT_RESULT platonWalletPrepare(void);
-
-#define TEST_KEY_TYPE BOAT_WALLET_PRIKEY_FORMAT_NATIVE
-extern char platon_private_key_buf[1024];
-extern BoatPlatONWallet *g_platon_wallet_ptr;
-extern BoatPlatONWalletConfig wallet_config;
-extern BUINT8 binFormatKey[32];
-extern BCHAR *hrp;
+extern char platone_private_key_buf[1024];
