@@ -611,6 +611,12 @@ BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatChainmakerNetworkData mNetworkDataCtx ;
     BUINT8 networkIndex = 0;
+
+    if (networkConfig == NULL)
+    {
+         BoatLog(BOAT_LOG_NORMAL, "network create ontime");
+         return BOAT_ERROR;
+    }
     result = BoATChainmakerNetworkDataInit(&mNetworkDataCtx);
     if(result != BOAT_SUCCESS){
         return result;
