@@ -855,7 +855,6 @@ END_TEST
 
 START_TEST(test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat)
 {
-    BoatLog(BOAT_LOG_VERBOSE, "test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat");
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig;
 
@@ -875,7 +874,6 @@ END_TEST
 
 START_TEST(test_002InitWallet_0016InitPlatONWalletWithWrongType)
 {
-    BoatLog(BOAT_LOG_VERBOSE, "test_002InitWallet_0016InitPlatONWalletWithWrongType");
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig;
 
