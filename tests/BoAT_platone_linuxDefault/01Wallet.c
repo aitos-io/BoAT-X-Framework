@@ -503,6 +503,56 @@ START_TEST(test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne)
 }
 END_TEST
 
+START_TEST(test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne)
+{
+    BSINT32 rtnVal;
+    BoatIotSdkInit();
+    BoatPlatoneWalletConfig wallet = get_platone_wallet_settings();
+    extern BoatIotSdkContext g_boat_iot_sdk_context;
+    wallet.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    /* 1. execute unit test */
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet, sizeof(BoatPlatoneWalletConfig));
+    ck_assert_int_eq(rtnVal, 0);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet, sizeof(BoatPlatoneWalletConfig));
+    ck_assert_int_eq(rtnVal, 1);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet, sizeof(BoatPlatoneWalletConfig));
+    ck_assert_int_eq(rtnVal, 2);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet, sizeof(BoatPlatoneWalletConfig));
+    ck_assert_int_eq(rtnVal, 3);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet, sizeof(BoatPlatoneWalletConfig));
+    ck_assert_int_eq(rtnVal, 4);
+
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet, sizeof(BoatPlatoneWalletConfig));
+    ck_assert_int_eq(rtnVal, 5);
+
+    /* 2-2. verify the global variables that be affected */
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[2].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[3].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[4].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[5].is_used == true);
+
+    BoatWalletUnload(2);
+    BoatWalletUnload(4);
+    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_PLATONE, NULL, &wallet, sizeof(BoatPlatoneWalletConfig));
+    ck_assert_int_eq(rtnVal, 2);
+
+    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[1].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[2].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[3].is_used == true);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[4].is_used == false);
+    ck_assert(g_boat_iot_sdk_context.wallet_list[5].is_used == true);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_wallet_suite(void) 
 {
     /* Create Suite */
@@ -530,6 +580,7 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0014UnloadInexistentWallet);  
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0015CreateSixWalletUnloadOneSuccess);  
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0016CreateSixWalletUnloadOneCreateOne);  
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0017CreateSixWalletUnloadTwoCreateOne);  
 
     return s_wallet;
 }
