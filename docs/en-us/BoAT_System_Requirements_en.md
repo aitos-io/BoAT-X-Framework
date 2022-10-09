@@ -77,7 +77,6 @@ There are no special requirements concerning the operating system. Generally, Bo
    (2) CoAP <br>
    (3) MQTT <br>
    (4) TCP <br>
-
 The communication protocol follows the operator's requirements if the device can only connect to a specific operator or service provider (such as OneNET, OceanConnect).
 
 7. Supports commonly used standard C library functions such as memcpy(), strcpy(), snprintf()(optional for I/O-related functions such as printf()).
