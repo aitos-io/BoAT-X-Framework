@@ -136,8 +136,22 @@ typedef struct T_DiscoverRes
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricDiscoverySubmit( BoatHlfabricTx *tx_ptr,const BoatHlfabricNodesCfg endorserInfo_ptr );
-/*! @}*/
+
+/*!****************************************************************************
+ * @brief 
+ *   DiscoverRes init.
+ *
+ * @details
+ *   This function should be invoked before using the  parameter of discoverResult
+ * @param discoverResult 
+ *  
+ * @return 
+ *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
+ ******************************************************************************/
 void DiscoveryResInit(DiscoverRes *discoverResult);
+
+/*! @}*/
+
 void DiscoveryResFree(DiscoverRes discoverResult);
 
 #endif
