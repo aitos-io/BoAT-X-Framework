@@ -146,13 +146,25 @@ BOAT_RESULT BoatHlfabricDiscoverySubmit( BoatHlfabricTx *tx_ptr,const BoatHlfabr
  * @param discoverResult 
  *  
  * @return 
- *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
+ *   This function has no return value
  ******************************************************************************/
 void DiscoveryResInit(DiscoverRes *discoverResult);
 
-/*! @}*/
-
+/*!****************************************************************************
+ * @brief 
+ *   DiscoverRes Free.
+ *
+ * @details
+ *   This function should be invoked after using the  parameter of discoverResult;
+ *   To free the memory of discoverResult;
+ * @param discoverResult 
+ *  
+ * @return 
+ *   This function has no return value
+ ******************************************************************************/
 void DiscoveryResFree(DiscoverRes discoverResult);
+
+/*! @}*/
 
 #endif
 /*! @}*/
