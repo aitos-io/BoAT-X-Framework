@@ -131,6 +131,8 @@ typedef struct T_DiscoverRes
  *   Hlfabric,use this function.
  * @param tx_ptr 
  *   Fabric transaction structure pointer.
+ * @param endorserInfo_ptr
+ *   node info used for nodes-discovery
  *
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
