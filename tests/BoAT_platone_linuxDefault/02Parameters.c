@@ -128,6 +128,71 @@ START_TEST(test_004ParametersInit_0002TxInitFailureNullParam)
 }
 END_TEST
 
+START_TEST(test_004ParametersInit_0003TxInitSuccessNullGasPrice)
+{
+	BSINT32 rtnVal;
+    BoatPlatoneTx tx_ptr;
+
+    BoatIotSdkInit();
+
+    rtnVal = platoneWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+	rtnVal = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, NULL, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);	
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_004ParametersInit_0004TxInitFailureErrorGasPriceHexFormat)
+{
+    BSINT32 rtnVal;
+    BoatPlatoneTx tx_ptr;
+
+    BoatIotSdkInit();
+
+    rtnVal = platoneWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+	rtnVal = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "0x123G", 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx)
+{
+	BSINT32 rtnVal;
+    BoatPlatoneTx tx_ptr;
+
+    BoatIotSdkInit();
+
+    rtnVal = platoneWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+	rtnVal = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "A", 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);	
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat)
+{
+	BSINT32 rtnVal;
+    BoatPlatoneTx tx_ptr;
+
+    BoatIotSdkInit();
+
+    rtnVal = platoneWalletPrepare();
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+    rtnVal = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   "0x123G", TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
+	ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_parameters_suite(void)
 {
     /* Create Suite */
@@ -145,6 +210,10 @@ Suite *make_parameters_suite(void)
     /* Test cases are added to the test set */
     tcase_add_test(tc_param_api, test_004ParametersInit_0001TxInitSuccess); 
     tcase_add_test(tc_param_api, test_004ParametersInit_0002TxInitFailureNullParam); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0003TxInitSuccessNullGasPrice); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0004TxInitFailureErrorGasPriceHexFormat); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat); 
 
     return s_param;
 }
