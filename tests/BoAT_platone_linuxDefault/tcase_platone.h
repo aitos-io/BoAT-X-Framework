@@ -27,3 +27,4 @@
 
 extern char platone_private_key_buf[1024];
 extern BUINT8 binFormatKey[32];
+extern BoatPlatoneWallet *g_platone_wallet_ptr;

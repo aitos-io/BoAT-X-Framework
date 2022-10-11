@@ -23,6 +23,7 @@
 /* extern suite declaration */
 extern Suite *make_wallet_suite(void);
 extern Suite *make_parameters_suite(void);
+extern Suite *make_transactions_suite(void);
 
 char platone_private_key_buf[1024];
 
@@ -69,8 +70,9 @@ int main(int argc, char *argv[])
     int failed_number = 0;
 
     /* new adding test suite should create in here */
-    Suite *suite_wallet    = make_wallet_suite();
+    Suite *suite_wallet        = make_wallet_suite();
     Suite *suite_parameters    = make_parameters_suite();
+    Suite *suite_transactions  = make_transactions_suite();
 
     read_key_content(platone_private_key_buf);
 
@@ -82,6 +84,7 @@ int main(int argc, char *argv[])
     srunner_set_log(sr, "test_statistics_report.txt");
     /* add other suite to srunner, more test suite should be add in here */
     srunner_add_suite(sr, suite_parameters);
+    srunner_add_suite(sr, suite_transactions);
 
     /* start to run all test case */
     srunner_run_all(sr, CK_NORMAL);
