@@ -125,6 +125,10 @@ START_TEST(test_004ParametersInit_0002TxInitFailureNullParam)
     rtnVal = BoatPlatONTxInit(NULL, NULL, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
 		                   TEST_GAS_LIMIT, NULL, hrp);
     ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
+		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS, NULL);
+    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatIotSdkDeInit();
 }
 END_TEST
