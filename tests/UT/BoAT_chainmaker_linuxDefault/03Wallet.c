@@ -96,7 +96,7 @@ BOAT_RESULT chainmaker_create_network(WALLET_TYPE wallet_type, BUINT8* network_i
     return BOAT_SUCCESS;
 }
 
-START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess) 
+START_TEST(test_003CreateWallet_0001CreateOneTimeWalletSuccess) 
 {
     BSINT32 rtnVal;
     BUINT8 keypair_index;
@@ -118,7 +118,7 @@ START_TEST(test_001CreateWallet_0001CreateOneTimeWalletSuccess)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullKeypair) 
+START_TEST(test_003CreateWallet_0002CreateOneTimeWalletFailureNullKeypair) 
 {
     BSINT32 rtnVal;
     BUINT8 keypair_index;
@@ -135,7 +135,7 @@ START_TEST(test_001CreateWallet_0002CreateOneTimeWalletFailureNullKeypair)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0003CreateOneTimeWalletFailureNullNetwork) 
+START_TEST(test_003CreateWallet_0003CreateOneTimeWalletFailureNullNetwork) 
 {
     BSINT32 rtnVal;
     BUINT8 keypair_index;
@@ -152,7 +152,7 @@ START_TEST(test_001CreateWallet_0003CreateOneTimeWalletFailureNullNetwork)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0004CreateOneTimeWalletFailureErrKeypairIndex) 
+START_TEST(test_003CreateWallet_0004CreateOneTimeWalletFailureErrKeypairIndex) 
 {
     BSINT32 rtnVal;
     BUINT8 keypair_index;
@@ -176,7 +176,7 @@ START_TEST(test_001CreateWallet_0004CreateOneTimeWalletFailureErrKeypairIndex)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0005CreateOneTimeWalletFailureErrNetworkIndex) 
+START_TEST(test_003CreateWallet_0005CreateOneTimeWalletFailureErrNetworkIndex) 
 {
     BSINT32 rtnVal;
     BUINT8 keypair_index;
@@ -200,7 +200,7 @@ START_TEST(test_001CreateWallet_0005CreateOneTimeWalletFailureErrNetworkIndex)
 }
 END_TEST
 
-START_TEST(test_002CreateWallet_0001CreateFivePersistWalletSuccess) 
+START_TEST(test_003CreateWallet_0006CreateFivePersistWalletSuccess) 
 {
     BSINT32 rtnVal;
     BUINT8 keypair_index;
@@ -282,11 +282,12 @@ Suite *make_wallet_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_wallet, tc_wallet_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0001CreateOneTimeWalletSuccess);  
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0002CreateOneTimeWalletFailureNullKeypair); 
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0003CreateOneTimeWalletFailureNullNetwork);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0004CreateOneTimeWalletFailureErrKeypairIndex);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0005CreateOneTimeWalletFailureErrNetworkIndex);
+    tcase_add_test(tc_wallet_api, test_003CreateWallet_0001CreateOneTimeWalletSuccess);  
+    tcase_add_test(tc_wallet_api, test_003CreateWallet_0002CreateOneTimeWalletFailureNullKeypair); 
+    tcase_add_test(tc_wallet_api, test_003CreateWallet_0003CreateOneTimeWalletFailureNullNetwork);
+    tcase_add_test(tc_wallet_api, test_003CreateWallet_0004CreateOneTimeWalletFailureErrKeypairIndex);
+    tcase_add_test(tc_wallet_api, test_003CreateWallet_0005CreateOneTimeWalletFailureErrNetworkIndex);
+    tcase_add_test(tc_wallet_api, test_003CreateWallet_0006CreateFivePersistWalletSuccess);
     return s_wallet;
 }
 

@@ -15,8 +15,6 @@
  *****************************************************************************/
 #include "tcase_chainmaker.h"
 
-
-
 static BoatChainmakerWallet* g_chaninmaker_wallet_ptr;
 
 static BOAT_RESULT chainmakerWalletPrepare()
@@ -248,7 +246,7 @@ START_TEST(test_005ContractInvoke_0008InvokeFailureInvalidUrl)
 END_TEST
 
 
-START_TEST(test_006ContractQuery_0001QueryFailureTxNull) 
+START_TEST(test_005ContractQuery_0009QueryFailureTxNull) 
 {
     BOAT_RESULT        result;
     BoatResponseData  query_response;
@@ -259,7 +257,7 @@ START_TEST(test_006ContractQuery_0001QueryFailureTxNull)
 }
 END_TEST
 
-START_TEST(test_006ContractQuery_0002QueryFailureMethodNull) 
+START_TEST(test_005ContractQuery_0010QueryFailureMethodNull) 
 {
     BOAT_RESULT        result;
     BoatChainmakerTx tx_ptr;
@@ -275,7 +273,7 @@ START_TEST(test_006ContractQuery_0002QueryFailureMethodNull)
 END_TEST
 
 
-START_TEST(test_006ContractQuery_0003QueryFailureContractNull) 
+START_TEST(test_005ContractQuery_0011QueryFailureContractNull) 
 {
     BOAT_RESULT        result;
     BoatChainmakerTx tx_ptr;
@@ -290,7 +288,7 @@ START_TEST(test_006ContractQuery_0003QueryFailureContractNull)
 }
 END_TEST
 
-START_TEST(test_006ContractQuery_0004QueryFailureContractNoExist) 
+START_TEST(test_005ContractQuery_0012QueryFailureContractNoExist) 
 {
     BOAT_RESULT        result;
     BoatChainmakerTx tx_ptr;
@@ -310,7 +308,7 @@ START_TEST(test_006ContractQuery_0004QueryFailureContractNoExist)
 }
 END_TEST
 
-START_TEST(test_006ContractQuery_0005QueryFailureResponseNull) 
+START_TEST(test_005ContractQuery_0013QueryFailureResponseNull) 
 {
     BOAT_RESULT        result;
     BoatChainmakerTx tx_ptr;
@@ -325,7 +323,7 @@ START_TEST(test_006ContractQuery_0005QueryFailureResponseNull)
 }
 END_TEST
 
-START_TEST(test_006ContractQuery_0006QuerySucess) 
+START_TEST(test_005ContractQuery_0014QuerySucess) 
 {
     BOAT_RESULT        result;
     BoatChainmakerTx tx_ptr;
@@ -365,12 +363,12 @@ Suite *make_contract_suite(void)
     tcase_add_test(tc_contract_api, test_005ContractInvoke_0007InvokeSucessSyncOff); 
     tcase_add_test(tc_contract_api, test_005ContractInvoke_0008InvokeFailureInvalidUrl); 
 
-    tcase_add_test(tc_contract_api, test_006ContractQuery_0001QueryFailureTxNull); 
-    tcase_add_test(tc_contract_api, test_006ContractQuery_0002QueryFailureMethodNull); 
-    tcase_add_test(tc_contract_api, test_006ContractQuery_0003QueryFailureContractNull); 
-    tcase_add_test(tc_contract_api, test_006ContractQuery_0004QueryFailureContractNoExist);
-    tcase_add_test(tc_contract_api, test_006ContractQuery_0005QueryFailureResponseNull);
-    tcase_add_test(tc_contract_api, test_006ContractQuery_0006QuerySucess);
+    tcase_add_test(tc_contract_api, test_005ContractQuery_0009QueryFailureTxNull); 
+    tcase_add_test(tc_contract_api, test_005ContractQuery_0010QueryFailureMethodNull); 
+    tcase_add_test(tc_contract_api, test_005ContractQuery_0011QueryFailureContractNull); 
+    tcase_add_test(tc_contract_api, test_005ContractQuery_0012QueryFailureContractNoExist);
+    tcase_add_test(tc_contract_api, test_005ContractQuery_0013QueryFailureResponseNull);
+    tcase_add_test(tc_contract_api, test_005ContractQuery_0014QuerySucess);
  
     return s_contract;
 }

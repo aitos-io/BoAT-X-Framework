@@ -148,7 +148,7 @@ static BOAT_RESULT param_add_check(BoatChainmakerTx* tx_ptr, int num)
     return result;
 }
 
-START_TEST(test_003ParametersInit_0001TxinitSuccess) 
+START_TEST(test_004ParametersInit_0001TxinitSuccess) 
 {
     BSINT32 rtnVal;
     BoatChainmakerTx    tx_ptr;
@@ -164,7 +164,7 @@ START_TEST(test_003ParametersInit_0001TxinitSuccess)
 }
 END_TEST
 
-START_TEST(test_003ParametersInit_0002TxinitxFailureNullpara) 
+START_TEST(test_004ParametersInit_0002TxinitxFailureNullpara) 
 {
     BSINT32 rtnVal;
     BoatChainmakerTx    tx_ptr;
@@ -184,7 +184,7 @@ START_TEST(test_003ParametersInit_0002TxinitxFailureNullpara)
 END_TEST
 
 
-START_TEST(test_004ParametersAdd_0001AddTxParamSuccess) 
+START_TEST(test_004ParametersAdd_0003AddTxParamSuccess) 
 {
     BSINT32 rtnVal;
     BoatChainmakerTx tx_ptr;
@@ -198,7 +198,7 @@ START_TEST(test_004ParametersAdd_0001AddTxParamSuccess)
 END_TEST
 
 
-START_TEST(test_004ParametersAdd_0002AddTxParamFailureShortParam) 
+START_TEST(test_004ParametersAdd_0004AddTxParamFailureShortParam) 
 {
     BSINT32 rtnVal;
     BoatChainmakerTx tx_ptr;
@@ -209,7 +209,7 @@ START_TEST(test_004ParametersAdd_0002AddTxParamFailureShortParam)
 }
 END_TEST
 
-START_TEST(test_004ParametersAdd_0003AddTxParamFailureLongParam) 
+START_TEST(test_004ParametersAdd_0005AddTxParamFailureLongParam) 
 {
     BSINT32 rtnVal;
     BoatChainmakerTx tx_ptr;
@@ -221,7 +221,7 @@ START_TEST(test_004ParametersAdd_0003AddTxParamFailureLongParam)
 }
 END_TEST
 
-START_TEST(test_004ParametersAdd_0004AddTxParamFailureOddParam) 
+START_TEST(test_004ParametersAdd_0006AddTxParamFailureOddParam) 
 {
     BSINT32 rtnVal;
     BoatChainmakerTx tx_ptr;
@@ -233,7 +233,7 @@ START_TEST(test_004ParametersAdd_0004AddTxParamFailureOddParam)
 }
 END_TEST
 
-START_TEST(test_004ParametersAdd_0005AddTxParamSucessNumberNULLParam) 
+START_TEST(test_004ParametersAdd_0007AddTxParamSucessNumberNULLParam) 
 {
     BSINT32 rtnVal;
     BoatChainmakerTx    tx_ptr;
@@ -245,7 +245,7 @@ START_TEST(test_004ParametersAdd_0005AddTxParamSucessNumberNULLParam)
 }
 END_TEST
 
-START_TEST(test_004ParametersAdd_0006AddTxParamFailureTxNULLParam) 
+START_TEST(test_004ParametersAdd_0008AddTxParamFailureTxNULLParam) 
 {
     BSINT32 rtnVal;
 
@@ -255,7 +255,7 @@ START_TEST(test_004ParametersAdd_0006AddTxParamFailureTxNULLParam)
 }
 END_TEST
 
-START_TEST(test_004ParametersAdd_0007AddTxParamSucessTxLessMaxEvenParam) 
+START_TEST(test_004ParametersAdd_0009AddTxParamSucessTxLessMaxEvenParam) 
 {
     BSINT32 rtnVal;
     BoatChainmakerTx    tx_ptr;
@@ -268,7 +268,7 @@ START_TEST(test_004ParametersAdd_0007AddTxParamSucessTxLessMaxEvenParam)
 }
 END_TEST
 
-START_TEST(test_004ParametersAdd_0008AddTxParamFailureMoreMaxOddParam) 
+START_TEST(test_004ParametersAdd_0010AddTxParamFailureMoreMaxOddParam) 
 {
     BSINT32 rtnVal;
     BoatChainmakerTx    tx_ptr;
@@ -292,16 +292,16 @@ Suite *make_parameters_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_param, tc_param_api);       
     /* Test cases are added to the test set */
-    // tcase_add_test(tc_param_api, test_003ParametersInit_0001TxinitSuccess);  
-    // tcase_add_test(tc_param_api, test_003ParametersInit_0002TxinitxFailureNullpara);  
-    // tcase_add_test(tc_param_api, test_004ParametersAdd_0001AddTxParamSuccess);  
-    // tcase_add_test(tc_param_api, test_004ParametersAdd_0002AddTxParamFailureShortParam);  
-    // tcase_add_test(tc_param_api, test_004ParametersAdd_0003AddTxParamFailureLongParam); 
-    // tcase_add_test(tc_param_api, test_004ParametersAdd_0004AddTxParamFailureOddParam);   
-    // tcase_add_test(tc_param_api, test_004ParametersAdd_0005AddTxParamSucessNumberNULLParam);  
-    // tcase_add_test(tc_param_api, test_004ParametersAdd_0006AddTxParamFailureTxNULLParam); 
-    // tcase_add_test(tc_param_api, test_004ParametersAdd_0007AddTxParamSucessTxLessMaxEvenParam);  
-    // tcase_add_test(tc_param_api, test_004ParametersAdd_0008AddTxParamFailureMoreMaxOddParam);  
+    tcase_add_test(tc_param_api, test_004ParametersInit_0001TxinitSuccess);  
+    tcase_add_test(tc_param_api, test_004ParametersInit_0002TxinitxFailureNullpara);  
+    tcase_add_test(tc_param_api, test_004ParametersAdd_0003AddTxParamSuccess);  
+    tcase_add_test(tc_param_api, test_004ParametersAdd_0004AddTxParamFailureShortParam);  
+    tcase_add_test(tc_param_api, test_004ParametersAdd_0005AddTxParamFailureLongParam); 
+    tcase_add_test(tc_param_api, test_004ParametersAdd_0006AddTxParamFailureOddParam);   
+    tcase_add_test(tc_param_api, test_004ParametersAdd_0007AddTxParamSucessNumberNULLParam);  
+    tcase_add_test(tc_param_api, test_004ParametersAdd_0008AddTxParamFailureTxNULLParam); 
+    tcase_add_test(tc_param_api, test_004ParametersAdd_0009AddTxParamSucessTxLessMaxEvenParam);  
+    tcase_add_test(tc_param_api, test_004ParametersAdd_0010AddTxParamFailureMoreMaxOddParam);  
 
     return s_param;
 }

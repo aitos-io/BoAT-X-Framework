@@ -52,7 +52,7 @@ typedef struct TBoatChainmakerCertInfoCfg{
 //! chainmaker network  structure
 typedef struct TBoatChainmakerNetworkData
 {
-	BUINT8 index;
+	BUINT8 networkIndex;
 	BoatChainmakerCertInfoCfg     client_sign_cert_content;   //!< certificate content of account
 
     BCHAR    node_url[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 

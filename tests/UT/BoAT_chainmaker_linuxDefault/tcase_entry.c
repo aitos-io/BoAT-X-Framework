@@ -24,7 +24,8 @@
 extern Suite *make_wallet_suite(void);
 extern Suite *make_parameters_suite(void);
 extern Suite *make_contract_suite(void);
-
+extern Suite *make_keypair_suite(void);
+extern Suite *make_network_suite(void);
 #define CERT_PRIKEY_LEN 1024
 
 char chainmaker_client_sign_prikey[CERT_PRIKEY_LEN];
@@ -86,9 +87,12 @@ int main(int argc, char *argv[])
     int result;
 
     /* new adding test suite should create in here */
+    Suite *suite_keypair   = make_keypair_suite();
+    Suite *suite_network   = make_network_suite();
     Suite *suite_wallet    = make_wallet_suite();
     Suite *suite_paramters = make_parameters_suite();
     Suite *suite_contract  = make_contract_suite();
+  
     result = read_key_cert_content(chainmaker_client_sign_prikey, chainmaker_client_sign_cert, chainmaker_client_tls_cert);
     
     if (result != 0)
@@ -99,12 +103,15 @@ int main(int argc, char *argv[])
     /* create srunner and add first suite to it.
     The first suite in a suite runner is always added in function srunner_create,
     here set suite_wallet as first adding suite. */
-    sr = srunner_create(suite_wallet);
+    sr = srunner_create(suite_keypair);
     /* set generate test log in running path */
     srunner_set_log(sr, "test_statistics_report.txt");
     /* add other suite to srunner, more test suite should be add in here */
+    srunner_add_suite(sr, suite_network);
+    srunner_add_suite(sr, suite_wallet);
     srunner_add_suite(sr, suite_paramters);
     srunner_add_suite(sr, suite_contract);
+   
 
     /* start to run all test case */
     srunner_run_all(sr, CK_NORMAL);
