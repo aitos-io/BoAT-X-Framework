@@ -216,7 +216,7 @@ BOAT_RESULT quorumTransfer(BoatQuorumWallet *wallet_ptr)
 
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxInit failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "BoatQuorumTxInit failed.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
     
