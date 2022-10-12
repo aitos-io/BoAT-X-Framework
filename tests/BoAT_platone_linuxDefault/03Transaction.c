@@ -13,37 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "tcase_platon.h"
-#define EXCEED_STR_MAX_LEN 4097
+#include "tcase_platone.h"
 
-#define TEST_EIP155_COMPATIBILITY   BOAT_TRUE
-#define TEST_PLATON_CHAIN_ID        210309
+#define EXCEED_STR_MAX_LEN          4097
+#define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
+#define TEST_PLATONE_CHAIN_ID       1
 #define TEST_GAS_LIMIT              "0x6691B7"
 #define TEST_GAS_PRICE              "0x4A817C800"
 #define TEST_IS_SYNC_TX             BOAT_TRUE
-#define TEST_RECIPIENT_ADDRESS      "lat159js9hw63x2y8m65mhgprm3eu9f4c7xmv3lym4"
+#define TEST_RECIPIENT_ADDRESS      "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
 
-extern BoatPlatONWalletConfig get_platon_wallet_settings();
+extern BoatPlatoneWalletConfig get_platone_wallet_settings();
 
 START_TEST(test_006GetBalance_0001GetSuccess) 
 {
     BOAT_RESULT result;
-    BoatPlatONTx tx_ctx;
+    BoatPlatoneTx tx_ctx;
     BCHAR *cur_balance_wei = NULL;
     BoatFieldVariable parse_result = {NULL, 0};
 
     BoatIotSdkInit();
 
-    result = platonWalletPrepare();
+    result = platoneWalletPrepare();
     ck_assert(result == BOAT_SUCCESS);
 
-    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, TEST_GAS_PRICE,
+    result = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, TEST_GAS_PRICE,
                            TEST_GAS_LIMIT,
-                           (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    cur_balance_wei = BoatPlatONWalletGetBalance(g_platon_wallet_ptr, "lat");
-	result          = BoatPlatONParseRpcResponseStringResult(cur_balance_wei, &parse_result);
+    cur_balance_wei = BoatPlatoneWalletGetBalance(g_platone_wallet_ptr, TEST_RECIPIENT_ADDRESS);
+	result          = BoatPlatoneParseRpcResponseStringResult(cur_balance_wei, &parse_result);
 
     ck_assert_int_eq(result, BOAT_SUCCESS);
     ck_assert_ptr_ne(parse_result.field_ptr, NULL);
@@ -54,20 +54,31 @@ START_TEST(test_006GetBalance_0001GetSuccess)
 }
 END_TEST
 
-START_TEST(test_006GetBalance_0002GetSuccessNullAddress) 
+START_TEST(test_006GetBalance_0002GetWalletDefaultAddressSuccess) 
 {
     BOAT_RESULT result;
+    BoatPlatoneTx tx_ctx;
     BCHAR *cur_balance_wei = NULL;
     BoatFieldVariable parse_result = {NULL, 0};
 
     BoatIotSdkInit();
 
-    result = platonWalletPrepare();
+    result = platoneWalletPrepare();
     ck_assert(result == BOAT_SUCCESS);
 
-    cur_balance_wei = BoatPlatONWalletGetBalance(g_platon_wallet_ptr, NULL);
+    result = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, NULL,
+                           TEST_GAS_LIMIT,
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    ck_assert_ptr_eq(cur_balance_wei, NULL);
+
+    cur_balance_wei = BoatPlatoneWalletGetBalance(g_platone_wallet_ptr, NULL);
+	result          = BoatPlatoneParseRpcResponseStringResult(cur_balance_wei, &parse_result);
+
+    ck_assert_ptr_ne(parse_result.field_ptr, NULL);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    BoatFree(parse_result.field_ptr);
 
     BoatIotSdkDeInit();
 }
@@ -79,7 +90,7 @@ START_TEST(test_006GetBalance_0003GetFailureNullWallet)
 
     BoatIotSdkInit();
 
-    cur_balance_wei = BoatPlatONWalletGetBalance(NULL, "lat");
+    cur_balance_wei = BoatPlatoneWalletGetBalance(NULL, NULL);
 
     ck_assert_ptr_eq(cur_balance_wei, NULL);
 
@@ -90,19 +101,19 @@ END_TEST
 START_TEST(test_007Transfer_0001TransferSuccess) 
 {
     BOAT_RESULT result;
-    BoatPlatONTx tx_ctx;
+    BoatPlatoneTx tx_ctx;
 
     BoatIotSdkInit();
 
-    result = platonWalletPrepare();
+    result = platoneWalletPrepare();
     ck_assert(result == BOAT_SUCCESS);
 
-    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, NULL,
+    result = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, NULL,
                            TEST_GAS_LIMIT,
-                           (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatPlatONTransfer(&tx_ctx, "0x1");
+    result = BoatPlatoneTransfer(&tx_ctx, "0x0");
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     BoatIotSdkDeInit();
@@ -112,29 +123,29 @@ END_TEST
 START_TEST(test_007Transfer_0002TransferFailureNullParam) 
 {
     BOAT_RESULT result;
-    BoatPlatONTx tx_ctx;
+    BoatPlatoneTx tx_ctx;
 
     BoatIotSdkInit();
 
-    result = platonWalletPrepare();
+    result = platoneWalletPrepare();
     ck_assert(result == BOAT_SUCCESS);
 
-    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, NULL,
+    result = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, NULL,
                            TEST_GAS_LIMIT,
-                           (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatPlatONTransfer(&tx_ctx, NULL);
+    result = BoatPlatoneTransfer(&tx_ctx, NULL);
     ck_assert_int_eq(result, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
     BoatIotSdkDeInit();
 }
 END_TEST
 
-START_TEST(test_007Transfer_0003BoatPlatonParseRpcResponseResultFail)
+START_TEST(test_007Transfer_0003BoatPlatoneParseRpcResponseResultFail)
 {
     BOAT_RESULT result;
-    result = BoatPlatONParseRpcResponseResult(NULL,NULL,NULL);
+    result = BoatPlatoneParseRpcResponseResult(NULL,NULL,NULL);
     ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 }
 END_TEST
@@ -142,19 +153,19 @@ END_TEST
 START_TEST(test_007Transfer_0004TransferSuccessWithoutSync) 
 {
     BOAT_RESULT result;
-    BoatPlatONTx tx_ctx;
+    BoatPlatoneTx tx_ctx;
 
     BoatIotSdkInit();    
 
-    result = platonWalletPrepare();
+    result = platoneWalletPrepare();
     ck_assert(result == BOAT_SUCCESS);
 
-    result = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ctx, BOAT_FALSE, NULL,
+    result = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ctx, BOAT_FALSE, NULL,
                            TEST_GAS_LIMIT,
-                           (BCHAR *)TEST_RECIPIENT_ADDRESS, hrp);
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
-    result = BoatPlatONTransfer(&tx_ctx, "0x1");
+    result = BoatPlatoneTransfer(&tx_ctx, "0x0");
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
     BoatIotSdkDeInit();
@@ -168,13 +179,13 @@ START_TEST(test_008ParseJson_0001ParseJsonFailureNullParam)
     BCHAR *child_name = "";
     BoatFieldVariable *result_out = {NULL, 0};
 
-    result = platon_parse_json_result(NULL, child_name, result_out);
+    result = platone_parse_json_result(NULL, child_name, result_out);
     ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    result = platon_parse_json_result(json_string, NULL, result_out);
+    result = platone_parse_json_result(json_string, NULL, result_out);
     ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    result = platon_parse_json_result(json_string, child_name, NULL);
+    result = platone_parse_json_result(json_string, child_name, NULL);
     ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);        
 }
 END_TEST
@@ -186,7 +197,7 @@ START_TEST(test_008ParseJson_0002ObtainResultObjectFailure)
     BCHAR *child_name = "";
     BoatFieldVariable *result_out = {"1", 1};
 
-    result = platon_parse_json_result(json_string, child_name, result_out);
+    result = platone_parse_json_result(json_string, child_name, result_out);
     ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);
    
 }
@@ -208,16 +219,16 @@ Suite *make_transactions_suite(void)
  
     /* Test cases are added to the test set */
     tcase_add_test(tc_transaction_api, test_006GetBalance_0001GetSuccess); 
-    tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetSuccessNullAddress); 
+    tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetWalletDefaultAddressSuccess); 
     tcase_add_test(tc_transaction_api, test_006GetBalance_0003GetFailureNullWallet); 
 
     tcase_add_test(tc_transaction_api, test_007Transfer_0001TransferSuccess); 
     tcase_add_test(tc_transaction_api, test_007Transfer_0002TransferFailureNullParam); 
-    tcase_add_test(tc_transaction_api, test_007Transfer_0003BoatPlatonParseRpcResponseResultFail); 
+    tcase_add_test(tc_transaction_api, test_007Transfer_0003BoatPlatoneParseRpcResponseResultFail); 
     tcase_add_test(tc_transaction_api, test_007Transfer_0004TransferSuccessWithoutSync); 
-
+    
     tcase_add_test(tc_transaction_api, test_008ParseJson_0001ParseJsonFailureNullParam); 
     tcase_add_test(tc_transaction_api, test_008ParseJson_0002ObtainResultObjectFailure); 
-
+    
     return s_transaction;
 }
