@@ -140,6 +140,8 @@ int main(int argc, char *argv[])
 	BoatResponseData      response_data;
 	boat_try_declare;
 
+	memset(&wallet_config,0U,sizeof(BoatHlchainmakerWalletConfig));
+
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
 
