@@ -584,7 +584,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	}
 
 	response_data->gas_used = 0;
-	response_data->code     = tx_response->code;
+	response_data->code     = (BoatresponseCode)tx_response->code;
 
 	if (strlen(tx_response->message) > BOAT_RESPONSE_MESSAGE_MAX_LEN) 
 	{
