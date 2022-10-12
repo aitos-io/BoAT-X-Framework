@@ -67,7 +67,7 @@ BCHAR *chainmaker_chain_id   = "chain1";
 BCHAR *chainmaker_org_id     = "wx-org1.chainmaker.org";
 
 BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
-BoatHlchainmakerWalletConfig wallet_config = {0};
+BoatHlchainmakerWalletConfig wallet_config;
 
 __BOATSTATIC BOAT_RESULT chainmakerWalletPrepare(void)
 {
