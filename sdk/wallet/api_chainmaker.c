@@ -484,7 +484,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	}
 
 	response_data->gas_used = 0;
-    response_data->code  = tx_response->code;
+    response_data->code  = (BoatresponseCode)tx_response->code;
 	if (strlen(tx_response->message) < BOAT_RESPONSE_MESSAGE_MAX_LEN) 
     {
 		memset(response_data->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
