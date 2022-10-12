@@ -216,7 +216,7 @@ BOAT_RESULT quorumTransfer(BoatQuorumWallet *wallet_ptr)
 
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatEthTxInit failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "BoatQuorumTxInit failed.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
     
@@ -234,7 +234,7 @@ int main(int argc, char *argv[])
 	/* step-1: Boat SDK initialization */
     BoatIotSdkInit();
 
-    /* step-2: create ethereum wallet */
+    /* step-2: create quorum wallet */
 #if defined(USE_ONETIME_WALLET)
     BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
     result = quorum_createOnetimeWallet();
