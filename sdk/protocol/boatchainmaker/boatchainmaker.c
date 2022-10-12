@@ -127,7 +127,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatHlchainmakerTx *tx_ptr, BCHAR* met
 	sender.is_full_cert       = true;
 
 	tx_header.chain_id        = tx_ptr->wallet_ptr->node_info.chain_id_info;
-	tx_header.tx_type         = tx_type;
+	tx_header.tx_type         = (Common__TxType)tx_type;
 	tx_header.tx_id           = tx_id;
 	tx_header.timestamp       = BoatGetTimes();
 	tx_header.sender          = &sender;
