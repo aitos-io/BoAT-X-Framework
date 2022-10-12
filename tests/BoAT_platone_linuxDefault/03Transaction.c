@@ -98,6 +98,111 @@ START_TEST(test_006GetBalance_0003GetFailureNullWallet)
 }
 END_TEST
 
+START_TEST(test_007Transfer_0001TransferSuccess) 
+{
+    BOAT_RESULT result;
+    BoatPlatoneTx tx_ctx;
+
+    BoatIotSdkInit();
+
+    result = platoneWalletPrepare();
+    ck_assert(result == BOAT_SUCCESS);
+
+    result = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, NULL,
+                           TEST_GAS_LIMIT,
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatPlatoneTransfer(&tx_ctx, "0x0");
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_007Transfer_0002TransferFailureNullParam) 
+{
+    BOAT_RESULT result;
+    BoatPlatoneTx tx_ctx;
+
+    BoatIotSdkInit();
+
+    result = platoneWalletPrepare();
+    ck_assert(result == BOAT_SUCCESS);
+
+    result = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ctx, TEST_IS_SYNC_TX, NULL,
+                           TEST_GAS_LIMIT,
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatPlatoneTransfer(&tx_ctx, NULL);
+    ck_assert_int_eq(result, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_007Transfer_0003BoatPlatoneParseRpcResponseResultFail)
+{
+    BOAT_RESULT result;
+    result = BoatPlatoneParseRpcResponseResult(NULL,NULL,NULL);
+    ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+}
+END_TEST
+
+START_TEST(test_007Transfer_0004TransferSuccessWithoutSync) 
+{
+    BOAT_RESULT result;
+    BoatPlatoneTx tx_ctx;
+
+    BoatIotSdkInit();    
+
+    result = platoneWalletPrepare();
+    ck_assert(result == BOAT_SUCCESS);
+
+    result = BoatPlatoneTxInit(g_platone_wallet_ptr, &tx_ctx, BOAT_FALSE, NULL,
+                           TEST_GAS_LIMIT,
+                           (BCHAR *)TEST_RECIPIENT_ADDRESS, BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    result = BoatPlatoneTransfer(&tx_ctx, "0x0");
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_008ParseJson_0001ParseJsonFailureNullParam)
+{
+    BOAT_RESULT result;
+    BCHAR *json_string= "111";
+    BCHAR *child_name = "";
+    BoatFieldVariable *result_out = {NULL, 0};
+
+    result = platone_parse_json_result(NULL, child_name, result_out);
+    ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    result = platone_parse_json_result(json_string, NULL, result_out);
+    ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+
+    result = platone_parse_json_result(json_string, child_name, NULL);
+    ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);        
+}
+END_TEST
+
+START_TEST(test_008ParseJson_0002ObtainResultObjectFailure)
+{
+    BOAT_RESULT result;
+    BCHAR *json_string= "111";
+    BCHAR *child_name = "";
+    BoatFieldVariable *result_out = {"1", 1};
+
+    result = platone_parse_json_result(json_string, child_name, result_out);
+    ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+   
+}
+END_TEST
+
 Suite *make_transactions_suite(void)
 {
     /* Create Suite */
@@ -117,5 +222,13 @@ Suite *make_transactions_suite(void)
     tcase_add_test(tc_transaction_api, test_006GetBalance_0002GetWalletDefaultAddressSuccess); 
     tcase_add_test(tc_transaction_api, test_006GetBalance_0003GetFailureNullWallet); 
 
+    tcase_add_test(tc_transaction_api, test_007Transfer_0001TransferSuccess); 
+    tcase_add_test(tc_transaction_api, test_007Transfer_0002TransferFailureNullParam); 
+    tcase_add_test(tc_transaction_api, test_007Transfer_0003BoatPlatoneParseRpcResponseResultFail); 
+    tcase_add_test(tc_transaction_api, test_007Transfer_0004TransferSuccessWithoutSync); 
+    
+    tcase_add_test(tc_transaction_api, test_008ParseJson_0001ParseJsonFailureNullParam); 
+    tcase_add_test(tc_transaction_api, test_008ParseJson_0002ObtainResultObjectFailure); 
+    
     return s_transaction;
 }
