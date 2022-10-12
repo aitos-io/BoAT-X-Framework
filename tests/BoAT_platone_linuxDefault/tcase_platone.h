@@ -25,6 +25,8 @@
 
 #define TEST_KEY_TYPE BOAT_WALLET_PRIKEY_FORMAT_NATIVE
 
+extern BOAT_RESULT platoneWalletPrepare(void);
+
 extern char platone_private_key_buf[1024];
 extern BUINT8 binFormatKey[32];
 extern BoatPlatoneWallet *g_platone_wallet_ptr;
