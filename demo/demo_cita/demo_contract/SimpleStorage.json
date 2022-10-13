@@ -1,0 +1,79 @@
+[
+	{
+		"inputs":[],
+		"payable":false,
+		"stateMutability":"nonpayable",
+		"type":"constructor"
+	},
+
+	{	"anonymous":false,
+		"inputs":[
+			{	"indexed":false,
+				"internalType":"address",
+				"name":"","type":"address"
+			},
+			{	"indexed":false,
+				"internalType":"uint256",
+				"name":"","type":"uint256"
+			}
+		],
+		"name":"Init",
+		"type":"event"
+	},
+
+	{	"anonymous":false,
+		"inputs":[
+			{	"indexed":false,
+				"internalType":"address",
+				"name":"",
+				"type":"address"
+			},
+			{	"indexed":false,
+				"internalType":"uint256",
+				"name":"",
+				"type":"uint256"}
+			],
+		"name":"Set",
+		"type":"event"
+	},
+
+	{	"anonymous":false,
+		"inputs":[
+			{	"indexed":false,
+				"internalType":"uint256",
+				"name":"",
+				"type":"uint256"
+			}
+		],
+		"name":"Stored",
+		"type":"event"
+	},
+
+	{	"constant":true,
+		"inputs":[],
+		"name":"get",
+		"outputs":[
+			{	"internalType":"uint256",
+				"name":"",
+				"type":"uint256"
+			}
+		],
+		"payable":false,
+		"stateMutability":"view",
+		"type":"function"
+	},
+
+	{	"constant":false,
+		"inputs":[
+			{	"internalType":"uint256",
+				"name":"x",
+				"type":"uint256"
+			}
+		],
+		"name":"set",
+		"outputs":[],
+		"payable":false,
+		"stateMutability":"nonpayable",
+		"type":"function"
+	}
+]
