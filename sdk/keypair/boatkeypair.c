@@ -954,7 +954,7 @@ BOAT_RESULT BoATIotKeypairDelete(BUINT8 index)
     BUINT8 lengthBytes[3] = {0};
     BUINT8 keypairnumBytes[4] = {0};
     BUINT8 *keypairData = NULL;
-    if(index >= BOAT_MAX_KEYPAIR_NUM){
+    if(index > BOAT_MAX_KEYPAIR_NUM){
         return BOAT_ERROR;
     }
     /* onetime keypair 
