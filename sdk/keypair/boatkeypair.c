@@ -418,6 +418,7 @@ BOAT_RESULT BoATKeypair_GetKeypairList(BoatIotKeypairContext *keypairList)
             return result;
         }
     }
+    (*keypairList).keypairPersistentNum = keypairNum;
     (*keypairList).keypairNum = keypairNum;
     offset += sizeof(keypairnumBytes);
     for (int i = 0; i < keypairNum; i++)
@@ -540,8 +541,9 @@ __BOATSTATIC BOAT_RESULT BoATKeypair_GetFreeIndex_From_Persistent(void)
         // return result;
         BoatLog(BOAT_LOG_NORMAL,"get keypair list fail");
     }
-    if(keypairList.keypairNum == BOAT_MAX_KEYPAIR_NUM){
+    if(keypairList.keypairPersistentNum == BOAT_MAX_KEYPAIR_NUM){
         BoATKeypair_FreeKeypairContext(keypairList);
+        BoatLog(BOAT_LOG_NORMAL," keypair num already equal max num");
         return BOAT_ERROR;
     }
     for (i = 0; i < BOAT_MAX_KEYPAIR_NUM; i++)
@@ -761,6 +763,7 @@ __BOATSTATIC BOAT_RESULT BoATKeypair_DataCtx_Store(BoatKeypairDataCtx *mKeypairD
         keypairNum = 0;
     }
     offset += sizeof(keypairnumBytes);
+    BoatLog(BOAT_LOG_NONE," keypair num : %d ",keypairNum);
     for (int i = 0; i < keypairNum; i++)
     {
         /* keypair length */
@@ -883,11 +886,13 @@ BOAT_RESULT BoatKeypairCreate(BoatKeypairPriKeyCtx_config *keypairConfig,BCHAR *
     BUINT8 keypairIndex = 0;
     result = BoATIotKeypairInit(&mKeypairDataCtx);
     if(result != BOAT_SUCCESS){
+        BoatLog(BOAT_LOG_NORMAL," keypair init fail ");
         return result;
     }
     if(storeType == BOAT_STORE_TYPE_FLASH){
         result = BoATKeypair_GetFreeIndex_From_Persistent();
         if(result < BOAT_SUCCESS){
+            BoatLog(BOAT_LOG_NORMAL," keypair get free index fail ");
             return result;
         }
         keypairIndex = result;  // from 1 to BOAT_MAX_KEYPAIR_NUM
@@ -897,6 +902,7 @@ BOAT_RESULT BoatKeypairCreate(BoatKeypairPriKeyCtx_config *keypairConfig,BCHAR *
 
     result = BoatPort_keyCreate(keypairConfig,&mKeypairDataCtx);
     if(result != BOAT_SUCCESS){
+        BoatLog(BOAT_LOG_NORMAL," key creat fail");
         return result;
     }
     BoatLog(BOAT_LOG_NORMAL,"BoatPort_keyCreate success , index = %d ",keypairIndex);

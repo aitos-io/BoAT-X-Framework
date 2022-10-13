@@ -143,6 +143,7 @@ typedef struct TBoatKeypairDataCtx
 typedef struct TBoatIotKeypairContext
 {
     BUINT8 keypairNum;
+    BUINT8 keypairPersistentNum;
     // Protocol specific properties are defined in protocol specific KeypairInfo structure
     BoatKeypairDataCtx keypairs[BOAT_MAX_KEYPAIR_NUM];  //!< Keypair Info List
 }BoatIotKeypairContext;

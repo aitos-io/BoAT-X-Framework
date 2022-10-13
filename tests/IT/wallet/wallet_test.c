@@ -164,7 +164,19 @@ int main(int argc, char *argv[])
 		 BoatLog(BOAT_LOG_CRITICAL, "keypair creat failed: %d.", result);
         boat_throw(result, ethereum_storeread_demo_catch);
 	}
-    result = BoATIotKeypairDelete(2);
+    result = createPersistkeypair("Persistkeypair04");
+    if(result != BOAT_SUCCESS)
+	{
+		 BoatLog(BOAT_LOG_CRITICAL, "keypair creat failed: %d.", result);
+        boat_throw(result, ethereum_storeread_demo_catch);
+	}
+    result = createPersistkeypair("Persistkeypair05");
+    if(result != BOAT_SUCCESS)
+	{
+		 BoatLog(BOAT_LOG_CRITICAL, "keypair creat failed: %d.", result);
+        boat_throw(result, ethereum_storeread_demo_catch);
+	}
+    result = BoATIotKeypairDelete(5);
 
     if(result != BOAT_SUCCESS)
 	{
