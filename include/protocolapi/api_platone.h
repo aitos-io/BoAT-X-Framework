@@ -340,7 +340,6 @@ BOAT_RESULT BoatPlatoneTxSend(BoatPlatoneTx *tx_ptr);
 BOAT_RESULT BoatPlatoneTransfer(BoatPlatoneTx *tx_ptr, BCHAR * value_hex_str);
 
 
-// Ethereum APIs compatible for PlatONE
 
 /*!****************************************************************************/
 /**

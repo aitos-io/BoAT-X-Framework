@@ -11,3 +11,7 @@ endif()
 if(BOAT_PROTOCOL_USE_PLATONE)
 add_subdirectory(platone)
 endif()
+
+if(BOAT_PROTOCOL_USE_PLATON)
+add_subdirectory(platon)
+endif()

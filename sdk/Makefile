@@ -20,7 +20,8 @@ ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM),1)
 			   $(wildcard $(BOAT_BUILD_DIR)/sdk/network/ethereum/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_PLATON),1)
-	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatplaton/*.o) 
+	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatplaton/*.o) \
+				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/platon/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_PLATONE),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatplatone/*.o) \
