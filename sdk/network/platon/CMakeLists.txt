@@ -1,4 +1,4 @@
-set(SUB_MODULE_NAME         network_eth_obj)
+set(SUB_MODULE_NAME         network_platon_obj)
 
 set(FILE_SRC    network_platon.c)
 
