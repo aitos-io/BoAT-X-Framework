@@ -44,7 +44,7 @@ const BCHAR *native_demoKey = "0xf1395a1fc3f74f0c867b61292e28e0f6cc98a095535fd6b
 /**
  * test node url
  */
-const BCHAR * demoUrl = "http://127.0.0.1:7545";
+const BCHAR * demoUrl = "http://127.0.0.1:1337";
 
 
 /**
@@ -195,6 +195,12 @@ BOAT_RESULT cita_call_ReadStore(BoatCitaWallet *wallet_ptr)
     result = BoatCitaTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
                            "0x333333",
                            (BCHAR *)demoRecipientAddress);
+        /* Set Contract Address */
+    result = BoatCitaTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, 
+                                 (BCHAR *)demoRecipientAddress, //recipient
+                                 "0x01", //chainid
+                                 10000000  //quota
+                                );
 
     if (result != BOAT_SUCCESS)
     {
