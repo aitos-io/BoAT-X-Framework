@@ -97,5 +97,5 @@ Common tips:
 mkdir… command syntax is incorrect.  
 FIND: The parameter format is incorrect  
 
-This problem is generally caused by compiling under Windows, but Cygwin is not installed, or the paths of BOAT_RM, BOAT_MKDIR, and BOAT_FIND are not correctly configured in the Makefile. Please refer to the section [Use Windows as Compiler Environment](../docs/en-us/BoAT_User_Guide_en.md#Use-Windows-as-Compiler-Environment)  in BoAT User Guide to install Cygwin and configure Makefile.
+This problem is generally caused by compiling under Windows, but Cygwin is not installed, or the paths of BOAT_RM, BOAT_MKDIR, and BOAT_FIND are not correctly configured in the Makefile. Please refer to the section [Use Windows as Compiler Environment](../docs/en-us/BoAT_User_Guide_en.md#use-windows-as-the-compilation-environment) in BoAT User Guide to install Cygwin and configure Makefile.
 
