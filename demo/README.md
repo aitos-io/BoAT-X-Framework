@@ -109,5 +109,5 @@ $file \<lib或obj文件名\>
 mkdir… 命令语法不正确。  
 FIND: 参数格式不正确  
 
-该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[以Windows为编译环境](####以Windows为编译环境)章节安装Cygwin和配置Makefile。
+该问题一般是因为在Windows下进行编译，但未安装Cygwin，或者未在Makefile中正确配置BOAT_RM、BOAT_MKDIR、BOAT_FIND的路径。请参照[BoAT用户手册中以Windows为编译环境](../docs/zh-cn/BoAT_User_Guide_cn.md##以Windows为编译环境)章节安装Cygwin和配置Makefile。
 
