@@ -111,11 +111,13 @@ const BCHAR *hw_bcs_demo_order_hostName = "node-0.org1.bcs-epmmli.svc.cluster.lo
 
 BoatHwbcsWallet *g_hwbcs_wallet_ptr;
 // DiscoverRes discoverResult;
-BoatHwbcsWalletConfig wallet_config = {0};
+BoatHwbcsWalletConfig wallet_config;
 __BOATSTATIC BOAT_RESULT hw_bcs_WalletPrepare(void)
 {
 	BOAT_RESULT index;
 
+	memset(&wallet_config,0U,sizeof(BoatHwbcsWalletConfig));
+	
 	//BoatHwbcsWalletConfig wallet_config = {0};
 	//set private key context
 	wallet_config.accountPriKey_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
