@@ -254,7 +254,7 @@ Follow the steps below to compile:
 ````
 $make boatlibs
 ````
-After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See [Header Files and Libraries](#header-files-and-libraries)chapter.
+4. After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See [Header Files and Libraries](#header-files-and-libraries)chapter.
 
 #### Use Cygwin as The Compilation Environment
 On Windows, the SDK does not support compilation in environments other than Cygwin, nor does it support compilation with compilers other than gcc.
