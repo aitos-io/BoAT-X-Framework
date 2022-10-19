@@ -111,10 +111,12 @@ const BCHAR *fabric_demo_endorser_peer1Org2_hostName = "peer1.org2.example.com";
 
 BoatHlfabricWallet *g_fabric_wallet_ptr;
 // DiscoverRes discoverResult;
-BoatHlfabricWalletConfig wallet_config = {0};
+BoatHlfabricWalletConfig wallet_config;
 __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 {
 	BOAT_RESULT index;
+
+	memset(&wallet_config,0U,sizeof(BoatHlfabricWalletConfig));
 
 	//BoatHlfabricWalletConfig wallet_config = {0};
 	//set private key context
