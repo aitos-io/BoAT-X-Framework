@@ -6,9 +6,9 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/network
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 		  
-.PHONY: all  network_ethereum network_hlfabric network_platone network_venachain network_platon
+.PHONY: all  network_ethereum network_hlfabric network_platone network_venachain network_platon network_fiscobcos
 
-all:  network_ethereum network_hlfabric network_platone network_venachain network_platon $(OBJECTS_DIR) $(OBJECTS)
+all:  network_ethereum network_hlfabric network_platone network_venachain network_platon network_fiscobcos $(OBJECTS_DIR) $(OBJECTS)
 
 network_ethereum:
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
@@ -35,6 +35,11 @@ ifeq ($(BOAT_PROTOCOL_USE_PLATON),1)
 	make -C platon all
 endif
 
+network_fiscobcos:
+ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS),1)
+	make -C fiscobcos all
+endif
+
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
 
@@ -58,4 +63,7 @@ ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_PLATON),1)
 	make -C platon clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS),1)
+	make -C fiscobcos clean
 endif

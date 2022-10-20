@@ -15,3 +15,7 @@ endif()
 if(BOAT_PROTOCOL_USE_PLATON)
 add_subdirectory(platon)
 endif()
+
+if(BOAT_PROTOCOL_USE_FISCOBCOS)
+add_subdirectory(fiscobcos)
+endif()

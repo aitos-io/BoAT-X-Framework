@@ -28,7 +28,8 @@ ifeq ($(BOAT_PROTOCOL_USE_PLATONE),1)
 				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/platone/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS),1)
-	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatfiscobcos/*.o) 
+	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatfiscobcos/*.o) \
+				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/fiscobcos/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatvenachain/*.o) \
