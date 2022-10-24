@@ -36,7 +36,8 @@ ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN),1)
 				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/venachain/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_QUORUM),1)
-	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatquorum/*.o) 
+	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatquorum/*.o) \
+				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/quorum/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/*.o) \

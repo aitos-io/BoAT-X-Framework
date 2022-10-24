@@ -19,3 +19,7 @@ endif()
 if(BOAT_PROTOCOL_USE_FISCOBCOS)
 add_subdirectory(fiscobcos)
 endif()
+
+if(BOAT_PROTOCOL_USE_QUORUM)
+add_subdirectory(quorum)
+endif()

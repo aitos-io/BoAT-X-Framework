@@ -9,7 +9,7 @@ add_subdirectory(third-party)
 add_subdirectory(protocol)
 add_subdirectory(utilities)
 
-if (BOAT_PROTOCOL_USE_ETHEREUM OR BOAT_PROTOCOL_USE_PLATONE OR BOAT_PROTOCOL_USE_PLATON OR BOAT_PROTOCOL_USE_FISCOBCOS)
+if (BOAT_PROTOCOL_USE_ETHEREUM OR BOAT_PROTOCOL_USE_PLATONE OR BOAT_PROTOCOL_USE_PLATON OR BOAT_PROTOCOL_USE_FISCOBCOS OR BOAT_PROTOCOL_USE_QUORUM)
 add_subdirectory(rlp)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatrlp-obj>)
 endif()
@@ -54,6 +54,7 @@ set(TARGET  ${TARGET} $<TARGET_OBJECTS:protobuf-obj>)
 endif()
 if(BOAT_PROTOCOL_USE_QUORUM)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatquorum-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:network_quorum_obj>)
 endif()
 
 
