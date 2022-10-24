@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "StoreRead.h"
-
+#include "SimpleStorage.h"
+#include "boatlog.h"
 /**
  * macro used to select wallet type:
  * - USE_ONETIME_WALLET          : create a one-time wallet
@@ -39,7 +39,7 @@ const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const BCHAR *native_demoKey = "0xf1395a1fc3f74f0c867b61292e28e0f6cc98a095535fd6bf04e4169ebc047e61";
+const BCHAR *native_demoKey = "0xdf694c554142b47a98d282a89d5d3ff323f9cb43df6f1f857e0cd5bc092df2b1";
 
 /**
  * test node url
@@ -50,7 +50,7 @@ const BCHAR * demoUrl = "http://127.0.0.1:1337";
 /**
  * transfer recipient address
  */
-const BCHAR *demoRecipientAddress = "0xDED9ea325f8D657614f0F96444ca9DF1d7E2f27c";
+const BCHAR *demoRecipientAddress = "0x68bdfa185a341e1a398c68a5002fe8266cca442c";
 
 
 BoatCitaWallet *g_cita_wallet_ptr;
@@ -59,7 +59,7 @@ BoatCitaWallet *g_cita_wallet_ptr;
 __BOATSTATIC BOAT_RESULT cita_createOnetimeWallet()
 {
     BSINT32 index;
-    BoatCitaWalletConfig wallet_config;
+    BoatCitaWalletConfig wallet_config = {0};
     BUINT8 binFormatKey[32]           = {0};
 
     (void)binFormatKey; //avoid warning
@@ -68,18 +68,18 @@ __BOATSTATIC BOAT_RESULT cita_createOnetimeWallet()
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS) 
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
         wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
         wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
@@ -92,10 +92,7 @@ __BOATSTATIC BOAT_RESULT cita_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
 
-    wallet_config.chain_id             = 1;
-    wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_CITA_NODE_URL_MAX_LEN - 1);
-
 	/* create cita wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_CITA, NULL, &wallet_config, sizeof(BoatCitaWalletConfig));
     if (index < 0)
@@ -103,7 +100,7 @@ __BOATSTATIC BOAT_RESULT cita_createOnetimeWallet()
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-    g_citaereum_wallet_ptr = BoatGetWalletByIndex(index);
+    g_cita_wallet_ptr = BoatGetWalletByIndex(index);
     
     return BOAT_SUCCESS;
 }
@@ -122,18 +119,18 @@ __BOATSTATIC BOAT_RESULT cita_createPersistWallet(BCHAR *wallet_name)
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
         wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
         wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
+        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
         wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
@@ -146,8 +143,6 @@ __BOATSTATIC BOAT_RESULT cita_createPersistWallet(BCHAR *wallet_name)
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
 
-    wallet_config.chain_id             = 1;
-    wallet_config.eip155_compatibility = BOAT_FALSE;
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_CITA_NODE_URL_MAX_LEN - 1);
 
 	/* create cita wallet */
@@ -173,7 +168,7 @@ __BOATSTATIC BOAT_RESULT cita_loadPersistWallet(BCHAR *wallet_name)
     index = BoatWalletCreate(BOAT_PROTOCOL_CITA, wallet_name, NULL, sizeof(BoatCitaWalletConfig));
     if (index < 0)
 	{
-        //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     g_cita_wallet_ptr = BoatGetWalletByIndex(index);
@@ -191,10 +186,6 @@ BOAT_RESULT cita_call_ReadStore(BoatCitaWallet *wallet_ptr)
 
     BoatLog(BOAT_LOG_NORMAL, "cita_call_ReadStore start.");
 
-     /* Set Contract Address */
-    result = BoatCitaTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, NULL,
-                           "0x333333",
-                           (BCHAR *)demoRecipientAddress);
         /* Set Contract Address */
     result = BoatCitaTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, 
                                  (BCHAR *)demoRecipientAddress, //recipient
