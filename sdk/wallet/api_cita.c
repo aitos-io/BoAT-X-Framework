@@ -26,6 +26,67 @@ api_cita.c defines the cita wallet API for BoAT IoT SDK.
 #include "rpcintf.h"
 #include "cJSON.h"
 
+BoatCitaWallet *BoatCitaWalletInit(const BoatCitaWalletConfig *config_ptr, BUINT32 config_size)
+{
+    BoatCitaWallet *wallet_ptr;
+    BOAT_RESULT result;
+    BUINT8 pubkeyHash[32];
+    BUINT8 hashLenDummy;
+
+    if (config_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
+        return NULL;
+    }
+
+    if (sizeof(BoatCitaWalletConfig) != config_size)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Incorrect configuration size.");
+        return NULL;
+    }
+    
+    wallet_ptr = BoatMalloc(sizeof(BoatCitaWallet));
+    if (wallet_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "wallet memory malloc falied.");
+        return NULL;
+    }
+        
+    /* Init Web3 interface */
+    wallet_ptr->web3intf_context_ptr = web3_init();
+
+    if (wallet_ptr->web3intf_context_ptr == NULL)
+    {
+        BoatFree(wallet_ptr);
+        BoatLog(BOAT_LOG_CRITICAL, "web3 interface initialization falied.");
+        return NULL;
+    }
+    //Configure priKey context information
+    if (BOAT_SUCCESS != BoatPort_keyCreate(&config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
+    {
+        web3_deinit(wallet_ptr->web3intf_context_ptr);
+        BoatFree(wallet_ptr);
+        BoatLog(BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate.");
+        return NULL;
+    }
+
+    // Configure account address    
+    BoatHash(BOAT_HASH_SHA256, wallet_ptr->account_info.prikeyCtx.pubkey_content, 
+             64, pubkeyHash, &hashLenDummy, NULL);
+    memcpy(wallet_ptr->account_info.address, &pubkeyHash[32 - BOAT_CITA_ADDRESS_SIZE], BOAT_CITA_ADDRESS_SIZE);
+    // Configure node URL string
+    wallet_ptr->network_info.node_url_ptr = NULL;
+    result = BoatCitaWalletSetNodeUrl(wallet_ptr, config_ptr->node_url_str);
+    if (result != BOAT_SUCCESS)
+    {
+        web3_deinit(wallet_ptr->web3intf_context_ptr);
+        BoatFree(wallet_ptr);
+        BoatLog(BOAT_LOG_CRITICAL, "wallet set nodeURL failed.");
+        return NULL;
+    }
+    return wallet_ptr;
+}
+
 BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
                                 BoatCitaTx *tx_ptr,
                                 BBOOL is_sync_tx,
@@ -35,9 +96,8 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
 {
     BCHAR   *retval_str = NULL;
     BOAT_RESULT result;
-    BUINT16     i = 0;
 
-    if ((wallet_ptr == NULL) || (tx_ptr == NULL) || (gasprice_str == NULL) || (recipient_str == NULL))
+    if ((wallet_ptr == NULL) || (tx_ptr == NULL) || (recipient_str == NULL) || (chainid_str == NULL))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
@@ -67,83 +127,42 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
         return result;
     }
     
-    //chainid
-    tx_ptr->rawtx_fields.chainid.field_len    = UtilityHexToBin(tx_ptr->rawtx_fields.chainid.field, 32, 
+    //chain_id_v1
+    tx_ptr->rawtx_fields.chain_id_v1.field_len    = UtilityHexToBin(tx_ptr->rawtx_fields.chain_id_v1.field, 32, 
                                                                 chainid_str, TRIMBIN_LEFTTRIM, BOAT_TRUE);
-    if (tx_ptr->rawtx_fields.chainid.field_len == 0)
+    if (tx_ptr->rawtx_fields.chain_id_v1.field_len == 0)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "chainid Initialize failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "chain_id_v1 Initialize failed.");
         return BOAT_ERROR_COMMON_UTILITY;
     }
     
     //quota 
     tx_ptr->rawtx_fields.quota = quota;
-    
-    // Initialize blocklimit
-    // blocklimit should be greater than current blocknumber, 
-    // and less than current blocknumber plus 1000.
+
+    // less than current blocknumber plus 100.
     retval_str = BoatCitaGetBlockNumber(tx_ptr);
     result     = BoatCitaParseRpcResponseStringResult(retval_str, 
                                                            &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosGetBlockNumber failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaGetBlockNumber failed.");
         return result;
     }
+    BUINT8 Block_bumber[8] = {0};
 
-    tx_ptr->rawtx_fields.blocklimit.field_len = \
-                            UtilityHexToBin(tx_ptr->rawtx_fields.blocklimit.field, 32, 
-                                            (BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
-                                            TRIMBIN_LEFTTRIM, BOAT_TRUE);
-    BoatLog(BOAT_LOG_CRITICAL, "%s", tx_ptr->rawtx_fields.blocklimit.field);
-    if (tx_ptr->rawtx_fields.blocklimit.field_len == 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "blocklimit Initialize failed.");
-        return BOAT_ERROR_COMMON_UTILITY;
-    }
+    UtilityHexToBin(Block_bumber, 32, 
+                    (BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
+                    TRIMBIN_TRIM_NO, BOAT_TRUE);
 
-    //convert to bigendian uint256
-    BoatFieldMax32B blocklimitTmp;
-    memset(&blocklimitTmp, 0, sizeof(BoatFieldMax32B));
-    for (i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++)
-    {
-        blocklimitTmp.field[31 - i] = tx_ptr->rawtx_fields.blocklimit.field[tx_ptr->rawtx_fields.blocklimit.field_len - i - 1];
-    }
-    BoatLog_hexdump(BOAT_LOG_NORMAL, "blocklimitTmp1:", blocklimitTmp.field, 32);
+
+
+      
+    BoatLog(BOAT_LOG_CRITICAL, "1111111111 = %s\n", (BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr);
+
     
-    //convert bigendian uint256 to bignumber
-    utilityBignum256 convertTmp;
-    BUINT32 blockLimitOffset = 500; //value should rangle of 1 ~ 1000
-    UtilityReadBigendToBignum(&blocklimitTmp.field[0], &convertTmp);
-    
-    //execute bignumber plus uint
-    for (i = 0; i < 9; i++)
-    {
-        blockLimitOffset += convertTmp.val[i];
-        convertTmp.val[i] = blockLimitOffset & 0x3FFFFFFF;
-        blockLimitOffset >>= 30;
-    }
-    
-    //convert bignumber to bigendian uint256
-    UtilityWriteBignumToBigend(&convertTmp, &blocklimitTmp.field[0]);   
-    BoatLog_hexdump(BOAT_LOG_NORMAL, "blocklimitTmp2:", blocklimitTmp.field, 32);
-    memset(tx_ptr->rawtx_fields.blocklimit.field, 0, 32);
-    
-    //convert bigendian uint256 to foregone
-    for (i = 0; i < 32; i++)
-    {
-        if (blocklimitTmp.field[i] != 0x00)
-        {
-            blocklimitTmp.field_len = 32 - i; //compute valid data length
-            break;
-        }
-    }
-    tx_ptr->rawtx_fields.blocklimit.field_len = blocklimitTmp.field_len;//update data length
-    for (i = 0; i < tx_ptr->rawtx_fields.blocklimit.field_len; i++)
-    {
-        tx_ptr->rawtx_fields.blocklimit.field[i] = blocklimitTmp.field[32 - tx_ptr->rawtx_fields.blocklimit.field_len + i];
-    }
-    
+    tx_ptr->rawtx_fields.valid_until_block = 0x258c;
+    BoatLog(BOAT_LOG_CRITICAL, "3333333333333 = %x\n",  tx_ptr->rawtx_fields.valid_until_block);
+
     // Initialize value = 0
     //CITA DOES NOT SET VALUE, IT'S DE-COINIZED
     result = BoatCitaTxSetValue(tx_ptr, NULL);
@@ -226,40 +245,6 @@ BOAT_RESULT BoatCitaWalletSetNodeUrl(BoatCitaWallet *wallet_ptr, const BCHAR *no
     return result;
 }
 
-BOAT_RESULT BoatCitaWalletSetChainId(BoatCitaWallet *tx_ptr, BoatFieldMax32B *chain_id_ptr)
-{
-    if (tx_ptr == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
-
-    // Set chainid
-    if (chain_id_ptr != NULL)
-    {
-        memcpy(&tx_ptr->rawtx_fields.chain_id_v1, chain_id_ptr, sizeof(BoatFieldMax32B));
-        return BOAT_SUCCESS;
-    }
-    else
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
-}
-
-BOAT_RESULT BoatCitaWalletSetVersion(BoatCitaWallet *wallet_ptr, BUINT32 version)
-{
-    if (wallet_ptr == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
-
-    // Set Chain ID
-    wallet_ptr->network_info.version = version;
-    
-    return BOAT_SUCCESS;
-}
 
 BOAT_RESULT BoatCitaTxSetRecipient(BoatCitaTx *tx_ptr, BUINT8 address[BOAT_CITA_ADDRESS_SIZE])
 {
@@ -338,7 +323,7 @@ BOAT_RESULT BoatCitaTxSetNonce(BoatCitaTx *tx_ptr, BUINT64 nonce)
 
     if (nonce == BOAT_CITA_NONCE_AUTO)
     {
-        tx_ptr->rawtx_fields.nonce.field_len = 32;
+        tx_ptr->rawtx_fields.nonce.field_len = 16;
         result = BoatRandom(tx_ptr->rawtx_fields.nonce.field, 
                             tx_ptr->rawtx_fields.nonce.field_len, NULL);
     }
@@ -388,8 +373,6 @@ BOAT_RESULT BoatCitaTxSend(BoatCitaTx *tx_ptr)
     
     return result;
 }
-
-
 BCHAR *BoatCitaCallContractFunc(BoatCitaTx *tx_ptr, BCHAR *func_proto_str,
                                      BUINT8 *func_param_ptr, BUINT32 func_param_len)
 {
@@ -434,13 +417,13 @@ BCHAR *BoatCitaCallContractFunc(BoatCitaTx *tx_ptr, BCHAR *func_proto_str,
     memset(from_hexstr, 0, sizeof(from_hexstr));
     UtilityBinToHex(from_hexstr, tx_ptr->wallet_ptr->account_info.address, BOAT_CITA_ADDRESS_SIZE,
                     BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-     param_fiscobcos_call.from  = from_hexstr;
+     param_cita_call.from  = from_hexstr;
 
     //set to
     memset(to_hexstr, 0, sizeof(to_hexstr));
     UtilityBinToHex(to_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_CITA_ADDRESS_SIZE, 
                     BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-    param_fiscobcos_call.to  = to_hexstr;
+    param_cita_call.to  = to_hexstr;
 
     //set data
     memset(data_hexstr, 0, sizeof(data_hexstr));
@@ -462,6 +445,8 @@ BCHAR *BoatCitaCallContractFunc(BoatCitaTx *tx_ptr, BCHAR *func_proto_str,
 
     return retval_str;
 }
+
+
 
 
 BOAT_RESULT BoatCitaGetTransactionReceipt(BoatCitaTx *tx_ptr)
@@ -502,13 +487,14 @@ BOAT_RESULT BoatCitaGetTransactionReceipt(BoatCitaTx *tx_ptr)
             result = BOAT_ERROR_WALLET_RESULT_PARSE_FAIL;
             break;
         }
+
         else
         {
             // tx_status_str == "0x0": the transaction is successfully mined
             // tx_status_str is ohters: error number, for detail, see https://fisco-bcos-documentation.readthedocs.io/zh_CN/latest/docs/api.html#
             if (result != BOAT_ERROR_JSON_OBJ_IS_NULL)
             {
-                if (strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "0x0") == 0)
+                if (strcmp((BCHAR*)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, "null") == 0)
                 {
                     BoatLog(BOAT_LOG_NORMAL, "Transaction has got mined.");
                     break;
@@ -541,7 +527,7 @@ BOAT_RESULT BoatCitaGetTransactionReceipt(BoatCitaTx *tx_ptr)
 
 BCHAR *BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr)
 {
-    BOAT_RESULT result = BOAT_SUCCESS;
+    BUINT64 result = BOAT_SUCCESS;
     BCHAR *retval_str;
 
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
@@ -549,13 +535,15 @@ BCHAR *BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr)
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
     }
-
-    retval_str = web3_fiscobcos_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
+    retval_str = web3_cita_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                                &result);
+    BoatLog(BOAT_LOG_CRITICAL, "web3 cita get blocknumber 1111 ,result = %d\n .",result);
+    BoatLog(BOAT_LOG_CRITICAL, "web3 cita get blocknumber 2222 ,retval_str = %s\n .",retval_str);
+
     if (retval_str == NULL)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "web3 fiscobcos get blocknumber fail ,result = %d .",result);
+        
     }
     return retval_str;
 }
@@ -578,5 +566,4 @@ BOAT_RESULT BoatCitaParseRpcResponseResult(const BCHAR *json_string,
     return cita_parse_json_result(json_string, child_name, result_out);
 }
 
-#endif /* end of PROTOCOL_USE_FISCOBCOS */
 
