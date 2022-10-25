@@ -1,23 +1,20 @@
-pragma solidity >=0.4.16 <0.6.0;
+pragma solidity ^0.7.0;
 
 contract SimpleStorage {
-    uint storedData;
-    event Init(address, uint);
-    event Set(address, uint);
-    event Stored(uint);
+  uint public storedData;
+  event stored(address _to, uint _amount);
 
-    constructor() public {
-        storedData = 100;
-        emit Init(msg.sender, 100);
-    }
+  constructor(uint initVal) public {
+    emit stored(msg.sender, initVal);
+    storedData = initVal;
+  }
 
-    function set(uint x) public {
-        emit Stored(x);
-        storedData = x;
-        emit Set(msg.sender, x);
-    }
+  function set(uint x) public {
+    emit stored(msg.sender, x);
+    storedData = x;
+  }
 
-    function get() public view returns (uint) {
-        return storedData;
-    }
+  function get() view public returns (uint retVal) {
+    return storedData;
+  }
 }
