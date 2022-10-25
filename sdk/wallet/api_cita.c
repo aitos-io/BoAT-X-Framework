@@ -139,7 +139,7 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
     //quota 
     tx_ptr->rawtx_fields.quota = quota;
 
-    // less than current blocknumber plus 100.
+    // valid_until_block = current blocknumber + 100.
     retval_str = BoatCitaGetBlockNumber(tx_ptr);
     result     = BoatCitaParseRpcResponseStringResult(retval_str, 
                                                            &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
@@ -148,20 +148,9 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
         BoatLog(BOAT_LOG_CRITICAL, "BoatCitaGetBlockNumber failed.");
         return result;
     }
-    BUINT8 Block_bumber[8] = {0};
-
-    UtilityHexToBin(Block_bumber, 32, 
-                    (BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr,
-                    TRIMBIN_TRIM_NO, BOAT_TRUE);
-
-
-
-      
-    BoatLog(BOAT_LOG_CRITICAL, "1111111111 = %s\n", (BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr);
-
-    
-    tx_ptr->rawtx_fields.valid_until_block = 0x258c;
-    BoatLog(BOAT_LOG_CRITICAL, "3333333333333 = %x\n",  tx_ptr->rawtx_fields.valid_until_block);
+    char *stopstring;
+    BUINT64 valid_until_block_value = strtoll((BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, &stopstring, 16);
+    tx_ptr->rawtx_fields.valid_until_block = valid_until_block_value + 100;
 
     // Initialize value = 0
     //CITA DOES NOT SET VALUE, IT'S DE-COINIZED
