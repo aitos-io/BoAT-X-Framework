@@ -54,7 +54,6 @@ typedef struct TBoatCitaAccountInfo
  */
 typedef struct TBoatCitaNetworkInfo
 {
-    BUINT32 version
     BCHAR *node_url_ptr; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
 }BoatCitaNetworkInfo;
 
@@ -81,27 +80,11 @@ typedef struct TBoatCitaWalletConfig
 {
 	BoatWalletPriKeyCtx_config  prikeyCtx_config; //!< @NOTE This field MUST BE placed in the first member of the structure
 	                                              //!< because in function BoatWalletCreate(), 
-    BUINT32  chain_id;                            //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
-    BCHAR    node_url_str[BOAT_ETH_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
+    BCHAR    node_url_str[BOAT_CITA_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
     BBOOL    load_existed_wallet;   //false: need creat key by Boat , true: not need creat key
-}BoatEthWalletConfig;
 
+}BoatCitaWalletConfig;
 
-//!@brief ECDSA signature struct
-typedef struct TBoatEthTxFieldSig
-{
-    union
-    {
-        struct
-        {
-            BUINT8 r32B[32]; //!< r part of the signature
-            BUINT8 s32B[32]; //!< s part of the signature
-        };
-        BUINT8 sig64B[64];   //!< consecutive signature composed of r+s
-    };
-    BUINT8 r_len;            //!< Effective length of r, either 0 for unsigned tx and 32 for signed tx
-    BUINT8 s_len;            //!< Effective length of s, either 0 for unsigned tx and 32 for signed tx
-}BoatEthTxFieldSig;
 
 //!@brief EthereumRAW transaction fields
 
@@ -119,16 +102,14 @@ typedef struct TBoatCitaRawtxFields
     // Protocols inherited these fileds include:
     // PlatONE
     BoatFieldMax32B nonce;        //!< nonce, uint256 in bigendian, equal to the transaction count of the sender's account address
+    BUINT32 version;
     BUINT64 quota;                  //!< gasprice in wei, uint256 in bigendian
     BUINT64 valid_until_block ;     //!< gaslimit, uint256 in bigendian
     BUINT8 recipient[BOAT_CITA_ADDRESS_SIZE]; //!< recipient's address, 160 bits
     BoatFieldMax32B value;        //!< value to transfer, uint256 in bigendian
-    BoatFieldMax32B to_v1;        //
+   // BoatFieldMax32B to_v1;        //
     BoatFieldVariable data;       //!< data to transfer, unformatted stream
     BoatFieldMax32B chain_id_v1 ;      //!< record the chain/business information to which the transaction belongs
-    BoatFieldMax4B v;             //!< chain id or recovery identifier, @see RawtxPerform()
-    BoatEthTxFieldSig sig;        //!< ECDSA signature, including r and s parts
-    
     // To allow struct inheritance, other Ethereum compatible protocols can
     // define a BoatXXXRawtxFields struct type with all above fields the very
     // same as Ethereum and append its own fields following them.
@@ -280,7 +261,7 @@ BOAT_RESULT BoatCitaWalletSetNodeUrl(BoatCitaWallet *wallet_ptr, const BCHAR *no
  *   This function returns BOAT_SUCCESS if setting is successful.\n
  *   Otherwise it returns one of the error codes.
  ******************************************************************************/
-BOAT_RESULT BoatCitaWalletSetChainId(BoatCitaWallet *tx_ptr, BoatFieldMax32B *chain_id_ptr)
+BOAT_RESULT BoatCitaWalletSetChainId(BoatCitaWallet *tx_ptr, BoatFieldMax32B *chain_id_ptr);
 
 
 /*!*****************************************************************************
@@ -480,8 +461,7 @@ BOAT_RESULT BoatCitaTxSetValue(BoatCitaTx *tx_ptr, BoatFieldMax32B *value_ptr);
  *   This function returns BOAT_SUCCESS if setting is successful.\n
  *   Otherwise it returns one of the error codes.       
  ******************************************************************************/
-BOAT_RESULT BoatCitaTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
-
+BOAT_RESULT BoatCitaTxSetData(BoatCitaTx *tx_ptr, BoatFieldVariable *data_ptr);
 
 /*!****************************************************************************
  * @brief Sign and send a transaction. Also call a stateful contract function.
@@ -522,7 +502,7 @@ BOAT_RESULT BoatCitaTxSetData(BoatEthTx *tx_ptr, BoatFieldVariable *data_ptr);
  *
  * @see BoatEthCallContractFunc()    
  ******************************************************************************/
-BOAT_RESULT BoatCitaTxSend(BoatEthTx *tx_ptr);
+BOAT_RESULT BoatCitaTxSend(BoatCitaTx *tx_ptr);
 
 
 /*!****************************************************************************
@@ -567,35 +547,10 @@ BOAT_RESULT BoatCitaTxSend(BoatEthTx *tx_ptr);
  *
  * @see BoatEthTxSend()
  ******************************************************************************/
-BCHAR *BoatCitaCallContractFunc(BoatEthTx *tx_ptr,
+BCHAR *BoatCitaCallContractFunc(BoatCitaTx *tx_ptr,
 								BCHAR *func_proto_str,
 								BUINT8 *func_param_ptr,
 								BUINT32 func_param_len);
-
-
-/*!****************************************************************************
- * @brief Transfer Ether to spceified recipient
- *
- * @details
- *   This function transfer Ether from the wallet's owner account to the specified
- *   recipient account.
- *   \n Before calling this function, all necessary wallet fields such as private key,
- *   node URL and etc. must be set correctly.
- *   
- * @param[in] tx_ptr
- *   Transaction pointer.
- *
- * @param[in] value_hex_str
- *   A string representing the value (Unit: wei) to transfer, in HEX format like\n
- *   "0x89AB3C".\n
- *   Note that decimal value is not accepted. If a decimal value such as "1234"\n
- *   is specified, it's treated as "0x1234".
- *
- * @return
- *   This function returns BOAT_SUCCESS if transfer is successful.\n
- *   Otherwise it returns one of the error codes.      
- ******************************************************************************/
-BOAT_RESULT BoatCitaTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str);
 
 
 /*!****************************************************************************
@@ -614,7 +569,11 @@ BOAT_RESULT BoatCitaTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str);
  *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
  *   of the error codes.
  ******************************************************************************/
-BOAT_RESULT BoatCitaGetTransactionReceipt(BoatEthTx *tx_ptr);
+BOAT_RESULT BoatCitaGetTransactionReceipt(BoatCitaTx *tx_ptr);
+
+
+
+BCHAR *BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr);
 
 /*! @}*/
 
