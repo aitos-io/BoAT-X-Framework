@@ -15,7 +15,7 @@
 # limitations under the License.
 
 
-# This python script generates FISCOBCOS's C language interface function from contract ABI (solidity).
+# This python script generates Ethereum's C language interface function from contract ABI (solidity).
 
 # Not all contract ABI can be converted to C interface because C is lack of object-oriented programming
 # capability. If the tool fails to generate the interface, you may have to organize the contract call
@@ -29,8 +29,8 @@
 # function. The return value string has to be parsed manually as per the contract prototype. If the call
 # fails, it returns NULL.
 #
-# For state-ful contract call, i.e. a transaction, the generated C API returns a HEX string representing
-# the transaction hash. If the transaction fails, it returns NULL.
+# For value transfer or state-ful contract call, i.e. a transaction, the generated C API returns a HEX
+# string representing the transaction hash. If the transaction fails, it returns NULL.
 
 import sys
 import json
@@ -232,7 +232,7 @@ class CFunctionGen():
         with open(abi_file_name) as file_handle:
             self.abi_object = json.load(file_handle)
             self.abi_file_name = os.path.basename(abi_file_name)
-            #print(self.abi_object)
+            #print(self.abi_object);
 
         self.output_path = output_path
         
@@ -857,8 +857,6 @@ class CFunctionGen():
         if not self.is_Change_Blockchain_State(abi_item):
             func_body_str += '    boat_try(BoatCitaTxSetNonce(tx_ptr, BOAT_CITA_NONCE_AUTO));\n\n'
 
-
-
         # Extract solidity function inputs
         inputs_len = len(inputs)
         nonFixed_filedLen_str = self.gen_nonFixed_mallocSize_exp(abi_item, 27)
@@ -1062,7 +1060,6 @@ class CFunctionGen():
             i = i + 1
 
         if self.is_Change_Blockchain_State(abi_item):
-            # for state-less funciton call
             func_body_str += '    call_result_str = BoatCitaCallContractFunc(tx_ptr, function_prototye_str, data_field.field_ptr+4, data_field.field_len-4);\n\n'
         else:
             # for stateful transaction
