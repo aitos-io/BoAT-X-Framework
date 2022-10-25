@@ -62,48 +62,54 @@ BoatQuorumWallet *g_quorum_wallet_ptr;
 BUINT8 keypairIndex = 0;
 BUINT8 networkIndex = 0;
 
+
+__BOATSTATIC BOAT_RESULT quorum_createKeypair(BCHAR *keypairName)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+    BoatKeypairPriKeyCtx_config keypair_config = {0};
+    BUINT8 binFormatKey[32]               = {0};
+
+    (void) binFormatKey;
+    /* wallet_config value assignment */
+    #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
+        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
+
+    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
+        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
+        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
+        keypair_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
+        keypair_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
+
+    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
+
+        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
+        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
+        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
+        UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        keypair_config.prikey_content.field_ptr = binFormatKey;
+        keypair_config.prikey_content.field_len = 32;
+
+    #else  
+        /* default is internal generation */  
+        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
+    #endif
+
+
+
+    /* create quorum keypair */
 #if defined(USE_ONETIME_WALLET)
-__BOATSTATIC BOAT_RESULT quorum_createOnetimeKeypair()
-{
-    BOAT_RESULT result = BOAT_SUCCESS;
-    BoatKeypairPriKeyCtx_config keypair_config = {0};
-    BUINT8 binFormatKey[32]               = {0};
-
-
-    /* wallet_config value assignment */
-    #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
-        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
-
-    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
-        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
-        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
-        keypair_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
-        keypair_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
-
-    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
-
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
-        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
-        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
-        UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
-        keypair_config.prikey_content.field_ptr = binFormatKey;
-        keypair_config.prikey_content.field_len = 32;
-
-    #else  
-        /* default is internal generation */  
-        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
-    #endif
-
-
-
-    /* create quorum keypair */
-    result = BoatKeypairCreate( &keypair_config, "keypairOnetime",BOAT_STORE_TYPE_RAM);
+    result = BoatKeypairCreate( &keypair_config, keypairName,BOAT_STORE_TYPE_RAM);
+#elif defined(USE_CREATE_PERSIST_WALLET)
+    result = BoatKeypairCreate( &keypair_config, keypairName,BOAT_STORE_TYPE_FLASH);
+#else
+    result = BOAT_ERROR;
+#endif
     if (result < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
@@ -113,7 +119,7 @@ __BOATSTATIC BOAT_RESULT quorum_createOnetimeKeypair()
     return BOAT_SUCCESS;
 }
 
-__BOATSTATIC BOAT_RESULT createOnetimeNetwork()
+__BOATSTATIC BOAT_RESULT createNetwork()
 {
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatQuorumNetworkConfig network_config = {0};
@@ -123,78 +129,13 @@ __BOATSTATIC BOAT_RESULT createOnetimeNetwork()
     strncpy(network_config.node_url_str, demoUrl, BOAT_QUORUM_NODE_URL_MAX_LEN - 1);
 
 	/* create platone network */
+#if defined(USE_ONETIME_WALLET)
     result = BoatQuorumNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
-    if (result < 0)
-	{
-        //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
-        return BOAT_ERROR_WALLET_CREATE_FAIL;
-    }
-    networkIndex = result;
-    
-    return BOAT_SUCCESS;
-}
-
-#endif
-
-#if defined(USE_CREATE_PERSIST_WALLET)
-__BOATSTATIC BOAT_RESULT quorum_createPersistKeypair(BCHAR *wallet_name)
-{
-    BOAT_RESULT result = BOAT_SUCCESS;
-    BoatKeypairPriKeyCtx_config keypair_config = {0};
-    BUINT8 binFormatKey[32]               = {0};
-
-    /* wallet_config value assignment */
-    #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
-        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
-
-    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
-        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
-        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
-        keypair_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
-        keypair_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
-
-    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
-        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
-        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
-        UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
-        keypair_config.prikey_content.field_ptr = binFormatKey;
-        keypair_config.prikey_content.field_len = 32;
-
-    #else  
-        /* default is internal generation */  
-        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
-    #endif
-
-    /* create quorum keypair */
-    result = BoatKeypairCreate( &keypair_config, "keypairOnetime",BOAT_STORE_TYPE_FLASH);
-    if (result < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
-        return BOAT_ERROR_WALLET_CREATE_FAIL;
-    }
-    keypairIndex = result;
-
-    return BOAT_SUCCESS;
-}
-
-__BOATSTATIC BOAT_RESULT createPersistNetwork()
-{
-    BOAT_RESULT result = BOAT_SUCCESS;
-    BoatQuorumNetworkConfig network_config = {0};
-
-    network_config.chain_id = 10;
-    network_config.eip155_compatibility = BOAT_TRUE;
-    strncpy(network_config.node_url_str, demoUrl, BOAT_QUORUM_NODE_URL_MAX_LEN - 1);
-
-	/* create platone network */
+#elif defined(USE_CREATE_PERSIST_WALLET)
     result = BoatQuorumNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
+#else
+    result = BOAT_ERROR;
+#endif
     if (result < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
@@ -204,8 +145,6 @@ __BOATSTATIC BOAT_RESULT createPersistNetwork()
     
     return BOAT_SUCCESS;
 }
-#endif
-
 
 BOAT_RESULT quorum_call_ReadStore(BoatQuorumWallet *wallet_ptr)
 {
@@ -255,20 +194,14 @@ int main(int argc, char *argv[])
     BoatIotSdkInit();
 
     /* step-2: create quorum wallet */
-#if defined(USE_ONETIME_WALLET)
     BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
-    result = quorum_createOnetimeKeypair();
-    result = createOnetimeNetwork();
-
-#elif defined(USE_CREATE_PERSIST_WALLET)
-    BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
-    result = quorum_createPersistKeypair("quorum.cfg");
-    result = createPersistNetwork();
-#else
-    BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
-    result = BOAT_ERROR;
-#endif  
-
+    result = quorum_createKeypair("keypair00");
+    if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "quorumWalletPrepare_create failed : %d.", result);
+        boat_throw(result, ethereum_trans_demo_catch);
+	}
+    result = createNetwork();
     if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "quorumWalletPrepare_create failed : %d.", result);
