@@ -1415,7 +1415,7 @@ BCHAR *web3_cita_call(Web3IntfContext *web3intf_context_ptr,
         expected_string_size = snprintf((BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
                                         web3intf_context_ptr->web3_json_string_buf.field_len,
                                         "{\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":"
-                                        "[{\"from\":\"%s\",\"to\":\"%s\",\"data\":\"%s\"}],\"id\":%u}",
+                                        "[{\"from\":\"%s\",\"to\":\"%s\",\"data\":\"%s\"}, \"latest\"],\"id\":%u}",
                                         param_ptr->from,
                                         param_ptr->to,
                                         param_ptr->data,
@@ -1693,7 +1693,7 @@ BCHAR *web3_cita_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
                                         (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
                                         web3intf_context_ptr->web3_json_string_buf.field_len,
                                         "{\"jsonrpc\":\"2.0\",\"method\":\"blockNumber\",\"params\":"
-                                          "[]\",\"id\":%u}",
+                                          "[],\"id\":%u}",
                                         web3intf_context_ptr->web3_message_id);
 
         if (expected_string_size >= web3intf_context_ptr->web3_json_string_buf.field_len)
