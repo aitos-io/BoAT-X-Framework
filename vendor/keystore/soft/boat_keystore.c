@@ -2,8 +2,8 @@
  * @Description: 
  * @Author: aitos
  * @Date: 2022-09-13 16:37:32
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 17:11:17
+ * @LastEditors: zt222 tao.zheng@aitos.io
+ * @LastEditTime: 2022-10-24 20:44:16
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -229,10 +229,10 @@ BOAT_RESULT BoAT_Keystore_store_prikey(BUINT8 keypairIndex,BUINT8 *prikey,BUINT3
             result = BOAT_SUCCESS;
         }
     }
-    if(prikeyNum >= BOAT_MAX_KEYPAIR_NUM){
-        return result;
-    }
     BoatLog(BOAT_LOG_NORMAL,"read prikey num  = %d ",prikeyNum);
+    if(prikeyNum >= BOAT_MAX_KEYPAIR_NUM){
+        return BOAT_ERROR;
+    }
     offset += sizeof(prikeynumBytes);
     for (size_t i = 0; i < prikeyNum; i++)
     {
@@ -254,6 +254,7 @@ BOAT_RESULT BoAT_Keystore_store_prikey(BUINT8 keypairIndex,BUINT8 *prikey,BUINT3
             BoatLog(BOAT_LOG_NORMAL,"read prikey index fail,ret = %d ",result);
             return result;
         }
+        BoatLog(BOAT_LOG_NORMAL,"prikey index = %d , keypairIndex = %d ",index,keypairIndex);
         if(index == keypairIndex){
             BoatLog(BOAT_LOG_NORMAL,"keypair index already exist ");
             return BOAT_ERROR;
@@ -300,3 +301,192 @@ BOAT_RESULT BoAT_Keystore_store_prikey(BUINT8 keypairIndex,BUINT8 *prikey,BUINT3
     }
     return result;
 }
+
+/**
+ * @description: 
+ *  This cunction delete prikey by index.
+ * @param {BUINT8} index
+ * @return {*}
+ *  This function returns BoAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ */
+BOAT_RESULT BoAT_DeletePirkeyByIndex(BUINT8 index)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+    BUINT8 i = 0;
+    BUINT8 prikeyNum = 0 ,prikeyNumNew = 0, prikeyIndex = 0;
+    BUINT32 offset = 0, offset_moveFrom = 0 , offset_moveTo = 0;
+    BUINT32 prikeyLength = 0 , prikeyLengthLen = 0 , paramLength = 0 , paramLengthLen = 0 ;
+    BUINT8 lengthBytes[3] = {0};
+    BUINT8 prikeynumBytes[4] = {0};
+    BUINT8 *prikeyData = NULL;
+    boat_try_declare;
+    if(index > BOAT_MAX_KEYPAIR_NUM){
+        return BOAT_ERROR;
+    }
+    /* onetime prikey 
+       index of onetime prikey must be 0
+    */
+    if(index == 0){
+        /* set prikey num of onetime prikey to 0 */
+        memset(prikeynumBytes,0x00,sizeof(prikeynumBytes));
+        result = BoATStoreSoftRotNvram(BOAT_STORE_PRIKEY,0,prikeynumBytes,sizeof(prikeynumBytes),BOAT_STORE_TYPE_RAM);
+        return result;
+    }else{ // persistent prikey
+        result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset,prikeynumBytes,sizeof(prikeynumBytes),BOAT_STORE_TYPE_FLASH);
+    /* if read Nvram failed , no keypair */
+    if(result != BOAT_SUCCESS){
+        return result;
+    }
+    result = utility_check_NumBytes(prikeynumBytes,&prikeyNum);
+    if(result != BOAT_SUCCESS || prikeyNum == 0){
+        return result;
+    }
+    offset += sizeof(prikeynumBytes);
+    for ( i = 0; i < prikeyNum; i++)
+    {
+        /* index */
+        result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
+        if(result != BOAT_SUCCESS ){
+            BoatLog(BOAT_LOG_NORMAL,"read prikey index lengthbytes fail ,ret = %d ",result);
+            return result;
+        }
+        paramLength = UtilityGetLVData_L(lengthBytes);
+        if(paramLength != 1){
+            BoatLog(BOAT_LOG_NORMAL,"prikey index length err ");
+            return BOAT_ERROR;
+        }
+        paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
+        // offset += keypairLengthLen;
+        /* keypair index  */
+        result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset + paramLengthLen ,&prikeyIndex,sizeof(prikeyIndex),BOAT_STORE_TYPE_FLASH);
+        if(result != BOAT_SUCCESS ){
+            BoatLog(BOAT_LOG_NORMAL,"read keypair index err ");
+            return result;
+        }
+        if(prikeyIndex == index){
+            break;
+        }
+        offset += (paramLengthLen+paramLength);
+        /* prikey data */
+        result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
+        if(result != BOAT_SUCCESS ){
+            BoatLog(BOAT_LOG_NORMAL,"read prikey lengthbytes fail,ret = %d ",result);
+            return result;
+        }
+        paramLength = UtilityGetLVData_L(lengthBytes);
+        if(paramLength < 0){
+            BoatLog(BOAT_LOG_NORMAL,"prikey data length err ");
+            return BOAT_ERROR;
+        }
+        paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
+        offset += (paramLengthLen+paramLength);
+    }
+    BoatLog(BOAT_LOG_NORMAL,"i= %d ",i);
+    if(i >= prikeyNum){
+        BoatLog(BOAT_LOG_NORMAL,"not find the prikey ");
+        return BOAT_ERROR;
+    }
+    prikeyNumNew = prikeyNum -1;
+    utility_get_NumBytes(prikeyNumNew,prikeynumBytes);
+    result = BoATStoreSoftRotNvram(BOAT_STORE_PRIKEY,0,prikeynumBytes,sizeof(prikeynumBytes),BOAT_STORE_TYPE_FLASH); // only need to reset keypair length bytes
+    if(result != BOAT_SUCCESS){
+        BoatLog(BOAT_LOG_NORMAL,"delete keypair fail ");
+        return result;
+    }
+
+    if(i == (prikeyNum -1)){  /* last one keypair*/
+        memset(lengthBytes,0x00,sizeof(lengthBytes));
+        result = BoATStoreSoftRotNvram(BOAT_STORE_PRIKEY,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH); // only need to reset keypair length bytes
+        if(result != BOAT_SUCCESS){
+           BoatLog(BOAT_ERROR, "delete keypair fail");
+           boat_throw(BOAT_ERROR, updataPrikeyData_exception);
+        }
+    }else{
+        offset_moveTo = offset;
+        // the next keypair
+        offset += (paramLengthLen + paramLength);
+        /* prikey content*/
+        result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
+        if(result != BOAT_SUCCESS ){
+            BoatLog(BOAT_LOG_NORMAL,"read prikey lengthbytes fail,ret = %d ",result);
+            boat_throw(result, updataPrikeyData_exception);
+        }
+        paramLength = UtilityGetLVData_L(lengthBytes);
+        if(paramLength < 0){
+            BoatLog(BOAT_LOG_NORMAL,"prikey data length err ");
+            boat_throw(BOAT_ERROR, updataPrikeyData_exception);
+        }
+        paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
+        offset += (paramLengthLen+paramLength);        
+        offset_moveFrom = offset;
+        i++;  
+        prikeyLength = 0;
+        for ( ; i < prikeyNum; i++)
+        {
+            /* index */
+            result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
+            if(result != BOAT_SUCCESS ){
+                boat_throw(result, updataPrikeyData_exception);
+            }
+            paramLength = UtilityGetLVData_L(lengthBytes);
+            if(paramLength < 0){
+                BoatLog(BOAT_LOG_NORMAL,"keypair data length err ");
+                boat_throw(BOAT_ERROR, updataPrikeyData_exception);
+            }
+            paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
+            offset += (paramLengthLen + paramLength);
+            prikeyLength += (paramLengthLen + paramLength);
+            result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset,lengthBytes,sizeof(lengthBytes),BOAT_STORE_TYPE_FLASH);
+            if(result != BOAT_SUCCESS ){
+                boat_throw(result, updataPrikeyData_exception);
+            }
+            paramLength = UtilityGetLVData_L(lengthBytes);
+            if(paramLength < 0){
+                BoatLog(BOAT_LOG_NORMAL,"keypair data length err ");
+                boat_throw(BOAT_ERROR, updataPrikeyData_exception);
+            }
+            paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
+            offset += (paramLengthLen + paramLength);            
+            prikeyLength += (paramLengthLen + paramLength);
+        }
+        // all the keypairs'length after index keypair
+        prikeyData = BoatMalloc(prikeyLength);
+        if(NULL == prikeyData){
+            BoatLog(BOAT_LOG_NORMAL,"fail to malloc memory ");
+            boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, updataPrikeyData_exception);
+        }
+        result = BoatReadSoftRotNvram(BOAT_STORE_PRIKEY,offset_moveFrom,prikeyData,prikeyLength,BOAT_STORE_TYPE_FLASH);
+        if(result != BOAT_SUCCESS){
+            BoatFree(prikeyData);
+            BoatLog(BOAT_LOG_NORMAL,"read keypair data fail ");
+            boat_throw(BOAT_ERROR_STORAGE_FILE_READ_FAIL, updataPrikeyData_exception);
+        }
+        result = BoATStoreSoftRotNvram(BOAT_STORE_PRIKEY,offset_moveTo,prikeyData,prikeyLength,BOAT_STORE_TYPE_FLASH);
+        BoatFree(prikeyData);
+        if(result != BOAT_SUCCESS){
+            /* recover keypairNum */
+            boat_throw(BOAT_ERROR_STORAGE_FILE_WRITE_FAIL, updataPrikeyData_exception);
+        }
+    }
+    }
+
+    	//! boat catch handle
+	boat_catch(updataPrikeyData_exception)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+		result = boat_exception;
+        /* recover prikeyNum */
+        utility_get_NumBytes(prikeyNum,prikeynumBytes);
+        offset = 0;
+        result = BoATStoreSoftRotNvram(BOAT_STORE_PRIKEY,offset,prikeynumBytes,sizeof(prikeynumBytes),BOAT_STORE_TYPE_FLASH); 
+        if(result != BOAT_SUCCESS){
+            BoatLog(BOAT_LOG_NORMAL,"delete keypair fail ");
+            return result;
+        }
+	}
+    return BOAT_SUCCESS;
+    
+}
+

@@ -2,8 +2,8 @@
  * @Description: 
  * @Author: aitos
  * @Date: 2022-09-04 11:28:58
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-13 14:33:03
+ * @LastEditors: zt222 tao.zheng@aitos.io
+ * @LastEditTime: 2022-10-24 19:34:55
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
 		 BoatLog(BOAT_LOG_CRITICAL, "keypair creat failed: %d.", result);
         boat_throw(result, ethereum_storeread_demo_catch);
 	}
-    result = BoATIotKeypairDelete(5);
+    result = BoATIotKeypairDelete(4);
 
     if(result != BOAT_SUCCESS)
 	{
@@ -201,7 +201,14 @@ int main(int argc, char *argv[])
     }
     BoATKeypair_FreeKeypairContext(keypairList);
     
-        result = BoATIotKeypairDelete(0);
+    result = createPersistkeypair("Persistkeypair04");
+    if(result != BOAT_SUCCESS)
+	{
+		 BoatLog(BOAT_LOG_CRITICAL, "keypair creat failed: %d.", result);
+        boat_throw(result, ethereum_storeread_demo_catch);
+	}
+
+    result = BoATIotKeypairDelete(0);
 
     if(result != BOAT_SUCCESS)
 	{
