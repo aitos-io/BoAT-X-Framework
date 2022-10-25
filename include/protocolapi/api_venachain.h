@@ -24,7 +24,6 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 #define __API_VENACHAIN_H__
 
 #include "boatiotsdk.h"
-#include "network_venachain.h"
 
 /*! @defgroup eth-api boat venachain-API
  * @{

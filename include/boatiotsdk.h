@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-08-19 14:33:35
  * @LastEditors: zt222 tao.zheng@aitos.io
- * @LastEditTime: 2022-10-25 18:01:36
+ * @LastEditTime: 2022-10-25 20:40:40
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -80,6 +80,7 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #endif
 
 #if PROTOCOL_USE_VENACHAIN == 1
+#include "network_venachain.h"
 #include "protocolapi/api_venachain.h"
 #endif
 
