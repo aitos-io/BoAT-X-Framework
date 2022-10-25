@@ -12,6 +12,8 @@ add_subdirectory(utilities)
 if (BOAT_PROTOCOL_USE_ETHEREUM OR BOAT_PROTOCOL_USE_PLATONE OR BOAT_PROTOCOL_USE_PLATON OR BOAT_PROTOCOL_USE_FISCOBCOS OR BOAT_PROTOCOL_USE_QUORUM)
 add_subdirectory(rlp)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatrlp-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:web3intf-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:cjson-obj>)
 endif()
 
 if(BOAT_PROTOCOL_USE_VENACHAIN)
@@ -43,7 +45,12 @@ set(TARGET  ${TARGET} $<TARGET_OBJECTS:network_hlfabric_obj>)
 endif()
 if(BOAT_PROTOCOL_USE_HWBCS)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boathwbcs-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:http2intf-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:nghttps2-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:protos-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:protobuf-obj>)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:protos-hwbcs-obj>)
+set(TARGET  ${TARGET} $<TARGET_OBJECTS:network_hwbcs_obj>)
 endif()
 if(BOAT_PROTOCOL_USE_CHAINMAKER)
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:boatchainmaker-obj>)
@@ -62,8 +69,6 @@ add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:keypair_obj>
                                     $<TARGET_OBJECTS:wallet_obj>
                                     $<TARGET_OBJECTS:protocol_obj>
                                     $<TARGET_OBJECTS:utilities-obj>
-                                    $<TARGET_OBJECTS:web3intf-obj>
-                                    $<TARGET_OBJECTS:cjson-obj>
                                     ${TARGET})
 
 

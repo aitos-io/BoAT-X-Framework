@@ -21,11 +21,14 @@
 #include "boatkeypair.h"
 
 #include "persiststore.h"
-#include "cJSON.h"
 #include "boatkeystore.h"
 
 #if RPC_USE_LIBCURL == 1
 #include "curl/curl.h"
+#endif
+
+#if ((PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATON == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) || (PROTOCOL_USE_VENACHAIN == 1))  
+#include "cJSON.h"
 #endif
 
 
