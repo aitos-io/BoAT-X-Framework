@@ -39,7 +39,7 @@ const BCHAR *pkcs_demoKey =  "-----BEGIN EC PRIVATE KEY-----\n"
 /**
  * native demo key
  */
-const BCHAR *native_demoKey = "0xdf694c554142b47a98d282a89d5d3ff323f9cb43df6f1f857e0cd5bc092df2b1";
+const BCHAR *native_demoKey = "0x3ef2627393529fed043c7dbfd9358a4ae47a88a59949b07e7631722fd6959002";
 
 /**
  * test node url
@@ -50,7 +50,7 @@ const BCHAR * demoUrl = "http://127.0.0.1:1337";
 /**
  * transfer recipient address
  */
-const BCHAR *demoRecipientAddress = "0x68bdfa185a341e1a398c68a5002fe8266cca442c";
+const BCHAR *demoRecipientAddress = "0x776daaa7443599c2ef54fc41b1d26b98d916fead";
 
 
 BoatCitaWallet *g_cita_wallet_ptr;
