@@ -3,7 +3,7 @@
  * @Author: aitos
  * @Date: 2022-08-19 14:33:35
  * @LastEditors: zt222 tao.zheng@aitos.io
- * @LastEditTime: 2022-10-25 17:49:01
+ * @LastEditTime: 2022-10-25 18:01:36
  */
 /******************************************************************************
  * Copyright (C) 2018-2021 aitos.io
@@ -66,6 +66,7 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #endif
 
 #if PROTOCOL_USE_FISCOBCOS == 1
+#include "network_fiscobcos.h"
 #include "protocolapi/api_fiscobcos.h"
 #endif
 

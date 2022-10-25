@@ -24,7 +24,6 @@ api_fiscobcos.h is header file for BoAT IoT SDK FISCOBCOS's interface.
 #define __API_FISCOBCOS_H__
 
 #include "boatiotsdk.h"
-#include "network_fiscobcos.h"
 
 /*! @defgroup fiscobcos-api boat fiscobcos-API
  * @{
