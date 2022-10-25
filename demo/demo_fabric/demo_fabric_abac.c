@@ -141,7 +141,7 @@ BUINT8 networkIndex = 0;
 // DiscoverRes discoverResult;
 
 
-__BOATSTATIC BOAT_RESULT fabric_createOnetimeWallet()
+__BOATSTATIC BOAT_RESULT fabric_createkeypair()
 {
     BOAT_RESULT result  = BOAT_SUCCESS;
     BoatKeypairPriKeyCtx_config keypair_config = {0};
@@ -174,7 +174,7 @@ __BOATSTATIC BOAT_RESULT fabric_createOnetimeWallet()
 }
 
 
-__BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
+__BOATSTATIC BOAT_RESULT fabric_creatNetwork(void)
 {
 	BOAT_RESULT index;
 	BoatHlfabricNetworkConfig networkConfig;
@@ -265,11 +265,11 @@ int main(int argc, char *argv[])
     BoatIotSdkInit();
 	
 	/* step-2: prepare wallet */
-	result = fabric_createOnetimeWallet();
+	result = fabric_createkeypair();
 	if(result < BOAT_ERROR){
 		boat_throw(result, fabric_key_network_catch);
 	}
-	result = fabricWalletPrepare();
+	result = fabric_creatNetwork();
 	if(result < BOAT_ERROR){
 		boat_throw(result, fabric_key_network_catch);
 	}
