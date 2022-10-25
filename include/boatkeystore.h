@@ -2,8 +2,8 @@
  * @Description: 
  * @Author: aitos
  * @Date: 2022-09-13 20:26:08
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-14 10:49:37
+ * @LastEditors: zt222 tao.zheng@aitos.io
+ * @LastEditTime: 2022-10-24 19:31:09
  */
 #ifndef __BOATKEYSTORE_H__
 #define __BOATKEYSTORE_H__
@@ -63,6 +63,15 @@ BOAT_RESULT BoAT_Keystore_Sign(BoatKeypairPriKeyType type,BUINT8 prikeyIndex, co
  */
 BOAT_RESULT BoAT_Keystore_Gen_Keypair(BoatKeypairPriKeyType type,  BoatKeypairKeypair *keypair);
 
-
+/**
+ * @description: 
+ *  This cunction delete prikey by index.
+ * @param {BUINT8} index
+ * @return {*}
+ *  This function returns BoAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ */
+BOAT_RESULT BoAT_DeletePirkeyByIndex(BUINT8 index);
 
 #endif

@@ -49,6 +49,7 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 
 #if PROTOCOL_USE_ETHEREUM == 1
 #include "protocolapi/api_ethereum.h"
+#include "network_ethereum.h"
 #endif
 
 #if PROTOCOL_USE_PLATON == 1
@@ -57,6 +58,7 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 
 #if PROTOCOL_USE_HLFABRIC == 1
 #include "protocolapi/api_hlfabric.h"
+#include "network_hlfabric.h"
 #endif
 
 #if PROTOCOL_USE_PLATONE == 1
@@ -68,6 +70,7 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #endif
 
 #if PROTOCOL_USE_HWBCS == 1
+#include "network_hwbcs.h"
 #include "protocolapi/api_hw_bcs.h"
 #endif
 

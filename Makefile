@@ -8,14 +8,14 @@ BOAT_BUILD_DIR := $(BOAT_BASE_DIR)/build
 # Set to 1 to enable releated chain, to 0 to disable
 BOAT_PROTOCOL_USE_ETHEREUM   ?= 0
 BOAT_PROTOCOL_USE_PLATON     ?= 0
-BOAT_PROTOCOL_USE_PLATONE    ?= 0
+BOAT_PROTOCOL_USE_PLATONE    ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS  ?= 0
 BOAT_PROTOCOL_USE_HLFABRIC   ?= 0
 BOAT_PROTOCOL_USE_HWBCS      ?= 0
 BOAT_PROTOCOL_USE_CHAINMAKER ?= 0
 BOAT_DISCOVERY_PEER_QUERY    ?= 0
 BOAT_PROTOCOL_USE_VENACHAIN  ?= 0
-BOAT_PROTOCOL_USE_QUORUM     ?= 1
+BOAT_PROTOCOL_USE_QUORUM     ?= 0
 
 # Chain config check
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATON)_$(BOAT_PROTOCOL_USE_PLATONE)_$(BOAT_PROTOCOL_USE_FISCOBCOS)_$(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS)_$(BOAT_PROTOCOL_USE_CHAINMAKER)_$(BOAT_PROTOCOL_USE_VENACHAIN)_$(BOAT_PROTOCOL_USE_QUORUM), 0_0_0_0_0_0_0_0)
@@ -129,6 +129,16 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_QUORUM),1)         
 BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/quorum \
                 -I$(BOAT_SDK_DIR)/protocol/boatquorum
+endif
+
+ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)         
+BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/hwbcs \
+                -I$(BOAT_SDK_DIR)/protocol/boathwbcs  \
+                -I$(BOAT_SDK_DIR)/protocol/boathwbcs/protos  \
+                -I$(BOAT_SDK_DIR)/protocol/common/http2intf \
+                -I$(BOAT_SDK_DIR)/third-party/protos \
+                -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
+                -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include
 endif
 
 BOAT_CSTD_FLAGS := -std=c99

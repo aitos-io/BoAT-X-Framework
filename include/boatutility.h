@@ -24,10 +24,6 @@ boatutility.h is header file for utility functions.
 #define __BOATUTILITY_H__
 
 #include "boatiotsdk.h"
-#if PROTOCOL_USE_HWBCS == 1
-#include "protocolapi/api_hlfabric.h"
-#include "protocolapi/api_hw_bcs.h"
-#endif
 
 /*! @defgroup BoAT utility functions
  * @{

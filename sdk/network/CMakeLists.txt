@@ -23,3 +23,7 @@ endif()
 if(BOAT_PROTOCOL_USE_QUORUM)
 add_subdirectory(quorum)
 endif()
+
+if(BOAT_PROTOCOL_USE_HWBCS)
+add_subdirectory(hwbcs)
+endif()

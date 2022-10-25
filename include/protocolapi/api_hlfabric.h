@@ -24,7 +24,6 @@ api_hlfabric.h is header file for fabric transaction construction and performing
 #define __API_HLFABRIC_H__
 
 #include "boatiotsdk.h"
-#include "network_hlfabric.h"
 /*! @defgroup fabric-api boat fabric-API 
  * @{
  */

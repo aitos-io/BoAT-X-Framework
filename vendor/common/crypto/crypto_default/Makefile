@@ -9,6 +9,9 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
     SHA256_HASH_TYPE = 1
 endif
+ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
+    SHA256_HASH_TYPE = 1
+endif
 
 CRYPTO_CFLAGS   =  $(BOAT_CFLAGS) \
             -W \

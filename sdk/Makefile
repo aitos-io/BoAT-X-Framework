@@ -41,11 +41,13 @@ ifeq ($(BOAT_PROTOCOL_USE_QUORUM),1)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathlfabric/*.o) \
-				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/hlfabric/*.o)
+				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/hlfabric/*.o) 
+
 endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathwbcs/*.o) \
-				$(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathwbcs/protos/*/*.o) 
+				$(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathwbcs/protos/common/*.o) \
+				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/hwbcs/*.o)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker/*.o) \

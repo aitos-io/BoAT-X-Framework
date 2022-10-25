@@ -53,7 +53,7 @@
 
 #include <sys/time.h>
 
-#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER == 1))
+#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER == 1) || (PROTOCOL_USE_HWBCS == 1))
 // for TTLSContext structure
 #include "http2intf.h"
 #endif
@@ -316,7 +316,7 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 }
 
 
-#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER == 1))
+#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER == 1) || (PROTOCOL_USE_HWBCS == 1))
 
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
@@ -397,7 +397,7 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,c
 	TTLSContext *tlsContext_ptr = (TTLSContext *)tlsContext;
 	mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_TLS_SUPPORT == 1) &&(BOAT_TLS_IDENTIFY_CLIENT == 1)
 	mbedtls_x509_crt clientTlscert;
     mbedtls_pk_context clientTlspkey;
 #endif
@@ -437,7 +437,7 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,c
 	mbedtls_ssl_init(tlsContext_ptr->ssl);
 	mbedtls_ssl_config_init(tlsContext_ptr->ssl_cfg);
 	mbedtls_x509_crt_init(tlsContext_ptr->ssl_crt);
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_TLS_SUPPORT == 1) &&(BOAT_TLS_IDENTIFY_CLIENT == 1)
 	mbedtls_x509_crt_init( &clientTlscert );
     mbedtls_pk_init( &clientTlspkey );
 #endif
@@ -467,7 +467,7 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,c
     }
 
 	mbedtls_ssl_conf_ca_chain(tlsContext_ptr->ssl_cfg, tlsContext_ptr->ssl_crt, NULL);
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) &&(BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
+#if (BOAT_TLS_SUPPORT == 1) &&(BOAT_TLS_IDENTIFY_CLIENT == 1)
 	result = mbedtls_x509_crt_parse( &clientTlscert,(const unsigned char *) clientCert.field_ptr,clientCert.field_len);
     if( result != BOAT_SUCCESS )
     {

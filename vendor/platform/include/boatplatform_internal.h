@@ -236,7 +236,7 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd);
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd);
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1  || BOAT_CHAINMAKER_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1  || BOAT_TLS_SUPPORT == 1)
 /*!****************************************************************************
  * @brief initinal TLS connection
  * 
