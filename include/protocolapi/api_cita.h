@@ -36,6 +36,7 @@ api_cita.h is header file for BoAT IoT SDK cita's interface.
 
 #define BOAT_CITA_NONCE_AUTO                     0xFFFFFFFFFFFFFFFF
 #define BOAT_CITA_ADDRESS_SIZE                   20
+#define BOAT_CITA_CHAIN_ID_V1_SIZE               32
 
 //!@brief Account information
 //! An account's only identifier is its private key. An address is calculated

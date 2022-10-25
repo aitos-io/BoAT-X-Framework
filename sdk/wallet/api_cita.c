@@ -123,23 +123,30 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
     result = BoatCitaTxSetRecipient(tx_ptr, recipient);
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatFiscobcosTxSetRecipient failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaTxSetRecipient failed.");
         return result;
     }
     
     //chain_id_v1
-    tx_ptr->rawtx_fields.chain_id_v1.field_len    = UtilityHexToBin(tx_ptr->rawtx_fields.chain_id_v1.field, 32, 
-                                                                chainid_str, TRIMBIN_LEFTTRIM, BOAT_TRUE);
-    if (tx_ptr->rawtx_fields.chain_id_v1.field_len == 0)
+    BUINT8  chain_id_v1[BOAT_CITA_CHAIN_ID_V1_SIZE];
+    converted_len = UtilityHexToBin(chain_id_v1, BOAT_CITA_CHAIN_ID_V1_SIZE,
+                                    chainid_str, TRIMBIN_TRIM_NO, BOAT_TRUE);
+    if (converted_len == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "chain_id_v1 Initialize failed.");
         return BOAT_ERROR_COMMON_UTILITY;
+    }
+    result = BoatCitaTxSetChainID(tx_ptr, chain_id_v1, converted_len);
+    if (result != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaTxSetChainID failed.");
+        return result;
     }
     
     //quota 
     tx_ptr->rawtx_fields.quota = quota;
 
-    // valid_until_block = current blocknumber + 100.
+    // set valid_until_block as current blocknumber + 100.
     retval_str = BoatCitaGetBlockNumber(tx_ptr);
     result     = BoatCitaParseRpcResponseStringResult(retval_str, 
                                                            &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
@@ -163,7 +170,6 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
 
     return BOAT_SUCCESS;
 }
-
 
 
 void BoatCitaWalletDeInit(BoatCitaWallet *wallet_ptr)
@@ -247,6 +253,23 @@ BOAT_RESULT BoatCitaTxSetRecipient(BoatCitaTx *tx_ptr, BUINT8 address[BOAT_CITA_
     memcpy(&tx_ptr->rawtx_fields.recipient, address, BOAT_CITA_ADDRESS_SIZE);
 
     return BOAT_SUCCESS;    
+}
+
+BOAT_RESULT BoatCitaTxSetChainID(BoatCitaTx *tx_ptr, BUINT8 chain_id[BOAT_CITA_CHAIN_ID_V1_SIZE], BUINT32 size)
+{
+    if (tx_ptr == NULL)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    // Set recipient's address
+    BUINT8 chain_id_index = BOAT_CITA_CHAIN_ID_V1_SIZE - size;
+
+    memcpy(&tx_ptr->rawtx_fields.chain_id_v1.field[chain_id_index], chain_id, size);
+    tx_ptr->rawtx_fields.chain_id_v1.field_len = BOAT_CITA_CHAIN_ID_V1_SIZE;
+
+    return BOAT_SUCCESS;
 }
 
 BOAT_RESULT BoatCitaTxSetValue(BoatCitaTx *tx_ptr, BoatFieldMax32B *value_ptr)
