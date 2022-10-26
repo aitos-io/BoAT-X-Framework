@@ -142,7 +142,6 @@ sudo make install
 sudo apt-get install libcurl4-openssl-dev
 ````
 - Cygwin  
-
 Execute setup-x86_64.exe and install tools including make, gcc, python, libcurl as shown below:
 ![image](https://user-images.githubusercontent.com/81662688/130744353-3e6ad68c-7945-44e6-93ac-c8a468e8e0aa.png)
 ![image](https://user-images.githubusercontent.com/81662688/130744453-08a1dff2-08d8-46d8-9732-de814b077ba7.png)
