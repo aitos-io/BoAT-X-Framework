@@ -84,6 +84,20 @@ BoatCitaWallet *BoatCitaWalletInit(const BoatCitaWalletConfig *config_ptr, BUINT
         BoatLog(BOAT_LOG_CRITICAL, "wallet set nodeURL failed.");
         return NULL;
     }
+
+    //chainid
+    result = BoatCitaTxSetChainID(wallet_ptr, &config_ptr->chain_id);
+    if (result != BOAT_SUCCESS)
+    {
+        web3_deinit(wallet_ptr->web3intf_context_ptr);
+        BoatFree(wallet_ptr);
+        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaTxSetChainID failed.");
+        return NULL;
+    }
+
+    wallet_ptr->network_info.version = config_ptr->version;
+
+
     return wallet_ptr;
 }
 
@@ -91,13 +105,12 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
                                 BoatCitaTx *tx_ptr,
                                 BBOOL is_sync_tx,
                                 BCHAR *recipient_str,
-                                BCHAR *chainid_str,
                                 BUINT64 quota)
 {
     BCHAR   *retval_str = NULL;
     BOAT_RESULT result;
 
-    if ((wallet_ptr == NULL) || (tx_ptr == NULL) || (recipient_str == NULL) || (chainid_str == NULL))
+    if ((wallet_ptr == NULL) || (tx_ptr == NULL) || (recipient_str == NULL))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
@@ -127,21 +140,16 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
         return result;
     }
     
-    //chain_id_v1
-    BUINT8  chain_id_v1[BOAT_CITA_CHAIN_ID_V1_SIZE];
-    converted_len = UtilityHexToBin(chain_id_v1, BOAT_CITA_CHAIN_ID_V1_SIZE,
-                                    chainid_str, TRIMBIN_TRIM_NO, BOAT_TRUE);
-    if (converted_len == 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "chain_id_v1 Initialize failed.");
-        return BOAT_ERROR_COMMON_UTILITY;
-    }
-    result = BoatCitaTxSetChainID(tx_ptr, chain_id_v1, converted_len);
-    if (result != BOAT_SUCCESS)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaTxSetChainID failed.");
-        return result;
-    }
+    // //chain_id_v1
+    // BUINT8  chain_id_v1[BOAT_CITA_CHAIN_ID_V1_SIZE];
+    // converted_len = UtilityHexToBin(chain_id_v1, BOAT_CITA_CHAIN_ID_V1_SIZE,
+    //                                 chainid_str, TRIMBIN_TRIM_NO, BOAT_TRUE);
+    // if (converted_len == 0)
+    // {
+    //     BoatLog(BOAT_LOG_CRITICAL, "chain_id_v1 Initialize failed.");
+    //     return BOAT_ERROR_COMMON_UTILITY;
+    // }
+
     
     //quota 
     tx_ptr->rawtx_fields.quota = quota;
@@ -255,25 +263,25 @@ BOAT_RESULT BoatCitaTxSetRecipient(BoatCitaTx *tx_ptr, BUINT8 address[BOAT_CITA_
     return BOAT_SUCCESS;    
 }
 
-BOAT_RESULT BoatCitaTxSetChainID(BoatCitaTx *tx_ptr, BUINT8 chain_id[BOAT_CITA_CHAIN_ID_V1_SIZE], BUINT32 size)
+BOAT_RESULT BoatCitaTxSetChainID(BoatCitaWallet *wallet_ptr, BoatWalletChainId *wallet_chain_id)
 {
-    if (tx_ptr == NULL)
+    if (wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
-    // Set recipient's address
-    BUINT8 chain_id_index = BOAT_CITA_CHAIN_ID_V1_SIZE - size;
+    memset(wallet_ptr->network_info.chain_id_buf, 0, BOAT_CITA_CHAIN_ID_V1_SIZE);
 
-    memcpy(&tx_ptr->rawtx_fields.chain_id_v1.field[chain_id_index], chain_id, size);
-    tx_ptr->rawtx_fields.chain_id_v1.field_len = BOAT_CITA_CHAIN_ID_V1_SIZE;
-
+    BUINT8 chain_id_index = BOAT_CITA_CHAIN_ID_V1_SIZE - wallet_chain_id->value_len;
+    memcpy(&wallet_ptr->network_info.chain_id_buf[chain_id_index],  wallet_chain_id->value, wallet_chain_id->value_len);
     return BOAT_SUCCESS;
 }
 
 BOAT_RESULT BoatCitaTxSetValue(BoatCitaTx *tx_ptr, BoatFieldMax32B *value_ptr)
 {
+    
+
     if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
@@ -281,16 +289,14 @@ BOAT_RESULT BoatCitaTxSetValue(BoatCitaTx *tx_ptr, BoatFieldMax32B *value_ptr)
     }
     
     // Set value
+    tx_ptr->rawtx_fields.value.field_len = BOAT_CITA_VALUE_SIZE;
     if (value_ptr != NULL)
     {
         memcpy(&tx_ptr->rawtx_fields.value, value_ptr, sizeof(BoatFieldMax32B));
     }
     else
     {
-        // If value_ptr is NULL, value is treated as 0.
-        // NOTE: value.field_len == 0 has the same effect as
-        //       value.field_len == 1 && value.field[0] == 0x00 for RLP encoding
-        tx_ptr->rawtx_fields.value.field_len = 0;
+        memset(&tx_ptr->rawtx_fields.value, 0, BOAT_CITA_VALUE_SIZE);    
     }
 
     return BOAT_SUCCESS;
@@ -550,8 +556,6 @@ BCHAR *BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr)
     retval_str = web3_cita_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                                &result);
-    BoatLog(BOAT_LOG_CRITICAL, "web3 cita get blocknumber 1111 ,result = %d\n .",result);
-    BoatLog(BOAT_LOG_CRITICAL, "web3 cita get blocknumber 2222 ,retval_str = %s\n .",retval_str);
 
     if (retval_str == NULL)
     {

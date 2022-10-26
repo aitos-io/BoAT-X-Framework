@@ -37,6 +37,18 @@ api_cita.h is header file for BoAT IoT SDK cita's interface.
 #define BOAT_CITA_NONCE_AUTO                     0xFFFFFFFFFFFFFFFF
 #define BOAT_CITA_ADDRESS_SIZE                   20
 #define BOAT_CITA_CHAIN_ID_V1_SIZE               32
+#define BOAT_CITA_VALUE_SIZE                     32
+
+
+
+//!@brief The extension field of prikey context
+//!  This field is only used for secret key storage when secure storage environment is not available. 
+//!  \n The practice of the security specification is still to store it in TEE/SE.
+typedef struct TBoatWalletChainId
+{
+    BUINT32  value_len;  //!< Length of the stored private key
+    BUINT8   value[BOAT_CITA_CHAIN_ID_V1_SIZE]; //!< Private key content when a secure storage environment is not available
+}BoatWalletChainId;
 
 //!@brief Account information
 //! An account's only identifier is its private key. An address is calculated
@@ -56,6 +68,8 @@ typedef struct TBoatCitaAccountInfo
 typedef struct TBoatCitaNetworkInfo
 {
     BCHAR *node_url_ptr; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
+    BUINT8 chain_id_buf[BOAT_CITA_CHAIN_ID_V1_SIZE];
+    BUINT32 version;
 }BoatCitaNetworkInfo;
 
 
@@ -83,6 +97,8 @@ typedef struct TBoatCitaWalletConfig
 	                                              //!< because in function BoatWalletCreate(), 
     BCHAR    node_url_str[BOAT_CITA_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
     BBOOL    load_existed_wallet;   //false: need creat key by Boat , true: not need creat key
+    BUINT32  version;
+    BoatWalletChainId chain_id;
 
 }BoatCitaWalletConfig;
 
@@ -103,14 +119,13 @@ typedef struct TBoatCitaRawtxFields
     // Protocols inherited these fileds include:
     // PlatONE
     BoatFieldMax32B nonce;        //!< nonce, uint256 in bigendian, equal to the transaction count of the sender's account address
-    BUINT32 version;
+    // BUINT32 version;
     BUINT64 quota;                  //!< gasprice in wei, uint256 in bigendian
     BUINT64 valid_until_block ;     //!< gaslimit, uint256 in bigendian
     BUINT8 recipient[BOAT_CITA_ADDRESS_SIZE]; //!< recipient's address, 160 bits
-    BoatFieldMax32B value;        //!< value to transfer, uint256 in bigendian
-   // BoatFieldMax32B to_v1;        //
+    BoatFieldMax32B  value;        //!< value to transfer, uint256 in bigendian
     BoatFieldVariable data;       //!< data to transfer, unformatted stream
-    BoatFieldMax32B chain_id_v1 ;      //!< record the chain/business information to which the transaction belongs
+    //BoatFieldMax32B chain_id_v1 ;      //!< record the chain/business information to which the transaction belongs
     // To allow struct inheritance, other Ethereum compatible protocols can
     // define a BoatXXXRawtxFields struct type with all above fields the very
     // same as Ethereum and append its own fields following them.
@@ -360,7 +375,6 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
                                 BoatCitaTx *tx_ptr,
                                 BBOOL is_sync_tx,
                                 BCHAR *recipient_str,
-                                BCHAR *chainid_str,
                                 BUINT64 quota);
 
 
