@@ -96,8 +96,6 @@ BoatCitaWallet *BoatCitaWalletInit(const BoatCitaWalletConfig *config_ptr, BUINT
     }
 
     wallet_ptr->network_info.version = config_ptr->version;
-
-
     return wallet_ptr;
 }
 
@@ -139,17 +137,6 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
         BoatLog(BOAT_LOG_CRITICAL, "BoatCitaTxSetRecipient failed.");
         return result;
     }
-    
-    // //chain_id_v1
-    // BUINT8  chain_id_v1[BOAT_CITA_CHAIN_ID_V1_SIZE];
-    // converted_len = UtilityHexToBin(chain_id_v1, BOAT_CITA_CHAIN_ID_V1_SIZE,
-    //                                 chainid_str, TRIMBIN_TRIM_NO, BOAT_TRUE);
-    // if (converted_len == 0)
-    // {
-    //     BoatLog(BOAT_LOG_CRITICAL, "chain_id_v1 Initialize failed.");
-    //     return BOAT_ERROR_COMMON_UTILITY;
-    // }
-
     
     //quota 
     tx_ptr->rawtx_fields.quota = quota;
@@ -280,8 +267,6 @@ BOAT_RESULT BoatCitaTxSetChainID(BoatCitaWallet *wallet_ptr, BoatWalletChainId *
 
 BOAT_RESULT BoatCitaTxSetValue(BoatCitaTx *tx_ptr, BoatFieldMax32B *value_ptr)
 {
-    
-
     if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
@@ -464,9 +449,6 @@ BCHAR *BoatCitaCallContractFunc(BoatCitaTx *tx_ptr, BCHAR *func_proto_str,
     return retval_str;
 }
 
-
-
-
 BOAT_RESULT BoatCitaGetTransactionReceipt(BoatCitaTx *tx_ptr)
 {
     Param_cita_getTransactionReceipt param_cita_getTransactionReceipt;
@@ -556,11 +538,6 @@ BCHAR *BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr)
     retval_str = web3_cita_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                                &result);
-
-    if (retval_str == NULL)
-    {
-        
-    }
     return retval_str;
 }
 

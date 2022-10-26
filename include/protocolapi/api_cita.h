@@ -25,7 +25,7 @@ api_cita.h is header file for BoAT IoT SDK cita's interface.
 
 #include "boatiotsdk.h"
 
-/*! @defgroup eth-api boat ethereum-API
+/*! @defgroup cita-api boat cita-API
  * @{
  */
 
@@ -41,13 +41,13 @@ api_cita.h is header file for BoAT IoT SDK cita's interface.
 
 
 
-//!@brief The extension field of prikey context
+//!@brief The extension field of chainid context
 //!  This field is only used for secret key storage when secure storage environment is not available. 
 //!  \n The practice of the security specification is still to store it in TEE/SE.
 typedef struct TBoatWalletChainId
 {
-    BUINT32  value_len;  //!< Length of the stored private key
-    BUINT8   value[BOAT_CITA_CHAIN_ID_V1_SIZE]; //!< Private key content when a secure storage environment is not available
+    BUINT32  value_len;  //!< Length of the chainid
+    BUINT8   value[BOAT_CITA_CHAIN_ID_V1_SIZE]; 
 }BoatWalletChainId;
 
 //!@brief Account information
@@ -83,14 +83,13 @@ typedef struct TBoatCitaWallet
     BoatCitaAccountInfo account_info; //!< Account information
     BoatCitaNetworkInfo network_info; //!< Network information
 
-    // Ethereum wallet internal members. DO NOT access them from outside wallet protocol.
     struct TWeb3IntfContext *web3intf_context_ptr;  //!< Web3 Interface Context
 }BoatCitaWallet;
 
 
 //!@brief cita Wallet configuration
 
-//! Ethereum wallet configuration is used in wallet creation.
+//! cita wallet configuration is used in wallet creation.
 typedef struct TBoatCitaWalletConfig
 {
 	BoatWalletPriKeyCtx_config  prikeyCtx_config; //!< @NOTE This field MUST BE placed in the first member of the structure
@@ -103,40 +102,38 @@ typedef struct TBoatCitaWalletConfig
 }BoatCitaWalletConfig;
 
 
-//!@brief EthereumRAW transaction fields
+//!@brief CitaRAW transaction fields
 
-//! These fields are to be inherited by other Ethereum compatible protocols (such as PlatONE).
+//! These fields are to be inherited by other cita compatible protocols
 //! Make sure any inherited struct only appends fields at the end of this struct.
-//! This allow these Ethereum compatible protocols to re-use a lot of Ethereum
+//! This allow these cita compatible protocols to re-use a lot of cita
 //! APIs by converting inherited struct pointer to base struct pointer, if only
 //! members in base struct are visited.
 typedef struct TBoatCitaRawtxFields
 {
-    // Following fields are to be inherited by other Ethereum compatible protocols.
+    // Following fields are to be inherited by other cita compatible protocols.
     // DO NOT modify these fields unless all inherited structures are modified
     // synchronously.
     //
     // Protocols inherited these fileds include:
-    // PlatONE
     BoatFieldMax32B nonce;        //!< nonce, uint256 in bigendian, equal to the transaction count of the sender's account address
-    // BUINT32 version;
-    BUINT64 quota;                  //!< gasprice in wei, uint256 in bigendian
-    BUINT64 valid_until_block ;     //!< gaslimit, uint256 in bigendian
+    BUINT64 quota;                  //!< quota
+    BUINT64 valid_until_block ;     //!< valid_until_block
     BUINT8 recipient[BOAT_CITA_ADDRESS_SIZE]; //!< recipient's address, 160 bits
     BoatFieldMax32B  value;        //!< value to transfer, uint256 in bigendian
     BoatFieldVariable data;       //!< data to transfer, unformatted stream
-    // To allow struct inheritance, other Ethereum compatible protocols can
+    // To allow struct inheritance, other cita compatible protocols can
     // define a BoatXXXRawtxFields struct type with all above fields the very
-    // same as Ethereum and append its own fields following them.
+    // same as cita and append its own fields following them.
     
 }BoatCitaRawtxFields;
 
 //!@brief Cita Transaction
 
-//! The <rawtx_fields> may be inherited by other Ethereum compatible protocols
-//! (such as PlatONE). Thus <rawtx_fields> MUST be the last member in the struct
-//! to allow Ethereum compatible protocols to re-use Ethereum APIs that take
-//! BoatEthTx as function arguments.
+//! The <rawtx_fields> may be inherited by other cita compatible protocols
+//! Thus <rawtx_fields> MUST be the last member in the struct
+//! to allow cita compatible protocols to re-use cita APIs that take
+//! BoatCitaTx as function arguments.
 typedef struct TBoatCitaTx
 {
     BoatCitaWallet *wallet_ptr; //!< Wallet pointer the transaction is combined with
@@ -154,32 +151,32 @@ extern "C" {
 
 
 /*!****************************************************************************
- * @brief Initialize Boat Ethereum Wallet
+ * @brief Initialize Boat Cita Wallet
  *
  * @details
- *   This function sets up context of Boat Ethereum Wallet based on given
+ *   This function sets up context of Boat Cita Wallet based on given
  *   configuration.
- *   \n DO NOT call this function directly. Instead call BoatWalletCreate() with an Ethereum
+ *   \n DO NOT call this function directly. Instead call BoatWalletCreate() with an Cita
  *   wallet configuration like:
  *   @verbatim
-     BoatEthWalletConfig eth_config = {...};
+     BoatCitaWalletConfig cita_config = {...};
      BSINT32 wallet_index;
-     wallet_index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM,
-                                     &eth_config,
-                                     sizeof(BoatEthWalletConfig)
+     wallet_index = BoatWalletCreate(BOAT_PROTOCOL_CITA,
+                                     &cita_config,
+                                     sizeof(BoatCitaWalletConfig)
                                     );
      @endverbatim
- *   \n BoatEthWalletInit() MUST be called before any use of Boat Ethereum Wallet.
- *   \n BoatEthWalletDeInit() MUST be called after use of Boat Ethereum Wallet.
+ *   \n BoatCitaWalletInit() MUST be called before any use of Boat Cita Wallet.
+ *   \n BoatCitaWalletDeInit() MUST be called after use of Boat Cita Wallet.
  *   
  * @param[in] config_ptr
- *   Pointer to Ethereum wallet configuration.
+ *   Pointer to Cita wallet configuration.
  *
  * @param[in] config_size
- *   Size (in byte) of Ethereum wallet configuration.
+ *   Size (in byte) of Cita wallet configuration.
  *
  * @return
- *   This function returns instance pointer of BoatEthWallet if initialization is successful.\n
+ *   This function returns instance pointer of BoatCitaWallet if initialization is successful.\n
  *   Otherwise it returns NULL.
  *		
  * @see BoatCitaWalletDeInit() BoatWalletCreate()
@@ -188,10 +185,10 @@ BoatCitaWallet *BoatCitaWalletInit(const BoatCitaWalletConfig *config_ptr, BUINT
 
 
 /*!****************************************************************************
- * @brief De-initialize Boat Ethereum Wallet
+ * @brief De-initialize Boat cita Wallet
  *
  * @details
- *   This function de-initialize context of Boat Ethereum Wallet.
+ *   This function de-initialize context of Boat cita Wallet.
  *   \n BoatCitaWalletInit() MUST be called before any use of Boat cita Wallet.
  *   \n BoatCItaWalletDeInit() MUST be called after use of Boat cita Wallet.
  *
@@ -299,10 +296,10 @@ BOAT_RESULT BoatCitaParseRpcResponseResult(const BCHAR *json_string,
 
                                            
 /*!****************************************************************************
- * @brief Initialize Ethereum Transaction
+ * @brief Initialize cita Transaction
  *
  * @details
- *   This function initialize an Ethereum transaction.
+ *   This function initialize an cita transaction.
 
  * @param[in] wallet_ptr
  *   The wallet pointer that this transaction is combined with.
@@ -315,28 +312,22 @@ BOAT_RESULT BoatCitaParseRpcResponseResult(const BCHAR *json_string,
  *   Specifiy BOAT_FALSE to allow multiple transactions to be sent continuously in a short time.\n
  *   For a state-less contract call, this option is ignored.
  *
- * @param[in] gasprice_str
- *   A HEX string representing the gas price (unit: wei) to be used in the transaction.\n
- *   Set <gasprice> = NULL to obtain gas price from network.\n
- *   BoatEthTxSetGasPrice() can later be called to modify the gas price at any\n
- *   time before the transaction is executed.
- *
- * @param[in] gaslimit_str
- *   A HEX string representing the gas limit to be used in the transaction.\n
- *   BoatEthTxSetGasLimit() can later be called to modify the gas limit at any\n
- *   time before the transaction is executed.
- *
  * @param[in] recipient_str
  *   A HEX string representing the recipient address, in HEX format like\n
  *   "0x19c91A4649654265823512a457D2c16981bB64F5".\n
  *   BoatEthTxSetRecipient() can later be called to modify the recipient at any\n
+ *   time before the transaction is executed.
+ * 
+ * @param[in] quota
+ *   BUINT64 representing the gas price (unit: wei) to be used in the transaction.\n
+ *   quota is used as gas
  *   time before the transaction is executed.
  *	
  * @return
  *   This function returns BOAT_SUCCESS if initialization is successful.\n
  *   Otherwise it returns one of the error codes.
  *
- * @see BoatEthTxSetGasPrice() BoatEthTxSetGasLimit() BoatEthTxSetRecipient()
+ * @see
 *******************************************************************************/
 
 BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
@@ -350,23 +341,23 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
  * @brief Set Transaction Parameter: Transaction Nonce
  *
  * @details
- *   This function initialize an Ethereum transaction.
+ *   This function initialize an cita transaction.
  *   \n This function sets the nonce to the transaction count of the account
  *   obtained from network.
- *   \n This function can be called after BoatEthTxInit() has been called.
+ *   \n This function can be called after BoatcitaTxInit() has been called.
  *
  * @param[in] tx_ptr
  *   The pointer to the transaction.
  *
  * @param[in] nonce
  *   The nonce to use in the transaction.\n
- *   If BOAT_ETH_NONCE_AUTO (0xFFFFFFFFFFFFFFFF) is specified, the nonce is\n
+ *   If BOAT_CITA_NONCE_AUTO (0xFFFFFFFFFFFFFFFF) is specified, the nonce is\n
  *   obtained from network.
  *
  * @return
  *   This function returns BOAT_SUCCESS if setting is successful.\n
  *   Otherwise it returns one of the error codes.
- * @see BoatEthTxInit()       
+ * @see BoatCitaTxInit()       
  ******************************************************************************/
 BOAT_RESULT BoatCitaTxSetNonce(BoatCitaTx *tx_ptr, BUINT64 nonce);
 
@@ -388,10 +379,10 @@ BOAT_RESULT BoatCitaTxSetNonce(BoatCitaTx *tx_ptr, BUINT64 nonce);
 BOAT_RESULT BoatCitaTxSetRecipient(BoatCitaTx *tx_ptr, BUINT8 address[BOAT_CITA_ADDRESS_SIZE]);
 
 /*!****************************************************************************
- * @brief Construct a raw ethereum transaction synchronously.
+ * @brief Construct a raw cita transaction synchronously.
  *
  * @details
- *   This function is similar to EthSendRawtx except that it waits for the
+ *   This function is similar to CitaSendRawtx except that it waits for the
  *   transaction being mined.
  *   
  * @param[in] tx_ptr
@@ -401,7 +392,7 @@ BOAT_RESULT BoatCitaTxSetRecipient(BoatCitaTx *tx_ptr, BUINT8 address[BOAT_CITA_
  *   This function returns BOAT_SUCCESS if successful. Otherwise it returns one\n
  *   of the error codes.
  *	
- * @see EthSendRawtx() BoatEthGetTransactionReceipt() 
+ * @see CitaSendRawtx() BoatCitaGetTransactionReceipt() 
 *******************************************************************************/
 BOAT_RESULT BoatCitaSendRawtxWithReceipt(BOAT_INOUT BoatCitaTx *tx_ptr);
 
@@ -455,16 +446,16 @@ BOAT_RESULT BoatCitaTxSetData(BoatCitaTx *tx_ptr, BoatFieldVariable *data_ptr);
  *   before call this function.
  *   \n A transaction whose recipient may be an EOA address or a contract address.
  *   In latter case it's usually a contract function call.
- *   \n This function invokes the eth_sendRawTransaction RPC method.
- *   eth_sendRawTransaction method only applies the transaction and returns a
+ *   \n This function invokes the cita_sendRawTransaction RPC method.
+ *   cita_sendRawTransaction method only applies the transaction and returns a
  *   transaction hash. The transaction is not verified (got mined) until the
  *   nodes in the network get into consensus about the transaction. This
- *   function will invoke eth_getTransactionReceipt method to wait for the
+ *   function will invoke cita_getTransactionReceipt method to wait for the
  *   transaction being mined or timeout.
  *   \n If the transaction is a contract function call, the caller cannot get its
  *   return value because the transaction is asynchronously executed. It's a
  *   good practice to save the return value in a state variable and use
- *   BoatEthCallContractFunc() to call a "read" contract function that could read
+ *   BoatCitaCallContractFunc() to call a "read" contract function that could read
  *   and return the state variable.
  *
  *   @note
@@ -472,8 +463,8 @@ BOAT_RESULT BoatCitaTxSetData(BoatCitaTx *tx_ptr, BoatFieldVariable *data_ptr);
  *   be called in a transaction way. "state" is the "global variable" used in a
  *   contract.
  *   \n Any contract function that doesn't change the state of the contract can
- *   be called either in a transaction way or by BoatEthCallContractFunc(), which
- *   invokes the eth_call RPC method. However the former will consume gas and
+ *   be called either in a transaction way or by BoatCitaCallContractFunc(), which
+ *   invokes the call RPC method. However the former will consume gas and
  *   latter doesn't consume gas.
  *
  * @param[in] tx_ptr
@@ -483,7 +474,7 @@ BOAT_RESULT BoatCitaTxSetData(BoatCitaTx *tx_ptr, BoatFieldVariable *data_ptr);
  *   This function returns BOAT_SUCCESS if setting is successful.\n
  *   Otherwise it returns one of the error codes.
  *
- * @see BoatEthCallContractFunc()    
+ * @see BoatCitaCallContractFunc()    
  ******************************************************************************/
 BOAT_RESULT BoatCitaTxSend(BoatCitaTx *tx_ptr);
 
@@ -494,15 +485,15 @@ BOAT_RESULT BoatCitaTxSend(BoatCitaTx *tx_ptr);
  * @details
  *   This function calls contract function that doesn't change the state of the
  *   contract. "state" is the "global variable" used in a contract.
- *   \n This function invokes the eth_call RPC method. eth_call method requests the
+ *   \n This function invokes the call RPC method. call method requests the
  *   blockchain node to execute the function without affecting the block chain.
  *   The execution runs only on the requested node thus it can return immediately
  *   after the execution. This function synchronously return the return value
- *   of the eth_call method, which is the return value of the contract function.
- *   \n To call contract function that may change the state, use BoatEthTxSend()
+ *   of the call method, which is the return value of the contract function.
+ *   \n To call contract function that may change the state, use BoatCitaTxSend()
  *   instead.
  *   \n If call a contract function that may change the state with
- *   BoatEthCallContractFunc(), the function will be executed and return a value,
+ *   BoatCitaCallContractFunc(), the function will be executed and return a value,
  *   but none of the states will change.
  *
  * @param[in] tx_ptr
@@ -517,7 +508,7 @@ BOAT_RESULT BoatCitaTxSend(BoatCitaTx *tx_ptr);
  *
  * @param[in] func_param_ptr
  *   A byte stream containing the parameters to pass to the function.\n
- *   The layout conforms to Ethereum ABI: https://solidity.readthedocs.io/en/develop/abi-spec.html\n
+ *   The layout conforms to cita ABI: https://solidity.readthedocs.io/en/develop/abi-spec.html\n
  *   If <func_param_ptr> is NULL, this function doesn't take any parameter.
  *
  * @param[in] func_param_len
@@ -528,7 +519,7 @@ BOAT_RESULT BoatCitaTxSend(BoatCitaTx *tx_ptr);
  *   called contract function.\n
  *   If any error occurs, it returns NULL.
  *
- * @see BoatEthTxSend()
+ * @see BoatCitaTxSend()
  ******************************************************************************/
 BCHAR *BoatCitaCallContractFunc(BoatCitaTx *tx_ptr,
 								BCHAR *func_proto_str,
@@ -543,7 +534,7 @@ BCHAR *BoatCitaCallContractFunc(BoatCitaTx *tx_ptr,
  *   This function polls receipt by transaction hash and waits for the transaction
  *   being mined.  
  *   Be sure the transaction object pointed by <tx_ptr> has been called with
- *   EthSendRawtxis().
+ *   CitaSendRawtxis().
  *
  * @param[in] tx_ptr
  *   A pointer to the context of the transaction.
@@ -555,7 +546,9 @@ BCHAR *BoatCitaCallContractFunc(BoatCitaTx *tx_ptr,
 BOAT_RESULT BoatCitaGetTransactionReceipt(BoatCitaTx *tx_ptr);
 
 
-
+/*!****************************************************************************
+ * @brief query current group block number.
+ ******************************************************************************/
 BCHAR *BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr);
 
 /*! @}*/
