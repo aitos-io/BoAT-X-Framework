@@ -125,7 +125,6 @@ typedef struct TBoatCitaRawtxFields
     BUINT8 recipient[BOAT_CITA_ADDRESS_SIZE]; //!< recipient's address, 160 bits
     BoatFieldMax32B  value;        //!< value to transfer, uint256 in bigendian
     BoatFieldVariable data;       //!< data to transfer, unformatted stream
-    //BoatFieldMax32B chain_id_v1 ;      //!< record the chain/business information to which the transaction belongs
     // To allow struct inheritance, other Ethereum compatible protocols can
     // define a BoatXXXRawtxFields struct type with all above fields the very
     // same as Ethereum and append its own fields following them.
@@ -206,38 +205,7 @@ BoatCitaWallet *BoatCitaWalletInit(const BoatCitaWalletConfig *config_ptr, BUINT
  ******************************************************************************/
 void BoatCitaWalletDeInit(BoatCitaWallet *wallet_ptr);
 
-/*!*****************************************************************************
-@brief Parse RPC method RESPONSE
 
-   This function Parse "result" segment.
-   If "result" object is string, this function will returns contents of "result" . 
-   If "result" object is still json object, the parameter named "child_name" will actived,
-   if "child_name" object is string, this function will returns contents of "child_name"; 
-   if "child_name" object is other types, this function will prompt "un-implemention yet".
-   For other types of "result" this function is not support yet.
-
-@param[in] json_string
-	 The json to be parsed.
-
-@param[in] child_name
-	 if "result" item is json object, this param will actived.
-
-@param[out] result_out
-	 The buffer to store parse result.
-	 Caller can allocate memory for this param, or can initial it with {NULL, 0},
-	 this function will expand the memory if it too small to store parse result.
-	 
-@return
-    This function returns BOAT_SUCCESS if parse successed. Otherwise
-    it returns an error code.
-*******************************************************************************/
-
-__BOATSTATIC __BOATINLINE BOAT_RESULT cita_parse_json_result(const BCHAR *json_string, 
-                                                             const BCHAR *child_name, 
-                                                             BoatFieldVariable *result_out)
-{
-    return eth_parse_json_result(json_string, child_name, result_out);
-}
 /*!****************************************************************************
  * @brief Set BoatWallet: URL of blockchain node
  *
