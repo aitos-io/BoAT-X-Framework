@@ -39,7 +39,6 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     BUINT8 message_digestLen;
     BCHAR *probuf_hex_str = NULL;
     BCHAR *probuf_nonce_str = NULL;
-    BCHAR *probuf_to_str = NULL;
     BUINT8  *packed_trans_unverifiled_buf = NULL;
     BUINT32 packed_trans_unverifiled_length;
     BUINT32 packed_trans_length;
@@ -63,19 +62,8 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     * STEP 1: Construct RAW transaction without real v/r/s                 *
     *         (See above description for details)                             *
     **************************************************************************/
-    // Encode nonce
-    probuf_to_str = BoatMalloc(BOAT_CITA_ADDRESS_SIZE * 2 + 1);
-    if (probuf_to_str == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Unable to dynamically allocate memory to store protobuf HEX string.");
-        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, CitaSendRawtx_cleanup);
-    }
-  
-    UtilityBinToHex(probuf_to_str,
-                tx_ptr->rawtx_fields.recipient, BOAT_CITA_ADDRESS_SIZE,
-                BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
 
-      // Encode nonce
+    // Encode nonce
     probuf_nonce_str = BoatMalloc(16 * 2 + 1);
     if (probuf_nonce_str == NULL)
     {
@@ -90,28 +78,24 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     transaction.quota = tx_ptr->rawtx_fields.quota;
     transaction.valid_until_block = tx_ptr->rawtx_fields.valid_until_block;
 
-    transaction.value.data = "0";
-    transaction.value.len = 32;
-  //  transaction.version = tx_ptr->rawtx_fields.version;
-    transaction.version = 2;
+    //data
+    transaction.data.data = tx_ptr->rawtx_fields.data.field_ptr;
+    transaction.data.len  = tx_ptr->rawtx_fields.data.field_len;
 
-    transaction.to_v1.data = probuf_to_str;
+    //value
+    transaction.value.data = tx_ptr->rawtx_fields.value.field;
+    transaction.value.len = tx_ptr->rawtx_fields.value.field_len;
+
+    //version
+    transaction.version = tx_ptr->wallet_ptr->network_info.version;
+
+    //to_v1 
+    transaction.to_v1.data = tx_ptr->rawtx_fields.recipient;
     transaction.to_v1.len  = BOAT_CITA_ADDRESS_SIZE;
 
-    BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(to_v1    )", 
-                    transaction.to_v1.data, transaction.to_v1.len);
-
-    BUINT8 chaid_dat[32] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x0, 0x00, 0x00, 0x0, 0x00, 0x00, 0x0, 0x00, 0x00, 0x0, 0x00, 0x00, 0x0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0, 0x00, 0x00, 0x0, 0x00, 0x00, 0x0, 0x00, 0x01};
-                    
-
-
-    transaction.chain_id_v1.data = chaid_dat;
-   // transaction.chain_id_v1.data = tx_ptr->rawtx_fields.chain_id_v1.field;
-  //  transaction.chain_id_v1.len  = tx_ptr->rawtx_fields.chain_id_v1.field_len;
+    //chainid
+    transaction.chain_id_v1.data = tx_ptr->wallet_ptr->network_info.chain_id_buf;
     transaction.chain_id_v1.len  = 32;
-
-    BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(chain_v1   )", 
-                    transaction.chain_id_v1.data, transaction.chain_id_v1.len);
 
     packed_trans_length = transaction__get_packed_size(&transaction);
     hash_data.field_ptr = BoatMalloc(packed_trans_length);
@@ -157,21 +141,16 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     {
         sig_parity = signatureResultTmp.signPrefix;
     }
-    printf("biatcit v = %d\n", signatureResultTmp.signPrefix);
 
     // Trim r
     BUINT8 trimed_r[32] = {0};
     BUINT8 trimed_r_len = UtilityTrimBin(trimed_r, &signatureResultTmp.native_sign[0],
                                                     32, TRIMBIN_LEFTTRIM, BOAT_TRUE);
     memcpy(sign_result, trimed_r, trimed_r_len);
-
-    printf("luussssssssssssssss = %d\n", trimed_r_len);
     // Trim s
     BUINT8 trimed_s[32] = {0};
     BUINT8 trimed_s_len = UtilityTrimBin(trimed_s, &signatureResultTmp.native_sign[32],
                                                     32, TRIMBIN_LEFTTRIM, BOAT_TRUE);
-
-    printf("luussssssssssssssss = %d\n", trimed_s_len);
     memcpy(&sign_result[32], trimed_s, trimed_s_len);
     
     /**************************************************************************
@@ -180,9 +159,6 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     // Re-encode v
     BUINT8 v = sig_parity;   
     sign_result[64] = v;
-
-       BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(sign111    )", 
-                    sign_result, 65);
     
     if (result != BOAT_SUCCESS) 
     {
@@ -222,9 +198,6 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
                 packed_trans_unverifiled_buf, packed_trans_unverifiled_length,
                 BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
 
-    printf("liuzhenhe = %s\n", probuf_hex_str);
-
-
     /* print cita transaction message */
     BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(sign    )", 
                     unverified_transaction.signature.data, unverified_transaction.signature.len);
@@ -239,6 +212,8 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
                     tx_ptr->rawtx_fields.value.field, tx_ptr->rawtx_fields.value.field_len);
     BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Data     )", 
                     tx_ptr->rawtx_fields.data.field_ptr, tx_ptr->rawtx_fields.data.field_len);
+    BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(chain_id )", 
+                     transaction.chain_id_v1.data,  transaction.chain_id_v1.len);
     
     param_cita_sendRawTransaction.signedtx_str = probuf_hex_str;
     tx_hash_str = web3_cita_sendRawTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
