@@ -134,7 +134,6 @@ sudo make install
 sudo apt-get install libcurl4-openssl-dev
 ````
 - Cygwin  
-
 执行setup-x86_64.exe，安装make、gcc、python、libcurl等工具，如下图：
 ![image](https://user-images.githubusercontent.com/81662688/130744353-3e6ad68c-7945-44e6-93ac-c8a468e8e0aa.png)
 ![image](https://user-images.githubusercontent.com/81662688/130744453-08a1dff2-08d8-46d8-9732-de814b077ba7.png)
