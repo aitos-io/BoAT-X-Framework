@@ -30,7 +30,6 @@ perform it and wait for its receipt.
 
 BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
 {
-
     BCHAR *tx_hash_str;
 
     BUINT8 sig_parity = 0;
@@ -48,7 +47,6 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     UnverifiedTransaction unverified_transaction = UNVERIFIED_TRANSACTION__INIT;
     BoatFieldVariable hash_data = {NULL, 0};
 
-
     BOAT_RESULT result = BOAT_SUCCESS;
     boat_try_declare;
 
@@ -62,7 +60,6 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     * STEP 1: Construct RAW transaction without real v/r/s                 *
     *         (See above description for details)                             *
     **************************************************************************/
-
     // Encode nonce
     probuf_nonce_str = BoatMalloc(16 * 2 + 1);
     if (probuf_nonce_str == NULL)
@@ -102,17 +99,16 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     if (hash_data.field_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Failed to allocate memory.");
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+        boat_throw(result, CitaSendRawtx_cleanup);;
     }
-    hash_data.field_len = packed_trans_length;
 
+    hash_data.field_len = packed_trans_length;
     transaction__pack(&transaction, hash_data.field_ptr);
 
     /**************************************************************************
     * STEP 2: Calculate SHA3 hash of message                                  *
     **************************************************************************/
      // Hash the message
-
     result = BoatHash(BOAT_HASH_KECCAK256,hash_data.field_ptr, 
                        hash_data.field_len, message_digest, &message_digestLen, NULL);
 
@@ -126,7 +122,6 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
      /**************************************************************************
     * STEP 3: Sign the transaction                                            *
     **************************************************************************/
-
     BoatSignatureResult signatureResultTmp;
     result = BoatSignature(tx_ptr->wallet_ptr->account_info.prikeyCtx, 
                            message_digest, message_digestLen, &signatureResultTmp, NULL);
@@ -136,11 +131,9 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
         boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, CitaSendRawtx_cleanup);
     }
 
-    // assign signature value
-    if (signatureResultTmp.signPrefix_used)
-    {
-        sig_parity = signatureResultTmp.signPrefix;
-    }
+    /**************************************************************************
+    * STEP 4: Encode full RAW transaction with updated /r/s/v                  *
+    **************************************************************************/
 
     // Trim r
     BUINT8 trimed_r[32] = {0};
@@ -152,20 +145,11 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     BUINT8 trimed_s_len = UtilityTrimBin(trimed_s, &signatureResultTmp.native_sign[32],
                                                     32, TRIMBIN_LEFTTRIM, BOAT_TRUE);
     memcpy(&sign_result[32], trimed_s, trimed_s_len);
-    
-    /**************************************************************************
-    * STEP 4: Encode full RAW transaction with updated v/r/s                  *
-    **************************************************************************/
-    // Re-encode v
-    BUINT8 v = sig_parity;   
+
+    // v
+    BUINT8 v = signatureResultTmp.signPrefix;
     sign_result[64] = v;
     
-    if (result != BOAT_SUCCESS) 
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Fail to exec BoatSignature.");
-        boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, CitaSendRawtx_cleanup);
-    }
-
     /**************************************************************************
     * SETP 4: pack the envelope                                               *
     **************************************************************************/
@@ -174,19 +158,14 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     unverified_transaction.signature.len  = 65;
     unverified_transaction.crypto         = 0;
     packed_trans_unverifiled_length       = unverified_transaction__get_packed_size(&unverified_transaction);
-
-    packed_trans_unverifiled_buf = BoatMalloc(packed_trans_unverifiled_length);
+    packed_trans_unverifiled_buf          = BoatMalloc(packed_trans_unverifiled_length);
     if (packed_trans_unverifiled_buf == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Failed to allocate memory.");
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+        boat_throw(BOAT_ERROR_COMMON_GEN_SIGN_FAIL, CitaSendRawtx_cleanup);;
     }
-    unverified_transaction__pack(&unverified_transaction, packed_trans_unverifiled_buf);
 
-    // Allocate memory for RLP stream HEX string
-    // It's a storage for HEX string converted from RLP stream binary. The
-    // HEX string is used as input for web3. It's in a form of "0x1234ABCD".
-    // Where *2 for binary to HEX conversion, +2 for "0x" prefix, + 1 for null terminator.
+    unverified_transaction__pack(&unverified_transaction, packed_trans_unverifiled_buf);
     probuf_hex_str = BoatMalloc(packed_trans_unverifiled_length * 2 + 2 + 1);
     if (probuf_hex_str == NULL)
     {
@@ -199,7 +178,7 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
                 BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
 
     /* print cita transaction message */
-    BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(sign    )", 
+    BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(sign     )", 
                     unverified_transaction.signature.data, unverified_transaction.signature.len);
     /* print cita transaction message */
     BoatLog_hexdump(BOAT_LOG_VERBOSE, "Transaction Message(Nonce    )", 
@@ -225,8 +204,6 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
         boat_throw(result, CitaSendRawtx_cleanup);
     }
 
-    // result = BoatCitaParseRpcResponseStringResult(tx_hash_str,
-    //                                                    &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
     result = BoatCitaParseRpcResponseResult(tx_hash_str, "hash",
                                                        &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
     if (result != BOAT_SUCCESS)
@@ -249,6 +226,11 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     }
 
     /* free malloc */
+    if (packed_trans_unverifiled_buf != NULL) 
+    {
+        BoatFree(packed_trans_unverifiled_buf);
+    }
+
     if (hash_data.field_ptr != NULL) 
     {
         BoatFree(hash_data.field_ptr);
@@ -257,6 +239,11 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     if (probuf_hex_str != NULL) 
     {
         BoatFree(probuf_hex_str);
+    }
+
+    if (probuf_nonce_str != NULL) 
+    {
+        BoatFree(probuf_nonce_str);
     }
 
     return result;
