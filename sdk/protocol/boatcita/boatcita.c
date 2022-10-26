@@ -279,7 +279,7 @@ BOAT_RESULT cita_parse_json_result(const BCHAR *json_string,
         {
             BoatLog(BOAT_LOG_NORMAL, "Parsing RESPONSE as JSON fails before: %s.", cjson_error_ptr);
         }
-        boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, eth_parse_json_result_cleanup);
+        boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, cita_parse_json_result_cleanup);
     }
     
     // Obtain result object
@@ -287,7 +287,7 @@ BOAT_RESULT cita_parse_json_result(const BCHAR *json_string,
     if (cjson_result_ptr == NULL)
     {
         BoatLog(BOAT_LOG_NORMAL, "Cannot find \"result\" item in RESPONSE.");
-        boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, eth_parse_json_result_cleanup);
+        boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, cita_parse_json_result_cleanup);
     }
 
     if (cJSON_IsObject(cjson_result_ptr))
@@ -297,7 +297,7 @@ BOAT_RESULT cita_parse_json_result(const BCHAR *json_string,
         if (cjson_child_name_ptr == NULL)
         {
             BoatLog(BOAT_LOG_NORMAL, "Cannot find \"%s\" item in RESPONSE.", child_name);
-            boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, eth_parse_json_result_cleanup);
+            boat_throw(BOAT_ERROR_WEB3_JSON_GETOBJ_FAIL, cita_parse_json_result_cleanup);
         }
     
         //parse child_name object
@@ -317,7 +317,7 @@ BOAT_RESULT cita_parse_json_result(const BCHAR *json_string,
                     if (result != BOAT_SUCCESS)
                     {
                         BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
-                        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, eth_parse_json_result_cleanup);
+                        boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, cita_parse_json_result_cleanup);
                     }
                 }
                 strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
@@ -345,7 +345,7 @@ BOAT_RESULT cita_parse_json_result(const BCHAR *json_string,
                 if (result != BOAT_SUCCESS)
                 {
                     BoatLog(BOAT_LOG_CRITICAL, "Failed to excute BoatFieldVariable_malloc_size_expand.");
-                    boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, eth_parse_json_result_cleanup);
+                    boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, cita_parse_json_result_cleanup);
                 }
             }
             strcpy((BCHAR*)result_out->field_ptr, parse_result_str);
@@ -354,12 +354,12 @@ BOAT_RESULT cita_parse_json_result(const BCHAR *json_string,
     else if (cJSON_IsNull(cjson_result_ptr))//cjson_result_ptr:null
     {
         BoatLog(BOAT_LOG_VERBOSE, "Result is NULL.");
-        boat_throw(BOAT_ERROR_JSON_OBJ_IS_NULL, eth_parse_json_result_cleanup);
+        boat_throw(BOAT_ERROR_JSON_OBJ_IS_NULL, cita_parse_json_result_cleanup);
     }
     else
     {
         BoatLog(BOAT_LOG_CRITICAL, "Un-expect object type.");
-        boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, eth_parse_json_result_cleanup);
+        boat_throw(BOAT_ERROR_WEB3_JSON_PARSE_FAIL, cita_parse_json_result_cleanup);
     }
     if (cjson_string_ptr != NULL)
     {
@@ -367,7 +367,7 @@ BOAT_RESULT cita_parse_json_result(const BCHAR *json_string,
     }
     
     // Exceptional Clean Up
-    boat_catch(eth_parse_json_result_cleanup)
+    boat_catch(cita_parse_json_result_cleanup)
     {
         BoatLog(BOAT_LOG_NORMAL, "Exception: %d", boat_exception);
 
