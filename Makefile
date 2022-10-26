@@ -16,7 +16,7 @@ BOAT_PROTOCOL_USE_CHAINMAKER ?= 1
 BOAT_DISCOVERY_PEER_QUERY    ?= 1
 BOAT_PROTOCOL_USE_VENACHAIN  ?= 1
 BOAT_PROTOCOL_USE_QUORUM     ?= 1
-BOAT_PROTOCOL_USE_CIAT       ?= 1
+BOAT_PROTOCOL_USE_CITA       ?= 1
 
 # Chain config check
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATON)_$(BOAT_PROTOCOL_USE_PLATONE)_$(BOAT_PROTOCOL_USE_FISCOBCOS)_$(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS)_$(BOAT_PROTOCOL_USE_CHAINMAKER)_$(BOAT_PROTOCOL_USE_VENACHAIN)_$(BOAT_PROTOCOL_USE_QUORUM)_$(BOAT_PROTOCOL_USE_CITA), 0_0_0_0_0_0_0_0_0)
@@ -40,7 +40,7 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_QUORUM), 0_1)
     $(error QUORUM depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_ETHEREUM' to 1 if enable QUORUM)
 endif
-ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_CITA), 0_1)
+ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_CITA), 0_1)
     $(error CITA depends on ETHEREUM, set 'BOAT_PROTOCOL_USE_ETHEREUM' to 1 if enable CITA)
 endif
 
@@ -119,6 +119,7 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
                   -I$(BOAT_SDK_DIR)/protocol/boatvenachain \
 				  -I$(BOAT_SDK_DIR)/protocol/boatfiscobcos \
                   -I$(BOAT_SDK_DIR)/protocol/boatquorum \
+                  -I$(BOAT_SDK_DIR)/protocol/boatcita/protos \
                   -I$(BOAT_SDK_DIR)/protocol/boatcita \
                   -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
                   -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include \

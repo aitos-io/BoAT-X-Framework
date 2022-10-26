@@ -339,7 +339,7 @@ BOAT_RESULT cita_parse_json_result(const BCHAR *json_string,
         else
         {
             strcpy((BCHAR*)result_out->field_ptr, "null");
-            BoatLog(BOAT_LOG_NORMAL, "un-implemention111 yet.");
+            BoatLog(BOAT_LOG_NORMAL, "error info is null");
         }
     }
     else if (cJSON_IsString(cjson_result_ptr))
