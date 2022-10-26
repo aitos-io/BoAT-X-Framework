@@ -51,6 +51,7 @@ const BCHAR * demoUrl = "http://127.0.0.1:1337";
  * transfer recipient address
  */
 const BCHAR *demoRecipientAddress = "0x776daaa7443599c2ef54fc41b1d26b98d916fead";
+const BCHAR *demoChainIdStr       = "0x1";
 
 
 BoatCitaWallet *g_cita_wallet_ptr;
@@ -60,7 +61,8 @@ __BOATSTATIC BOAT_RESULT cita_createOnetimeWallet()
 {
     BSINT32 index;
     BoatCitaWalletConfig wallet_config = {0};
-    BUINT8 binFormatKey[32]           = {0};
+    BUINT8 binFormatKey[32]            = {0};
+    BUINT8 binChainId[32]              = {0};
 
     (void)binFormatKey; //avoid warning
 
@@ -92,6 +94,11 @@ __BOATSTATIC BOAT_RESULT cita_createOnetimeWallet()
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
 
+
+    wallet_config.chain_id.value_len = UtilityHexToBin(binChainId, 32, demoChainIdStr, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    memcpy(wallet_config.chain_id.value, binChainId, 32);
+    wallet_config.version = 2;
+
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_CITA_NODE_URL_MAX_LEN - 1);
 	/* create cita wallet */
     index = BoatWalletCreate(BOAT_PROTOCOL_CITA, NULL, &wallet_config, sizeof(BoatCitaWalletConfig));
@@ -110,9 +117,9 @@ __BOATSTATIC BOAT_RESULT cita_createOnetimeWallet()
 __BOATSTATIC BOAT_RESULT cita_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatCitaWalletConfig wallet_config;
-    BUINT8 binFormatKey[32]           = {0};
-
+    BoatCitaWalletConfig wallet_config = {0};
+    BUINT8 binFormatKey[32]            = {0};
+    BUINT8 binChainId[32]              = {0};
     (void)binFormatKey; //avoid warning
 
     memset(&wallet_config,0,sizeof(wallet_config));
@@ -142,6 +149,10 @@ __BOATSTATIC BOAT_RESULT cita_createPersistWallet(BCHAR *wallet_name)
         wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
         wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     #endif
+
+    wallet_config.chain_id.value_len = UtilityHexToBin(binChainId, 32, demoChainIdStr, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    memcpy(wallet_config.chain_id.value, binChainId, 32);
+    wallet_config.version = 2;
 
     strncpy(wallet_config.node_url_str, demoUrl, BOAT_CITA_NODE_URL_MAX_LEN - 1);
 
@@ -189,7 +200,6 @@ BOAT_RESULT cita_call_ReadStore(BoatCitaWallet *wallet_ptr)
         /* Set Contract Address */
     result = BoatCitaTxInit(wallet_ptr, &tx_ctx, BOAT_TRUE, 
                                  (BCHAR *)demoRecipientAddress, //recipient
-                                 "0x01", //chainid
                                  10000000  //quota
                                 );
 
@@ -200,7 +210,7 @@ BOAT_RESULT cita_call_ReadStore(BoatCitaWallet *wallet_ptr)
     }
 
     BUINT8 set_data[32] = {0};
-    set_data[0]= 5;
+    set_data[0]= 6;
     result_str = SimpleStorage_set(&tx_ctx, set_data);
     if(result_str == NULL)
     {
@@ -208,6 +218,7 @@ BOAT_RESULT cita_call_ReadStore(BoatCitaWallet *wallet_ptr)
         return BOAT_ERROR;
     }
     
+    BoatSleep(3);
     result_str = SimpleStorage_get(&tx_ctx);
     if (result_str == NULL)
     {
