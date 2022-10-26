@@ -861,6 +861,12 @@ void BoatWalletUnload(BSINT32 wallet_index)
             break;
 		    #endif
 
+            #if PROTOCOL_USE_CITA== 1
+            case BOAT_PROTOCOL_CITA:
+                BoatCitaWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
+            break;
+            #endif
+
             default:
                 BoatLog(BOAT_LOG_VERBOSE, "Unknown blockchain protocol type: %u.", protocol);
                 protocol = BOAT_PROTOCOL_UNKNOWN;
