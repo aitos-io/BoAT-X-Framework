@@ -547,7 +547,7 @@ BOAT_RESULT BoatCitaGetTransactionReceipt(BoatCitaTx *tx_ptr);
 /*!****************************************************************************
  * @brief query current group block number.
  ******************************************************************************/
-BCHAR *BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr);
+BOAT_RESULT BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr, BUINT64 *block_number);
 
 /*! @}*/
 

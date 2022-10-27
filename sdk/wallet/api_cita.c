@@ -107,6 +107,7 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
 {
     BCHAR   *retval_str = NULL;
     BOAT_RESULT result;
+    BUINT64 valid_until_block_value;
 
     if ((wallet_ptr == NULL) || (tx_ptr == NULL) || (recipient_str == NULL))
     {
@@ -160,17 +161,15 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
     tx_ptr->rawtx_fields.quota = quota;
 
     // set valid_until_block as current blocknumber + 100.
-    retval_str = BoatCitaGetBlockNumber(tx_ptr);
-    result     = BoatCitaParseRpcResponseStringResult(retval_str, 
-                                                           &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+
+    result = BoatCitaGetBlockNumber(tx_ptr, &valid_until_block_value);
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaGetBlockNumber failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaTxSetRecipient failed.");
         return result;
     }
-    char *stopstring;
-    BUINT64 valid_until_block_value = strtoll((BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, &stopstring, 16);
     tx_ptr->rawtx_fields.valid_until_block = valid_until_block_value + 100;
+    printf("liuhneh = %x\n", tx_ptr->rawtx_fields.valid_until_block);
 
     // Initialize value = 0
     //CITA DOES NOT SET VALUE, IT'S DE-COINIZED
@@ -543,10 +542,12 @@ BOAT_RESULT BoatCitaGetTransactionReceipt(BoatCitaTx *tx_ptr)
 }
 
 
-BCHAR *BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr)
+BOAT_RESULT BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr, BUINT64 *block_number)
 {
     BUINT64 result = BOAT_SUCCESS;
     BCHAR *retval_str;
+    BCHAR *stopstring;
+    BUINT64 valid_until_block_value;
 
     if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
     {
@@ -556,7 +557,18 @@ BCHAR *BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr)
     retval_str = web3_cita_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                                &result);
-    return retval_str;
+
+    result = BoatCitaParseRpcResponseStringResult(retval_str, 
+                                                           &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
+    if (result != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaGetBlockNumber failed.");
+        return result;
+    }
+    
+    valid_until_block_value = strtoll((BCHAR *)tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr, &stopstring, 16);
+    *block_number = valid_until_block_value;
+    return result;
 }
 
 
