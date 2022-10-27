@@ -242,9 +242,7 @@ BOAT_RESULT BoatCitaWalletSetNodeUrl(BoatCitaWallet *wallet_ptr, const BCHAR *no
  *   This function returns BOAT_SUCCESS if setting is successful.\n
  *   Otherwise it returns one of the error codes.
  ******************************************************************************/
-BOAT_RESULT BoatCitaWalletSetChainId(BoatCitaWallet *tx_ptr, BoatFieldMax32B *chain_id_ptr);
-
-
+BOAT_RESULT BoatCitaWalletSetChainId(BoatCitaWallet *wallet_ptr, BoatWalletChainId *wallet_chain_id);
 /*!*****************************************************************************
 @brief Parse RPC method RESPONSE
 

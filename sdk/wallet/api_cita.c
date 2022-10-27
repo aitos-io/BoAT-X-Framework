@@ -86,12 +86,12 @@ BoatCitaWallet *BoatCitaWalletInit(const BoatCitaWalletConfig *config_ptr, BUINT
     }
 
     //chainid
-    result = BoatCitaTxSetChainID(wallet_ptr, &config_ptr->chain_id);
+    result = BoatCitaWalletSetChainId(wallet_ptr, &config_ptr->chain_id);
     if (result != BOAT_SUCCESS)
     {
         web3_deinit(wallet_ptr->web3intf_context_ptr);
         BoatFree(wallet_ptr);
-        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaTxSetChainID failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaWalletSetChainId failed.");
         return NULL;
     }
 
@@ -250,7 +250,7 @@ BOAT_RESULT BoatCitaTxSetRecipient(BoatCitaTx *tx_ptr, BUINT8 address[BOAT_CITA_
     return BOAT_SUCCESS;    
 }
 
-BOAT_RESULT BoatCitaTxSetChainID(BoatCitaWallet *wallet_ptr, BoatWalletChainId *wallet_chain_id)
+BOAT_RESULT BoatCitaWalletSetChainId(BoatCitaWallet *wallet_ptr, BoatWalletChainId *wallet_chain_id)
 {
     if (wallet_ptr == NULL)
     {
