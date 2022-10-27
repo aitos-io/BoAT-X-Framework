@@ -120,6 +120,24 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
     // Set synchronous transaction flag
     tx_ptr->is_sync_tx = is_sync_tx;
 
+    if (!UtilityStringIsHex(recipient_str))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The format of recipient is incorrect");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    if (UtilityStringLenCheck(recipient_str) != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The length of string recipient_str is incorrect");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    if (strlen(recipient_str) != 42)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The length of string recipient_str is incorrect");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
     // Initialize recipient
     BUINT32 converted_len;
     BUINT8  recipient[BOAT_CITA_ADDRESS_SIZE];
