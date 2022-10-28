@@ -169,7 +169,6 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
         return result;
     }
     tx_ptr->rawtx_fields.valid_until_block = valid_until_block_value + 100;
-    printf("liuhneh = %x\n", tx_ptr->rawtx_fields.valid_until_block);
 
     // Initialize value = 0
     //CITA DOES NOT SET VALUE, IT'S DE-COINIZED
@@ -549,10 +548,10 @@ BOAT_RESULT BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr, BUINT64 *block_number)
     BCHAR *stopstring;
     BUINT64 valid_until_block_value;
 
-    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL || block_number == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return NULL;
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
     retval_str = web3_cita_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
