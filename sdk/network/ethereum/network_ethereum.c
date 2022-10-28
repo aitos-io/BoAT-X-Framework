@@ -661,7 +661,7 @@ __BOATSTATIC BOAT_RESULT BoATEth_NetworkDataCtx_Store(BoatEthNetworkData *mNetwo
         result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK, offset, lengthbytes, sizeof(lengthbytes), storeType);
         if (result != BOAT_SUCCESS)
         {
-            BoatLog(BOAT_LOG_NONE, "read network length fail");
+            BoatLog(BOAT_LOG_NORMAL, "read network length fail");
             boat_throw(result, eth_exception);
         }
         networkLength = UtilityGetLVData_L(lengthbytes);
@@ -687,7 +687,7 @@ __BOATSTATIC BOAT_RESULT BoATEth_NetworkDataCtx_Store(BoatEthNetworkData *mNetwo
     result = BoATEth_Get_Network_Data(mNetworkDataCtx, networkData, &networkLength);
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_NONE, " get network data fail ");
+        BoatLog(BOAT_LOG_NORMAL, " get network data fail ");
         boat_throw(result, eth_exception);
     }
     /* protocol type */
@@ -935,14 +935,14 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
             networkData = BoatMalloc(networkLength);
             if (NULL == networkData)
             {
-                BoatLog(BOAT_LOG_NONE, "fail to malloc memory ");
+                BoatLog(BOAT_LOG_NORMAL, "fail to malloc memory ");
                 return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
             }
             result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK, offset_moveFrom, networkData, networkLength, BOAT_STORE_TYPE_FLASH);
             if (result != BOAT_SUCCESS)
             {
                 BoatFree(networkData);
-                BoatLog(BOAT_LOG_NONE, "read network data fail ");
+                BoatLog(BOAT_LOG_NORMAL, "read network data fail ");
                 return BOAT_ERROR_STORAGE_FILE_READ_FAIL;
             }
             result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK, offset_moveTo, networkData, networkLength, BOAT_STORE_TYPE_FLASH);
@@ -958,7 +958,7 @@ BOAT_RESULT BoATEthNetworkDelete(BUINT8 index)
                     BoatLog(BOAT_LOG_NORMAL, "delete network fail ");
                     return result;
                 }
-                BoatLog(BOAT_LOG_NONE, "store network data fail ");
+                BoatLog(BOAT_LOG_NORMAL, "store network data fail ");
                 return BOAT_ERROR_STORAGE_FILE_WRITE_FAIL;
             }
         }
