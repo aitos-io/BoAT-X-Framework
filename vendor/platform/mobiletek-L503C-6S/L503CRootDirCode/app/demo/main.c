@@ -6,7 +6,6 @@
 #include "mbtk_api.h"
 #include "mbtk_os.h"
 #include "demo_ethereum.h"
-#include "demo_fabric.h"
 #include "mbtk_open_at.h"
 #include "nl_api_sys.h"
 #include "boattypes.h"
@@ -29,7 +28,6 @@ void timeout_cb(UINT32 cookie)
 }
 
 extern BOAT_RESULT ethereumDemo(void);
-extern BOAT_RESULT fabricDemo(void);
 
 void user_data_call_demo_callback(uint8_t index, uint8_t status)
 {
@@ -72,7 +70,6 @@ void app_open_task(void *argv)
         // hello_test();
     }
     ethereumDemo();
-    fabricDemo();
 
     user_app_printf("\r\n app task end !!!\n");
 }
