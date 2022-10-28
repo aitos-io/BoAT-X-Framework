@@ -48,7 +48,8 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - MTK-MT3620                : MTK MT3620
 # - XinYi-XY1100              : XY1100
 # - Fibocom-MA510             : MA510
-PLATFORM_TARGET ?= linux-default
+# - mobiletek-L503C-6S        : mobiletek-L503C-6S
+PLATFORM_TARGET ?= mobiletek-L503C-6S
 
 # Environment-specific Settings
 include $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/external.env
@@ -194,6 +195,8 @@ else ifeq ($(PLATFORM_TARGET), XinYi-XY1100)
 else ifeq ($(PLATFORM_TARGET), MTK-MT3620) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else ifeq ($(PLATFORM_TARGET), Fibocom-MA510) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else ifeq ($(PLATFORM_TARGET), mobiletek-L503C-6S) 
     SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else
     $(error not support this platform : $(PLATFORM_TARGET))
