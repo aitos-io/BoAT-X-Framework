@@ -1,4 +1,4 @@
-all: testIT
+all: testIT testUT
 
 testIT:
 	make -C IT all

@@ -29,14 +29,14 @@ int main(int argc, char *argv[])
     int ret = 0;
 
     /* new adding test suite should create in here */
-    Suite *suite_keypairCreate = make_keypairIntfTest_suite();
+    Suite *suite_keypairCreat = make_keypairIntfTest_suite();
     // Suite *suite_transaction = make_transaction_suite();
     // Suite *suite_nodesDiscover = make_nodesDiscover_suite();
 
     /* create srunner and add first suite to it.
     The first suite in a suite runner is always added in function srunner_create,
     here set suite_wallet as first adding suite. */
-    sr = srunner_create(suite_keypairCreate);
+    sr = srunner_create(suite_keypairCreat);
     // srunner_add_suite(sr, suite_transaction);
     // srunner_add_suite(sr, suite_nodesDiscover);
 

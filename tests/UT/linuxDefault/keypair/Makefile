@@ -1,8 +1,8 @@
 # Source and Objects
 
 SOURCES = $(wildcard *.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/tests/IT/linuxDefault/keypair/lib
-EXECUTABLE_DIR  = $(BOAT_BUILD_DIR)/tests/IT/linuxDefault/keypair
+OBJECTS_DIR = $(BOAT_BUILD_DIR)/tests/UT/linuxDefault/keypair/lib
+EXECUTABLE_DIR  = $(BOAT_BUILD_DIR)/tests/UT/linuxDefault/keypair
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
