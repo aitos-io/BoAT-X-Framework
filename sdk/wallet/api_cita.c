@@ -289,17 +289,13 @@ BOAT_RESULT BoatCitaTxSetValue(BoatCitaTx *tx_ptr, BoatFieldMax32B *value_ptr)
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
     
+    memset(&tx_ptr->rawtx_fields.value, 0, BOAT_CITA_VALUE_SIZE);   
     // Set value
     tx_ptr->rawtx_fields.value.field_len = BOAT_CITA_VALUE_SIZE;
     if (value_ptr != NULL)
     {
         memcpy(&tx_ptr->rawtx_fields.value, value_ptr, sizeof(BoatFieldMax32B));
     }
-    else
-    {
-        memset(&tx_ptr->rawtx_fields.value, 0, BOAT_CITA_VALUE_SIZE);    
-    }
-
     return BOAT_SUCCESS;
 }
 
