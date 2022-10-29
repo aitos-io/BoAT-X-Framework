@@ -370,6 +370,7 @@ END_TEST
 START_TEST(test_002Keypair_0008GetKeypairListSuccess)
 {
     BSINT32 rtnVal;
+    BUINT8 index = 0;
     BCHAR keypairName[64] = {0};
     BoatIotKeypairContext keypairList;
     /* get keypair list */
@@ -381,12 +382,17 @@ START_TEST(test_002Keypair_0008GetKeypairListSuccess)
     /* check persist keypair num */
     ck_assert_int_eq(keypairList.keypairPersistentNum, 4);
     /* check everyone in the list */
-    for (size_t i = 0; (i != 2) && (i < BOAT_MAX_KEYPAIR_NUM); i++)
+    for (size_t i = 0; i < BOAT_MAX_KEYPAIR_NUM - 1; i++)
     {
+        index = i + 1;
+        if (index > 2)
+        {
+            index++;
+        }
         memset(keypairName, 0x00, sizeof(keypairName));
-        snprintf(keypairName, sizeof(keypairName), "keypairPersist%02d", i + 1);
+        snprintf(keypairName, sizeof(keypairName), "keypairPersist%02d", index);
         /* keypair index */
-        ck_assert_int_eq(keypairList.keypairs[i].prikeyCtx.keypair_index, i + 1);
+        ck_assert_int_eq(keypairList.keypairs[i].prikeyCtx.keypair_index, index);
         /* keypair format */
         ck_assert_int_eq(keypairList.keypairs[i].prikeyCtx.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
         /* keypair type*/
@@ -394,7 +400,7 @@ START_TEST(test_002Keypair_0008GetKeypairListSuccess)
         /* keypair name */
         ck_assert_int_eq(strcmp(keypairList.keypairs[i].prikeyCtx.keypair_name, keypairName), 0);
         /* keypair pubkey */
-        ck_assert_int_eq(memcmp(keypairList.keypairs[i].prikeyCtx.pubkey_content, pubkey_256k1[i + 1], sizeof(pubkey_256k1[i + 1])), 0);
+        ck_assert_int_eq(memcmp(keypairList.keypairs[i].prikeyCtx.pubkey_content, pubkey_256k1[index], sizeof(pubkey_256k1[index])), 0);
     }
     /* release list*/
     BoATKeypair_FreeKeypairContext(keypairList);
