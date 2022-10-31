@@ -1,4 +1,4 @@
-all: testkeypair testEthNetwork testFiscobcosNetwork testPlatonNetwork testPlatoneNetwork
+all: testkeypair testEthNetwork testFiscobcosNetwork testPlatonNetwork testPlatoneNetwork testQuorumNetwork
 	
 testkeypair:
 	make -C keypair all
@@ -23,9 +23,15 @@ ifeq ($(BOAT_PROTOCOL_USE_PLATONE),1)
 	make -C PlatoneNetwork all
 endif
 
+testQuorumNetwork:
+ifeq ($(BOAT_PROTOCOL_USE_QUORUM),1)
+	make -C QuorumNetwork all
+endif
+
 clean:
 	make -C keypair clean
 	make -C EthNetwork clean
 	make -C FiscobcosNetwork clean
 	make -C PlatonNetwork clean
 	make -C PlatoneNetwork clean
+	make -C QuorumNetwork clean
