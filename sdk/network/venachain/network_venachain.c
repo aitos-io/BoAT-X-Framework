@@ -208,6 +208,11 @@ BOAT_RESULT BoATVenachain_GetNetworkList(BoatVenachainNetworkContext *networkLis
     BUINT8 networknumBytes[4] = {0};
     BUINT8 lengthBytes[3] = {0};
     BoatProtocolType protocolType = BOAT_PROTOCOL_UNKNOWN;
+    /* check param */
+    if (NULL == networkList)
+    {
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
     /* persistent network  */
     result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK, offset, networknumBytes, sizeof(networknumBytes), BOAT_STORE_TYPE_FLASH);
     /* if read Nvram failed , no network */
@@ -417,7 +422,7 @@ __BOATSTATIC BOAT_RESULT BoATVenachain_GetFreeNetworkIndex_From_Persistent(void)
     }
     if (networkNum >= BOAT_MAX_NETWORK_NUM)
     {
-        return BOAT_ERROR;
+        return BOAT_ERROR_NETWORK_INDEX_EXCEED;
     }
     offset += sizeof(networknumBytes);
     for (size_t i = 0; i < networkNum; i++)
@@ -649,7 +654,11 @@ __BOATSTATIC BOAT_RESULT BoATVenachain_NetworkDataCtx_Store(BoatVenachainNetwork
     }
     if (networkNum >= BOAT_MAX_NETWORK_NUM)
     {
-        boat_throw(BOAT_ERROR, venachain_exception);
+        boat_throw(BOAT_ERROR_NETWORK_INDEX_EXCEED, venachain_exception);
+    }
+    if (BOAT_STORE_TYPE_RAM == storeType)
+    {
+        networkNum = 0;
     }
     offset += sizeof(networknumBytes);
     for (int i = 0; i < networkNum; i++)
@@ -800,15 +809,26 @@ BOAT_RESULT BoATVenachainNetworkDelete(BUINT8 index)
     BUINT8 networknumBytes[4] = {0};
     BUINT8 *networkData = NULL;
     BoatProtocolType protocolType = BOAT_PROTOCOL_UNKNOWN;
-    if (index >= BOAT_MAX_NETWORK_NUM)
+    if (index > BOAT_MAX_NETWORK_NUM)
     {
-        return BOAT_ERROR;
+        return BOAT_ERROR_NETWORK_INDEX_EXCEED;
     }
     /* onetime network
        index of onetime network must be 0
     */
     if (index == 0)
     {
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK, offset, networknumBytes, sizeof(networknumBytes), BOAT_STORE_TYPE_RAM);
+        /* if read Nvram failed , no network */
+        if (result != BOAT_SUCCESS)
+        {
+            return result;
+        }
+        result = utility_check_NumBytes(networknumBytes, &networkNum);
+        if (result != BOAT_SUCCESS || networkNum == 0)
+        {
+            return BOAT_ERROR_NETWORK_HAVENOON;
+        }
         /* set network_num of onetime network to 0 */
         memset(networknumBytes, 0x00, sizeof(networknumBytes));
         result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK, 0, networknumBytes, sizeof(networknumBytes), BOAT_STORE_TYPE_RAM);
@@ -825,7 +845,7 @@ BOAT_RESULT BoATVenachainNetworkDelete(BUINT8 index)
         result = utility_check_NumBytes(networknumBytes, &networkNum);
         if (result != BOAT_SUCCESS || networkNum == 0)
         {
-            return result;
+            return BOAT_ERROR_NETWORK_HAVENOON;
         }
         offset += sizeof(networknumBytes);
         for (i = 0; i < networkNum; i++)
@@ -870,7 +890,7 @@ BOAT_RESULT BoATVenachainNetworkDelete(BUINT8 index)
         if (i >= networkNum)
         {
             BoatLog(BOAT_LOG_NORMAL, "not find the network ");
-            return BOAT_ERROR;
+            return BOAT_ERROR_NETWORK_HAVENOON;
         }
         networkNumNew = networkNum - 1;
         utility_get_NumBytes(networkNumNew, networknumBytes);
@@ -989,7 +1009,15 @@ BOAT_RESULT BoATVenachain_GetNetworkByIndex(BoatVenachainNetworkData *networkDat
     BUINT8 networknumBytes[4] = {0};
     BoatProtocolType protocolType = BOAT_PROTOCOL_UNKNOWN;
     BoatStoreType storetype;
-
+    /* check params */
+    if (NULL == networkData)
+    {
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+    if (index > BOAT_MAX_NETWORK_NUM)
+    {
+        return BOAT_ERROR_NETWORK_INDEX_EXCEED;
+    }
     if (index == 0)
     { // onetime wallet
         storetype = BOAT_STORE_TYPE_RAM;
@@ -1008,7 +1036,7 @@ BOAT_RESULT BoATVenachain_GetNetworkByIndex(BoatVenachainNetworkData *networkDat
     result = utility_check_NumBytes(networknumBytes, &networkNum);
     if (result != BOAT_SUCCESS || networkNum == 0)
     {
-        return BOAT_ERROR;
+        return BOAT_ERROR_NETWORK_HAVENOON;
     }
     offset += sizeof(networknumBytes);
     BoatLog(BOAT_LOG_NORMAL, "network num = %d ", networkNum);
@@ -1061,5 +1089,5 @@ BOAT_RESULT BoATVenachain_GetNetworkByIndex(BoatVenachainNetworkData *networkDat
             offset += (networkLength + networkLengthLen);
         }
     }
-    return BOAT_ERROR;
+    return BOAT_ERROR_NETWORK_HAVENOON;
 }
