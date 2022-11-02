@@ -220,7 +220,7 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
     BSINT32 i;
     BUINT8 *boatwalletStore_ptr = NULL;
     void   *wallet_ptr          = NULL;
-#if ((PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATON == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) || (PROTOCOL_USE_VENACHAIN == 1))    
+#if ((PROTOCOL_USE_ETHEREUM == 1) || (PROTOCOL_USE_PLATON == 1) || (PROTOCOL_USE_PLATONE == 1) || (PROTOCOL_USE_FISCOBCOS == 1) || (PROTOCOL_USE_VENACHAIN == 1) || (PROTOCOL_USE_CITA == 1))    
     BUINT8  pubkeyHashDummy[32];
     BUINT8  hashLenDummy;
 #endif    
@@ -727,6 +727,64 @@ BSINT32 BoatWalletCreate(BoatProtocolType protocol_type, const BCHAR *wallet_nam
             break;
         #endif
 
+         #if PROTOCOL_USE_CITA == 1
+        case BOAT_PROTOCOL_CITA:
+            if (wallet_config_ptr != NULL)
+            {
+                memcpy(boatwalletStore_ptr, wallet_config_ptr, wallet_config_size);
+                ((BoatCitaWalletConfig*)wallet_config_ptr)->load_existed_wallet = false;
+                wallet_ptr = BoatCitaWalletInit((BoatCitaWalletConfig*)wallet_config_ptr, wallet_config_size);
+                if (wallet_ptr != NULL)
+                {
+                    memcpy(boatwalletStore_ptr + wallet_config_size, &((BoatCitaWallet*)wallet_ptr)->account_info.prikeyCtx, sizeof(BoatWalletPriKeyCtx));
+                    if (wallet_name_str != NULL)
+                    {
+                        /* create persistent wallet / Overwrite existed configuration */
+                        if (BOAT_SUCCESS != BoatPersistStore(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)))
+                        {
+                            BoatLog(BOAT_LOG_NORMAL, "persistent wallet create failed.");
+                            BoatCitaWalletDeInit(wallet_ptr);
+                            BoatFree(boatwalletStore_ptr);
+                            return BOAT_ERROR_PERSISTER_STORE_FAIL;
+                        }
+                    }
+                    else
+                    {
+                        /* create one-time wallet */
+                        // nothing to do
+                    } 
+                }   
+            }
+            else
+            {
+                /* Load persistent wallet */
+                if (BOAT_SUCCESS != BoatPersistRead(wallet_name_str, boatwalletStore_ptr, wallet_config_size + sizeof(BoatWalletPriKeyCtx)))
+                {
+                    BoatLog(BOAT_LOG_NORMAL, "persistent wallet load failed.");
+                    BoatFree(boatwalletStore_ptr);
+                    return BOAT_ERROR_PERSISTER_READ_FAIL;
+                }
+                // 
+                BoatCitaWalletConfig *load_wallet_config_ptr = (BoatCitaWalletConfig*)boatwalletStore_ptr; 
+                load_wallet_config_ptr->prikeyCtx_config.prikey_content.field_ptr = NULL;
+                load_wallet_config_ptr->prikeyCtx_config.prikey_content.field_len = 0;
+                load_wallet_config_ptr->load_existed_wallet = true;
+                wallet_ptr = BoatCitaWalletInit(load_wallet_config_ptr, wallet_config_size);
+                if (wallet_ptr != NULL)
+                {
+                    // re-assign private key context
+                    memcpy(&((BoatCitaWallet*)wallet_ptr)->account_info.prikeyCtx,  boatwalletStore_ptr + wallet_config_size, sizeof(BoatWalletPriKeyCtx));
+                    // compute address
+                    BoatHash(BOAT_HASH_KECCAK256, ((BoatCitaWallet*)wallet_ptr)->account_info.prikeyCtx.pubkey_content, 64, pubkeyHashDummy, &hashLenDummy, NULL);
+                    memcpy(((BoatCitaWallet*)wallet_ptr)->account_info.address, &pubkeyHashDummy[32 - BOAT_CITA_ADDRESS_SIZE], BOAT_CITA_ADDRESS_SIZE);     
+                }
+            }
+
+            g_boat_iot_sdk_context.wallet_list[i].wallet_ptr = wallet_ptr;
+            break;
+        #endif
+
+
         default:
             g_boat_iot_sdk_context.wallet_list[i].wallet_ptr = NULL;
             break;
@@ -802,6 +860,12 @@ void BoatWalletUnload(BSINT32 wallet_index)
                 BoatVenachainWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
             break;
 		    #endif
+
+            #if PROTOCOL_USE_CITA== 1
+            case BOAT_PROTOCOL_CITA:
+                BoatCitaWalletDeInit(g_boat_iot_sdk_context.wallet_list[wallet_index].wallet_ptr);
+            break;
+            #endif
 
             default:
                 BoatLog(BOAT_LOG_VERBOSE, "Unknown blockchain protocol type: %u.", protocol);
