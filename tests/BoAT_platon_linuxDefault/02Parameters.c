@@ -307,7 +307,7 @@ START_TEST(test_005ParametersSet_0002SetNonceSuccess)
 	NONCE.field_len = UtilityHexToBin(NONCE.field, 32, "0xA1",
 	 				                  TRIMBIN_LEFTTRIM, BOAT_TRUE);
     ck_assert(rtnVal == BOAT_SUCCESS);
-	ck_assert_str_eq(tx_ptr.rawtx_fields.nonce.field, NONCE.field);
+	ck_assert_str_eq((char *)tx_ptr.rawtx_fields.nonce.field, (char *)NONCE.field);
     BoatIotSdkDeInit();
 }
 END_TEST
