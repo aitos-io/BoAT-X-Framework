@@ -1,0 +1,536 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.common";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/common";
+
+package common;
+import "accesscontrol/member.proto";
+import "accesscontrol/policy.proto";
+
+enum ContractName {
+    // system chain configuration contract
+    // used to add, delete and change the chain configuration
+    SYSTEM_CONTRACT_CHAIN_CONFIG = 0;
+
+    // system chain query contract
+    // used to query the configuration on the chain
+    SYSTEM_CONTRACT_QUERY = 1;
+
+    // system certificate storage contract
+    // used to manage certificates
+    SYSTEM_CONTRACT_CERT_MANAGE = 2;
+
+    // governance contract
+    SYSTEM_CONTRACT_GOVERNANCE = 3;
+
+    // multi signature contract on chain
+    SYSTEM_CONTRACT_MULTI_SIGN = 4;
+
+    // contract state
+    SYSTEM_CONTRACT_STATE = 5;
+
+    // private compute contract
+    SYSTEM_CONTRACT_PRIVATE_COMPUTE = 6;
+
+    // erc20 contract for DPoS
+    SYSTEM_CONTRACT_DPOS_ERC20 = 7;
+
+    // stake contract for dpos
+    SYSTEM_CONTRACT_DPOS_STAKE = 8;
+}
+
+// the unique identifier of a smart contract
+message ContractId {
+    // smart contract name, set by contract creator, can have multiple versions
+    string contract_name = 1;
+
+    // smart contract version, set by contract creator, name + version should be unique
+    string contract_version = 2;
+
+    // smart contract runtime type, set by contract creator
+    RuntimeType runtime_type = 3;
+}
+
+message ContractInfo {
+    repeated ContractTransaction contract_transaction = 1;
+}
+
+message ContractTransaction {
+    ContractId contract_id = 1;
+    string tx_id = 2;
+}
+
+message RemoteAttestationRequest {
+    repeated SignInfo sign_pair = 1;
+    RemoteAttestationPayload payload = 2;
+}
+
+message RemoteAttestationPayload {
+    string challenge = 1;
+    repeated string org_id = 2;
+}
+
+message PrivateDeployRequest {
+    repeated SignInfo sign_pair = 1;
+    PrivateDeployPayload payload = 2;
+}
+
+message PrivateDeployPayload {
+    string code_bytes = 1;
+    // deploy args which is packed by abi
+    string private_rlp_data = 2;
+    string passwd = 3;
+    string sig_algo = 4;
+    string contract_name = 5;
+    string contract_version = 6;
+    string code_hash = 7;
+    repeated string org_id = 8;
+}
+
+message PrivateComputeRequest {
+    repeated SignInfo sign_pair = 1;
+    PrivateComputePayload  payload = 2;
+}
+
+message PrivateComputePayload {
+    string private_rlp_data = 1;
+    string passwd = 2;
+    string sig_algo = 3;
+    string contract_name = 4;
+    string code_hash = 5;
+    repeated string org_id = 6;
+}
+
+message SignInfo {
+    string client_sign = 1;
+    string cert = 2;
+}
+
+enum QueryFunction {
+    // get block by transactionId
+    GET_BLOCK_BY_TX_ID = 0;
+
+    // get contract information
+    GET_CONTRACT_INFO = 1;
+
+    // get transaction by transactionId
+    GET_TX_BY_TX_ID = 2;
+
+    // get block by block height
+    GET_BLOCK_BY_HEIGHT = 3;
+
+    // get chain information
+    GET_CHAIN_INFO = 4;
+
+    // get the last configuration block
+    GET_LAST_CONFIG_BLOCK = 5;
+
+    // get block by block hash
+    GET_BLOCK_BY_HASH = 6;
+
+    // get the list of node
+    GET_NODE_CHAIN_LIST = 7;
+
+    // get governance information
+    GET_GOVERNANCE_CONTRACT = 8;
+
+    // get read/write set information by eight
+    GET_BLOCK_WITH_TXRWSETS_BY_HEIGHT = 9;
+
+    // get read/write set information by hash
+    GET_BLOCK_WITH_TXRWSETS_BY_HASH = 10;
+
+    // get the last block
+    GET_LAST_BLOCK = 11;
+
+    // get full block by height
+    GET_FULL_BLOCK_BY_HEIGHT = 12;
+
+    // get block height by tx id
+    GET_BLOCK_HEIGHT_BY_TX_ID = 13;
+
+    // get block height by hash
+    GET_BLOCK_HEIGHT_BY_HASH = 14;
+
+    //get block header by height
+    GET_BLOCK_HEADER_BY_HEIGHT = 15;
+
+    // get archived block height
+    GET_ARCHIVED_BLOCK_HEIGHT = 16;
+    //get contract bytecode
+    GET_CONTRACT_BYTECODE=17;
+    //get all contract info list
+    GET_ALL_CONTRACTS=18;
+}
+
+// smart contract runtime, contains vm type and language type
+enum RuntimeType {
+    INVALID = 0;
+
+    // native implement in chainmaker-go
+    NATIVE = 1;
+
+    // vm-wasmer, language-c++
+    WASMER = 2;
+
+    // vm-wxvm, language-cpp
+    WXVM = 3;
+
+    // wasm interpreter in go
+    GASM = 4;
+
+    // vm-evm
+    EVM = 5;
+
+    // vm-docker, language-golang
+    DOCKER_GO = 6;
+
+    // vm-docker, language-java
+    DOCKER_JAVA = 7;
+}
+
+enum ConfigFunction {
+    // get chain configuration
+    GET_CHAIN_CONFIG = 0;
+
+    // get the latest configuration block
+    // the incoming blockheight must exist in the database
+    // 如果传入的blockHeight是配置块，直接返回当前的配置信息
+    GET_CHAIN_CONFIG_AT = 1;
+
+    // update core
+    CORE_UPDATE = 2;
+
+    // update block
+    BLOCK_UPDATE = 3;
+
+    // add trusted certficate (org_id and root)
+    TRUST_ROOT_ADD = 4;
+
+    // [self] modify an individual's own trusted root certificate [org_id must exist in the original trust_roots,
+    // and the new root certificate must be different from other certificates]
+    TRUST_ROOT_UPDATE = 5;
+
+    // delete trusted root certificate [org_ ID should be in trust_ The nodes in nodes need to be deleted]
+    TRUST_ROOT_DELETE = 6;
+
+    // organization add node address
+    // org_id must already exist in nodes，you can add addresses in batches
+    // the parameter is addresses. Single addresses are separated by ","
+    // ip+port and peerid cannot be repeated
+    // Deprecated , replace by NODE_ID_ADD
+    NODE_ADDR_ADD = 7;
+
+    // [self]the organization updates an address
+    //[org_id and address must already exist in nodes, new_address is the new address. ip+port and peerId cannot be duplicated]
+    // Deprecated , replace by NODE_ID_UPDATE
+    NODE_ADDR_UPDATE = 8;
+
+    // organization delete node address [org_id and address must already exist in nodes]
+    // Deprecated , replace by NODE_ID_DELETE
+    NODE_ADDR_DELETE = 9;
+
+    // organization add node address in batches [org_id在nodes不存在，批量添加地址，参数为node_ids，单地址用逗号","隔开。nodeId不能重复]
+    NODE_ORG_ADD = 10;
+
+    // organization update
+    // org_id must already exist in nodes，the parameter is addresses，Single addresses are separated by ","
+    // ip+port and peerid cannot be repeated
+    NODE_ORG_UPDATE = 11;
+
+    // organization delete, org_id must already exist in nodes
+    NODE_ORG_DELETE = 12;
+
+    // add consensus parameters, key is not exit in ext_config
+    CONSENSUS_EXT_ADD = 13;
+
+    // update onsensus parameters, key exit in ext_config
+    CONSENSUS_EXT_UPDATE = 14;
+
+    // delete onsensus parameters, key exit in ext_config
+    CONSENSUS_EXT_DELETE = 15;
+
+    // add permission
+    PERMISSION_ADD = 16;
+
+    // update permission
+    PERMISSION_UPDATE = 17;
+
+    // delete permission
+    PERMISSION_DELETE = 18;
+
+    // organization add node_id
+    // org_id must already exist in nodes，you can add node_id in batches
+    // the parameter is node_ids. Single node_ids are separated by ","
+    // node_id cannot be repeated
+    NODE_ID_ADD = 19;
+
+    // [self]the organization updates a node_ids
+    //[org_id and node_ids must already exist in nodes, new_node_id is the new node_id. node_id cannot be duplicated]
+    NODE_ID_UPDATE = 20;
+
+    // organization delete node_id [org_id and node_id must already exist in nodes]
+    NODE_ID_DELETE = 21;
+}
+
+// Methods of certificate management
+enum CertManageFunction {
+
+    // add certficate
+    CERT_ADD = 0;
+
+    // delete certficate
+    CERTS_DELETE = 1;
+
+    // query certficate
+    CERTS_QUERY = 2;
+
+    // freeze certificate
+    CERTS_FREEZE = 3;
+
+    // unfreezing certificate
+    CERTS_UNFREEZE = 4;
+
+    // Revocation of certificate
+    CERTS_REVOKE = 5;
+}
+
+// methods of managing multi signature
+enum MultiSignFunction {
+    // multi signature request
+    REQ = 0;
+
+    // multi signature voting
+    VOTE = 1;
+
+    // multi signature query
+    QUERY = 2;
+}
+
+// methods of user management contract
+enum ManageUserContractFunction {
+    // init contract
+    INIT_CONTRACT = 0;
+    // upgrade contract
+    UPGRADE_CONTRACT = 1;
+    // freeze  contract
+    FREEZE_CONTRACT = 2;
+
+    // unfreezing contract
+    UNFREEZE_CONTRACT = 3;
+
+    // Revocation of contract
+    REVOKE_CONTRACT = 4;
+
+
+}
+
+// methods of private compute contract
+enum PrivateComputeContractFunction {
+    // get contract code
+    GET_CONTRACT = 0;
+    // get private data
+    GET_DATA = 1;
+    // save cert of tee
+    SAVE_CA_CERT = 2;
+    // save private data dir
+    SAVE_DIR = 3;
+    // save data of private computation result
+    SAVE_DATA = 4;
+    //save enclave report
+    SAVE_ENCLAVE_REPORT = 5;
+    //get enclave proof
+    GET_ENCLAVE_PROOF = 6;
+    //get cert of tee
+    GET_CA_CERT = 7;
+    //get private data dir
+    GET_DIR = 8;
+    //checkCallerCertAuth
+    CHECK_CALLER_CERT_AUTH = 9;
+
+    GET_ENCLAVE_ENCRYPT_PUB_KEY = 10;
+    GET_ENCLAVE_VERIFICATION_PUB_KEY = 11;
+    GET_ENCLAVE_REPORT = 12;
+    GET_ENCLAVE_CHALLENGE = 13;
+    GET_ENCLAVE_SIGNATURE = 14;
+    SAVE_REMOTE_ATTESTATION = 15;
+}
+
+//ContractStatus 合约状态
+enum ContractStatus{
+    //未知
+    UNKNOWN =0;
+    //普通正常状态
+    NORMAL =1;
+    //冻结
+    FROZEN =2;
+    //被撤销
+    REVOKED =3;
+}
+
+enum ContractType{
+    //normal,support parallel
+    PARALLEL=0;
+    //don't support parallel, for example: SQL contract
+    SERIAL=1;
+    //like Fabric contract, run contract need add endorsement, for example: TEE contract
+    ENDORSE=2;
+    //only pack 1 tx in block
+    SINGLE=4;
+}
+
+message Contract {
+    // smart contract name, set by contract creator, can have multiple versions
+    string name = 1;
+
+    // smart contract version, set by contract creator, name + version should be unique
+    string version = 2;
+
+    // smart contract runtime type, set by contract creator
+    RuntimeType runtime_type = 3;
+
+    //contract status
+    ContractStatus status =4;
+
+    // contract run parallel or need endorsement
+    ContractType type=5;
+
+    //if need endorsement,specify policy
+    accesscontrol.Policy endorse_policy =6;
+
+    //contract upgrade policy
+    accesscontrol.Policy update_policy =7;
+
+    //contract initial block timestamp
+    int64 create_time =8;
+
+    //contract creator identity
+    accesscontrol.SerializedMember creator = 9;
+
+    //contract identity
+    accesscontrol.SerializedMember address = 10;
+
+}
+message ContractList {
+    repeated Contract contracts=1;
+}
+
+enum DPoSERC20ContractFunction {
+    // get owner of DPoS
+    GET_OWNER = 0;
+    // get decimals of DPoS
+    GET_DECIMALS = 1;
+    // transfer token at DPoS
+    TRANSFER = 2;
+    // transfer token from user at DPoS
+    TRANSFER_FROM = 3;
+    // get balance of user at DPoS
+    GET_BALANCEOF = 4;
+    // approve token for user to other user at DPoS
+    APPROVE = 5;
+    // get allowance at DPoS
+    GET_ALLOWANCE = 6;
+    // burn token at DPoS
+    BURN = 7;
+    // mint token at DPoS
+    MINT = 8;
+    // transfer owner ship at DPoS
+    TRANSFER_OWNERSHIP = 9;
+    // get total supply of tokens
+    GET_TOTAL_SUPPLY = 10;
+}
+
+enum DPoSStakeContractFunction {
+    // get all validator candidates
+    GET_ALL_CANDIDATES = 0;
+    // get validator by address
+    GET_VALIDATOR_BY_ADDRESS = 1;
+    // delegate
+    DELEGATE = 2;
+    // get delegate by address
+    GET_DELEGATIONS_BY_ADDRESS = 3;
+    // get user delegation by validator
+    GET_USER_DELEGATION_BY_VALIDATOR = 4;
+    // undelegate
+    UNDELEGATE = 5;
+    // read epoch by id
+    READ_EPOCH_BY_ID = 6;
+    // read latest epoch
+    READ_LATEST_EPOCH = 7;
+    // set node id before join network
+    SET_NODE_ID = 8;
+    // get node id after join network
+    GET_NODE_ID = 9;
+    // update min self delegation
+    UPDATE_MIN_SELF_DELEGATION = 10;
+    // read min self delegation
+    READ_MIN_SELF_DELEGATION = 11;
+    // update epoch validator number
+    UPDATE_EPOCH_VALIDATOR_NUMBER = 12;
+    // read epoch validator number
+    READ_EPOCH_VALIDATOR_NUMBER = 13;
+    // update epoch block number
+    UPDATE_EPOCH_BLOCK_NUMBER = 14;
+    // read epoch block number
+    READ_EPOCH_BLOCK_NUMBER = 15;
+    // read complete unbounding epoch number
+    READ_COMPLETE_UNBOUNDING_EPOCH_NUMBER = 16;
+    // read system contract address
+    READ_SYSTEM_CONTRACT_ADDR = 18;
+}
+
+message Epoch {
+	uint64  EpochID = 1; // ID with auto-increment
+	repeated string ProposerVector = 2; // A collection of validators for the current generation
+	uint64 NextEpochCreateHeight = 3; // Next epoch switch height
+}
+
+enum BondStatus{
+    Bonded = 0;
+    Unbonding = 1;
+    Unbonded = 2;
+}
+
+message Validator {
+	string ValidatorAddress	= 1; // The address of the verifier: base58.Encode(sha256(pubkey))
+	bool Jailed = 2; // 活性惩罚后是否被移除验证人集合的标记
+	BondStatus Status = 3;	// 验证人状态包含 Bonded / Unbonding / Unbonded
+	string Tokens = 4; // 抵押的 token 数量
+	string DelegatorShares = 5; // 抵押物的股权总计
+	uint64 UnbondingEpochID = 6;	// 发起解除质押物交易的 Epoch
+	uint64 UnbondingCompletionEpochID = 7; // 解除质押 Epoch
+	string SelfDelegation = 8; // 自抵押 token 数
+}
+
+message Delegation  {
+	string DelegatorAddress	= 1; //抵押人的ID
+	string ValidatorAddress	= 2; //验证人的ID
+	string Shares = 3; //抵押股权
+}
+
+message UnbondingDelegation {
+  string EpochID = 1; // epoch id
+	string DelegatorAddress = 2; // 抵押人ID
+	string ValidatorAddress	= 3; // 验证人ID
+	repeated UnbondingDelegationEntry Entries = 4; // Unbond 记录
+}
+
+message UnbondingDelegationEntry {
+	uint64 CreationEpochID = 1;	// 创建 Epoch 高度
+  uint64 CompletionEpochID = 2; // 完成 Epoch 高度
+	string Amount = 3; // 解抵押金额
+}
+
+message ValidatorVector {
+    repeated string Vector = 1; // 验证人数组
+}
+
+message DelegationInfo {
+    repeated Delegation Infos = 1; // 验证人数组
+}
