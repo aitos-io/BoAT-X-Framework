@@ -51,7 +51,8 @@ ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker/*.o) \
-			   $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker/protos/*/*.o)
+			   $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker/protos/*/*.o) \
+			   $(wildcard $(BOAT_BUILD_DIR)/sdk/network/chainmaker/*.o) 
 endif
 
 ifneq ($(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS)_$(BOAT_PROTOCOL_USE_CHAINMAKER),0_0_0)
