@@ -92,5 +92,5 @@ ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	make -C boatvenachain clean
 endif
 ifeq ($(BOAT_PROTOCOL_USE_QUORUM), 1)
-	make -C boatvenachain clean
+	make -C boatquorum clean
 endif
