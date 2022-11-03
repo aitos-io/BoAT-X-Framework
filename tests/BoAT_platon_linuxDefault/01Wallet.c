@@ -25,13 +25,13 @@ BOAT_RESULT check_platon_wallet(BoatPlatONWallet *wallet_ptr)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
 
-    result = strncmp(wallet_ptr->account_info.prikeyCtx.extra_data.value, platon_private_key_buf, strlen(platon_private_key_buf));
+    result = strncmp((char *)wallet_ptr->account_info.prikeyCtx.extra_data.value, platon_private_key_buf, strlen(platon_private_key_buf));
     if (result != 0) 
     {
         return result;
     }
     
-    result = strncmp(wallet_ptr->network_info.node_url_ptr, TEST_PLATON_NODE_URL, strlen(TEST_PLATON_NODE_URL));
+    result = strncmp((char *)wallet_ptr->network_info.node_url_ptr, TEST_PLATON_NODE_URL, strlen(TEST_PLATON_NODE_URL));
     if (result != 0)
     {
         return result;
