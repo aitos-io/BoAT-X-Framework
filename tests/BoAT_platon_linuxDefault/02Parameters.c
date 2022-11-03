@@ -352,7 +352,7 @@ START_TEST(test_005ParametersSet_0004SetValueSuccess)
 	rtnVal = BoatPlatONTxSetValue(&tx_ptr, &value);
     ck_assert(rtnVal == BOAT_SUCCESS);
 
-	ck_assert_str_eq(tx_ptr.rawtx_fields.value.field, value.field);
+	ck_assert_str_eq((char *)tx_ptr.rawtx_fields.value.field, (char *)value.field);
     BoatIotSdkDeInit();
 }
 END_TEST
