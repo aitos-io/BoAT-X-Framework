@@ -58,7 +58,6 @@ START_TEST(test_006GetBalance_0002GetSuccessNullAddress)
 {
     BOAT_RESULT result;
     BCHAR *cur_balance_wei = NULL;
-    BoatFieldVariable parse_result = {NULL, 0};
 
     BoatIotSdkInit();
 
