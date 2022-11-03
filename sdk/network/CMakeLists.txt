@@ -33,5 +33,9 @@ add_subdirectory(venachain)
 endif()
 
 if(BOAT_PROTOCOL_USE_CHAINMAKER)
-add_subdirectory(venachain)
+add_subdirectory(chainmaker)
+endif()
+
+if(BOAT_PROTOCOL_CITA)
+add_subdirectory(cita)
 endif()
