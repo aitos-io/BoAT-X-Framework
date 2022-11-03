@@ -45,6 +45,11 @@ add_subdirectory(boatquorum)
 set(PROTOS  ${PROTOS} $<TARGET_OBJECTS:boatquorum-obj>)
 endif()
 
+if(BOAT_PROTOCOL_USE_CITA)
+add_subdirectory(boatcita)
+set(PROTOS  ${PROTOS} $<TARGET_OBJECTS:boatcita-obj>)
+endif()
+
 add_library(protocol_obj    OBJECT  ${PROTOS})
 
 # target_link_libraries(protocol_obj  ${PROTOS})
