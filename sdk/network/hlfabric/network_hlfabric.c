@@ -28,6 +28,81 @@
 #include "network_hlfabric.h"
 #include "fabric_network.pb-c.h"
 
+__BOATSTATIC BOAT_RESULT BoATHlfabric_checkNodefig(BoatHlfabricNodesCfg nodeCfg)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+    /* check endorserLayoutNum , if endorserLayoutNum equal 0, have no nodes information*/
+    if (nodeCfg.endorserLayoutNum == 0)
+    {
+        return BOAT_ERROR_NETWORK_NODECFG_ERR;
+    }
+    if (NULL == nodeCfg.layoutCfg)
+    {
+        return BOAT_ERROR_NETWORK_NODECFG_ERR;
+    }
+    /******************  check layoutCfg ****************************/
+    for (size_t i = 0; i < nodeCfg.endorserLayoutNum; i++)
+    {
+        if (nodeCfg.layoutCfg[i].endorserGroupNum == 0)
+        {
+            return BOAT_ERROR_NETWORK_NODECFG_ERR;
+        }
+        if (NULL == nodeCfg.layoutCfg[i].groupCfg)
+        {
+            return BOAT_ERROR_NETWORK_NODECFG_ERR;
+        }
+        for (size_t j = 0; j < nodeCfg.layoutCfg[i].endorserGroupNum; j++)
+        {
+            if (nodeCfg.layoutCfg[i].groupCfg[j].endorserNumber == 0)
+            {
+                return BOAT_ERROR_NETWORK_NODECFG_ERR;
+            }
+            if (NULL == nodeCfg.layoutCfg[i].groupCfg[j].endorser)
+            {
+                return BOAT_ERROR_NETWORK_NODECFG_ERR;
+            }
+            /*    if quantities is bigger than endorserNumber ,the transaction cannot be executed successfully*/
+            if (nodeCfg.layoutCfg[i].groupCfg[j].quantities > nodeCfg.layoutCfg[i].groupCfg[j].endorserNumber)
+            {
+                return BOAT_ERROR_NETWORK_NODECFG_ERR;
+            }
+            for (size_t k = 0; k < nodeCfg.layoutCfg[i].groupCfg[j].endorserNumber; k++)
+            {
+                if (NULL == nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].hostName)
+                {
+                    return BOAT_ERROR_NETWORK_NODECFG_ERR;
+                }
+                if (NULL == nodeCfg.layoutCfg[i].groupCfg[j].endorser[k].nodeUrl)
+                {
+                    return BOAT_ERROR_NETWORK_NODECFG_ERR;
+                }
+            }
+        }
+    }
+    /**********************check orderCfg **********************************/
+    if (nodeCfg.orderCfg.endorserNumber == 0)
+    {
+        return BOAT_ERROR_NETWORK_NODECFG_ERR;
+    }
+    if (NULL == nodeCfg.orderCfg.endorser)
+    {
+        return BOAT_ERROR_NETWORK_NODECFG_ERR;
+    }
+    for (size_t i = 0; i < nodeCfg.orderCfg.endorserNumber; i++)
+    {
+        if (NULL == nodeCfg.orderCfg.endorser[i].hostName)
+        {
+            return BOAT_ERROR_NETWORK_NODECFG_ERR;
+        }
+        if (NULL == nodeCfg.orderCfg.endorser[i].nodeUrl)
+        {
+            return BOAT_ERROR_NETWORK_NODECFG_ERR;
+        }
+    }
+
+    return result;
+}
+
 /**
  * @description:
  *  This function reset every param in BoatHlfabricNetworkData;
@@ -44,7 +119,7 @@ BOAT_RESULT BoATHlfabric_FreeNetworkData(BoatHlfabricNetworkData networkData)
     BOAT_RESULT result = BOAT_SUCCESS;
     networkData.index = 0;
     networkData.accountCertContent.length = 0;
-    networkData.tlsClientCertContent.length = 0;
+    // networkData.tlsClientCertContent.length = 0;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
     networkData.accountClientTlsPrikey.value_len = 0;
     networkData.accountClientTlsCert.length = 0;
@@ -137,17 +212,18 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_getNetworkFromProto(BoatHlfabricNetworkDat
     /* account Cert */
     if (strlen(network_proto->accountcertcontent) > sizeof(Networkdata->accountCertContent.content))
     {
+        BoatLog(BOAT_LOG_NORMAL, "accountcertcontent length err");
         return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
     }
     Networkdata->accountCertContent.length = strlen(network_proto->accountcertcontent);
     strcpy(Networkdata->accountCertContent.content, network_proto->accountcertcontent);
     /* tls cert */
-    if (strlen(network_proto->tlsclientcertcontent) > sizeof(Networkdata->tlsClientCertContent.content))
-    {
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
-    Networkdata->tlsClientCertContent.length = strlen(network_proto->tlsclientcertcontent);
-    strcpy(Networkdata->tlsClientCertContent.content, network_proto->tlsclientcertcontent);
+    // if (strlen(network_proto->tlsclientcertcontent) > sizeof(Networkdata->tlsClientCertContent.content))
+    // {
+    //     return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+    // }
+    // Networkdata->tlsClientCertContent.length = strlen(network_proto->tlsclientcertcontent);
+    // strcpy(Networkdata->tlsClientCertContent.content, network_proto->tlsclientcertcontent);
     /* layout */
     Networkdata->nodesCfg.endorserLayoutNum = network_proto->n_layoutcfg;
     Networkdata->nodesCfg.layoutCfg = BoatMalloc(Networkdata->nodesCfg.endorserLayoutNum * sizeof(BoatHlfabricNodeLayoutCfg));
@@ -172,6 +248,7 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_getNetworkFromProto(BoatHlfabricNetworkDat
             Networkdata->nodesCfg.layoutCfg[i].groupCfg[j].quantities = network_proto->layoutcfg[i]->groupcfg[j]->quantities;
             if (strlen(network_proto->layoutcfg[i]->groupcfg[j]->tlsorgcertcontent) > sizeof(Networkdata->nodesCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content))
             {
+                BoatLog(BOAT_LOG_NORMAL, "tlsorgcertcontent length err : %d ", strlen(network_proto->layoutcfg[i]->groupcfg[j]->tlsorgcertcontent));
                 boat_throw(BOAT_ERROR, hlfabric_exception);
             }
             Networkdata->nodesCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length = strlen(network_proto->layoutcfg[i]->groupcfg[j]->tlsorgcertcontent);
@@ -377,6 +454,11 @@ BOAT_RESULT BoATHlfabric_GetNetworkList(BoatHlfabricNetworkContext *networkList)
     BUINT8 networknumBytes[4] = {0};
     BUINT8 lengthBytes[3] = {0};
     BoatProtocolType protocolType = BOAT_PROTOCOL_UNKNOWN;
+    /* check param*/
+    if (NULL == networkList)
+    {
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
     /* persistent network  */
     result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK, offset, networknumBytes, sizeof(networknumBytes), BOAT_STORE_TYPE_FLASH);
     /* if read Nvram failed , no network */
@@ -559,7 +641,7 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_GetFreeNetworkIndex_From_Persistent(void)
     }
     if (networkNum >= BOAT_MAX_NETWORK_NUM)
     {
-        return BOAT_ERROR;
+        return BOAT_ERROR_NETWORK_INDEX_EXCEED;
     }
     offset += sizeof(networknumBytes);
     for (size_t i = 0; i < networkNum; i++)
@@ -798,7 +880,7 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_Get_Network_Data(BoatHlfabricNetworkData *
     }
     protobuf_network.index = networkData->index;
     protobuf_network.accountcertcontent = networkData->accountCertContent.content;
-    protobuf_network.tlsclientcertcontent = networkData->tlsClientCertContent.content;
+    // protobuf_network.tlsclientcertcontent = networkData->tlsClientCertContent.content;
     protobuf_network.n_layoutcfg = networkData->nodesCfg.endorserLayoutNum;
     nodelayoutcfg = BoatMalloc(protobuf_network.n_layoutcfg * sizeof(Common__FabricNodeLayoutCfg *));
     if (NULL == nodelayoutcfg)
@@ -945,7 +1027,7 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_Get_Network_Data(BoatHlfabricNetworkData *
 BOAT_RESULT BoATHlfabricNetworkDataInit(BoatHlfabricNetworkData *mNetworkDataCtx)
 {
     mNetworkDataCtx->index = 0;
-    mNetworkDataCtx->tlsClientCertContent.length = 0;
+    // mNetworkDataCtx->tlsClientCertContent.length = 0;
     mNetworkDataCtx->accountCertContent.length = 0;
     mNetworkDataCtx->nodesCfg.endorserLayoutNum = 0;
     mNetworkDataCtx->nodesCfg.layoutCfg = NULL;
@@ -998,7 +1080,11 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_NetworkDataCtx_Store(BoatHlfabricNetworkDa
     }
     if (networkNum >= BOAT_MAX_NETWORK_NUM)
     {
-        boat_throw(BOAT_ERROR, hlfabric_exception);
+        boat_throw(BOAT_ERROR_NETWORK_INDEX_EXCEED, hlfabric_exception);
+    }
+    if (storeType == BOAT_STORE_TYPE_RAM)
+    {
+        networkNum = 0;
     }
     offset += sizeof(networknumBytes);
     for (int i = 0; i < networkNum; i++)
@@ -1084,6 +1170,12 @@ BOAT_RESULT BoatHlfabricNetworkCreate(BoatHlfabricNetworkConfig *networkConfig, 
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatHlfabricNetworkData mNetworkDataCtx;
     BUINT8 networkIndex = 0;
+    /****************** check params in networkConfig *********************/
+    if (BoATHlfabric_checkNodefig(networkConfig->nodesCfg) != BOAT_SUCCESS)
+    {
+        return BOAT_ERROR_NETWORK_NODECFG_ERR;
+    }
+
     result = BoATHlfabricNetworkDataInit(&mNetworkDataCtx);
     if (result != BOAT_SUCCESS)
     {
@@ -1142,15 +1234,26 @@ BOAT_RESULT BoATHlfabricNetworkDelete(BUINT8 index)
     BUINT8 networknumBytes[4] = {0};
     BUINT8 *networkData = NULL;
     BoatProtocolType protocolType = BOAT_PROTOCOL_UNKNOWN;
-    if (index >= BOAT_MAX_NETWORK_NUM)
+    if (index > BOAT_MAX_NETWORK_NUM)
     {
-        return BOAT_ERROR;
+        return BOAT_ERROR_NETWORK_INDEX_EXCEED;
     }
     /* onetime network
        index of onetime network must be 0
     */
     if (index == 0)
     {
+        result = BoatReadSoftRotNvram(BOAT_STORE_NETWORK, offset, networknumBytes, sizeof(networknumBytes), BOAT_STORE_TYPE_RAM);
+        /* if read Nvram failed , no network */
+        if (result != BOAT_SUCCESS)
+        {
+            return result;
+        }
+        result = utility_check_NumBytes(networknumBytes, &networkNum);
+        if (result != BOAT_SUCCESS || networkNum == 0)
+        {
+            return BOAT_ERROR_NETWORK_HAVENOON;
+        }
         /* set network_num of onetime network to 0 */
         memset(networknumBytes, 0x00, sizeof(networknumBytes));
         result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK, 0, networknumBytes, sizeof(networknumBytes), BOAT_STORE_TYPE_RAM);
@@ -1167,7 +1270,7 @@ BOAT_RESULT BoATHlfabricNetworkDelete(BUINT8 index)
         result = utility_check_NumBytes(networknumBytes, &networkNum);
         if (result != BOAT_SUCCESS || networkNum == 0)
         {
-            return result;
+            return BOAT_ERROR_NETWORK_HAVENOON;
         }
         offset += sizeof(networknumBytes);
         for (i = 0; i < networkNum; i++)
@@ -1210,7 +1313,7 @@ BOAT_RESULT BoATHlfabricNetworkDelete(BUINT8 index)
         if (i >= networkNum)
         {
             BoatLog(BOAT_LOG_NORMAL, "not find the network ");
-            return BOAT_ERROR;
+            return BOAT_ERROR_NETWORK_HAVENOON;
         }
         networkNumNew = networkNum - 1;
         utility_get_NumBytes(networkNumNew, networknumBytes);
@@ -1329,7 +1432,15 @@ BOAT_RESULT BoATHlfabric_GetNetworkByIndex(BoatHlfabricNetworkData *networkData,
     BUINT8 networknumBytes[4] = {0};
     BoatProtocolType protocolType = BOAT_PROTOCOL_UNKNOWN;
     BoatStoreType storetype;
-
+    /* check params*/
+    if (NULL == networkData)
+    {
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+    if (index > BOAT_MAX_NETWORK_NUM)
+    {
+        return BOAT_ERROR_NETWORK_INDEX_EXCEED;
+    }
     if (index == 0)
     { // onetime wallet
         storetype = BOAT_STORE_TYPE_RAM;
@@ -1348,7 +1459,7 @@ BOAT_RESULT BoATHlfabric_GetNetworkByIndex(BoatHlfabricNetworkData *networkData,
     result = utility_check_NumBytes(networknumBytes, &networkNum);
     if (result != BOAT_SUCCESS || networkNum == 0)
     {
-        return BOAT_ERROR;
+        return BOAT_ERROR_NETWORK_HAVENOON;
     }
     offset += sizeof(networknumBytes);
     BoatLog(BOAT_LOG_NORMAL, "network num = %d ", networkNum);
@@ -1401,5 +1512,5 @@ BOAT_RESULT BoATHlfabric_GetNetworkByIndex(BoatHlfabricNetworkData *networkData,
             offset += (networkLength + networkLengthLen);
         }
     }
-    return BOAT_ERROR;
+    return BOAT_ERROR_NETWORK_INDEX_EXCEED;
 }

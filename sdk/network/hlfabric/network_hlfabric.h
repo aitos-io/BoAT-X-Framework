@@ -90,7 +90,7 @@ typedef struct TBoatHlfabricNetworkConfig
 	BoatKeypairExtraData accountClientTlsPrikey;
 	BoatHlfabricCertInfoCfg accountClientTlsCert;
 #endif
-	BoatHlfabricCertInfoCfg tlsClientCertContent; //!< certificate content of TLS
+	// BoatHlfabricCertInfoCfg tlsClientCertContent; //!< certificate content of TLS
 	BoatHlfabricNodesCfg nodesCfg;
 } BoatHlfabricNetworkConfig;
 
@@ -104,7 +104,7 @@ typedef struct TBoatHlfabricNetworkData
 	BoatKeypairExtraData accountClientTlsPrikey;
 	BoatHlfabricCertInfoCfg accountClientTlsCert;
 #endif
-	BoatHlfabricCertInfoCfg tlsClientCertContent; //!< certificate content of TLS
+	// BoatHlfabricCertInfoCfg tlsClientCertContent; //!< certificate content of TLS
 	BoatHlfabricNodesCfg nodesCfg;
 } BoatHlfabricNetworkData;
 
