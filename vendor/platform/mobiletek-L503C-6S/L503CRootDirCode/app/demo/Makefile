@@ -8,9 +8,7 @@ include ${SOFT_WORKDIR}/build/buildenv.mk
 LOCAL_NAME := demo
 
 LOCAL_API_DEPENDS :=  ${API_PLATFORM_DEPENDS} \
-                      demo/hello_test/include \
-                      demo/demo_ethereum/include \
-                      demo/demo_fabric/include
+                      demo/demo_platone/include
 
 LOCAL_MODULE_DEPENDS := demo/hello_test
 LOCAL_MODULE_DEPENDS += demo/visual_at_demo
@@ -28,8 +26,7 @@ LOCAL_MODULE_DEPENDS += demo/fota_demo
 LOCAL_MODULE_DEPENDS += demo/ftp_demo
 LOCAL_MODULE_DEPENDS += demo/lcd_demo
 LOCAL_MODULE_DEPENDS += demo/cam_demo
-LOCAL_MODULE_DEPENDS += demo/demo_ethereum
-LOCAL_MODULE_DEPENDS += demo/demo_fabric
+LOCAL_MODULE_DEPENDS += demo/demo_platone
 
 LOCAL_EXPORT_FLAG += \
                     MBTK_TEST_FLAG
