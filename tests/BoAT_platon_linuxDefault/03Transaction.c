@@ -183,7 +183,8 @@ START_TEST(test_008ParseJson_0002ObtainResultObjectFailure)
     BOAT_RESULT result;
     BCHAR *json_string= "111";
     BCHAR *child_name = "";
-    BoatFieldVariable *result_out = {"1", 1};
+    BUINT8 b = 0x31;
+    BoatFieldVariable *result_out = {&b, 1};
 
     result = platon_parse_json_result(json_string, child_name, result_out);
     ck_assert(result = BOAT_ERROR_COMMON_INVALID_ARGUMENT);
