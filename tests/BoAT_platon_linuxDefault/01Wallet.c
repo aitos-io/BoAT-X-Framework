@@ -552,7 +552,6 @@ END_TEST
 START_TEST(test_001CreateWallet_0018DeletePersistWalletSuccess) 
 {
     BSINT32 rtnVal;
-    BoatPlatONWallet *g_platon_wallet_ptr = NULL;
 
     BoatIotSdkInit();
     BoatPlatONWalletConfig wallet = get_platon_wallet_settings();
