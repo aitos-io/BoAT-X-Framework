@@ -10,10 +10,10 @@ BOAT_PROTOCOL_USE_ETHEREUM   ?= 1
 BOAT_PROTOCOL_USE_PLATON     ?= 1
 BOAT_PROTOCOL_USE_PLATONE    ?= 1
 BOAT_PROTOCOL_USE_FISCOBCOS  ?= 1
-BOAT_PROTOCOL_USE_HLFABRIC   ?= 0
-BOAT_PROTOCOL_USE_HWBCS      ?= 0
-BOAT_PROTOCOL_USE_CHAINMAKER ?= 0
-BOAT_DISCOVERY_PEER_QUERY    ?= 0
+BOAT_PROTOCOL_USE_HLFABRIC   ?= 1
+BOAT_PROTOCOL_USE_HWBCS      ?= 1
+BOAT_PROTOCOL_USE_CHAINMAKER ?= 1
+BOAT_DISCOVERY_PEER_QUERY    ?= 1
 BOAT_PROTOCOL_USE_VENACHAIN  ?= 1
 BOAT_PROTOCOL_USE_QUORUM     ?= 1
 
@@ -135,6 +135,16 @@ ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
 BOAT_INCLUDE +=  -I$(BOAT_SDK_DIR)/network/hwbcs \
                 -I$(BOAT_SDK_DIR)/protocol/boathwbcs  \
                 -I$(BOAT_SDK_DIR)/protocol/boathwbcs/protos  \
+                -I$(BOAT_SDK_DIR)/protocol/common/http2intf \
+                -I$(BOAT_SDK_DIR)/third-party/protos \
+                -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
+                -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include
+endif
+
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)         
+BOAT_INCLUDE += -I$(BOAT_SDK_DIR)/network/chainmaker \
+                -I$(BOAT_SDK_DIR)/protocol/boatchainmaker  \
+                -I$(BOAT_SDK_DIR)/protocol/boatchainmaker/protos  \
                 -I$(BOAT_SDK_DIR)/protocol/common/http2intf \
                 -I$(BOAT_SDK_DIR)/third-party/protos \
                 -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
