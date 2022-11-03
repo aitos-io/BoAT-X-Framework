@@ -55,6 +55,13 @@ ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
 			   $(wildcard $(BOAT_BUILD_DIR)/sdk/network/chainmaker/*.o) 
 endif
 
+ifeq ($(BOAT_PROTOCOL_USE_CITA),1)
+	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatcita/*.o) \
+			   $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatcita/protos/*.o) \
+			   $(wildcard $(BOAT_BUILD_DIR)/sdk/network/cita/*.o) \
+			   $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/protobuf-c/*.o) 
+endif
+
 ifneq ($(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS)_$(BOAT_PROTOCOL_USE_CHAINMAKER),0_0_0)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/protos/*/*.o) \
 		  	   $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/protos/*/*/*.o) \
@@ -63,7 +70,7 @@ ifneq ($(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS)_$(BOAT_PROTOCOL_
 			   $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/common/http2intf/*.o)
 endif
 
-ifneq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATON)_$(BOAT_PROTOCOL_USE_PLATONE)_$(BOAT_PROTOCOL_USE_FISCOBCOS)_$(BOAT_PROTOCOL_USE_VENACHAIN)_$(BOAT_PROTOCOL_USE_QUORUM),0_0_0_0_0_0)
+ifneq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATON)_$(BOAT_PROTOCOL_USE_PLATONE)_$(BOAT_PROTOCOL_USE_FISCOBCOS)_$(BOAT_PROTOCOL_USE_VENACHAIN)_$(BOAT_PROTOCOL_USE_QUORUM)_$(BOAT_PROTOCOL_USE_CITA),0_0_0_0_0_0_0)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/common/web3intf/*.o) \
 				$(wildcard $(BOAT_BUILD_DIR)/sdk/rlp/*.o) 
 endif
