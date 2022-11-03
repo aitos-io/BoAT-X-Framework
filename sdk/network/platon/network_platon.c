@@ -754,6 +754,10 @@ BOAT_RESULT BoatPlatONNetworkCreate(BoatPlatONNetworkConfig *networkConfig, Boat
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatPlatONNetworkData mNetworkDataCtx;
     BUINT8 networkIndex = 0;
+    if (NULL == networkConfig)
+    {
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
     result = BoATPlatONNetworkDataInit(&mNetworkDataCtx);
     if (result != BOAT_SUCCESS)
     {

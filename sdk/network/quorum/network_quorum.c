@@ -754,6 +754,10 @@ BOAT_RESULT BoatQuorumNetworkCreate(BoatQuorumNetworkConfig *networkConfig, Boat
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatQuorumNetworkData mNetworkDataCtx;
     BUINT8 networkIndex = 0;
+    if (NULL == networkConfig)
+    {
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
     result = BoATQuorumNetworkDataInit(&mNetworkDataCtx);
     if (result != BOAT_SUCCESS)
     {

@@ -119,7 +119,6 @@ BOAT_RESULT BoATHlfabric_FreeNetworkData(BoatHlfabricNetworkData networkData)
     BOAT_RESULT result = BOAT_SUCCESS;
     networkData.index = 0;
     networkData.accountCertContent.length = 0;
-    // networkData.tlsClientCertContent.length = 0;
 #if (BOAT_HLFABRIC_TLS_SUPPORT == 1) && (BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT == 1)
     networkData.accountClientTlsPrikey.value_len = 0;
     networkData.accountClientTlsCert.length = 0;
@@ -217,13 +216,6 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_getNetworkFromProto(BoatHlfabricNetworkDat
     }
     Networkdata->accountCertContent.length = strlen(network_proto->accountcertcontent);
     strcpy(Networkdata->accountCertContent.content, network_proto->accountcertcontent);
-    /* tls cert */
-    // if (strlen(network_proto->tlsclientcertcontent) > sizeof(Networkdata->tlsClientCertContent.content))
-    // {
-    //     return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    // }
-    // Networkdata->tlsClientCertContent.length = strlen(network_proto->tlsclientcertcontent);
-    // strcpy(Networkdata->tlsClientCertContent.content, network_proto->tlsclientcertcontent);
     /* layout */
     Networkdata->nodesCfg.endorserLayoutNum = network_proto->n_layoutcfg;
     Networkdata->nodesCfg.layoutCfg = BoatMalloc(Networkdata->nodesCfg.endorserLayoutNum * sizeof(BoatHlfabricNodeLayoutCfg));
@@ -880,7 +872,6 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_Get_Network_Data(BoatHlfabricNetworkData *
     }
     protobuf_network.index = networkData->index;
     protobuf_network.accountcertcontent = networkData->accountCertContent.content;
-    // protobuf_network.tlsclientcertcontent = networkData->tlsClientCertContent.content;
     protobuf_network.n_layoutcfg = networkData->nodesCfg.endorserLayoutNum;
     nodelayoutcfg = BoatMalloc(protobuf_network.n_layoutcfg * sizeof(Common__FabricNodeLayoutCfg *));
     if (NULL == nodelayoutcfg)
@@ -1027,7 +1018,6 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_Get_Network_Data(BoatHlfabricNetworkData *
 BOAT_RESULT BoATHlfabricNetworkDataInit(BoatHlfabricNetworkData *mNetworkDataCtx)
 {
     mNetworkDataCtx->index = 0;
-    // mNetworkDataCtx->tlsClientCertContent.length = 0;
     mNetworkDataCtx->accountCertContent.length = 0;
     mNetworkDataCtx->nodesCfg.endorserLayoutNum = 0;
     mNetworkDataCtx->nodesCfg.layoutCfg = NULL;
@@ -1170,6 +1160,10 @@ BOAT_RESULT BoatHlfabricNetworkCreate(BoatHlfabricNetworkConfig *networkConfig, 
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatHlfabricNetworkData mNetworkDataCtx;
     BUINT8 networkIndex = 0;
+    if (NULL == networkConfig)
+    {
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
     /****************** check params in networkConfig *********************/
     if (BoATHlfabric_checkNodefig(networkConfig->nodesCfg) != BOAT_SUCCESS)
     {

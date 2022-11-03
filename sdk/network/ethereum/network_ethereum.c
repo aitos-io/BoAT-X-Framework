@@ -753,6 +753,10 @@ BOAT_RESULT BoatEthNetworkCreate(BoatEthNetworkConfig *networkConfig, BoatStoreT
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatEthNetworkData mNetworkDataCtx;
     BUINT8 networkIndex = 0;
+    if (NULL == networkConfig)
+    {
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
     result = BoATEthNetworkDataInit(&mNetworkDataCtx);
     if (result != BOAT_SUCCESS)
     {

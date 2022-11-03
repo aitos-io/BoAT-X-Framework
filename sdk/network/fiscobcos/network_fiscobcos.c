@@ -754,6 +754,10 @@ BOAT_RESULT BoatFiscobcosNetworkCreate(BoatFiscobcosNetworkConfig *networkConfig
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatFiscobcosNetworkData mNetworkDataCtx;
     BUINT8 networkIndex = 0;
+    if (NULL == networkConfig)
+    {
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
     result = BoATFiscobcosNetworkDataInit(&mNetworkDataCtx);
     if (result != BOAT_SUCCESS)
     {
