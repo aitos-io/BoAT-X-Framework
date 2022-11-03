@@ -1,7 +1,7 @@
 # Source and Objects
 
 SOURCES = $(wildcard *.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/rpc
+OBJECTS_DIR = $(BOAT_BUILD_DIR)/vendor/platform/$(PLATFORM_TARGET)/rpc
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 
@@ -12,7 +12,7 @@ $(OBJECTS_DIR):
 
 $(OBJECTS_DIR)/%.o:%.c
 	$(CC) -c $(BOAT_CFLAGS) $< -o $@
-
-
+	$(BOAT_COPY) $(SOURCES) $(OBJECTS_DIR)
+	
 clean:
 	-$(BOAT_RM) $(OBJECTS)
