@@ -30,6 +30,9 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_QUORUM), 1)
 	SOURCES += api_quorum.c
 endif
+ifeq ($(BOAT_PROTOCOL_USE_CITA), 1)
+	SOURCES += api_cita.c
+endif
 
 
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/wallet
