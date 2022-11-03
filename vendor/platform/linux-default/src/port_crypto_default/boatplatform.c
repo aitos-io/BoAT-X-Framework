@@ -274,7 +274,7 @@ void BoatSleep(BUINT32 second)
     sleep(second);
 }
 
-long int BoatGetTimes()
+long int BoatGetTimes(void)
 {
 	return time(NULL);
 }
