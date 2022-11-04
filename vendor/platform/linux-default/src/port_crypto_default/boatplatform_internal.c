@@ -51,7 +51,6 @@
 // #include "http2intf.h"
 // #endif
 
-
 uint32_t random32(void)
 {
 	static uint32_t seed = 0;
@@ -67,7 +66,7 @@ uint32_t random32(void)
 }
 
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
-{	
+{
 	/* param check */
 	if (output == NULL)
 	{
@@ -82,9 +81,8 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 	return BOAT_SUCCESS;
 }
 
-
-BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx, 
-						  const BUINT8 *digest, BUINT32 digestLen, 
+BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
+						  const BUINT8 *digest, BUINT32 digestLen,
 						  BoatSignatureResult *signatureResult, void *rsvd)
 {
 	BUINT8 signature[64] = {0};
@@ -93,9 +91,9 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 	BUINT8 ecdsPrefix = 0;
 	BUINT32 signatureLen = 0;
 	BOAT_RESULT result = BOAT_SUCCESS;
-	
+
 	(void)rsvd;
-	
+
 	/* param check */
 	if ((digest == NULL) || (signatureResult == NULL))
 	{
@@ -110,14 +108,15 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 
 	// result = BoAT_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format, prikey.value,prikey.value_len,digest,digestLen,signatureTmp,&signatureLen,&ecdsPrefix);
 
-	result = BoAT_Keystore_Sign(prikeyCtx.prikey_type,prikeyCtx.keypair_index,digest,digestLen,signature,&signatureLen,&ecdsPrefix);
-	if(result != BOAT_SUCCESS){
+	result = BoAT_Keystore_Sign(prikeyCtx.prikey_type, prikeyCtx.keypair_index, digest, digestLen, signature, &signatureLen, &ecdsPrefix);
+	if (result != BOAT_SUCCESS)
+	{
 		return result;
 	}
 
 	// // signature result assign
 	// memset(signatureResult, 0, sizeof(BoatSignatureResult));
-	
+
 	// signatureResult->native_format_used = true;
 	// memcpy(signatureResult->native_sign, signatureTmp, 64);
 
@@ -125,8 +124,9 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 	// signatureResult->signPrefix      = ecdsPrefix;
 
 	/* convert r,s to asn.1 */
-	result = utility_signature_to_asn1(signature,signatureLen,signatureTmp,&signatureTmpLen);
-	if(result != BOAT_SUCCESS){
+	result = utility_signature_to_asn1(signature, signatureLen, signatureTmp, &signatureTmpLen);
+	if (result != BOAT_SUCCESS)
+	{
 		BoatLog(BOAT_LOG_CRITICAL, "signature to asn.1  fail.");
 		return BOAT_ERROR;
 	}
@@ -136,51 +136,48 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 	signatureResult->pkcs_format_used = true;
 	signatureResult->pkcs_sign_length = signatureTmpLen;
 	memcpy(signatureResult->pkcs_sign, signatureTmp, signatureResult->pkcs_sign_length);
-	
+
 	signatureResult->native_format_used = true;
-	memcpy(&signatureResult->native_sign[0],  signature, 64);
+	memcpy(&signatureResult->native_sign[0], signature, 64);
 
 	signatureResult->signPrefix_used = true;
-	signatureResult->signPrefix      = ecdsPrefix;
-
+	signatureResult->signPrefix = ecdsPrefix;
 
 	return result;
 }
 
-
 /******************************************************************************
-                              BOAT FILE OPERATION WARPPER
+							  BOAT FILE OPERATION WARPPER
 *******************************************************************************/
-
 
 BOAT_RESULT BoatGetStorageSize(BUINT32 *size, void *rsvd)
 {
 	FILE *file_ptr;
-	
+
 	(void)rsvd;
-	
+
 	if (size == NULL)
 	{
-		BoatLog( BOAT_LOG_CRITICAL, "param which  'size' can't be NULL." );
+		BoatLog(BOAT_LOG_CRITICAL, "param which  'size' can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
-	
+
 	file_ptr = fopen(BOAT_FILE_STOREDATA, "rb");
 	if (file_ptr == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
-	
+
 	fseek(file_ptr, 0, SEEK_END);
 	*size = ftell(file_ptr);
 	fclose(file_ptr);
-	
+
 	return BOAT_SUCCESS;
 }
 
 /**
- * @description: 
+ * @description:
  * 	This function wirte data into file.
  * @param[in] {BUINT32} offset
  * 	write data from offset as the starting point of the file
@@ -192,26 +189,27 @@ BOAT_RESULT BoatGetStorageSize(BUINT32 *size, void *rsvd)
  * 	reserved , not used now
  * @return {*}
  * 	This function will return BOAT_SUCCESS if write successfully.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoatWriteStorage(BUINT32 offset ,BUINT8 *writeBuf, BUINT32 writeLen, void *rsvd)
+BOAT_RESULT BoatWriteStorage(BUINT32 offset, BUINT8 *writeBuf, BUINT32 writeLen, void *rsvd)
 {
-	FILE    *file_ptr;
+	FILE *file_ptr;
 	BSINT32 count = 0;
 	BUINT32 size = 0;
 	BUINT8 *buf_zero = NULL;
-	
+
 	(void)rsvd;
-	
+
 	if (writeBuf == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which  'writeBuf' can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 	file_ptr = fopen(BOAT_FILE_STOREDATA, "rb+");
-	if(file_ptr == NULL){
+	if (file_ptr == NULL)
+	{
 		file_ptr = fopen(BOAT_FILE_STOREDATA, "wb");
 		fclose(file_ptr);
 		file_ptr = fopen(BOAT_FILE_STOREDATA, "rb+");
@@ -226,14 +224,16 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset ,BUINT8 *writeBuf, BUINT32 writeLen,
 	/*move to the end of the file*/
 	fseek(file_ptr, 0, SEEK_END);
 	size = ftell(file_ptr);
-	BoatLog(BOAT_LOG_NORMAL,"size = %d , offset = %d ",size,offset);
-	if(size < offset){
+	BoatLog(BOAT_LOG_NORMAL, "size = %d , offset = %d ", size, offset);
+	if (size < offset)
+	{
 		buf_zero = BoatMalloc(offset - size);
-		if(NULL == buf_zero){
+		if (NULL == buf_zero)
+		{
 			fclose(file_ptr);
 			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}
-		memset(buf_zero,0x00,offset - size);
+		memset(buf_zero, 0x00, offset - size);
 		count = fwrite(buf_zero, 1, offset - size, file_ptr);
 		BoatFree(buf_zero);
 		if (count != (offset - size))
@@ -243,7 +243,9 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset ,BUINT8 *writeBuf, BUINT32 writeLen,
 			return BOAT_ERROR_STORAGE_FILE_WRITE_FAIL;
 		}
 		fseek(file_ptr, 0, SEEK_END);
-	}else{
+	}
+	else
+	{
 		fseek(file_ptr, offset, SEEK_SET);
 	}
 	count = fwrite(writeBuf, 1, writeLen, file_ptr);
@@ -253,12 +255,12 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset ,BUINT8 *writeBuf, BUINT32 writeLen,
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to write file: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_WRITE_FAIL;
 	}
-	
+
 	return BOAT_SUCCESS;
 }
 
 /**
- * @description: 
+ * @description:
  * 	This function read data from file
  * @param {BUINT32} offset
  * 	read data from offset as the starting point of the file
@@ -270,7 +272,7 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset ,BUINT8 *writeBuf, BUINT32 writeLen,
  * 	reserved , not used now
  * @return {*}
  * 	This function will return BOAT_SUCCESS if read successfully.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
@@ -297,7 +299,8 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 	/*move to the end of the file*/
 	fseek(file_ptr, 0, SEEK_END);
 	size = ftell(file_ptr);
-	if(readLen + offset > size){
+	if (readLen + offset > size)
+	{
 		fclose(file_ptr);
 		return BOAT_ERROR_STORAGE_FILE_READ_FAIL;
 	}
@@ -309,125 +312,120 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_READ_FAIL;
 	}
-	
+
 	return BOAT_SUCCESS;
 }
 
-
 /******************************************************************************
-                              BOAT SOCKET WARPPER
-					        THIS ONLY USED BY FABRIC
+							  BOAT SOCKET WARPPER
+							THIS ONLY USED BY FABRIC
 *******************************************************************************/
 #if (PROTOCOL_USE_HLFABRIC == 1)
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
-    int                connectfd;
-    char               ip[64];
-    char               port[8];
-    char               *ptr = NULL;
-    struct hostent     *he; 
-    struct sockaddr_in server;
-    struct sockaddr    localaddr;
-    struct sockaddr_in *localaddr_ptr;
-    socklen_t          addrlen = sizeof(struct sockaddr);
+	int connectfd;
+	char ip[64];
+	char port[8];
+	char *ptr = NULL;
+	struct hostent *he;
+	struct sockaddr_in server;
+	struct sockaddr localaddr;
+	struct sockaddr_in *localaddr_ptr;
+	socklen_t addrlen = sizeof(struct sockaddr);
 
-    (void)rsvd;
+	(void)rsvd;
 
-    ptr = strchr(address, ':');
-    if (NULL == ptr)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", address);
-        return -1;
-    }
+	ptr = strchr(address, ':');
+	if (NULL == ptr)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", address);
+		return -1;
+	}
 
-    memset(ip  , 0      , sizeof(ip));
-    memset(port, 0      , sizeof(port));
-    memcpy(ip  , address, (int)(ptr - address));
-    memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
+	memset(ip, 0, sizeof(ip));
+	memset(port, 0, sizeof(port));
+	memcpy(ip, address, (int)(ptr - address));
+	memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
 
-    if ((he = gethostbyname(ip)) == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "gethostbyname() error");
-        return -1;
-    }
+	if ((he = gethostbyname(ip)) == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "gethostbyname() error");
+		return -1;
+	}
 
-    if ((connectfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "socket() error");
-        return -1;
-    }
+	if ((connectfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "socket() error");
+		return -1;
+	}
 
-    struct timeval timeout = {0, 500*1000};
-    setsockopt(connectfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(struct timeval));
-    setsockopt(connectfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(struct timeval));
+	struct timeval timeout = {0, 500 * 1000};
+	setsockopt(connectfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(struct timeval));
+	setsockopt(connectfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(struct timeval));
 
-    memset(&server, 0, sizeof(server));
-    server.sin_family = AF_INET;
-    server.sin_port = htons(atoi(port));
-    server.sin_addr = *((struct in_addr *)(he->h_addr_list[0])); 
+	memset(&server, 0, sizeof(server));
+	server.sin_family = AF_INET;
+	server.sin_port = htons(atoi(port));
+	server.sin_addr = *((struct in_addr *)(he->h_addr_list[0]));
 
-    if (connect(connectfd, (struct sockaddr *)&server,sizeof(struct sockaddr)) < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "connect() error");
-        close(connectfd);
-        return -1;
-    }
-    if (getsockname(connectfd, &localaddr, &addrlen) < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "getsockname() error");
-        close(connectfd);
-        return -1;
-    }
-    else
-    {
-        localaddr_ptr = (struct sockaddr_in*)&localaddr;
-        BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.", 
-        inet_ntoa(localaddr_ptr->sin_addr), htons(localaddr_ptr->sin_port));
-    }
+	if (connect(connectfd, (struct sockaddr *)&server, sizeof(struct sockaddr)) < 0)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "connect() error");
+		close(connectfd);
+		return -1;
+	}
+	if (getsockname(connectfd, &localaddr, &addrlen) < 0)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "getsockname() error");
+		close(connectfd);
+		return -1;
+	}
+	else
+	{
+		localaddr_ptr = (struct sockaddr_in *)&localaddr;
+		BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.",
+				inet_ntoa(localaddr_ptr->sin_addr), htons(localaddr_ptr->sin_port));
+	}
 
-    BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
+	BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
 
-    return connectfd;
+	return connectfd;
 }
 
-
-#if (BOAT_TLS_SUPPORT == 1)	
-BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,const BoatFieldVariable clientPrikey,
-						const BoatFieldVariable clientCert,BSINT32 socketfd, void *tlsContext, void *rsvd)
+#if (BOAT_TLS_SUPPORT == 1)
+BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain, const BoatFieldVariable clientPrikey,
+						const BoatFieldVariable clientCert, BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
-	
+
 	//! @todo BoatTlsInit implementation in crypto default.
 	return BOAT_ERROR;
 }
 #endif
 
-
 BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_TLS_SUPPORT == 1) 
+#if (BOAT_TLS_SUPPORT == 1)
 	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
 	return -1;
 #else
-	return send(sockfd, buf, len, 0);	
-#endif	
+	return send(sockfd, buf, len, 0);
+#endif
 }
-
 
 BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_TLS_SUPPORT == 1) 
+#if (BOAT_TLS_SUPPORT == 1)
 	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
 	return -1;
 #else
 	return recv(sockfd, buf, len, 0);
-#endif	
+#endif
 }
-
 
 void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 {
 	close(sockfd);
-#if (BOAT_TLS_SUPPORT == 1) 
+#if (BOAT_TLS_SUPPORT == 1)
 	// free tls releated
 	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
 #endif
@@ -435,15 +433,15 @@ void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
 
 /******************************************************************************
-                              BOAT KEY PROCESS WARPPER
+							  BOAT KEY PROCESS WARPPER
 *******************************************************************************/
-static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriKeyCtx_config *config, 
-													       BoatKeypairDataCtx *pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriKeyCtx_config *config,
+														   BoatKeypairDataCtx *pkCtx)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BoatKeypairKeypair keypair;
 	// result = BoAT_Keypair_generation(config->prikey_type,config->prikey_format,&keypair);
-	result = BoAT_Keystore_Gen_Keypair(config->prikey_type,&keypair);
+	result = BoAT_Keystore_Gen_Keypair(config->prikey_type, &keypair);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "generate private key failed.");
@@ -452,21 +450,21 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriK
 
 	// 2- update private key format
 	pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
-	
+
 	// 3- update private key type
-	pkCtx->prikeyCtx.prikey_type   = config->prikey_type;
+	pkCtx->prikeyCtx.prikey_type = config->prikey_type;
 	pkCtx->extraData.value_len = keypair.prikey.value_len;
-	memcpy(pkCtx->extraData.value,keypair.prikey.value,keypair.prikey.value_len);
+	memcpy(pkCtx->extraData.value, keypair.prikey.value, keypair.prikey.value_len);
 	memcpy(pkCtx->prikeyCtx.pubkey_content, keypair.pubkey.value, 64);
 
 	return result;
 }
 
-static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatKeypairPriKeyCtx_config *config, 
-													             BoatKeypairDataCtx *pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatKeypairPriKeyCtx_config *config,
+																 BoatKeypairDataCtx *pkCtx)
 {
 	BUINT32 len = 0;
-	BOAT_RESULT  result = BOAT_SUCCESS;
+	BOAT_RESULT result = BOAT_SUCCESS;
 
 	// 0- check input parameter
 	if ((config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL))
@@ -487,25 +485,23 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatKeypa
 
 	// 2- update private key format
 	pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
-	
+
 	// 3- update private key type
-	pkCtx->prikeyCtx.prikey_type   = config->prikey_type;
+	pkCtx->prikeyCtx.prikey_type = config->prikey_type;
 
 	// 4- update private key index
 
-
 	// 5- update public key
-	result = BoAT_getPubkey(config->prikey_type,config->prikey_format, pkCtx->extraData.value,pkCtx->extraData.value_len,pkCtx->prikeyCtx.pubkey_content,&len);
+	result = BoAT_getPubkey(config->prikey_type, config->prikey_format, pkCtx->extraData.value, pkCtx->extraData.value_len, pkCtx->prikeyCtx.pubkey_content, &len);
 
-    return result;
+	return result;
 }
 
-
-static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatKeypairPriKeyCtx_config *config, 
-													             BoatKeypairDataCtx *pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatKeypairPriKeyCtx_config *config,
+															   BoatKeypairDataCtx *pkCtx)
 {
 	// BUINT8       pubKey65[65] = {0};
-	BOAT_RESULT  result = BOAT_SUCCESS;
+	BOAT_RESULT result = BOAT_SUCCESS;
 	KeypairNative keypair;
 
 	// 0- check input parameter
@@ -522,23 +518,24 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatKeypair
 		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 
-    result = UtilityPKCS2Native((BCHAR*)(config->prikey_content.field_ptr),&keypair);
-    if(result != BOAT_SUCCESS){
-        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> UtilityPKCS2Native err.");
-	UtilityFreeKeypair(keypair);
-        return result;
-    }
+	result = UtilityPKCS2Native((BCHAR *)(config->prikey_content.field_ptr), &keypair);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> UtilityPKCS2Native err.");
+		UtilityFreeKeypair(keypair);
+		return result;
+	}
 
 	// memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
 	// pkCtx->extra_data.value_len = config->prikey_content.field_len;
-	memcpy(pkCtx->extraData.value,keypair.prikey,keypair.prikeylen);
+	memcpy(pkCtx->extraData.value, keypair.prikey, keypair.prikeylen);
 	pkCtx->extraData.value_len = keypair.prikeylen;
 
 	// 2- update private key format
 	pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
-	
+
 	// 3- update private key type
-	pkCtx->prikeyCtx.prikey_type   = config->prikey_type;
+	pkCtx->prikeyCtx.prikey_type = config->prikey_type;
 
 	// 4- update private key index
 	// This field should update by 'key secure storage'(such as TE/SE).
@@ -557,27 +554,26 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatKeypair
 	// 	ecdsa_get_public_key65(&nist256p1, pkCtx->extra_data.value, pubKey65);
 	// 	memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
 	// }
-	// else 
+	// else
 	// {
 	// 	BoatLog( BOAT_LOG_CRITICAL, "Invalid private key type." );
 	// 	result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
 	// }
 	memcpy(pkCtx->prikeyCtx.pubkey_content, keypair.pubkey, keypair.pubkeylen);
 	UtilityFreeKeypair(keypair);
-    return result;
+	return result;
 }
 
-
-BOAT_RESULT  BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatKeypairDataCtx *pkCtx)
+BOAT_RESULT BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatKeypairDataCtx *pkCtx)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-	
+
 	if ((config == NULL) || (pkCtx == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
-	BoatLog(BOAT_LOG_NORMAL, "prikey_genMode = %d .",config->prikey_genMode);
+	BoatLog(BOAT_LOG_NORMAL, "prikey_genMode = %d .", config->prikey_genMode);
 	if (config->prikey_genMode == BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION)
 	{
 		BoatLog(BOAT_LOG_VERBOSE, "The private key is generated internally...");
@@ -585,35 +581,35 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatK
 	}
 	else if (config->prikey_genMode == BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION)
 	{
-		BoatLog(BOAT_LOG_NORMAL, "prikey_format = %d .",config->prikey_format);
-		switch(config->prikey_format)
+		BoatLog(BOAT_LOG_NORMAL, "prikey_format = %d .", config->prikey_format);
+		switch (config->prikey_format)
 		{
-			case BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS:
-				BoatLog(BOAT_LOG_NORMAL, "keypair private key[pkcs] set...");
-				// result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
-				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
-				break;
-			case BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE:
-				BoatLog(BOAT_LOG_VERBOSE, "keypair private key[native] set...");
-				result = sBoatPort_keyCreate_external_injection_native(config, pkCtx);
-				break;
-			case BOAT_KEYPAIR_PRIKEY_FORMAT_MNEMONIC:
-				BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
-				result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
-				break;
-			default:
-				BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
-				result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
-				break;
+		case BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS:
+			BoatLog(BOAT_LOG_NORMAL, "keypair private key[pkcs] set...");
+			// result = BOAT_ERROR_kEYPAIR_KEY_FORMAT_ERR;
+			result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
+			break;
+		case BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE:
+			BoatLog(BOAT_LOG_VERBOSE, "keypair private key[native] set...");
+			result = sBoatPort_keyCreate_external_injection_native(config, pkCtx);
+			break;
+		case BOAT_KEYPAIR_PRIKEY_FORMAT_MNEMONIC:
+			BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
+			result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
+			break;
+		default:
+			BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
+			result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
+			break;
 		}
 	}
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
-		result = BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
+		result = BOAT_ERROR_KEYPAIR_KEY_GENMODE_ERR;
 	}
 
-    return result;
+	return result;
 }
 
 BOAT_RESULT BoatPort_keyQuery(const BoatKeypairPriKeyCtx_config *config, BoatKeypairPriKeyCtx *pkCtx)
@@ -628,14 +624,13 @@ BOAT_RESULT BoatPort_keyDelete(BoatKeypairPriKeyCtx *pkCtx)
 	return BOAT_ERROR;
 }
 
-
 /******************************************************************************
-                              BOAT AES WARPPER
+							  BOAT AES WARPPER
 *******************************************************************************/
 BOAT_RESULT BoatAesEncrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output)
 {
 	aes_encrypt_ctx ctxe;
-	BUINT8  saltArrayTmp[16];
+	BUINT8 saltArrayTmp[16];
 	BOAT_RESULT result = BOAT_SUCCESS;
 
 	/* aes init */

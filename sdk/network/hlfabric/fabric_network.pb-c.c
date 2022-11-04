@@ -328,7 +328,7 @@ const ProtobufCMessageDescriptor common__fabric_networks__descriptor =
   (ProtobufCMessageInit) common__fabric_networks__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor common__fabric_network_data__field_descriptors[7] =
+static const ProtobufCFieldDescriptor common__fabric_network_data__field_descriptors[6] =
 {
   {
     "index",
@@ -379,20 +379,8 @@ static const ProtobufCFieldDescriptor common__fabric_network_data__field_descrip
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "tlsClientCertContent",
-    5,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    offsetof(Common__FabricNetworkData, tlsclientcertcontent),
-    NULL,
-    &protobuf_c_empty_string,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
     "layoutCfg",
-    6,
+    5,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(Common__FabricNetworkData, n_layoutcfg),
@@ -404,7 +392,7 @@ static const ProtobufCFieldDescriptor common__fabric_network_data__field_descrip
   },
   {
     "orderCfg",
-    7,
+    6,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -420,14 +408,13 @@ static const unsigned common__fabric_network_data__field_indices_by_name[] = {
   3,   /* field[3] = accountClientTlsCert */
   2,   /* field[2] = accountClientTlsPrikey */
   0,   /* field[0] = index */
-  5,   /* field[5] = layoutCfg */
-  6,   /* field[6] = orderCfg */
-  4,   /* field[4] = tlsClientCertContent */
+  4,   /* field[4] = layoutCfg */
+  5,   /* field[5] = orderCfg */
 };
 static const ProtobufCIntRange common__fabric_network_data__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 7 }
+  { 0, 6 }
 };
 const ProtobufCMessageDescriptor common__fabric_network_data__descriptor =
 {
@@ -437,7 +424,7 @@ const ProtobufCMessageDescriptor common__fabric_network_data__descriptor =
   "Common__FabricNetworkData",
   "common",
   sizeof(Common__FabricNetworkData),
-  7,
+  6,
   common__fabric_network_data__field_descriptors,
   common__fabric_network_data__field_indices_by_name,
   1,  common__fabric_network_data__number_ranges,

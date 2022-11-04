@@ -63,7 +63,8 @@ typedef enum
     BOAT_PROTOCOL_HWBCS,           // huawei chain
     BOAT_PROTOCOL_CHAINMAKER,      // chainmaker
     BOAT_PROTOCOL_VENACHAIN,       // Venachain Enterprise consortium chain
-    BOAT_PROTOCOL_QUORUM           // quorum
+    BOAT_PROTOCOL_QUORUM,          // quorum
+    BOAT_PROTOCOL_CITA             // cita
 }BoatProtocolType;
 
 //!@brief Blockchain hash algorithm

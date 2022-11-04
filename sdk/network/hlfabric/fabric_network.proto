@@ -14,11 +14,11 @@ message fabricNetworkData{
     string accountCertContent = 2;
     string accountClientTlsPrikey = 3;
     string accountClientTlsCert  = 4;
-    string tlsClientCertContent = 5 ;
+    // string tlsClientCertContent = 5 ;
     // fabricNodesCfg nodes = 4;
     // uint32 layoutNum = 4;
-    repeated fabricNodeLayoutCfg layoutCfg = 6;
-    fabricNodeGroupCfg orderCfg = 7;
+    repeated fabricNodeLayoutCfg layoutCfg = 5;
+    fabricNodeGroupCfg orderCfg = 6;
 }
 
 message fabricNodesCfg{
