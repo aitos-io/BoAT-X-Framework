@@ -1,4 +1,4 @@
-all: testkeypair testsEthNetwork testsFiscobcosNetwork testsPlatonNetwork testsPlatoneNetwork testsQuorumNetwork testVenachainNetwork testFabricNetwork testHwbcsNetwork
+all: testkeypair testsEthNetwork testsFiscobcosNetwork testsPlatonNetwork testsPlatoneNetwork testsQuorumNetwork testVenachainNetwork testFabricNetwork testHwbcsNetwork testCitaNetwork
 	
 testkeypair:
 	make -C keypair all
@@ -42,6 +42,11 @@ ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
 	make -C HwbcsNetwork all
 endif
 
+testCitaNetwork:
+ifeq ($(BOAT_PROTOCOL_USE_CITA),1)
+	make -C CitaNetwork all
+endif
+
 clean:
 	make -C keypair clean
 	make -C EthNetwork clean
@@ -52,3 +57,4 @@ clean:
 	make -C VenachainNetwork clean
 	make -C FabricNetwork clean
 	make -C HwbcsNetwork clean
+	make -C CitaNetwork clean
