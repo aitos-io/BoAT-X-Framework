@@ -203,6 +203,7 @@ void BoatCitaWalletDeInit(BoatCitaWallet *wallet_ptr)
 
 BOAT_RESULT BoatCitaTxSetQuotaLimit(BoatCitaTx *tx_ptr, BUINT64 quota_limit_value)
 {
+    BOAT_RESULT result = BOAT_SUCCESS;
     if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
@@ -211,6 +212,7 @@ BOAT_RESULT BoatCitaTxSetQuotaLimit(BoatCitaTx *tx_ptr, BUINT64 quota_limit_valu
 
     // Set quotaLimit
     tx_ptr->rawtx_fields.quota = quota_limit_value;
+    return result;
 }
 
 
