@@ -599,18 +599,18 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatK
 				break;
 			case BOAT_KEYPAIR_PRIKEY_FORMAT_MNEMONIC:
 				BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
-				result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
+				result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
 				break;
 			default:
 				BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
-				result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
+				result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
 				break;
 		}
 	}
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
-		result = BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
+		result = BOAT_ERROR_KEYPAIR_KEY_GENMODE_ERR;
 	}
 
     return result;
