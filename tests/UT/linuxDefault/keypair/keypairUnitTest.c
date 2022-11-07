@@ -145,7 +145,10 @@ START_TEST(test_002Keypair_0002CreateMoreOneTimeKeypairSuccess)
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config */
     get_keypair_external_native_256k1_config(&keypair_config, prikey_index);
-
+    /* create keypair */
+    rtnVal = BoatKeypairCreate(&keypair_config, "keypairOnetime00", BOAT_STORE_TYPE_RAM);
+    /* check keypair index ,must be 0 */
+    ck_assert_int_eq(rtnVal, 0);
     /* create keypair */
     rtnVal = BoatKeypairCreate(&keypair_config, "keypairOnetime01", BOAT_STORE_TYPE_RAM);
     /* check keypair index ,must be 0 */
