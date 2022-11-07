@@ -108,7 +108,6 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
                                 BCHAR *recipient_str,
                                 BUINT64 quota)
 {
-    BCHAR   *retval_str = NULL;
     BOAT_RESULT result;
     BUINT64 valid_until_block_value;
 
