@@ -541,7 +541,7 @@ BOAT_RESULT BoatCitaGetTransactionReceipt(BoatCitaTx *tx_ptr)
 
 BOAT_RESULT BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr, BUINT64 *block_number)
 {
-    BUINT64 result = BOAT_SUCCESS;
+    BOAT_RESULT result = BOAT_SUCCESS;
     BCHAR *retval_str;
     BCHAR *stopstring;
     BUINT64 valid_until_block_value;
@@ -554,12 +554,17 @@ BOAT_RESULT BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr, BUINT64 *block_number)
     retval_str = web3_cita_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
                                                tx_ptr->wallet_ptr->network_info.node_url_ptr,
                                                &result);
+    if (result != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "web3_cita_getBlockNumber failed.");
+        return result;
+    }
 
     result = BoatCitaParseRpcResponseStringResult(retval_str, 
                                                            &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaGetBlockNumber failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaParseRpcResponseStringResult failed.");
         return result;
     }
     
