@@ -794,7 +794,12 @@ BOAT_RESULT BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatKe
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
-
+	// 1- update private key
+	if (config->prikey_content.field_len > sizeof(pkCtx->extraData.value))
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Error: length of injection key is too long.");
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+	}
 	if (config->prikey_genMode == BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION)
 	{
 		BoatLog(BOAT_LOG_VERBOSE, "The private key is generated internally...");

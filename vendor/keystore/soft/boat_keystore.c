@@ -258,6 +258,10 @@ BOAT_RESULT BoAT_Keystore_store_prikey(BUINT8 keypairIndex, BUINT8 *prikey, BUIN
     {
         return BOAT_ERROR;
     }
+    if (BOAT_STORE_TYPE_RAM == storeType)
+    {
+        prikeyNum = 0;
+    }
     offset += sizeof(prikeynumBytes);
     for (size_t i = 0; i < prikeyNum; i++)
     {
