@@ -85,7 +85,34 @@ extern "C" {
 
 BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr);
 
+/*!*****************************************************************************
+@brief Parse RPC method RESPONSE
 
+   This function Parse "result" segment.
+   If "result" object is string, this function will returns contents of "result" . 
+   If "result" object is still json object, the parameter named "child_name" will actived,
+   if "child_name" object is string, this function will returns contents of "child_name"; 
+   if "child_name" object is other types, this function will prompt "un-implemention yet".
+   For other types of "result" this function is not support yet.
+
+@param[in] json_string
+     The json to be parsed.
+
+@param[in] child_name
+     if "result" item is json object, this param will actived.
+
+@param[out] result_out
+     The buffer to store parse result.
+     Caller can allocate memory for this param, or can initial it with {NULL, 0},
+     this function will expand the memory if it too small to store parse result.
+     
+@return
+    This function returns BOAT_SUCCESS if parse successed. Otherwise
+    it returns an error code.
+*******************************************************************************/
+BOAT_RESULT cita_parse_json_result(const BCHAR *json_string, 
+                                  const BCHAR *child_name, 
+                                  BoatFieldVariable *result_out);
 
 /*! @}*/
 
