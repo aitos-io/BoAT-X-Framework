@@ -1,4 +1,4 @@
-all: testsEthNetwork testsFiscobcosNetwork testsPlatonNetwork testsPlatoneNetwork testsQuorumNetwork testVenachainNetwork testFabricNetwork testHwbcsNetwork testCitaNetwork testChainmakerNetwork
+all: testsEthNetwork testsFiscobcosNetwork testsPlatonNetwork testsPlatoneNetwork testsQuorumNetwork testVenachainNetwork testFabricNetwork testHwbcsNetwork testCitaNetwork testChainmakerNetwork testNetworkCross
 
 
 testsEthNetwork:
@@ -51,6 +51,11 @@ ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
 	make -C ChainmakerNetwork all
 endif
 
+testNetworkCross:
+ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATON)_$(BOAT_PROTOCOL_USE_PLATONE)_$(BOAT_PROTOCOL_USE_FISCOBCOS)_$(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS)_$(BOAT_PROTOCOL_USE_CHAINMAKER)_$(BOAT_PROTOCOL_USE_VENACHAIN)_$(BOAT_PROTOCOL_USE_QUORUM)_$(BOAT_PROTOCOL_USE_CITA), 1_1_1_1_1_1_1_1_1_1)
+	make -C NetworkCrossTest all
+endif
+
 clean:
 	make -C EthNetwork clean
 	make -C FiscobcosNetwork clean
@@ -62,3 +67,4 @@ clean:
 	make -C HwbcsNetwork clean
 	make -C CitaNetwork clean
 	make -C ChainmakerNetwork clean
+	make -C NetworkCrossTest clean

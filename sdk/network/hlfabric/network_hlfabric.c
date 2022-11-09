@@ -1506,5 +1506,5 @@ BOAT_RESULT BoATHlfabric_GetNetworkByIndex(BoatHlfabricNetworkData *networkData,
             offset += (networkLength + networkLengthLen);
         }
     }
-    return BOAT_ERROR_NETWORK_INDEX_EXCEED;
+    return BOAT_ERROR_NETWORK_HAVENOON;
 }

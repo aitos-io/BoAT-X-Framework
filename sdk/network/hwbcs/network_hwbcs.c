@@ -1214,7 +1214,7 @@ BOAT_RESULT BoATHwbcsNetworkDelete(BUINT8 index)
         if (i >= networkNum)
         {
             BoatLog(BOAT_LOG_NORMAL, "not find the network ");
-            return BOAT_ERROR;
+            return BOAT_ERROR_NETWORK_HAVENOON;
         }
         networkNumNew = networkNum - 1;
         utility_get_NumBytes(networkNumNew, networknumBytes);
