@@ -1,0 +1,149 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.common";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/common";
+
+package common;
+// tx request - tx response, only for RPC response
+message TxResponse {
+  // response code
+  TxStatusCode code = 1;
+  // response message
+  string message = 2;
+  // returned data, set in smart contract
+  ContractResult contract_result = 3;
+}
+
+message SubscribeResult {
+  // when TxType == SUBSCRIBE_BLOCK_INFO, data type is pb.BlockInfo;
+  // when TxType == SUBSCRIBE_TX_INFO，data type is pb.Transaction.
+  bytes data = 1;
+}
+
+// tx result, part of a transaction in block
+message Result {
+  // response code
+  TxStatusCode code = 1;
+  // returned data, set in smart contract
+  ContractResult contract_result = 2;
+  // hash of the transaction's read-write set
+  bytes rw_set_hash = 3;
+}
+
+// invoke user contract method return UserContractReturnPayload
+// Unmarshal from TransactResult.TxResponse.payload
+message ContractResult {
+  // user contract defined return code, 0-ok, 1-error. for example, insufficient balance in token transfer
+  ContractResultCode code = 1;
+  // user contract defined result
+  bytes result = 2;
+  // user contract defined result message
+  string message = 3;
+  // gas used by current contract(include contract call)
+  int64 gas_used = 4;
+  // contract events
+  repeated ContractEvent contract_event = 5;
+}
+
+message PrivateGetContract{
+    bytes contract_code = 1;
+    string version = 2;
+    int64 gas_limit = 3;
+}
+
+message StrSlice{
+    repeated string str_arr = 1;
+}
+
+// TxStatusCode describes the tx status in tx result
+enum TxStatusCode {
+  SUCCESS = 0;
+  TIMEOUT = 1;
+  INVALID_PARAMETER = 2;
+  NO_PERMISSION = 3;
+  CONTRACT_FAIL = 4;
+  INTERNAL_ERROR = 5;
+
+  INVALID_CONTRACT_TRANSACTION_TYPE = 10;
+  INVALID_CONTRACT_PARAMETER_CONTRACT_NAME = 11;
+  INVALID_CONTRACT_PARAMETER_METHOD = 12;
+  INVALID_CONTRACT_PARAMETER_INIT_METHOD = 13;
+  INVALID_CONTRACT_PARAMETER_UPGRADE_METHOD = 14;
+  INVALID_CONTRACT_PARAMETER_BYTE_CODE = 15;
+  INVALID_CONTRACT_PARAMETER_RUNTIME_TYPE = 16;
+  INVALID_CONTRACT_PARAMETER_VERSION = 17;
+
+  GET_FROM_TX_CONTEXT_FAILED = 20;
+  PUT_INTO_TX_CONTEXT_FAILED = 21;
+  CONTRACT_VERSION_EXIST_FAILED = 22;
+  CONTRACT_VERSION_NOT_EXIST_FAILED = 23;
+  CONTRACT_BYTE_CODE_NOT_EXIST_FAILED = 24;
+  MARSHAL_SENDER_FAILED = 25;
+  INVOKE_INIT_METHOD_FAILED = 26;
+  INVOKE_UPGRADE_METHOD_FAILED = 27;
+  CREATE_RUNTIME_INSTANCE_FAILED = 28;
+  UNMARSHAL_CREATOR_FAILED = 29;
+  UNMARSHAL_SENDER_FAILED = 30;
+  GET_SENDER_PK_FAILED = 31;
+  GET_CREATOR_PK_FAILED = 32;
+  GET_CREATOR_FAILED = 33;
+  GET_CREATOR_CERT_FAILED = 34;
+  GET_SENDER_CERT_FAILED = 35;
+  CONTRACT_FREEZE_FAILED = 36;
+  CONTRACT_TOO_DEEP_FAILED = 37;
+  CONTRACT_REVOKE_FAILED = 38;
+  CONTRACT_INVOKE_METHOD_FAILED = 39;
+
+  ARCHIVED_TX = 40;
+  ARCHIVED_BLOCK = 41;
+}
+
+// returned by contract
+enum ContractResultCode {
+  OK = 0;
+  FAIL = 1;
+}
+
+// certificate collection
+message CertInfos {
+  repeated CertInfo cert_infos = 1;
+}
+
+// certificate information
+message CertInfo {
+  // certificate hash
+  string hash = 1;
+
+  // certificate contents
+  bytes cert = 2;
+}
+
+
+// contract event saved in block chain
+message ContractEvent {
+  string topic = 1;
+  string tx_id = 2;
+  string contract_name = 3;
+  string contract_version = 4;
+  repeated string event_data = 5;
+}
+// contract event published to user
+message ContractEventInfo {
+  int64 block_height = 1;
+  string chain_id = 2;
+  string topic = 3;
+  string tx_id = 4;
+  string contract_name = 5;
+  string contract_version = 6;
+  repeated string event_data = 7;
+}
+// contract event published to user
+message ContractEventInfoList {
+  repeated ContractEventInfo contract_events = 1;
+}

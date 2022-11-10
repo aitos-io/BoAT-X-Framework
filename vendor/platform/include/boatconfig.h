@@ -16,7 +16,7 @@
 
 
 /****************************************************************************
- THIS FILE IS AUTO GENERATED FOR SPECIAL PLATFORM linux-default
+ THIS FILE IS AUTO GENERATED FOR SPECIAL PLATFORM mobiletek-L503C-6S
  DO NOT MODIFY THIS FILE MANUALLY
  ****************************************************************************/
 
@@ -35,7 +35,7 @@
 #define  PROTOCOL_USE_VENACHAIN     0
 #define  PROTOCOL_USE_QUORUM     0
 
-#define  RPC_USE_LIBCURL     1
+#define  RPC_USE_OLHTTPPORT     1
 
 
 #endif

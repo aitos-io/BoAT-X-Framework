@@ -6,9 +6,9 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/network
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 		  
-.PHONY: all  network_ethereum network_hlfabric network_platone network_venachain network_platon network_fiscobcos network_quorum network_hwbcs
+.PHONY: all  network_ethereum network_hlfabric network_platone network_venachain network_platon network_fiscobcos network_quorum network_hwbcs network_chainmaker network_cita
 
-all:  network_ethereum network_hlfabric network_platone network_venachain network_platon network_fiscobcos network_quorum network_hwbcs $(OBJECTS_DIR) $(OBJECTS)
+all:  network_ethereum network_hlfabric network_platone network_venachain network_platon network_fiscobcos network_quorum network_hwbcs network_chainmaker network_cita $(OBJECTS_DIR) $(OBJECTS)
 
 network_ethereum:
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
@@ -50,6 +50,16 @@ ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
 	make -C hwbcs all
 endif
 
+network_chainmaker:
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
+	make -C chainmaker all
+endif
+
+network_cita:
+ifeq ($(BOAT_PROTOCOL_USE_CITA),1)
+	make -C cita all
+endif
+
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
 
@@ -82,4 +92,10 @@ ifeq ($(BOAT_PROTOCOL_USE_QUORUM),1)
 endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
 	make -C hwbcs clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
+	make -C chainmaker clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_CITA),1)
+	make -C cita clean
 endif

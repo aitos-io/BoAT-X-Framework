@@ -1,0 +1,45 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.common";
+option java_outer_classname = "ChainmakerTransaction";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/common";
+
+package common;
+
+import "common/request.proto";
+import "common/result.proto";
+
+// a transaction includes request and its result
+message Transaction {
+    // header of the transaction
+    TxHeader header = 1;
+
+    // payload of the request
+    bytes request_payload = 2;
+
+    // signature of request bytes(including header and payload)
+    bytes request_signature = 3;
+
+    // result of the transaction, can be marshalled according to tx_type in header
+    Result result = 4;
+}
+
+// transactioninfo inclde transaction and its block height hash and tx index
+message TransactionInfo {
+    // transaction raw data
+    Transaction transaction = 1;
+
+    // block height
+    uint64 block_height = 2;
+    // block hash
+    bytes block_hash=3;
+    // transaction index in block
+    uint32 tx_index=4;
+}
+

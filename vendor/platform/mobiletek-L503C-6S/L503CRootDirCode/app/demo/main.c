@@ -5,11 +5,10 @@
 #include "mbtk_comm_api.h"
 #include "mbtk_api.h"
 #include "mbtk_os.h"
-#include "demo_ethereum.h"
+#include "demo_platone.h"
 #include "mbtk_open_at.h"
 #include "nl_api_sys.h"
 #include "boattypes.h"
-#include "boatlog.h"
 
 
 #define MBTK_TEST_STACK_SIZE    (40*1024)
@@ -27,7 +26,7 @@ void timeout_cb(UINT32 cookie)
 	user_app_printf("os_status = %d",os_status);
 }
 
-extern BOAT_RESULT ethereumDemo(void);
+extern BOAT_RESULT PlatoneDemo(void);
 
 void user_data_call_demo_callback(uint8_t index, uint8_t status)
 {
@@ -56,38 +55,30 @@ void app_open_task(void *argv)
 {
     uint32 cnt=0;
     char *p = NULL;
-    // uint8_t random[8] = {0};
 
-    ol_enable_sys_debug_uart_log('1');
     user_app_printf("\r\n app task begin !!!\n");
+    ol_enable_sys_debug_uart_log('1');
     user_app_printf("waitforNetwork: %d\n", waitforNetwork());
-    // ol_enable_sys_debug_uart_log('1');
     while(cnt++ < 3)
     {
         ol_os_task_sleep(1000);
-		//lcd_demo();
-
-        // hello_test();
     }
-    ethereumDemo();
+
+    PlatoneDemo();
 
     user_app_printf("\r\n app task end !!!\n");
 }
 
-
 void user_app_init(void *api_table)
 {
-
     mbtk_taskref mbtk_test_task_ref;
     void *mbtk_test_task_stack = NULL;
-    // user_app_printf("hello, world\r\n");
-    // Step 1: Initialize the API interface
+
+    //Step 1: Initialize the API interface
     mbtk_api_init(api_table);
+
     ol_enable_sys_debug_uart_log('1');
     user_app_printf("api init OK\r\n");
-    // ol_power_down();
-    
-    
 
     mbtk_test_task_stack = ol_malloc(MBTK_TEST_STACK_SIZE);
     if(NULL == mbtk_test_task_stack)

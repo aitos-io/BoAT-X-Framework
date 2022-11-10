@@ -4,9 +4,9 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-.PHONY: all protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain protocol_quorum
+.PHONY: all protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain protocol_quorum protocol_cita
 
-all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain protocol_quorum $(OBJECTS_DIR) $(OBJECTS)
+all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain protocol_quorum protocol_cita $(OBJECTS_DIR) $(OBJECTS)
 
 
 protocol_common:
@@ -57,6 +57,11 @@ ifeq ($(BOAT_PROTOCOL_USE_QUORUM), 1)
 	make -C  boatquorum all
 endif
 
+protocol_cita:
+ifeq ($(BOAT_PROTOCOL_USE_CITA), 1)
+	make -C  boatcita all
+endif
+
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)
 
@@ -92,5 +97,8 @@ ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	make -C boatvenachain clean
 endif
 ifeq ($(BOAT_PROTOCOL_USE_QUORUM), 1)
-	make -C boatvenachain clean
+	make -C boatquorum clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_CITA), 1)
+	make -C boatcita clean
 endif

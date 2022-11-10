@@ -1,0 +1,54 @@
+/*
+Copyright (C) BABEC. All rights reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.chainmaker.pb.common";
+option go_package = "chainmaker.org/chainmaker-go/pb/protogo/common";
+
+package common;
+
+// key read version
+message KeyVersion {
+    // the transaction identifier that last modified the key
+    string ref_tx_id = 3;
+    // the offset of the key in the write set of the transaction, starts from 0
+    int32 ref_offset = 4;
+}
+
+// TxRead describes a read operation on a key
+message TxRead {
+    // read key
+    bytes key = 1;
+    // the value of the key
+    bytes value = 2;
+    // contract name, used in cross-contract calls
+    // set to null if only the contract in transaction request is called
+    string contract_name = 3;
+    // read key version
+    KeyVersion version = 4;
+}
+
+// TxRead describes a write/delete operation on a key
+message TxWrite {
+    // write key
+    bytes key = 1;
+    // write value
+    bytes value = 2;
+    // contract name, used in cross-contract calls
+    // set to null if only the contract in transaction request is called
+    string contract_name = 3;
+}
+
+// TxRWSet describes all the operations of a transaction on ledger
+message TxRWSet {
+    // transaction identifier
+    string tx_id = 1;
+    // read set
+    repeated TxRead tx_reads = 2;
+    // write set
+    repeated TxWrite tx_writes = 3;
+}

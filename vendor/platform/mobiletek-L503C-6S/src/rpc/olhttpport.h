@@ -33,7 +33,7 @@ extern "C" {
 typedef struct TOlHttpPortContext
 {
     BCHAR *remote_url_str;                 //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
-    StringWithLen curlport_response;    //!<  Store response from remote peer
+    StringWithLen olhttpport_response;    //!<  Store response from remote peer
 }OlHttpPortContext;
 
 http_client * OlHttpPortInit(void);

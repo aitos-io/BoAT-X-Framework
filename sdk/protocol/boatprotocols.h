@@ -54,4 +54,12 @@ boatprotocols.h is a wrapper header file for protocols.
 #include "boatvenachain/boatvenachain.h"
 #endif
 
+#if PROTOCOL_USE_QUORUM
+#include "boatquorum/boatquorum.h"
+#endif
+
+#if PROTOCOL_USE_CITA
+#include "boatcita/boatcita.h"
+#endif
+
 #endif

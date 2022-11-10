@@ -1,5 +1,5 @@
 /*
- * @Description: 
+ * @Description:
  * @Author: aitos
  * @Date: 2022-09-09 11:24:55
  * @LastEditors: Please set LastEditors
@@ -21,180 +21,175 @@
  * limitations under the License.
  *****************************************************************************/
 
-
-
 #ifndef __NETWORK_HWBCS_H__
 #define __NETWORK_HWBCS_H__
 
-
 #include "boatiotsdk.h"
 
-#define BOAT_HWBCS_TLS_SUPPORT                BOAT_TLS_SUPPORT //!< If need client support TLS, set it to 1.
-#define BOAT_HWBCS_TLS_IDENTIFY_CLIENT        BOAT_TLS_IDENTIFY_CLIENT //!< If server need identify client, set it to 1.
+#define BOAT_HWBCS_TLS_SUPPORT BOAT_TLS_SUPPORT					//!< If need client support TLS, set it to 1.
+#define BOAT_HWBCS_TLS_IDENTIFY_CLIENT BOAT_TLS_IDENTIFY_CLIENT //!< If server need identify client, set it to 1.
 
-                                                   //!< This macro valid only BOAT_HWBCS_TLS_SUPPORT has
-                                                   //!< set to 1. 
-												   //!< @note This macro is reserved for future.
+//!< This macro valid only BOAT_HWBCS_TLS_SUPPORT has
+//!< set to 1.
+//!< @note This macro is reserved for future.
 
-#define BOAT_HWBCS_NODE_URL_MAX_LEN           127  //!< Maxmum length of node's URL
-#define BOAT_HWBCS_HOSTNAME_MAX_LEN           127  //!< Maxmum length of hostname
-#define BOAT_HWBCS_CERT_MAX_LEN               1024 //!< Maxmum length of certificate
+#define BOAT_HWBCS_NODE_URL_MAX_LEN 127 //!< Maxmum length of node's URL
+#define BOAT_HWBCS_HOSTNAME_MAX_LEN 127 //!< Maxmum length of hostname
+#define BOAT_HWBCS_CERT_MAX_LEN 1024	//!< Maxmum length of certificate
 
 //!@brief hwbcs certificate information config structure
 //! hwbcs certificate information config structure
-typedef struct TBoatHwbcsCertInfoCfg{
-	BUINT32  length;                              //!< length of certificate content, this length contains the terminator '\0'.
-	BCHAR    content[BOAT_HWBCS_CERT_MAX_LEN]; //!< content of certificate.
-}BoatHwbcsCertInfoCfg;
+typedef struct TBoatHwbcsCertInfoCfg
+{
+	BUINT32 length;							//!< length of certificate content, this length contains the terminator '\0'.
+	BCHAR content[BOAT_HWBCS_CERT_MAX_LEN]; //!< content of certificate.
+} BoatHwbcsCertInfoCfg;
 
 //!@brief hwbcs node information config structure
 //! hwbcs node information config structure
-typedef struct TBoatHwbcsNodeInfoCfg{
-	BCHAR  *nodeUrl;  //!< URL of the blockchain node, e.g. "http://a.b.com:8545"	
-	BCHAR  *hostName; //!< TLS server hostname, it's 'CN' field in server certificate
-}BoatHwbcsNodeInfoCfg;
+typedef struct TBoatHwbcsNodeInfoCfg
+{
+	BCHAR *nodeUrl;	 //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
+	BCHAR *hostName; //!< TLS server hostname, it's 'CN' field in server certificate
+} BoatHwbcsNodeInfoCfg;
 
 //!@brief hwbcs node group config structure
 //! hwbcs node group config structure
-typedef struct TBoatHwbcsNodeGroupCfg{
-	BUINT8 endorserNumber;//!< The number of endorser to be set
+typedef struct TBoatHwbcsNodeGroupCfg
+{
+	BUINT8 endorserNumber; //!< The number of endorser to be set
 	BUINT8 quantities;
 	BoatHwbcsNodeInfoCfg *endorser;
 	BoatHwbcsCertInfoCfg tlsOrgCertContent;
-}BoatHwbcsNodeGroupCfg;
+} BoatHwbcsNodeGroupCfg;
 
 //!@brief hwbcs node layout config structure
 //! hwbcs node layout config structure
-typedef struct TBoatHwbcsNodeLayoutCfg{
+typedef struct TBoatHwbcsNodeLayoutCfg
+{
 	BUINT8 endorserGroupNum;
 	BoatHwbcsNodeGroupCfg *groupCfg;
-}BoatHwbcsNodeLayoutCfg;
+} BoatHwbcsNodeLayoutCfg;
 
 //!@brief hwbcs node  config structure
 //! hwbcs node layout config structure
-typedef struct TBoatHwbcsNodesCfg{
+typedef struct TBoatHwbcsNodesCfg
+{
 	BUINT8 endorserLayoutNum;
 	BoatHwbcsNodeLayoutCfg *layoutCfg;
 	BoatHwbcsNodeGroupCfg orderCfg;
-}BoatHwbcsNodesCfg;
-
+} BoatHwbcsNodesCfg;
 
 //!@brief hwbcs wallet config structure
 //! hwbcs wallet config structure
 typedef struct TBoatHwbcsNetworkConfig
 {
-	BoatHwbcsCertInfoCfg     accountCertContent;   //!< certificate content of account
-#if (BOAT_HWBCS_TLS_SUPPORT == 1) &&(BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
-	BoatKeypairExtraData        accountClientTlsPrikey;
-	BoatHwbcsCertInfoCfg     accountClientTlsCert;
+	BoatHwbcsCertInfoCfg accountCertContent; //!< certificate content of account
+#if (BOAT_HWBCS_TLS_SUPPORT == 1) && (BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
+	BoatKeypairExtraData accountClientTlsPrikey;
+	BoatHwbcsCertInfoCfg accountClientTlsCert;
 #endif
-	BoatHwbcsCertInfoCfg     tlsClientCertContent; //!< certificate content of TLS 	
-	BoatHwbcsNodesCfg 		nodesCfg;
-}BoatHwbcsNetworkConfig;
+	BoatHwbcsNodesCfg nodesCfg;
+} BoatHwbcsNetworkConfig;
 
 //!@brief hwbcs network  structure
 //! hwbcs network  structure
 typedef struct TBoatHwbcsNetworkData
 {
 	BUINT8 index;
-	BoatHwbcsCertInfoCfg     accountCertContent;   //!< certificate content of account
-#if (BOAT_HWBCS_TLS_SUPPORT == 1) &&(BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
-	BoatKeypairExtraData        accountClientTlsPrikey;
-	BoatHwbcsCertInfoCfg     accountClientTlsCert;
+	BoatHwbcsCertInfoCfg accountCertContent; //!< certificate content of account
+#if (BOAT_HWBCS_TLS_SUPPORT == 1) && (BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
+	BoatKeypairExtraData accountClientTlsPrikey;
+	BoatHwbcsCertInfoCfg accountClientTlsCert;
 #endif
-	BoatHwbcsCertInfoCfg     tlsClientCertContent; //!< certificate content of TLS 	
-	BoatHwbcsNodesCfg 		nodesCfg;
-}BoatHwbcsNetworkData;
+	BoatHwbcsNodesCfg nodesCfg;
+} BoatHwbcsNetworkData;
 
 typedef struct TBoatHwbcsNetworkContext
 {
 	/* data */
 	BUINT8 networkNum;
-	BoatHwbcsNetworkData networks[BOAT_MAX_NETWORK_NUM];  //hwbcs networks
-}BoatHwbcsNetworkContext;
-
+	BoatHwbcsNetworkData networks[BOAT_MAX_NETWORK_NUM + 1]; // hwbcs networks
+} BoatHwbcsNetworkContext;
 
 /**
- * @description: 
+ * @description:
  *  This function get network list ,include persistent networks and onetime network
  * @param[out] {BoatHwbcsNetworkContext} *networkList
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
 BOAT_RESULT BoATHwbcs_GetNetworkList(BoatHwbcsNetworkContext *networkList);
 
 /**
- * @description: 
+ * @description:
  *  This function reset every param in BoatHwbcsNetworkData;
  *  if someone have malloced memory , free the memory;
  * @param {BoatHwbcsNetworkData} networkData
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
 BOAT_RESULT BoATHwbcs_FreeNetworkData(BoatHwbcsNetworkData networkData);
 
 /**
- * @description: 
+ * @description:
  *  This function use to free BoatHwbcsNetworkContext param.
  * @param[in] {BoatHwbcsNetworkContext} networkList
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
 BOAT_RESULT BoATHwbcs_FreeNetworkContext(BoatHwbcsNetworkContext networkList);
 
 /**
- * @description: 
- * This function creat hwbcs network
+ * @description:
+ * This function create hwbcs network
  * @param[in] {BoatHwbcsNetworkConfig} networkConfig
  * @param[in] {BoatStoreType} storeType
  *  For onetime network or test , select store in ram .
  *  For persistent network ,slect store in flash.
- * @return 
- *   This function returns network index if creat network successfully.\n
- *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ * @return
+ *   This function returns network index if create network successfully.\n
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatHwbcsNetworkCreate(BoatHwbcsNetworkConfig *networkConfig,BoatStoreType storeType);
-
+BOAT_RESULT BoatHwbcsNetworkCreate(BoatHwbcsNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
- * @description: 
+ * @description:
  *  This function delete the network which networkIndex equals index.
  *  This function will delete the network data in Nvram.
  * @param {BUINT8} index
  *  the index want to delete
  * @return {*}
  *   This function returns BOAT_SUCCESS if delete successfully.\n
- *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *   for details.
  * @author: aitos
  */
 BOAT_RESULT BoATHwbcsNetworkDelete(BUINT8 index);
 
-
 /**
- * @description: 
+ * @description:
  *  This function read network data from Nvram by index.
  * @param {BoatHwbcsNetworkData} *networkData
  * @param {BUINT8} index
  *  the network index want to read
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoATHwbcs_GetNetworkByIndex(BoatHwbcsNetworkData *networkData ,BUINT8 index);
-
+BOAT_RESULT BoATHwbcs_GetNetworkByIndex(BoatHwbcsNetworkData *networkData, BUINT8 index);
 
 #endif
