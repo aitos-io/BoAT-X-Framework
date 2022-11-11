@@ -710,27 +710,8 @@ START_TEST(test_002InitWallet_0006SetNodeUrlFailureNullParam)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat)
-{
-    BSINT32 rtnVal;
-    BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
-    BoatPlatONWalletConfig wallet;
-    
-    /* 1. execute unit test */
-    strncpy(wallet.node_url_str, "abcd", strlen("abcd"));
-    wallet_ptr->network_info.node_url_ptr = NULL;
-    rtnVal = BoatPlatONWalletSetNodeUrl(wallet_ptr, wallet.node_url_str);
-    /* 2. verify test result */
-    /* 2-1. verify the return value */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    /* 2-2. verify the global variables that be affected */
-    ck_assert(wallet_ptr->network_info.node_url_ptr == NULL);
-    BoatFree(wallet_ptr);
-}
-END_TEST
-
-START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
+START_TEST(test_002InitWallet_0007SetNodeUrlFailureNodeUrlOutOfLimit)
 {
     BSINT32 rtnVal;
     BoatPlatONWallet *wallet_ptr = BoatMalloc(sizeof(BoatPlatONWallet));
@@ -754,7 +735,7 @@ START_TEST(test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0009InitPlatONWalletWithNullConfig)
+START_TEST(test_002InitWallet_0008InitPlatONWalletWithNullConfig)
 {
     BoatPlatONWallet *rtnVal;
 
@@ -768,7 +749,7 @@ START_TEST(test_002InitWallet_0009InitPlatONWalletWithNullConfig)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0010InitPlatONWalletWithSmallerSize)
+START_TEST(test_002InitWallet_0009InitPlatONWalletWithSmallerSize)
 {
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig = {0};
@@ -783,7 +764,7 @@ START_TEST(test_002InitWallet_0010InitPlatONWalletWithSmallerSize)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0011InitPlatONWalletWithBiggerSize)
+START_TEST(test_002InitWallet_0010InitPlatONWalletWithBiggerSize)
 {
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig = {0};
@@ -798,7 +779,7 @@ START_TEST(test_002InitWallet_0011InitPlatONWalletWithBiggerSize)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0012InitPlatONWalletSuccess)
+START_TEST(test_002InitWallet_0011InitPlatONWalletSuccess)
 {
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig = get_platon_wallet_settings();
@@ -813,7 +794,7 @@ START_TEST(test_002InitWallet_0012InitPlatONWalletSuccess)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0013InitPlatONWalletGenerationKey)
+START_TEST(test_002InitWallet_0012InitPlatONWalletGenerationKey)
 {
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig;
@@ -833,7 +814,7 @@ START_TEST(test_002InitWallet_0013InitPlatONWalletGenerationKey)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0014InitPlatONWalletWithWrongGenMode)
+START_TEST(test_002InitWallet_0013InitPlatONWalletWithWrongGenMode)
 {
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig;
@@ -852,12 +833,12 @@ START_TEST(test_002InitWallet_0014InitPlatONWalletWithWrongGenMode)
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat)
+START_TEST(test_002InitWallet_0014InitPlatONWalletWithWrongKeyFormat)
 {
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig;
 
-    walletConfig.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
+    walletConfig.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     walletConfig.prikeyCtx_config.prikey_format = 4;
     walletConfig.prikeyCtx_config.prikey_type = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
     walletConfig.eip155_compatibility = BOAT_FALSE;
@@ -867,11 +848,11 @@ START_TEST(test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat)
     rtnVal = BoatPlatONWalletInit(&walletConfig, sizeof(BoatPlatONWalletConfig));
     /* 2. verify test result */
     /* 2-1. verify the return value */
-    ck_assert_ptr_eq(rtnVal,NULL);
+    ck_assert_ptr_eq(rtnVal, NULL);
 }
 END_TEST
 
-START_TEST(test_002InitWallet_0016InitPlatONWalletWithWrongType)
+START_TEST(test_002InitWallet_0015InitPlatONWalletWithWrongType)
 {
     BoatPlatONWallet *rtnVal;
     BoatPlatONWalletConfig walletConfig;
@@ -963,16 +944,15 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_002InitWallet_0004SetChainIdFailureNullParam);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0005SetNodeUrlSuccess);
     tcase_add_test(tc_wallet_api, test_002InitWallet_0006SetNodeUrlFailureNullParam);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0007SetNodeUrlFailureErrorNodeUrlFormat);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0008SetNodeUrlFailureNodeUrlOutOfLimit);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0009InitPlatONWalletWithNullConfig);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0010InitPlatONWalletWithSmallerSize);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0011InitPlatONWalletWithBiggerSize);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0012InitPlatONWalletSuccess);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0013InitPlatONWalletGenerationKey);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0014InitPlatONWalletWithWrongGenMode);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0015InitPlatONWalletWithWrongKeyFormat);
-    tcase_add_test(tc_wallet_api, test_002InitWallet_0016InitPlatONWalletWithWrongType);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0007SetNodeUrlFailureNodeUrlOutOfLimit);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0008InitPlatONWalletWithNullConfig);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0009InitPlatONWalletWithSmallerSize);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0010InitPlatONWalletWithBiggerSize);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0011InitPlatONWalletSuccess);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0012InitPlatONWalletGenerationKey);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0013InitPlatONWalletWithWrongGenMode);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0014InitPlatONWalletWithWrongKeyFormat);
+    tcase_add_test(tc_wallet_api, test_002InitWallet_0015InitPlatONWalletWithWrongType);
     
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_003DeleteWallet_0002DeleteWalletFailureNoExistingFile);
