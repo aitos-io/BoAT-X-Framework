@@ -251,11 +251,14 @@ START_TEST(test_005ContractInvoke_0008InvokeFailureInvalidUrl)
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
     BoatResponseData   invoke_response;
-    char url_buf[] = {"127.0.0.1:12310"};
+    char *url_str = "127.0.0.1:12310";
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
-    strncpy(tx_ptr.wallet_ptr->node_info.node_url_info, url_buf, strlen(url_buf));
+
+    result = BoatChainmakerWalletSetNodeUrl(tx_ptr.wallet_ptr, url_str);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
     result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "fact", true, &invoke_response); ;
     ck_assert(result == BOAT_ERROR_HTTP2_CONNECT_FAIL);
     BoatIotSdkDeInit();
@@ -367,11 +370,14 @@ START_TEST(test_006ContractQuery_0007QueryFailureInvalidUrl)
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
     BoatResponseData   query_response;
-    char url_buf[] = {"127.0.0.1:12310"};
+    char *url_str = "127.0.0.1:12310";
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
-    strncpy(tx_ptr.wallet_ptr->node_info.node_url_info, url_buf, strlen(url_buf));
+
+    result = BoatChainmakerWalletSetNodeUrl(tx_ptr.wallet_ptr, url_str);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
     result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", &query_response); ;
     ck_assert(result == BOAT_ERROR_HTTP2_CONNECT_FAIL);
     BoatIotSdkDeInit();
@@ -386,6 +392,8 @@ Suite *make_contract_suite(void)
 
     /* Create test cases */
     TCase *tc_contract_api = tcase_create("contract_api");
+
+    tcase_set_timeout(tc_contract_api, 50);     
 
     /* Add a test case to the Suite */
     suite_add_tcase(s_contract, tc_contract_api);       
