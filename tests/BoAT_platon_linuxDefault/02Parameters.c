@@ -161,7 +161,7 @@ START_TEST(test_004ParametersInit_0004TxInitFailureErrorGasPriceHexFormat)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 	rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "0x123G", 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS, hrp);
-    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -177,7 +177,7 @@ START_TEST(test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
 	rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, "A", 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS, hrp);	
-    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -193,7 +193,7 @@ START_TEST(test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
 		                   "0x123G", TEST_RECIPIENT_ADDRESS, hrp);
-	ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+	ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -210,46 +210,12 @@ START_TEST(test_004ParametersInit_0007TxInitSuccessGasLimitHexNullOx)
 
     rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
 		                   "333333", TEST_RECIPIENT_ADDRESS, hrp);
-    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatIotSdkDeInit();
 }
 END_TEST
 
-START_TEST(test_004ParametersInit_0008TxInitFailureRecipientErrorHexFormat)
-{
-    BSINT32 rtnVal;
-    BoatPlatONTx tx_ptr;
-
-    BoatIotSdkInit();
-
-    rtnVal = platonWalletPrepare();
-    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-
-    rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
-		                   TEST_GAS_LIMIT, "0xABCDG", hrp);
-	ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
-    BoatIotSdkDeInit();
-}
-END_TEST
-
-START_TEST(test_004ParametersInit_0009TxInitFailureRecipientLongLength)
-{
-	BSINT32 rtnVal;
-    BoatPlatONTx tx_ptr;
-
-    BoatIotSdkInit();
-
-    rtnVal = platonWalletPrepare();
-    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-
-	rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
-		                   TEST_GAS_LIMIT, "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", hrp);
-	ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
-    BoatIotSdkDeInit();
-}
-END_TEST
-
-START_TEST(test_004ParametersInit_0010TxInitFailureLonghrp)
+START_TEST(test_004ParametersInit_0008TxInitFailureLonghrp)
 {
 	BSINT32 rtnVal;
     BoatPlatONTx tx_ptr;
@@ -262,7 +228,7 @@ START_TEST(test_004ParametersInit_0010TxInitFailureLonghrp)
     rtnVal = BoatPlatONTxInit(g_platon_wallet_ptr, &tx_ptr, TEST_IS_SYNC_TX, TEST_GAS_PRICE, 
 		                   TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS, "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
 
-    ck_assert(rtnVal == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -429,9 +395,7 @@ Suite *make_parameters_suite(void)
     tcase_add_test(tc_param_api, test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx); 
     tcase_add_test(tc_param_api, test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat); 
     tcase_add_test(tc_param_api, test_004ParametersInit_0007TxInitSuccessGasLimitHexNullOx); 
-    tcase_add_test(tc_param_api, test_004ParametersInit_0008TxInitFailureRecipientErrorHexFormat); 
-    tcase_add_test(tc_param_api, test_004ParametersInit_0009TxInitFailureRecipientLongLength); 
-    tcase_add_test(tc_param_api, test_004ParametersInit_0010TxInitFailureLonghrp);
+    tcase_add_test(tc_param_api, test_004ParametersInit_0008TxInitFailureLonghrp);
 
     tcase_add_test(tc_param_api, test_005ParametersSet_0001GetNonceFromNetworkSuccess); 
     tcase_add_test(tc_param_api, test_005ParametersSet_0002SetNonceSuccess); 

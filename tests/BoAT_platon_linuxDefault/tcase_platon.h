@@ -21,7 +21,8 @@
 #include "boatlog.h"
 #include "boattypes.h"
 #include "boatwallet.h"
-#include "protocolapi/api_platon.h"
+#include "boatconfig.h"
+#include "boatiotsdk.h"
 
 extern BOAT_RESULT platonWalletPrepare(void);
 
