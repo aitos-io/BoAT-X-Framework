@@ -70,7 +70,7 @@
 
   打开`<L503 Root>/app/build/makerules.mk`文件。
   
-  首先找到 DEPENDENCY_INCLUDE_LIB := ${foreach lib, ${LOCAL_EXPORT_LIB}, ${SOFT_WORKDIR}/${lib}}，然后在下方添加以下内容：
+  首先找到 `DEPENDENCY_INCLUDE_LIB := ${foreach lib, ${LOCAL_EXPORT_LIB}, ${SOFT_WORKDIR}/${lib}}`，然后在下方添加以下内容：
   ```
   DEPENDENCY_INCLUDE_LIB += $(SOFT_WORKDIR)/BoAT-X-Framework/lib/libboatwallet.a
   DEPENDENCY_INCLUDE_LIB += $(SOFT_WORKDIR)/BoAT-X-Framework/lib/libboatvendor.a
