@@ -1,0 +1,14 @@
+syntax = "proto3";
+package common;
+
+message citaNetworks{
+    uint32 networkNum = 1;
+    citaNetworkData networks= 2;
+}
+
+message citaNetworkData{
+    uint32 index                      = 1;
+    uint32 version                    = 2;
+    string node_url_str               = 3;
+    bytes chain_id_str                = 4;
+}

@@ -1,5 +1,5 @@
 /*
- * @Description: 
+ * @Description:
  * @Author: aitos
  * @Date: 2022-09-06 14:49:41
  * @LastEditors: Please set LastEditors
@@ -36,105 +36,100 @@ boatwallet.h is the SDK header file.
 
 #include "boattypes.h"
 
-#define BOAT_ETH_NODE_URL_MAX_LEN                127 //!< Maxmum length for node's URL
-
-
+#define BOAT_ETH_NODE_URL_MAX_LEN 127 //!< Maxmum length for node's URL
 
 //!@brief Ethereum network configuration
 
 //! Ethereum network configuration is used in network creation.
 typedef struct TBoatEthNetworkConfig
 {
-    BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
-    BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatEthNetworkInfo
-    BCHAR    node_url_str[BOAT_ETH_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
-}BoatEthNetworkConfig;
+    BUINT32 chain_id;                              //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
+    BBOOL eip155_compatibility;                    //!< Network EIP-155 compatibility. See BoatEthNetworkInfo
+    BCHAR node_url_str[BOAT_ETH_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
+} BoatEthNetworkConfig;
 
 //! Ethereum network  is used in network creation.
 typedef struct TBoatEthNetworkData
 {
-	BUINT8 networkIndex;   // index of network
-    BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
-    BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatEthNetworkInfo
-    BCHAR    node_url_str[BOAT_ETH_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
-}BoatEthNetworkData;
-
+    BUINT8 networkIndex;                           // index of network
+    BUINT32 chain_id;                              //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
+    BBOOL eip155_compatibility;                    //!< Network EIP-155 compatibility. See BoatEthNetworkInfo
+    BCHAR node_url_str[BOAT_ETH_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
+} BoatEthNetworkData;
 
 //!@brief BoAT IoT SDK Context
 typedef struct TBoatEthNetworkContext
 {
     BUINT8 networkNum;
     // Protocol specific properties are defined in protocol specific WalletInfo structure
-    BoatEthNetworkData networks[BOAT_MAX_NETWORK_NUM];  //!< Wallet Info List
-}BoatEthNetworkContext;
-
+    BoatEthNetworkData networks[BOAT_MAX_NETWORK_NUM + 1]; //!< Wallet Info List
+} BoatEthNetworkContext;
 
 /**
- * @description: 
+ * @description:
  *  This function get network list ,include persistent networks and onetime network
  * @param[out] {BoatEthNetworkContext} *networkList
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
 BOAT_RESULT BoATEth_GetNetworkList(BoatEthNetworkContext *networkList);
 
 /**
- * @description: 
+ * @description:
  *  This function use to free BoatEthNetworkContext param.
  * @param[in] {BoatEthNetworkContext} networkList
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
 BOAT_RESULT BoATEth_FreeNetworkContext(BoatEthNetworkContext networkList);
 
 /**
- * @description: 
- * This function creat eth network
+ * @description:
+ * This function create eth network
  * @param[in] {BoatEthNetworkConfig} networkConfig
  * @param[in] {BoatStoreType} storeType
  *  For onetime network or test , select store in ram .
  *  For persistent network ,slect store in flash.
- * @return 
- *   This function returns network index if creat network successfully.\n
- *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ * @return
+ *   This function returns network index if create network successfully.\n
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatEthNetworkCreate(BoatEthNetworkConfig *networkConfig,BoatStoreType storeType);
-
+BOAT_RESULT BoatEthNetworkCreate(BoatEthNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
- * @description: 
+ * @description:
  *  This function delete the network which networkIndex equals index.
  *  This function will delete the network data in Nvram.
  * @param {BUINT8} index
  *  the index want to delete
  * @return {*}
  *   This function returns BOAT_SUCCESS if delete successfully.\n
- *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *   for details.
  * @author: aitos
  */
 BOAT_RESULT BoATEthNetworkDelete(BUINT8 index);
 
 /**
- * @description: 
+ * @description:
  *  This function read network data from Nvram by index.
  * @param {BoatEthNetworkData} *networkData
  * @param {BUINT8} index
  *  the network index want to read
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData ,BUINT8 index);
+BOAT_RESULT BoATEth_GetNetworkByIndex(BoatEthNetworkData *networkData, BUINT8 index);
 
 #endif

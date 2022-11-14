@@ -46,8 +46,8 @@ struct  _Common__HwbcsNetworkData
   char *accountcertcontent;
   char *accountclienttlsprikey;
   char *accountclienttlscert;
-  char *tlsclientcertcontent;
   /*
+   * string tlsClientCertContent = 5 ;
    * hwbcsNodesCfg nodes = 4;
    * uint32 layoutNum = 4;
    */
@@ -57,7 +57,7 @@ struct  _Common__HwbcsNetworkData
 };
 #define COMMON__HWBCS_NETWORK_DATA__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&common__hwbcs_network_data__descriptor) \
-    , 0, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, NULL }
+    , 0, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, NULL }
 
 
 struct  _Common__HwbcsNodesCfg

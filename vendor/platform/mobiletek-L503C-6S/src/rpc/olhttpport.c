@@ -247,8 +247,6 @@ BOAT_RESULT OlHttpPortRequestSync( OlHttpPortContext * olport_context_ptr,
 	ol_http_client_setopt(client, HTTPCLIENT_OPT_POSTDATA, request_str);
 	ol_http_client_setopt(client, HTTPCLIENT_OPT_POSTLENGTH, request_len);
 
-	ol_http_client_setopt(client, HTTPCLIENT_OPT_RECV_TIMEOUT, 100000);
-
     ol_http_client_getinfo(client, HTTPCLIENT_GETINFO_TCP_STATE, &olhttp_result);
 
     if( olhttp_result != HTTP_TCP_ESTABLISHED )

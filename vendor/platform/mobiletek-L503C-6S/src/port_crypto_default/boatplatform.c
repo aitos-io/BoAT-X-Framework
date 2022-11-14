@@ -126,7 +126,7 @@ BOAT_RESULT BoAT_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat fo
 	else 
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Invalid private key type.");
-		result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
+		result = BOAT_ERROR_KEYPAIR_KEY_TYPE_ERR;
 	}
 	return result;
 }
@@ -250,7 +250,7 @@ BOAT_RESULT BoAT_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Unkown private key type.");
-		return BOAT_ERROR_WALLET_KEY_TYPE_ERR;
+		return BOAT_ERROR_KEYPAIR_KEY_TYPE_ERR;
 	}
 	if(result == BOAT_SUCCESS){
 		*signatureLen = 64;

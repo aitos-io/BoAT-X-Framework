@@ -1,5 +1,5 @@
 /*
- * @Description: 
+ * @Description:
  * @Author: aitos
  * @Date: 2022-09-06 14:49:41
  * @LastEditors: Please set LastEditors
@@ -36,105 +36,100 @@ boatwallet.h is the SDK header file.
 
 #include "boattypes.h"
 
-#define BOAT_PLATONE_NODE_URL_MAX_LEN                127 //!< Maxmum length for node's URL
-
-
+#define BOAT_PLATONE_NODE_URL_MAX_LEN 127 //!< Maxmum length for node's URL
 
 //!@brief Platone network configuration
 
 //! Platone network configuration is used in network creation.
 typedef struct TBoatPlatoneNetworkConfig
 {
-    BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
-    BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatPlatoneNetworkInfo
-    BCHAR    node_url_str[BOAT_PLATONE_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
-}BoatPlatoneNetworkConfig;
+    BUINT32 chain_id;                                  //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
+    BBOOL eip155_compatibility;                        //!< Network EIP-155 compatibility. See BoatPlatoneNetworkInfo
+    BCHAR node_url_str[BOAT_PLATONE_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
+} BoatPlatoneNetworkConfig;
 
 //! Platone network  is used in network creation.
 typedef struct TBoatPlatoneNetworkData
 {
-	BUINT8 networkIndex;   // index of network
-    BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
-    BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatPlatoneNetworkInfo
-    BCHAR    node_url_str[BOAT_PLATONE_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
-}BoatPlatoneNetworkData;
-
+    BUINT8 networkIndex;                               // index of network
+    BUINT32 chain_id;                                  //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
+    BBOOL eip155_compatibility;                        //!< Network EIP-155 compatibility. See BoatPlatoneNetworkInfo
+    BCHAR node_url_str[BOAT_PLATONE_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
+} BoatPlatoneNetworkData;
 
 //!@brief BoAT IoT SDK Context
 typedef struct TBoatPlatoneNetworkContext
 {
     BUINT8 networkNum;
     // Protocol specific properties are defined in protocol specific WalletInfo structure
-    BoatPlatoneNetworkData networks[BOAT_MAX_NETWORK_NUM];  //!< Wallet Info List
-}BoatPlatoneNetworkContext;
-
+    BoatPlatoneNetworkData networks[BOAT_MAX_NETWORK_NUM + 1]; //!< Wallet Info List
+} BoatPlatoneNetworkContext;
 
 /**
- * @description: 
+ * @description:
  *  This function get network list ,include persistent networks and onetime network
  * @param[out] {BoatPlatoneNetworkContext} *networkList
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
 BOAT_RESULT BoATPlatone_GetNetworkList(BoatPlatoneNetworkContext *networkList);
 
 /**
- * @description: 
+ * @description:
  *  This function use to free BoatPlatoneNetworkContext param.
  * @param[in] {BoatPlatoneNetworkContext} networkList
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
 BOAT_RESULT BoATPlatone_FreeNetworkContext(BoatPlatoneNetworkContext networkList);
 
 /**
- * @description: 
- * This function creat platone network
+ * @description:
+ * This function create platone network
  * @param[in] {BoatPlatoneNetworkConfig} networkConfig
  * @param[in] {BoatStoreType} storeType
  *  For onetime network or test , select store in ram .
  *  For persistent network ,slect store in flash.
- * @return 
- *   This function returns network index if creat network successfully.\n
- *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ * @return
+ *   This function returns network index if create network successfully.\n
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatPlatoneNetworkCreate(BoatPlatoneNetworkConfig *networkConfig,BoatStoreType storeType);
-
+BOAT_RESULT BoatPlatoneNetworkCreate(BoatPlatoneNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
- * @description: 
+ * @description:
  *  This function delete the network which networkIndex equals index.
  *  This function will delete the network data in Nvram.
  * @param {BUINT8} index
  *  the index want to delete
  * @return {*}
  *   This function returns BOAT_SUCCESS if delete successfully.\n
- *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *   Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *   for details.
  * @author: aitos
  */
 BOAT_RESULT BoATPlatoneNetworkDelete(BUINT8 index);
 
 /**
- * @description: 
+ * @description:
  *  This function read network data from Nvram by index.
  * @param {BoatPlatoneNetworkData} *networkData
  * @param {BUINT8} index
  *  the network index want to read
  * @return {*}
  *  This function returns BOAT_SUCCESS if successfully executed.
- *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoATPlatone_GetNetworkByIndex(BoatPlatoneNetworkData *networkData ,BUINT8 index);
+BOAT_RESULT BoATPlatone_GetNetworkByIndex(BoatPlatoneNetworkData *networkData, BUINT8 index);
 
 #endif

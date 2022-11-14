@@ -1,13 +1,11 @@
-all: testkeypair testEthAccount
+all: testkeypair testnetwork 
 	
 testkeypair:
 	make -C keypair all
 
-testEthAccount:
-ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM),1)
-	make -C EthAccount all
-endif
+testnetwork:
+	make -C network all
 
 clean:
 	make -C keypair clean
-	make -C EthAccount clean
+	make -C network clean
