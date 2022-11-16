@@ -401,9 +401,9 @@ BoatHlfabricWallet *BoatHlfabricWalletInit(BUINT8 keypairIndex, BUINT8 networkIn
 	/* http2Context_ptr assignment */
 	wallet_ptr->http2Context_ptr = http2Init();
 
-	if (result != BOAT_SUCCESS)
+	if (NULL == wallet_ptr->http2Context_ptr)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to set accountInfo|TlsUInfo|networkInfo.");
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to init http2Context_ptr");
 		return NULL;
 	}
 
