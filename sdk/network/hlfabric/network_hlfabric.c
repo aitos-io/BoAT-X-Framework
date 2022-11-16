@@ -240,7 +240,7 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_getNetworkFromProto(BoatHlfabricNetworkDat
             Networkdata->nodesCfg.layoutCfg[i].groupCfg[j].quantities = network_proto->layoutcfg[i]->groupcfg[j]->quantities;
             if (strlen(network_proto->layoutcfg[i]->groupcfg[j]->tlsorgcertcontent) > sizeof(Networkdata->nodesCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content))
             {
-                BoatLog(BOAT_LOG_NORMAL, "tlsorgcertcontent length err : %d ", strlen(network_proto->layoutcfg[i]->groupcfg[j]->tlsorgcertcontent));
+                BoatLog(BOAT_LOG_NORMAL, "tlsorgcertcontent length err ");
                 boat_throw(BOAT_ERROR, hlfabric_exception);
             }
             Networkdata->nodesCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length = strlen(network_proto->layoutcfg[i]->groupcfg[j]->tlsorgcertcontent);
