@@ -897,7 +897,7 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_Get_Network_Data(BoatHlfabricNetworkData *
         boat_throw(BOAT_ERROR, hlfabric_exception);
     }
     offset = 0;
-    result = add_L_withOffset(networkbuf, &offset, networkLength);
+    add_L_withOffset(networkbuf, &offset, networkLength);
     *data = networkbuf;
     *datalen = offset;
     /* boat catch handle */
@@ -912,7 +912,7 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_Get_Network_Data(BoatHlfabricNetworkData *
     }
     // common__fabric_network_data__free_unpacked(&protobuf_network,NULL);
     BoAT_Free_FabricNetworkData(protobuf_network);
-    return BOAT_SUCCESS;
+    return result;
 }
 
 /**
