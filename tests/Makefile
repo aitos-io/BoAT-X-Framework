@@ -8,3 +8,4 @@ testUT:
 
 clean:
 	make -C IT clean
+	make -C UT clean
