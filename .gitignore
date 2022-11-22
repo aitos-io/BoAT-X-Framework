@@ -1,0 +1,15 @@
+/build
+/lib
+.svn
+docs/html/
+docs/latex/
+*.udb
+.scannerwork/
+contract/
+node_modules/
+package.json
+package-lock.json
+.vscode/settings.json
+html/
+latex/
+vendor/platform/include/boatconfig.h
