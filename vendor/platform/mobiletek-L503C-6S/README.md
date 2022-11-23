@@ -80,7 +80,7 @@
 
   打开`<L503 Root>/app/build/buildvar.mk`文件。
   
-  首先找到 cust_lc/inc，在后方添加` \`，然后在最后添加以下BoAT-X-Framework内容：
+  首先找到 `cust_lc/inc`，在后方添加` \`，然后在最后添加以下BoAT-X-Framework内容：
   ```
   BoAT-X-Framework/include/protocolapi \
   BoAT-X-Framework/include \
@@ -92,31 +92,31 @@
 
   打开`<L503 Root>/kernel/mbtk/cust_api/customer_api.c`文件。
   
-  找到结构体 mbtk_user_api，在该结构体中添加函数映射指针：
+  找到结构体 `mbtk_user_api`，在该结构体中添加函数映射指针：
   ```
   int (*user_uart_printf)(const char *fmt, ...);
   ```
 
-  找到定义映射表结构体 g_user_api，在该结构体中添加需要映射函数的初始化：
+  找到定义映射表结构体 `g_user_api`，在该结构体中添加需要映射函数的初始化：
   ```
   .user_uart_printf = RTI_LOG,
   ```  
   
   打开`<L503 Root>/app/system/inc/mbtk_customer_api.h`文件。
   
-  找到结构体 mbtk_user_api，在该结构体中添加函数映射指针：
+  找到结构体 `mbtk_user_api`，在该结构体中添加函数映射指针：
   ```
   int (*user_uart_printf)(const char *fmt, ...);
   ``` 
   
   打开`<L503 Root>/app/system/src/api_customer_init.c`文件。
   
-  找到定义 int (*ol_path_ctrl)(UINT32 path);在下方添加定义：
+  找到定义 `int (*ol_path_ctrl)(UINT32 path)`;在下方添加定义：
   ```
   int (*user_app_printf)(const char *fmt, ...);
   ```
   
-  找到函数 mbtk_api_init_customer，在函数中if(api_table)下方的大括号内添加：
+  找到函数 `mbtk_api_init_customer`，在函数中`if(api_table)`下方的大括号内添加：
   ```
   user_app_printf = api_table->user_uart_printf;
   ```
@@ -138,7 +138,7 @@
    ../tools/gnumake.exe clean all
    ```
    
-   编译成功后，在BoAT-X-Framework/lib下会生成静态库libboatvendor.a、libboatwallet.a。
+   编译成功后，在BoAT-X-Framework/lib下会生成静态库`libboatvendor.a`、`libboatwallet.a`。
    
 
 ### 2、编译L503演示demo程序，生成.zip下载文件
@@ -151,9 +151,9 @@
    build_app.bat
    ```
 
-   编译成功会在`<L503 Root>/app/release`下生成user_app.bin文件。
+   编译成功会在`<L503 Root>/app/release`下生成`user_app.bin`文件。
 
-   将user_app.bin文件拷贝并覆盖到`<L503 Root>/kernel/mbtk/releasepack/L503C_6S/images`下。
+   将`user_app.bin`文件拷贝并覆盖到`<L503 Root>/kernel/mbtk/releasepack/L503C_6S/images`下。
 
    打开windows终端进入`<L503 Root>/kernel`
    ```
@@ -162,4 +162,4 @@
    L503_6S_build_open.bat
    ```
 
-   编译成功会在`<L503 Root>/kernel/OUTPUT_L503C_6S`下生成ASR_CRANEL_EVB_CRANEL_A0_08MB.zip下载文件。
+   编译成功会在`<L503 Root>/kernel/OUTPUT_L503C_6S`下生成`ASR_CRANEL_EVB_CRANEL_A0_08MB.zip`下载文件。
