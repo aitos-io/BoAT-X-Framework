@@ -150,6 +150,7 @@
    cd <L503 Root>/app
    build_app.bat
    ```
+
    编译成功会在`<L503 Root>/app/release`下生成user_app.bin文件。
 
    将user_app.bin文件拷贝并覆盖到`<L503 Root>/kernel/mbtk/releasepack/L503C_6S/images`下。
@@ -160,4 +161,5 @@
    make_clean.bat
    L503_6S_build_open.bat
    ```
+   
    编译成功会在`<L503 Root>/kernel/OUTPUT_L503C_6S`下生成.zip下载文件。
