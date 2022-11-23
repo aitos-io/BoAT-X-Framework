@@ -12,11 +12,11 @@
 
 1、拷贝 BoAT代码，将 BoAT-X-Framework 整个文件夹拷贝至`<L503 Root>/app`下。
 
-2、拷贝 BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/L503CRootDirCode/app/demo/platone_demo到`<L503 Root>/app/demo`下。
+2、拷贝 `BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/L503CRootDirCode/app/demo/platone_demo`到`<L503 Root>/app/demo`下。
 
-3、拷贝并覆盖 BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/main.c到`<L503 Root>/app/demo`下。
+3、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/main.c`到`<L503 Root>/app/demo`下。
 
-4、拷贝并覆盖 BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/Makefile到`<L503 Root>/app/demo`下。
+4、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/Makefile`到`<L503 Root>/app/demo`下。
 
 
 拷贝后的目录和文件结构如下：
@@ -161,5 +161,5 @@
    make_clean.bat
    L503_6S_build_open.bat
    ```
-   
-   编译成功会在`<L503 Root>/kernel/OUTPUT_L503C_6S`下生成.zip下载文件。
+
+   编译成功会在`<L503 Root>/kernel/OUTPUT_L503C_6S`下生成ASR_CRANEL_EVB_CRANEL_A0_08MB.zip下载文件。
