@@ -5,7 +5,7 @@
 #include "mbtk_comm_api.h"
 #include "mbtk_api.h"
 #include "mbtk_os.h"
-#include "demo_platone.h"
+#include "platone_demo.h"
 #include "mbtk_open_at.h"
 #include "nl_api_sys.h"
 #include "boattypes.h"
