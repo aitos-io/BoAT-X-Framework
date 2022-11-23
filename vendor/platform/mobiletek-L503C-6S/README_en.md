@@ -97,14 +97,14 @@ After these files copied, the directory structure should look like:
   int (*user_uart_printf)(const char *fmt, ...);
   ```
 
-  Find the definition mapping table struct `g_user_api`，add initializations that require mapping functions to this struct:
+  Find the definition mapping table struct `g_user_api`, add initializations that require mapping functions to this struct:
   ```
   .user_uart_printf = RTI_LOG,
   ```  
   
   Open `<L503 Root>/app/system/inc/mbtk_customer_api.h`.
   
-  Find struct `mbtk_user_api`，add a function mapping pointer to this struct：
+  Find struct `mbtk_user_api`, add a function mapping pointer to this struct：
   ```
   int (*user_uart_printf)(const char *fmt, ...);
   ``` 
@@ -141,7 +141,7 @@ After these files copied, the directory structure should look like:
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<L503 Root>\BoAT-X-Framework\lib` directory.
    
 
-### 2. Build demo program，generate .zip file for download
+### 2. Build demo program, generate .zip file for download
 
    Demo code for accessing blockchain through BoAT-X Framework is in `<L503 Root>/app/demo/platone_demo/platone_demo.c`。
    
