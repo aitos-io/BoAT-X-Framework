@@ -128,7 +128,7 @@ BoAT IoT Framework SDK depends on the following software:
 | Python             | Python 3.8.3 (Python 2.7 is also compatible)         | Required                  |                           |
 | curl               | libcurl and its development files (7.55.1 is tested) | Required on Linux default | Required on Linux default |
 
-Before compiling the SDK and using it, you need to make sure that these software have been installed. On Ubuntu, can use the apt install command to install the corresponding package. Under Cygwin, use the Setup program that comes with Cygwin to install.  
+Before compiling the SDK and using it, you need to make sure that these software have been installed. On Ubuntu OS, you can use the `apt install` command to install the corresponding package. Under Cygwin, use the Setup program that comes with Cygwin to install.  
 E.g.:
 - Ubuntu
 ````
