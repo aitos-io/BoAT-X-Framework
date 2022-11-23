@@ -12,7 +12,7 @@
 
 1、拷贝 BoAT代码，将 BoAT-X-Framework 整个文件夹拷贝至`<L503 Root>/app`下。
 
-2、在`<L503 Root>/app/demo`下新建文件夹platone_demo，拷贝 BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/L503CRootDirCode/app/demo/platone_demo中所有文件及文件夹到`<L503 Root>/app/demo/platone_demo`下。
+2、拷贝 BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/L503CRootDirCode/app/demo/platone_demo到`<L503 Root>/app/demo`下。
 
 3、拷贝并覆盖 BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/main.c到`<L503 Root>/app/demo`下。
 
