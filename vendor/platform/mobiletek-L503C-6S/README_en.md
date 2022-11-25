@@ -135,7 +135,7 @@ After these files copied, the directory structure should look like:
    ```
    cd <L503 Root>/app/BoAT-X-Framework
    ../tools/gnumake.exe clean
-   ../tools/gnumake.exe clean all
+   ../tools/gnumake.exe all
    ```
    
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<L503 Root>\BoAT-X-Framework\lib` directory.
