@@ -90,68 +90,14 @@ START_TEST(test_010CallContract_0001CallContractSuccess)
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* Call Contract */
-    for (i = 0; i < 10; i++)  
-    {
-        bs[i] = 0 - i;
-    }      
-    result_str = TestABIContract_abi_setIntArray(&tx_ctx, bs, 10);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getIntArray(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getIntArray returns: %s", parse_result.field_ptr);
+    result_str = mycontract_cpp_abi_store(&tx_ctx, "hello_venachain!");//sol contradct
 
+    ck_assert(result_str != NULL);
 
-    for (i = 0; i < 20; i++)  
-    {
-        ba[i] = i * 5 + 0x10;
-    }       
-    result_str = TestABIContract_abi_setAddress(&tx_ctx, ba);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getAddress(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getAddress returns: %s", parse_result.field_ptr);
+    
+    result_str = mycontract_cpp_abi_retrieve(&tx_ctx);//sol contract
 
-
-    for (i = 0; i < 32; i++)  
-    {
-        b32[i] = 96 - i * 2;
-    }     
-    result_str = TestABIContract_abi_setByte(&tx_ctx, b32);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getByte(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getByte returns: %s", parse_result.field_ptr);
-
-    result_str = TestABIContract_abi_setString(&tx_ctx, s);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getString(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getString returns: %s", parse_result.field_ptr);
-
-    result_str = TestABIContract_abi_setUint32(&tx_ctx, 0x12345);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getUint32(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getUint32 returns: %s", parse_result.field_ptr);
-
-    result_str = TestABIContract_abi_setBool(&tx_ctx, BOAT_TRUE);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getBool(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getBool returns: %s", parse_result.field_ptr);
-
+    ck_assert(result_str != NULL);
 
 
     BoatVenachainWalletDeInit(&wallet);
