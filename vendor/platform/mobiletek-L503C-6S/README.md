@@ -135,7 +135,7 @@
    ```
    cd <L503 Root>/app/BoAT-X-Framework
    ../tools/gnumake.exe clean
-   ../tools/gnumake.exe clean all
+   ../tools/gnumake.exe all
    ```
    
    编译成功后，在BoAT-X-Framework/lib下会生成静态库`libboatvendor.a`、`libboatwallet.a`。
