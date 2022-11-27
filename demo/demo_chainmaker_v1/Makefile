@@ -1,7 +1,7 @@
 # Source and Objects
 
 # Specify demo folder name
-DEMO_FOLDER    = demo_chainmaker
+DEMO_FOLDER    = demo_chainmaker_v1
 
 # Source and Objects
 OBJECTS_DIR          = $(BOAT_BUILD_DIR)/demo/$(DEMO_FOLDER)

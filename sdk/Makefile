@@ -49,9 +49,14 @@ ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
 				$(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boathwbcs/protos/common/*.o) \
 				$(wildcard $(BOAT_BUILD_DIR)/sdk/network/hwbcs/*.o)
 endif
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
-	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker/*.o) \
-			   $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker/protos/*/*.o) \
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1),1)
+	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker_v1/*.o) \
+			   $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker_v1/protos/*/*.o) \
+			   $(wildcard $(BOAT_BUILD_DIR)/sdk/network/chainmaker/*.o) 
+endif
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V2),1)
+	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker_v2/*.o) \
+			   $(wildcard $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker_v2/protos/*/*.o) \
 			   $(wildcard $(BOAT_BUILD_DIR)/sdk/network/chainmaker/*.o) 
 endif
 
@@ -62,7 +67,7 @@ ifeq ($(BOAT_PROTOCOL_USE_CITA),1)
 			   $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/protobuf-c/*.o) 
 endif
 
-ifneq ($(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS)_$(BOAT_PROTOCOL_USE_CHAINMAKER),0_0_0)
+ifneq ($(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS)_$(BOAT_PROTOCOL_USE_CHAINMAKER_V1)_$(BOAT_PROTOCOL_USE_CHAINMAKER_V2),0_0_0_0)
 	OBJECTS += $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/protos/*/*.o) \
 		  	   $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/protos/*/*/*.o) \
 			   $(wildcard $(BOAT_BUILD_DIR)/sdk/third-party/nghttp2/*.o) \

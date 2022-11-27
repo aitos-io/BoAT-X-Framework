@@ -30,94 +30,106 @@ api_chainmaker.h is header file for BoAT IoT SDK chainmaker's interface.
  * @{
  */
 
+#define BOAT_CHAINMAKER_PRIKEY_MAX_LEN            512
 #define BOAT_CHAINMAKER_CERT_MAX_LEN              1024
 #define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN  8192 //!< The maximum length of HTTP2 send buffer
 #define BOAT_HLCHAINMAKER_ARGS_MAX_NUM            10
-#define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN     128
+#define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN     2048
 #define BOAT_RESPONSE_MESSAGE_MAX_LEN             2048
 #define BAOT_CHAINMAKER_NODE_STR_LEN              127
 // call a pre created user contract, tx included in block
 // query a pre-created user contract, tx not included in block
 typedef enum {
 
-	TXTYPE_INVOKE_USER_CONTRACT  = 0,
-	TXTYPE_QUERY_USER_CONTRACT   = 1,
-	TxType_QUERY_SYSTEM_CONTRACT = 3
+  TXTYPE_INVOKE_USER_CONTRACT  = 0,
+  TXTYPE_QUERY_USER_CONTRACT   = 1,
+  TxType_QUERY_SYSTEM_CONTRACT = 3
 } TxType;
+
+typedef enum TBoatMemberType {
+
+  BOAT_MEMBER_TYPE_CERT = 0,        // *X509 cert
+  BOAT_MEMBER_TYPE__CERT_HASH = 1,  // *cert hash
+  BOAT_MEMBER_TYPE__PUBLIC_KEY = 2, // *public key
+  BOAT_MEMBER_TYPE__DID = 3,        // *did
+  BOAT_MEMBER_TYPE__ALIAS = 4,      // *alias
+  BOAT_MEMBER_TYPE__ADDR = 5        // *address
+
+} BoatMemberType;
 
 typedef enum TBoatresponseCode {
 
-	SUCCESS                                = 0,
-	TIMEOUT                                = 1,
-	INVALIDPARAMETER                       = 2,
-	NOPERMISSION                           = 3,
-	CONTRACTFAIL                           = 4,
-	INTERNALERROR                          = 5,
-	INVALIDCONTRACTTRANSACTIONTYPE         = 10,
-	INVALIDCONTRACTPARAMETERCONTRACTNAME   = 11,
-	INVALIDCONTRACTPARAMETERMETHOD         = 12,
-	INVALIDCONTRACTPARAMETERINITMETHOD     = 13,
-	INVALIDCONTRACTPARAMETERUPGRADEMETHOD  = 14,
-	INVALIDCONTRACTPARAMETERBYTECODE       = 15,
-	INVALIDCONTRACTPARAMETERRUNTIMETYPE    = 16,
-	INVALIDCONTRACTPARAMETERVERSION        = 17,
-	GETFROMTXCONTEXTFAILED                 = 20,
-	PUTINTOTXCONTEXTFAILED                 = 21,
-	CONTRACTVERSIONEXISTFAILED             = 22,
-	CONTRACTVERSIONNOTEXISTFAILED          = 23,
-	CONTRACTBYTECODENOTEXISTFAILED         = 24,
-	MARSHALSENDERFAILED                    = 25,
-	INVOKEINITMETHODFAILED                 = 26,
-	INVOKEUPGRADEMETHODFAILED              = 27,
-	CREATERUNTIMEINSTANCEFAILED            = 28,
-	UNMARSHALCREATORFAILED                 = 29,
-	UNMARSHALSENDERFAILED                  = 30,
-	GETSENDERPKFAILED                      = 31,
-	GETCREATORPKFAILED                     = 32,
-	GETCREATORFAILED                       = 33,
-	GETCREATORCERTFAILED                   = 34,
-	GETSENDERCERTFAILED                    = 35,
-	CONTRACTFREEZEFAILED                   = 36,
-	CONTRACTTOODEEPFAILED                  = 37,
-	CONTRACTREVOKEFAILED                   = 38,
-	CONTRACTINVOKEMETHODFAILED             = 39,
-	ARCHIVEDTX                             = 40,
-	ARCHIVEDBLOCK                          = 41
+  SUCCESS                                = 0,
+  TIMEOUT                                = 1,
+  INVALIDPARAMETER                       = 2,
+  NOPERMISSION                           = 3,
+  CONTRACTFAIL                           = 4,
+  INTERNALERROR                          = 5,
+  INVALIDCONTRACTTRANSACTIONTYPE         = 10,
+  INVALIDCONTRACTPARAMETERCONTRACTNAME   = 11,
+  INVALIDCONTRACTPARAMETERMETHOD         = 12,
+  INVALIDCONTRACTPARAMETERINITMETHOD     = 13,
+  INVALIDCONTRACTPARAMETERUPGRADEMETHOD  = 14,
+  INVALIDCONTRACTPARAMETERBYTECODE       = 15,
+  INVALIDCONTRACTPARAMETERRUNTIMETYPE    = 16,
+  INVALIDCONTRACTPARAMETERVERSION        = 17,
+  GETFROMTXCONTEXTFAILED                 = 20,
+  PUTINTOTXCONTEXTFAILED                 = 21,
+  CONTRACTVERSIONEXISTFAILED             = 22,
+  CONTRACTVERSIONNOTEXISTFAILED          = 23,
+  CONTRACTBYTECODENOTEXISTFAILED         = 24,
+  MARSHALSENDERFAILED                    = 25,
+  INVOKEINITMETHODFAILED                 = 26,
+  INVOKEUPGRADEMETHODFAILED              = 27,
+  CREATERUNTIMEINSTANCEFAILED            = 28,
+  UNMARSHALCREATORFAILED                 = 29,
+  UNMARSHALSENDERFAILED                  = 30,
+  GETSENDERPKFAILED                      = 31,
+  GETCREATORPKFAILED                     = 32,
+  GETCREATORFAILED                       = 33,
+  GETCREATORCERTFAILED                   = 34,
+  GETSENDERCERTFAILED                    = 35,
+  CONTRACTFREEZEFAILED                   = 36,
+  CONTRACTTOODEEPFAILED                  = 37,
+  CONTRACTREVOKEFAILED                   = 38,
+  CONTRACTINVOKEMETHODFAILED             = 39,
+  ARCHIVEDTX                             = 40,
+  ARCHIVEDBLOCK                          = 41
 } BoatresponseCode;
 
 
-typedef struct TBoatResponseData {	
+typedef struct TBoatResponseData {  
 
-		BoatresponseCode code;
-		char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
+    BoatresponseCode code;
+    char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
     char contract_result[BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN];
-		BUINT32 gas_used;
+    BUINT32 gas_used;
 } BoatResponseData;
 
 
 //! chainmaker certificate information config structure
 typedef struct TBoatHlchainmakerCertInfoCfg {
 
-	BUINT32  length;                             
-	BCHAR    content[BOAT_CHAINMAKER_CERT_MAX_LEN]; 
+  BUINT32  length;                             
+  BCHAR    content[BOAT_CHAINMAKER_CERT_MAX_LEN]; 
 } BoatHlchainmakerCertInfoCfg;
 
 typedef struct  TBoatKeyValuePair {
 
   char *key;
-  char *value;
+  BoatFieldVariable value;
 } BoatKeyValuePair;
 
 typedef struct TBoatTransactionPara {
-	
-	BUINT32 n_parameters;
-	BoatKeyValuePair parameters[BOAT_HLCHAINMAKER_ARGS_MAX_NUM]; 
+  
+  BUINT32 n_parameters;
+  BoatKeyValuePair parameters[BOAT_HLCHAINMAKER_ARGS_MAX_NUM]; 
 } BoatTransactionPara;
 
 typedef struct TBoatChainamkerResult {
-	BUINT32             code;
-	char*               message;
-	BoatFieldVariable   payload;
+  BUINT32             code;
+  char*               message;
+  BoatFieldVariable   payload;
 
 } BoatChainamkerResult;
 
@@ -132,15 +144,17 @@ typedef struct TBoatChainmakerKeyPair
 typedef struct TBoatChainmakerWallet {
 
   BoatChainmakerKeyPair      account_info;      //!< Account information
-  BoatChainmakerNetworkData network_info;
+  BoatChainmakerNetworkData  network_info;
   http2IntfContext          *http2Context_ptr; //!< http2 information
 } BoatChainmakerWallet;
 
 
 typedef struct TBoatChainamkerTx {
 
-	BoatChainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet 
-	BoatTransactionPara       trans_para; 
+  BoatChainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet 
+  BoatTransactionPara       trans_para; 
+  BUINT64                   gas_limit;
+  BoatMemberType            member_type;
 }BoatChainmakerTx;
 
 
@@ -179,7 +193,7 @@ BoatChainmakerWallet *BoatChainmakerWalletInit(BUINT8 keypairIndex,BUINT8 networ
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatChainmakerTxInit(const BoatChainmakerWallet* wallet_ptr, BoatChainmakerTx* tx_ptr);
+BOAT_RESULT BoatChainmakerTxInit(const BoatChainmakerWallet* wallet_ptr, BoatChainmakerTx* tx_ptr, BUINT64 gas_limit, BoatMemberType member_type);
 
 /*!****************************************************************************
  * @brief 
@@ -214,7 +228,7 @@ BOAT_RESULT BoatChainmakerAddTxParam(BoatChainmakerTx *tx_ptr, BUINT8 length, co
  *  Chainmaker transaction structure pointer.
  * 
  * @param method 
- * 	The pointer to Chainmaker contract method name.
+ *  The pointer to Chainmaker contract method name.
  * 
  * @param contract_name 
  *  Chainmaker contarct name.

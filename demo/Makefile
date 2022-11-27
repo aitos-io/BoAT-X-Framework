@@ -3,8 +3,8 @@
 # Generate sub-directory list
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/demo
 
-.PHONY: all demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs demo_chainmaker demo_venachain demo_quorum demo_cita
-all: $(OBJECTS_DIR) demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs demo_chainmaker demo_venachain demo_quorum demo_cita
+.PHONY: all demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs demo_chainmaker_v1 demo_chainmaker_v2 demo_venachain demo_quorum demo_cita
+all: $(OBJECTS_DIR) demo_ethereum demo_platon demo_platone demo_fiscobcos demo_fabric demo_hw_bcs demo_chainmaker_v1 demo_chainmaker_v2 demo_venachain demo_quorum demo_cita
 
 demo_ethereum:
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
@@ -36,9 +36,14 @@ ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_hw_bcs all	
 endif
 
-demo_chainmaker:
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
-	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker all	
+demo_chainmaker_v1:
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1), 1)
+	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker_v1 all	
+endif
+
+demo_chainmaker_v2:
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V2), 1)
+	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker_v2 all	
 endif
 
 demo_venachain:
@@ -78,8 +83,11 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_hw_bcs clean
 endif
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
-	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker clean
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1), 1)
+	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker_v1 clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V2), 1)
+	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker_v2 clean
 endif
 ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_venachain clean

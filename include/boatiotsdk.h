@@ -75,7 +75,7 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #include "protocolapi/api_hw_bcs.h"
 #endif
 
-#if PROTOCOL_USE_CHAINMAKER == 1
+#if ((PROTOCOL_USE_CHAINMAKER_V1 == 1) || (PROTOCOL_USE_CHAINMAKER_V2 == 1))
 #include "network_chainmaker.h"
 #include "protocolapi/api_chainmaker.h"
 #endif

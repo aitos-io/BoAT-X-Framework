@@ -13,6 +13,8 @@ message chainmakerNetworkData{
     string host_name                  = 4;
     string chain_id                   = 5;
     string org_id                     = 6;
-    string client_tls_cert_content    = 7;
-    string client_tls_privkey_value   = 8;
+    string ca_tls_cert_content        = 8;
+    string client_tls_cert_content    = 9;
+    string client_tls_privkey_data    = 10;
+
 }

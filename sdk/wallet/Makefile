@@ -21,8 +21,11 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
 	SOURCES += api_hw_bcs.c
 endif
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
-	SOURCES += api_chainmaker.c
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1), 1)
+	SOURCES += api_chainmaker_v1.c
+endif
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V2), 1)
+	SOURCES += api_chainmaker_v2.c
 endif
 ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	SOURCES += api_venachain.c

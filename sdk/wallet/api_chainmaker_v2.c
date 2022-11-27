@@ -26,7 +26,7 @@ api_chainmaker.c defines the chainmaker wallet API for BoAT IoT SDK.
 #include "http2intf.h"
 #include "common/result.pb-c.h"
 #include "common/transaction.pb-c.h"
-#include "boatchainmaker/boatchainmaker.h"
+#include "boatchainmaker_v2/boatchainmaker.h"
 
 #define BOAT_TXID_LEN 65
 #define BOAT_RETRY_CNT 10
@@ -59,6 +59,7 @@ BoatChainmakerWallet *BoatChainmakerWalletInit(BUINT8 keypairIndex,BUINT8 networ
         BoatLog(BOAT_LOG_CRITICAL, "get keypair by index fail");
         return NULL;
     }
+
     result = BoATChainmaker_GetNetworkByIndex(&(wallet_ptr->network_info), networkIndex);
     if(result != BOAT_SUCCESS){
         BoatLog(BOAT_LOG_CRITICAL, "get network by index fail");
@@ -139,67 +140,8 @@ BOAT_RESULT get_tx_id(BCHAR* tx_id_ptr)
     return result;
 }
 
-// BOAT_RESULT BoatHlchainmakerWalletSetUserClientInfo(BoatChainmakerWallet *wallet_ptr,
-//                                              const BoatWalletPriKeyCtx_config prikeyCtx_config,
-//                                              const BoatHlchainmakerCertInfoCfg certContent)
-// {
-//     BOAT_RESULT result = BOAT_SUCCESS;
-//     boat_try_declare;
 
-//     if (wallet_ptr == NULL) 
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-//         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-//     }
-
-//     /* initialization */
-//     memset(&wallet_ptr->user_cert_prikey_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx));
-    
-//     /* prikey context assignment */
-//     if (prikeyCtx_config.prikey_content.field_ptr != NULL) 
-//     {
-//         if (BOAT_SUCCESS != BoatPort_keyCreate(&prikeyCtx_config, &wallet_ptr->user_cert_prikey_info.prikeyCtx)) 
-//         {
-//             BoatLog(BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate.");
-//             return BOAT_ERROR_WALLET_KEY_CREAT_FAIL;
-//         }
-//     }
-
-//     /* cert assignment */
-//     wallet_ptr->user_cert_prikey_info.cert.field_ptr = BoatMalloc(certContent.length);
-//     if (wallet_ptr->user_cert_prikey_info.cert.field_ptr == NULL) 
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-//         boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
-//     }
-
-//     if (certContent.length > BOAT_CHAINMAKER_CERT_MAX_LEN)
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "certContent length invalid");
-//         boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatChainmakerWalletSetAccountInfo_exception);
-//     }
-//     memcpy(wallet_ptr->user_cert_prikey_info.cert.field_ptr, certContent.content, certContent.length);
-//     wallet_ptr->user_cert_prikey_info.cert.field_len = certContent.length;
-
-//     /* boat catch handle */
-//     boat_catch(BoatChainmakerWalletSetAccountInfo_exception) 
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-//         result = boat_exception;
-//         // /* free malloc param Deinit */
-//         if (wallet_ptr->user_cert_prikey_info.cert.field_ptr != NULL)
-//         {
-//             BoatFree(wallet_ptr->user_cert_prikey_info.cert.field_ptr);
-//             wallet_ptr->user_cert_prikey_info.cert.field_ptr = NULL;
-//         }
-        
-//         wallet_ptr->user_cert_prikey_info.cert.field_len = 0;
-//     }
-//     return result;
-// }
-
-
-BOAT_RESULT BoatChainmakerTxInit(const BoatChainmakerWallet* wallet_ptr, BoatChainmakerTx* tx_ptr)
+BOAT_RESULT BoatChainmakerTxInit(const BoatChainmakerWallet* wallet_ptr, BoatChainmakerTx* tx_ptr, BUINT64 gas_limit, BoatMemberType member_type)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -209,7 +151,9 @@ BOAT_RESULT BoatChainmakerTxInit(const BoatChainmakerWallet* wallet_ptr, BoatCha
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
-    tx_ptr->wallet_ptr = (BoatChainmakerTx *)wallet_ptr;
+    tx_ptr->wallet_ptr  = (BoatChainmakerTx *)wallet_ptr;
+    tx_ptr->gas_limit   = gas_limit;
+    tx_ptr->member_type = member_type;
     return result;
 }
 
@@ -227,69 +171,49 @@ __BOATSTATIC BOAT_RESULT BoatChainmakerTxRequest(BoatChainmakerTx *tx_ptr, Commo
 
     tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = tx_ptr->wallet_ptr->network_info.node_url;
 
+
+  #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+    if (((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr != NULL)
+    {
+        BoatFree(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr);
+    }
+    ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_len = tx_ptr->wallet_ptr->network_info.client_tls_privkey_data.value_len + 1;
+    ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr = BoatMalloc(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_len);
+    strcpy((BCHAR *)((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr, (BCHAR *)tx_ptr->wallet_ptr->network_info.client_tls_privkey_data.value);
+    if (((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr != NULL)
+    {
+        BoatFree(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr);
+    }
+    ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_len = tx_ptr->wallet_ptr->network_info.client_tls_cert_content.length + 1;
+    ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr = BoatMalloc(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_len);
+    strcpy((BCHAR *)((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr, tx_ptr->wallet_ptr->network_info.client_tls_cert_content.content);
+#endif
+
+
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
-    tx_ptr->wallet_ptr->http2Context_ptr->hostName                = tx_ptr->wallet_ptr->network_info.host_name;
-    tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len = tx_ptr->wallet_ptr->network_info.client_tls_cert_content.length+ 1;
+    tx_ptr->wallet_ptr->http2Context_ptr->hostName             = tx_ptr->wallet_ptr->network_info.host_name;
+    tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len = tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.length+ 1;
     tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr = BoatMalloc(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len);
     memset(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr, 0x00, tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len);
-    memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr, tx_ptr->wallet_ptr->network_info.client_tls_cert_content.content, tx_ptr->wallet_ptr->network_info.client_tls_cert_content.length);
+    memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr, tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.content, tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.length);
 #endif
     tx_ptr->wallet_ptr->http2Context_ptr->pathTmp      = "/api.RpcNode/SendRequest";
     tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &http2_response;
 
-    if (sync_result)
+    result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
+    if (result == BOAT_SUCCESS)
     {
-        for (BUINT8 i = 0; i < BOAT_RETRY_CNT; i++) 
+        tx_response_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
+        if (tx_response_ptr != NULL)
         {
-            BoatSleep(BOAT_CHAINMAKER_MINE_INTERVAL);
-            result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
-            if (result == BOAT_SUCCESS)
-            {
-                tx_response_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
-                if (tx_response_ptr == NULL)
-                {
-                    BoatLog(BOAT_LOG_NORMAL, "[http2] respond NULL");
-                    *tx_response = NULL;
-                    result = BOAT_ERROR;
-                    break;
-                }
-                
-                if (tx_response_ptr->code == BOAT_SUCCESS)
-                {
-                    *tx_response = tx_response_ptr;
-                    break;
-                }
-                else
-                {
-                    BoatLog(BOAT_LOG_NORMAL, "querying contract.");
-                    common__tx_response__free_unpacked(tx_response_ptr, NULL);
-                    if (http2_response.http2Res != NULL) 
-                    {
-                        BoatFree(http2_response.http2Res);
-                        http2_response.http2Res = NULL;
-                        http2_response.httpResLen = 0;
-                    }
-                }
-            }
+            BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
+            *tx_response = tx_response_ptr;
         }
-    }
-    else
-    {
-        result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
-        if (result == BOAT_SUCCESS)
+        else
         {
-            tx_response_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
-            if (tx_response_ptr != NULL)
-            {
-                BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
-                *tx_response = tx_response_ptr;
-            }
-            else
-            {
-                BoatLog(BOAT_LOG_NORMAL, "[http2] respond NULL");
-                *tx_response = NULL;
-                result = BOAT_ERROR;
-            }
+            BoatLog(BOAT_LOG_NORMAL, "[http2] respond NULL");
+            *tx_response = NULL;
+            result = BOAT_ERROR;
         }
     }
 
@@ -343,7 +267,8 @@ BOAT_RESULT BoatChainmakerAddTxParam(BoatChainmakerTx *tx_ptr, BUINT8 length, co
         }
         if (i & 0x01) 
         {
-            tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].value = (BCHAR *)args;
+            tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].value.field_ptr = (BCHAR *)args;
+            tx_ptr->trans_para.parameters[tx_ptr->trans_para.n_parameters].value.field_len = strlen(args);
             tx_ptr->trans_para.n_parameters++;
         }
         else 
@@ -359,9 +284,10 @@ BOAT_RESULT BoatChainmakerAddTxParam(BoatChainmakerTx *tx_ptr, BUINT8 length, co
 
 BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatResponseData *response_data)
 {
-    Common__TxResponse *tx_response              = NULL;
-    Common__TransactionInfo* transactation_info = NULL;
+    Common__TxResponse *tx_response         = NULL;
+    Common__ContractResult* contract_result = NULL;
     BCHAR invoke_tx_id[BOAT_TXID_LEN]= {0};
+    BCHAR query_systm_tx_id[BOAT_TXID_LEN]= {0};
 
     BOAT_RESULT result = BOAT_SUCCESS;
     boat_try_declare;
@@ -403,6 +329,7 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char* method,
         memcpy(response_data->message, tx_response->message, strlen(tx_response->message));
     }
 
+    printf("sync before = %s\n", tx_response->message);
     if (tx_response != NULL)
     {
         common__tx_response__free_unpacked(tx_response, NULL);
@@ -416,34 +343,50 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char* method,
 
     if (sync_result) 
     {
-        BoatChainmakerAddTxParam(tx_ptr, 2, "txId",invoke_tx_id);
-        result = hlchainmakerTransactionPacked(tx_ptr, "GET_TX_BY_TX_ID", "SYSTEM_CONTRACT_QUERY", TxType_QUERY_SYSTEM_CONTRACT, invoke_tx_id);
+        int i = 0;
 
-        if (result == BOAT_SUCCESS) 
+        for(i=0;i<1;i=i+1)
         {
-            result = BoatChainmakerTxRequest(tx_ptr, &tx_response, BOAT_TRUE);
-            if (result != BOAT_SUCCESS) 
+           BoatSleep(4);
+            
+            result = get_tx_id(query_systm_tx_id);
+            if (result != BOAT_SUCCESS)
             {
-                BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerTxRequest sync failed");
-                boat_throw(result, BoatHlchainmakerContractInvoke);
+                BoatLog(BOAT_LOG_CRITICAL, "get_tx_id failed");
+                ///boat_throw(result, BoatHlchainmakerContractInvoke);
             }
+            BoatChainmakerAddTxParam(tx_ptr, 2, "txId",invoke_tx_id);
+            
+            result = hlchainmakerTransactionPacked(tx_ptr, "GET_TX_BY_TX_ID", "CHAIN_QUERY", 1, query_systm_tx_id);
 
-            if (tx_response->code == BOAT_SUCCESS) 
+            if (result == BOAT_SUCCESS) 
             {
-                transactation_info = common__transaction_info__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
-                response_data->gas_used = transactation_info->transaction->result->contract_result->gas_used;
-                if (tx_response != NULL)
+                result = BoatChainmakerTxRequest(tx_ptr, &tx_response, BOAT_TRUE);
+                if (result != BOAT_SUCCESS) 
                 {
-                    common__tx_response__free_unpacked(tx_response, NULL);
-                    tx_response = NULL;
+                    BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerTxRequest sync failed");
                 }
-                if (transactation_info != NULL)
+               
+                printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %ld\n",  tx_response->contract_result->code);
+                printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %ld\n",  tx_response->code);
+                   printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %d\n",  tx_response->contract_result->result.len);
+
+                 Common__TransactionInfoWithRWSet   *transaction_info_with_rwset = common__transaction_info_with_rwset__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
+                
+                if (transaction_info_with_rwset != NULL)
                 {
-                    common__transaction_info__free_unpacked(transactation_info, NULL);
-                    transactation_info = NULL;
+                    printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %d\n", transaction_info_with_rwset->block_height);
+                      printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %d\n", transaction_info_with_rwset->transaction->result->contract_result->n_contract_event);
                 }
+                printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %d\n", transaction_info_with_rwset->transaction->result->contract_result->gas_used);
+                printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %s\n", transaction_info_with_rwset->transaction->result->contract_result->contract_event[0]->contract_name);
+
+                    //        printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %s\n",  tx_response->contract_result->result.data);
+                //memcpy(response_data->contract_result, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
             }
+            //response_data->gas_used = tx_response->contract_result->gas_used;
         }
+ 
     }   
 
     /* boat catch handle */
@@ -544,168 +487,3 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char* method, 
     return result;
 }   
 
-
-// BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatChainmakerTx *wallet_ptr, const BCHAR *node_url_ptr)
-// {
-//     BOAT_RESULT result;
-    
-//     if ((wallet_ptr == NULL) || (node_url_ptr == NULL))
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or node_url_ptr cannot be NULL.");
-//         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-//     }
-
-//     // string length check
-//     if (BOAT_SUCCESS != UtilityStringLenCheck(node_url_ptr))
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "node URL length out of limit: %s.", node_url_ptr);
-//         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-//     }
-
-//     // Set Node URL
-
-//     if (wallet_ptr->node_info.node_url_info != NULL)
-//     {
-//         BoatFree(wallet_ptr->node_info.node_url_info);
-//         wallet_ptr->node_info.node_url_info = NULL;
-//     }
-
-//     // +1 for NULL Terminator
-//     wallet_ptr->node_info.node_url_info = BoatMalloc(strlen(node_url_ptr) + 1);
-//     if (wallet_ptr->node_info.node_url_info == NULL)
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate memory for Node URL string.");
-//         result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-//     }
-//     else
-//     {
-//         strcpy(wallet_ptr->node_info.node_url_info, node_url_ptr);
-//         result = BOAT_SUCCESS;
-//     }
-
-//     return result;
-// }
-
-
-// BOAT_RESULT BoatChainmakerWalletSetHostName(BoatChainmakerTx *wallet_ptr, const BCHAR *host_name_ptr)
-// {
-//     BOAT_RESULT result;
-    
-//     if ((wallet_ptr == NULL) || (host_name_ptr == NULL))
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or host_name_ptr cannot be NULL.");
-//         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-//     }
-
-//     // string length check
-//     if (BOAT_SUCCESS != UtilityStringLenCheck(host_name_ptr))
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "host name length out of limit: %s.", host_name_ptr);
-//         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-//     }
-
-//     // Set Node URL
-
-//     if (wallet_ptr->node_info.host_name_info != NULL)
-//     {
-//         BoatFree(wallet_ptr->node_info.host_name_info);
-//         wallet_ptr->node_info.host_name_info = NULL;
-//     }
-
-//     // +1 for NULL Terminator
-//     wallet_ptr->node_info.host_name_info = BoatMalloc(strlen(host_name_ptr) + 1);
-//     if (wallet_ptr->node_info.host_name_info == NULL)
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate memory for Host name string.");
-//         result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-//     }
-//     else
-//     {
-//         strcpy(wallet_ptr->node_info.host_name_info, host_name_ptr);
-//         result = BOAT_SUCCESS;
-//     }
-
-//     return result;
-// }
-
-// BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *chain_id_ptr)
-// {
-//     BOAT_RESULT result;
-    
-//     if ((wallet_ptr == NULL) || (chain_id_ptr == NULL))
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or chain_id_ptr cannot be NULL.");
-//         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-//     }
-
-//     // string length check
-//     if (BOAT_SUCCESS != UtilityStringLenCheck(chain_id_ptr))
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "chain id length out of limit: %s.", chain_id_ptr);
-//         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-//     }
-
-//     // Set Node URL
-
-//     if (wallet_ptr->node_info.chain_id_info != NULL)
-//     {
-//         BoatFree(wallet_ptr->node_info.chain_id_info);
-//         wallet_ptr->node_info.chain_id_info = NULL;
-//     }
-
-//     // +1 for NULL Terminator
-//     wallet_ptr->node_info.chain_id_info = BoatMalloc(strlen(chain_id_ptr) + 1);
-//     if (wallet_ptr->node_info.chain_id_info == NULL)
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate memory for chain id string.");
-//         result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-//     }
-//     else
-//     {
-//         strcpy(wallet_ptr->node_info.chain_id_info, chain_id_ptr);
-//         result = BOAT_SUCCESS;
-//     }
-
-//     return result;
-// }
-
-// BOAT_RESULT BoatChainmakerWalletSetOrgId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *org_id_ptr)
-// {
-//     BOAT_RESULT result;
-    
-//     if ((wallet_ptr == NULL) || (org_id_ptr == NULL))
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or org_id_ptr cannot be NULL.");
-//         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-//     }
-
-//     // string length check
-//     if (BOAT_SUCCESS != UtilityStringLenCheck(org_id_ptr))
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "org id length out of limit: %s.", org_id_ptr);
-//         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-//     }
-
-//     // Set Node URL
-
-//     if (wallet_ptr->node_info.org_id_info != NULL)
-//     {
-//         BoatFree(wallet_ptr->node_info.org_id_info);
-//         wallet_ptr->node_info.org_id_info = NULL;
-//     }
-
-//     // +1 for NULL Terminator
-//     wallet_ptr->node_info.org_id_info = BoatMalloc(strlen(org_id_ptr) + 1);
-//     if (wallet_ptr->node_info.org_id_info == NULL)
-//     {
-//         BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate memory for org id string.");
-//         result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-//     }
-//     else
-//     {
-//         strcpy(wallet_ptr->node_info.org_id_info, org_id_ptr);
-//         result = BOAT_SUCCESS;
-//     }
-
-//     return result;
-// }

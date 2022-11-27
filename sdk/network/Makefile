@@ -51,7 +51,7 @@ ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
 endif
 
 network_chainmaker:
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
+ifneq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1)_$(BOAT_PROTOCOL_USE_CHAINMAKER_V2),0_0)
 	make -C chainmaker all
 endif
 
@@ -93,7 +93,7 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS),1)
 	make -C hwbcs clean
 endif
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
+ifneq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1)_$(BOAT_PROTOCOL_USE_CHAINMAKER_V2),0_0)
 	make -C chainmaker clean
 endif
 ifeq ($(BOAT_PROTOCOL_USE_CITA),1)
