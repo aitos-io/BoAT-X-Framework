@@ -371,7 +371,7 @@ START_TEST(test_004DeleteNetwork_0002DeleteOnetimeNetworkFailureNonExistentIndex
 
     /* 2. Delete network twice*/
     ret = BoATEthNetworkDelete(networkIndex);
-    ck_assert_int_eq(ret, BOAT_ERROR);
+    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_HAVENOON);
     
     BoatIotSdkDeInit();
 }
