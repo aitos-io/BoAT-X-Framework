@@ -324,7 +324,7 @@ START_TEST(test_004DeleteNetwork_0001DeleteOnetimeNetworkSuccess)
     /* 3. Check network */
     BoatEthNetworkData networkData1;
     ret = BoATEth_GetNetworkByIndex(&networkData1,networkIndex);
-    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_INEXISTENCE);
 
      /* 3. Check network list */
     BoatEthNetworkContext networkList1;
@@ -371,7 +371,7 @@ START_TEST(test_004DeleteNetwork_0002DeleteOnetimeNetworkFailureNonExistentIndex
 
     /* 2. Delete network twice*/
     ret = BoATEthNetworkDelete(networkIndex);
-    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_INEXISTENCE);
     
     BoatIotSdkDeInit();
 }
@@ -398,7 +398,7 @@ START_TEST(test_004DeleteNetwork_0003DeletePersistNetworkSuccess)
 
     BoatEthNetworkData networkData;
     ret = BoATEth_GetNetworkByIndex(&networkData,networkIndex);
-    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_INEXISTENCE);
 
     /* 4. Check network list */
     BoatEthNetworkContext networkList;
@@ -447,7 +447,7 @@ START_TEST(test_004DeleteNetwork_0004DeletePersistNetworkFailureNonExistentIndex
 
     /* 2. Delete network */
     ret = BoATEthNetworkDelete(pickNum);
-    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_INEXISTENCE);
 
     BoatIotSdkDeInit();
 }

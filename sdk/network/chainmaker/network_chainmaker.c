@@ -792,7 +792,7 @@ BOAT_RESULT BoATChainmakerNetworkDelete(BUINT8 index)
         result = utility_check_NumBytes(networknumBytes, &networkNum);
         if (result != BOAT_SUCCESS || networkNum == 0)
         {
-            return BOAT_ERROR_NETWORK_HAVENOON;
+            return BOAT_ERROR_NETWORK_INEXISTENCE;
         }
         /* set network_num of onetime network to 0 */
         memset(networknumBytes, 0x00, sizeof(networknumBytes));
@@ -810,7 +810,7 @@ BOAT_RESULT BoATChainmakerNetworkDelete(BUINT8 index)
         result = utility_check_NumBytes(networknumBytes, &networkNum);
         if (result != BOAT_SUCCESS || networkNum == 0)
         {
-            return BOAT_ERROR_NETWORK_HAVENOON;
+            return BOAT_ERROR_NETWORK_INEXISTENCE;
         }
         offset += sizeof(networknumBytes);
         for (i = 0; i < networkNum; i++)
@@ -853,7 +853,7 @@ BOAT_RESULT BoATChainmakerNetworkDelete(BUINT8 index)
         if (i >= networkNum)
         {
             BoatLog(BOAT_LOG_NORMAL, "not find the network ");
-            return BOAT_ERROR_NETWORK_HAVENOON;
+            return BOAT_ERROR_NETWORK_INEXISTENCE;
         }
         networkNumNew = networkNum - 1;
         utility_get_NumBytes(networkNumNew, networknumBytes);
@@ -1001,7 +1001,7 @@ BOAT_RESULT BoATChainmaker_GetNetworkByIndex(BoatChainmakerNetworkData *networkD
     result = utility_check_NumBytes(networknumBytes, &networkNum);
     if (result != BOAT_SUCCESS || networkNum == 0)
     {
-        return BOAT_ERROR_NETWORK_HAVENOON;
+        return BOAT_ERROR_NETWORK_INEXISTENCE;
     }
     offset += sizeof(networknumBytes);
     BoatLog(BOAT_LOG_NORMAL, "network num = %d ", networkNum);
@@ -1058,5 +1058,5 @@ BOAT_RESULT BoATChainmaker_GetNetworkByIndex(BoatChainmakerNetworkData *networkD
             offset += (networkLength + networkLengthLen);
         }
     }
-    return BOAT_ERROR_NETWORK_HAVENOON;
+    return BOAT_ERROR_NETWORK_INEXISTENCE;
 }
