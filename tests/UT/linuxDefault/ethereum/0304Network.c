@@ -77,6 +77,8 @@ START_TEST(test_003CreateNetwork_0001CreateOnetimeNetworkSuccess)
     BOAT_RESULT networkIndex;
     BoatEthNetworkConfig networkConfig;
 
+    BoatLog(BOAT_LOG_VERBOSE, "03 is start");
+
     BoatIotSdkInit();
     /* 1. Create network */
     networkConfig = get_ethereum_network_settings();
@@ -322,7 +324,7 @@ START_TEST(test_004DeleteNetwork_0001DeleteOnetimeNetworkSuccess)
     /* 3. Check network */
     BoatEthNetworkData networkData1;
     ret = BoATEth_GetNetworkByIndex(&networkData1,networkIndex);
-    ck_assert_int_eq(ret, BOAT_ERROR);
+    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_HAVENOON);
 
      /* 3. Check network list */
     BoatEthNetworkContext networkList1;
