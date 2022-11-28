@@ -398,7 +398,7 @@ START_TEST(test_004DeleteNetwork_0003DeletePersistNetworkSuccess)
 
     BoatEthNetworkData networkData;
     ret = BoATEth_GetNetworkByIndex(&networkData,networkIndex);
-    ck_assert_int_eq(ret, BOAT_ERROR);
+    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_HAVENOON);
 
     /* 4. Check network list */
     BoatEthNetworkContext networkList;
