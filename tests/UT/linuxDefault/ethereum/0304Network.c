@@ -447,7 +447,7 @@ START_TEST(test_004DeleteNetwork_0004DeletePersistNetworkFailureNonExistentIndex
 
     /* 2. Delete network */
     ret = BoATEthNetworkDelete(pickNum);
-    ck_assert_int_eq(ret, BOAT_ERROR);
+    ck_assert_int_eq(ret, BOAT_ERROR_NETWORK_HAVENOON);
 
     BoatIotSdkDeInit();
 }
