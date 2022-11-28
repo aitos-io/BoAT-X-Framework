@@ -396,8 +396,8 @@ START_TEST(test_001Keypair_0009DeleteOneTimeKeypairSuccess)
     BoATIotKeypairDelete(rtnVal);
     /* get keypair content by index , index = 0 (one time keypair)*/
     rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, 0);
-    /* rtnVal must be BOAT_ERROR_KEYPAIR_KEY_HAVENOON , because the keypair has be deleted , have no this keypair*/
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_KEYPAIR_KEY_HAVENOON);
+    /* rtnVal must be BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE , because the keypair has be deleted , have no this keypair*/
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE);
 }
 END_TEST
 
@@ -424,8 +424,8 @@ START_TEST(test_001Keypair_0010DeletePersistKeypairSuccess)
     BoATIotKeypairDelete(rtnVal);
     /* get keypair content by index */
     rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, rtnVal);
-    /* rtnVal must be BOAT_ERROR_KEYPAIR_KEY_HAVENOON , because the keypair has be deleted , have no this keypair*/
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_KEYPAIR_KEY_HAVENOON);
+    /* rtnVal must be BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE , because the keypair has be deleted , have no this keypair*/
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE);
 }
 END_TEST
 
@@ -545,8 +545,8 @@ START_TEST(test_001Keypair_0015DeleteKeypair_NoKeypair)
         /* code */
         rtnVal = BoATIotKeypairDelete(i);
         /* check result of delete keypair , there have no keypair to delete ,
-         so the result must be  BOAT_ERROR_KEYPAIR_KEY_HAVENOON*/
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_KEYPAIR_KEY_HAVENOON);
+         so the result must be  BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE*/
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE);
     }
 }
 END_TEST

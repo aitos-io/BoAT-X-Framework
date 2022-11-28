@@ -166,7 +166,7 @@ START_TEST(test_001fiscobcosNetwork_0003DeleteOneTimeNetworkSuccess)
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&networkdata, 0);
     /* check the result of getting network data ,
         the onetime network has been deleted ,so return error */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
 }
 END_TEST
 
@@ -197,7 +197,7 @@ START_TEST(test_001fiscobcosNetwork_0004DeletePersistNetworkSuccess)
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&networkdata, 1);
     /* check the result of getting network data ,
         the persist network has been deleted ,so return error */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
 }
 END_TEST
 
@@ -217,7 +217,7 @@ START_TEST(test_001fiscobcosNetwork_0005DeleteNetwork_NoNetwork)
         /* delete the network  */
         rtnVal = BoATFiscobcosNetworkDelete(i);
         /* have no network ,so return error */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     }
 }
 END_TEST

@@ -985,8 +985,8 @@ START_TEST(test_001fabricNetwork_0012DeleteOneTimeNetworkSuccess)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* get network data by index , index = 0 */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&networkData, 0);
-    /* check result; There are no network , so return BOAT_ERROR_NETWORK_HAVENOON */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    /* check result; There are no network , so return BOAT_ERROR_NETWORK_INEXISTENCE */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
 }
 END_TEST
 
@@ -1021,8 +1021,8 @@ START_TEST(test_001fabricNetwork_0013DeletePersistNetworkSuccess)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* get network data by index , index = 1 */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&networkData, 1);
-    /* check result; There are no network , so return BOAT_ERROR_NETWORK_HAVENOON */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    /* check result; There are no network , so return BOAT_ERROR_NETWORK_INEXISTENCE */
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
 }
 END_TEST
 
@@ -1042,7 +1042,7 @@ START_TEST(test_001fabricNetwork_0014DeleteNetwork_NoNetwork)
         /* delete the  network*/
         rtnVal = BoATHlfabricNetworkDelete(i);
         /* check result */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     }
 }
 END_TEST

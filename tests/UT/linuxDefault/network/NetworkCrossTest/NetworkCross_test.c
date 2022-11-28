@@ -727,39 +727,39 @@ START_TEST(test_002CrossNetwork_0001CreateOneTimeNetworkSuccess_ETH)
     /* get platon network by index */
     rtnVal = BoATPlatON_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no PlatON network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatone_GetNetworkByIndex(&Platonenetworkdata, 0);
     /* check the result of getting network data, There has no Platone network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fiscobcos network by index */
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&Fiscobcosnetworkdata, 0);
     /* check the result of getting network data, There has no fiscobcos network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fabric network by index */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&Fabricnetworkdata, 0);
     /* check the result of getting network data, There has no fabric network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get hwbcs network by index */
     rtnVal = BoATHwbcs_GetNetworkByIndex(&Hwbcsnetworkdata, 0);
     /* check the result of getting network data, There has no hwbcs network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get quorum network by index */
     rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, 0);
     /* check the result of getting network data, There has no quorum network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get venachain network by index */
     rtnVal = BoATVenachain_GetNetworkByIndex(&Venachainnetworkdata, 0);
     /* check the result of getting network data, There has no venachain network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get chainmaker network by index */
     rtnVal = BoATChainmaker_GetNetworkByIndex(&Chainmakernetworkdata, 0);
     /* check the result of getting network data, There has no chainmaker network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get cita network by index */
     rtnVal = BoATCita_GetNetworkByIndex(&Citanetworkdata, 0);
     /* check the result of getting network data, There has no cita network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* delete the onetime networl */
     BoATEthNetworkDelete(0);
 }
@@ -803,39 +803,39 @@ START_TEST(test_002CrossNetwork_0002CreateOneTimeNetworkSuccess_platON)
     /* get platon network by index */
     rtnVal = BoATEth_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no Eth network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatone_GetNetworkByIndex(&Platonenetworkdata, 0);
     /* check the result of getting network data, There has no Platone network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fiscobcos network by index */
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&Fiscobcosnetworkdata, 0);
     /* check the result of getting network data, There has no fiscobcos network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fabric network by index */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&Fabricnetworkdata, 0);
     /* check the result of getting network data, There has no fabric network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get hwbcs network by index */
     rtnVal = BoATHwbcs_GetNetworkByIndex(&Hwbcsnetworkdata, 0);
     /* check the result of getting network data, There has no hwbcs network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get quorum network by index */
     rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, 0);
     /* check the result of getting network data, There has no quorum network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get venachain network by index */
     rtnVal = BoATVenachain_GetNetworkByIndex(&Venachainnetworkdata, 0);
     /* check the result of getting network data, There has no venachain network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get chainmaker network by index */
     rtnVal = BoATChainmaker_GetNetworkByIndex(&Chainmakernetworkdata, 0);
     /* check the result of getting network data, There has no chainmaker network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get cita network by index */
     rtnVal = BoATCita_GetNetworkByIndex(&Citanetworkdata, 0);
     /* check the result of getting network data, There has no cita network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* delete the onetime networl */
     BoATEthNetworkDelete(0);
 }
@@ -879,39 +879,39 @@ START_TEST(test_002CrossNetwork_0003CreateOneTimeNetworkSuccess_platone)
     /* get platon network by index */
     rtnVal = BoATEth_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no Eth network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatON_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no PlatON network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fiscobcos network by index */
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&Fiscobcosnetworkdata, 0);
     /* check the result of getting network data, There has no fiscobcos network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fabric network by index */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&Fabricnetworkdata, 0);
     /* check the result of getting network data, There has no fabric network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get hwbcs network by index */
     rtnVal = BoATHwbcs_GetNetworkByIndex(&Hwbcsnetworkdata, 0);
     /* check the result of getting network data, There has no hwbcs network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get quorum network by index */
     rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, 0);
     /* check the result of getting network data, There has no quorum network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get venachain network by index */
     rtnVal = BoATVenachain_GetNetworkByIndex(&Venachainnetworkdata, 0);
     /* check the result of getting network data, There has no venachain network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get chainmaker network by index */
     rtnVal = BoATChainmaker_GetNetworkByIndex(&Chainmakernetworkdata, 0);
     /* check the result of getting network data, There has no chainmaker network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get cita network by index */
     rtnVal = BoATCita_GetNetworkByIndex(&Citanetworkdata, 0);
     /* check the result of getting network data, There has no cita network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* delete the onetime networl */
     BoATEthNetworkDelete(0);
 }
@@ -955,39 +955,39 @@ START_TEST(test_002CrossNetwork_0004CreateOneTimeNetworkSuccess_fiscobcos)
     /* get platon network by index */
     rtnVal = BoATEth_GetNetworkByIndex(&Ethnetworkdata, 0);
     /* check the result of getting network data, There has no Eth network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatON_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no PlatON network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatone_GetNetworkByIndex(&Platonenetworkdata, 0);
     /* check the result of getting network data, There has no platone network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fabric network by index */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&Fabricnetworkdata, 0);
     /* check the result of getting network data, There has no fabric network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get hwbcs network by index */
     rtnVal = BoATHwbcs_GetNetworkByIndex(&Hwbcsnetworkdata, 0);
     /* check the result of getting network data, There has no hwbcs network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get quorum network by index */
     rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, 0);
     /* check the result of getting network data, There has no quorum network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get venachain network by index */
     rtnVal = BoATVenachain_GetNetworkByIndex(&Venachainnetworkdata, 0);
     /* check the result of getting network data, There has no venachain network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get chainmaker network by index */
     rtnVal = BoATChainmaker_GetNetworkByIndex(&Chainmakernetworkdata, 0);
     /* check the result of getting network data, There has no chainmaker network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get cita network by index */
     rtnVal = BoATCita_GetNetworkByIndex(&Citanetworkdata, 0);
     /* check the result of getting network data, There has no cita network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* delete the onetime networl */
     BoATEthNetworkDelete(0);
 }
@@ -1035,39 +1035,39 @@ START_TEST(test_002CrossNetwork_0005CreateOneTimeNetworkSuccess_fabric)
     /* get platon network by index */
     rtnVal = BoATEth_GetNetworkByIndex(&Ethnetworkdata, 0);
     /* check the result of getting network data, There has no Eth network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatON_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no PlatON network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatone_GetNetworkByIndex(&Platonenetworkdata, 0);
     /* check the result of getting network data, There has no platone network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fiscobcos network by index */
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&Fiscobcosnetworkdata, 0);
     /* check the result of getting network data, There has no ficobcos network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get hwbcs network by index */
     rtnVal = BoATHwbcs_GetNetworkByIndex(&Hwbcsnetworkdata, 0);
     /* check the result of getting network data, There has no hwbcs network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get quorum network by index */
     rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, 0);
     /* check the result of getting network data, There has no quorum network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get venachain network by index */
     rtnVal = BoATVenachain_GetNetworkByIndex(&Venachainnetworkdata, 0);
     /* check the result of getting network data, There has no venachain network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get chainmaker network by index */
     rtnVal = BoATChainmaker_GetNetworkByIndex(&Chainmakernetworkdata, 0);
     /* check the result of getting network data, There has no chainmaker network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get cita network by index */
     rtnVal = BoATCita_GetNetworkByIndex(&Citanetworkdata, 0);
     /* check the result of getting network data, There has no cita network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* delete the onetime networl */
     BoATEthNetworkDelete(0);
 }
@@ -1115,39 +1115,39 @@ START_TEST(test_002CrossNetwork_0006CreateOneTimeNetworkSuccess_hwbcs)
     /* get platon network by index */
     rtnVal = BoATEth_GetNetworkByIndex(&Ethnetworkdata, 0);
     /* check the result of getting network data, There has no Eth network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatON_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no PlatON network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatone_GetNetworkByIndex(&Platonenetworkdata, 0);
     /* check the result of getting network data, There has no platone network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fiscobcos network by index */
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&Fiscobcosnetworkdata, 0);
     /* check the result of getting network data, There has no ficobcos network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fabric network by index */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&Fabricnetworkdata, 0);
     /* check the result of getting network data, There has no fabric network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get quorum network by index */
     rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, 0);
     /* check the result of getting network data, There has no quorum network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get venachain network by index */
     rtnVal = BoATVenachain_GetNetworkByIndex(&Venachainnetworkdata, 0);
     /* check the result of getting network data, There has no venachain network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get chainmaker network by index */
     rtnVal = BoATChainmaker_GetNetworkByIndex(&Chainmakernetworkdata, 0);
     /* check the result of getting network data, There has no chainmaker network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get cita network by index */
     rtnVal = BoATCita_GetNetworkByIndex(&Citanetworkdata, 0);
     /* check the result of getting network data, There has no cita network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* delete the onetime networl */
     BoATEthNetworkDelete(0);
 }
@@ -1191,39 +1191,39 @@ START_TEST(test_002CrossNetwork_0007CreateOneTimeNetworkSuccess_quorum)
     /* get platon network by index */
     rtnVal = BoATEth_GetNetworkByIndex(&Ethnetworkdata, 0);
     /* check the result of getting network data, There has no Eth network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatON_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no PlatON network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatone_GetNetworkByIndex(&Platonenetworkdata, 0);
     /* check the result of getting network data, There has no platone network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fiscobcos network by index */
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&Fiscobcosnetworkdata, 0);
     /* check the result of getting network data, There has no ficobcos network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fabric network by index */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&Fabricnetworkdata, 0);
     /* check the result of getting network data, There has no fabric network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get hwbcs network by index */
     rtnVal = BoATHwbcs_GetNetworkByIndex(&Hwbcsnetworkdata, 0);
     /* check the result of getting network data, There has no hwbcs network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get venachain network by index */
     rtnVal = BoATVenachain_GetNetworkByIndex(&Venachainnetworkdata, 0);
     /* check the result of getting network data, There has no venachain network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get chainmaker network by index */
     rtnVal = BoATChainmaker_GetNetworkByIndex(&Chainmakernetworkdata, 0);
     /* check the result of getting network data, There has no chainmaker network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get cita network by index */
     rtnVal = BoATCita_GetNetworkByIndex(&Citanetworkdata, 0);
     /* check the result of getting network data, There has no cita network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* delete the onetime networl */
     BoATEthNetworkDelete(0);
 }
@@ -1267,39 +1267,39 @@ START_TEST(test_002CrossNetwork_0008CreateOneTimeNetworkSuccess_venachain)
     /* get platon network by index */
     rtnVal = BoATEth_GetNetworkByIndex(&Ethnetworkdata, 0);
     /* check the result of getting network data, There has no Eth network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatON_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no PlatON network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatone_GetNetworkByIndex(&Platonenetworkdata, 0);
     /* check the result of getting network data, There has no platone network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fiscobcos network by index */
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&Fiscobcosnetworkdata, 0);
     /* check the result of getting network data, There has no ficobcos network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fabric network by index */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&Fabricnetworkdata, 0);
     /* check the result of getting network data, There has no fabric network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get hwbcs network by index */
     rtnVal = BoATHwbcs_GetNetworkByIndex(&Hwbcsnetworkdata, 0);
     /* check the result of getting network data, There has no hwbcs network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get quorum network by index */
     rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, 0);
     /* check the result of getting network data, There has no quorum network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get chainmaker network by index */
     rtnVal = BoATChainmaker_GetNetworkByIndex(&Chainmakernetworkdata, 0);
     /* check the result of getting network data, There has no chainmaker network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get cita network by index */
     rtnVal = BoATCita_GetNetworkByIndex(&Citanetworkdata, 0);
     /* check the result of getting network data, There has no cita network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* delete the onetime networl */
     BoATEthNetworkDelete(0);
 }
@@ -1343,39 +1343,39 @@ START_TEST(test_002CrossNetwork_0009CreateOneTimeNetworkSuccess_cita)
     /* get platon network by index */
     rtnVal = BoATEth_GetNetworkByIndex(&Ethnetworkdata, 0);
     /* check the result of getting network data, There has no Eth network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatON_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no PlatON network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatone_GetNetworkByIndex(&Platonenetworkdata, 0);
     /* check the result of getting network data, There has no platone network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fiscobcos network by index */
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&Fiscobcosnetworkdata, 0);
     /* check the result of getting network data, There has no ficobcos network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fabric network by index */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&Fabricnetworkdata, 0);
     /* check the result of getting network data, There has no fabric network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get hwbcs network by index */
     rtnVal = BoATHwbcs_GetNetworkByIndex(&Hwbcsnetworkdata, 0);
     /* check the result of getting network data, There has no hwbcs network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get quorum network by index */
     rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, 0);
     /* check the result of getting network data, There has no quorum network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get chainmaker network by index */
     rtnVal = BoATChainmaker_GetNetworkByIndex(&Chainmakernetworkdata, 0);
     /* check the result of getting network data, There has no chainmaker network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get venachain network by index */
     rtnVal = BoATVenachain_GetNetworkByIndex(&Venachainnetworkdata, 0);
     /* check the result of getting network data, There has no venachain network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* delete the onetime networl */
     BoATEthNetworkDelete(0);
 }
@@ -1419,39 +1419,39 @@ START_TEST(test_002CrossNetwork_0010CreateOneTimeNetworkSuccess_chainmaker)
     /* get platon network by index */
     rtnVal = BoATEth_GetNetworkByIndex(&Ethnetworkdata, 0);
     /* check the result of getting network data, There has no Eth network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatON_GetNetworkByIndex(&PlatONnetworkdata, 0);
     /* check the result of getting network data, There has no PlatON network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get platone network by index */
     rtnVal = BoATPlatone_GetNetworkByIndex(&Platonenetworkdata, 0);
     /* check the result of getting network data, There has no platone network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fiscobcos network by index */
     rtnVal = BoATFiscobcos_GetNetworkByIndex(&Fiscobcosnetworkdata, 0);
     /* check the result of getting network data, There has no ficobcos network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get fabric network by index */
     rtnVal = BoATHlfabric_GetNetworkByIndex(&Fabricnetworkdata, 0);
     /* check the result of getting network data, There has no fabric network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get hwbcs network by index */
     rtnVal = BoATHwbcs_GetNetworkByIndex(&Hwbcsnetworkdata, 0);
     /* check the result of getting network data, There has no hwbcs network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get quorum network by index */
     rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, 0);
     /* check the result of getting network data, There has no quorum network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get cita network by index */
     rtnVal = BoATCita_GetNetworkByIndex(&Citanetworkdata, 0);
     /* check the result of getting network data, There has no cita network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* get venachain network by index */
     rtnVal = BoATVenachain_GetNetworkByIndex(&Venachainnetworkdata, 0);
     /* check the result of getting network data, There has no venachain network */
-    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+    ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     /* delete the onetime networl */
     BoATEthNetworkDelete(0);
 }
@@ -1617,7 +1617,7 @@ START_TEST(test_002CrossNetwork_0013GetNetworkbyIndexSuccess)
         /* get network data by index , index = 0 */
         rtnVal = BoATChainmaker_GetNetworkByIndex(&Chainmakernetworkdata, Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* get platon network by index */
         rtnVal = BoATEth_GetNetworkByIndex(&Ethnetworkdata, Index);
         if (Index == 1)
@@ -1628,7 +1628,7 @@ START_TEST(test_002CrossNetwork_0013GetNetworkbyIndexSuccess)
         else
         {
             /* check the result of getting network data, There has no Eth network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
 
         /* get platone network by index */
@@ -1641,7 +1641,7 @@ START_TEST(test_002CrossNetwork_0013GetNetworkbyIndexSuccess)
         else
         {
             /* check the result of getting network data, There has no PlatON network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
 
         /* get platone network by index */
@@ -1654,7 +1654,7 @@ START_TEST(test_002CrossNetwork_0013GetNetworkbyIndexSuccess)
         else
         {
             /* check the result of getting network data, There has no platone network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
 
         /* get fiscobcos network by index */
@@ -1667,7 +1667,7 @@ START_TEST(test_002CrossNetwork_0013GetNetworkbyIndexSuccess)
         else
         {
             /* check the result of getting network data, There has no ficobcos network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
 
         /* get fabric network by index */
@@ -1682,25 +1682,25 @@ START_TEST(test_002CrossNetwork_0013GetNetworkbyIndexSuccess)
         else
         {
             /* check the result of getting network data, There has no fabric network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
 
         /* get hwbcs network by index */
         rtnVal = BoATHwbcs_GetNetworkByIndex(&Hwbcsnetworkdata, Index);
         /* check the result of getting network data, There has no hwbcs network */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* get quorum network by index */
         rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, Index);
         /* check the result of getting network data, There has no quorum network */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* get cita network by index */
         rtnVal = BoATCita_GetNetworkByIndex(&Citanetworkdata, Index);
         /* check the result of getting network data, There has no cita network */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* get venachain network by index */
         rtnVal = BoATVenachain_GetNetworkByIndex(&Venachainnetworkdata, Index);
         /* check the result of getting network data, There has no venachain network */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     }
 }
 END_TEST
@@ -1723,7 +1723,7 @@ START_TEST(test_002CrossNetwork_0014DeleteNetwork_otherBlockchain)
         /* delete network with chainmaker interface, but the protocol type don't macth chainmaker*/
         rtnVal = BoATChainmakerNetworkDelete(Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
 
         /* protocol type of network which index equal 2 is platon*/
         if (Index != 2)
@@ -1731,7 +1731,7 @@ START_TEST(test_002CrossNetwork_0014DeleteNetwork_otherBlockchain)
             /* delete network with PlatON interface, but the protocol type don't macth PlatON */
             rtnVal = BoATPlatONNetworkDelete(Index);
             /* check the result of getting network data,There has no PlatON network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
         /* protocol type of network which index equal 1 is eth*/
         if (Index != 1)
@@ -1739,7 +1739,7 @@ START_TEST(test_002CrossNetwork_0014DeleteNetwork_otherBlockchain)
             /* delete network with eth interface, but the protocol type don't macth eth  */
             rtnVal = BoATEthNetworkDelete(Index);
             /* check the result of getting network data */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
         /* protocol type of network which index equal 3 is platone*/
         if (Index != 3)
@@ -1747,7 +1747,7 @@ START_TEST(test_002CrossNetwork_0014DeleteNetwork_otherBlockchain)
             /* delete network with platone interface, but the protocol type don't macth platone  */
             rtnVal = BoATPlatoneNetworkDelete(Index);
             /* check the result of getting network data*/
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
         /* protocol type of network which index equal 4 is fiscobcos*/
         if (Index != 4)
@@ -1755,7 +1755,7 @@ START_TEST(test_002CrossNetwork_0014DeleteNetwork_otherBlockchain)
             /* delete network with fiscobcos interface, but the protocol type don't macth fiscobcos  */
             rtnVal = BoATFiscobcosNetworkDelete(Index);
             /* check the result of getting network data */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
         /* protocol type of network which index equal 5 is fabric*/
         if (Index != 5)
@@ -1763,24 +1763,24 @@ START_TEST(test_002CrossNetwork_0014DeleteNetwork_otherBlockchain)
             /* delete network with fabric interface, but the protocol type don't macth fabric  */
             rtnVal = BoATHlfabricNetworkDelete(Index);
             /* check the result of getting network data*/
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
         /* delete network with hwbcs interface, but the protocol type don't macth hwbcs*/
         rtnVal = BoATHwbcsNetworkDelete(Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* delete network with quorum interface, but the protocol type don't macth quorum*/
         rtnVal = BoATQuorumNetworkDelete(Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* delete network with cita interface, but the protocol type don't macth cita*/
         rtnVal = BoATCitaNetworkDelete(Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* delete network with venachain interface, but the protocol type don't macth venachain*/
         rtnVal = BoATVenachainNetworkDelete(Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     }
 }
 END_TEST
@@ -2005,7 +2005,7 @@ START_TEST(test_002CrossNetwork_0018GetNetworkbyIndexSuccess)
         /* get fiscobcos network by index */
         rtnVal = BoATFiscobcos_GetNetworkByIndex(&Fiscobcosnetworkdata, Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* get quorum network by index */
         rtnVal = BoATQuorum_GetNetworkByIndex(&Quorumnetworkdata, Index);
         if (Index == 1)
@@ -2016,7 +2016,7 @@ START_TEST(test_002CrossNetwork_0018GetNetworkbyIndexSuccess)
         else
         {
             /* check the result of getting network data, There has no quorum network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
 
         /* get venachain network by index */
@@ -2029,7 +2029,7 @@ START_TEST(test_002CrossNetwork_0018GetNetworkbyIndexSuccess)
         else
         {
             /* check the result of getting network data, There has no venachain network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
 
         /* get hwbcs network by index */
@@ -2044,7 +2044,7 @@ START_TEST(test_002CrossNetwork_0018GetNetworkbyIndexSuccess)
         else
         {
             /* check the result of getting network data, There has no hwbcs network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
 
         /* get network data by index , index = 0 */
@@ -2057,7 +2057,7 @@ START_TEST(test_002CrossNetwork_0018GetNetworkbyIndexSuccess)
         else
         {
             /* check the result of getting network data, There has no chainmaker network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
 
         /* get cita network by index */
@@ -2070,25 +2070,25 @@ START_TEST(test_002CrossNetwork_0018GetNetworkbyIndexSuccess)
         else
         {
             /* check the result of getting network data, There has no cita network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
 
         /* get platone network by index */
         rtnVal = BoATPlatone_GetNetworkByIndex(&Platonenetworkdata, Index);
         /* check the result of getting network data, There has no platone network */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* get platon network by index */
         rtnVal = BoATEth_GetNetworkByIndex(&Ethnetworkdata, Index);
         /* check the result of getting network data, There has no platon network */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* get fabric network by index */
         rtnVal = BoATHlfabric_GetNetworkByIndex(&Fabricnetworkdata, Index);
         /* check the result of getting network data, There has no fabric network */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* get platone network by index */
         rtnVal = BoATPlatON_GetNetworkByIndex(&PlatONnetworkdata, Index);
         /* check the result of getting network data, There has no platone network */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     }
 }
 END_TEST
@@ -2111,7 +2111,7 @@ START_TEST(test_002CrossNetwork_0019DeleteNetwork_otherBlockchain)
         /* delete network with fiscobcos interface, but the protocol type don't macth fiscobcos  */
         rtnVal = BoATFiscobcosNetworkDelete(Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
 
         /* protocol type of network which index equal 2 is platon*/
         if (Index != 2)
@@ -2119,7 +2119,7 @@ START_TEST(test_002CrossNetwork_0019DeleteNetwork_otherBlockchain)
             /* delete network with venachain interface, but the protocol type don't macth venachain*/
             rtnVal = BoATVenachainNetworkDelete(Index);
             /* check the result of getting network data,There has no Venachain network */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
         /* protocol type of network which index equal 1 is eth*/
         if (Index != 1)
@@ -2127,7 +2127,7 @@ START_TEST(test_002CrossNetwork_0019DeleteNetwork_otherBlockchain)
             /* delete network with quorum interface, but the protocol type don't macth quorum*/
             rtnVal = BoATQuorumNetworkDelete(Index);
             /* check the result of getting network data */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
         /* protocol type of network which index equal 3 is platone*/
         if (Index != 3)
@@ -2135,7 +2135,7 @@ START_TEST(test_002CrossNetwork_0019DeleteNetwork_otherBlockchain)
             /* delete network with hwbcs interface, but the protocol type don't macth hwbcs*/
             rtnVal = BoATHwbcsNetworkDelete(Index);
             /* check the result of getting network data*/
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
         /* protocol type of network which index equal 4 is fiscobcos*/
         if (Index != 4)
@@ -2143,7 +2143,7 @@ START_TEST(test_002CrossNetwork_0019DeleteNetwork_otherBlockchain)
             /* delete network with chainmaker interface, but the protocol type don't macth chainmaker*/
             rtnVal = BoATChainmakerNetworkDelete(Index);
             /* check the result of getting network data */
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
         /* protocol type of network which index equal 5 is fabric*/
         if (Index != 5)
@@ -2151,24 +2151,24 @@ START_TEST(test_002CrossNetwork_0019DeleteNetwork_otherBlockchain)
             /* delete network with cita interface, but the protocol type don't macth cita*/
             rtnVal = BoATCitaNetworkDelete(Index);
             /* check the result of getting network data*/
-            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+            ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         }
         /* delete network with platone interface, but the protocol type don't macth platone  */
         rtnVal = BoATPlatoneNetworkDelete(Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* delete network with Eth interface, but the protocol type don't macth Eth  */
         rtnVal = BoATEthNetworkDelete(Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* delete network with fabric interface, but the protocol type don't macth fabric  */
         rtnVal = BoATHlfabricNetworkDelete(Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
         /* delete network with PlatON interface, but the protocol type don't macth PlatON */
         rtnVal = BoATPlatONNetworkDelete(Index);
         /* check the result of getting network data */
-        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_HAVENOON);
+        ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
     }
 }
 END_TEST

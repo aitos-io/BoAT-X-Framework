@@ -280,7 +280,7 @@ BOAT_RESULT BoATKeypair_GetKeypairByIndex(BoatKeypairPriKeyCtx *priKeyCtx, BUINT
     if (result != BOAT_SUCCESS || keypairNum == 0)
     {
         BoatLog(BOAT_LOG_NORMAL, "keypair num check fail ");
-        return BOAT_ERROR_KEYPAIR_KEY_HAVENOON;
+        return BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE;
     }
     offset += sizeof(keypairNumBytes);
     for (BUINT8 i = 0; i < keypairNum; i++)
@@ -445,7 +445,7 @@ BOAT_RESULT BoATKeypair_GetKeypairByIndex(BoatKeypairPriKeyCtx *priKeyCtx, BUINT
             offset += keypairLength;
         }
     }
-    return BOAT_ERROR_KEYPAIR_KEY_HAVENOON;
+    return BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE;
 }
 
 /**
@@ -486,7 +486,7 @@ BOAT_RESULT BoATKeypair_GetKeypairList(BoatIotKeypairContext *keypairList)
         if (result != BOAT_SUCCESS)
         {
             BoatLog(BOAT_LOG_NORMAL, "check keypair num fail");
-            // return BOAT_ERROR_KEYPAIR_KEY_HAVENOON;
+            // return BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE;
             keypairNum = 0;
         }
     }
