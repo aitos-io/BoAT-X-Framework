@@ -366,18 +366,19 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char* method,
                 {
                     BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerTxRequest sync failed");
                 }
-               
+
                 printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %ld\n",  tx_response->contract_result->code);
                 printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %ld\n",  tx_response->code);
                    printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %d\n",  tx_response->contract_result->result.len);
-
+#ifdef CHAINMAKER_V2
                  Common__TransactionInfoWithRWSet   *transaction_info_with_rwset = common__transaction_info_with_rwset__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
-                
-                if (transaction_info_with_rwset != NULL)
-                {
-                    printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %d\n", transaction_info_with_rwset->block_height);
-                      printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %d\n", transaction_info_with_rwset->transaction->result->contract_result->n_contract_event);
-                }
+#elif  CHAINMAKER_V1        
+#endif
+                // if (transaction_info_with_rwset != NULL)
+                // {
+                //     printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %d\n", transaction_info_with_rwset->block_height);
+                //       printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %d\n", transaction_info_with_rwset->transaction->result->contract_result->n_contract_event);
+                // }
                 printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %d\n", transaction_info_with_rwset->transaction->result->contract_result->gas_used);
                 printf("liuzhnehe1111111111111111111111111111111111111111111111111111111111 = %s\n", transaction_info_with_rwset->transaction->result->contract_result->contract_event[0]->contract_name);
 
