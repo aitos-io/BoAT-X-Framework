@@ -103,7 +103,7 @@ START_TEST(test_007ParametersInit_0002TxInitFailureNullParam)
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
-    ret = BoatEthTxInit(&wallet,NULL,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatEthTxInit(wallet,NULL,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
@@ -125,7 +125,7 @@ START_TEST(test_007ParametersInit_0003TxInitSuccessNullGasPrice)
     wallet = ethereumOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatEthTxInit(&wallet,&tx_ctx,BOAT_TRUE, NULL,
+    ret = BoatEthTxInit(wallet,&tx_ctx,BOAT_TRUE, NULL,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     
@@ -147,7 +147,7 @@ START_TEST(test_007ParametersInit_0004TxInitFailureErrorGasPriceHexFormat)
     wallet = ethereumOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatEthTxInit(&wallet,&tx_ctx,BOAT_TRUE, "0x4A81LLJK",
+    ret = BoatEthTxInit(wallet,&tx_ctx,BOAT_TRUE, "0x4A81LLJK",
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
@@ -170,7 +170,7 @@ START_TEST(test_007ParametersInit_0005TxInitSuccessGasPriceHexNonOx)
     wallet = ethereumOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatEthTxInit(&wallet,&tx_ctx,BOAT_TRUE, "4A817C800",
+    ret = BoatEthTxInit(wallet,&tx_ctx,BOAT_TRUE, "4A817C800",
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     
@@ -546,7 +546,7 @@ START_TEST(test_009ParametersChange_0001ChangeNodeUrlSuccess)
     wallet = ethereumOnetimeWalletPrepare();
 
     /* Change url*/
-    ret = BoatEthWalletChangeNodeUrl(&wallet,"www.123.com");
+    ret = BoatEthWalletChangeNodeUrl(wallet,"www.123.com");
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     ck_assert_str_eq(wallet->network_info.node_url_str,"www.123.com");
 
@@ -568,7 +568,7 @@ START_TEST(test_009ParametersChange_0002ChangeNodeUrlFailureNullParameters)
     wallet = ethereumOnetimeWalletPrepare();
 
     /* Change url*/
-    ret = BoatEthWalletChangeNodeUrl(&wallet,NULL);
+    ret = BoatEthWalletChangeNodeUrl(wallet,NULL);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
     ret = BoatEthWalletChangeNodeUrl(NULL,"www.123.com");
@@ -592,7 +592,7 @@ START_TEST(test_009ParametersChange_0003ChangeChainIDSuccess)
     wallet = ethereumOnetimeWalletPrepare();
 
     /* Change chainID*/
-    ret = BoatEthWalletChangeChainID(&wallet,111);
+    ret = BoatEthWalletChangeChainID(wallet,111);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     ck_assert_int_eq(wallet->network_info.chain_id, 111);
 
@@ -635,7 +635,7 @@ START_TEST(test_009ParametersChange_0005ChangeEip155CompSuccess)
     wallet = ethereumOnetimeWalletPrepare();
 
     /* Change EIP155 comp*/
-    ret = BoatEthWalletChangeEIP155Comp(&wallet,BOAT_TRUE);
+    ret = BoatEthWalletChangeEIP155Comp(wallet,BOAT_TRUE);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     ck_assert(wallet->network_info.eip155_compatibility == BOAT_TRUE);
 
