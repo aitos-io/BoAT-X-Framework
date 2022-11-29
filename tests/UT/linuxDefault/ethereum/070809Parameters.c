@@ -314,7 +314,7 @@ START_TEST(test_008ParametersSet_0002SetNonceSuccess)
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* Set Nonce*/
-    ret = BoatEthTxSetNonce(&tx_ctx,"0xA1");
+    ret = BoatEthTxSetNonce(&tx_ctx, 161);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     BoatFieldMax32B NONCE;
