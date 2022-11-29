@@ -148,7 +148,7 @@ const ProtobufCMessageDescriptor common__chainmaker_networks__descriptor =
   (ProtobufCMessageInit) common__chainmaker_networks__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor common__chainmaker_network_data__field_descriptors[9] =
+static const ProtobufCFieldDescriptor common__chainmaker_network_data__field_descriptors[10] =
 {
   {
     "index",
@@ -163,8 +163,20 @@ static const ProtobufCFieldDescriptor common__chainmaker_network_data__field_des
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "client_sign_cert_content",
+    "client_member_type",
     2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(Common__ChainmakerNetworkData, client_member_type),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "client_sign_cert_content",
+    3,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
@@ -176,7 +188,7 @@ static const ProtobufCFieldDescriptor common__chainmaker_network_data__field_des
   },
   {
     "node_url",
-    3,
+    4,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
@@ -188,7 +200,7 @@ static const ProtobufCFieldDescriptor common__chainmaker_network_data__field_des
   },
   {
     "host_name",
-    4,
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
@@ -200,7 +212,7 @@ static const ProtobufCFieldDescriptor common__chainmaker_network_data__field_des
   },
   {
     "chain_id",
-    5,
+    6,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
@@ -212,7 +224,7 @@ static const ProtobufCFieldDescriptor common__chainmaker_network_data__field_des
   },
   {
     "org_id",
-    6,
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
@@ -260,21 +272,21 @@ static const ProtobufCFieldDescriptor common__chainmaker_network_data__field_des
   },
 };
 static const unsigned common__chainmaker_network_data__field_indices_by_name[] = {
-  6,   /* field[6] = ca_tls_cert_content */
-  4,   /* field[4] = chain_id */
-  1,   /* field[1] = client_sign_cert_content */
-  7,   /* field[7] = client_tls_cert_content */
-  8,   /* field[8] = client_tls_privkey_data */
-  3,   /* field[3] = host_name */
+  7,   /* field[7] = ca_tls_cert_content */
+  5,   /* field[5] = chain_id */
+  1,   /* field[1] = client_member_type */
+  2,   /* field[2] = client_sign_cert_content */
+  8,   /* field[8] = client_tls_cert_content */
+  9,   /* field[9] = client_tls_privkey_data */
+  4,   /* field[4] = host_name */
   0,   /* field[0] = index */
-  2,   /* field[2] = node_url */
-  5,   /* field[5] = org_id */
+  3,   /* field[3] = node_url */
+  6,   /* field[6] = org_id */
 };
-static const ProtobufCIntRange common__chainmaker_network_data__number_ranges[2 + 1] =
+static const ProtobufCIntRange common__chainmaker_network_data__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 8, 6 },
-  { 0, 9 }
+  { 0, 10 }
 };
 const ProtobufCMessageDescriptor common__chainmaker_network_data__descriptor =
 {
@@ -284,10 +296,10 @@ const ProtobufCMessageDescriptor common__chainmaker_network_data__descriptor =
   "Common__ChainmakerNetworkData",
   "common",
   sizeof(Common__ChainmakerNetworkData),
-  9,
+  10,
   common__chainmaker_network_data__field_descriptors,
   common__chainmaker_network_data__field_indices_by_name,
-  2,  common__chainmaker_network_data__number_ranges,
+  1,  common__chainmaker_network_data__number_ranges,
   (ProtobufCMessageInit) common__chainmaker_network_data__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
