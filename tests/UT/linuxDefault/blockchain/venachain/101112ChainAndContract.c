@@ -23,13 +23,15 @@
 
 #define TEST_RECIPIENT_ADDRESS      "0x16E598Eba11d0909ee4B3D439f2477dCeE126BCE"
 
-__BOATSTATIC BOAT_RESULT venachainOnetimeWalletPrepare(BoatVenachainWallet *wallet_p)
+__BOATSTATIC BoatVenachainWallet *venachainOnetimeWalletPrepare()
 {
     BOAT_RESULT index;
     BoatKeypairPriKeyCtx_config keypair_config;
     BUINT8 keypair_index;
     BoatVenachainNetworkConfig network_config;
     BUINT8 network_index;
+
+    BoatVenachainWallet *wallet_p = NULL;
 
         
     if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
@@ -62,14 +64,14 @@ __BOATSTATIC BOAT_RESULT venachainOnetimeWalletPrepare(BoatVenachainWallet *wall
     wallet_p = BoatVenachainWalletInit(keypair_index,network_index);
     ck_assert(wallet_p != NULL);
 
-    return BOAT_SUCCESS;
+    return wallet_p;
 }
 
 START_TEST(test_010CallContract_0001CallContractSuccess) 
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BCHAR *result_str;
@@ -82,10 +84,10 @@ START_TEST(test_010CallContract_0001CallContractSuccess)
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, NULL,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, NULL,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -100,7 +102,7 @@ START_TEST(test_010CallContract_0001CallContractSuccess)
     ck_assert(result_str != NULL);
 
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -111,20 +113,20 @@ START_TEST(test_011GetBalance_0001GetSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BCHAR *result_str;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Get Balance */
-    result_str = BoatVenachainWalletGetBalance(&wallet,TEST_RECIPIENT_ADDRESS);
+    result_str = BoatVenachainWalletGetBalance(wallet,TEST_RECIPIENT_ADDRESS);
     ck_assert_ptr_ne(result_str, NULL);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -134,20 +136,20 @@ START_TEST(test_011GetBalance_0002GetSuccessNullAddress)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BCHAR *result_str;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Get Balance */
-    result_str = BoatVenachainWalletGetBalance(&wallet,NULL);
+    result_str = BoatVenachainWalletGetBalance(wallet,NULL);
     ck_assert_ptr_ne(result_str, NULL);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -157,7 +159,7 @@ START_TEST(test_011GetBalance_0003GetFailureNullWallet)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BCHAR *result_str;
@@ -168,7 +170,7 @@ START_TEST(test_011GetBalance_0003GetFailureNullWallet)
     result_str = BoatVenachainWalletGetBalance(NULL,NULL);
     ck_assert_ptr_eq(result_str, NULL);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -178,24 +180,24 @@ START_TEST(test_012Transfer_0001TransferSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, NULL,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* Transfer */
-    ret = BoatVenachainTransfer(&tx_ctx,"0x1");
+    ret = BoatVenachainTransfer(&tx_ctx,"0x0");
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
