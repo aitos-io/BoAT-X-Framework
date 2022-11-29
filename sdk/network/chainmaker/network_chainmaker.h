@@ -47,18 +47,30 @@ typedef struct TBoatChainmakerCertInfoCfg{
     BCHAR    content[BOAT_CHAINMAKER_CERT_MAX_LEN]; //!< content of certificate.
 } BoatChainmakerCertInfoCfg;
 
+typedef enum TBoatChainmakerMemberType {
 
+  BOAT_MEMBER_TYPE_CERT       = 0,       // *X509 cert
+  BOAT_MEMBER_TYPE_CERT_HASH  = 1,       // *cert hash
+  BOAT_MEMBER_TYPE_PUBLIC_KEY = 2,       // *public key
+  BOAT_MEMBER_TYPE_TYPE_DID   = 3,       // *did
+  BOAT_MEMBER_TYPE_YPE_ALIAS  = 4,       // *alias
+  BOAT_MEMBER_TYPE_YPE_ADDR   = 5        
+   // *address
+
+} BoatChainmakerMemberType;
 //!@brief chainmaker network  structure
 //! chainmaker network  structure
 typedef struct TBoatChainmakerNetworkData
 {
     BUINT8 networkIndex;
+
+    BoatChainmakerMemberType      client_member_type;
     BoatChainmakerCertInfoCfg     client_sign_cert_content;   //!< certificate content of account
 
-    BCHAR    node_url[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
-    BCHAR    host_name[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
-    BCHAR    chain_id[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
-    BCHAR    org_id[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
+    BCHAR *node_url;
+    BCHAR *host_name;
+    BCHAR *chain_id;
+    BCHAR *org_id;
 
     BoatChainmakerCertInfoCfg     ca_tls_cert_content;
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) && (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)

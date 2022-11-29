@@ -98,7 +98,30 @@ void BoatChainmakerWalletDeInit(BoatChainmakerWallet *wallet_ptr)
         wallet_ptr->account_info.prikeyCtx.keypair_name = NULL;
     }
 
-    /* network_info DeInit */
+     /* network_info DeInit */
+    if (wallet_ptr->network_info.node_url != NULL)
+    {
+        BoatFree(wallet_ptr->network_info.node_url);
+        wallet_ptr->network_info.node_url = NULL;
+    }
+
+    if (wallet_ptr->network_info.host_name != NULL)
+    {
+        BoatFree(wallet_ptr->network_info.host_name);
+        wallet_ptr->network_info.host_name = NULL;
+    }
+
+    if (wallet_ptr->network_info.chain_id != NULL)
+    {
+        BoatFree(wallet_ptr->network_info.chain_id);
+        wallet_ptr->network_info.chain_id = NULL;
+    }
+
+    if (wallet_ptr->network_info.org_id != NULL)
+    {
+        BoatFree(wallet_ptr->network_info.org_id);
+        wallet_ptr->network_info.org_id = NULL;
+    }
     
     /* http2Context DeInit */
     http2DeInit(wallet_ptr->http2Context_ptr);
@@ -141,7 +164,7 @@ BOAT_RESULT get_tx_id(BCHAR* tx_id_ptr)
 }
 
 
-BOAT_RESULT BoatChainmakerTxInit(const BoatChainmakerWallet* wallet_ptr, BoatChainmakerTx* tx_ptr, BUINT64 gas_limit, BoatMemberType member_type)
+BOAT_RESULT BoatChainmakerTxInit(const BoatChainmakerWallet* wallet_ptr, BoatChainmakerTx* tx_ptr, BUINT64 gas_limit)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
 
@@ -153,7 +176,6 @@ BOAT_RESULT BoatChainmakerTxInit(const BoatChainmakerWallet* wallet_ptr, BoatCha
 
     tx_ptr->wallet_ptr  = (BoatChainmakerTx *)wallet_ptr;
     tx_ptr->gas_limit   = gas_limit;
-    tx_ptr->member_type = member_type;
     return result;
 }
 

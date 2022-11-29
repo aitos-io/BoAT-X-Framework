@@ -46,17 +46,6 @@ typedef enum {
   TxType_QUERY_SYSTEM_CONTRACT = 3
 } TxType;
 
-typedef enum TBoatMemberType {
-
-  BOAT_MEMBER_TYPE_CERT = 0,        // *X509 cert
-  BOAT_MEMBER_TYPE__CERT_HASH = 1,  // *cert hash
-  BOAT_MEMBER_TYPE__PUBLIC_KEY = 2, // *public key
-  BOAT_MEMBER_TYPE__DID = 3,        // *did
-  BOAT_MEMBER_TYPE__ALIAS = 4,      // *alias
-  BOAT_MEMBER_TYPE__ADDR = 5        // *address
-
-} BoatMemberType;
-
 typedef enum TBoatresponseCode {
 
   SUCCESS                                = 0,
@@ -154,7 +143,6 @@ typedef struct TBoatChainamkerTx {
   BoatChainmakerWallet*     wallet_ptr;       //!< Pointer of the transaction wallet 
   BoatTransactionPara       trans_para; 
   BUINT64                   gas_limit;
-  BoatMemberType            member_type;
 }BoatChainmakerTx;
 
 
@@ -193,7 +181,7 @@ BoatChainmakerWallet *BoatChainmakerWalletInit(BUINT8 keypairIndex,BUINT8 networ
  * @return 
  *   Return \c BOAT_SUCCESS if transaction initinal success, otherwise return a error code.
  ******************************************************************************/
-BOAT_RESULT BoatChainmakerTxInit(const BoatChainmakerWallet* wallet_ptr, BoatChainmakerTx* tx_ptr, BUINT64 gas_limit, BoatMemberType member_type);
+BOAT_RESULT BoatChainmakerTxInit(const BoatChainmakerWallet* wallet_ptr, BoatChainmakerTx* tx_ptr, BUINT64 gas_limit);
 
 /*!****************************************************************************
  * @brief 

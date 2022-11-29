@@ -52,6 +52,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_getNetworkFromProto(BoatChainmakerNetwor
     Networkdata->networkIndex = network_proto->index;
 
     /* client sign Cert */
+    Networkdata->client_member_type = network_proto->client_member_type;
     if (strlen(network_proto->client_sign_cert_content) > sizeof(Networkdata->client_sign_cert_content.content))
     {
         return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
@@ -60,23 +61,10 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_getNetworkFromProto(BoatChainmakerNetwor
     strcpy(Networkdata->client_sign_cert_content.content, network_proto->client_sign_cert_content);
 
     /*node info*/
-    if (strlen(network_proto->node_url) > BOAT_CHAINMAKER_NODE_INFO_MAX_LEN)
-    {
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
-
-    if (strlen(network_proto->host_name) > BOAT_CHAINMAKER_NODE_INFO_MAX_LEN)
-    {
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
-    if (strlen(network_proto->chain_id) > BOAT_CHAINMAKER_NODE_INFO_MAX_LEN)
-    {
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
-    if (strlen(network_proto->org_id) > BOAT_CHAINMAKER_NODE_INFO_MAX_LEN)
-    {
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
+    Networkdata->node_url  = BoatMalloc(strlen(network_proto->node_url) + 1);
+    Networkdata->host_name = BoatMalloc(strlen(network_proto->host_name) + 1);
+    Networkdata->chain_id  = BoatMalloc(strlen(network_proto->chain_id) + 1);
+    Networkdata->org_id    = BoatMalloc(strlen(network_proto->org_id) + 1);
 
     strcpy(Networkdata->node_url, network_proto->node_url);
     strcpy(Networkdata->host_name, network_proto->host_name);
@@ -196,7 +184,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_GetNetworkFromNvram(BoatChainmakerNetwor
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
     }
-
+    
     if (networkcontent != NULL)
     {
         BoatFree(networkcontent);
@@ -475,9 +463,11 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_Get_Network_Data(BoatChainmakerNetworkDa
     protobuf_network.host_name = networkData->host_name;
     protobuf_network.chain_id = networkData->chain_id;
     protobuf_network.org_id = networkData->org_id;
-    protobuf_network.client_sign_cert_content = networkData->client_sign_cert_content.content;
 
+    protobuf_network.client_member_type       = networkData->client_member_type;
+    protobuf_network.client_sign_cert_content = networkData->client_sign_cert_content.content;
     protobuf_network.ca_tls_cert_content = (BCHAR *)networkData->ca_tls_cert_content.content;
+
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) && (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
     protobuf_network.client_tls_privkey_data = (BCHAR *)networkData->client_tls_privkey_data.value;
     protobuf_network.client_tls_cert_content  = (BCHAR *)networkData->client_tls_cert_content.content;
@@ -728,11 +718,11 @@ BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig
     }
 
     mNetworkDataCtx.networkIndex = networkIndex;
-
-    strcpy(mNetworkDataCtx.node_url, networkConfig->node_url);
-    strcpy(mNetworkDataCtx.host_name, networkConfig->host_name);
-    strcpy(mNetworkDataCtx.chain_id, networkConfig->chain_id);
-    strcpy(mNetworkDataCtx.org_id, networkConfig->org_id);
+    mNetworkDataCtx.node_url     = networkConfig->node_url;
+    mNetworkDataCtx.host_name    = networkConfig->host_name;
+    mNetworkDataCtx.chain_id     = networkConfig->chain_id;
+    mNetworkDataCtx.org_id       = networkConfig->org_id;
+    mNetworkDataCtx.client_member_type       = networkConfig->client_member_type;
     mNetworkDataCtx.client_sign_cert_content = networkConfig->client_sign_cert_content;
 
     mNetworkDataCtx.ca_tls_cert_content  = networkConfig->ca_tls_cert_content;
