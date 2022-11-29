@@ -24,9 +24,18 @@ BOAT_RESULT check_venachain_wallet(BoatVenachainWallet *wallet,BUINT8 keypairInd
         return ret;
     }
 
+    BCHAR temBuf[15]={0};
+    BCHAR *temP = keypairName;
+    if(keypairName == NULL)
+    {
+        memcpy(temBuf,"keypair",strlen("keypair"));
+        temBuf[strlen("keypair")] = 0x30 + keypairIndex;
+        temP = temBuf;
+    }
+
     if((wallet->account_info.prikeyCtx.keypair_index != keypairIndex) || \
-        (0 != strncmp(wallet->account_info.prikeyCtx.keypair_name,keypairName,strlen(keypairName))) || \
-        (strlen(wallet->account_info.prikeyCtx.keypair_name) != strlen(keypairName)) || \
+        (0 != strncmp(wallet->account_info.prikeyCtx.keypair_name,temP,strlen(temP))) || \
+        (strlen(wallet->account_info.prikeyCtx.keypair_name) != strlen(temP)) || \
         (wallet->account_info.prikeyCtx.prikey_format != keypairConfig->prikey_format) || \
         (wallet->account_info.prikeyCtx.prikey_type != keypairConfig->prikey_type) || \
         (wallet->network_info.networkIndex != networkIndex) || \
@@ -155,7 +164,8 @@ START_TEST(test_005InitWallet_0003InitWalletSuccessPersistKeypairOneTimeNetwork)
 	keypair_config.prikey_type	  = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
 
     keypair_index = BoatKeypairCreate(&keypair_config,NULL,BOAT_STORE_TYPE_FLASH);
-    ck_assert_int_eq(keypair_index, 0);
+    ck_assert_int_lt(keypair_index,5);
+    ck_assert_int_gt(keypair_index,0);
 
     /* 2. Create onetime network */
     networkConfig.chain_id             = 300;
@@ -201,7 +211,8 @@ START_TEST(test_005InitWallet_0004InitWalletSuccessPersistKeypairPersistNetwork)
 	keypair_config.prikey_type	  = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
 
     keypair_index = BoatKeypairCreate(&keypair_config,NULL,BOAT_STORE_TYPE_FLASH);
-    ck_assert_int_eq(keypair_index, 0);
+    ck_assert_int_lt(keypair_index,5);
+    ck_assert_int_gt(keypair_index,0);
 
     /* 2. Create persist network */
     networkConfig.chain_id             = 300;
@@ -210,7 +221,8 @@ START_TEST(test_005InitWallet_0004InitWalletSuccessPersistKeypairPersistNetwork)
     strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatVenachainNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
-    ck_assert_int_eq(networkIndex, 0);
+    ck_assert_int_lt(networkIndex,5);
+    ck_assert_int_gt(networkIndex,0);
 
     /* 3.Init wallet */
     wallet_p = BoatVenachainWalletInit(keypair_index,networkIndex);
@@ -329,7 +341,7 @@ START_TEST(test_006DeInitWallet_0001DeInitWalletSuccessOneTimeKeypairOneTimeNetw
 
     /* 4.DeInit wallet*/
     BoatVenachainWalletDeInit(wallet_p);
-    ck_assert(wallet_p == NULL);
+    ck_assert(*wallet_p == 0);
 
     BoatIotSdkDeInit();
 }
@@ -408,7 +420,8 @@ START_TEST(test_006DeInitWallet_0003DeInitWalletSuccessPersistKeypairOneTimeNetw
 	keypair_config.prikey_type	  = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
 
     keypair_index = BoatKeypairCreate(&keypair_config,NULL,BOAT_STORE_TYPE_FLASH);
-    ck_assert_int_eq(keypair_index, 0);
+    ck_assert_int_lt(keypair_index,5);
+    ck_assert_int_gt(keypair_index,0);
 
     /* 2. Create onetime network */
     networkConfig.chain_id             = 300;
@@ -458,7 +471,8 @@ START_TEST(test_006DeInitWallet_0004DeInitWalletSuccessPersistKeypairPersistNetw
 	keypair_config.prikey_type	  = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
 
     keypair_index = BoatKeypairCreate(&keypair_config,NULL,BOAT_STORE_TYPE_FLASH);
-    ck_assert_int_eq(keypair_index, 0);
+    ck_assert_int_lt(keypair_index,5);
+    ck_assert_int_gt(keypair_index,0);
 
     /* 2. Create persist network */
     networkConfig.chain_id             = 300;
@@ -467,7 +481,8 @@ START_TEST(test_006DeInitWallet_0004DeInitWalletSuccessPersistKeypairPersistNetw
     strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatVenachainNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
-    ck_assert_int_eq(networkIndex, 0);
+    ck_assert_int_lt(networkIndex,5);
+    ck_assert_int_gt(networkIndex,0);
 
     /* 3.Init wallet */
     wallet_p = BoatVenachainWalletInit(keypair_index,networkIndex);
