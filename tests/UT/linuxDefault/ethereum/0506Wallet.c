@@ -424,7 +424,6 @@ START_TEST(test_006DeInitWallet_0003DeInitWalletSuccessPersistKeypairOneTimeNetw
 
     /* 4.Deinit wallet*/
     BoatEthWalletDeInit(wallet_p);
-    ck_assert(wallet_p == NULL);
 
     /* 5.Delete persist keypair*/
     ret = BoATIotKeypairDelete(keypair_index);
@@ -465,7 +464,7 @@ START_TEST(test_006DeInitWallet_0004DeInitWalletSuccessPersistKeypairPersistNetw
     strncpy(networkConfig.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
-    ck_assert_int_eq(networkIndex, 0);
+    ck_assert_int_eq(networkIndex, 1);
 
     /* 3.Init wallet */
     wallet_p = BoatEthWalletInit(keypair_index,networkIndex);
@@ -474,7 +473,6 @@ START_TEST(test_006DeInitWallet_0004DeInitWalletSuccessPersistKeypairPersistNetw
 
     /* 4.Deinit wallet*/
     BoatEthWalletDeInit(wallet_p);
-    ck_assert(wallet_p == NULL);
 
     /* 5.Delete persist keypair and network*/
     ret = BoATIotKeypairDelete(keypair_index);
