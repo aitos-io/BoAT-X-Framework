@@ -202,6 +202,26 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
     }
     network_index = index;
 
+    if (networkConfig.node_url != NULL)
+    {
+        BoatFree(networkConfig.node_url);
+    }
+
+    if (networkConfig.host_name != NULL)
+    {
+        BoatFree(networkConfig.host_name);
+    }
+
+    if (networkConfig.chain_id != NULL)
+    {
+        BoatFree(networkConfig.chain_id);
+    }
+
+    if (networkConfig.org_id != NULL)
+    {
+        BoatFree(networkConfig.org_id);
+    }
+
     return index;
 }
 
