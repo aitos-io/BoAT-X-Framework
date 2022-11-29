@@ -14,14 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 #include "tcase_venachain.h"
-#include "TestABIContract.abi.h"
+#include "mycontract.cpp.abi.h"
 
 #define TEST_GAS_LIMIT              "0x6691B7"
 #define TEST_GAS_PRICE              "0x4A817C800"
 #define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
 #define TEST_VENACHAIN_CHAIN_ID      300
 
-#define TEST_RECIPIENT_ADDRESS      "0x3e3bd84cf33796cb55cc713d5134597eb809fcc3"
+#define TEST_RECIPIENT_ADDRESS      "0x16E598Eba11d0909ee4B3D439f2477dCeE126BCE"
 
 __BOATSTATIC BOAT_RESULT venachainOnetimeWalletPrepare(BoatVenachainWallet *wallet_p)
 {
