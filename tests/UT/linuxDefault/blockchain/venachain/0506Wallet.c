@@ -388,7 +388,7 @@ START_TEST(test_006DeInitWallet_0002DeInitWalletSuccessOneTimeKeypairPersistNetw
 
     /* 4.Deinit wallet*/
     BoatVenachainWalletDeInit(wallet_p);
-    ck_assert(wallet_p == NULL);
+    ck_assert(*wallet_p == 0);
 
     /* 5.Delete persist network*/
     ret = BoATVenachainNetworkDelete(networkIndex);
@@ -439,7 +439,7 @@ START_TEST(test_006DeInitWallet_0003DeInitWalletSuccessPersistKeypairOneTimeNetw
 
     /* 4.Deinit wallet*/
     BoatVenachainWalletDeInit(wallet_p);
-    ck_assert(wallet_p == NULL);
+    ck_assert(*wallet_p == 0);
 
     /* 5.Delete persist keypair*/
     ret = BoATIotKeypairDelete(keypair_index);
@@ -491,7 +491,7 @@ START_TEST(test_006DeInitWallet_0004DeInitWalletSuccessPersistKeypairPersistNetw
 
     /* 4.Deinit wallet*/
     BoatVenachainWalletDeInit(wallet_p);
-    ck_assert(wallet_p == NULL);
+    ck_assert(*wallet_p == 0);
 
     /* 5.Delete persist keypair and network*/
     ret = BoATIotKeypairDelete(keypair_index);
