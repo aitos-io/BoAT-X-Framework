@@ -22,14 +22,15 @@
 
 #define TEST_RECIPIENT_ADDRESS      "0x16E598Eba11d0909ee4B3D439f2477dCeE126BCE"
 
-__BOATSTATIC BOAT_RESULT venachainOnetimeWalletPrepare(BoatVenachainWallet *wallet_p)
+__BOATSTATIC BoatVenachainWallet * venachainOnetimeWalletPrepare()
 {
     BOAT_RESULT index;
     BoatKeypairPriKeyCtx_config keypair_config;
     BUINT8 keypair_index;
     BoatVenachainNetworkConfig network_config;
     BUINT8 network_index;
-
+    BoatVenachainWallet *wallet_p = NULL;
+    
         
     if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
     {
@@ -61,7 +62,7 @@ __BOATSTATIC BOAT_RESULT venachainOnetimeWalletPrepare(BoatVenachainWallet *wall
     wallet_p = BoatVenachainWalletInit(keypair_index,network_index);
     ck_assert(wallet_p != NULL);
 
-    return BOAT_SUCCESS;
+    return wallet_p;
 }
 
 
@@ -69,19 +70,19 @@ START_TEST(test_007ParametersInit_0001TxInitSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -91,23 +92,23 @@ START_TEST(test_007ParametersInit_0002TxInitFailureNullParam)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
     ret = BoatVenachainTxInit(NULL,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
-    ret = BoatVenachainTxInit(&wallet,NULL,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,NULL,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -117,19 +118,19 @@ START_TEST(test_007ParametersInit_0003TxInitSuccessNullGasPrice)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet =  NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, NULL,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, NULL,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -139,42 +140,42 @@ START_TEST(test_007ParametersInit_0004TxInitFailureErrorGasPriceHexFormat)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, "0x4A81LLJK",
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, "0x4A81LLJK",
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
 END_TEST
 
 
-START_TEST(test_007ParametersInit_0005TxInitSuccessGasPriceHexNonOx) 
+START_TEST(test_007ParametersInit_0005TxInitFailureGasPriceHexNonOx) 
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, "4A817C800",
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, "4A817C800",
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);
+    ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -185,41 +186,41 @@ START_TEST(test_007ParametersInit_0006TxInitFailureGasLimitErrorHexFormat)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   "0x6691JJ",TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
 END_TEST
 
-START_TEST(test_007ParametersInit_0007TxInitSuccessGasLimitHexNonOx) 
+START_TEST(test_007ParametersInit_0007TxInitFailureGasLimitHexNonOx) 
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   "6691B7",TEST_RECIPIENT_ADDRESS);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);
+    ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -230,19 +231,19 @@ START_TEST(test_007ParametersInit_0008TxInitFailureRecipientErrorHexFormat)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,"0xde4c806b372Df8857C97cF36A08D528bB8E261JJ");
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -252,19 +253,19 @@ START_TEST(test_007ParametersInit_0009TxInitFailureRecipientLongLength)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,"0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -274,15 +275,15 @@ START_TEST(test_008ParametersSet_0001GetNonceFromNetworkSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -291,7 +292,7 @@ START_TEST(test_008ParametersSet_0001GetNonceFromNetworkSuccess)
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -301,30 +302,31 @@ START_TEST(test_008ParametersSet_0002SetNonceSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare(wallet);
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* Set Nonce*/
-    ret = BoatVenachainTxSetNonce(&tx_ctx,"0xA1");
+    ret = BoatVenachainTxSetNonce(&tx_ctx,0xA1);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     BoatFieldMax32B NONCE;
     memset(NONCE.field, 0, 32);
 	NONCE.field_len = UtilityHexToBin(NONCE.field, 32, "0xA1",
 	 				                  TRIMBIN_LEFTTRIM, BOAT_TRUE);
-	ck_assert_str_eq(tx_ctx.rawtx_fields.nonce.field, NONCE.field);
+
+	ck_assert(0 == memcmp(tx_ctx.rawtx_fields.nonce.field, NONCE.field,tx_ctx.rawtx_fields.nonce.field_len));
 
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -334,15 +336,15 @@ START_TEST(test_008ParametersSet_0003SetNonceFailureNullTx)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -350,7 +352,7 @@ START_TEST(test_008ParametersSet_0003SetNonceFailureNullTx)
     ret = BoatVenachainTxSetNonce(NULL,"0xA1");
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -360,15 +362,15 @@ START_TEST(test_008ParametersSet_0004SetValueSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -382,7 +384,7 @@ START_TEST(test_008ParametersSet_0004SetValueSuccess)
 
     ck_assert_str_eq(tx_ctx.rawtx_fields.value.field, value.field);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -393,15 +395,15 @@ START_TEST(test_008ParametersSet_0005SetValueFailureNullTx)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -413,7 +415,7 @@ START_TEST(test_008ParametersSet_0005SetValueFailureNullTx)
     ret = BoatVenachainTxSetValue(NULL,&value);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -423,15 +425,15 @@ START_TEST(test_008ParametersSet_0006SetValueSuccessNullvalue)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -441,7 +443,7 @@ START_TEST(test_008ParametersSet_0006SetValueSuccessNullvalue)
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     ck_assert_int_eq(tx_ctx.rawtx_fields.value.field_len, 0);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -451,15 +453,15 @@ START_TEST(test_008ParametersSet_0007SetDataSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -471,7 +473,7 @@ START_TEST(test_008ParametersSet_0007SetDataSuccess)
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     ck_assert_str_eq(tx_ctx.rawtx_fields.data.field_ptr, data.field_ptr);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -481,15 +483,15 @@ START_TEST(test_008ParametersSet_0008SetDataFailureNullTx)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -500,7 +502,7 @@ START_TEST(test_008ParametersSet_0008SetDataFailureNullTx)
     ret = BoatVenachainTxSetData(NULL,&data);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -510,15 +512,15 @@ START_TEST(test_008ParametersSet_0009SetDataSuccessNullData)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -527,7 +529,7 @@ START_TEST(test_008ParametersSet_0009SetDataSuccessNullData)
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     ck_assert_int_eq(tx_ctx.rawtx_fields.data.field_len, 0);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -538,19 +540,19 @@ START_TEST(test_009ParametersChange_0001ChangeNodeUrlSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Change url*/
-    ret = BoatVenachainWalletChangeNodeUrl(&wallet,"www.123.com");
+    ret = BoatVenachainWalletChangeNodeUrl(wallet,"www.123.com");
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ck_assert_str_eq(wallet.network_info.node_url_str,"www.123.com");
+    ck_assert_str_eq(wallet->network_info.node_url_str,"www.123.com");
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -560,21 +562,21 @@ START_TEST(test_009ParametersChange_0002ChangeNodeUrlFailureNullParameters)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Change url*/
-    ret = BoatVenachainWalletChangeNodeUrl(&wallet,NULL);
+    ret = BoatVenachainWalletChangeNodeUrl(wallet,NULL);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
     ret = BoatVenachainWalletChangeNodeUrl(NULL,"www.123.com");
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -584,19 +586,19 @@ START_TEST(test_009ParametersChange_0003ChangeChainIDSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Change chainID*/
-    ret = BoatVenachainWalletChangeChainID(&wallet,111);
+    ret = BoatVenachainWalletChangeChainID(wallet,111);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ck_assert_int_eq(wallet.network_info.chain_id, 111);
+    ck_assert_int_eq(wallet->network_info.chain_id, 111);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -606,18 +608,18 @@ START_TEST(test_009ParametersChange_0004ChangeChainIDFailureNullParameters)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Change chainID*/
     ret = BoatVenachainWalletChangeChainID(NULL,111);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -627,19 +629,19 @@ START_TEST(test_009ParametersChange_0005ChangeEip155CompSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Change EIP155 comp*/
-    ret = BoatVenachainWalletChangeEIP155Comp(&wallet,BOAT_TRUE);
+    ret = BoatVenachainWalletChangeEIP155Comp(wallet,BOAT_TRUE);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ck_assert(wallet.network_info.eip155_compatibility == BOAT_TRUE);
+    ck_assert(wallet->network_info.eip155_compatibility == BOAT_TRUE);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -649,18 +651,18 @@ START_TEST(test_009ParametersChange_0006ChangeEip155CompFailureNullParameters)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Change EIP155 comp*/
     ret = BoatVenachainWalletChangeEIP155Comp(NULL,BOAT_TRUE);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -678,12 +680,13 @@ Suite *make_parameters_suite(void)
     suite_add_tcase(s_parameters, tc_parameters_api);       
     /* Test cases are added to the test set */
     tcase_add_test(tc_parameters_api, test_007ParametersInit_0001TxInitSuccess);
+
     tcase_add_test(tc_parameters_api, test_007ParametersInit_0002TxInitFailureNullParam);
     tcase_add_test(tc_parameters_api, test_007ParametersInit_0003TxInitSuccessNullGasPrice);
     tcase_add_test(tc_parameters_api, test_007ParametersInit_0004TxInitFailureErrorGasPriceHexFormat);
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0005TxInitSuccessGasPriceHexNonOx);
+    tcase_add_test(tc_parameters_api, test_007ParametersInit_0005TxInitFailureGasPriceHexNonOx);
     tcase_add_test(tc_parameters_api, test_007ParametersInit_0006TxInitFailureGasLimitErrorHexFormat);
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0007TxInitSuccessGasLimitHexNonOx);
+    tcase_add_test(tc_parameters_api, test_007ParametersInit_0007TxInitFailureGasLimitHexNonOx);
     tcase_add_test(tc_parameters_api, test_007ParametersInit_0008TxInitFailureRecipientErrorHexFormat);
     tcase_add_test(tc_parameters_api, test_007ParametersInit_0009TxInitFailureRecipientLongLength);
 
