@@ -98,11 +98,13 @@ BOAT_RESULT check_venachain_keypair_in_keypairList(BoatKeypairPriKeyCtx *keypair
 
     if(index < 0)
     {
+
         return ret;
     }
-    
+
     if(keypair_list->keypairs[index].prikeyCtx.prikey_format != keypair->prikey_format)
     {
+
         return ret;
     }
 
@@ -466,7 +468,7 @@ START_TEST(test_002DeleteKeypair_0001DeleteOnetimeKeypairSuccess)
     BoatIotKeypairContext keypair_list1;
     ret = BoATKeypair_GetKeypairList(&keypair_list1);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
     ck_assert_int_eq(ret, BOAT_ERROR);
 
     BoatIotSdkDeInit();
@@ -503,12 +505,12 @@ START_TEST(test_002DeleteKeypair_0002DeleteOnetimeKeypairFailureTwice)
     BoatIotKeypairContext keypair_list1;
     ret = BoATKeypair_GetKeypairList(&keypair_list1);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
     ck_assert_int_eq(ret, BOAT_ERROR);
 
     /* 2. Delete again*/
     ret = BoATIotKeypairDelete(0);
-    ck_assert_int_eq(ret, BOAT_ERROR);    //first delete
+    ck_assert_int_eq(ret, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE);
 
     BoatIotSdkDeInit();
 }
@@ -557,7 +559,7 @@ START_TEST(test_002DeleteKeypair_0004DeleteKeypairFailureWrongIndex)
     BoatIotSdkInit();
 
     ret = BoATIotKeypairDelete(5);
-    ck_assert_int_eq(ret, BOAT_ERROR); 
+    ck_assert_int_eq(ret, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE); 
 
     BoatIotSdkDeInit();
 }
@@ -596,7 +598,7 @@ START_TEST(test_002DeleteKeypair_0005DeletePersistKeypairSuccess)
     BoatIotKeypairContext keypair_list1;
     ret = BoATKeypair_GetKeypairList(&keypair_list1);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
     ck_assert_int_eq(ret, BOAT_ERROR);
 
 
@@ -640,7 +642,7 @@ START_TEST(test_002DeleteKeypair_0006DeletePersistKeypairFailureNonExistentIndex
 
     /* 2.Delete the keypair */
     ret = BoATIotKeypairDelete(pickNum); 
-    ck_assert_int_eq(ret, BOAT_ERROR);
+    ck_assert_int_eq(ret, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE);
 
     BoatIotSdkDeInit();
 }
@@ -658,19 +660,15 @@ Suite *make_keypair_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_keypair, tc_keypair_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0001CreateOneTimeKeypairSuccessNullName);  
 
+    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0001CreateOneTimeKeypairSuccessNullName);  
     tcase_add_test(tc_keypair_api, test_001CreateKeypair_0002CreateOneTimeKeypairSuccessWithName); 
-#if 1
     tcase_add_test(tc_keypair_api, test_001CreateKeypair_0003CreateOneTimeKeypairSuccessTwice);
-#endif
     tcase_add_test(tc_keypair_api, test_001CreateKeypair_0004CreateOneTimeWalletFailureNullConfig);
     tcase_add_test(tc_keypair_api, test_001CreateKeypair_0005CreateOneTimeWalletFailureWrongGenModeConfig);
     tcase_add_test(tc_keypair_api, test_001CreateKeypair_0006CreateOneTimeWalletFailureWrongKeyTypeConfig);
     tcase_add_test(tc_keypair_api, test_001CreateKeypair_0007CreateOneTimeWalletFailureWrongKeyFormatConfig);
-
     tcase_add_test(tc_keypair_api, test_001CreateKeypair_0008CreateOneTimeWalletFailureWrongNativeKeyLenConfig);
-#if 1
     tcase_add_test(tc_keypair_api, test_001CreateKeypair_0009CreateOneTimeWalletFailureWrongPKCSKeyLenConfig);
     tcase_add_test(tc_keypair_api, test_001CreateKeypair_0010CreatePersistKeypairSuccess);
     tcase_add_test(tc_keypair_api, test_001CreateKeypair_0011Create2PersistKeypairSuccess);
@@ -680,7 +678,7 @@ Suite *make_keypair_suite(void)
     tcase_add_test(tc_keypair_api, test_002DeleteKeypair_0004DeleteKeypairFailureWrongIndex);
     tcase_add_test(tc_keypair_api, test_002DeleteKeypair_0005DeletePersistKeypairSuccess);
     tcase_add_test(tc_keypair_api, test_002DeleteKeypair_0006DeletePersistKeypairFailureNonExistentIndex);
-#endif
+
     return s_keypair;
 }
 
