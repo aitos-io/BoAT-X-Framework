@@ -216,7 +216,7 @@ START_TEST(test_007ParametersInit_0007TxInitSuccessGasLimitHexNonOx)
 
     /* Init TX */
     ret = BoatEthTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   "6691B7",TEST_RECIPIENT_ADDRESS);
+							   "0x6691B7",TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     
     BoatEthWalletDeInit(wallet);
