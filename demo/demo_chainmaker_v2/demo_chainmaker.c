@@ -143,21 +143,18 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
     BoatChainmakerNetworkData networkConfig = {0};
 
     //set user cert context
+    networkConfig.client_member_type              = BOAT_MEMBER_TYPE_CERT;
     networkConfig.client_sign_cert_content.length = strlen(chainmaker_client_sign_cert);
     if (networkConfig.client_sign_cert_content.length  > BOAT_CHAINMAKER_CERT_MAX_LEN)
     {
         return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
     }
     strcpy(networkConfig.client_sign_cert_content.content, chainmaker_client_sign_cert);
-    
-    //set url and name
-    if ((strlen(chainmaker_node_url) >= BAOT_CHAINMAKER_NODE_STR_LEN) || 
-        (strlen(chainmaker_host_name) >= BAOT_CHAINMAKER_NODE_STR_LEN)||
-        (strlen(chainmaker_chain_id) >= BAOT_CHAINMAKER_NODE_STR_LEN)||
-        (strlen(chainmaker_org_id) >= BAOT_CHAINMAKER_NODE_STR_LEN))
-    {
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT ;
-    }
+
+    networkConfig.node_url  = BoatMalloc(strlen(chainmaker_node_url) + 1);
+    networkConfig.host_name = BoatMalloc(strlen(chainmaker_host_name) + 1);
+    networkConfig.chain_id  = BoatMalloc(strlen(chainmaker_chain_id) + 1);
+    networkConfig.org_id    = BoatMalloc(strlen(chainmaker_org_id) + 1);
 
     strcpy(networkConfig.node_url,  chainmaker_node_url);
     strcpy(networkConfig.host_name, chainmaker_host_name);
@@ -243,7 +240,7 @@ int main(int argc, char *argv[])
     }
 
     /* step-3: Chainmaker transaction structure initialization */
-    result = BoatChainmakerTxInit(g_chaninmaker_wallet_ptr, &tx_ptr, 0, 0);
+    result = BoatChainmakerTxInit(g_chaninmaker_wallet_ptr, &tx_ptr, 0);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerTxInit failed.");
