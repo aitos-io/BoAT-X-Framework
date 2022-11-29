@@ -18,7 +18,7 @@
 #define TEST_GAS_LIMIT              "0x6691B7"
 #define TEST_GAS_PRICE              "0x4A817C800"
 #define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
-#define TEST_ETH_CHAIN_ID      300
+#define TEST_ETH_CHAIN_ID           5777
 
 #define TEST_RECIPIENT_ADDRESS      "0x3e3bd84cf33796cb55cc713d5134597eb809fcc3"
 
@@ -170,7 +170,7 @@ START_TEST(test_007ParametersInit_0005TxInitSuccessGasPriceHexNonOx)
     wallet = ethereumOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatEthTxInit(wallet,&tx_ctx,BOAT_TRUE, "4A817C800",
+    ret = BoatEthTxInit(wallet,&tx_ctx,BOAT_TRUE, "0x4A817C800",
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     
