@@ -38,6 +38,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 	Common__TxRequest        common_tx_request        = COMMON__TX_REQUEST__INIT;
 	Common__KeyValuePair     common_key_value_pair    = COMMON__KEY_VALUE_PAIR__INIT;
 	Common__Payload          common_payload           = COMMON__PAYLOAD__INIT;
+	Common__Limit            common_limit             = COMMON__LIMIT__INIT;
 	Common__EndorsementEntry common_endorsement_entry = COMMON__ENDORSEMENT_ENTRY__INIT;
 	Accesscontrol__Member    accesscontrol_member     = ACCESSCONTROL__MEMBER__INIT;
 	
@@ -60,11 +61,13 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 	common_payload.tx_type   	   = tx_type;
 	common_payload.tx_id     	   = tx_id;
 	common_payload.timestamp 	   = BoatGetTimes();
-	//common_payload.expiration_time = 0;
+
 	common_payload.contract_name   = contract_name;
 	common_payload.method          = method;
 	common_payload.sequence        = 0;
-	common_payload.limit           = NULL;
+
+	common_limit.gas_limit         = tx_ptr->gas_limit;
+	common_payload.limit           = &common_limit;
 
 	//Common__KeyValuePair parameters
 	common_payload.n_parameters    = tx_ptr->trans_para.n_parameters;
@@ -88,16 +91,6 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 		key_value_pair_ptr->value.data = tx_ptr->trans_para.parameters[i].value.field_ptr;
 		common_payload.parameters[i]   = key_value_pair_ptr;
 	}	
-
-	printf("boatchainmaker chain_id = %s\n", common_payload.chain_id);
-	printf("boatchainmaker tx_type = %d\n", common_payload.tx_type);
-	printf("boatchainmaker tx_id = %s\n", common_payload.tx_id);
-	printf("boatchainmaker n_parameters = %d\n",common_payload.n_parameters);
-	printf("boatchainmaker timestamp = %lld\n",common_payload.timestamp);
-	printf("boatchainmaker contract_name = %s\n",common_payload.contract_name);
-	printf("boatchainmaker method = %s\n",common_payload.method);
-
-	printf("boatchainmaker parameters = %s\n",common_payload.parameters[0]->value.data);
 
 	/* step-2: compute payload packed length */
 	packedLength = common__payload__get_packed_size(&common_payload);
@@ -137,15 +130,9 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 
 	/**************************  sender  start *************************/
 	accesscontrol_member.org_id      	  = tx_ptr->wallet_ptr->network_info.org_id;
-	// accesscontrol_member.member_type      = tx_ptr->member_type;
-	accesscontrol_member.member_type      = 0;
+	accesscontrol_member.member_type      = tx_ptr->wallet_ptr->network_info.client_member_type;
 	accesscontrol_member.member_info.len  = tx_ptr->wallet_ptr->network_info.client_sign_cert_content.length;
 	accesscontrol_member.member_info.data = (uint8_t *)tx_ptr->wallet_ptr->network_info.client_sign_cert_content.content;
-
-	printf("boatchainmaker len = %d\n", tx_ptr->wallet_ptr->network_info.client_sign_cert_content.length);
-	printf("boatchainmaker org_id = %s\n", accesscontrol_member.org_id);
-	printf("boatchainmaker member_type = %d\n", accesscontrol_member.member_type);
-	printf("boatchainmaker cert = %s\n", accesscontrol_member.member_info.data );
 
 	common_endorsement_entry.signer         = &accesscontrol_member;
 	common_endorsement_entry.signature.len  = signatureResult.pkcs_sign_length;
@@ -154,10 +141,17 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 	/* step-5: pack the envelope */
 	common_tx_request.payload     = &common_payload;
 	common_tx_request.sender      = &common_endorsement_entry;
-	// common_tx_request.n_endorsers = 0;
-	// common_tx_request.endorsers   = NULL;
 	packedLength                   = common__tx_request__get_packed_size(&common_tx_request);
-	
+
+	/* print chainmaker transaction message */
+	BoatLog(BOAT_LOG_VERBOSE, "Transaction Message tx_id = %s", tx_id);
+	BoatLog(BOAT_LOG_VERBOSE, "Transaction Message time = %lld", common_payload.timestamp);
+
+	for (i = 0; i < common_payload.n_parameters; i++)
+	{
+		BoatLog(BOAT_LOG_VERBOSE, "Transaction Message key = %s, value = %s", common_payload.parameters[i]->key, common_payload.parameters[i]->value.data);
+	}	
+
 	/* step-6: packed length assignment */
 	tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len = packedLength + sizeof(grpcHeader);
 	if (tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_len > BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
@@ -175,9 +169,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 
 	/* ---generate packed data */
 	packedData = tx_ptr->wallet_ptr->http2Context_ptr->sendBuf.field_ptr;
-	 printf("baotchainmaker 55555555555555555\n");
 	memcpy(packedData, grpcHeader, sizeof(grpcHeader));
-	 printf("baotchainmaker 6666666666666666666\n");
 
 	common__tx_request__pack(&common_tx_request, &packedData[sizeof(grpcHeader)]);
 	/* boat catch handle */
@@ -199,13 +191,11 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 		}	
     	BoatFree(common_payload.parameters);
     }
- printf("baotchainmaker 55555555555555555\n");
+
     if (hash_data.field_ptr != NULL) 
     {
     	BoatFree(hash_data.field_ptr);
     }
-
-    printf("baotchainmaker finish\n");
 	
 	return result;
 }
