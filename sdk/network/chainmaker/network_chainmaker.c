@@ -71,6 +71,8 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_getNetworkFromProto(BoatChainmakerNetwor
     strcpy(Networkdata->chain_id, network_proto->chain_id);
     strcpy(Networkdata->org_id, network_proto->org_id);
 
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
+
     if (strlen(network_proto->ca_tls_cert_content) - 1 > sizeof(Networkdata->ca_tls_cert_content.content))
     {
         BoatLog(BOAT_LOG_NORMAL, "client tls cert len exceed = %lld\n", strlen(network_proto->ca_tls_cert_content));
@@ -80,8 +82,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_getNetworkFromProto(BoatChainmakerNetwor
     Networkdata->ca_tls_cert_content.length = strlen(network_proto->ca_tls_cert_content);
     strcpy((BCHAR *)Networkdata->ca_tls_cert_content.content, network_proto->ca_tls_cert_content);
 
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) && (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
-
+    #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
     if (strlen(network_proto->client_tls_cert_content) - 1 > sizeof(Networkdata->client_tls_cert_content.content))
     {
         BoatLog(BOAT_LOG_NORMAL, "client tls cert len exceed");
@@ -98,7 +99,9 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_getNetworkFromProto(BoatChainmakerNetwor
     }
     Networkdata->client_tls_privkey_data.value_len = strlen(network_proto->client_tls_privkey_data);
     strcpy((BCHAR *)Networkdata->client_tls_privkey_data.value, network_proto->client_tls_privkey_data);
+    #endif
 #endif
+
     return result;
 }
 
@@ -468,9 +471,12 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_Get_Network_Data(BoatChainmakerNetworkDa
     protobuf_network.client_sign_cert_content = networkData->client_sign_cert_content.content;
     protobuf_network.ca_tls_cert_content = (BCHAR *)networkData->ca_tls_cert_content.content;
 
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) && (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
-    protobuf_network.client_tls_privkey_data = (BCHAR *)networkData->client_tls_privkey_data.value;
-    protobuf_network.client_tls_cert_content  = (BCHAR *)networkData->client_tls_cert_content.content;
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
+    protobuf_network.ca_tls_cert_content = (BCHAR *)networkData->ca_tls_cert_content.content;
+    #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+        protobuf_network.client_tls_privkey_data = (BCHAR *)networkData->client_tls_privkey_data.value;
+        protobuf_network.client_tls_cert_content  = (BCHAR *)networkData->client_tls_cert_content.content;
+    #endif
 #endif
 
     networkLength = common__chainmaker_network_data__get_packed_size(&protobuf_network);
@@ -725,10 +731,13 @@ BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig
     mNetworkDataCtx.client_member_type       = networkConfig->client_member_type;
     mNetworkDataCtx.client_sign_cert_content = networkConfig->client_sign_cert_content;
 
+    
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
     mNetworkDataCtx.ca_tls_cert_content  = networkConfig->ca_tls_cert_content;
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) && (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
-    mNetworkDataCtx.client_tls_cert_content  = networkConfig->client_tls_cert_content;
-    mNetworkDataCtx.client_tls_privkey_data = networkConfig->client_tls_privkey_data;
+    #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+        mNetworkDataCtx.client_tls_cert_content  = networkConfig->client_tls_cert_content;
+        mNetworkDataCtx.client_tls_privkey_data = networkConfig->client_tls_privkey_data;
+    #endif
 #endif
 
     result = BoATChainmaker_NetworkDataCtx_Store(&mNetworkDataCtx, storeType);

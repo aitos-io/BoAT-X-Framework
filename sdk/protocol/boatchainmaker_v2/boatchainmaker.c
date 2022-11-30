@@ -199,14 +199,3 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 	
 	return result;
 }
-
-
-
-
-
-
-
-
-
-
-

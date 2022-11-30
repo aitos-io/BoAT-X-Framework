@@ -71,12 +71,15 @@ typedef struct TBoatChainmakerNetworkData
     BCHAR *host_name;
     BCHAR *chain_id;
     BCHAR *org_id;
+    
+#if(BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
 
     BoatChainmakerCertInfoCfg     ca_tls_cert_content;
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) && (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+    #if(BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
 
-    BoatChainmakerCertInfoCfg     client_tls_cert_content;
-    BoatKeypairExtraData          client_tls_privkey_data;
+        BoatChainmakerCertInfoCfg     client_tls_cert_content;
+        BoatKeypairExtraData          client_tls_privkey_data;
+    #endif
 #endif
     
 } BoatChainmakerNetworkData;

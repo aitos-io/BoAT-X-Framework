@@ -45,7 +45,9 @@ const BCHAR* chainmaker_client_sign_cert =
     "PoHSDSh/PzoPpZLdHg==\n"
     "-----END CERTIFICATE-----\n";
 
-const BCHAR* chainmaker_ca_tls_cert = 
+
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
+    const BCHAR* chainmaker_ca_tls_cert = 
     "-----BEGIN CERTIFICATE-----\n"
     "MIICnjCCAkOgAwIBAgICK7swCgYIKoZIzj0EAwIwgYoxCzAJBgNVBAYTAkNOMRAw\n"
     "DgYDVQQIEwdCZWlqaW5nMRAwDgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1v\n"
@@ -63,8 +65,6 @@ const BCHAR* chainmaker_ca_tls_cert =
     "MtqVL1KAr+h/KBxwCRWcAiEAx3uFKTj/RCNqJVL35ULz5pWcIaK/0TWRuq6sisXd\n"
     "wVk=\n"
     "-----END CERTIFICATE-----\n";
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
-    
 
     #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
         const BCHAR* chainmaker_clinet_tls_prikey = 
@@ -91,7 +91,6 @@ const BCHAR* chainmaker_ca_tls_cert =
         "CCqGSM49BAMCA0cAMEQCIDS4InAM5Oa6GB9lzL/K4c1/2F2vnf9k3rU7HQ3W2xAQ\n"
         "AiAX4PjazfcIqrDPztfHqxxcXRF2tMAqkMBJapZgWlQZrA==\n"
         "-----END CERTIFICATE-----\n";
-
     #endif
 #endif
 
@@ -162,29 +161,32 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
     strcpy(networkConfig.org_id,    chainmaker_org_id);
 
 
-    networkConfig.ca_tls_cert_content.length = strlen(chainmaker_ca_tls_cert);
+   
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
+     networkConfig.ca_tls_cert_content.length = strlen(chainmaker_ca_tls_cert);
     if (networkConfig.ca_tls_cert_content.length  > BOAT_CHAINMAKER_CERT_MAX_LEN)
     {
         return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
     }
     strcpy(networkConfig.ca_tls_cert_content.content, chainmaker_ca_tls_cert);
 
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) && (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
-    //set tls cert context
-    networkConfig.client_tls_cert_content.length = strlen(chainmaker_client_tls_cert);
-    if (networkConfig.client_tls_cert_content.length  > BOAT_CHAINMAKER_CERT_MAX_LEN)
-    {
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
-    strcpy(networkConfig.client_tls_cert_content.content, chainmaker_client_tls_cert);
+    #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+        //set tls cert context
+        networkConfig.client_tls_cert_content.length = strlen(chainmaker_client_tls_cert);
+        if (networkConfig.client_tls_cert_content.length  > BOAT_CHAINMAKER_CERT_MAX_LEN)
+        {
+            return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+        }
+        strcpy(networkConfig.client_tls_cert_content.content, chainmaker_client_tls_cert);
 
-    networkConfig.client_tls_privkey_data.value_len = strlen(chainmaker_clinet_tls_prikey);
-    if (networkConfig.client_tls_privkey_data.value_len  > BOAT_CHAINMAKER_PRIKEY_MAX_LEN)
-    {
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
-    strcpy(networkConfig.client_tls_privkey_data.value, chainmaker_clinet_tls_prikey);
-#endif
+        networkConfig.client_tls_privkey_data.value_len = strlen(chainmaker_clinet_tls_prikey);
+        if (networkConfig.client_tls_privkey_data.value_len  > BOAT_CHAINMAKER_PRIKEY_MAX_LEN)
+        {
+            return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+        }
+        strcpy(networkConfig.client_tls_privkey_data.value, chainmaker_clinet_tls_prikey);
+    #endif
+#endif 
 
 #if defined(USE_ONETIME_WALLET)
     index = BoatChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);

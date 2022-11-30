@@ -184,9 +184,16 @@ __BOATSTATIC BOAT_RESULT BoatChainmakerTxRequest(BoatChainmakerTx *tx_ptr, Commo
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
-
     tx_ptr->wallet_ptr->http2Context_ptr->nodeUrl = tx_ptr->wallet_ptr->network_info.node_url;
-#if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
+    tx_ptr->wallet_ptr->http2Context_ptr->hostName             = tx_ptr->wallet_ptr->network_info.host_name;
+    tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len = tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.length+ 1;
+    tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr = BoatMalloc(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len);
+    memset(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr, 0x00, tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len);
+    memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr, tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.content, tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.length);
+
+    #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
     if (((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr != NULL)
     {
         BoatFree(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr);
@@ -201,14 +208,7 @@ __BOATSTATIC BOAT_RESULT BoatChainmakerTxRequest(BoatChainmakerTx *tx_ptr, Commo
     ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_len = tx_ptr->wallet_ptr->network_info.client_tls_cert_content.length + 1;
     ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr = BoatMalloc(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_len);
     strcpy((BCHAR *)((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr, tx_ptr->wallet_ptr->network_info.client_tls_cert_content.content);
-#endif
-
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
-    tx_ptr->wallet_ptr->http2Context_ptr->hostName             = tx_ptr->wallet_ptr->network_info.host_name;
-    tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len = tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.length+ 1;
-    tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr = BoatMalloc(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len);
-    memset(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr, 0x00, tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len);
-    memcpy(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr, tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.content, tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.length);
+    #endif
 #endif
     tx_ptr->wallet_ptr->http2Context_ptr->pathTmp      = "/api.RpcNode/SendRequest";
     tx_ptr->wallet_ptr->http2Context_ptr->parseDataPtr = &http2_response;
