@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
     }
 
     /* step-4: add invoke parameters */
-    result = BoatChainmakerAddTxParam(&tx_ptr, 6, "time", "1669200547", "file_hash", "a3f485ea14d946168d2a448adea8d471", "file_name", "file_liusssu", NULL);
+    result = BoatChainmakerAddTxParam(&tx_ptr, 6, "time", "1669200547", "file_hash", "a3f485ea14d946168d2a448adea8d47123", "file_name", "file_name", NULL);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerAddTxParam() failed.");
@@ -282,11 +282,11 @@ int main(int argc, char *argv[])
         BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerContractInvoke() failed.");
         boat_throw(result, chainmaker_demo_catch);
     }
- BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, gas_used = %d\n", 
-            response_data.code, response_data.message, response_data.contract_result, response_data.gas_used);
+    BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s", response_data.code, response_data.message, response_data.contract_result);
+
     // /* step-6: add query parameters*/
-  //  BoatSleep(2);
-    result = BoatChainmakerAddTxParam(&tx_ptr, 2, "file_hash", "a3f485ea14d946168d2a448adea8d471", NULL);
+    BoatSleep(2);
+    result = BoatChainmakerAddTxParam(&tx_ptr, 2, "file_hash", "a3f485ea14d946168d2a448adea8d47123", NULL);
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerAddTxParam() failed.");
@@ -300,8 +300,8 @@ int main(int argc, char *argv[])
         BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerContractQuery() failed.");
         boat_throw(result, chainmaker_demo_catch);
     }
-    BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, gas_used = %d\n", 
-            response_data.code, response_data.message, response_data.contract_result, response_data.gas_used);
+    BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s", 
+            response_data.code, response_data.message, response_data.contract_result);
 
     boat_catch(chainmaker_demo_catch)
     {
