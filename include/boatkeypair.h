@@ -30,7 +30,7 @@ boatkeypair.h is the SDK header file.
 #include "boattypes.h"
 
 #define BOAT_TLS_SUPPORT 1         //!< If need client support TLS, set it to 1.
-#define BOAT_TLS_IDENTIFY_CLIENT 0 //!< If server need identify client, set it to 1.
+#define BOAT_TLS_IDENTIFY_CLIENT 1 //!< If server need identify client, set it to 1.
 
 #define BOAT_KEYPAIR_NUM_LEN 4       // AA55+NUM+CRC
 #define BOAT_KEYPAIR_ALL_LEN_MAX 3   // 82XXXX

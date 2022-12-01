@@ -47,7 +47,7 @@ ifeq ($(BOAT_PROTOCOL_USE_CITA),1)
 endif
 
 testCitaNetwork:
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER),1)
+ifneq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1)_$(BOAT_PROTOCOL_USE_CHAINMAKER_V2),0_0)
 	make -C ChainmakerNetwork all
 endif
 

@@ -30,12 +30,12 @@
 #include "boatiotsdk.h"
 #include "boattypes.h"
 
-#define BOAT_CHAINMAKER_TLS_SUPPORT               BOAT_TLS_SUPPORT //!< If need client support TLS, set it to 1.
-//#define BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT        BOAT_TLS_IDENTIFY_CLIENT //!< If server need identify client, set it to 1.
+#define BOAT_CHAINMAKER_TLS_SUPPORT                BOAT_TLS_SUPPORT //!< If need client support TLS, set it to 1.
+#define BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT        BOAT_TLS_IDENTIFY_CLIENT //!< If server need identify client, set it to 1.
 
                                                    //!< This macro valid only BOAT_HLFABRIC_TLS_SUPPORT has
                                                    //!< set to 1. 
-												   //!< @note This macro is reserved for future.
+                                                   //!< @note This macro is reserved for future.
 
 #define BOAT_CHAINMAKER_NODE_INFO_MAX_LEN        127  //!< Maxmum length of node's URL
 #define BOAT_CHAINMAKER_CERT_MAX_LEN             1024 //!< Maxmum length of certificate
@@ -43,37 +43,52 @@
 //!@brief chainmaker certificate information config structure
 //! chainmaker certificate information config structure
 typedef struct TBoatChainmakerCertInfoCfg{
-	BUINT32  length;                              //!< length of certificate content, this length contains the terminator '\0'.
-	BCHAR    content[BOAT_CHAINMAKER_CERT_MAX_LEN]; //!< content of certificate.
+    BUINT32  length;                              //!< length of certificate content, this length contains the terminator '\0'.
+    BCHAR    content[BOAT_CHAINMAKER_CERT_MAX_LEN]; //!< content of certificate.
 } BoatChainmakerCertInfoCfg;
 
+typedef enum TBoatChainmakerMemberType {
 
+  BOAT_MEMBER_TYPE_CERT       = 0,       // *X509 cert
+  BOAT_MEMBER_TYPE_CERT_HASH  = 1,       // *cert hash
+  BOAT_MEMBER_TYPE_PUBLIC_KEY = 2,       // *public key
+  BOAT_MEMBER_TYPE_TYPE_DID   = 3,       // *did
+  BOAT_MEMBER_TYPE_YPE_ALIAS  = 4,       // *alias
+  BOAT_MEMBER_TYPE_YPE_ADDR   = 5        
+   // *address
+
+} BoatChainmakerMemberType;
 //!@brief chainmaker network  structure
 //! chainmaker network  structure
 typedef struct TBoatChainmakerNetworkData
 {
-	BUINT8 networkIndex;
-	BoatChainmakerCertInfoCfg     client_sign_cert_content;   //!< certificate content of account
+    BUINT8 networkIndex;
 
-    BCHAR    node_url[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
-    BCHAR    host_name[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
-    BCHAR    chain_id[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
-    BCHAR    org_id[BOAT_CHAINMAKER_NODE_INFO_MAX_LEN]; 
+    BoatChainmakerMemberType      client_member_type;
+    BoatChainmakerCertInfoCfg     client_sign_cert_content;   //!< certificate content of account
 
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
-    BoatChainmakerCertInfoCfg     client_tls_cert_content;
+    BCHAR *node_url;
+    BCHAR *host_name;
+    BCHAR *chain_id;
+    BCHAR *org_id;
+    
+#if(BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
+
+    BoatChainmakerCertInfoCfg     ca_tls_cert_content;
+    #if(BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+
+        BoatChainmakerCertInfoCfg     client_tls_cert_content;
+        BoatKeypairExtraData          client_tls_privkey_data;
+    #endif
 #endif
-#if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
-	BoatKeypairExtraData          client_tls_privkey_vlaue;
-#endif
-	
+    
 } BoatChainmakerNetworkData;
 
 typedef struct TBoatChainmakerNetworkContext
 {
-	/* data */
-	BUINT8 networkNum;
-	BoatChainmakerNetworkData networks[BOAT_MAX_NETWORK_NUM];  //fabirc networks
+    /* data */
+    BUINT8 networkNum;
+    BoatChainmakerNetworkData networks[BOAT_MAX_NETWORK_NUM];  //fabirc networks
 } BoatChainmakerNetworkContext;
 
 

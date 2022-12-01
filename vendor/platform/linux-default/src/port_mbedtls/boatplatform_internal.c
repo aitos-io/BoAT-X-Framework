@@ -53,7 +53,7 @@
 
 #include <sys/time.h>
 
-#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER == 1) || (PROTOCOL_USE_HWBCS == 1))
+#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER_V1 == 1) || (PROTOCOL_USE_CHAINMAKER_V2 == 1) || (PROTOCOL_USE_HWBCS == 1))
 // for TTLSContext structure
 #include "http2intf.h"
 #endif
@@ -319,7 +319,7 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 	return BOAT_SUCCESS;
 }
 
-#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER == 1) || (PROTOCOL_USE_HWBCS == 1))
+#if ((PROTOCOL_USE_HLFABRIC == 1) || (PROTOCOL_USE_CHAINMAKER_V1 == 1) || (PROTOCOL_USE_CHAINMAKER_V2 == 1) || (PROTOCOL_USE_HWBCS == 1))
 
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {

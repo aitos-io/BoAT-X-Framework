@@ -39,17 +39,19 @@ struct  _Common__ChainmakerNetworkData
 {
   ProtobufCMessage base;
   uint32_t index;
+  uint32_t client_member_type;
   char *client_sign_cert_content;
   char *node_url;
   char *host_name;
   char *chain_id;
   char *org_id;
+  char *ca_tls_cert_content;
   char *client_tls_cert_content;
-  char *client_tls_privkey_value;
+  char *client_tls_privkey_data;
 };
 #define COMMON__CHAINMAKER_NETWORK_DATA__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&common__chainmaker_network_data__descriptor) \
-    , 0, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
+    , 0, 0, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
 
 
 /* Common__ChainmakerNetworks methods */

@@ -8,11 +8,14 @@ message chainmakerNetworks{
 
 message chainmakerNetworkData{
     uint32 index                      = 1;
-    string client_sign_cert_content   = 2;
-    string node_url                   = 3;
-    string host_name                  = 4;
-    string chain_id                   = 5;
-    string org_id                     = 6;
-    string client_tls_cert_content    = 7;
-    string client_tls_privkey_value   = 8;
+    uint32 client_member_type         = 2; 
+    string client_sign_cert_content   = 3;
+    string node_url                   = 4;
+    string host_name                  = 5;
+    string chain_id                   = 6;
+    string org_id                     = 7;
+    string ca_tls_cert_content        = 8;
+    string client_tls_cert_content    = 9;
+    string client_tls_privkey_data    = 10;
+
 }

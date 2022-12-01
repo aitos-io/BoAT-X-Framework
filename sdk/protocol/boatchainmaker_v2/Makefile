@@ -1,7 +1,7 @@
 # Source and Objects
 
 SOURCES = $(wildcard *.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker
+OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol/boatchainmaker_v2
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 all: $(OBJECTS_DIR) $(OBJECTS) protos-objects

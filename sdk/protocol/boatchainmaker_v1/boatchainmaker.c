@@ -56,7 +56,7 @@ BOAT_RESULT generateTxRequestPayloadPack(BoatChainmakerTx *tx_ptr, char *method,
         }
 		memcpy(key_value_pair, &keyValuePair, sizeof(Common__KeyValuePair));
 		key_value_pair->key   = tx_ptr->trans_para.parameters[i].key;
-		key_value_pair->value = tx_ptr->trans_para.parameters[i].value;
+		key_value_pair->value = tx_ptr->trans_para.parameters[i].value.field_ptr;
 		transactPayload.parameters[i] = key_value_pair;
 	}	
 
