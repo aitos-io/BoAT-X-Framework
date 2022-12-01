@@ -35,12 +35,12 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 	boat_try_declare;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
-	Common__TxRequest        common_tx_request        = COMMON__TX_REQUEST__INIT;
-	Common__KeyValuePair     common_key_value_pair    = COMMON__KEY_VALUE_PAIR__INIT;
-	Common__Payload          common_payload           = COMMON__PAYLOAD__INIT;
-	Common__Limit            common_limit             = COMMON__LIMIT__INIT;
-	Common__EndorsementEntry common_endorsement_entry = COMMON__ENDORSEMENT_ENTRY__INIT;
-	Accesscontrol__Member    accesscontrol_member     = ACCESSCONTROL__MEMBER__INIT;
+	Common__TxRequest           common_tx_request        = COMMON__TX_REQUEST__INIT;
+	Common__KeyValuePair        common_key_value_pair    = COMMON__KEY_VALUE_PAIR__INIT;
+	Common__ChainmakerPayload   common_payload           = COMMON__CHAINMAKER_PAYLOAD__INIT;
+	Common__Limit               common_limit             = COMMON__LIMIT__INIT;
+	Common__EndorsementEntry    common_endorsement_entry = COMMON__ENDORSEMENT_ENTRY__INIT;
+	Accesscontrol__Member       accesscontrol_member     = ACCESSCONTROL__MEMBER__INIT;
 	
 	BoatFieldVariable hash_data = {NULL, 0};
 	BoatSignatureResult signatureResult;
@@ -93,7 +93,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
 	}	
 
 	/* step-2: compute payload packed length */
-	packedLength = common__payload__get_packed_size(&common_payload);
+	packedLength = common__chainmaker_payload__get_packed_size(&common_payload);
 	hash_data.field_ptr = BoatMalloc(packedLength);
     if (hash_data.field_ptr == NULL)
     {
@@ -102,7 +102,7 @@ BOAT_RESULT hlchainmakerTransactionPacked(BoatChainmakerTx *tx_ptr, BCHAR* metho
     }
 
 	hash_data.field_len = packedLength;
-	common__payload__pack(&common_payload, hash_data.field_ptr);
+	common__chainmaker_payload__pack(&common_payload, hash_data.field_ptr);
 
 	/* step-3: compute hash */
 	result = BoatHash(BOAT_HASH_SHA256,hash_data.field_ptr, 

@@ -38,7 +38,7 @@ struct  _Common__Transaction
   /*
    * payload
    */
-  Common__Payload *payload;
+  Common__ChainmakerPayload *payload;
   /*
    * sender account and signature
    */

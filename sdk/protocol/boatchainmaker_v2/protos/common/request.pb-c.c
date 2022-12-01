@@ -97,49 +97,49 @@ void   common__raw_tx_request__free_unpacked
   assert(message->base.descriptor == &common__raw_tx_request__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-void   common__payload__init
-                     (Common__Payload         *message)
+void   common__chainmaker_payload__init
+                     (Common__ChainmakerPayload         *message)
 {
-  static const Common__Payload init_value = COMMON__PAYLOAD__INIT;
+  static const Common__ChainmakerPayload init_value = COMMON__CHAINMAKER_PAYLOAD__INIT;
   *message = init_value;
 }
-size_t common__payload__get_packed_size
-                     (const Common__Payload *message)
+size_t common__chainmaker_payload__get_packed_size
+                     (const Common__ChainmakerPayload *message)
 {
-  assert(message->base.descriptor == &common__payload__descriptor);
+  assert(message->base.descriptor == &common__chainmaker_payload__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t common__payload__pack
-                     (const Common__Payload *message,
+size_t common__chainmaker_payload__pack
+                     (const Common__ChainmakerPayload *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &common__payload__descriptor);
+  assert(message->base.descriptor == &common__chainmaker_payload__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t common__payload__pack_to_buffer
-                     (const Common__Payload *message,
+size_t common__chainmaker_payload__pack_to_buffer
+                     (const Common__ChainmakerPayload *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &common__payload__descriptor);
+  assert(message->base.descriptor == &common__chainmaker_payload__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Common__Payload *
-       common__payload__unpack
+Common__ChainmakerPayload *
+       common__chainmaker_payload__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Common__Payload *)
-     protobuf_c_message_unpack (&common__payload__descriptor,
+  return (Common__ChainmakerPayload *)
+     protobuf_c_message_unpack (&common__chainmaker_payload__descriptor,
                                 allocator, len, data);
 }
-void   common__payload__free_unpacked
-                     (Common__Payload *message,
+void   common__chainmaker_payload__free_unpacked
+                     (Common__ChainmakerPayload *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &common__payload__descriptor);
+  assert(message->base.descriptor == &common__chainmaker_payload__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 void   common__endorsement_entry__init
@@ -286,7 +286,7 @@ static const ProtobufCFieldDescriptor common__tx_request__field_descriptors[3] =
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
     offsetof(Common__TxRequest, payload),
-    &common__payload__descriptor,
+    &common__chainmaker_payload__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -379,7 +379,7 @@ const ProtobufCMessageDescriptor common__raw_tx_request__descriptor =
   (ProtobufCMessageInit) common__raw_tx_request__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
+static const ProtobufCFieldDescriptor common__chainmaker_payload__field_descriptors[10] =
 {
   {
     "chain_id",
@@ -387,7 +387,7 @@ static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Common__Payload, chain_id),
+    offsetof(Common__ChainmakerPayload, chain_id),
     NULL,
     &protobuf_c_empty_string,
     0,             /* flags */
@@ -399,7 +399,7 @@ static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
-    offsetof(Common__Payload, tx_type),
+    offsetof(Common__ChainmakerPayload, tx_type),
     &common__tx_type__descriptor,
     NULL,
     0,             /* flags */
@@ -411,7 +411,7 @@ static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Common__Payload, tx_id),
+    offsetof(Common__ChainmakerPayload, tx_id),
     NULL,
     &protobuf_c_empty_string,
     0,             /* flags */
@@ -423,7 +423,7 @@ static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT64,
     0,   /* quantifier_offset */
-    offsetof(Common__Payload, timestamp),
+    offsetof(Common__ChainmakerPayload, timestamp),
     NULL,
     NULL,
     0,             /* flags */
@@ -435,7 +435,7 @@ static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT64,
     0,   /* quantifier_offset */
-    offsetof(Common__Payload, expiration_time),
+    offsetof(Common__ChainmakerPayload, expiration_time),
     NULL,
     NULL,
     0,             /* flags */
@@ -447,7 +447,7 @@ static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Common__Payload, contract_name),
+    offsetof(Common__ChainmakerPayload, contract_name),
     NULL,
     &protobuf_c_empty_string,
     0,             /* flags */
@@ -459,7 +459,7 @@ static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Common__Payload, method),
+    offsetof(Common__ChainmakerPayload, method),
     NULL,
     &protobuf_c_empty_string,
     0,             /* flags */
@@ -470,8 +470,8 @@ static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
     8,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
-    offsetof(Common__Payload, n_parameters),
-    offsetof(Common__Payload, parameters),
+    offsetof(Common__ChainmakerPayload, n_parameters),
+    offsetof(Common__ChainmakerPayload, parameters),
     &common__key_value_pair__descriptor,
     NULL,
     0,             /* flags */
@@ -483,7 +483,7 @@ static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT64,
     0,   /* quantifier_offset */
-    offsetof(Common__Payload, sequence),
+    offsetof(Common__ChainmakerPayload, sequence),
     NULL,
     NULL,
     0,             /* flags */
@@ -495,14 +495,14 @@ static const ProtobufCFieldDescriptor common__payload__field_descriptors[10] =
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Common__Payload, limit),
+    offsetof(Common__ChainmakerPayload, limit),
     &common__limit__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned common__payload__field_indices_by_name[] = {
+static const unsigned common__chainmaker_payload__field_indices_by_name[] = {
   0,   /* field[0] = chain_id */
   5,   /* field[5] = contract_name */
   4,   /* field[4] = expiration_time */
@@ -514,24 +514,24 @@ static const unsigned common__payload__field_indices_by_name[] = {
   2,   /* field[2] = tx_id */
   1,   /* field[1] = tx_type */
 };
-static const ProtobufCIntRange common__payload__number_ranges[1 + 1] =
+static const ProtobufCIntRange common__chainmaker_payload__number_ranges[1 + 1] =
 {
   { 1, 0 },
   { 0, 10 }
 };
-const ProtobufCMessageDescriptor common__payload__descriptor =
+const ProtobufCMessageDescriptor common__chainmaker_payload__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "common.Payload",
-  "Payload",
-  "Common__Payload",
+  "common.chainmaker_payload",
+  "ChainmakerPayload",
+  "Common__ChainmakerPayload",
   "common",
-  sizeof(Common__Payload),
+  sizeof(Common__ChainmakerPayload),
   10,
-  common__payload__field_descriptors,
-  common__payload__field_indices_by_name,
-  1,  common__payload__number_ranges,
-  (ProtobufCMessageInit) common__payload__init,
+  common__chainmaker_payload__field_descriptors,
+  common__chainmaker_payload__field_indices_by_name,
+  1,  common__chainmaker_payload__number_ranges,
+  (ProtobufCMessageInit) common__chainmaker_payload__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
 static const ProtobufCFieldDescriptor common__endorsement_entry__field_descriptors[2] =
