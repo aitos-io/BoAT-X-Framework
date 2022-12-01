@@ -47,7 +47,7 @@ typedef enum {
 
   TXTYPE_INVOKE_USER_CONTRACT  = 0,
   TXTYPE_QUERY_USER_CONTRACT   = 1,
-  TxType_QUERY_SYSTEM_CONTRACT = 3
+  TXTYPE_QUERY_SYSTEM_CONTRACT = 3
 } TxType;
 
 typedef enum TBoatresponseCode {

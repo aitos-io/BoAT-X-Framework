@@ -6,22 +6,26 @@ BOAT_BUILD_DIR := $(BOAT_BASE_DIR)/build
 
 # Set chain support
 # Set to 1 to enable releated chain, to 0 to disable
-BOAT_PROTOCOL_USE_ETHEREUM      ?= 0
-BOAT_PROTOCOL_USE_PLATON        ?= 0
-BOAT_PROTOCOL_USE_PLATONE       ?= 0
-BOAT_PROTOCOL_USE_FISCOBCOS     ?= 0
-BOAT_PROTOCOL_USE_HLFABRIC      ?= 0
-BOAT_PROTOCOL_USE_HWBCS         ?= 0
+BOAT_PROTOCOL_USE_ETHEREUM      ?= 1
+BOAT_PROTOCOL_USE_PLATON        ?= 1
+BOAT_PROTOCOL_USE_PLATONE       ?= 1
+BOAT_PROTOCOL_USE_FISCOBCOS     ?= 1
+BOAT_PROTOCOL_USE_HLFABRIC      ?= 1
+BOAT_PROTOCOL_USE_HWBCS         ?= 1
 BOAT_PROTOCOL_USE_CHAINMAKER_V1 ?= 0
 BOAT_PROTOCOL_USE_CHAINMAKER_V2 ?= 1
-BOAT_DISCOVERY_PEER_QUERY       ?= 0
-BOAT_PROTOCOL_USE_VENACHAIN     ?= 0
-BOAT_PROTOCOL_USE_QUORUM        ?= 0
-BOAT_PROTOCOL_USE_CITA          ?= 0
+BOAT_DISCOVERY_PEER_QUERY       ?= 1
+BOAT_PROTOCOL_USE_VENACHAIN     ?= 1
+BOAT_PROTOCOL_USE_QUORUM        ?= 1
+BOAT_PROTOCOL_USE_CITA          ?= 1
 
 # Chain config check
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM)_$(BOAT_PROTOCOL_USE_PLATON)_$(BOAT_PROTOCOL_USE_PLATONE)_$(BOAT_PROTOCOL_USE_FISCOBCOS)_$(BOAT_PROTOCOL_USE_HLFABRIC)_$(BOAT_PROTOCOL_USE_HWBCS)_$(BOAT_PROTOCOL_USE_CHAINMAKER_V1)_$(BOAT_PROTOCOL_USE_CHAINMAKER_V2)_$(BOAT_PROTOCOL_USE_VENACHAIN)_$(BOAT_PROTOCOL_USE_QUORUM)_$(BOAT_PROTOCOL_USE_CITA), 0_0_0_0_0_0_0_0_0_0)
     $(error Select at least one chain)
+endif
+
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1)_$(BOAT_PROTOCOL_USE_CHAINMAKER_V2), 1_1)
+    $(error Select only one chainmaker version)
 endif
 
 
@@ -153,6 +157,8 @@ BOAT_INCLUDE += -I$(BOAT_SDK_DIR)/network/chainmaker \
                 -I$(BOAT_SDK_DIR)/third-party/protos \
                 -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
                 -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include
+
+BOAT_CHAINMAKER_VERSION_CFLAGS = -DCHAINMAKER_V1 
 endif
 
 ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V2),1)         
@@ -163,6 +169,8 @@ BOAT_INCLUDE += -I$(BOAT_SDK_DIR)/network/chainmaker \
                 -I$(BOAT_SDK_DIR)/third-party/protos \
                 -I$(BOAT_SDK_DIR)/third-party/nghttp2/include \
                 -I$(BOAT_SDK_DIR)/third-party/protobuf-c/include
+
+BOAT_CHAINMAKER_VERSION_CFLAGS += -DCHAINMAKER_V2
 endif
 
 ifeq ($(BOAT_PROTOCOL_USE_CITA),1)         
@@ -283,7 +291,8 @@ BOAT_CFLAGS := $(TARGET_SPEC_CFLAGS) \
                $(BOAT_WARNING_FLAGS) \
                $(BOAT_DEFINED_MACROS) \
                $(EXTERNAL_CFLAGS) \
-               $(BOAT_TEST_FLAG)
+               $(BOAT_TEST_FLAG) \
+               $(BOAT_CHAINMAKER_VERSION_CFLAGS)
 
 BOAT_LFLAGS := $(BOAT_COMMON_LINK_FLAGS) $(TARGET_SPEC_LINK_FLAGS) $(EXTERNAL_LFLAGS)
 LINK_LIBS := $(EXTERNAL_LIBS) $(TARGET_SPEC_LIBS)

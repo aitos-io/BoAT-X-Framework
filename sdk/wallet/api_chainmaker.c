@@ -216,17 +216,26 @@ __BOATSTATIC BOAT_RESULT BoatChainmakerTxRequest(BoatChainmakerTx *tx_ptr, Commo
     result = http2SubmitRequest(tx_ptr->wallet_ptr->http2Context_ptr);
     if (result == BOAT_SUCCESS)
     {
-        tx_response_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
-        if (tx_response_ptr != NULL)
+        if (http2_response.http2Res != NULL)
         {
-            BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
-            *tx_response = tx_response_ptr;
+            tx_response_ptr = common__tx_response__unpack(NULL, http2_response.httpResLen - 5, http2_response.http2Res + 5);
+            if (tx_response_ptr != NULL)
+            {
+                BoatLog(BOAT_LOG_NORMAL, "[http2] respond received.");
+                *tx_response = tx_response_ptr;
+            }
+            else
+            {
+                BoatLog(BOAT_LOG_NORMAL, "[http2] respond unpack NULL");
+                *tx_response = NULL;
+                result = BOAT_ERROR_RLP_ENCODER_FAIL;
+            }
+           
         }
-        else
+        else 
         {
             BoatLog(BOAT_LOG_NORMAL, "[http2] respond NULL");
-            *tx_response = NULL;
-            result = BOAT_ERROR;
+            result = BOAT_ERROR_HTTP2_RECEIVE_FAIL;
         }
     }
 
@@ -238,13 +247,29 @@ __BOATSTATIC BOAT_RESULT BoatChainmakerTxRequest(BoatChainmakerTx *tx_ptr, Commo
     }
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)      
-
     if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr != NULL) 
     {
         BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr);
         tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_ptr = NULL;
     }
     tx_ptr->wallet_ptr->http2Context_ptr->tlsCAchain.field_len = 0;
+
+#if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+    if (tx_ptr->wallet_ptr->http2Context_ptr->tlsPrikey.field_ptr != NULL) 
+    {
+        BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsPrikey.field_ptr);
+        tx_ptr->wallet_ptr->http2Context_ptr->tlsPrikey.field_ptr = NULL;
+    }
+    tx_ptr->wallet_ptr->http2Context_ptr->tlsPrikey.field_len = 0;
+
+    if (tx_ptr->wallet_ptr->http2Context_ptr->tlsCert.field_ptr != NULL) 
+    {
+        BoatFree(tx_ptr->wallet_ptr->http2Context_ptr->tlsCert.field_ptr);
+        tx_ptr->wallet_ptr->http2Context_ptr->tlsCert.field_ptr = NULL;
+    }
+    tx_ptr->wallet_ptr->http2Context_ptr->tlsCert.field_len = 0;
+#endif
+
 #endif
     return result;
 }
@@ -293,7 +318,6 @@ BOAT_RESULT BoatChainmakerAddTxParam(BoatChainmakerTx *tx_ptr, BUINT8 length, co
     return result;
 }
         
-
 BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char* method, char* contract_name, bool sync_result, BoatResponseData *response_data)
 {
     BUINT32 i;
@@ -367,7 +391,13 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char* method,
             }
 
             BoatChainmakerAddTxParam(tx_ptr, 2, "txId",invoke_tx_id);
-            result = hlchainmakerTransactionPacked(tx_ptr, "GET_TX_BY_TX_ID", "CHAIN_QUERY", 1, query_systm_tx_id);
+#ifdef CHAINMAKER_V1
+            result = hlchainmakerTransactionPacked(tx_ptr, "GET_TX_BY_TX_ID", "SYSTEM_CONTRACT_QUERY", TXTYPE_QUERY_SYSTEM_CONTRACT, query_systm_tx_id);
+#endif
+
+#ifdef CHAINMAKER_V2
+            result = hlchainmakerTransactionPacked(tx_ptr, "GET_TX_BY_TX_ID", "CHAIN_QUERY", TXTYPE_QUERY_USER_CONTRACT, query_systm_tx_id);
+#endif
             if (result == BOAT_SUCCESS) 
             {
                 result = BoatChainmakerTxRequest(tx_ptr, &tx_response, BOAT_TRUE);
@@ -382,12 +412,24 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char* method,
 
                 if (response_data->code == BOAT_SUCCESS)
                 {
+#ifdef CHAINMAKER_V1
+                Common__TransactionInfo *transactation_info = common__transaction_info__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
+                if (transactation_info != NULL)
+                {
+                    if (transactation_info->transaction->result->code == BOAT_SUCCESS)
+                    {
+                        len = sprintf(response_data->contract_result, "gas_used:%lld ", transactation_info->transaction->result->contract_result->gas_used);
+                        break;
+                    }
+                }
+#endif
+#ifdef CHAINMAKER_V2
                     Common__TransactionInfoWithRWSet *transaction_info_with_rwset = common__transaction_info_with_rwset__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
                     if (transaction_info_with_rwset != NULL)
                     {
                         if (transaction_info_with_rwset->transaction->result->code == BOAT_SUCCESS)
                         {
-                            len = sprintf(response_data->contract_result, "gas_used: %lld ", transaction_info_with_rwset->transaction->result->contract_result->gas_used);
+                            len = sprintf(response_data->contract_result, "gas_used:%lld ", transaction_info_with_rwset->transaction->result->contract_result->gas_used);
                             len += sprintf(response_data->contract_result + len, "contract_event:<");
 
                             for (i = 0; i < transaction_info_with_rwset->transaction->result->contract_result->n_contract_event; i++)
@@ -406,6 +448,7 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char* method,
                             break;
                         }
                     }
+#endif
                 }
             }
             BoatSleep(BOAT_CHAINMAKER_MINE_INTERVAL);
@@ -490,7 +533,9 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char* method, 
         }
         len = tx_response->contract_result->result.len;
         len += sprintf(response_data->contract_result + len, " gas_used: %lld", tx_response->contract_result->gas_used);
+        #ifdef CHAINMAKER_V2
         sprintf(response_data->contract_result + len, " tx_id:\"%s\"", tx_response->tx_id);
+        #endif
     }
     else
     {
