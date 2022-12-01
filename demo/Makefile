@@ -38,12 +38,12 @@ endif
 
 demo_chainmaker_v1:
 ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1), 1)
-	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker_v1 all	
+	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker all	
 endif
 
 demo_chainmaker_v2:
 ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V2), 1)
-	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker_v2 all	
+	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker all	
 endif
 
 demo_venachain:
@@ -84,10 +84,10 @@ ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_hw_bcs clean
 endif
 ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1), 1)
-	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker_v1 clean
+	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker clean
 endif
 ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V2), 1)
-	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker_v2 clean
+	make -C $(BOAT_BASE_DIR)/demo/demo_chainmaker clean
 endif
 ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	make -C $(BOAT_BASE_DIR)/demo/demo_venachain clean

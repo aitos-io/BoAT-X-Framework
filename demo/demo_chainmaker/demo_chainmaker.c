@@ -251,7 +251,6 @@ int main(int argc, char *argv[])
         BoatLog(BOAT_LOG_CRITICAL, "chainmaker create network failed.");
         boat_throw(result, chainmaker_demo_catch);;
     }
-
     BoatLog(BOAT_LOG_CRITICAL, "wallet init keypair_index =%d, network_index = %d\n",keypair_index, network_index);
 
     g_chaninmaker_wallet_ptr = BoatChainmakerWalletInit(keypair_index, network_index);
