@@ -14,22 +14,24 @@
  * limitations under the License.
  *****************************************************************************/
 #include "tcase_venachain.h"
-#include "TestABIContract.abi.h"
+#include "mycontract.cpp.abi.h"
 
 #define TEST_GAS_LIMIT              "0x6691B7"
 #define TEST_GAS_PRICE              "0x4A817C800"
 #define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
 #define TEST_VENACHAIN_CHAIN_ID      300
 
-#define TEST_RECIPIENT_ADDRESS      "0x3e3bd84cf33796cb55cc713d5134597eb809fcc3"
+#define TEST_RECIPIENT_ADDRESS      "0x16E598Eba11d0909ee4B3D439f2477dCeE126BCE"
 
-__BOATSTATIC BOAT_RESULT venachainOnetimeWalletPrepare(BoatVenachainWallet *wallet_p)
+__BOATSTATIC BoatVenachainWallet *venachainOnetimeWalletPrepare()
 {
     BOAT_RESULT index;
     BoatKeypairPriKeyCtx_config keypair_config;
     BUINT8 keypair_index;
     BoatVenachainNetworkConfig network_config;
     BUINT8 network_index;
+
+    BoatVenachainWallet *wallet_p = NULL;
 
         
     if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
@@ -62,14 +64,14 @@ __BOATSTATIC BOAT_RESULT venachainOnetimeWalletPrepare(BoatVenachainWallet *wall
     wallet_p = BoatVenachainWalletInit(keypair_index,network_index);
     ck_assert(wallet_p != NULL);
 
-    return BOAT_SUCCESS;
+    return wallet_p;
 }
 
 START_TEST(test_010CallContract_0001CallContractSuccess) 
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BCHAR *result_str;
@@ -82,79 +84,25 @@ START_TEST(test_010CallContract_0001CallContractSuccess)
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, NULL,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, NULL,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* Call Contract */
-    for (i = 0; i < 10; i++)  
-    {
-        bs[i] = 0 - i;
-    }      
-    result_str = TestABIContract_abi_setIntArray(&tx_ctx, bs, 10);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getIntArray(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getIntArray returns: %s", parse_result.field_ptr);
+    result_str = mycontract_cpp_abi_store(&tx_ctx, "hello_venachain!");//sol contradct
+
+    ck_assert(result_str != NULL);
+
+    
+    result_str = mycontract_cpp_abi_retrieve(&tx_ctx);//sol contract
+
+    ck_assert(result_str != NULL);
 
 
-    for (i = 0; i < 20; i++)  
-    {
-        ba[i] = i * 5 + 0x10;
-    }       
-    result_str = TestABIContract_abi_setAddress(&tx_ctx, ba);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getAddress(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getAddress returns: %s", parse_result.field_ptr);
-
-
-    for (i = 0; i < 32; i++)  
-    {
-        b32[i] = 96 - i * 2;
-    }     
-    result_str = TestABIContract_abi_setByte(&tx_ctx, b32);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getByte(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getByte returns: %s", parse_result.field_ptr);
-
-    result_str = TestABIContract_abi_setString(&tx_ctx, s);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getString(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getString returns: %s", parse_result.field_ptr);
-
-    result_str = TestABIContract_abi_setUint32(&tx_ctx, 0x12345);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getUint32(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getUint32 returns: %s", parse_result.field_ptr);
-
-    result_str = TestABIContract_abi_setBool(&tx_ctx, BOAT_TRUE);
-    ck_assert_ptr_ne(result_str, NULL);
-    result_str = TestABIContract_abi_getBool(&tx_ctx);
-    ck_assert_ptr_ne(result_str, NULL);
-    ret = BoatVenachainParseRpcResponseStringResult(result_str, &parse_result);
-    ck_assert_int_eq(ret, BOAT_SUCCESS);   
-    BoatLog(BOAT_LOG_NORMAL, "getBool returns: %s", parse_result.field_ptr);
-
-
-
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -165,20 +113,20 @@ START_TEST(test_011GetBalance_0001GetSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BCHAR *result_str;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Get Balance */
-    result_str = BoatVenachainWalletGetBalance(&wallet,TEST_RECIPIENT_ADDRESS);
+    result_str = BoatVenachainWalletGetBalance(wallet,TEST_RECIPIENT_ADDRESS);
     ck_assert_ptr_ne(result_str, NULL);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -188,20 +136,20 @@ START_TEST(test_011GetBalance_0002GetSuccessNullAddress)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BCHAR *result_str;
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Get Balance */
-    result_str = BoatVenachainWalletGetBalance(&wallet,NULL);
+    result_str = BoatVenachainWalletGetBalance(wallet,NULL);
     ck_assert_ptr_ne(result_str, NULL);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -211,7 +159,7 @@ START_TEST(test_011GetBalance_0003GetFailureNullWallet)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
     BCHAR *result_str;
@@ -222,7 +170,7 @@ START_TEST(test_011GetBalance_0003GetFailureNullWallet)
     result_str = BoatVenachainWalletGetBalance(NULL,NULL);
     ck_assert_ptr_eq(result_str, NULL);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }
@@ -232,24 +180,24 @@ START_TEST(test_012Transfer_0001TransferSuccess)
 {
     BOAT_RESULT ret;
 
-    BoatVenachainWallet wallet;
+    BoatVenachainWallet *wallet = NULL;
     BoatVenachainTx tx_ctx;
 
 
     BoatIotSdkInit();
 
-    venachainOnetimeWalletPrepare(&wallet);
+    wallet = venachainOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatVenachainTxInit(&wallet,&tx_ctx,BOAT_TRUE, NULL,
+    ret = BoatVenachainTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
 							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* Transfer */
-    ret = BoatVenachainTransfer(&tx_ctx,"0x1");
+    ret = BoatVenachainTransfer(&tx_ctx,"0x0");
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
-    BoatVenachainWalletDeInit(&wallet);
+    BoatVenachainWalletDeInit(wallet);
 
     BoatIotSdkDeInit();
 }

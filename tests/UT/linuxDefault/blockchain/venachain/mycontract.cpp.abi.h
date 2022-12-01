@@ -54,18 +54,5 @@ This file is generated from contract ABI. DO NOT modify it by hand.
     typedef Bbytes32 BSINT256;
 
 #endif 
-BCHAR *TestABIContract_abi_count(BoatVenachainTx *tx_ptr);
-BCHAR *TestABIContract_abi_getAddress(BoatVenachainTx *tx_ptr);
-BCHAR *TestABIContract_abi_getBool(BoatVenachainTx *tx_ptr);
-BCHAR *TestABIContract_abi_getByte(BoatVenachainTx *tx_ptr);
-BCHAR *TestABIContract_abi_getCountTimes(BoatVenachainTx *tx_ptr);
-BCHAR *TestABIContract_abi_getIntArray(BoatVenachainTx *tx_ptr);
-BCHAR *TestABIContract_abi_getString(BoatVenachainTx *tx_ptr);
-BCHAR *TestABIContract_abi_getUint32(BoatVenachainTx *tx_ptr);
-BCHAR *TestABIContract_abi_organizer(BoatVenachainTx *tx_ptr);
-BCHAR *TestABIContract_abi_setAddress(BoatVenachainTx *tx_ptr, BoatAddress input);
-BCHAR *TestABIContract_abi_setBool(BoatVenachainTx *tx_ptr, BUINT8 input);
-BCHAR *TestABIContract_abi_setByte(BoatVenachainTx *tx_ptr, Bbytes32 input);
-BCHAR *TestABIContract_abi_setIntArray(BoatVenachainTx *tx_ptr, BSINT32 *input, BUINT32 inputLen);
-BCHAR *TestABIContract_abi_setString(BoatVenachainTx *tx_ptr, BCHAR*input);
-BCHAR *TestABIContract_abi_setUint32(BoatVenachainTx *tx_ptr, BUINT32 input);
+BCHAR *mycontract_cpp_abi_retrieve(BoatVenachainTx *tx_ptr);
+BCHAR *mycontract_cpp_abi_store(BoatVenachainTx *tx_ptr, BCHAR*word);

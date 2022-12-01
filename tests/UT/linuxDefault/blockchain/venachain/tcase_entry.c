@@ -41,7 +41,7 @@ int read_key_content(char* key_ptr)
 
     if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
     {
-        fd = open("../../../../../tests/UT/linuxDefault/venachain/pri_key/native.key", O_RDONLY);
+        fd = open("./pri_key/native.key", O_RDONLY);
         if (fd < 0)
         {
             return -1;
@@ -50,7 +50,7 @@ int read_key_content(char* key_ptr)
     }
     else
     {
-        fd = open("../../../../../tests/UT/linuxDefault/venachain/pri_key/pkcs_key.key", O_RDONLY);
+        fd = open("./pri_key/pkcs_key.key", O_RDONLY);
         if (fd < 0)
         {
             return -1;
@@ -73,10 +73,10 @@ int main(int argc, char *argv[])
 
     /* new adding test suite should create in here */
     Suite *suite_keypair    = make_keypair_suite();
-//    Suite *suite_network = make_network_suite();
-//    Suite *suite_wallet = make_wallet_suite();
-//    Suite *suite_parameters = make_parameters_suite();
-//    Suite *suite_chainandcontract= make_chainAndContract_suite();
+    Suite *suite_network = make_network_suite();
+    Suite *suite_wallet = make_wallet_suite();
+    Suite *suite_parameters = make_parameters_suite();
+    Suite *suite_chainandcontract= make_chainAndContract_suite();
 
     read_key_content(g_venachain_private_key_buf);
 
@@ -87,12 +87,12 @@ int main(int argc, char *argv[])
     /* set generate test log in running path */
     srunner_set_log(sr, "test_statistics_report.txt");
     /* add other suite to srunner, more test suite should be add in here */
-//    srunner_add_suite(sr, suite_network);
+    srunner_add_suite(sr, suite_network);
 
-//    srunner_add_suite(sr, suite_wallet);
+    srunner_add_suite(sr, suite_wallet);
 
-//    srunner_add_suite(sr, suite_parameters);
-//    srunner_add_suite(sr, suite_chainandcontract);
+    srunner_add_suite(sr, suite_parameters);
+    srunner_add_suite(sr, suite_chainandcontract);
 
     /* start to run all test case */
     srunner_run_all(sr, CK_NORMAL);

@@ -98,6 +98,8 @@ void BoatVenachainWalletDeInit(BoatVenachainWallet *wallet_ptr)
         web3_deinit(wallet_ptr->web3intf_context_ptr);
 
         BoatFree(wallet_ptr);
+
+        wallet_ptr = NULL;
     }
 }
 
