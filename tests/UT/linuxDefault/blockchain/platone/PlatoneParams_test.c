@@ -379,23 +379,23 @@ Suite *make_platoneParamsTest_suite(void)
     suite_add_tcase(s_param, tc_param_api);      
  
     /* Test cases are added to the test set */
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0001TxInitSuccess); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0002TxInitFailureNullParam); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0003TxInitSuccessNullGasPrice); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0004TxInitFailureErrorGasPriceHexFormat); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0007TxInitSuccessGasLimitHexNullOx); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0008TxInitFailureRecipientErrorHexFormat); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0009TxInitFailureRecipientLongLength); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0010TxInitSucessFailureTxtype); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0001TxInitSuccess); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0002TxInitFailureNullParam); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0003TxInitSuccessNullGasPrice); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0004TxInitFailureErrorGasPriceHexFormat); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0005TxInitSuccessGasPriceHexNullOx); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0006TxInitFailureGasLimitErrorHexFormat); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0007TxInitSuccessGasLimitHexNullOx); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0008TxInitFailureRecipientErrorHexFormat); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0009TxInitFailureRecipientLongLength); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0010TxInitSucessFailureTxtype); 
 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0011GetNonceFromNetworkSuccess); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0012SetNonceSuccess); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0013SetNonceFailureNullTx); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0014SetValueSuccess); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0015SetValueFailureNullTx); 
-    // tcase_add_test(tc_param_api, test_004ParametersInit_0016SetValueSuccessNullvalue); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0011GetNonceFromNetworkSuccess); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0012SetNonceSuccess); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0013SetNonceFailureNullTx); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0014SetValueSuccess); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0015SetValueFailureNullTx); 
+    tcase_add_test(tc_param_api, test_004ParametersInit_0016SetValueSuccessNullvalue); 
 
     return s_param;
 }

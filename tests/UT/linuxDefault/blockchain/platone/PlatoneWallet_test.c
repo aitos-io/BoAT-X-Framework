@@ -314,14 +314,14 @@ Suite *make_platoneWalletTest_suite(void)
     TCase *tc_walletInit_api = tcase_create("walletInit_api");
 
     /* Add a test case to the Suite */
-    // suite_add_tcase(s_walletInit, tc_walletInit_api);
-    // /* Test cases are added to the test set */
-    // tcase_add_test(tc_walletInit_api, test_003CreateWallet_0001CreateOneTimeWalletSuccess);  
-    // tcase_add_test(tc_walletInit_api, test_003CreateWallet_0002CreateOneTimeWalletFailureWithoutKeypair); 
-    // tcase_add_test(tc_walletInit_api, test_003CreateWallet_0003CreateOneTimeWalletFailureWithoutNetwork);
+    suite_add_tcase(s_walletInit, tc_walletInit_api);
+    /* Test cases are added to the test set */
+    tcase_add_test(tc_walletInit_api, test_003CreateWallet_0001CreateOneTimeWalletSuccess);  
+    tcase_add_test(tc_walletInit_api, test_003CreateWallet_0002CreateOneTimeWalletFailureWithoutKeypair); 
+    tcase_add_test(tc_walletInit_api, test_003CreateWallet_0003CreateOneTimeWalletFailureWithoutNetwork);
 
-    // tcase_add_test(tc_walletInit_api, test_003CreateWallet_0004CreatePersistWalletSuccess);
-    // tcase_add_test(tc_walletInit_api, test_003CreateWallet_0005CreatePersistWalletFailureWithoutKeypair); 
-    // tcase_add_test(tc_walletInit_api, test_003CreateWallet_0006CreatePersistWalletFailureWithoutNetwork);
+    tcase_add_test(tc_walletInit_api, test_003CreateWallet_0004CreatePersistWalletSuccess);
+    tcase_add_test(tc_walletInit_api, test_003CreateWallet_0005CreatePersistWalletFailureWithoutKeypair); 
+    tcase_add_test(tc_walletInit_api, test_003CreateWallet_0006CreatePersistWalletFailureWithoutNetwork);
     return s_walletInit;
 }
