@@ -20,7 +20,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "tcase_fabricBlockchain.h"
+#include "tcase_fabric.h"
 
 BoatHlfabricWallet *fabric_get_wallet_ptr()
 {

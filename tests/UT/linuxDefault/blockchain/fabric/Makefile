@@ -1,8 +1,8 @@
 # Source and Objects
 
 SOURCES = $(wildcard *.c)
-OBJECTS_DIR = $(BOAT_BUILD_DIR)/tests/UT/linuxDefault/blockchain/FabricBlockchain/lib
-EXECUTABLE_DIR  = $(BOAT_BUILD_DIR)/tests/UT/linuxDefault/blockchain/FabricBlockchain
+OBJECTS_DIR = $(BOAT_BUILD_DIR)/tests/UT/linuxDefault/blockchain/fabric/lib
+EXECUTABLE_DIR  = $(BOAT_BUILD_DIR)/tests/UT/linuxDefault/blockchain/fabric
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
 DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
@@ -15,7 +15,7 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 				  -lsubunit
 
 all: $(OBJECTS_DIR) $(OBJECTS)	
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(OBJECTS) $(DEPENDENCE_LIBS) -o $(EXECUTABLE_DIR)/FabricBlockchain
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(OBJECTS) $(DEPENDENCE_LIBS) -o $(EXECUTABLE_DIR)/fabric
 
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)

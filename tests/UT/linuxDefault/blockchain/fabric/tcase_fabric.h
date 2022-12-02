@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __TCASE_FABRIC_BLOCKCHAIN_H__
-#define __TCASE_FABRIC_BLOCKCHAIN_H__
+#ifndef __TCASE_FABRIC_H__
+#define __TCASE_FABRIC_H__
 
 #include <stdio.h>
 #include <stdbool.h>
