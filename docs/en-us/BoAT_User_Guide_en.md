@@ -128,7 +128,7 @@ BoAT IoT Framework SDK depends on the following software:
 | Python             | Python 3.8.3 (Python 2.7 is also compatible)         | Required                  |                           |
 | curl               | libcurl and its development files (7.55.1 is tested) | Required on Linux default | Required on Linux default |
 
-Before compiling the SDK and using it, you need to make sure that these software have been installed. On Ubuntu, can use the apt install command to install the corresponding package. Under Cygwin, use the Setup program that comes with Cygwin to install.  
+Before compiling the SDK and using it, you need to make sure that these software have been installed. On Ubuntu OS, you can use the `apt install` command to install the corresponding package. Under Cygwin, use the Setup program that comes with Cygwin to install.  
 E.g.:
 - Ubuntu
 ````
@@ -142,7 +142,6 @@ sudo make install
 sudo apt-get install libcurl4-openssl-dev
 ````
 - Cygwin  
-
 Execute setup-x86_64.exe and install tools including make, gcc, python, libcurl as shown below:
 ![image](https://user-images.githubusercontent.com/81662688/130744353-3e6ad68c-7945-44e6-93ac-c8a468e8e0aa.png)
 ![image](https://user-images.githubusercontent.com/81662688/130744453-08a1dff2-08d8-46d8-9732-de814b077ba7.png)
@@ -254,7 +253,7 @@ Follow the steps below to compile:
 ````
 $make boatlibs
 ````
-After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See [Header Files and Libraries](#header-files-and-libraries)chapter.
+4. After the compilation is complete, the generated library file is in ./lib. The application should include the header files under ./include and link the libraries under ./lib to achieve the function of accessing the blockchain. See [Header Files and Libraries](#header-files-and-libraries)chapter.
 
 #### Use Cygwin as The Compilation Environment
 On Windows, the SDK does not support compilation in environments other than Cygwin, nor does it support compilation with compilers other than gcc.
@@ -1016,8 +1015,7 @@ The manual construction of transactions needs to follow the ABI interface of the
                                       BUINT8 *rlp_param_ptr,
                                       BUINT32 rlp_param_len)
   ```
-  Among them, the format of rlp_param_ptr follows the same rules as Step 3.
-
+  Among them, the format of rlp_param_ptr follows the same rules as Step 3.  
 
   - For the specific calling method, please refer to the automatically generated code of the Demo attached to the SDK, which is located under `\<SDKRoot\>/demo/demo_platone/demo_contract/WASM` or `<SDKRoot\>/demo/demo_platone/demo_contract/Solidity`.
 

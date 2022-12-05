@@ -32,11 +32,6 @@ api_chainmaker.c defines the chainmaker wallet API for BoAT IoT SDK.
 #define BOAT_RETRY_CNT 10
 #define BOAT_CHAINMAKER_MINE_INTERVAL    3  //!< Mining Interval of the blockchain, in seconds
 
-static BOAT_RESULT BoatChainmakerWalletSetOrgId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *org_id_ptr);
-static BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *chain_id_ptr);
-static BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *host_name_ptr);
-static BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *node_url_ptr);
-
 void hex_to_str(BUINT8 *hex_data,  BUINT32 hex_len, BCHAR *str_data)
 {
     BUINT32 num;
@@ -484,7 +479,7 @@ BOAT_RESULT BoatHlchainmakerContractInvoke(BoatHlchainmakerTx *tx_ptr, char* met
 	}
 
 	response_data->gas_used = 0;
-    response_data->code  = tx_response->code;
+    response_data->code  = (BoatresponseCode)tx_response->code;
 	if (strlen(tx_response->message) < BOAT_RESPONSE_MESSAGE_MAX_LEN) 
     {
 		memset(response_data->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
@@ -584,7 +579,7 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
 	}
 
 	response_data->gas_used = 0;
-	response_data->code     = tx_response->code;
+	response_data->code     = (BoatresponseCode)tx_response->code;
 
 	if (strlen(tx_response->message) > BOAT_RESPONSE_MESSAGE_MAX_LEN) 
 	{

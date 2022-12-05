@@ -20,10 +20,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "check.h"
-#include "boatlog.h"
-#include "boattypes.h"
-#include "boatwallet.h"
-#include "protocolapi/api_chainmaker.h"
+#include "boatconfig.h"
+#include "boatiotsdk.h"
 
 #define CERT_PRIKEY_LEN 1024
 

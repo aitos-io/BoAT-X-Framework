@@ -74,4 +74,8 @@ boatiotsdk.h is the wrapper header file for 3rd application to include.
 #include "protocolapi/api_quorum.h"
 #endif
 
+#if PROTOCOL_USE_CITA == 1
+#include "protocolapi/api_cita.h"
+#endif
+
 #endif

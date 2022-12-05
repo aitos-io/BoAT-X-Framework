@@ -61,10 +61,12 @@ BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
 __BOATSTATIC BOAT_RESULT fiscobcos_createOnetimeWallet()
 {
     BSINT32 index;
-    BoatFiscobcosWalletConfig wallet_config = {0};
+    BoatFiscobcosWalletConfig wallet_config;
     BUINT8 binFormatKey[32]                 = {0};
 
     (void)binFormatKey; //avoid warning
+
+    memset(&wallet_config,0U,sizeof(BoatFiscobcosWalletConfig));
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
@@ -112,10 +114,12 @@ __BOATSTATIC BOAT_RESULT fiscobcos_createOnetimeWallet()
 __BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR *wallet_name)
 {
     BSINT32 index;
-    BoatFiscobcosWalletConfig wallet_config = {0};
+    BoatFiscobcosWalletConfig wallet_config;
     BUINT8 binFormatKey[32]                 = {0};
 
     (void)binFormatKey; //avoid warning
+
+    memset(&wallet_config,0U,sizeof(BoatFiscobcosWalletConfig));
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)

@@ -287,6 +287,82 @@ BOAT_RESULT BoatHlchainmakerContractQuery(BoatHlchainmakerTx *tx_ptr, char* meth
  ******************************************************************************/
 void BoatHlchainmakerWalletDeInit(BoatHlchainmakerWallet *wallet_ptr);
 
+/*!****************************************************************************
+ * @brief Set BoatWallet: URL of blockchain node
+ *
+ * @details
+ *   This function sets the URL of the blockchain node to connect to.
+ *   \n A URL is composed of protocol, IP address/name and port, in a form:
+ *   http://a.b.com:8545
+ *
+ * @param[in] wallet_ptr
+ *   Wallet context pointer.    
+ *
+ * @param[in] node_url_ptr
+ *   A string indicating the URL of blockchain node to connect to.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if setting is successful.\n
+ *   Otherwise it returns one of the error codes.        
+ ******************************************************************************/
+BOAT_RESULT BoatChainmakerWalletSetNodeUrl(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *node_url_ptr);
+
+/*!****************************************************************************
+ * @brief Set BoatWallet: ORG ID
+ *
+ * @details
+ *   This function sets the chain ID of the network.
+ *   If the network supports EIP-155, chain ID is part of the transaction
+ *   message to sign.
+ *   If the network doesn't support EIP-155, chain ID is ignored.
+ *
+ * @param[in] wallet_ptr
+ *   Wallet context pointer.    
+ *
+ * @param[in] org_id_ptr
+ *   Chain ID of the blockchain network to use.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if setting is successful.\n
+ *   Otherwise it returns one of the error codes.
+ ******************************************************************************/
+BOAT_RESULT BoatChainmakerWalletSetOrgId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *org_id_ptr);
+
+/*!****************************************************************************
+ * @brief Set BoatWallet: Chain ID
+ *
+ * @details
+ *   This function sets the chain ID of the network.
+ *
+ * @param[in] wallet_ptr
+ *   Wallet context pointer.    
+ *
+ * @param[in] chain_id_ptr
+ *   Chain ID of the blockchain network to use.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if setting is successful.\n
+ *   Otherwise it returns one of the error codes.
+ ******************************************************************************/
+BOAT_RESULT BoatChainmakerWalletSetChainId(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *chain_id_ptr);
+
+/*!****************************************************************************
+ * @brief Set BoatWallet: Host name
+ *
+ * @details
+ *   This function sets the host name of the network.
+ * @param[in] wallet_ptr
+ *   Wallet context pointer.    
+ *
+ * @param[in] host_name_ptr
+ *  Host name of the blockchain network to use.
+ *
+ * @return
+ *   This function returns BOAT_SUCCESS if setting is successful.\n
+ *   Otherwise it returns one of the error codes.
+ ******************************************************************************/
+BOAT_RESULT BoatChainmakerWalletSetHostName(BoatHlchainmakerWallet *wallet_ptr, const BCHAR *host_name_ptr);
+
 /*! @}*/
 
 #ifdef __cplusplus

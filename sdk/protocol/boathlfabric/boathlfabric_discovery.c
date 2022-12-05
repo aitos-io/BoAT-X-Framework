@@ -14,10 +14,10 @@
  * limitations under the License.
  *****************************************************************************/
 
-/*!@brief Ethereum wallet API for BoAT IoT SDK
+/*!@brief fabric wallet API for BoAT IoT SDK
 
 @file
-api_hlfabric.c defines the Ethereum wallet API for BoAT IoT SDK.
+api_hlfabric.c defines the fabric wallet API for BoAT IoT SDK.
 */
 #include "boatinternal.h"
 #if (DISCOVERY_PEER_QUERY == 1)

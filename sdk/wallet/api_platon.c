@@ -86,12 +86,36 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
+    if ((gasprice_str != NULL) && !UtilityStringIsHex(gasprice_str))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The format of gasprice is incorrect");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    if ((gaslimit_str != NULL) && !UtilityStringIsHex(gaslimit_str))
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The format of gaslimit is incorrect");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    if (UtilityStringLenCheck(recipient_str) != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "The length of string recipient_str is incorrect");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
     tx_ptr->wallet_ptr = wallet_ptr;
     memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
+    BoatLog(BOAT_LOG_CRITICAL, "The length of string recipient_str is incorrect");
 
     // Generate platon's Bech32 address from the public key
-    BoatPlatONBech32Encode(wallet_ptr->account_info.address , BOAT_PLATON_ADDRESS_SIZE,
-                           tx_ptr->address, hrp_str, strlen(hrp_str));
+    result = BoatPlatONBech32Encode(wallet_ptr->account_info.address , BOAT_PLATON_ADDRESS_SIZE,
+                                    tx_ptr->address, hrp_str, strlen(hrp_str));
+    if (result == BOAT_ERROR)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "BoatPlatONBech32Encode failed");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
 
     // Set synchronous transaction flag
     tx_ptr->is_sync_tx = is_sync_tx;
