@@ -14,10 +14,10 @@
  * limitations under the License.
  *****************************************************************************/
 
-/*!@brief Ethereum wallet API for BoAT IoT SDK
+/*!@brief hwbcs wallet API for BoAT IoT SDK
 
 @file
-api_hw_bcs.c defines the Ethereum wallet API for BoAT IoT SDK.
+api_hw_bcs.c defines the hwbcs wallet API for BoAT IoT SDK.
 */
 
 /* self-header include */

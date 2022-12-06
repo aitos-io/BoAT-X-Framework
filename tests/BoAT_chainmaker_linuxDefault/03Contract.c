@@ -134,7 +134,7 @@ static BOAT_RESULT test_contrct_query_prepara(BoatHlchainmakerTx  *tx_ptr)
 START_TEST(test_005ContractInvoke_0001InvokeFailureTxNull) 
 {
     BOAT_RESULT        result;
-    BoatInvokeResponse  invoke_response;
+    BoatResponseData   invoke_response;
 
     result = BoatHlchainmakerContractInvoke(NULL, "save", "fact", true, &invoke_response); ;
     ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -146,7 +146,7 @@ START_TEST(test_005ContractInvoke_0002InvokeFailureMethodNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeResponse  invoke_response;
+    BoatResponseData   invoke_response;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -161,7 +161,7 @@ START_TEST(test_005ContractInvoke_0003InvokeFailureContractNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeResponse  invoke_response;
+    BoatResponseData   invoke_response;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -176,7 +176,7 @@ START_TEST(test_005ContractInvoke_0004InvokeFailureContractNoExist)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeResponse  invoke_response;
+    BoatResponseData   invoke_response;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -210,7 +210,7 @@ START_TEST(test_005ContractInvoke_0006InvokeSucessSyncOn)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeResponse  invoke_response;
+    BoatResponseData   invoke_response;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -230,7 +230,7 @@ START_TEST(test_005ContractInvoke_0007InvokeSucessSyncOff)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeResponse  invoke_response;
+    BoatResponseData   invoke_response;
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -250,12 +250,15 @@ START_TEST(test_005ContractInvoke_0008InvokeFailureInvalidUrl)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatInvokeResponse  invoke_response;
-    char url_buf[] = {"127.0.0.1:12310"};
+    BoatResponseData   invoke_response;
+    char *url_str = "127.0.0.1:12310";
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
-    strncpy(tx_ptr.wallet_ptr->node_info.node_url_info, url_buf, strlen(url_buf));
+
+    result = BoatChainmakerWalletSetNodeUrl(tx_ptr.wallet_ptr, url_str);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
     result = BoatHlchainmakerContractInvoke(&tx_ptr, "save", "fact", true, &invoke_response); ;
     ck_assert(result == BOAT_ERROR_HTTP2_CONNECT_FAIL);
     BoatIotSdkDeInit();
@@ -267,7 +270,7 @@ START_TEST(test_006ContractQuery_0001QueryFailureTxNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryResponse  query_response;
+    BoatResponseData   query_response;
 
     result = BoatHlchainmakerContractQuery(NULL, "save", "fact", &query_response); ;
     ck_assert(result == BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -279,7 +282,7 @@ START_TEST(test_006ContractQuery_0002QueryFailureMethodNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryResponse  query_response;
+    BoatResponseData   query_response;
 
     result = test_contrct_query_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -295,7 +298,7 @@ START_TEST(test_006ContractQuery_0003QueryFailureContractNull)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryResponse   query_response;
+    BoatResponseData   query_response;
 
     result = test_contrct_query_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -310,7 +313,7 @@ START_TEST(test_006ContractQuery_0004QueryFailureContractNoExist)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryResponse  query_response;
+    BoatResponseData   query_response;
 
     result = test_contrct_query_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -343,9 +346,9 @@ END_TEST
 
 START_TEST(test_006ContractQuery_0006QuerySucess) 
 {
-   BOAT_RESULT        result;
+    BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryResponse  query_response;
+    BoatResponseData   query_response;
 
     result = test_contrct_query_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -366,12 +369,15 @@ START_TEST(test_006ContractQuery_0007QueryFailureInvalidUrl)
 {
     BOAT_RESULT        result;
     BoatHlchainmakerTx tx_ptr;
-    BoatQueryResponse  query_response;
-    char url_buf[] = {"127.0.0.1:12310"};
+    BoatResponseData   query_response;
+    char *url_str = "127.0.0.1:12310";
 
     result = test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
-    strncpy(tx_ptr.wallet_ptr->node_info.node_url_info, url_buf, strlen(url_buf));
+
+    result = BoatChainmakerWalletSetNodeUrl(tx_ptr.wallet_ptr, url_str);
+    ck_assert_int_eq(result, BOAT_SUCCESS);
+
     result = BoatHlchainmakerContractQuery(&tx_ptr, "save", "fact", &query_response); ;
     ck_assert(result == BOAT_ERROR_HTTP2_CONNECT_FAIL);
     BoatIotSdkDeInit();
@@ -386,6 +392,8 @@ Suite *make_contract_suite(void)
 
     /* Create test cases */
     TCase *tc_contract_api = tcase_create("contract_api");
+
+    tcase_set_timeout(tc_contract_api, 50);     
 
     /* Add a test case to the Suite */
     suite_add_tcase(s_contract, tc_contract_api);       

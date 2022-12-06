@@ -23,8 +23,8 @@
 #include "check.h"
 
 #include "boatiotsdk.h"
-#include "protocolapi/api_hlfabric_discovery.h"
-// #include "protocolapi/api_hlfabric.h"
+#include "boatconfig.h"
+#include "boatiotsdk.h"
 
 #define CERT_PRIKEY_LEN 1024
 

@@ -246,33 +246,8 @@ START_TEST(test_001CreateWallet_0007_CreateOneTimeWalletSucessLongSize)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0008_CreateOneTimeWalletFailureUrlFormatError) 
-{
-    BSINT32 rtnVal;
-    BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
-    BoatHlchainmakerWalletConfig wallet_config = get_chainmaker_wallet_settings();
-    memset(wallet_config.node_url_cfg, 0, BAOT_CHAINMAKER_NODE_STR_LEN);
-    strncpy(wallet_config.node_url_cfg,  "192",  4);
 
-    extern BoatIotSdkContext g_boat_iot_sdk_context;
-
-    /* 1. execute unit test */
-    rtnVal = BoatWalletCreate(BOAT_PROTOCOL_CHAINMAKER, NULL, &wallet_config, sizeof(BoatHlchainmakerWalletConfig));
-    
-    /* 2. verify test result */
-    /* 2-1. verify the return value*/
-    ck_assert_int_eq(rtnVal, BOAT_ERROR);
-
-    /* 2-2. verify the global variables that be affected */
-    ck_assert(g_boat_iot_sdk_context.wallet_list[0].is_used == false);
-
-    g_chaninmaker_wallet_ptr = BoatGetWalletByIndex(rtnVal);
-    ck_assert(g_chaninmaker_wallet_ptr == NULL);
-    BoatIotSdkDeInit();
-}
-END_TEST
-
-START_TEST(test_001CreateWallet_0009_CreateOneTimeWalletFailureLongNum) 
+START_TEST(test_001CreateWallet_0008_CreateOneTimeWalletFailureLongNum) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
@@ -336,7 +311,7 @@ START_TEST(test_001CreateWallet_0009_CreateOneTimeWalletFailureLongNum)
 END_TEST
 
 
-START_TEST(test_001CreateWallet_0010_CreatePersisWalletFailureLongName) 
+START_TEST(test_001CreateWallet_0009_CreatePersisWalletFailureLongName) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
@@ -365,7 +340,7 @@ START_TEST(test_001CreateWallet_0010_CreatePersisWalletFailureLongName)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0011_CreatePersisWalletFailurePotocolTypeNoExit) 
+START_TEST(test_001CreateWallet_0010_CreatePersisWalletFailurePotocolTypeNoExit) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
@@ -388,7 +363,7 @@ START_TEST(test_001CreateWallet_0011_CreatePersisWalletFailurePotocolTypeNoExit)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0012_CreatePersisWalletFailureIndexExceed) 
+START_TEST(test_001CreateWallet_0011_CreatePersisWalletFailureIndexExceed) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr;
@@ -411,7 +386,7 @@ START_TEST(test_001CreateWallet_0012_CreatePersisWalletFailureIndexExceed)
 END_TEST
 
 
-START_TEST(test_001CreateWallet_0013_CreateOneTimeWalletSucessHostNameMaxLen) 
+START_TEST(test_001CreateWallet_0012_CreateOneTimeWalletSucessHostNameMaxLen) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
@@ -442,7 +417,7 @@ START_TEST(test_001CreateWallet_0013_CreateOneTimeWalletSucessHostNameMaxLen)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0014_CreateOneTimeWalletSucessChainIdMaxLen) 
+START_TEST(test_001CreateWallet_0013_CreateOneTimeWalletSucessChainIdMaxLen) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
@@ -474,7 +449,7 @@ START_TEST(test_001CreateWallet_0014_CreateOneTimeWalletSucessChainIdMaxLen)
 END_TEST
 
 
-START_TEST(test_001CreateWallet_0015_CreateOneTimeWalletSucessOrgIdMaxLen) 
+START_TEST(test_001CreateWallet_0014_CreateOneTimeWalletSucessOrgIdMaxLen) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
@@ -506,7 +481,7 @@ START_TEST(test_001CreateWallet_0015_CreateOneTimeWalletSucessOrgIdMaxLen)
 END_TEST
 
 
-START_TEST(test_001CreateWallet_0016_CreateOneTimeWalletFailurePrikeyError) 
+START_TEST(test_001CreateWallet_0015_CreateOneTimeWalletFailurePrikeyError) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
@@ -529,7 +504,7 @@ START_TEST(test_001CreateWallet_0016_CreateOneTimeWalletFailurePrikeyError)
 }
 END_TEST
 
-START_TEST(test_001CreateWallet_0017_CreateOneTimeWalletFailureCertLenExceed) 
+START_TEST(test_001CreateWallet_0016_CreateOneTimeWalletFailureCertLenExceed) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
@@ -553,7 +528,7 @@ START_TEST(test_001CreateWallet_0017_CreateOneTimeWalletFailureCertLenExceed)
 END_TEST
 
 
-START_TEST(test_001CreateWallet_0018_CreatePersisWalletFailureExceed256Name) 
+START_TEST(test_001CreateWallet_0017_CreatePersisWalletFailureExceed256Name) 
 {
     BSINT32 rtnVal;
     BoatHlchainmakerWallet *g_chaninmaker_wallet_ptr = NULL;
@@ -621,17 +596,16 @@ Suite *make_wallet_suite(void)
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0005CreateLoadWalletFailurePersistWalletNoExist);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0006_CreateOneTimeWalletFailureShortSize);
     tcase_add_test(tc_wallet_api, test_001CreateWallet_0007_CreateOneTimeWalletSucessLongSize);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0008_CreateOneTimeWalletFailureUrlFormatError);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0009_CreateOneTimeWalletFailureLongNum);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0010_CreatePersisWalletFailureLongName);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0011_CreatePersisWalletFailurePotocolTypeNoExit);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0012_CreatePersisWalletFailureIndexExceed);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0013_CreateOneTimeWalletSucessHostNameMaxLen);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0014_CreateOneTimeWalletSucessChainIdMaxLen);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0015_CreateOneTimeWalletSucessOrgIdMaxLen);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0016_CreateOneTimeWalletFailurePrikeyError);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0017_CreateOneTimeWalletFailureCertLenExceed);
-    tcase_add_test(tc_wallet_api, test_001CreateWallet_0018_CreatePersisWalletFailureExceed256Name);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0008_CreateOneTimeWalletFailureLongNum);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0009_CreatePersisWalletFailureLongName);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0010_CreatePersisWalletFailurePotocolTypeNoExit);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0011_CreatePersisWalletFailureIndexExceed);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0012_CreateOneTimeWalletSucessHostNameMaxLen);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0013_CreateOneTimeWalletSucessChainIdMaxLen);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0014_CreateOneTimeWalletSucessOrgIdMaxLen);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0015_CreateOneTimeWalletFailurePrikeyError);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0016_CreateOneTimeWalletFailureCertLenExceed);
+    tcase_add_test(tc_wallet_api, test_001CreateWallet_0017_CreatePersisWalletFailureExceed256Name);
     
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0001DeleteWalletFailureNullFleName);
     tcase_add_test(tc_wallet_api, test_002DeleteWallet_0002DeleteWalletFailureNoExistingFile);

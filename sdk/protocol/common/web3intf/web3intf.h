@@ -145,6 +145,28 @@ typedef struct TParam_quorum_sendRawPrivateTransaction
     BCHAR *privatefor_str;
 }Param_quorum_sendRawPrivateTransaction;
 
+/***************************************************************************************************
+                                  CITA JSONRPC INTERFACE
+***************************************************************************************************/
+//typedef struct TParam_cita_call
+typedef struct TParam_cita_call
+{
+    BCHAR *from;     //!< The address of the sender.
+    BCHAR *to;       //!< The address of the contract.
+    BCHAR *data;    //!< transfer value(optional).
+}Param_cita_call;
+
+//!@brief Parameter for web3_cita_sendRawTransaction()
+typedef struct TParam_cita_sendRawTransaction
+{
+    BCHAR *signedtx_str;  //!< String of the signed transaction in HEX with "0x" prefixed
+}Param_cita_sendRawTransaction;
+
+//!@brief Parameter for web3_fiscobcos_getTransactionReceiptStatus()
+typedef struct TParam_cita_getTransactionReceipt
+{
+    BCHAR *tx_hash_str; //!< String of 32-byte transaction hash, e.g. "0x123456..."
+}Param_cita_getTransactionReceipt;
 
 
 #ifdef __cplusplus
@@ -649,6 +671,29 @@ BCHAR *web3_sendRawPrivateTransaction(Web3IntfContext *web3intf_context_ptr,
                                BOAT_RESULT *web3Result);
 
 
+/***************************************************************************************************
+                                  CITA JSONRPC INTERFACE
+***************************************************************************************************/
+
+BCHAR *web3_cita_call(Web3IntfContext *web3intf_context_ptr,
+                           BCHAR *node_url_str,
+                           const Param_cita_call *param_ptr,
+                           BOAT_RESULT *web3Result);
+
+BCHAR *web3_cita_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
+                                         BCHAR *node_url_str,
+                                         const Param_cita_sendRawTransaction *param_ptr,
+                                         BOAT_RESULT *web3Result);
+
+
+BCHAR *web3_cita_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
+                                                  BCHAR *node_url_str,
+                                                  const Param_cita_getTransactionReceipt *param_ptr,
+                                                  BOAT_RESULT *web3Result);
+
+BCHAR *web3_cita_getBlockNumber(Web3IntfContext *web3intf_context_ptr,
+                                     BCHAR *node_url_str,
+                                     BOAT_RESULT *web3Result);
 
 /*! @}*/
 

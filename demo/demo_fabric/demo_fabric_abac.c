@@ -110,11 +110,12 @@ const BCHAR *fabric_demo_endorser_peer1Org2_hostName = "peer1.org2.example.com";
 
 
 BoatHlfabricWallet *g_fabric_wallet_ptr;
-// DiscoverRes discoverResult;
-BoatHlfabricWalletConfig wallet_config = {0};
+BoatHlfabricWalletConfig wallet_config;
 __BOATSTATIC BOAT_RESULT fabricWalletPrepare(void)
 {
 	BOAT_RESULT index;
+
+	memset(&wallet_config,0U,sizeof(BoatHlfabricWalletConfig));
 
 	//BoatHlfabricWalletConfig wallet_config = {0};
 	//set private key context
@@ -277,7 +278,6 @@ int main(int argc, char *argv[])
 			//BoatLog( BOAT_LOG_CRITICAL, "BoatHlfabricTxSubmit(query) failed." );
 			boat_throw(result, fabric_demo_catch);
 		}
-		// discoverResult = tx_ptr.discooverRes;
 		BoatHlfabricNodesCfg network_info = tx_ptr.wallet_ptr->network_info;
 		BoatLog( BOAT_LOG_CRITICAL, "***************** peers ****************\n");
 		for (int i = 0; i < network_info.endorserLayoutNum; i++)
@@ -306,69 +306,6 @@ int main(int argc, char *argv[])
 		}
 		BoatLog( BOAT_LOG_CRITICAL, "***************************************\n");
 		
-
-
-		// BoatLog( BOAT_LOG_CRITICAL, "mychannel has [%d] orgs ",discoverResult.Peership.orgNum );
-		// for (int i = 0; i < discoverResult.Peership.orgNum; i++)
-		// {
-		// 	BoatLog( BOAT_LOG_CRITICAL, "***************************************");
-		// 	BoatLog( BOAT_LOG_CRITICAL, " [org%d] info :  ",i );
-		// 	BoatLog( BOAT_LOG_CRITICAL, "        name     : %s   ",discoverResult.Peership.orgs[i].orgName );
-		// 	BoatLog( BOAT_LOG_CRITICAL, "        peer num : %d   ",discoverResult.Peership.orgs[i].peerNum );
-		// 	for (int j = 0; j < discoverResult.Peership.orgs[i].peerNum; j++)
-		// 	{
-		// 	BoatLog( BOAT_LOG_CRITICAL, "        peer[%d] URL  : %s   ",j,discoverResult.Peership.orgs[i].peers[j].url );
-		//     BoatLog( BOAT_LOG_CRITICAL, "        peer[%d] cert : \n%s   ",j,discoverResult.Peership.orgs[i].peers[j].cert );					
-		// 	}
-			
-		// 	BoatLog( BOAT_LOG_CRITICAL, "        [org%d] tlscert : \n%s   ",i,discoverResult.Peership.orgs[i].tlsCert );
-
-
-		// 	BoatLog( BOAT_LOG_CRITICAL, "***************************************");
-		// }
-
-		
-		// BoatLog( BOAT_LOG_CRITICAL, "*************  config  ***************");
-
-		// for (int i = 0; i < discoverResult.cc_res.num; i++)
-		// {
-		// 	for (int j = 0; j < discoverResult.cc_res.layouts[i].num; j++)
-		// 	{
-		// 		BoatLog( BOAT_LOG_CRITICAL, "***layout[%d]-group[%d] : ",i,j );
-		// 		BoatLog( BOAT_LOG_CRITICAL, "  %s :   ",discoverResult.cc_res.layouts[i].groups[j].key );
-		// 		BoatLog( BOAT_LOG_CRITICAL, "      quantities :  %d ",discoverResult.cc_res.layouts[i].groups[j].value );
-		// 		for (int k = 0; k < discoverResult.cc_res.layouts[i].groups[j].numEndorsers; k++)
-		// 		{
-		// 		BoatLog( BOAT_LOG_CRITICAL, "       MSPID    :  %s ",discoverResult.cc_res.layouts[i].groups[j].endorsers[k].MSPID );
-		// 		BoatLog( BOAT_LOG_CRITICAL, "       Endpoint :  %s ",discoverResult.cc_res.layouts[i].groups[j].endorsers[k].Endpoint );
-		// 		}
-				
-		// 	}
-			
-		// }
-		// BoatLog( BOAT_LOG_CRITICAL, "****************************************\n");
-		// BoatLog( BOAT_LOG_CRITICAL, "*************** msps *******************");
-
-		// for (int i = 0; i < discoverResult.discoverConfig.discoverMsps.num; i++)
-		// {
-		// 	BoatLog( BOAT_LOG_CRITICAL, "  %s :   ",discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].name);
-		// 	BoatLog( BOAT_LOG_CRITICAL, "      tlseCert:   \n\n%s",discoverResult.discoverConfig.discoverMsps.discoverMspInfo[i].tlsCert);
-		// }
-		// BoatLog( BOAT_LOG_CRITICAL, "****************************************\n");
-		// BoatLog( BOAT_LOG_CRITICAL, "*************** orders *******************");
-
-		// for (int i = 0; i < discoverResult.discoverConfig.discoverOrders.num; i++)
-		// {
-		// 	BoatLog( BOAT_LOG_CRITICAL, "  %s :   ",discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].name);
-		// 	BoatLog( BOAT_LOG_CRITICAL, "      host :   %s",discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].host);
-		// 	BoatLog( BOAT_LOG_CRITICAL, "      port :   %s",discoverResult.discoverConfig.discoverOrders.discoverOrderinfo[i].port);
-		// }
-
-		// BoatLog( BOAT_LOG_CRITICAL, "***************************************");
-		
-		
-		
-		// DiscoverResFree(discoverResult);
 #endif
 
 

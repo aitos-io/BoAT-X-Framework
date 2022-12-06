@@ -131,14 +131,42 @@ typedef struct T_DiscoverRes
  *   Hlfabric,use this function.
  * @param tx_ptr 
  *   Fabric transaction structure pointer.
+ * @param endorserInfo_ptr
+ *   node info used for nodes-discovery
  *
  * @return 
  *   Return \c BOAT_SUCCESS if submit success, otherwise return a error code.
  ******************************************************************************/
 BOAT_RESULT BoatHlfabricDiscoverySubmit( BoatHlfabricTx *tx_ptr,const BoatHlfabricNodesCfg endorserInfo_ptr );
-/*! @}*/
+
+/*!****************************************************************************
+ * @brief 
+ *   DiscoverRes init.
+ *
+ * @details
+ *   This function should be invoked before using the  parameter of discoverResult
+ * @param discoverResult 
+ *  
+ * @return 
+ *   This function has no return value
+ ******************************************************************************/
 void DiscoveryResInit(DiscoverRes *discoverResult);
+
+/*!****************************************************************************
+ * @brief 
+ *   DiscoverRes Free.
+ *
+ * @details
+ *   This function should be invoked after using the  parameter of discoverResult;
+ *   To free the memory of discoverResult;
+ * @param discoverResult 
+ *  
+ * @return 
+ *   This function has no return value
+ ******************************************************************************/
 void DiscoveryResFree(DiscoverRes discoverResult);
+
+/*! @}*/
 
 #endif
 /*! @}*/

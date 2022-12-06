@@ -411,11 +411,11 @@ BOAT_RESULT BoatQuorumTxInit(BoatQuorumWallet *wallet_ptr,
     tx_ptr->is_private    = is_private;
     
     // Initialize gasprice
-    BoatFieldMax32B gasprice;
+    // BoatFieldMax32B gasprice;
     // Either manually set the gas price or get the price from network
    
-        gasprice.field_len = sizeof("0x0");
-        memcpy(&tx_ptr->rawtx_fields.gasprice, "0x0", sizeof("0x0"));
+        // gasprice.field_len = sizeof("0x0");
+         memcpy(&tx_ptr->rawtx_fields.gasprice, "0x0", sizeof("0x0"));
    
     // if (result != BOAT_SUCCESS)
     // {
