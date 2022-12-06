@@ -234,7 +234,11 @@ http2IntfContext *http2Init(void)
 	http2Context->nodeUrl = NULL;
 #if (BOAT_TLS_SUPPORT == 1)
 	http2Context->hostName = NULL;
-	http2Context->tlsCAchain = NULL;
+	http2Context->tlsCAchain.field_ptr = NULL;
+#if (BOAT_TLS_IDENTIFY_CLIENT == 1)
+	http2Context->tlsCert.field_ptr = NULL;
+	http2Context->tlsPrikey.field_ptr = NULL;
+#endif
 	http2Context->tlsContext = BoatMalloc(sizeof(TTLSContext));
 	if (http2Context->tlsContext == NULL)
 	{
@@ -282,12 +286,12 @@ void http2DeInit(http2IntfContext *http2Context)
 #if (BOAT_TLS_SUPPORT == 1)
 		BoatFree(http2Context->tlsContext);
 		http2Context->tlsContext = NULL;
-		if(http2Context->tlsCAchain != NULL){
-			http2Context->tlsCAchain[0].field_len = 0;
-			BoatFree(http2Context->tlsCAchain[0].field_ptr);
-			BoatFree(http2Context->tlsCAchain);
+		// if(http2Context->tlsCAchain != NULL){
+			http2Context->tlsCAchain.field_len = 0;
+			BoatFree(http2Context->tlsCAchain.field_ptr);
+			// BoatFree(http2Context->tlsCAchain);
 			
-		}
+		// }
 #endif
 		BoatFree(http2Context);
 		http2Context = NULL;
@@ -300,6 +304,8 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 	nghttp2_session_callbacks *callbacks;
 	// char *pathTmp = NULL;
 	// Http2Response *parsePtr = NULL;
+	BoatFieldVariable tlsPrikey = {NULL,0};
+	BoatFieldVariable tlscert = {NULL,0};
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BSINT32 nghttp2_result = 0;
 	boat_try_declare;
@@ -330,18 +336,25 @@ BOAT_RESULT http2SubmitRequest(http2IntfContext *context)
 		boat_throw(BOAT_ERROR_HTTP2_CONNECT_FAIL, http2SubmitRequest_exception);
 	}
 #if (BOAT_TLS_SUPPORT == 1)
-	if (context->tlsCAchain == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "BoatTlsInit tlsCAchain NULL.");
-		boat_throw(BOAT_ERROR_HTTP2_TLS_INIT_FAIL, http2SubmitRequest_exception);
-	}
-	
-	result = BoatTlsInit(context->hostName, context->tlsCAchain, context->sockfd, context->tlsContext, NULL);
+	// if (context->tlsCAchain == NULL)
+	// {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "BoatTlsInit tlsCAchain NULL.");
+	// 	boat_throw(BOAT_ERROR_HTTP2_TLS_INIT_FAIL, http2SubmitRequest_exception);
+	// }
+
+#if (BOAT_TLS_IDENTIFY_CLIENT == 1)
+	tlsPrikey = context->tlsPrikey;
+	tlscert = context->tlsCert;
+#endif
+	result = BoatTlsInit(context->hostName, context->tlsCAchain, tlsPrikey,tlscert, context->sockfd, context->tlsContext, NULL);
 	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "BoatTlsInit failed.");
 		boat_throw(BOAT_ERROR_HTTP2_TLS_INIT_FAIL, http2SubmitRequest_exception);
 	}
+
+	
+
 #endif
 	if (context->session != NULL)
 	{

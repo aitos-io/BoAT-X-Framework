@@ -24,7 +24,6 @@ api_fiscobcos.h is header file for BoAT IoT SDK FISCOBCOS's interface.
 #define __API_FISCOBCOS_H__
 
 #include "boatiotsdk.h"
-#include "api_ethereum.h"
 
 /*! @defgroup fiscobcos-api boat fiscobcos-API
  * @{
@@ -34,28 +33,66 @@ api_fiscobcos.h is header file for BoAT IoT SDK FISCOBCOS's interface.
 #define BOAT_FISCOBCOS_MINE_INTERVAL             3  //!< Mining Interval of the blockchain, in seconds
 #define BOAT_FISCOBCOS_WAIT_PENDING_TX_TIMEOUT   30 //!< Timeout waiting for a transaction being mined, in seconds
 
-#define BOAT_FISCOBCOS_NODE_URL_MAX_LEN          BOAT_ETH_NODE_URL_MAX_LEN
-#define BOAT_FISCOBCOS_NONCE_AUTO                BOAT_ETH_NONCE_AUTO
-#define BOAT_FISCOBCOS_ADDRESS_SIZE              BOAT_ETH_ADDRESS_SIZE
+#define BOAT_FISCOBCOS_NODE_URL_MAX_LEN          127
+#define BOAT_FISCOBCOS_NONCE_AUTO                0xFFFFFFFFFFFFFFFF
+#define BOAT_FISCOBCOS_ADDRESS_SIZE              20
 
-typedef BoatEthAccountInfo  BoatFiscobcosAccountInfo;
-typedef BoatEthNetworkInfo  BoatFiscobcosNetworkInfo;
-typedef BoatEthWallet       BoatFiscobcosWallet;
-typedef BoatEthWalletConfig BoatFiscobcosWalletConfig;
-typedef BoatEthTxFieldSig   BoatFiscobcosTxFieldSig;
+
+//!@brief Account information
+//! An account's only identifier is its private key. An address is calculated
+//! from the public key and the public key is calculated from the private key.
+typedef struct TBoatFiscobcosAccountInfo
+{
+    BoatKeypairPriKeyCtx prikeyCtx;         //!< prikey context                       
+
+    BUINT8  address[BOAT_FISCOBCOS_ADDRESS_SIZE];//!< Account address calculated from public key
+}BoatFiscobcosAccountInfo;
+
+
+
+//!@brief Wallet information
+
+//! Wallet information consists of account and block chain network information.
+//! Currently only one account per wallet is supported.
+//! NOTE: Members  of account_info and network_info will be stored, DO NOT put pointer member in it
+typedef struct TBoatFiscobcosWallet
+{
+    BoatFiscobcosAccountInfo account_info; //!< Account information
+    BoatFiscobcosNetworkData network_info; //!< Network information
+
+    // Fiscobcos wallet internal members. DO NOT access them from outside wallet protocol.
+    struct TWeb3IntfContext *web3intf_context_ptr;  //!< Web3 Interface Context
+}BoatFiscobcosWallet;
+
+
+//!@brief ECDSA signature struct
+typedef struct TBoatFiscobcosTxFieldSig
+{
+    union
+    {
+        struct
+        {
+            BUINT8 r32B[32]; //!< r part of the signature
+            BUINT8 s32B[32]; //!< s part of the signature
+        };
+        BUINT8 sig64B[64];   //!< consecutive signature composed of r+s
+    };
+    BUINT8 r_len;            //!< Effective length of r, either 0 for unsigned tx and 32 for signed tx
+    BUINT8 s_len;            //!< Effective length of s, either 0 for unsigned tx and 32 for signed tx
+}BoatFiscobcosTxFieldSig;
 
 //!@brief RAW FISCO BOCS transaction fields
 
-//! The difference from Ethereum is appending blocklimit, chainid and groupid field
+//! The difference from Fiscobcos is appending blocklimit, chainid and groupid field
 //! at the end of the struct. Thus a BoatFiscobcosRawtxFields pointer can be transfered 
 //! to any function that accepts a BoatEthRawtxFields argument. It behaves as a C 
 //! implementation of class inheritance, i.e. a pointer of an inherited class could 
 //! be assigned to a pointer of a base class.
 typedef struct TBoatFiscobcosRawtxFields
 {
-    // Following fields are inherited from Ethereum.
-    // DO NOT modify these fields unless all of Ethereum and all other protocols
-    // inherited from Ethereum are modified synchronously.
+    // Following fields are inherited from Fiscobcos.
+    // DO NOT modify these fields unless all of Fiscobcos and all other protocols
+    // inherited from Fiscobcos are modified synchronously.
     BoatFieldMax32B nonce;        //!< nonce, uint256 in bigendian
     BoatFieldMax32B gasprice;     //!< gasprice in wei, uint256 in bigendian
     BoatFieldMax32B gaslimit;     //!< gaslimit, uint256 in bigendian
@@ -63,7 +100,7 @@ typedef struct TBoatFiscobcosRawtxFields
     BoatFieldMax32B value;        //!< value to transfer, uint256 in bigendian
     BoatFieldVariable data;       //!< data to transfer, unformatted stream
     BoatFieldMax4B v;             //!< chain id or recovery identifier, @see RawtxPerform()
-    BoatEthTxFieldSig sig;        //!< ECDSA signature, including r and s parts
+    BoatFiscobcosTxFieldSig sig;        //!< ECDSA signature, including r and s parts
     
     // FISCOBCOS specific fields are appended here.
     BoatFieldMax32B blocklimit;   //!< transaction life cycle
@@ -74,7 +111,7 @@ typedef struct TBoatFiscobcosRawtxFields
 
 //!@brief FISCOBCOS Transaction
 
-//! The only difference between FISCO BCOS transaction and Ethereum transaction is
+//! The only difference between FISCO BCOS transaction and Fiscobcos transaction is
 //! BoatFiscobcosRawtxFields has more fields than BoatEthRawtxFields. To allow
 //! FISCO BCOS to re-use Ethereum APIs that take BoatEthTx as function arguments,
 //! <rawtx_fields> MUST be the last field.
@@ -98,7 +135,7 @@ extern "C" {
 
 /*!****************************************************************************
  * @brief Initialize a transaction
- * @see BoatEthTxInit()
+ * @see BoatFiscobcosTxInit()
  ******************************************************************************/
 BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 								BoatFiscobcosTx *tx_ptr,
@@ -112,7 +149,7 @@ BOAT_RESULT BoatFiscobcosTxInit(BoatFiscobcosWallet *wallet_ptr,
 
 /*!****************************************************************************
  * @brief Set Nonce
- * @see BoatEthTxSetNonce()
+ * @see BoatFiscobcosTxSetNonce()
  ******************************************************************************/
 BOAT_RESULT BoatFiscobcosTxSetNonce(BoatFiscobcosTx *tx_ptr, BUINT64 nonce);
 
@@ -172,14 +209,14 @@ BOAT_RESULT BoatFiscobcosSendRawtxWithReceipt(BOAT_INOUT BoatFiscobcosTx *tx_ptr
  *   This function returns BOAT_SUCCESS if setting is successful.\n
  *   Otherwise it returns one of the error codes.
  *
- * @see BoatEthTxSend()
+ * @see BoatFiscobcosTxSend()
  ******************************************************************************/
 BOAT_RESULT BoatFiscobcosTxSend(BoatFiscobcosTx *tx_ptr);
 
 
 /*!****************************************************************************
  * @brief Call a state-less contract function
- * @see BoatEthCallContractFunc()
+ * @see BoatFiscobcosCallContractFunc()
  ******************************************************************************/
 BCHAR *BoatFiscobcosCallContractFunc(BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_str, 
 									 BUINT8 *rlp_param_ptr, BUINT32 rlp_param_len);
@@ -187,7 +224,7 @@ BCHAR *BoatFiscobcosCallContractFunc(BoatFiscobcosTx *tx_ptr, BCHAR *func_proto_
 
 /*!****************************************************************************
  * @brief Wait for a transaction being mined.
-* @see BoatEthGetTransactionReceipt()
+* @see BoatFiscobcosGetTransactionReceipt()
  ******************************************************************************/
 BOAT_RESULT BoatFiscobcosGetTransactionReceipt(BoatFiscobcosTx *tx_ptr);
 
@@ -200,52 +237,24 @@ BCHAR *BoatFiscobcosGetBlockNumber(BoatFiscobcosTx *tx_ptr);
 
 /*!****************************************************************************
  * @brief Initialize Boat FISCOBCOS Wallet
- * @see BoatEthWalletInit()
+ * @see BoatFiscobcosWalletInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BoatFiscobcosWallet *BoatFiscobcosWalletInit(const BoatFiscobcosWalletConfig *config_ptr, BUINT32 config_size)
-{
-    return BoatEthWalletInit((const BoatEthWalletConfig *)config_ptr, config_size);
-}
+ BoatFiscobcosWallet *BoatFiscobcosWalletInit(BUINT8 walletIndex,BUINT8 accountIndex);
 
 
 /*!****************************************************************************
  * @brief De-initialize Boat FISCOBCOS Wallet
- * @see BoatEthWalletDeInit()
+ * @see BoatFiscobcosWalletDeInit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE void BoatFiscobcosWalletDeInit(BoatFiscobcosWallet *wallet_ptr)
-{
-    return BoatEthWalletDeInit((BoatEthWallet *)wallet_ptr);
-}
+void BoatFiscobcosWalletDeInit(BoatFiscobcosWallet *wallet_ptr);
 
 /*!*****************************************************************************
 * @brief Parse RPC method RESPONSE
 * @see eth_parse_json_result()
 *******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT fiscobcos_parse_json_result(const BCHAR *json_string, 
+BOAT_RESULT fiscobcos_parse_json_result(const BCHAR *json_string, 
 								                                  const BCHAR *child_name, 
-								                                  BoatFieldVariable *result_out)
-{
-    return eth_parse_json_result(json_string, child_name, result_out);
-}
-
-/*!****************************************************************************
- * @brief Set Node Url
- * @see BoatEthWalletSetNodeUrl()
- ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosWalletSetNodeUrl(BoatFiscobcosWallet *wallet_ptr, const BCHAR *node_url_ptr)
-{
-    return BoatEthWalletSetNodeUrl((BoatEthWallet *)wallet_ptr, node_url_ptr);
-}
-
-
-/*!****************************************************************************
- * @brief Set ChainId
- * @see BoatEthWalletSetChainId()
- ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosWalletSetChainId(BoatFiscobcosWallet *wallet_ptr, BUINT32 chain_id)
-{
-    return BoatEthWalletSetChainId((BoatEthWallet *)wallet_ptr, chain_id);
-}
+								                                  BoatFieldVariable *result_out);
 
 
 /*!****************************************************************************
@@ -259,40 +268,28 @@ BOAT_RESULT BoatFiscobcosTxSetGasPrice(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B 
  * @brief Set GasLimit
  * @see BoatEthTxSetGasLimit()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetGasLimit(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B *gas_limit_ptr)
-{
-    return BoatEthTxSetGasLimit((BoatEthTx *)tx_ptr, gas_limit_ptr);
-}
+BOAT_RESULT BoatFiscobcosTxSetGasLimit(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B *gas_limit_ptr);
 
 
 /*!****************************************************************************
  * @brief Set Recipient
  * @see BoatEthTxSetRecipient()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetRecipient(BoatFiscobcosTx *tx_ptr, BUINT8 address[BOAT_FISCOBCOS_ADDRESS_SIZE])
-{
-    return BoatEthTxSetRecipient((BoatEthTx *)tx_ptr, address);
-}
+BOAT_RESULT BoatFiscobcosTxSetRecipient(BoatFiscobcosTx *tx_ptr, BUINT8 address[BOAT_FISCOBCOS_ADDRESS_SIZE]);
 
 
 /*!*****************************************************************************
  * @brief Set Value
  * @see BoatEthTxSetValue()
  *******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetValue(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B *value_ptr)
-{
-    return BoatEthTxSetValue((BoatEthTx *)tx_ptr, value_ptr);
-}
+BOAT_RESULT BoatFiscobcosTxSetValue(BoatFiscobcosTx *tx_ptr, BoatFieldMax32B *value_ptr);
 
 
 /*!****************************************************************************
  * @brief Set Data
  * @see BoatEthTxSetData()
  ******************************************************************************/
-__BOATSTATIC __BOATINLINE BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx_ptr, BoatFieldVariable *data_ptr)
-{
-    return BoatEthTxSetData((BoatEthTx *)tx_ptr, data_ptr);
-}
+BOAT_RESULT BoatFiscobcosTxSetData(BoatFiscobcosTx *tx_ptr, BoatFieldVariable *data_ptr);
 
 /*!****************************************************************************
  * @brief Parse RPC method RESPONSE.

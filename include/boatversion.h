@@ -16,7 +16,9 @@
  *****************************************************************************/
 #ifndef __BOATVERSION_H__
 #define __BOATVERSION_H__
-
+/*! @addtogroup wallet
+ * @{
+ */
 
 #include <stdbool.h>
 #include "boattypes.h"

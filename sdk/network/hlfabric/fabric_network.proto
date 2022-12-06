@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option java_package = "com.huawei.wienerchain.proto.common";
+
+package common;
+
+message fabricNetworks{
+    uint32 networkNum = 1;
+    fabricNetworkData networks= 2;
+}
+
+message fabricNetworkData{
+    uint32 index = 1;
+    string accountCertContent = 2;
+    string accountClientTlsPrikey = 3;
+    string accountClientTlsCert  = 4;
+    // string tlsClientCertContent = 5 ;
+    // fabricNodesCfg nodes = 4;
+    // uint32 layoutNum = 4;
+    repeated fabricNodeLayoutCfg layoutCfg = 5;
+    fabricNodeGroupCfg orderCfg = 6;
+}
+
+message fabricNodesCfg{
+    // uint32 layoutNum = 1;
+    repeated fabricNodeLayoutCfg layoutCfg = 1;
+    fabricNodeGroupCfg orderCfg = 2;
+}
+
+message fabricNodeLayoutCfg{
+    // uint32 groupNum = 1;
+    repeated fabricNodeGroupCfg groupCfg = 1;
+}
+
+message fabricNodeGroupCfg {
+     uint32 quantities = 1 ;
+    //  uint32 nodeNum = 2;
+    repeated fabricNodeInfo endorser = 2  ;
+     string tlsOrgCertContent = 3 ;
+}
+
+
+message fabricNodeInfo {
+    string nodeUrl = 1;
+    string hostName = 2;
+}
+
+

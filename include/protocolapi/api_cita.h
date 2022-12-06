@@ -36,42 +36,16 @@ api_cita.h is header file for BoAT IoT SDK cita's interface.
 
 #define BOAT_CITA_NONCE_AUTO                     0xFFFFFFFFFFFFFFFF
 #define BOAT_CITA_ADDRESS_SIZE                   20
-#define BOAT_CITA_CHAIN_ID_V1_SIZE               32
 #define BOAT_CITA_VALUE_SIZE                     32
-
-
-
-//!@brief The extension field of chainid context
-//!  This field is only used for secret key storage when secure storage environment is not available. 
-//!  \n The practice of the security specification is still to store it in TEE/SE.
-typedef struct TBoatWalletChainId
-{
-    BUINT32  value_len;  //!< Length of the chainid
-    BUINT8   value[BOAT_CITA_CHAIN_ID_V1_SIZE]; 
-}BoatWalletChainId;
 
 //!@brief Account information
 //! An account's only identifier is its private key. An address is calculated
 //! from the public key and the public key is calculated from the private key.
 typedef struct TBoatCitaAccountInfo
 {
-    BoatWalletPriKeyCtx prikeyCtx;         //!< prikey context                       
+    BoatKeypairPriKeyCtx prikeyCtx;         //!< prikey context                       
     BUINT8  address[BOAT_CITA_ADDRESS_SIZE];//!< Account address calculated from public key
 }BoatCitaAccountInfo;
-
-/*!
- * @brief Blockchain network information
- * chain ID of the network being part of the transaction before it's signed.
- * <node_url_ptr> must include the protocol descriptor, IP address or URL name and 
- * port. For example, http://a.b.com:8545
- */
-typedef struct TBoatCitaNetworkInfo
-{
-    BCHAR *node_url_ptr; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
-    BUINT8 chain_id_buf[BOAT_CITA_CHAIN_ID_V1_SIZE];
-    BUINT32 version;
-}BoatCitaNetworkInfo;
-
 
 //!@brief Wallet information
 
@@ -81,26 +55,10 @@ typedef struct TBoatCitaNetworkInfo
 typedef struct TBoatCitaWallet
 {
     BoatCitaAccountInfo account_info; //!< Account information
-    BoatCitaNetworkInfo network_info; //!< Network information
+    BoatCitaNetworkData network_info; //!< Network information
 
     struct TWeb3IntfContext *web3intf_context_ptr;  //!< Web3 Interface Context
 }BoatCitaWallet;
-
-
-//!@brief cita Wallet configuration
-
-//! cita wallet configuration is used in wallet creation.
-typedef struct TBoatCitaWalletConfig
-{
-	BoatWalletPriKeyCtx_config  prikeyCtx_config; //!< @NOTE This field MUST BE placed in the first member of the structure
-	                                              //!< because in function BoatWalletCreate(), 
-    BCHAR    node_url_str[BOAT_CITA_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
-    BBOOL    load_existed_wallet;   //false: need creat key by Boat , true: not need creat key
-    BUINT32  version;
-    BoatWalletChainId chain_id;
-
-}BoatCitaWalletConfig;
-
 
 //!@brief CitaRAW transaction fields
 
@@ -181,7 +139,7 @@ extern "C" {
  *		
  * @see BoatCitaWalletDeInit() BoatWalletCreate()
  ******************************************************************************/
-BoatCitaWallet *BoatCitaWalletInit(const BoatCitaWalletConfig *config_ptr, BUINT32 config_size);
+BoatCitaWallet *BoatCitaWalletInit(BUINT8 walletIndex, BUINT8 networkIndex);
 
 
 /*!****************************************************************************
@@ -202,47 +160,6 @@ BoatCitaWallet *BoatCitaWalletInit(const BoatCitaWalletConfig *config_ptr, BUINT
  ******************************************************************************/
 void BoatCitaWalletDeInit(BoatCitaWallet *wallet_ptr);
 
-
-/*!****************************************************************************
- * @brief Set BoatWallet: URL of blockchain node
- *
- * @details
- *   This function sets the URL of the blockchain node to connect to.
- *   \n A URL is composed of protocol, IP address/name and port, in a form:
- *   http://a.b.com:8545
- *
- * @param[in] wallet_ptr
- *   Wallet context pointer.    
- *
- * @param[in] node_url_ptr
- *   A string indicating the URL of blockchain node to connect to.
- *
- * @return
- *   This function returns BOAT_SUCCESS if setting is successful.\n
- *   Otherwise it returns one of the error codes.        
- ******************************************************************************/
-BOAT_RESULT BoatCitaWalletSetNodeUrl(BoatCitaWallet *wallet_ptr, const BCHAR *node_url_ptr);
-
-/*!****************************************************************************
- * @brief Set BoatWallet: Chain ID
- *
- * @details
- *   This function sets the chain ID of the network.
- *   If the network supports EIP-155, chain ID is part of the transaction
- *   message to sign.
- *   If the network doesn't support EIP-155, chain ID is ignored.
- *
- * @param[in] wallet_ptr
- *   Wallet context pointer.    
- *
- * @param[in] chain_id
- *   Chain ID of the blockchain network to use.
- *
- * @return
- *   This function returns BOAT_SUCCESS if setting is successful.\n
- *   Otherwise it returns one of the error codes.
- ******************************************************************************/
-BOAT_RESULT BoatCitaWalletSetChainId(BoatCitaWallet *wallet_ptr, BoatWalletChainId *wallet_chain_id);
 /*!*****************************************************************************
 @brief Parse RPC method RESPONSE
 

@@ -34,3 +34,7 @@ endif()
 if(BOAT_PROTOCOL_USE_QUORUM)
 add_subdirectory(demo_quorum)
 endif()
+
+if(BOAT_PROTOCOL_USE_CITA)
+add_subdirectory(demo_cita)
+endif()
