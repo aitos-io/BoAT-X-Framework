@@ -28,4 +28,3 @@ $(OBJECTS_DIR):
 	
 clean:
 	-$(BOAT_RM) $(OBJECTS_DIR)/*
-

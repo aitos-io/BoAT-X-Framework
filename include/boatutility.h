@@ -24,10 +24,6 @@ boatutility.h is header file for utility functions.
 #define __BOATUTILITY_H__
 
 #include "boatiotsdk.h"
-#if PROTOCOL_USE_HWBCS == 1
-#include "protocolapi/api_hlfabric.h"
-#include "protocolapi/api_hw_bcs.h"
-#endif
 
 /*! @defgroup BoAT utility functions
  * @{
@@ -678,6 +674,100 @@ BCHAR* UtilityNative2PKCS(KeypairNative keypair);
 *
 ************************************************************/
 void UtilityFreeKeypair(KeypairNative keypair);
+
+
+/**
+ * @description: 
+ *  This function gets the real length of data according to length bytes.
+ * @param {BUINT8} *input
+ *  the bytes of length , minimum 1 byte, maximum 3 bytes
+ * @return {*}
+ *  This function will return the real length if success.
+ *  Otherwise it will return -1
+ * @author: aitos
+ */
+int UtilityGetLVData_L(BUINT8 *input);
+
+
+/**
+ * @description: 
+ *  This function get the actual number of bytes in the data length field.
+ * @param {BUINT32} len
+ * @return {*}
+ *  This function will return the number of bytes of len
+ * @author: aitos
+ */
+int UtilityGetTLV_LL_from_len(BUINT32 len);
+
+/**
+ * @description: 
+ *  This function add L into pbBuff.
+ * @param[in/out] {BUINT8*} pbBuff
+ *  data bytes
+ * @param[in/out] {BUINT32*} nOffset
+ *  in : offset of L
+ *  out: new offset of data , end of LV
+ * @param[in] {BUINT32} nLen
+ *  L
+ * @return {*}
+ *  This function return length of LV if successfully executed ,
+ *  Otherwise it will return -1.
+ * @author: aitos
+ */
+int add_L_withOffset(BUINT8* pbBuff,BUINT32* nOffset,BUINT32 nLen);
+
+
+/**
+ * @description: 
+ *  This function convert r,s to asn.1 . length of signature must be 64 and r's length is 32,s's length is 32.
+ * @param {BUINT8} *signature
+ *  data of signature
+ * @param {BUINT32} signaturelen
+ *  length of signature ,must be 64 
+ * @param {BUINT8} *out
+ *  asn.1 data out
+ * @param {BUINT32} *outlen
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT utility_signature_to_asn1(BUINT8 *signature , BUINT32 signaturelen,BUINT8 *out,BUINT32 *outlen);
+
+
+/**
+ * @description: 
+ *  This function get  num of keypair / network / prikey object from 4 bytes.
+ *  the format of 4 bytes data like this:
+ *  0xAA 0x55 num crc
+ *  crc is the XOR result of the first 3 bytes of data  
+ * @param[in] {BUINT8} temp
+ *  the 4 bytes data
+ * @param[out] {BUINT8} *num
+ *  quantity of keypair/network/prikey objects
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT utility_check_NumBytes(BUINT8 temp[4],BUINT8 *num);
+
+
+/**
+ * @description: 
+ *  This function get  4 bytes data of  keypair / network / prikey object by num.
+ *  the format of 4 bytes data like this:
+ *  0xAA 0x55 num crc
+ *  crc is the XOR result of the first 3 bytes of data  
+ * @param {BUINT8} num
+ * @param {BUINT8} temp
+ * @return {*}
+ *  This function have no return.
+ * @author: aitos
+ */
+void utility_get_NumBytes(BUINT8 num,BUINT8 temp[4]);
 
 /*! @}*/
 

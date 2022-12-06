@@ -125,7 +125,7 @@ void web3_deinit(Web3IntfContext *web3intf_context_ptr)
 
 BCHAR *web3_getTransactionCount(Web3IntfContext *web3intf_context_ptr,
                                 BCHAR *node_url_str,
-                                const Param_eth_getTransactionCount *param_ptr,
+                                const Param_web3_getTransactionCount *param_ptr,
                                 BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
@@ -311,7 +311,7 @@ BCHAR *web3_gasPrice(Web3IntfContext *web3intf_context_ptr, BCHAR *node_url_str,
 
 BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
                        BCHAR *node_url_str,
-                       const Param_eth_getBalance *param_ptr,
+                       const Param_web3_getBalance *param_ptr,
                        BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
@@ -364,20 +364,17 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
 	}while(malloc_size_expand_flag);
 
     BoatLog(BOAT_LOG_VERBOSE, "REQUEST: %s", (BCHAR*)web3intf_context_ptr->web3_json_string_buf.field_ptr);
-
     // POST the REQUEST through curl
     result = RpcRequestSet(web3intf_context_ptr->rpc_context_ptr, node_url_str);
     if (result != BOAT_SUCCESS)
     {
         boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, web3_getBalance_cleanup);
     }
-    
     result = RpcRequestSync(web3intf_context_ptr->rpc_context_ptr,
                     (BUINT8*)web3intf_context_ptr->web3_json_string_buf.field_ptr,
                     expected_string_size,
                     (BOAT_OUT BUINT8 **)&rpc_response_str,
                     &rpc_response_len);
-
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_NORMAL, "RpcRequestSync() fails.");
@@ -406,7 +403,7 @@ BCHAR *web3_getBalance(Web3IntfContext *web3intf_context_ptr,
 
 BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
                                BCHAR *node_url_str,
-                               const Param_eth_sendRawTransaction *param_ptr,
+                               const Param_web3_sendRawTransaction *param_ptr,
                                BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
@@ -500,7 +497,7 @@ BCHAR *web3_sendRawTransaction(Web3IntfContext *web3intf_context_ptr,
 
 BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
 						 BCHAR *node_url_str,
-						 const Param_eth_getStorageAt *param_ptr,
+						 const Param_web3_getStorageAt *param_ptr,
                          BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
@@ -597,7 +594,7 @@ BCHAR *web3_getStorageAt(Web3IntfContext *web3intf_context_ptr,
 
 BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
 										BCHAR *node_url_str,
-										const Param_eth_getTransactionReceipt *param_ptr,
+										const Param_web3_getTransactionReceipt *param_ptr,
                                         BOAT_RESULT *web3Result)
 {
     BCHAR  *rpc_response_str;
@@ -691,7 +688,7 @@ BCHAR *web3_getTransactionReceiptStatus(Web3IntfContext *web3intf_context_ptr,
 
 BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
                  BCHAR *node_url_str,
-                 const Param_eth_call *param_ptr,
+                 const Param_web3_call *param_ptr,
                  BOAT_RESULT *web3Result)
 {
     BCHAR *rpc_response_str;
@@ -1379,6 +1376,7 @@ BCHAR *web3_sendRawPrivateTransaction(Web3IntfContext *web3intf_context_ptr,
 /***************************************************************************************************
                                   CITA JSONRPC INTERFACE
 ***************************************************************************************************/
+
 #if (PROTOCOL_USE_CITA == 1)   
 BCHAR *web3_cita_call(Web3IntfContext *web3intf_context_ptr,
                            BCHAR *node_url_str,

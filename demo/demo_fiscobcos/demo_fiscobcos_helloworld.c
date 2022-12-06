@@ -34,15 +34,15 @@
  * "78a42562c1d19843fd6f5a0f07de0206fdcf2a682c5e0a9a814019abb531da3a"
  */
 const BCHAR *pkcs_demoKey =  "-----BEGIN PRIVATE KEY-----\n"
-"MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQgz3wfbqBIV+8EOR49yA4x\n"
-"4o6uVigkoU+WwaAKdQe2fZahRANCAAQpe8iOa9nDLr9r7/2aokClH7/Gqy7F+ep/\n"
-"SOf94NvnLoQILdWeBzeCotF1BoJyrfnXiMSgDZYexSsFFgNz8dJx\n"
-                              "-----END PRIVATE KEY-----\n";
+"MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQgzZK7QjW1qEm2daA3Pul1\n"
+"VOhdZUlLUCdbCYfsMPOTLJGhRANCAAQs7hq3lwEwUk/2KN0XgX77fBDY7EnfvkRK\n"
+"IVnzzKgkSWxrazOlB19SiFYJ1tq11BVisJFSwOfGWH0VG9UJykC/\n"
+"-----END PRIVATE KEY-----\n";
 
 /**
  * native demo key
  */
-const BCHAR *native_demoKey = "0xcf7c1f6ea04857ef04391e3dc80e31e28eae562824a14f96c1a00a7507b67d96";
+const BCHAR *native_demoKey = "0xcd92bb4235b5a849b675a0373ee97554e85d65494b50275b0987ec30f3932c91";
 
 /**
  * test node url
@@ -52,134 +52,91 @@ const BCHAR *demoUrl = "http://127.0.0.1:8545";
 /**
  * transfer recipient address
  */
-const BCHAR *demoRecipientAddress = "0xcfafa80763d106702c312ca6719e3f7b6fc8cf1c";
+const BCHAR *demoRecipientAddress = "0x201e148616556b1f30c78961a137e3534e6c263f";
 
 
 BoatFiscobcosWallet *g_fiscobcos_wallet_ptr;
+BUINT8 keypairIndex = 0;
+BUINT8 networkIndex = 0;
 
-#if defined(USE_ONETIME_WALLET)
-__BOATSTATIC BOAT_RESULT fiscobcos_createOnetimeWallet()
+
+__BOATSTATIC BOAT_RESULT fiscobcos_createKeypair(BCHAR *keypairName)
 {
-    BSINT32 index;
-    BoatFiscobcosWalletConfig wallet_config;
-    BUINT8 binFormatKey[32]                 = {0};
+    BOAT_RESULT result = BOAT_SUCCESS;
+    BoatKeypairPriKeyCtx_config keypair_config = {0};
+    BUINT8 binFormatKey[32]           = {0};
 
     (void)binFormatKey; //avoid warning
-
-    memset(&wallet_config,0U,sizeof(BoatFiscobcosWalletConfig));
 
 	/* wallet_config value assignment */
     #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
         //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
         //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
-        wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
+        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
+        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
+        keypair_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
+        keypair_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
     #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE)
         //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
+        keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
+        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
         UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
-        wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
-        //UtilityHexToBin(wallet_config.prikeyCtx_config.prikey_content, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
-        wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
+        keypair_config.prikey_content.field_ptr = binFormatKey;
+        //UtilityHexToBin(keypair_config.prikey_content, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
+        keypair_config.prikey_content.field_len = 32;
     #else  
         /* default is internal generation */  
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
+        keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
+        keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
     #endif
 
-    strncpy(wallet_config.node_url_str, demoUrl, BOAT_FISCOBCOS_NODE_URL_MAX_LEN - 1);
-
 	/* create fiscobcos wallet */
-    index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, NULL, &wallet_config, sizeof(BoatFiscobcosWalletConfig));
-    if (index < 0)
+#if defined(USE_ONETIME_WALLET)
+    result = BoatKeypairCreate( &keypair_config, keypairName,BOAT_STORE_TYPE_RAM);
+#elif defined(USE_CREATE_PERSIST_WALLET)
+    result = BoatKeypairCreate( &keypair_config, keypairName,BOAT_STORE_TYPE_FLASH);
+#else
+    result = BOAT_ERROR;
+#endif
+    if (result < 0)
+	{
+        //BoatLog(BOAT_LOG_CRITICAL, "create one-time keypair failed.");
+        return BOAT_ERROR_WALLET_CREATE_FAIL;
+    }
+    keypairIndex = result;
+    
+    return BOAT_SUCCESS;
+}
+
+__BOATSTATIC BOAT_RESULT createNetwork()
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+    BoatFiscobcosNetworkConfig network_config = {0};
+
+    strncpy(network_config.node_url_str, demoUrl, BOAT_FISCOBCOS_NODE_URL_MAX_LEN - 1);
+
+	/* create platone network */
+#if defined(USE_ONETIME_WALLET)
+    result = BoatFiscobcosNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
+#elif defined(USE_CREATE_PERSIST_WALLET)
+    result = BoatFiscobcosNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
+#else
+    result = BOAT_ERROR;
+#endif
+    if (result < 0)
 	{
         //BoatLog(BOAT_LOG_CRITICAL, "create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
-    g_fiscobcos_wallet_ptr = BoatGetWalletByIndex(index);
+    networkIndex = result;
     
     return BOAT_SUCCESS;
 }
-#endif
-
-#if defined(USE_CREATE_PERSIST_WALLET)
-__BOATSTATIC BOAT_RESULT fiscobcos_createPersistWallet(BCHAR *wallet_name)
-{
-    BSINT32 index;
-    BoatFiscobcosWalletConfig wallet_config;
-    BUINT8 binFormatKey[32]                 = {0};
-
-    (void)binFormatKey; //avoid warning
-
-    memset(&wallet_config,0U,sizeof(BoatFiscobcosWalletConfig));
-
-	/* wallet_config value assignment */
-    #if defined(USE_PRIKEY_FORMAT_INTERNAL_GENERATION)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: internal generated.");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    #elif defined(USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS)
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[pkcs].");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_PKCS;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        wallet_config.prikeyCtx_config.prikey_content.field_ptr = (BUINT8 *)pkcs_demoKey;
-        wallet_config.prikeyCtx_config.prikey_content.field_len = strlen(pkcs_demoKey) + 1; //length contain terminator
-    #elif (defined USE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE) 
-        //BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet format: external injection[native].");
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION;
-        wallet_config.prikeyCtx_config.prikey_format  = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-        UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
-        wallet_config.prikeyCtx_config.prikey_content.field_ptr = binFormatKey;
-        wallet_config.prikeyCtx_config.prikey_content.field_len = 32;
-    #else  
-        /* default is internal generation */  
-        wallet_config.prikeyCtx_config.prikey_genMode = BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION;
-        wallet_config.prikeyCtx_config.prikey_type    = BOAT_WALLET_PRIKEY_TYPE_SECP256K1;
-    #endif
-    
-    strncpy(wallet_config.node_url_str, demoUrl, BOAT_FISCOBCOS_NODE_URL_MAX_LEN - 1);
-
-	/* create fiscobcos wallet */
-    index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, wallet_name, &wallet_config, sizeof(BoatFiscobcosWalletConfig));
-    if (index < 0)
-	{
-        //BoatLog(BOAT_LOG_CRITICAL, "create persist wallet failed.");
-        return BOAT_ERROR_WALLET_CREATE_FAIL;
-    }
-
-    g_fiscobcos_wallet_ptr = BoatGetWalletByIndex(index);
-
-    return BOAT_SUCCESS;
-}
-#endif
-
-#if defined(USE_LOAD_PERSIST_WALLET)
-__BOATSTATIC BOAT_RESULT fiscobcos_loadPersistWallet(BCHAR *wallet_name)
-{
-	BSINT32 index;
-
-	/* create fiscobcos wallet */
-    index = BoatWalletCreate(BOAT_PROTOCOL_FISCOBCOS, wallet_name, NULL, sizeof(BoatFiscobcosWalletConfig));
-    if (index < 0)
-	{
-        //BoatLog(BOAT_LOG_CRITICAL, "load wallet failed.");
-        return BOAT_ERROR_WALLET_CREATE_FAIL;
-    }
-    g_fiscobcos_wallet_ptr = BoatGetWalletByIndex(index);
-
-    return BOAT_SUCCESS;
-}
-#endif
 
 BOAT_RESULT fiscobcos_helloworld(BoatFiscobcosWallet *wallet_ptr)
 {
@@ -228,26 +185,26 @@ int main(int argc, char *argv[])
     BoatIotSdkInit();
     
 	/* step-2: create fiscobcos wallet */
-#if defined(USE_ONETIME_WALLET)
 	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create one-time wallet.");
-	result = fiscobcos_createOnetimeWallet();
-#elif defined(USE_CREATE_PERSIST_WALLET)
-	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: create persist wallet.");
-	result = fiscobcos_createPersistWallet("fiscobcos.cfg");
-#elif defined(USE_LOAD_PERSIST_WALLET)
-	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> wallet type: load persist wallet.");
-	result = fiscobcos_loadPersistWallet("fiscobcos.cfg");
-#else
-	//BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> none wallet type selected.");
-	//return -1;
-    result = BOAT_ERROR;
-#endif	
+	result = fiscobcos_createKeypair("keypair00");
     if (result != BOAT_SUCCESS)
 	{
 		 //BoatLog(BOAT_LOG_CRITICAL, "fiscobcosWalletPrepare_create failed : %d.", result);
 		//return -1;
         boat_throw(result, fiscobcos_demo_catch);
 	}
+    result = createNetwork();
+    if (result != BOAT_SUCCESS)
+	{
+		 //BoatLog(BOAT_LOG_CRITICAL, "fiscobcosWalletPrepare_create failed : %d.", result);
+		//return -1;
+        boat_throw(result, fiscobcos_demo_catch);
+	}
+    g_fiscobcos_wallet_ptr = BoatFiscobcosWalletInit(keypairIndex,networkIndex);
+    if(g_fiscobcos_wallet_ptr == NULL){
+        // BoatLog(BOAT_LOG_NORMAL,"BoatPlatoneWalletInit fail");
+        boat_throw(BOAT_ERROR, fiscobcos_demo_catch);
+    }
     
 	/* step-3: execute 'fiscobcos_call_helloworld' */
 	result = fiscobcos_helloworld(g_fiscobcos_wallet_ptr);

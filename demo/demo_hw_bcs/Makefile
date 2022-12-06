@@ -18,10 +18,7 @@ all: $(OBJECTS_DIR)
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_hw_bcs_onetime
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_hw_bcs.c \
 	    -DUSE_CREATE_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_hw_bcs_persist	
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) demo_hw_bcs.c \
-	    -DUSE_LOAD_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_hw_bcs_load		
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_hw_bcs_persist			
 
 $(OBJECTS_DIR):
 	$(BOAT_MKDIR) -p $(OBJECTS_DIR)

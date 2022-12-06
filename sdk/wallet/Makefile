@@ -1,8 +1,7 @@
 # Source and Objects
 
 #SOURCES = $(wildcard *.c)
-SOURCES = boatwallet.c \
-          boatversion.c
+SOURCES = boatversion.c
 		  
 ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)
 	SOURCES += api_ethereum.c
@@ -22,9 +21,10 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
 	SOURCES += api_hw_bcs.c
 endif
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
+ifeq ($(findstring $(BOAT_PROTOCOL_USE_CHAINMAKER_V1)$(BOAT_PROTOCOL_USE_CHAINMAKER_V2), 00),)
 	SOURCES += api_chainmaker.c
 endif
+
 ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	SOURCES += api_venachain.c
 endif

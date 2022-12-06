@@ -85,7 +85,7 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd);
  * @return 
  *   Return \c BOAT_SUCCESS if generate success; otherwise return a negative error code.
  ******************************************************************************/
-BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
+BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx, 
 						  const BUINT8 *digest, BUINT32 digestLen, 
 						  BoatSignatureResult *signatureResult, void *rsvd);
 
@@ -104,9 +104,6 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
  *   \n Default, only with-file-system operation be implemented, other situation
  *   be implemented by user.
  *
- * @param fileName 
- *    File name of to be get size. 
- *
  * @param[out] size 
  *   File size. this field only valid when return \c BOAT_SUCCESS.
  *
@@ -116,7 +113,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
  * @return 
  *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code.
  ******************************************************************************/
-BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd);
+BOAT_RESULT BoatGetStorageSize(BUINT32 *size, void *rsvd);
 
 
 /*!****************************************************************************
@@ -133,9 +130,10 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd);
  *   \n Default, only with-file-system operation be implemented, other situation
  *   be implemented by user.
  *
- * @param fileName 
- *   File name of to be write. 
- *
+ * 
+ * @param {BUINT32} offset
+ * 	write data from offset as the starting point of the file
+ * 
  * @param writeBuf 
  *   to be write data pointer.
  *
@@ -150,7 +148,7 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd);
  *
  * @see BoatReadFile
  ******************************************************************************/
-BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
+BOAT_RESULT BoatWriteStorage(BUINT32 offset,
 						  BUINT8 *writeBuf, BUINT32 writeLen, void *rsvd);
 
 
@@ -167,10 +165,10 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
  *   of this function.
  *   \n Default, only with-file-system operation be implemented, other situation
  *   be implemented by user.
- *
- * @param fileName 
- *   File name of to be read. 
- *
+ * 
+ * @param {BUINT32} offset
+ * 	read data from offset as the starting point of the file
+ * 
  * @param readBuf 
  *   To be read data store buffer pointer.
  *
@@ -189,7 +187,7 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
  *
  * @see BoatWriteFile
  ******************************************************************************/
-BOAT_RESULT BoatReadFile(const BCHAR *fileName,
+BOAT_RESULT BoatReadStorage(BUINT32 offset,
 						 BUINT8 *readBuf, BUINT32 readLen, void *rsvd);
 
 
@@ -238,7 +236,7 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd);
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd);
 
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1  || BOAT_CHAINMAKER_TLS_SUPPORT == 1)
+#if (BOAT_TLS_SUPPORT == 1  || BOAT_TLS_SUPPORT == 1)
 /*!****************************************************************************
  * @brief initinal TLS connection
  * 
@@ -250,6 +248,12 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd);
  *
  * @param caChain 
  *   rootCA certificate content list address.
+ * 
+ * @param clientPrikey 
+ * 	client tls prikey
+ * 
+ * @param clientCert 
+ * 	client tls cert
  *
  * @param socketfd 
  *   The raw socket connection file descriptor.
@@ -263,8 +267,8 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd);
  * @return 
  *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code
  ******************************************************************************/
-BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
-						BSINT32 socketfd, void *tlsContext, void *rsvd);
+BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,const BoatFieldVariable clientPrikey,
+						const BoatFieldVariable clientCert,BSINT32 socketfd, void *tlsContext, void *rsvd);
 #endif
 
 
@@ -334,9 +338,9 @@ BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *
 void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd);
 
 
-BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx);
-BOAT_RESULT BoatPort_keyQuery(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx);
-BOAT_RESULT BoatPort_keyDelete(BoatWalletPriKeyCtx *pkCtx );
+BOAT_RESULT BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatKeypairDataCtx *pkCtx);
+BOAT_RESULT BoatPort_keyQuery(const BoatKeypairPriKeyCtx_config *config, BoatKeypairPriKeyCtx *pkCtx);
+BOAT_RESULT BoatPort_keyDelete(BoatKeypairPriKeyCtx *pkCtx );
 
 BOAT_RESULT BoatAesEncrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output);
 BOAT_RESULT BoatAesDecrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output);
