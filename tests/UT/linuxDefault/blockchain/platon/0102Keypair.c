@@ -41,8 +41,8 @@ BoatKeypairPriKeyCtx_config get_platon_keypair_settings()
     else
     {
         g_keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
-        g_keypair_config.prikey_content.field_ptr = (BUINT8 *)g_venachain_private_key_buf;
-	    g_keypair_config.prikey_content.field_len = strlen(g_venachain_private_key_buf) + 1;
+        g_keypair_config.prikey_content.field_ptr = (BUINT8 *)g_platon_private_key_buf;
+	    g_keypair_config.prikey_content.field_len = strlen(g_platon_private_key_buf) + 1;
     }
 	g_keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
 	g_keypair_config.prikey_type	  = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
@@ -52,7 +52,7 @@ BoatKeypairPriKeyCtx_config get_platon_keypair_settings()
 
 
 
-BOAT_RESULT check_venachain_keypairCtx(BoatKeypairPriKeyCtx *keypair2Ctx,BUINT8 keypair1Index,BCHAR *keypair1Name,BoatKeypairPriKeyCtx_config *keypair1Config )
+BOAT_RESULT check_platon_keypairCtx(BoatKeypairPriKeyCtx *keypair2Ctx,BUINT8 keypair1Index,BCHAR *keypair1Name,BoatKeypairPriKeyCtx_config *keypair1Config )
 {
     BOAT_RESULT ret = BOAT_ERROR;
     BCHAR temBuf[15]={0};
@@ -75,7 +75,7 @@ BOAT_RESULT check_venachain_keypairCtx(BoatKeypairPriKeyCtx *keypair2Ctx,BUINT8 
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT check_venachain_keypair_in_keypairList(BoatKeypairPriKeyCtx *keypair,BoatIotKeypairContext *keypair_list)
+BOAT_RESULT check_platon_keypair_in_keypairList(BoatKeypairPriKeyCtx *keypair,BoatIotKeypairContext *keypair_list)
 {
     BOAT_RESULT ret = BOAT_ERROR;
 
@@ -134,7 +134,7 @@ START_TEST(test_001CreateKeypair_0001CreateOneTimeKeypairSuccessNullName)
 
     BoatIotSdkInit();
     /* 1. Create keypair1 */
-    BoatKeypairPriKeyCtx_config keypair1_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair1_config = get_platon_keypair_settings();
     keypair1_index = BoatKeypairCreate(&keypair1_config,NULL,BOAT_STORE_TYPE_RAM);
 #if 1
     ck_assert_int_eq(keypair1_index, 0);
@@ -142,14 +142,14 @@ START_TEST(test_001CreateKeypair_0001CreateOneTimeKeypairSuccessNullName)
     /* 2.Verify keypair1 */
     ret = BoATKeypair_GetKeypairByIndex(&keypair2_ctx,0);
     ck_assert(ret == BOAT_SUCCESS);
-    ret = check_venachain_keypairCtx(&keypair2_ctx,keypair1_index,NULL,&keypair1_config);
+    ret = check_platon_keypairCtx(&keypair2_ctx,keypair1_index,NULL,&keypair1_config);
     ck_assert(ret == BOAT_SUCCESS);
 
     /* 3.Check keypair list */
     BoatIotKeypairContext keypair_list;
     ret = BoATKeypair_GetKeypairList(&keypair_list);
     ck_assert(ret == BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_platon_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
     ck_assert(ret == BOAT_SUCCESS);
 #endif
     BoatIotSdkDeInit();
@@ -164,21 +164,21 @@ START_TEST(test_001CreateKeypair_0002CreateOneTimeKeypairSuccessWithName)
 
     BoatIotSdkInit();
     /* 1. Create keypair1 */
-    BoatKeypairPriKeyCtx_config keypair1_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair1_config = get_platon_keypair_settings();
     keypair1_index = BoatKeypairCreate(&keypair1_config,"oneTime_keypair",BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(keypair1_index, 0);
 
     /* 2.Verify keypair1 */
     ret = BoATKeypair_GetKeypairByIndex(&keypair2_ctx,0);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypairCtx(&keypair2_ctx,keypair1_index,"oneTime_keypair",&keypair1_config);
+    ret = check_platon_keypairCtx(&keypair2_ctx,keypair1_index,"oneTime_keypair",&keypair1_config);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* 3.Check keypair list */
     BoatIotKeypairContext keypair_list;
     ret = BoATKeypair_GetKeypairList(&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_platon_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     BoatIotSdkDeInit();
@@ -194,12 +194,12 @@ START_TEST(test_001CreateKeypair_0003CreateOneTimeKeypairSuccessTwice)
 
     BoatIotSdkInit();
     /* 1. Create keypair1 */
-    BoatKeypairPriKeyCtx_config keypair1_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair1_config = get_platon_keypair_settings();
     keypair1_index = BoatKeypairCreate(&keypair1_config,NULL,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(keypair1_index, 0);
 
     /* 2. Create keypair2 */
-    BoatKeypairPriKeyCtx_config keypair2_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair2_config = get_platon_keypair_settings();
     keypair2_index = BoatKeypairCreate(&keypair2_config,"oneTime_keypair",BOAT_STORE_TYPE_RAM);
 #if 1
     ck_assert_int_eq(keypair2_index, 0);
@@ -207,14 +207,14 @@ START_TEST(test_001CreateKeypair_0003CreateOneTimeKeypairSuccessTwice)
     /* 3.Verify keypair */
     ret = BoATKeypair_GetKeypairByIndex(&keypair_ctx,0);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypairCtx(&keypair_ctx,keypair2_index,"oneTime_keypair",&keypair2_config);
+    ret = check_platon_keypairCtx(&keypair_ctx,keypair2_index,"oneTime_keypair",&keypair2_config);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* 4.Check keypair list */
     BoatIotKeypairContext keypair_list;
     ret = BoATKeypair_GetKeypairList(&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair_ctx,&keypair_list);
+    ret = check_platon_keypair_in_keypairList(&keypair_ctx,&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 #endif
     BoatIotSdkDeInit();
@@ -244,7 +244,7 @@ START_TEST(test_001CreateKeypair_0005CreateOneTimeWalletFailureWrongGenModeConfi
     BoatKeypairPriKeyCtx_config keypair_config;
 
     keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
-    UtilityHexToBin(g_binFormatKey, 32, g_venachain_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    UtilityHexToBin(g_binFormatKey, 32, g_platon_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
     keypair_config.prikey_content.field_ptr = g_binFormatKey;
     keypair_config.prikey_content.field_len = 32;
 	keypair_config.prikey_genMode = 0;
@@ -266,7 +266,7 @@ START_TEST(test_001CreateKeypair_0006CreateOneTimeWalletFailureWrongKeyTypeConfi
     BoatKeypairPriKeyCtx_config keypair_config;
 
     keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
-    UtilityHexToBin(g_binFormatKey, 32, g_venachain_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    UtilityHexToBin(g_binFormatKey, 32, g_platon_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
     keypair_config.prikey_content.field_ptr = g_binFormatKey;
     keypair_config.prikey_content.field_len = 32;
 	keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
@@ -288,7 +288,7 @@ START_TEST(test_001CreateKeypair_0007CreateOneTimeWalletFailureWrongKeyFormatCon
     BoatKeypairPriKeyCtx_config keypair_config;
 
     keypair_config.prikey_format  = 0;
-    UtilityHexToBin(g_binFormatKey, 32, g_venachain_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    UtilityHexToBin(g_binFormatKey, 32, g_platon_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
     keypair_config.prikey_content.field_ptr = g_binFormatKey;
     keypair_config.prikey_content.field_len = 32;
 	keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
@@ -310,7 +310,7 @@ START_TEST(test_001CreateKeypair_0008CreateOneTimeWalletFailureWrongNativeKeyLen
     BoatKeypairPriKeyCtx_config keypair_config;
 
     keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
-    UtilityHexToBin(g_binFormatKey, 32, g_venachain_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
+    UtilityHexToBin(g_binFormatKey, 32, g_platon_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
     keypair_config.prikey_content.field_ptr = g_binFormatKey;
     keypair_config.prikey_content.field_len = 513;
 	keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
@@ -333,7 +333,7 @@ START_TEST(test_001CreateKeypair_0009CreateOneTimeWalletFailureWrongPKCSKeyLenCo
     BoatKeypairPriKeyCtx_config keypair_config;
 
     keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS;
-    keypair_config.prikey_content.field_ptr = (BUINT8 *)g_venachain_private_key_buf;
+    keypair_config.prikey_content.field_ptr = (BUINT8 *)g_platon_private_key_buf;
 	keypair_config.prikey_content.field_len = 513;
 
 	keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
@@ -354,7 +354,7 @@ START_TEST(test_001CreateKeypair_0010CreatePersistKeypairSuccess)
 
     BoatIotSdkInit();
     /* 1. Create keypair1 */
-    BoatKeypairPriKeyCtx_config keypair1_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair1_config = get_platon_keypair_settings();
     keypair1_index = BoatKeypairCreate(&keypair1_config,"Persistkeypair1",BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(keypair1_index,5);
     ck_assert_int_gt(keypair1_index,0);
@@ -362,14 +362,14 @@ START_TEST(test_001CreateKeypair_0010CreatePersistKeypairSuccess)
     /* 2.Verify keypair1 */
     ret = BoATKeypair_GetKeypairByIndex(&keypair2_ctx,keypair1_index);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypairCtx(&keypair2_ctx,keypair1_index,"Persistkeypair1",&keypair1_config);
+    ret = check_platon_keypairCtx(&keypair2_ctx,keypair1_index,"Persistkeypair1",&keypair1_config);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* 3.Check keypair list */
     BoatIotKeypairContext keypair_list;
     ret = BoATKeypair_GetKeypairList(&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_platon_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* 4.Delete the keypair */
@@ -390,13 +390,13 @@ START_TEST(test_001CreateKeypair_0011Create2PersistKeypairSuccess)
 
     BoatIotSdkInit();
     /* 1. Create keypair1 */
-    BoatKeypairPriKeyCtx_config keypair1_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair1_config = get_platon_keypair_settings();
     keypair1_index = BoatKeypairCreate(&keypair1_config,"Persistkeypair1",BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(keypair1_index,5);
     ck_assert_int_gt(keypair1_index,0);
 
     /* 2. Create keypair2 */
-    BoatKeypairPriKeyCtx_config keypair2_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair2_config = get_platon_keypair_settings();
     keypair2_index = BoatKeypairCreate(&keypair2_config,"Persistkeypair2",BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(keypair2_index,5);
     ck_assert_int_gt(keypair2_index,0);
@@ -407,12 +407,12 @@ START_TEST(test_001CreateKeypair_0011Create2PersistKeypairSuccess)
     /* 4.Verify keypair */
     ret = BoATKeypair_GetKeypairByIndex(&keypair3_ctx,keypair1_index);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypairCtx(&keypair3_ctx,keypair1_index,"Persistkeypair1",&keypair1_config);
+    ret = check_platon_keypairCtx(&keypair3_ctx,keypair1_index,"Persistkeypair1",&keypair1_config);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     ret = BoATKeypair_GetKeypairByIndex(&keypair4_ctx,keypair2_index);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypairCtx(&keypair4_ctx,keypair2_index,"Persistkeypair2",&keypair2_config);
+    ret = check_platon_keypairCtx(&keypair4_ctx,keypair2_index,"Persistkeypair2",&keypair2_config);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* 5.Check keypair list */
@@ -420,10 +420,10 @@ START_TEST(test_001CreateKeypair_0011Create2PersistKeypairSuccess)
     ret = BoATKeypair_GetKeypairList(&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
-    ret = check_venachain_keypair_in_keypairList(&keypair3_ctx,&keypair_list);
+    ret = check_platon_keypair_in_keypairList(&keypair3_ctx,&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
-    ret = check_venachain_keypair_in_keypairList(&keypair4_ctx,&keypair_list);
+    ret = check_platon_keypair_in_keypairList(&keypair4_ctx,&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* 6.Delete keypairs*/
@@ -446,19 +446,19 @@ START_TEST(test_002DeleteKeypair_0001DeleteOnetimeKeypairSuccess)
     BoatIotSdkInit();
 
     /* 1.Execute 001_0001*/
-    BoatKeypairPriKeyCtx_config keypair1_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair1_config = get_platon_keypair_settings();
     keypair1_index = BoatKeypairCreate(&keypair1_config,NULL,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(keypair1_index, 0);
 
     ret = BoATKeypair_GetKeypairByIndex(&keypair2_ctx,0);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypairCtx(&keypair2_ctx,keypair1_index,NULL,&keypair1_config);
+    ret = check_platon_keypairCtx(&keypair2_ctx,keypair1_index,NULL,&keypair1_config);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     BoatIotKeypairContext keypair_list;
     ret = BoATKeypair_GetKeypairList(&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_platon_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* 2.Delete Onetime-keypair*/
@@ -468,7 +468,7 @@ START_TEST(test_002DeleteKeypair_0001DeleteOnetimeKeypairSuccess)
     BoatIotKeypairContext keypair_list1;
     ret = BoATKeypair_GetKeypairList(&keypair_list1);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
+    ret = check_platon_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
     ck_assert_int_eq(ret, BOAT_ERROR);
 
     BoatIotSdkDeInit();
@@ -484,19 +484,19 @@ START_TEST(test_002DeleteKeypair_0002DeleteOnetimeKeypairFailureTwice)
     BoatIotSdkInit();
 
     /* 1.Execute 002_0001*/
-    BoatKeypairPriKeyCtx_config keypair1_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair1_config = get_platon_keypair_settings();
     keypair1_index = BoatKeypairCreate(&keypair1_config,NULL,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(keypair1_index, 0);
 
     ret = BoATKeypair_GetKeypairByIndex(&keypair2_ctx,0);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypairCtx(&keypair2_ctx,keypair1_index,NULL,&keypair1_config);
+    ret = check_platon_keypairCtx(&keypair2_ctx,keypair1_index,NULL,&keypair1_config);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     BoatIotKeypairContext keypair_list;
     ret = BoATKeypair_GetKeypairList(&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_platon_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     ret = BoATIotKeypairDelete(0);
@@ -505,7 +505,7 @@ START_TEST(test_002DeleteKeypair_0002DeleteOnetimeKeypairFailureTwice)
     BoatIotKeypairContext keypair_list1;
     ret = BoATKeypair_GetKeypairList(&keypair_list1);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
+    ret = check_platon_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
     ck_assert_int_eq(ret, BOAT_ERROR);
 
     /* 2. Delete again*/
@@ -525,19 +525,19 @@ START_TEST(test_002DeleteKeypair_0003DeleteOnetimeKeypairFailureThenRecover)
     BoatIotSdkInit();
 
     /* 1.Execute 001_0001*/
-    BoatKeypairPriKeyCtx_config keypair1_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair1_config = get_platon_keypair_settings();
     keypair1_index = BoatKeypairCreate(&keypair1_config,NULL,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(keypair1_index, 0);
 
     ret = BoATKeypair_GetKeypairByIndex(&keypair2_ctx,0);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypairCtx(&keypair2_ctx,keypair1_index,NULL,&keypair1_config);
+    ret = check_platon_keypairCtx(&keypair2_ctx,keypair1_index,NULL,&keypair1_config);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     BoatIotKeypairContext keypair_list;
     ret = BoATKeypair_GetKeypairList(&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_platon_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* 2.Delete Onetime-keypair*/
@@ -574,20 +574,20 @@ START_TEST(test_002DeleteKeypair_0005DeletePersistKeypairSuccess)
     BoatIotSdkInit();
 
     /* 1.Execute 001_0010*/ 
-    BoatKeypairPriKeyCtx_config keypair1_config = get_venachain_keypair_settings();
+    BoatKeypairPriKeyCtx_config keypair1_config = get_platon_keypair_settings();
     keypair1_index = BoatKeypairCreate(&keypair1_config,"Persistkeypair1",BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(keypair1_index,5);
     ck_assert_int_gt(keypair1_index,0);
 
     ret = BoATKeypair_GetKeypairByIndex(&keypair2_ctx,keypair1_index);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypairCtx(&keypair2_ctx,keypair1_index,"Persistkeypair1",&keypair1_config);
+    ret = check_platon_keypairCtx(&keypair2_ctx,keypair1_index,"Persistkeypair1",&keypair1_config);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     BoatIotKeypairContext keypair_list;
     ret = BoATKeypair_GetKeypairList(&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_platon_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* 2.Delete the keypair */
@@ -598,7 +598,7 @@ START_TEST(test_002DeleteKeypair_0005DeletePersistKeypairSuccess)
     BoatIotKeypairContext keypair_list1;
     ret = BoATKeypair_GetKeypairList(&keypair_list1);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_venachain_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
+    ret = check_platon_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
     ck_assert_int_eq(ret, BOAT_ERROR);
 
 
