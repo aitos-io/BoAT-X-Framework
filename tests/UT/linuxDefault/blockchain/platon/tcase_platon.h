@@ -24,5 +24,5 @@
 
 extern char g_platon_private_key_buf[1024];
 extern BoatKeypairPriKeyCtx_config g_keypair_config;
-extern BoatVenachainNetworkConfig g_platon_network_config;
+extern BoatPlatONNetworkConfig g_platon_network_config;
 extern BUINT8 g_binFormatKey[32];
