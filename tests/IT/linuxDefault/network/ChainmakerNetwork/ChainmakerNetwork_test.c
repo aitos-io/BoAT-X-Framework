@@ -77,6 +77,25 @@ const BCHAR *chainmaker_client_tls_cert = "-----BEGIN CERTIFICATE-----\n"
                                           "ln6O\n"
                                           "-----END CERTIFICATE-----\n";
 
+ const BCHAR* chainmaker_ca_tls_cert = 
+                                        "-----BEGIN CERTIFICATE-----\n"
+                                        "MIICnjCCAkOgAwIBAgICK7swCgYIKoZIzj0EAwIwgYoxCzAJBgNVBAYTAkNOMRAw\n"
+                                        "DgYDVQQIEwdCZWlqaW5nMRAwDgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1v\n"
+                                        "cmcxLmNoYWlubWFrZXIub3JnMRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMT\n"
+                                        "GWNhLnd4LW9yZzEuY2hhaW5tYWtlci5vcmcwHhcNMjIxMTI1MDYyNTMxWhcNMzIx\n"
+                                        "MTIyMDYyNTMxWjCBijELMAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaWppbmcxEDAO\n"
+                                        "BgNVBAcTB0JlaWppbmcxHzAdBgNVBAoTFnd4LW9yZzEuY2hhaW5tYWtlci5vcmcx\n"
+                                        "EjAQBgNVBAsTCXJvb3QtY2VydDEiMCAGA1UEAxMZY2Eud3gtb3JnMS5jaGFpbm1h\n"
+                                        "a2VyLm9yZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABMbHVgzI2LlAMNsPCnZO\n"
+                                        "IUfYpkqRNDwjFalPs3gUQndwUYWCl1BiguaWed9fHorsfnc+GwTGjcIwE7iO/nVu\n"
+                                        "1najgZYwgZMwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wKQYDVR0O\n"
+                                        "BCIEIP8JF6Wzp59FtiT7y15PbQ75V22Z437e+kiBdsotqtNnMEUGA1UdEQQ+MDyC\n"
+                                        "DmNoYWlubWFrZXIub3Jngglsb2NhbGhvc3SCGWNhLnd4LW9yZzEuY2hhaW5tYWtl\n"
+                                        "ci5vcmeHBH8AAAEwCgYIKoZIzj0EAwIDSQAwRgIhAKN3jHuuMUsfY9UG6cyrRLtN\n"
+                                        "MtqVL1KAr+h/KBxwCRWcAiEAx3uFKTj/RCNqJVL35ULz5pWcIaK/0TWRuq6sisXd\n"
+                                        "wVk=\n"
+                                        "-----END CERTIFICATE-----\n";
+
 BCHAR *chainmaker_node_url = "127.0.0.0:12301";
 BCHAR *chainmaker_host_name = "chainmaker.org";
 BCHAR *chainmaker_chain_id = "chain1";
@@ -113,42 +132,42 @@ BOAT_RESULT getChainmakerNetworkConfig(BoatChainmakerNetworkData *networkConfig)
     }
     memcpy(networkConfig->client_sign_cert_content.content, chainmaker_client_sign_cert, networkConfig->client_sign_cert_content.length);
 
-    // set url and name
-    if ((strlen(chainmaker_node_url) >= BAOT_CHAINMAKER_NODE_STR_LEN) ||
-        (strlen(chainmaker_host_name) >= BAOT_CHAINMAKER_NODE_STR_LEN) ||
-        (strlen(chainmaker_chain_id) >= BAOT_CHAINMAKER_NODE_STR_LEN) ||
-        (strlen(chainmaker_org_id) >= BAOT_CHAINMAKER_NODE_STR_LEN))
-    {
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
+    networkConfig->node_url  = BoatMalloc(strlen(chainmaker_node_url) + 1);
+    networkConfig->host_name = BoatMalloc(strlen(chainmaker_host_name) + 1);
+    networkConfig->chain_id  = BoatMalloc(strlen(chainmaker_chain_id) + 1);
+    networkConfig->org_id    = BoatMalloc(strlen(chainmaker_org_id) + 1);
 
-    // strncpy(networkConfig->node_url, chainmaker_node_url, strlen(chainmaker_node_url));
-    // strncpy(networkConfig->host_name, chainmaker_host_name, strlen(chainmaker_host_name));
-    // strncpy(networkConfig->chain_id, chainmaker_chain_id, strlen(chainmaker_chain_id));
-    // strncpy(networkConfig->org_id, chainmaker_org_id, strlen(chainmaker_org_id));
-    strcpy(networkConfig->node_url, chainmaker_node_url);
+    strcpy(networkConfig->node_url,  chainmaker_node_url);
     strcpy(networkConfig->host_name, chainmaker_host_name);
-    strcpy(networkConfig->chain_id, chainmaker_chain_id);
-    strcpy(networkConfig->org_id, chainmaker_org_id);
+    strcpy(networkConfig->chain_id,  chainmaker_chain_id);
+    strcpy(networkConfig->org_id,    chainmaker_org_id);
 
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
-    // set tls cert context
-    networkConfig->client_tls_cert_content.length = strlen(chainmaker_client_tls_cert) + 1;
-    if (networkConfig->client_tls_cert_content.length > BOAT_CHAINMAKER_CERT_MAX_LEN)
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
+     networkConfig->ca_tls_cert_content.length = strlen(chainmaker_ca_tls_cert);
+    if (networkConfig->ca_tls_cert_content.length  > BOAT_CHAINMAKER_CERT_MAX_LEN)
     {
         return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
     }
-    memcpy(networkConfig->client_tls_cert_content.content, chainmaker_client_tls_cert, networkConfig->client_tls_cert_content.length);
-#endif
+    strcpy(networkConfig->ca_tls_cert_content.content, chainmaker_ca_tls_cert);
 
-#if (BOAT_CHAINMAKR_TLS_IDENTIFY_CLIENT == 1)
-    networkConfig->client_tls_privkey_content.value_len = strlen(chainmaker_clinet_tls_prikey) + 1;
-    if (networkConfig->client_tls_privkey_content.value_len > BOAT_CHAINMAKER_PRIKEY_MAX_LEN)
-    {
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
-    memcpy(networkConfig->client_tls_privkey_content.value, chainmaker_clinet_tls_prikey, networkConfig->client_tls_privkey_content.value_len);
-#endif
+    #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+        //set tls cert context
+        networkConfig->client_tls_cert_content.length = strlen(chainmaker_client_tls_cert);
+        if (networkConfig->client_tls_cert_content.length  > BOAT_CHAINMAKER_CERT_MAX_LEN)
+        {
+            return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+        }
+        strcpy(networkConfig->client_tls_cert_content.content, chainmaker_client_tls_cert);
+
+        networkConfig->client_tls_privkey_data.value_len = strlen(chainmaker_clinet_tls_prikey);
+        if (networkConfig->client_tls_privkey_data.value_len  > BOAT_CHAINMAKER_PRIKEY_MAX_LEN)
+        {
+            return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+        }
+        strcpy((BCHAR *)networkConfig->client_tls_privkey_data.value, chainmaker_clinet_tls_prikey);
+    #endif
+#endif 
+
     return result;
 }
 
@@ -178,44 +197,69 @@ BOAT_RESULT getChainmakerNetworkConfig2(BoatChainmakerNetworkData *networkConfig
     }
     memcpy(networkConfig->client_sign_cert_content.content, chainmaker_client_sign_cert, networkConfig->client_sign_cert_content.length);
 
-    // set url and name
-    if ((strlen(chainmaker_node_url2) >= BAOT_CHAINMAKER_NODE_STR_LEN) ||
-        (strlen(chainmaker_host_name2) >= BAOT_CHAINMAKER_NODE_STR_LEN) ||
-        (strlen(chainmaker_chain_id2) >= BAOT_CHAINMAKER_NODE_STR_LEN) ||
-        (strlen(chainmaker_org_id2) >= BAOT_CHAINMAKER_NODE_STR_LEN))
-    {
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
 
-    // strncpy(networkConfig->node_url, chainmaker_node_url2, strlen(chainmaker_node_url2));
-    // strncpy(networkConfig->host_name, chainmaker_host_name2, strlen(chainmaker_host_name2));
-    // strncpy(networkConfig->chain_id, chainmaker_chain_id2, strlen(chainmaker_chain_id2));
-    // strncpy(networkConfig->org_id, chainmaker_org_id2, strlen(chainmaker_org_id2));
+    networkConfig->node_url  = BoatMalloc(strlen(chainmaker_node_url2) + 1);
+    networkConfig->host_name = BoatMalloc(strlen(chainmaker_host_name2) + 1);
+    networkConfig->chain_id  = BoatMalloc(strlen(chainmaker_chain_id2) + 1);
+    networkConfig->org_id    = BoatMalloc(strlen(chainmaker_org_id2) + 1);
 
-    strcpy(networkConfig->node_url, chainmaker_node_url2);
+    strcpy(networkConfig->node_url,  chainmaker_node_url2);
     strcpy(networkConfig->host_name, chainmaker_host_name2);
-    strcpy(networkConfig->chain_id, chainmaker_chain_id2);
-    strcpy(networkConfig->org_id, chainmaker_org_id2);
+    strcpy(networkConfig->chain_id,  chainmaker_chain_id2);
+    strcpy(networkConfig->org_id,    chainmaker_org_id2);
 
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
-    // set tls cert context
-    networkConfig->client_tls_cert_content.length = strlen(chainmaker_client_tls_cert) + 1;
-    if (networkConfig->client_tls_cert_content.length > BOAT_CHAINMAKER_CERT_MAX_LEN)
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
+     networkConfig->ca_tls_cert_content.length = strlen(chainmaker_ca_tls_cert);
+    if (networkConfig->ca_tls_cert_content.length  > BOAT_CHAINMAKER_CERT_MAX_LEN)
     {
         return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
     }
-    memcpy(networkConfig->client_tls_cert_content.content, chainmaker_client_tls_cert, networkConfig->client_tls_cert_content.length);
-#endif
+    strcpy(networkConfig->ca_tls_cert_content.content, chainmaker_ca_tls_cert);
 
-#if (BOAT_CHAINMAKR_TLS_IDENTIFY_CLIENT == 1)
-    networkConfig->client_tls_privkey_content.value_len = strlen(chainmaker_clinet_tls_prikey) + 1;
-    if (networkConfig->client_tls_privkey_content.value_len > BOAT_CHAINMAKER_PRIKEY_MAX_LEN)
-    {
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
-    memcpy(networkConfig->client_tls_privkey_content.value, chainmaker_clinet_tls_prikey, networkConfig->client_tls_privkey_content.value_len);
-#endif
+    #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+        //set tls cert context
+        networkConfig->client_tls_cert_content.length = strlen(chainmaker_client_tls_cert);
+        if (networkConfig->client_tls_cert_content.length  > BOAT_CHAINMAKER_CERT_MAX_LEN)
+        {
+            return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+        }
+        strcpy(networkConfig->client_tls_cert_content.content, chainmaker_client_tls_cert);
+
+        networkConfig->client_tls_privkey_data.value_len = strlen(chainmaker_clinet_tls_prikey);
+        if (networkConfig->client_tls_privkey_data.value_len  > BOAT_CHAINMAKER_PRIKEY_MAX_LEN)
+        {
+            return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+        }
+        strcpy((BCHAR *)networkConfig->client_tls_privkey_data.value, chainmaker_clinet_tls_prikey);
+    #endif
+#endif 
     return result;
+}
+
+void chainmakerWalletConfigFree(BoatChainmakerNetworkData networkConfig)
+{
+
+    if (networkConfig.node_url != NULL)
+    {
+        BoatFree(networkConfig.node_url);
+    }
+
+    if (networkConfig.host_name != NULL)
+    {
+        BoatFree(networkConfig.host_name);
+    }
+
+    if (networkConfig.chain_id != NULL)
+    {
+        BoatFree(networkConfig.chain_id);
+    }
+
+    if (networkConfig.org_id != NULL)
+    {
+        BoatFree(networkConfig.org_id);
+    }
+
+
 }
 
 /**
@@ -251,6 +295,8 @@ START_TEST(test_001chainmakerNetwork_0001CreateOneTimeNetworkSuccess)
     ck_assert(strcmp(networkdata.org_id, chainmaker_org_id) == 0);
     /* check url in the struct , must be same to the configuration */
     ck_assert_int_eq(strcmp(networkdata.node_url, chainmaker_node_url), 0);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
     /* delete the onetime networl */
     BoATChainmakerNetworkDelete(0);
 }
@@ -291,6 +337,8 @@ START_TEST(test_001chainmakerNetwork_0002CreatePersistNetworkSuccess)
     ck_assert(strcmp(networkdata.org_id, chainmaker_org_id2) == 0);
     /* check url in the struct , must be same to the configuration */
     ck_assert_int_eq(strcmp(networkdata.node_url, chainmaker_node_url2), 0);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
     /* delete the persist network */
     BoATChainmakerNetworkDelete(1);
 }
@@ -319,6 +367,8 @@ START_TEST(test_001chainmakerNetwork_0003CreatetNetworkFail_signCert_content_emp
     rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
 }
 END_TEST
 
@@ -344,6 +394,8 @@ START_TEST(test_001chainmakerNetwork_0004CreatetNetworkFail_node_url_empty)
     rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
 }
 END_TEST
 
@@ -369,6 +421,8 @@ START_TEST(test_001chainmakerNetwork_0005CreatetNetworkFail_host_name_empty)
     rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
 }
 END_TEST
 
@@ -394,6 +448,8 @@ START_TEST(test_001chainmakerNetwork_0006CreatetNetworkFail_chain_id_empty)
     rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
 }
 END_TEST
 
@@ -419,6 +475,8 @@ START_TEST(test_001chainmakerNetwork_0007CreatetNetworkFail_org_id_empty)
     rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
 }
 END_TEST
 
@@ -449,6 +507,8 @@ START_TEST(test_001chainmakerNetwork_0008DeleteOneTimeNetworkSuccess)
     /* check the result of getting network data ,
         the onetime network has been deleted ,so return error */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
 }
 END_TEST
 
@@ -480,6 +540,8 @@ START_TEST(test_001chainmakerNetwork_0009DeletePersistNetworkSuccess)
     /* check the result of getting network data ,
         the persist network has been deleted ,so return error */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INEXISTENCE);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
 }
 END_TEST
 
@@ -599,6 +661,8 @@ START_TEST(test_001chainmakerNetwork_0014GetNetworkList_OnlyOnetimeNetwork)
     ck_assert_int_eq(strcmp(networkList.networks[0].org_id, chainmaker_org_id), 0);
     /* check url ,must be same to created */
     ck_assert_int_eq(strcmp(networkList.networks[0].node_url, chainmaker_node_url), 0);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
 }
 END_TEST
 
@@ -660,6 +724,8 @@ START_TEST(test_001chainmakerNetwork_0015GetNetworkList_OnetimeAndPersistNetwork
     ck_assert_int_eq(strcmp(networkList.networks[1].org_id, chainmaker_org_id), 0);
     /* check url ,must be same to created */
     ck_assert_int_eq(strcmp(networkList.networks[1].node_url, chainmaker_node_url), 0);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
     /* delete all the networks*/
     BoATChainmakerNetworkDelete(0);
     BoATChainmakerNetworkDelete(1);
@@ -745,6 +811,8 @@ START_TEST(test_001chainmakerNetwork_0018GetNetworkByIndex_Onetime)
     ck_assert_str_eq(networkdata.org_id, chainmaker_org_id);
     /* check url ,must be same to created */
     ck_assert_str_eq(networkdata.node_url, chainmaker_node_url);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
     /* delete all the networks*/
     BoATChainmakerNetworkDelete(0);
     BoATChainmakerNetworkDelete(1);
@@ -795,6 +863,8 @@ START_TEST(test_001chainmakerNetwork_0019GetNetworkByIndex_Persist)
     ck_assert_str_eq(networkdata.org_id, chainmaker_org_id2);
     /* check url ,must be same to created */
     ck_assert_str_eq(networkdata.node_url, chainmaker_node_url2);
+    /* free configuration struct */
+    chainmakerWalletConfigFree(network_config);
     /* delete all the networks*/
     BoATChainmakerNetworkDelete(0);
     BoATChainmakerNetworkDelete(1);
