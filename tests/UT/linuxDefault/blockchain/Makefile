@@ -15,4 +15,4 @@ testplaton:
 clean:
 	make -C fabric clean
 	make -C venachain clean
-	make -C platone
+	make -C platone clean
