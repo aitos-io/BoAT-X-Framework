@@ -224,13 +224,13 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
     }
 
     BUINT8 recipient[BOAT_PLATON_ADDRESS_SIZE];
-    BUINT32 converted_len;
+    BSINT32 converted_len;
 
     converted_len = BoatPlatONBech32Decode(recipient_str, strlen(recipient_str), recipient);
 
     // converted_len = UtilityHexToBin(recipient, BOAT_PLATON_ADDRESS_SIZE, recipient_str,
     //								TRIMBIN_TRIM_NO, BOAT_TRUE);
-    if (converted_len == 0)
+    if (converted_len <= 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "recipient Initialize failed.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
