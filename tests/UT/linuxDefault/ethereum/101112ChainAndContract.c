@@ -134,6 +134,40 @@ START_TEST(test_010CallContract_0002SetTwoBytesArraySuccess)
 }
 END_TEST
 
+
+START_TEST(test_010CallContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess) 
+{
+    BOAT_RESULT ret;
+
+    BoatEthWallet *wallet;
+    BoatEthTx *tx_ctx;
+
+    BCHAR *result_str;
+    BCHAR *teststring1 = "Hello";
+    BCHAR *teststring2 = ",World";
+    BoatFieldVariable ba1[] = {{"AbcdE", 5},{"qae", 4},{"Mti64$#", 6}};
+    BoatFieldVariable ba2[] = {{"hy45jws4jw", 3},{"3qh553", 4},{"3246754", 5},{"12345", 5},{"31351", 4}};
+    BUINT32 i;
+
+    BoatIotSdkInit();
+
+    ethereumOnetimeWalletPrepare(wallet);
+
+    /* Init TX */
+    ret = BoatEthTxInit(wallet,tx_ctx,BOAT_TRUE, NULL,
+						TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
+    ck_assert_int_eq(ret, BOAT_SUCCESS);
+
+    /* Call Contract */
+    result_str = TestPython_testTwoBytesArraysAndTwoNonFixed(tx_ctx, teststring1, ba1, 3, teststring2, ba2, 5);
+    ck_assert_ptr_ne(result_str, NULL);
+
+    BoatEthWalletDeInit(wallet);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
 Suite *make_chainAndContract_suite(void) 
 {
     /* Create Suite */
@@ -147,6 +181,7 @@ Suite *make_chainAndContract_suite(void)
     /* Test cases are added to the test set */
     tcase_add_test(tc_chainAndContract_api, test_010CallContract_0001SetBytesSuccess);
     tcase_add_test(tc_chainAndContract_api, test_010CallContract_0002SetTwoBytesArraySuccess);
+    tcase_add_test(tc_chainAndContract_api, test_010CallContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess);
 
     return s_chainAndContract;
 }
