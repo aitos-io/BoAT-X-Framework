@@ -5,10 +5,10 @@
 include ${SOFT_WORKDIR}/build/buildenv.mk
 
 
-LOCAL_NAME := demo/platone_demo
+LOCAL_NAME := demo/boat_fabric_demo
 
 LOCAL_API_DEPENDS :=  ${API_PLATFORM_DEPENDS} \
-                        demo/platone_demo/include
+                        demo/boat_fabric_demo/include
 
 LOCAL_MODULE_DEPENDS :=
 

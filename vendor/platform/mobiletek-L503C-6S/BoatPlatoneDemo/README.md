@@ -12,7 +12,7 @@
 
 1、拷贝 BoAT代码，将 BoAT-X-Framework 整个文件夹拷贝至`<L503 Root>/app`下。
 
-2、拷贝 `BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/L503CRootDirCode/app/demo/platone_demo`到`<L503 Root>/app/demo`下。
+2、拷贝 `BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/BoatPlatoneDemo/L503CRootDirCode/app/demo/boat_platone_demo`到`<L503 Root>/app/demo`下。
 
 3、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/main.c`到`<L503 Root>/app/demo`下。
 
@@ -54,13 +54,13 @@
     |   |-- wifi_demo
     |   |-- main.c
     |   |-- Makefile
-    |   |-- platone_demo
-    |   |   |-- platone_demo.c
+    |   |-- boat_platone_demo
+    |   |   |-- boat_platone_demo.c
     |   |   |-- my_contract.cpp.abi.c
     |   |   |-- my_contract.cpp.abi.h
     |   |   |-- Makefile
     |   |   |-- include
-    |   |   |   |-- platone_demo.h
+    |   |   |   |-- boat_platone_demo.h
 ```
 
 
@@ -148,12 +148,12 @@
 
 ### 2、编译L503演示demo程序，生成.zip下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在`<L503 Root>/app/demo/platone_demo/platone_demo.c`。
+   通过BoAT-X-Framework访问区块链的演示代码，在`<L503 Root>/app/demo/boat_platone_demo/boat_platone_demo.c`。
    
    打开windows终端进入`<L503 Root>/app`
    ```
    cd <L503 Root>/app
-   build_app.bat
+   build_app.bat -8
    ```
 
    编译成功会在`<L503 Root>/app/release`下生成`user_app.bin`文件。

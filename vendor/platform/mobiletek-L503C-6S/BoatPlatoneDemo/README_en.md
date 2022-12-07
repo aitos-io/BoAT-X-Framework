@@ -12,7 +12,7 @@ Assuming `<L503 Root>` to be the root directory of L503 SDK:
 
 1. Copy the entire BoAT-X-Framework directory into `<L503 Root>/app`.
 
-2. Copy `BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/L503CRootDirCode/app/demo/platone_demo` into `<L503 Root>/app/demo`.
+2. Copy `BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/BoatPlatoneDemo/L503CRootDirCode/app/demo/boat_platone_demo` into `<L503 Root>/app/demo`.
 
 3. Copy `BoAT-X-Framework/vendor/platform/mobiletek-L503C-6S/main.c` into `<L503 Root>/app/demo`.
 
@@ -54,13 +54,13 @@ After these files copied, the directory structure should look like:
     |   |-- wifi_demo
     |   |-- main.c
     |   |-- Makefile
-    |   |-- platone_demo
-    |   |   |-- platone_demo.c
+    |   |-- boat_platone_demo
+    |   |   |-- boat_platone_demo.c
     |   |   |-- my_contract.cpp.abi.c
     |   |   |-- my_contract.cpp.abi.h
     |   |   |-- Makefile
     |   |   |-- include
-    |   |   |   |-- platone_demo.h
+    |   |   |   |-- boat_platone_demo.h
 ```
 
 
@@ -148,7 +148,7 @@ After these files copied, the directory structure should look like:
 
 ### 2. Build demo program, generate .zip file for download
 
-   Demo code for accessing blockchain through BoAT-X Framework is in `<L503 Root>/app/demo/platone_demo/platone_demo.c`。
+   Demo code for accessing blockchain through BoAT-X Framework is in `<L503 Root>/app/demo/boat_platone_demo/boat_platone_demo.c`。
    
    Open a Windows cmd window and build the app:
    ```

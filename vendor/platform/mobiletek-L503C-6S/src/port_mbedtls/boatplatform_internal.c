@@ -816,14 +816,14 @@ BOAT_RESULT BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatKe
 				break;
 			default:
 				BoatLog(BOAT_LOG_CRITICAL, "invalid private key format.");
-				result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
+				result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
 				break;
 		}
 	}
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "invalid private key format.");
-		result = BOAT_ERROR_WALLET_KEY_GENMODE_ERR;
+		result = BOAT_ERROR_KEYPAIR_KEY_GENMODE_ERR;
 	}
 
     return result;

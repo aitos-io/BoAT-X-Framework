@@ -273,5 +273,5 @@ void BoatFree(void *mem_ptr)
 
 void BoatSleep(BUINT32 second)
 {
-    ol_os_task_sleep(2000 * second);
+    ol_os_task_sleep(200 * second);
 }

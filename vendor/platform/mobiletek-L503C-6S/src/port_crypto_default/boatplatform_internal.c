@@ -38,13 +38,11 @@
 /* net releated include */
 #if (PROTOCOL_USE_HLFABRIC == 1)
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
 #include <string.h>
 #include <sys/time.h>
 #include "http2intf.h"
+#include "mbtk_ssl_hal.h"
+#include "mbtk_socket_api.h"
 #endif
 
 // #if (PROTOCOL_USE_HLFABRIC == 1)
@@ -55,16 +53,19 @@
 
 uint32_t random32(void)
 {
-	static uint32_t seed = 0;
-	if (seed == 0)
-	{
-		seed = time(NULL);
-	}
-	// Linear congruential generator from Numerical Recipes
-	// https://en.wikipedia.org/wiki/Linear_congruential_generator
-	seed = 1664525 * seed + 1013904223;
+	BUINT8 buf[4];
+	// static uint32_t seed = 0;
+	// if (seed == 0)
+	// {
+	// 	seed = time(NULL);
+	// }
+	// // Linear congruential generator from Numerical Recipes
+	// // https://en.wikipedia.org/wiki/Linear_congruential_generator
+	// seed = 1664525 * seed + 1013904223;
 
-	return seed;
+	// return seed;
+	ol_random(buf, sizeof(buf));
+	return (buf[0]<<24) | (buf[1]<<16) | (buf[2]<<8) | buf[3];
 }
 
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
@@ -78,11 +79,10 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 
 	(void)rsvd;
 
-	random_buffer(output, outputLen);
+	ol_random(output, outputLen);
 
 	return BOAT_SUCCESS;
 }
-
 
 BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx, 
 						  const BUINT8 *digest, BUINT32 digestLen, 
@@ -406,73 +406,74 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 #if (PROTOCOL_USE_HLFABRIC == 1)
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
-    int                connectfd;
-    char               ip[64];
-    char               port[8];
-    char               *ptr = NULL;
-    struct hostent     *he; 
-    struct sockaddr_in server;
-    struct sockaddr    localaddr;
-    struct sockaddr_in *localaddr_ptr;
-    socklen_t          addrlen = sizeof(struct sockaddr);
+    // mbtk_socket_t      connectfd;
+    // char               ip[64];
+    // char               port[8];
+    // char               *ptr = NULL;
+    // struct hostent     *he; 
+    // struct sockaddr_in server;
+    // struct sockaddr    localaddr;
+    // struct sockaddr_in *localaddr_ptr;
+    // socklen_t          addrlen = sizeof(struct sockaddr);
+	// mbtk_ipaddr_struct addr_info = {0};
 
-    (void)rsvd;
+    // (void)rsvd;
 
-    ptr = strchr(address, ':');
-    if (NULL == ptr)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", address);
-        return -1;
-    }
+    // ptr = strchr(address, ':');
+    // if (NULL == ptr)
+    // {
+    //     BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", address);
+    //     return -1;
+    // }
 
-    memset(ip  , 0      , sizeof(ip));
-    memset(port, 0      , sizeof(port));
-    memcpy(ip  , address, (int)(ptr - address));
-    memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
+    // memset(ip  , 0      , sizeof(ip));
+    // memset(port, 0      , sizeof(port));
+    // memcpy(ip  , address, (int)(ptr - address));
+    // memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
 
-    if ((he = gethostbyname(ip)) == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "gethostbyname() error");
-        return -1;
-    }
+	// if (ol_gethostbyname(ip, &addr_info) != BOAT_SUCCESS)
+    // {
+    //     BoatLog(BOAT_LOG_CRITICAL, "gethostbyname() error");
+    //     return -1;
+    // }
 
-    if ((connectfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "socket() error");
-        return -1;
-    }
+    // if ((connectfd = ol_socket(OL_AF_INET, OL_SOCK_STREAM, 0)) < 0)
+    // {
+    //     BoatLog(BOAT_LOG_CRITICAL, "socket() error");
+    //     return -1;
+    // }
 
-    struct timeval timeout = {0, 500*1000};
-    setsockopt(connectfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(struct timeval));
-    setsockopt(connectfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(struct timeval));
+    // struct timeval timeout = {0, 500*1000};
+    // ol_setsocketopt(connectfd, OL_SOL_SOCKET, OL_SO_SNDTIMEO, (char *)&timeout, sizeof(struct timeval));
+    // ol_setsocketopt(connectfd, OL_SOL_SOCKET, OL_SO_RCVTIMEO, (char *)&timeout, sizeof(struct timeval));
 
-    memset(&server, 0, sizeof(server));
-    server.sin_family = AF_INET;
-    server.sin_port = htons(atoi(port));
-    server.sin_addr = *((struct in_addr *)(he->h_addr_list[0])); 
+    // memset(&server, 0, sizeof(server));
+    // server.sin_family = OL_AF_INET;
+    // server.sin_port = ol_htons(atoi(port));
+    // server.sin_addr.s_addr = ol_inet_addr(ip); 
 
-    if (connect(connectfd, (struct sockaddr *)&server,sizeof(struct sockaddr)) < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "connect() error");
-        close(connectfd);
-        return -1;
-    }
-    if (getsockname(connectfd, &localaddr, &addrlen) < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "getsockname() error");
-        close(connectfd);
-        return -1;
-    }
-    else
-    {
-        localaddr_ptr = (struct sockaddr_in*)&localaddr;
-        BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.", 
-        inet_ntoa(localaddr_ptr->sin_addr), htons(localaddr_ptr->sin_port));
-    }
+    // if (ol_connect(connectfd, server.sin_addr.s_addr, server.sin_port) < 0)
+    // {
+    //     BoatLog(BOAT_LOG_CRITICAL, "connect() error");
+    //     ol_close(connectfd);
+    //     return -1;
+    // }
+    // if (ol_getsocketname(connectfd, &localaddr, &addrlen) < 0)
+    // {
+    //     BoatLog(BOAT_LOG_CRITICAL, "getsockname() error");
+    //     ol_close(connectfd);
+    //     return -1;
+    // }
+    // else
+    // {
+    //     localaddr_ptr = (struct sockaddr_in*)&localaddr;
+    //     BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.", 
+    //     ol_inet_ntoa(localaddr_ptr->sin_addr.s_addr), ol_htons(localaddr_ptr->sin_port));
+    // }
 
-    BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
+    // BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
 
-    return connectfd;
+    return BOAT_TRUE;
 }
 
 
@@ -480,9 +481,65 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,const BoatFieldVariable clientPrikey,
 						const BoatFieldVariable clientCert,BSINT32 socketfd, void *tlsContext, void *rsvd)
 {
+	SSLCtx *tlsContext_ptr = (SSLCtx *)tlsContext;
+	SSLConfig conf_ssl ={0};
+	char *ptr = NULL;
+	char ip[64];
+    char port[8];
 	
-	//! @todo BoatTlsInit implementation in crypto default.
-	return BOAT_ERROR;
+	BOAT_RESULT result = BOAT_SUCCESS;
+	boat_try_declare;
+
+	ptr = strchr(hostName, ':');
+    if (NULL == ptr)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", hostName);
+        return BOAT_ERROR;
+    }
+
+	memset(ip  , 0      , sizeof(ip));
+    memset(port, 0      , sizeof(port));
+    memcpy(ip  , hostName, (int)(ptr - hostName));
+    memcpy(port, ptr + 1, strlen(hostName) - (int)(ptr - hostName));
+
+	conf_ssl.profileIdx = 0;
+	conf_ssl.dbgLevel = 3;
+	conf_ssl.protocol = 0;
+	conf_ssl.serverName = ip;
+	conf_ssl.serverPort = atoi(port);
+	conf_ssl.verify = SSL_VERIFY_MODE_NONE;
+	conf_ssl.vsn = SSL_VSN_ALL;
+	conf_ssl.cert.from = SSL_CERT_FROM_BUF;
+	conf_ssl.cert.path.rootCA = caChain.field_ptr;
+	conf_ssl.cert.path.clientCert = clientCert.field_ptr;
+	conf_ssl.cert.path.clientKey = clientPrikey.field_ptr;
+	ol_ssl_set_config(tlsContext_ptr, &conf_ssl);
+
+	result = ol_ssl_ctx_init(tlsContext_ptr);
+	BoatLog(BOAT_LOG_CRITICAL, "ol_ssl_ctx_init result:%d",result);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to ol_ssl_ctx_init.");
+        boat_throw(result, BoatTlsInit_exception);
+    }
+
+	result = ol_ssl_handshake(tlsContext_ptr, 60*1000);
+	BoatLog(BOAT_LOG_CRITICAL, "ol_ssl_handshake result:%d",result);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to ol_ssl_handshake.");
+        boat_throw(result, BoatTlsInit_exception);
+    }
+	/* boat catch handle */
+	boat_catch(BoatTlsInit_exception)
+	{
+        BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+        result = boat_exception;
+		ol_ssl_shutdown(tlsContext_ptr);
+		ol_ssl_ctx_deinit(tlsContext_ptr);
+	}
+	
+	return result;
 }
 #endif
 
@@ -490,8 +547,14 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,c
 BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, void *rsvd)
 {
 #if (BOAT_TLS_SUPPORT == 1) 
-	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
-	return -1;
+	if ((SSLCtx *)tlsContext == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "tlsContext can't be NULL.");
+		return -1;
+	}
+	BUINT8 *p = buf;
+
+	return ol_ssl_write((SSLCtx *)tlsContext, buf, len);
 #else
 	return send(sockfd, buf, len, 0);	
 #endif	
@@ -501,8 +564,13 @@ BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, 
 BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd)
 {
 #if (BOAT_TLS_SUPPORT == 1) 
-	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
-	return -1;
+	if ((SSLCtx *)tlsContext == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "tlsContext can't be NULL.");
+		return -1;
+	}
+
+	return ol_ssl_read((SSLCtx *)tlsContext, buf, len);
 #else
 	return recv(sockfd, buf, len, 0);
 #endif	
@@ -511,11 +579,18 @@ BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *
 
 void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 {
+	int ret = -1;
 	close(sockfd);
 #if (BOAT_TLS_SUPPORT == 1) 
-	// free tls releated
-	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
-#endif
+	if ((SSLCtx *)tlsContext == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "tlsContext can't be NULL.");
+		return -1;
+	}
+	ret = ol_ssl_shutdown((SSLCtx *)tlsContext);
+	ol_ssl_ctx_deinit((SSLCtx *)tlsContext);
+	return ret;
+#endif	
 }
 #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
 
