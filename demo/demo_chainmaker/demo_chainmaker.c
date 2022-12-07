@@ -184,7 +184,7 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
         {
             return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
         }
-        strcpy(networkConfig.client_tls_privkey_data.value, chainmaker_clinet_tls_prikey);
+        strcpy((BCHAR *)networkConfig.client_tls_privkey_data.value, chainmaker_clinet_tls_prikey);
     #endif
 #endif 
 
