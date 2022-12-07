@@ -79,8 +79,8 @@ START_TEST(test_005InitWallet_0001InitWalletSuccessOneTimeKeypairOneTimeNetwork)
     /* 2. Create onetime network */
     networkConfig.chain_id             = 300;
     networkConfig.eip155_compatibility = BOAT_FALSE;
-    memset(networkConfig.node_url_str,0U,BOAT_VENACHAIN_NODE_URL_MAX_LEN);
-    strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
+    memset(networkConfig.node_url_str,0U,BOAT_PLATON_NODE_URL_MAX_LEN);
+    strncpy(networkConfig.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatPlatONNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
@@ -122,8 +122,8 @@ START_TEST(test_005InitWallet_0002InitWalletSuccessOneTimeKeypairPersistNetwork)
     /* 2. Create persist network */
     networkConfig.chain_id             = 300;
     networkConfig.eip155_compatibility = BOAT_FALSE;
-    memset(networkConfig.node_url_str,0U,BOAT_VENACHAIN_NODE_URL_MAX_LEN);
-    strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
+    memset(networkConfig.node_url_str,0U,BOAT_PLATON_NODE_URL_MAX_LEN);
+    strncpy(networkConfig.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatPlatONNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(networkIndex,5);
@@ -170,8 +170,8 @@ START_TEST(test_005InitWallet_0003InitWalletSuccessPersistKeypairOneTimeNetwork)
     /* 2. Create onetime network */
     networkConfig.chain_id             = 300;
     networkConfig.eip155_compatibility = BOAT_FALSE;
-    memset(networkConfig.node_url_str,0U,BOAT_VENACHAIN_NODE_URL_MAX_LEN);
-    strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
+    memset(networkConfig.node_url_str,0U,BOAT_PLATON_NODE_URL_MAX_LEN);
+    strncpy(networkConfig.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatPlatONNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
@@ -217,8 +217,8 @@ START_TEST(test_005InitWallet_0004InitWalletSuccessPersistKeypairPersistNetwork)
     /* 2. Create persist network */
     networkConfig.chain_id             = 300;
     networkConfig.eip155_compatibility = BOAT_FALSE;
-    memset(networkConfig.node_url_str,0U,BOAT_VENACHAIN_NODE_URL_MAX_LEN);
-    strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
+    memset(networkConfig.node_url_str,0U,BOAT_PLATON_NODE_URL_MAX_LEN);
+    strncpy(networkConfig.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatPlatONNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(networkIndex,5);
@@ -254,8 +254,8 @@ START_TEST(test_005InitWallet_0005InitWalletFailureWrongKeypair)
     /* 1. Create onetime network */
     networkConfig.chain_id             = 300;
     networkConfig.eip155_compatibility = BOAT_FALSE;
-    memset(networkConfig.node_url_str,0U,BOAT_VENACHAIN_NODE_URL_MAX_LEN);
-    strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
+    memset(networkConfig.node_url_str,0U,BOAT_PLATON_NODE_URL_MAX_LEN);
+    strncpy(networkConfig.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatPlatONNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
@@ -327,8 +327,8 @@ START_TEST(test_006DeInitWallet_0001DeInitWalletSuccessOneTimeKeypairOneTimeNetw
     /* 2. Create onetime network */
     networkConfig.chain_id             = 300;
     networkConfig.eip155_compatibility = BOAT_FALSE;
-    memset(networkConfig.node_url_str,0U,BOAT_VENACHAIN_NODE_URL_MAX_LEN);
-    strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
+    memset(networkConfig.node_url_str,0U,BOAT_PLATON_NODE_URL_MAX_LEN);
+    strncpy(networkConfig.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatPlatONNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
@@ -373,8 +373,8 @@ START_TEST(test_006DeInitWallet_0002DeInitWalletSuccessOneTimeKeypairPersistNetw
     /* 2. Create persist network */
     networkConfig.chain_id             = 300;
     networkConfig.eip155_compatibility = BOAT_FALSE;
-    memset(networkConfig.node_url_str,0U,BOAT_VENACHAIN_NODE_URL_MAX_LEN);
-    strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
+    memset(networkConfig.node_url_str,0U,BOAT_PLATON_NODE_URL_MAX_LEN);
+    strncpy(networkConfig.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatPlatONNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(networkIndex,5);
@@ -424,8 +424,8 @@ START_TEST(test_006DeInitWallet_0003DeInitWalletSuccessPersistKeypairOneTimeNetw
     /* 2. Create onetime network */
     networkConfig.chain_id             = 300;
     networkConfig.eip155_compatibility = BOAT_FALSE;
-    memset(networkConfig.node_url_str,0U,BOAT_VENACHAIN_NODE_URL_MAX_LEN);
-    strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
+    memset(networkConfig.node_url_str,0U,BOAT_PLATON_NODE_URL_MAX_LEN);
+    strncpy(networkConfig.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatPlatONNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
@@ -474,8 +474,8 @@ START_TEST(test_006DeInitWallet_0004DeInitWalletSuccessPersistKeypairPersistNetw
     /* 2. Create persist network */
     networkConfig.chain_id             = 300;
     networkConfig.eip155_compatibility = BOAT_FALSE;
-    memset(networkConfig.node_url_str,0U,BOAT_VENACHAIN_NODE_URL_MAX_LEN);
-    strncpy(networkConfig.node_url_str, TEST_VENACHAIN_NODE_URL, BOAT_VENACHAIN_NODE_URL_MAX_LEN - 1);
+    memset(networkConfig.node_url_str,0U,BOAT_PLATON_NODE_URL_MAX_LEN);
+    strncpy(networkConfig.node_url_str, TEST_PLATON_NODE_URL, BOAT_PLATON_NODE_URL_MAX_LEN - 1);
 
     networkIndex = BoatPlatONNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(networkIndex,5);
