@@ -19,17 +19,19 @@
 #define TEST_GAS_LIMIT              "0x6691B7"
 #define TEST_GAS_PRICE              "0x4A817C800"
 #define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
-#define TEST_ETHEREUM_CHAIN_ID      300
+#define TEST_ETHEREUM_CHAIN_ID      5777
 
-#define TEST_RECIPIENT_ADDRESS      "0x3e3bd84cf33796cb55cc713d5134597eb809fcc3"
+#define TEST_CONTRACT_ADDRESS       "0x50D0501A86332245c9B4Bdece773A6388c1b69Aa"
+#define TEST_RECIPIENT_ADDRESS      "0x8c713E2F106a00F6d657BF00B3eF1eaCcffCbA4C"
 
-__BOATSTATIC BOAT_RESULT ethereumOnetimeWalletPrepare(BoatEthWallet *wallet_p)
+__BOATSTATIC BoatEthWallet *ethereumOnetimeWalletPrepare()
 {
     BOAT_RESULT index;
     BoatKeypairPriKeyCtx_config keypair_config;
     BUINT8 keypair_index;
     BoatEthNetworkConfig network_config;
     BUINT8 network_index;
+    BoatEthWallet *wallet_p;
 
         
     if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
@@ -54,7 +56,7 @@ __BOATSTATIC BOAT_RESULT ethereumOnetimeWalletPrepare(BoatEthWallet *wallet_p)
 	network_config.chain_id             = TEST_ETHEREUM_CHAIN_ID;
     network_config.eip155_compatibility = TEST_EIP155_COMPATIBILITY;
     memset(network_config.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
-    strncpy(network_config.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
+    strncpy(network_config.node_url_str, "http://127.0.0.1:7545", BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
     network_index = BoatEthNetworkCreate(&network_config,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(network_index, 0);
@@ -62,7 +64,7 @@ __BOATSTATIC BOAT_RESULT ethereumOnetimeWalletPrepare(BoatEthWallet *wallet_p)
     wallet_p = BoatEthWalletInit(keypair_index, network_index);
     ck_assert(wallet_p != NULL);
 
-    return BOAT_SUCCESS;
+    return wallet_p;
 }
 
 START_TEST(test_010CallContract_0001SetBytesSuccess) 
@@ -70,27 +72,23 @@ START_TEST(test_010CallContract_0001SetBytesSuccess)
     BOAT_RESULT ret;
 
     BoatEthWallet *wallet;
-    BoatEthTx *tx_ctx;
+    BoatEthTx tx_ctx;
 
     BCHAR *result_str;
-    BUINT8 bs[10];
+    BoatFieldVariable bs[] = {{"123",3},{"456",4},{"7",1},{"89",3},{"012",2},{"345",4}};
     BUINT32 i;
 
     BoatIotSdkInit();
 
-    ethereumOnetimeWalletPrepare(wallet);
+    wallet = ethereumOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatEthTxInit(wallet,tx_ctx, BOAT_TRUE, NULL,
+    ret = BoatEthTxInit(wallet, &tx_ctx, BOAT_TRUE, NULL,
 						TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* Call Contract */
-    for (i = 0; i < 10; i++)  
-    {
-        bs[i] = i * 2 + 1;
-    }
-    result_str = TestPython_testOneBytesArray(tx_ctx, bs, 10);
+    result_str = TestPython_testOneBytesArray(&tx_ctx, bs, 6);
     ck_assert_ptr_ne(result_str, NULL);
 
     BoatEthWalletDeInit(wallet);
@@ -105,27 +103,24 @@ START_TEST(test_010CallContract_0002SetTwoBytesArraySuccess)
     BOAT_RESULT ret;
 
     BoatEthWallet *wallet;
-    BoatEthTx *tx_ctx;
+    BoatEthTx tx_ctx;
 
     BCHAR *result_str;
-    BUINT8 ba1[3], ba2[] = {5, 10, 30, 40, 50};
+    BoatFieldVariable ba1[] = {{"123",3},{"456",4},{"7",1}};
+    BoatFieldVariable ba2[] = {{"5",1},{"10",2},{"15",2},{"20",2},{"25",2}};
     BUINT32 i;
 
     BoatIotSdkInit();
 
-    ethereumOnetimeWalletPrepare(wallet);
+    wallet = ethereumOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatEthTxInit(wallet,tx_ctx,BOAT_TRUE, NULL,
+    ret = BoatEthTxInit(wallet, &tx_ctx,BOAT_TRUE, NULL,
 						TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* Call Contract */
-    for (i = 0; i < 3; i++)  
-    {
-        ba1[i] = i * 2 + 1;
-    }
-    result_str = TestPython_testTwoBytesArrays(tx_ctx, ba1, 3, ba2, 5);
+    result_str = TestPython_testTwoBytesArrays(&tx_ctx, ba1, 3, ba2, 5);
     ck_assert_ptr_ne(result_str, NULL);
 
     BoatEthWalletDeInit(wallet);
@@ -140,7 +135,7 @@ START_TEST(test_010CallContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess)
     BOAT_RESULT ret;
 
     BoatEthWallet *wallet;
-    BoatEthTx *tx_ctx;
+    BoatEthTx tx_ctx;
 
     BCHAR *result_str;
     BCHAR *teststring1 = "Hello";
@@ -151,15 +146,15 @@ START_TEST(test_010CallContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess)
 
     BoatIotSdkInit();
 
-    ethereumOnetimeWalletPrepare(wallet);
+    wallet = ethereumOnetimeWalletPrepare();
 
     /* Init TX */
-    ret = BoatEthTxInit(wallet,tx_ctx,BOAT_TRUE, NULL,
+    ret = BoatEthTxInit(wallet, &tx_ctx,BOAT_TRUE, NULL,
 						TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* Call Contract */
-    result_str = TestPython_testTwoBytesArraysAndTwoNonFixed(tx_ctx, teststring1, ba1, 3, teststring2, ba2, 5);
+    result_str = TestPython_testTwoBytesArraysAndTwoNonFixed(&tx_ctx, teststring1, ba1, 3, teststring2, ba2, 5);
     ck_assert_ptr_ne(result_str, NULL);
 
     BoatEthWalletDeInit(wallet);
@@ -182,6 +177,7 @@ Suite *make_chainAndContract_suite(void)
     tcase_add_test(tc_chainAndContract_api, test_010CallContract_0001SetBytesSuccess);
     tcase_add_test(tc_chainAndContract_api, test_010CallContract_0002SetTwoBytesArraySuccess);
     tcase_add_test(tc_chainAndContract_api, test_010CallContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess);
+
 
     return s_chainAndContract;
 }
