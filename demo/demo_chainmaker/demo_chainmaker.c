@@ -125,6 +125,8 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_keypair()
 #elif defined(USE_CREATE_PERSIST_WALLET)
     BoatLog(BOAT_LOG_NORMAL, "create keypair persist");
     result = BoatKeypairCreate(&keypair_config, "keypairPersist", BOAT_STORE_TYPE_FLASH);
+#else
+    result = BOAT_ERROR;
 #endif
 
     if (result < 0)
