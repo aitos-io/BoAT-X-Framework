@@ -176,7 +176,6 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
 
     tx_ptr->wallet_ptr = wallet_ptr;
     memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
-    BoatLog(BOAT_LOG_CRITICAL, "The length of string recipient_str is incorrect");
 
     // Generate platon's Bech32 address from the public key
     result = BoatPlatONBech32Encode(wallet_ptr->account_info.address , BOAT_PLATON_ADDRESS_SIZE,
