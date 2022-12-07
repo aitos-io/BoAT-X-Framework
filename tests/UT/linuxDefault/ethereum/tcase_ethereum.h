@@ -14,6 +14,9 @@
  * limitations under the License.
  *****************************************************************************/
 
+#ifndef __TCASE_ERHEREUM__ 
+#define __TCASE_ERHEREUM__ 
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -26,3 +29,11 @@ extern char g_ethereum_private_key_buf[1024];
 extern BoatKeypairPriKeyCtx_config g_keypair_config;
 extern BoatEthNetworkConfig g_ethereum_network_config;
 extern BUINT8 g_binFormatKey[32];
+
+Suite *make_keypair_suite(void);
+Suite *make_network_suite(void);
+Suite *make_wallet_suite(void);
+Suite *make_parameters_suite(void);
+Suite *make_chainAndContract_suite(void);
+
+#endif
