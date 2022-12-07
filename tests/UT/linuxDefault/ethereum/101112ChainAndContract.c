@@ -163,6 +163,100 @@ START_TEST(test_010CallContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess)
 }
 END_TEST
 
+START_TEST(test_011GetBalance_0001GetSuccess) 
+{
+    BOAT_RESULT ret;
+
+    BoatEthWallet *wallet = NULL;
+    BoatEthTx tx_ctx;
+
+    BCHAR *result_str;
+
+    BoatIotSdkInit();
+
+    wallet = ethereumOnetimeWalletPrepare();
+
+    /* Get Balance */
+    result_str = BoatEthWalletGetBalance(wallet,TEST_RECIPIENT_ADDRESS);
+    ck_assert_ptr_ne(result_str, NULL);
+
+    BoatEthWalletDeInit(wallet);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_011GetBalance_0002GetSuccessNullAddress) 
+{
+    BOAT_RESULT ret;
+
+    BoatEthWallet *wallet = NULL;
+    BoatEthTx tx_ctx;
+
+    BCHAR *result_str;
+
+    BoatIotSdkInit();
+
+    wallet = ethereumOnetimeWalletPrepare();
+
+    /* Get Balance */
+    result_str = BoatEthWalletGetBalance(wallet,NULL);
+    ck_assert_ptr_ne(result_str, NULL);
+
+    BoatEthWalletDeInit(wallet);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_011GetBalance_0003GetFailureNullWallet) 
+{
+    BOAT_RESULT ret;
+
+    BoatEthWallet *wallet = NULL;
+    BoatEthTx tx_ctx;
+
+    BCHAR *result_str;
+
+    BoatIotSdkInit();
+
+    /* Get Balance */
+    result_str = BoatEthWalletGetBalance(NULL,NULL);
+    ck_assert_ptr_eq(result_str, NULL);
+
+    BoatEthWalletDeInit(wallet);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+START_TEST(test_012Transfer_0001TransferSuccess) 
+{
+    BOAT_RESULT ret;
+
+    BoatEthWallet *wallet = NULL;
+    BoatEthTx tx_ctx;
+
+    BoatIotSdkInit();
+
+    wallet = ethereumOnetimeWalletPrepare();
+
+    /* Init TX */
+    ret = BoatEthTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
+							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS);
+    ck_assert_int_eq(ret, BOAT_SUCCESS);
+
+    /* Transfer */
+    ret = BoatEthTransfer(&tx_ctx,"0x0");
+    ck_assert_int_eq(ret, BOAT_SUCCESS);
+
+    BoatEthWalletDeInit(wallet);
+
+    BoatIotSdkDeInit();
+}
+END_TEST
+
+
 Suite *make_chainAndContract_suite(void) 
 {
     /* Create Suite */
@@ -177,7 +271,11 @@ Suite *make_chainAndContract_suite(void)
     tcase_add_test(tc_chainAndContract_api, test_010CallContract_0001SetBytesSuccess);
     tcase_add_test(tc_chainAndContract_api, test_010CallContract_0002SetTwoBytesArraySuccess);
     tcase_add_test(tc_chainAndContract_api, test_010CallContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess);
-
+    
+    tcase_add_test(tc_chainAndContract_api, test_011GetBalance_0001GetSuccess);
+    tcase_add_test(tc_chainAndContract_api, test_011GetBalance_0002GetSuccessNullAddress);
+    tcase_add_test(tc_chainAndContract_api, test_011GetBalance_0003GetFailureNullWallet);
+    tcase_add_test(tc_chainAndContract_api, test_012Transfer_0001TransferSuccess);
 
     return s_chainAndContract;
 }
