@@ -92,8 +92,10 @@
 
   打开`<L503 Root>/kernel/mbtk/cust_api/customer_api.c`文件。
   
-  找到`extern int AudioHAL_AifSetPhoneStatus(unsigned int status);`
-  增加extern void RTI_LOG(const char* fmt, ...);
+  找到`extern int AudioHAL_AifSetPhoneStatus(unsigned int status);`,在下方添加：
+  ```
+  extern void RTI_LOG(const char* fmt, ...);
+  ```
   
   找到结构体 `mbtk_user_api`，在该结构体中添加函数映射指针：
   ```
@@ -114,7 +116,7 @@
   
   打开`<L503 Root>/app/system/src/api_customer_init.c`文件。
   
-  找到定义 `int (*ol_path_ctrl)(UINT32 path)`;在下方添加定义：
+  找到定义 `int (*ol_path_ctrl)(UINT32 path);`在下方添加定义：
   ```
   int (*user_app_printf)(const char *fmt, ...);
   ```

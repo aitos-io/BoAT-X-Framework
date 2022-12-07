@@ -91,6 +91,11 @@ After these files copied, the directory structure should look like:
 ### 3. Add a custom mapping interface for log printing
 
   Open `<L503 Root>/kernel/mbtk/cust_api/customer_api.c`.
+
+  Find`extern int AudioHAL_AifSetPhoneStatus(unsigned int status);`, add the following content in the last new line:
+  ```
+  extern void RTI_LOG(const char* fmt, ...);
+  ```
   
   Find struct `mbtk_user_api`, add a function mapping pointer to this struct：
   ```
