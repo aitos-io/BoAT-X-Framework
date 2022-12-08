@@ -1,4 +1,4 @@
-all: testfabric testvenachain testplatone testplaton
+all: testethereum
 	
 testfabric:
 	make -C fabric all
@@ -11,6 +11,9 @@ testplatone:
 
 testplaton:
 	make -C platon all
+
+testethereum:
+	make -C ethereum all
 
 clean:
 	make -C fabric clean
