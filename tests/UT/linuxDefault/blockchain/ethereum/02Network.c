@@ -16,7 +16,7 @@
 #include "tcase_ethereum.h"
 
 #define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
-#define TEST_ETHEREUM_CHAIN_ID     5777
+#define TEST_ETHEREUM_CHAIN_ID      5777
 
 BoatEthNetworkConfig get_ethereum_network_settings()
 {
