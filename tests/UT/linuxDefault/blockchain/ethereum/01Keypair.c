@@ -73,21 +73,21 @@ BOAT_RESULT check_ethereum_keypairCtx(BoatKeypairPriKeyCtx *keypair2Ctx,BUINT8 k
     return BOAT_SUCCESS;
 }
 
-BOAT_RESULT check_ethereum_keypair_in_keypairList(BoatKeypairPriKeyCtx *keypair,BoatIotKeypairContext *keypair_list)
+BOAT_RESULT check_ethereum_keypair_in_keypairList(BoatKeypairPriKeyCtx *keypair, BoatIotKeypairContext *keypair_list)
 {
     BOAT_RESULT ret = BOAT_ERROR;
 
     BUINT8 loop = keypair_list->keypairNum;
     BSINT8 index = -1;
 
-    if(loop == 0)
+    if (loop == 0)
     {
         return ret;
     }
 
     for(BUINT8 i = 0; i < loop;i++)
     {
-        if(keypair_list->keypairs[i].prikeyCtx.keypair_index == keypair->keypair_index)
+        if (keypair_list->keypairs[i].prikeyCtx.keypair_index == keypair->keypair_index)
         {
             index = i;
             break;
@@ -443,18 +443,18 @@ START_TEST(test_001Keypair_0012DeleteOnetimeKeypairSuccess)
 
     /* 1.Execute 001_0001*/
     BoatKeypairPriKeyCtx_config keypair1_config = get_ethereum_keypair_settings();
-    keypair1_index = BoatKeypairCreate(&keypair1_config,NULL,BOAT_STORE_TYPE_RAM);
+    keypair1_index = BoatKeypairCreate(&keypair1_config, NULL, BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(keypair1_index, 0);
 
-    ret = BoATKeypair_GetKeypairByIndex(&keypair2_ctx,0);
+    ret = BoATKeypair_GetKeypairByIndex(&keypair2_ctx, 0);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_ethereum_keypairCtx(&keypair2_ctx,keypair1_index,NULL,&keypair1_config);
+    ret = check_ethereum_keypairCtx(&keypair2_ctx, keypair1_index, NULL, &keypair1_config);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     BoatIotKeypairContext keypair_list;
     ret = BoATKeypair_GetKeypairList(&keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_ethereum_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_ethereum_keypair_in_keypairList(&keypair2_ctx, &keypair_list);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
     /* 2.Delete Onetime-keypair*/
@@ -464,7 +464,7 @@ START_TEST(test_001Keypair_0012DeleteOnetimeKeypairSuccess)
     BoatIotKeypairContext keypair_list1;
     ret = BoATKeypair_GetKeypairList(&keypair_list1);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_ethereum_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_ethereum_keypair_in_keypairList(&keypair2_ctx, &keypair_list1);
     ck_assert_int_eq(ret, BOAT_ERROR);
 
     BoatIotSdkDeInit();
@@ -501,7 +501,7 @@ START_TEST(test_001Keypair_0013DeleteOnetimeKeypairFailureTwice)
     BoatIotKeypairContext keypair_list1;
     ret = BoATKeypair_GetKeypairList(&keypair_list1);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_ethereum_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_ethereum_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
     ck_assert_int_eq(ret, BOAT_ERROR);
 
     /* 2. Delete again*/
@@ -594,7 +594,7 @@ START_TEST(test_001Keypair_0016DeletePersistKeypairSuccess)
     BoatIotKeypairContext keypair_list1;
     ret = BoATKeypair_GetKeypairList(&keypair_list1);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
-    ret = check_ethereum_keypair_in_keypairList(&keypair2_ctx,&keypair_list);
+    ret = check_ethereum_keypair_in_keypairList(&keypair2_ctx,&keypair_list1);
     ck_assert_int_eq(ret, BOAT_ERROR);
 
 
@@ -657,18 +657,14 @@ Suite *make_keypair_suite(void)
     suite_add_tcase(s_keypair, tc_keypair_api);       
     /* Test cases are added to the test set */
     tcase_add_test(tc_keypair_api, test_001Keypair_0001CreateOneTimeKeypairSuccessNullName);  
-
     tcase_add_test(tc_keypair_api, test_001Keypair_0002CreateOneTimeKeypairSuccessWithName); 
-#if 0
     tcase_add_test(tc_keypair_api, test_001Keypair_0003CreateOneTimeKeypairSuccessTwice);
-#endif
     tcase_add_test(tc_keypair_api, test_001Keypair_0004CreateOneTimeWalletFailureNullConfig);
     tcase_add_test(tc_keypair_api, test_001Keypair_0005CreateOneTimeWalletFailureWrongGenModeConfig);
     tcase_add_test(tc_keypair_api, test_001Keypair_0006CreateOneTimeWalletFailureWrongKeyTypeConfig);
     tcase_add_test(tc_keypair_api, test_001Keypair_0007CreateOneTimeWalletFailureWrongKeyFormatConfig);
 
     tcase_add_test(tc_keypair_api, test_001Keypair_0008CreateOneTimeWalletFailureWrongNativeKeyLenConfig);
-#if 0
     tcase_add_test(tc_keypair_api, test_001Keypair_0009CreateOneTimeWalletFailureWrongPKCSKeyLenConfig);
     tcase_add_test(tc_keypair_api, test_001Keypair_0010CreatePersistKeypairSuccess);
     tcase_add_test(tc_keypair_api, test_001Keypair_0011Create2PersistKeypairSuccess);
@@ -678,7 +674,7 @@ Suite *make_keypair_suite(void)
     tcase_add_test(tc_keypair_api, test_001Keypair_0015DeleteKeypairFailureWrongIndex);
     tcase_add_test(tc_keypair_api, test_001Keypair_0016DeletePersistKeypairSuccess);
     tcase_add_test(tc_keypair_api, test_001Keypair_0017DeletePersistKeypairFailureNonExistentIndex);
-#endif
+
     return s_keypair;
 }
 
