@@ -43,7 +43,7 @@ BOAT_RESULT check_ethereum_wallet(BoatEthWallet *wallet,BUINT8 keypairIndex,BCHA
 
 
 
-START_TEST(test_005InitWallet_0001InitWalletSuccessOneTimeKeypairOneTimeNetwork) 
+START_TEST(test_003Wallet_0001InitWalletSuccessOneTimeKeypairOneTimeNetwork) 
 {
     BOAT_RESULT ret;
 
@@ -86,7 +86,7 @@ START_TEST(test_005InitWallet_0001InitWalletSuccessOneTimeKeypairOneTimeNetwork)
 END_TEST
 
 
-START_TEST(test_005InitWallet_0002InitWalletSuccessOneTimeKeypairPersistNetwork) 
+START_TEST(test_003Wallet_0002InitWalletSuccessOneTimeKeypairPersistNetwork) 
 {
     BOAT_RESULT ret;
 
@@ -133,7 +133,7 @@ START_TEST(test_005InitWallet_0002InitWalletSuccessOneTimeKeypairPersistNetwork)
 }
 END_TEST
 
-START_TEST(test_005InitWallet_0003InitWalletSuccessPersistKeypairOneTimeNetwork) 
+START_TEST(test_003Wallet_0003InitWalletSuccessPersistKeypairOneTimeNetwork) 
 {
     BOAT_RESULT ret;
 
@@ -179,7 +179,7 @@ START_TEST(test_005InitWallet_0003InitWalletSuccessPersistKeypairOneTimeNetwork)
 }
 END_TEST
 
-START_TEST(test_005InitWallet_0004InitWalletSuccessPersistKeypairPersistNetwork) 
+START_TEST(test_003Wallet_0004InitWalletSuccessPersistKeypairPersistNetwork) 
 {
     BOAT_RESULT ret;
 
@@ -229,7 +229,7 @@ START_TEST(test_005InitWallet_0004InitWalletSuccessPersistKeypairPersistNetwork)
 END_TEST
 
 
-START_TEST(test_005InitWallet_0005InitWalletFailureWrongKeypair) 
+START_TEST(test_003Wallet_0003WalletFailureWrongKeypair) 
 {
     BOAT_RESULT ret;
 
@@ -257,7 +257,7 @@ START_TEST(test_005InitWallet_0005InitWalletFailureWrongKeypair)
 END_TEST
 
 
-START_TEST(test_005InitWallet_0006InitWalletFailureWrongNetwork) 
+START_TEST(test_003Wallet_0006InitWalletFailureWrongNetwork) 
 {
     BOAT_RESULT ret;
 
@@ -288,7 +288,7 @@ START_TEST(test_005InitWallet_0006InitWalletFailureWrongNetwork)
 END_TEST
 
 
-START_TEST(test_006DeInitWallet_0001DeInitWalletSuccessOneTimeKeypairOneTimeNetwork) 
+START_TEST(test_003Wallet_0007DeInitWalletSuccessOneTimeKeypairOneTimeNetwork) 
 {
     BOAT_RESULT ret;
 
@@ -334,7 +334,7 @@ START_TEST(test_006DeInitWallet_0001DeInitWalletSuccessOneTimeKeypairOneTimeNetw
 }
 END_TEST
 
-START_TEST(test_006DeInitWallet_0002DeInitWalletSuccessOneTimeKeypairPersistNetwork) 
+START_TEST(test_003Wallet_0008DeInitWalletSuccessOneTimeKeypairPersistNetwork) 
 {
     BOAT_RESULT ret;
 
@@ -384,7 +384,7 @@ START_TEST(test_006DeInitWallet_0002DeInitWalletSuccessOneTimeKeypairPersistNetw
 }
 END_TEST
 
-START_TEST(test_006DeInitWallet_0003DeInitWalletSuccessPersistKeypairOneTimeNetwork) 
+START_TEST(test_003Wallet_0009DeInitWalletSuccessPersistKeypairOneTimeNetwork) 
 {
     BOAT_RESULT ret;
 
@@ -433,7 +433,7 @@ START_TEST(test_006DeInitWallet_0003DeInitWalletSuccessPersistKeypairOneTimeNetw
 }
 END_TEST
 
-START_TEST(test_006DeInitWallet_0004DeInitWalletSuccessPersistKeypairPersistNetwork) 
+START_TEST(test_003Wallet_0010DeInitWalletSuccessPersistKeypairPersistNetwork) 
 {
     BOAT_RESULT ret;
 
@@ -496,17 +496,17 @@ Suite *make_wallet_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_wallet, tc_wallet_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_wallet_api, test_005InitWallet_0001InitWalletSuccessOneTimeKeypairOneTimeNetwork);
-    tcase_add_test(tc_wallet_api, test_005InitWallet_0002InitWalletSuccessOneTimeKeypairPersistNetwork);
-    tcase_add_test(tc_wallet_api, test_005InitWallet_0003InitWalletSuccessPersistKeypairOneTimeNetwork);
-    tcase_add_test(tc_wallet_api, test_005InitWallet_0004InitWalletSuccessPersistKeypairPersistNetwork);
-    tcase_add_test(tc_wallet_api, test_005InitWallet_0005InitWalletFailureWrongKeypair);
-    tcase_add_test(tc_wallet_api, test_005InitWallet_0006InitWalletFailureWrongNetwork);
+    tcase_add_test(tc_wallet_api, test_003Wallet_0001InitWalletSuccessOneTimeKeypairOneTimeNetwork);
+    tcase_add_test(tc_wallet_api, test_003Wallet_0002InitWalletSuccessOneTimeKeypairPersistNetwork);
+    tcase_add_test(tc_wallet_api, test_003Wallet_0003InitWalletSuccessPersistKeypairOneTimeNetwork);
+    tcase_add_test(tc_wallet_api, test_003Wallet_0004InitWalletSuccessPersistKeypairPersistNetwork);
+    tcase_add_test(tc_wallet_api, test_003Wallet_0003WalletFailureWrongKeypair);
+    tcase_add_test(tc_wallet_api, test_003Wallet_0006InitWalletFailureWrongNetwork);
 
-    tcase_add_test(tc_wallet_api, test_006DeInitWallet_0001DeInitWalletSuccessOneTimeKeypairOneTimeNetwork);
-    tcase_add_test(tc_wallet_api, test_006DeInitWallet_0002DeInitWalletSuccessOneTimeKeypairPersistNetwork);
-    tcase_add_test(tc_wallet_api, test_006DeInitWallet_0003DeInitWalletSuccessPersistKeypairOneTimeNetwork);
-    tcase_add_test(tc_wallet_api, test_006DeInitWallet_0004DeInitWalletSuccessPersistKeypairPersistNetwork);
+    tcase_add_test(tc_wallet_api, test_003Wallet_0007DeInitWalletSuccessOneTimeKeypairOneTimeNetwork);
+    tcase_add_test(tc_wallet_api, test_003Wallet_0008DeInitWalletSuccessOneTimeKeypairPersistNetwork);
+    tcase_add_test(tc_wallet_api, test_003Wallet_0009DeInitWalletSuccessPersistKeypairOneTimeNetwork);
+    tcase_add_test(tc_wallet_api, test_003Wallet_0010DeInitWalletSuccessPersistKeypairPersistNetwork);
 
     return s_wallet;
 }
