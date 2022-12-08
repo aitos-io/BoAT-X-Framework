@@ -67,7 +67,7 @@ __BOATSTATIC BoatEthWallet *ethereumOnetimeWalletPrepare()
     return wallet_p;
 }
 
-START_TEST(test_010CallContract_0001SetBytesSuccess) 
+START_TEST(test_005ChainAndContract_0001SetBytesSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -98,7 +98,7 @@ START_TEST(test_010CallContract_0001SetBytesSuccess)
 END_TEST
 
 
-START_TEST(test_010CallContract_0002SetTwoBytesArraySuccess) 
+START_TEST(test_005ChainAndContract_0002SetTwoBytesArraySuccess) 
 {
     BOAT_RESULT ret;
 
@@ -130,7 +130,7 @@ START_TEST(test_010CallContract_0002SetTwoBytesArraySuccess)
 END_TEST
 
 
-START_TEST(test_010CallContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess) 
+START_TEST(test_005ChainAndContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -163,7 +163,7 @@ START_TEST(test_010CallContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess)
 }
 END_TEST
 
-START_TEST(test_011GetBalance_0001GetSuccess) 
+START_TEST(test_005ChainAndContract_0004GetBalanceSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -186,7 +186,7 @@ START_TEST(test_011GetBalance_0001GetSuccess)
 }
 END_TEST
 
-START_TEST(test_011GetBalance_0002GetSuccessNullAddress) 
+START_TEST(test_005ChainAndContract_0005GetBalanceSuccessNullAddress) 
 {
     BOAT_RESULT ret;
 
@@ -209,7 +209,7 @@ START_TEST(test_011GetBalance_0002GetSuccessNullAddress)
 }
 END_TEST
 
-START_TEST(test_011GetBalance_0003GetFailureNullWallet) 
+START_TEST(test_005ChainAndContract_0006GetBalanceFailureNullWallet) 
 {
     BOAT_RESULT ret;
 
@@ -230,7 +230,7 @@ START_TEST(test_011GetBalance_0003GetFailureNullWallet)
 }
 END_TEST
 
-START_TEST(test_012Transfer_0001TransferSuccess) 
+START_TEST(test_005ChainAndContract_0007TransferSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -268,14 +268,14 @@ Suite *make_chainAndContract_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_chainAndContract, tc_chainAndContract_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_chainAndContract_api, test_010CallContract_0001SetBytesSuccess);
-    tcase_add_test(tc_chainAndContract_api, test_010CallContract_0002SetTwoBytesArraySuccess);
-    tcase_add_test(tc_chainAndContract_api, test_010CallContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess);
+    tcase_add_test(tc_chainAndContract_api, test_005ChainAndContract_0001SetBytesSuccess);
+    tcase_add_test(tc_chainAndContract_api, test_005ChainAndContract_0002SetTwoBytesArraySuccess);
+    tcase_add_test(tc_chainAndContract_api, test_005ChainAndContract_0003SetTwoBytesArraysAndTwoNonFixedSuccess);
     
-    tcase_add_test(tc_chainAndContract_api, test_011GetBalance_0001GetSuccess);
-    tcase_add_test(tc_chainAndContract_api, test_011GetBalance_0002GetSuccessNullAddress);
-    tcase_add_test(tc_chainAndContract_api, test_011GetBalance_0003GetFailureNullWallet);
-    tcase_add_test(tc_chainAndContract_api, test_012Transfer_0001TransferSuccess);
+    tcase_add_test(tc_chainAndContract_api, test_005ChainAndContract_0004GetBalanceSuccess);
+    tcase_add_test(tc_chainAndContract_api, test_005ChainAndContract_0005GetBalanceSuccessNullAddress);
+    tcase_add_test(tc_chainAndContract_api, test_005ChainAndContract_0006GetBalanceFailureNullWallet);
+    tcase_add_test(tc_chainAndContract_api, test_005ChainAndContract_0007TransferSuccess);
 
     return s_chainAndContract;
 }
