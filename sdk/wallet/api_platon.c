@@ -176,7 +176,6 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
 
     tx_ptr->wallet_ptr = wallet_ptr;
     memset(&tx_ptr->rawtx_fields, 0x00, sizeof(tx_ptr->rawtx_fields));
-    BoatLog(BOAT_LOG_CRITICAL, "The length of string recipient_str is incorrect");
 
     // Generate platon's Bech32 address from the public key
     result = BoatPlatONBech32Encode(wallet_ptr->account_info.address , BOAT_PLATON_ADDRESS_SIZE,
@@ -225,13 +224,13 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
     }
 
     BUINT8 recipient[BOAT_PLATON_ADDRESS_SIZE];
-    BUINT32 converted_len;
+    BSINT32 converted_len;
 
     converted_len = BoatPlatONBech32Decode(recipient_str, strlen(recipient_str), recipient);
 
     // converted_len = UtilityHexToBin(recipient, BOAT_PLATON_ADDRESS_SIZE, recipient_str,
     //								TRIMBIN_TRIM_NO, BOAT_TRUE);
-    if (converted_len == 0)
+    if (converted_len <= 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "recipient Initialize failed.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
