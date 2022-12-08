@@ -50,6 +50,7 @@
 // #include "http2intf.h"
 // #endif
 
+BCHAR *url_ptr = NULL;
 
 uint32_t random32(void)
 {
@@ -406,6 +407,8 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 #if (PROTOCOL_USE_HLFABRIC == 1)
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
+	url_ptr = BoatMalloc(strlen(address)+1);
+	strcpy(url_ptr, address);
     // mbtk_socket_t      connectfd;
     // char               ip[64];
     // char               port[8];
@@ -490,17 +493,22 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,c
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
 
-	ptr = strchr(hostName, ':');
+	ptr = strchr(url_ptr, ':');
     if (NULL == ptr)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", hostName);
+        BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", url_ptr);
         return BOAT_ERROR;
     }
+	BoatLog(BOAT_LOG_CRITICAL, "url_ptr:%s", url_ptr);
 
 	memset(ip  , 0      , sizeof(ip));
     memset(port, 0      , sizeof(port));
-    memcpy(ip  , hostName, (int)(ptr - hostName));
-    memcpy(port, ptr + 1, strlen(hostName) - (int)(ptr - hostName));
+    memcpy(ip  , url_ptr, (int)(ptr - url_ptr));
+    memcpy(port, ptr + 1, strlen(url_ptr) - (int)(ptr - url_ptr));
+	if(url_ptr != NULL)
+	{
+		BoatFree(url_ptr);
+	}
 
 	conf_ssl.profileIdx = 0;
 	conf_ssl.dbgLevel = 3;
