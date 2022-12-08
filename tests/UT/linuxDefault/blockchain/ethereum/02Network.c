@@ -71,7 +71,7 @@ BOAT_RESULT check_ethereum_network_in_networkList(BoatEthNetworkConfig *networkC
     return ret;
 }
 
-START_TEST(test_003CreateNetwork_0001CreateOnetimeNetworkSuccess) 
+START_TEST(test_002Network_0001CreateOnetimeNetworkSuccess) 
 {
     BOAT_RESULT ret;
     BOAT_RESULT networkIndex;
@@ -106,7 +106,7 @@ START_TEST(test_003CreateNetwork_0001CreateOnetimeNetworkSuccess)
 END_TEST
 
 
-START_TEST(test_003CreateNetwork_0002CreateOnetimeNetworkFailureNullConfig) 
+START_TEST(test_002Network_0002CreateOnetimeNetworkFailureNullConfig) 
 {
     BOAT_RESULT networkIndex;
 
@@ -119,7 +119,7 @@ START_TEST(test_003CreateNetwork_0002CreateOnetimeNetworkFailureNullConfig)
 }
 END_TEST
 
-START_TEST(test_003CreateNetwork_0003CreateOnetimeNetworkSuccessTwice) 
+START_TEST(test_002Network_0003CreateOnetimeNetworkSuccessTwice) 
 {
     BOAT_RESULT ret;
     BOAT_RESULT networkIndex1;
@@ -173,7 +173,7 @@ START_TEST(test_003CreateNetwork_0003CreateOnetimeNetworkSuccessTwice)
 END_TEST
 
 
-START_TEST(test_003CreateNetwork_0004CreatePersistNetworkSuccess) 
+START_TEST(test_002Network_0004CreatePersistNetworkSuccess) 
 {
     BOAT_RESULT ret;
     BOAT_RESULT networkIndex;
@@ -210,7 +210,7 @@ START_TEST(test_003CreateNetwork_0004CreatePersistNetworkSuccess)
 }
 END_TEST
 
-START_TEST(test_003CreateNetwork_0005Create2PersistNetworkSuccess) 
+START_TEST(test_002Network_0005Create2PersistNetworkSuccess) 
 {
     BOAT_RESULT ret;
     BOAT_RESULT networkIndex1;
@@ -277,7 +277,7 @@ START_TEST(test_003CreateNetwork_0005Create2PersistNetworkSuccess)
 }
 END_TEST
 
-START_TEST(test_003CreateNetwork_0006CreatePersistNetworkFailureNullConfig) 
+START_TEST(test_002Network_0006CreatePersistNetworkFailureNullConfig) 
 {
     BOAT_RESULT networkIndex;
 
@@ -290,7 +290,7 @@ START_TEST(test_003CreateNetwork_0006CreatePersistNetworkFailureNullConfig)
 }
 END_TEST
 
-START_TEST(test_004DeleteNetwork_0001DeleteOnetimeNetworkSuccess) 
+START_TEST(test_002Network_0007DeleteOnetimeNetworkSuccess) 
 {
     BOAT_RESULT ret;
     BOAT_RESULT networkIndex;
@@ -338,7 +338,7 @@ START_TEST(test_004DeleteNetwork_0001DeleteOnetimeNetworkSuccess)
 }
 END_TEST
 
-START_TEST(test_004DeleteNetwork_0002DeleteOnetimeNetworkFailureNonExistentIndex) 
+START_TEST(test_002Network_0008DeleteOnetimeNetworkFailureNonExistentIndex) 
 {
     BOAT_RESULT ret;
     BOAT_RESULT networkIndex;
@@ -377,7 +377,7 @@ START_TEST(test_004DeleteNetwork_0002DeleteOnetimeNetworkFailureNonExistentIndex
 }
 END_TEST
 
-START_TEST(test_004DeleteNetwork_0003DeletePersistNetworkSuccess) 
+START_TEST(test_002Network_0009DeletePersistNetworkSuccess) 
 {
     BOAT_RESULT ret;
     BOAT_RESULT networkIndex;
@@ -412,7 +412,7 @@ START_TEST(test_004DeleteNetwork_0003DeletePersistNetworkSuccess)
 }
 END_TEST
 
-START_TEST(test_004DeleteNetwork_0004DeletePersistNetworkFailureNonExistentIndex) 
+START_TEST(test_002Network_0010DeletePersistNetworkFailureNonExistentIndex) 
 {
     BOAT_RESULT ret;
     BUINT8 i,j,pickNum;
@@ -464,16 +464,16 @@ Suite *make_network_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_network, tc_network_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_network_api, test_003CreateNetwork_0001CreateOnetimeNetworkSuccess);  
-    tcase_add_test(tc_network_api, test_003CreateNetwork_0002CreateOnetimeNetworkFailureNullConfig);
-    tcase_add_test(tc_network_api, test_003CreateNetwork_0003CreateOnetimeNetworkSuccessTwice);
-    tcase_add_test(tc_network_api, test_003CreateNetwork_0004CreatePersistNetworkSuccess);
-    tcase_add_test(tc_network_api, test_003CreateNetwork_0005Create2PersistNetworkSuccess);
-    tcase_add_test(tc_network_api, test_003CreateNetwork_0006CreatePersistNetworkFailureNullConfig);
-    tcase_add_test(tc_network_api, test_004DeleteNetwork_0001DeleteOnetimeNetworkSuccess);
-    tcase_add_test(tc_network_api, test_004DeleteNetwork_0002DeleteOnetimeNetworkFailureNonExistentIndex);
-    tcase_add_test(tc_network_api, test_004DeleteNetwork_0003DeletePersistNetworkSuccess);
-    tcase_add_test(tc_network_api, test_004DeleteNetwork_0004DeletePersistNetworkFailureNonExistentIndex);
+    tcase_add_test(tc_network_api, test_002Network_0001CreateOnetimeNetworkSuccess);  
+    tcase_add_test(tc_network_api, test_002Network_0002CreateOnetimeNetworkFailureNullConfig);
+    tcase_add_test(tc_network_api, test_002Network_0003CreateOnetimeNetworkSuccessTwice);
+    tcase_add_test(tc_network_api, test_002Network_0004CreatePersistNetworkSuccess);
+    tcase_add_test(tc_network_api, test_002Network_0005Create2PersistNetworkSuccess);
+    tcase_add_test(tc_network_api, test_002Network_0006CreatePersistNetworkFailureNullConfig);
+    tcase_add_test(tc_network_api, test_002Network_0007DeleteOnetimeNetworkSuccess);
+    tcase_add_test(tc_network_api, test_002Network_0008DeleteOnetimeNetworkFailureNonExistentIndex);
+    tcase_add_test(tc_network_api, test_002Network_0009DeletePersistNetworkSuccess);
+    tcase_add_test(tc_network_api, test_002Network_0010DeletePersistNetworkFailureNonExistentIndex);
 
     return s_network;
 }
