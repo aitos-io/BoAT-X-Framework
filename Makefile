@@ -57,7 +57,8 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - XinYi-XY1100              : XY1100 R13
 # - Fibocom-MA510             : MA510
 # - XinYi-XY1100-R14          : XY1100 R14
-PLATFORM_TARGET ?= linux-default
+# - mobiletek-L503C-6S        : mobiletek-L503C-6S
+PLATFORM_TARGET ?= mobiletek-L503C-6S
 
 # Environment-specific Settings
 include $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/external.env
@@ -217,6 +218,8 @@ endif
 
 ifeq ($(PLATFORM_TARGET), linux-default)
     SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+else ifeq ($(PLATFORM_TARGET), mobiletek-L503C-6S) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else
     $(error not support this platform : $(PLATFORM_TARGET))
 endif
