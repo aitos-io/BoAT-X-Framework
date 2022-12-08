@@ -236,9 +236,17 @@ BOAT_RESULT getChainmakerNetworkConfig2(BoatChainmakerNetworkData *networkConfig
     return result;
 }
 
+/**
+****************************************************************************************
+* @brief:
+*  This function free the configuration to create chainmaker network with other url/hostname/chain_id/org_id
+* @param[in] networkConfig
+* @return
+*  This function returns NULL
+****************************************************************************************
+*/
 void chainmakerWalletConfigFree(BoatChainmakerNetworkData networkConfig)
 {
-
     if (networkConfig.node_url != NULL)
     {
         BoatFree(networkConfig.node_url);
@@ -258,8 +266,6 @@ void chainmakerWalletConfigFree(BoatChainmakerNetworkData networkConfig)
     {
         BoatFree(networkConfig.org_id);
     }
-
-
 }
 
 /**
