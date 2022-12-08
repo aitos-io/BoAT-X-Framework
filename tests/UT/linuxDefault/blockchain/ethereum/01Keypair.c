@@ -506,7 +506,7 @@ START_TEST(test_001Keypair_0013DeleteOnetimeKeypairFailureTwice)
 
     /* 2. Delete again*/
     ret = BoATIotKeypairDelete(0);
-    ck_assert_int_eq(ret, BOAT_ERROR);    //first delete
+    ck_assert_int_eq(ret, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE);    //first delete
 
     BoatIotSdkDeInit();
 }
@@ -555,7 +555,7 @@ START_TEST(test_001Keypair_0015DeleteKeypairFailureWrongIndex)
     BoatIotSdkInit();
 
     ret = BoATIotKeypairDelete(5);
-    ck_assert_int_eq(ret, BOAT_ERROR); 
+    ck_assert_int_eq(ret, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE); 
 
     BoatIotSdkDeInit();
 }
@@ -638,7 +638,7 @@ START_TEST(test_001Keypair_0017DeletePersistKeypairFailureNonExistentIndex)
 
     /* 2.Delete the keypair */
     ret = BoATIotKeypairDelete(pickNum); 
-    ck_assert_int_eq(ret, BOAT_ERROR);
+    ck_assert_int_eq(ret, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE);
 
     BoatIotSdkDeInit();
 }
