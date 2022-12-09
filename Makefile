@@ -58,7 +58,7 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - Fibocom-MA510             : MA510
 # - XinYi-XY1100-R14          : XY1100 R14
 # - mobiletek-L503C-6S        : mobiletek-L503C-6S
-PLATFORM_TARGET ?= mobiletek-L503C-6S
+PLATFORM_TARGET ?= linux-default
 
 # Environment-specific Settings
 include $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/external.env

@@ -50,8 +50,6 @@
 // #include "http2intf.h"
 // #endif
 
-BCHAR *url_ptr = NULL;
-
 uint32_t random32(void)
 {
 	BUINT8 buf[4];
@@ -407,84 +405,14 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 #if (PROTOCOL_USE_HLFABRIC == 1)
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
-	url_ptr = BoatMalloc(strlen(address)+1);
-	strcpy(url_ptr, address);
-    // mbtk_socket_t      connectfd;
-    // char               ip[64];
-    // char               port[8];
-    // char               *ptr = NULL;
-    // struct hostent     *he; 
-    // struct sockaddr_in server;
-    // struct sockaddr    localaddr;
-    // struct sockaddr_in *localaddr_ptr;
-    // socklen_t          addrlen = sizeof(struct sockaddr);
-	// mbtk_ipaddr_struct addr_info = {0};
-
-    // (void)rsvd;
-
-    // ptr = strchr(address, ':');
-    // if (NULL == ptr)
-    // {
-    //     BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", address);
-    //     return -1;
-    // }
-
-    // memset(ip  , 0      , sizeof(ip));
-    // memset(port, 0      , sizeof(port));
-    // memcpy(ip  , address, (int)(ptr - address));
-    // memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
-
-	// if (ol_gethostbyname(ip, &addr_info) != BOAT_SUCCESS)
-    // {
-    //     BoatLog(BOAT_LOG_CRITICAL, "gethostbyname() error");
-    //     return -1;
-    // }
-
-    // if ((connectfd = ol_socket(OL_AF_INET, OL_SOCK_STREAM, 0)) < 0)
-    // {
-    //     BoatLog(BOAT_LOG_CRITICAL, "socket() error");
-    //     return -1;
-    // }
-
-    // struct timeval timeout = {0, 500*1000};
-    // ol_setsocketopt(connectfd, OL_SOL_SOCKET, OL_SO_SNDTIMEO, (char *)&timeout, sizeof(struct timeval));
-    // ol_setsocketopt(connectfd, OL_SOL_SOCKET, OL_SO_RCVTIMEO, (char *)&timeout, sizeof(struct timeval));
-
-    // memset(&server, 0, sizeof(server));
-    // server.sin_family = OL_AF_INET;
-    // server.sin_port = ol_htons(atoi(port));
-    // server.sin_addr.s_addr = ol_inet_addr(ip); 
-
-    // if (ol_connect(connectfd, server.sin_addr.s_addr, server.sin_port) < 0)
-    // {
-    //     BoatLog(BOAT_LOG_CRITICAL, "connect() error");
-    //     ol_close(connectfd);
-    //     return -1;
-    // }
-    // if (ol_getsocketname(connectfd, &localaddr, &addrlen) < 0)
-    // {
-    //     BoatLog(BOAT_LOG_CRITICAL, "getsockname() error");
-    //     ol_close(connectfd);
-    //     return -1;
-    // }
-    // else
-    // {
-    //     localaddr_ptr = (struct sockaddr_in*)&localaddr;
-    //     BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.", 
-    //     ol_inet_ntoa(localaddr_ptr->sin_addr.s_addr), ol_htons(localaddr_ptr->sin_port));
-    // }
-
-    // BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
-
     return BOAT_TRUE;
 }
 
-
 #if (BOAT_TLS_SUPPORT == 1)	
-BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,const BoatFieldVariable clientPrikey,
-						const BoatFieldVariable clientCert,BSINT32 socketfd, void *tlsContext, void *rsvd)
+BOAT_RESULT BoatTlsInit(const BCHAR *address, const BCHAR *hostName, const BoatFieldVariable caChain, const BoatFieldVariable clientPrikey,
+						const BoatFieldVariable clientCert, BSINT32 *socketfd, void **tlsContext, void *rsvd)
 {
-	SSLCtx *tlsContext_ptr = (SSLCtx *)tlsContext;
+	SSLCtx *tlsContext_ptr = BoatMalloc(sizeof(SSLCtx));
 	SSLConfig conf_ssl ={0};
 	char *ptr = NULL;
 	char ip[64];
@@ -493,22 +421,18 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,c
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
 
-	ptr = strchr(url_ptr, ':');
+	ptr = strchr(address, ':');
     if (NULL == ptr)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", url_ptr);
+        BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", address);
         return BOAT_ERROR;
     }
-	BoatLog(BOAT_LOG_CRITICAL, "url_ptr:%s", url_ptr);
+	BoatLog(BOAT_LOG_CRITICAL, "address:%s", address);
 
 	memset(ip  , 0      , sizeof(ip));
     memset(port, 0      , sizeof(port));
-    memcpy(ip  , url_ptr, (int)(ptr - url_ptr));
-    memcpy(port, ptr + 1, strlen(url_ptr) - (int)(ptr - url_ptr));
-	if(url_ptr != NULL)
-	{
-		BoatFree(url_ptr);
-	}
+    memcpy(ip  , address, (int)(ptr - address));
+    memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
 
 	conf_ssl.profileIdx = 0;
 	conf_ssl.dbgLevel = 3;
@@ -545,8 +469,9 @@ BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,c
         result = boat_exception;
 		ol_ssl_shutdown(tlsContext_ptr);
 		ol_ssl_ctx_deinit(tlsContext_ptr);
+		BoatFree(tlsContext_ptr);
 	}
-	
+	*tlsContext = tlsContext_ptr;
 	return result;
 }
 #endif
@@ -585,18 +510,18 @@ BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *
 }
 
 
-void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
+void BoatClose(BSINT32 sockfd, void **tlsContext, void *rsvd)
 {
 	int ret = -1;
 	close(sockfd);
 #if (BOAT_TLS_SUPPORT == 1) 
-	if ((SSLCtx *)tlsContext == NULL)
+	if ((SSLCtx *)*tlsContext == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "tlsContext can't be NULL.");
 		return -1;
 	}
-	ret = ol_ssl_shutdown((SSLCtx *)tlsContext);
-	ol_ssl_ctx_deinit((SSLCtx *)tlsContext);
+	ret = ol_ssl_shutdown((SSLCtx *)*tlsContext);
+	ol_ssl_ctx_deinit((SSLCtx *)*tlsContext);
 	return ret;
 #endif	
 }
@@ -633,6 +558,7 @@ static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriK
 static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatKeypairPriKeyCtx_config *config, 
 													             BoatKeypairDataCtx *pkCtx)
 {
+	BoatLog(BOAT_LOG_CRITICAL, "sBoatPort_keyCreate_external_injection_native");
 	BUINT32 len = 0;
 	BOAT_RESULT  result = BOAT_SUCCESS;
 
@@ -756,23 +682,23 @@ BOAT_RESULT  BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatK
 		BoatLog(BOAT_LOG_NORMAL, "prikey_format = %d .",config->prikey_format);
 		switch(config->prikey_format)
 		{
-			case BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS:
-				BoatLog(BOAT_LOG_NORMAL, "keypair private key[pkcs] set...");
-				// result = BOAT_ERROR_WALLET_KEY_FORMAT_ERR;
-				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
-				break;
-			case BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE:
-				BoatLog(BOAT_LOG_VERBOSE, "keypair private key[native] set...");
-				result = sBoatPort_keyCreate_external_injection_native(config, pkCtx);
-				break;
-			case BOAT_KEYPAIR_PRIKEY_FORMAT_MNEMONIC:
-				BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
-				result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
-				break;
-			default:
-				BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
-				result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
-				break;
+		case BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS:
+			BoatLog(BOAT_LOG_NORMAL, "keypair private key[pkcs] set...");
+			// result = BOAT_ERROR_kEYPAIR_KEY_FORMAT_ERR;
+			result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
+			break;
+		case BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE:
+			BoatLog(BOAT_LOG_VERBOSE, "keypair private key[native] set...");
+			result = sBoatPort_keyCreate_external_injection_native(config, pkCtx);
+			break;
+		case BOAT_KEYPAIR_PRIKEY_FORMAT_MNEMONIC:
+			BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
+			result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
+			break;
+		default:
+			BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
+			result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
+			break;
 		}
 	}
 	else
