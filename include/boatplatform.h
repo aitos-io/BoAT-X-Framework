@@ -140,7 +140,7 @@ void BoatSleep(BUINT32 second);
  *   \n For RTOS it depends on the specification of the RTOS.
  *
  ******************************************************************************/
-long int BoatGetTimes();
+long int BoatGetTimes(void);
 
 
 /**

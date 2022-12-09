@@ -57,7 +57,8 @@ SCRIPTS_PARAM += "BOAT_PROTOCOL_USE_ETHEREUM=$(BOAT_PROTOCOL_USE_ETHEREUM)" \
 # - XinYi-XY1100              : XY1100 R13
 # - Fibocom-MA510             : MA510
 # - XinYi-XY1100-R14          : XY1100 R14
-PLATFORM_TARGET ?= linux-default
+# - mobiletek-L503C-6S        : mobiletek-L503C-6S
+PLATFORM_TARGET ?= mobiletek-L503C-6S
 
 # Environment-specific Settings
 include $(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/external.env
@@ -216,28 +217,17 @@ endif
 # SOFT_CRYPTO ?= CRYPTO_MBEDTLS
 
 ifeq ($(PLATFORM_TARGET), linux-default)
-    SOFT_CRYPTO ?= CRYPTO_MBEDTLS
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
+else ifeq ($(PLATFORM_TARGET), mobiletek-L503C-6S) 
+    SOFT_CRYPTO ?= CRYPTO_DEFAULT
 else
     $(error not support this platform : $(PLATFORM_TARGET))
 endif
 
 
 ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
-    ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)
-    $(error $(PLATFORM_TARGET) not support fabric)
-    endif
-    ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
-    $(error $(PLATFORM_TARGET) not support HWBCS)
-    endif
-endif
-
-ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
     BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default \
-	            -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default/aes \
-                    -I$(BOAT_BASE_DIR)/vendor/common/storage
-else ifeq ($(SOFT_CRYPTO), CRYPTO_MBEDTLS)
-    BOAT_INCLUDE += -I$(BOAT_BASE_DIR)/vendor/common/crypto/mbedTLS/include \
-                    -I$(BOAT_BASE_DIR)/vendor/common/crypto/keccak \
+	                -I$(BOAT_BASE_DIR)/vendor/common/crypto/crypto_default/aes \
                     -I$(BOAT_BASE_DIR)/vendor/common/storage
 else
     BOAT_INCLUDE +=

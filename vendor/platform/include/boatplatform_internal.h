@@ -235,40 +235,42 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd);
  ******************************************************************************/
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd);
 
-
-#if (BOAT_TLS_SUPPORT == 1  || BOAT_TLS_SUPPORT == 1)
-/*!****************************************************************************
- * @brief initinal TLS connection
- * 
- * @details
- *   initinal TLS connection
- *
- * @param hostName
- *   host name. It's the N field of server certificate.
- *
- * @param caChain 
- *   rootCA certificate content list address.
- * 
- * @param clientPrikey 
- * 	client tls prikey
- * 
- * @param clientCert 
- * 	client tls cert
- *
- * @param socketfd 
- *   The raw socket connection file descriptor.
- *
- * @param tlsContext 
- *   TLS context. it's defined at http2intf.h.
- *
- * @param rsvd 
- *   Reserved for futrue. 
- *
- * @return 
- *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code
- ******************************************************************************/
-BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain,const BoatFieldVariable clientPrikey,
-						const BoatFieldVariable clientCert,BSINT32 socketfd, void *tlsContext, void *rsvd);
+#if (BOAT_TLS_SUPPORT == 1 || BOAT_TLS_SUPPORT == 1)
+	/*!****************************************************************************
+	 * @brief initinal TLS connection
+	 *
+	 * @details
+	 *   initinal TLS connection
+	 *
+	 * @param address
+	 *   address of nodes
+	 *
+	 * @param hostName
+	 *   host name. It's the N field of server certificate.
+	 *
+	 * @param caChain
+	 *   rootCA certificate content list address.
+	 *
+	 * @param clientPrikey
+	 * 	client tls prikey
+	 *
+	 * @param clientCert
+	 * 	client tls cert
+	 *
+	 * @param socketfd
+	 *   The raw socket connection file descriptor.
+	 *
+	 * @param tlsContext
+	 *   TLS context. it's defined at http2intf.h.
+	 *
+	 * @param rsvd
+	 *   Reserved for futrue.
+	 *
+	 * @return
+	 *   Return \c BOAT_SUCCESS if read success, otherwise return a negative error code
+	 ******************************************************************************/
+	BOAT_RESULT BoatTlsInit(const BCHAR *address, const BCHAR *hostName, const BoatFieldVariable caChain, const BoatFieldVariable clientPrikey,
+							const BoatFieldVariable clientCert, BSINT32 *socketfd, void **tlsContext, void *rsvd);
 #endif
 
 
@@ -321,31 +323,29 @@ BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, 
  ******************************************************************************/
 BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd);
 
+	/*!****************************************************************************
+	 * @brief
+	 *   Colose a socket commection.
+	 *
+	 * @details
+	 *   Colose a socket commection.
+	 *
+	 * @param sockfd
+	 *   Socket descriptor.
+	 *
+	 * @param rsvd
+	 *   Reserved for futrue.
+	 ******************************************************************************/
+	void BoatClose(BSINT32 sockfd, void **tlsContext, void *rsvd);
 
-/*!****************************************************************************
- * @brief 
- *   Colose a socket commection.
- *
- * @details
- *   Colose a socket commection.
- *
- * @param sockfd 
- *   Socket descriptor.
- *
- * @param rsvd 
- *   Reserved for futrue. 
- ******************************************************************************/
-void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd);
+	BOAT_RESULT BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatKeypairDataCtx *pkCtx);
+	BOAT_RESULT BoatPort_keyQuery(const BoatKeypairPriKeyCtx_config *config, BoatKeypairPriKeyCtx *pkCtx);
+	BOAT_RESULT BoatPort_keyDelete(BoatKeypairPriKeyCtx *pkCtx);
 
-
-BOAT_RESULT BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatKeypairDataCtx *pkCtx);
-BOAT_RESULT BoatPort_keyQuery(const BoatKeypairPriKeyCtx_config *config, BoatKeypairPriKeyCtx *pkCtx);
-BOAT_RESULT BoatPort_keyDelete(BoatKeypairPriKeyCtx *pkCtx );
-
-BOAT_RESULT BoatAesEncrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output);
-BOAT_RESULT BoatAesDecrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output);
-
-/*! @}*/
+	BOAT_RESULT BoatAesEncrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output);
+	BOAT_RESULT BoatAesDecrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output);
+	BOAT_RESULT boat_find_subject_common_name(const BCHAR *cert, const BUINT32 certlen, BCHAR *value, size_t value_length);
+	/*! @}*/
 
 #ifdef __cplusplus
 }
