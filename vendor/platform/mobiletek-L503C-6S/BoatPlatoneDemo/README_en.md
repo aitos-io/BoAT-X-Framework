@@ -131,19 +131,19 @@ After these files copied, the directory structure should look like:
 
 ### 1. Compile BoAT-X Framework static library (under Cygwin)
 
-   #### a. Configure the target platform in directory BoAT-X-Framework\Makefile
+   #### a. Configure the target platform in directory BoAT-X-Framework/Makefile
    ```
    PLATFORM_TARGET ?= mobiletek-L503C-6S
    ```
    
-   #### b. Open a Cygwin shell, enter <ML302 Root>/BoAT-X-Framework directory and compile BoAT static library
+   #### b. Open a Cygwin shell, enter <L503 Root>/BoAT-X-Framework directory and compile BoAT static library
    ```
    cd <L503 Root>/app/BoAT-X-Framework
    ../tools/gnumake.exe clean
    ../tools/gnumake.exe all
    ```
    
-   After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<L503 Root>\BoAT-X-Framework\lib` directory.
+   After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<L503 Root>/BoAT-X-Framework/lib` directory.
    
 
 ### 2. Build demo program, generate .zip file for download
