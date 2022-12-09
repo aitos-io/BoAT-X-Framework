@@ -66,7 +66,7 @@ __BOATSTATIC BoatVenachainWallet * venachainOnetimeWalletPrepare()
 }
 
 
-START_TEST(test_007ParametersInit_0001TxInitSuccess) 
+START_TEST(test_004Parameters_0001TxInitSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -88,7 +88,7 @@ START_TEST(test_007ParametersInit_0001TxInitSuccess)
 }
 END_TEST
 
-START_TEST(test_007ParametersInit_0002TxInitFailureNullParam) 
+START_TEST(test_004Parameters_0002TxInitFailureNullParam) 
 {
     BOAT_RESULT ret;
 
@@ -114,7 +114,7 @@ START_TEST(test_007ParametersInit_0002TxInitFailureNullParam)
 }
 END_TEST
 
-START_TEST(test_007ParametersInit_0003TxInitSuccessNullGasPrice) 
+START_TEST(test_004Parameters_0003TxInitSuccessNullGasPrice) 
 {
     BOAT_RESULT ret;
 
@@ -136,7 +136,7 @@ START_TEST(test_007ParametersInit_0003TxInitSuccessNullGasPrice)
 }
 END_TEST
 
-START_TEST(test_007ParametersInit_0004TxInitFailureErrorGasPriceHexFormat) 
+START_TEST(test_004Parameters_0004TxInitFailureErrorGasPriceHexFormat) 
 {
     BOAT_RESULT ret;
 
@@ -159,7 +159,7 @@ START_TEST(test_007ParametersInit_0004TxInitFailureErrorGasPriceHexFormat)
 END_TEST
 
 
-START_TEST(test_007ParametersInit_0005TxInitFailureGasPriceHexNonOx) 
+START_TEST(test_004Parameters_0005TxInitFailureGasPriceHexNonOx) 
 {
     BOAT_RESULT ret;
 
@@ -182,7 +182,7 @@ START_TEST(test_007ParametersInit_0005TxInitFailureGasPriceHexNonOx)
 END_TEST
 
 
-START_TEST(test_007ParametersInit_0006TxInitFailureGasLimitErrorHexFormat) 
+START_TEST(test_004Parameters_0006TxInitFailureGasLimitErrorHexFormat) 
 {
     BOAT_RESULT ret;
 
@@ -204,7 +204,7 @@ START_TEST(test_007ParametersInit_0006TxInitFailureGasLimitErrorHexFormat)
 }
 END_TEST
 
-START_TEST(test_007ParametersInit_0007TxInitFailureGasLimitHexNonOx) 
+START_TEST(test_004Parameters_0007TxInitFailureGasLimitHexNonOx) 
 {
     BOAT_RESULT ret;
 
@@ -227,7 +227,7 @@ START_TEST(test_007ParametersInit_0007TxInitFailureGasLimitHexNonOx)
 END_TEST
 
 
-START_TEST(test_007ParametersInit_0008TxInitFailureRecipientErrorHexFormat) 
+START_TEST(test_004Parameters_0008TxInitFailureRecipientErrorHexFormat) 
 {
     BOAT_RESULT ret;
 
@@ -249,7 +249,7 @@ START_TEST(test_007ParametersInit_0008TxInitFailureRecipientErrorHexFormat)
 }
 END_TEST
 
-START_TEST(test_007ParametersInit_0009TxInitFailureRecipientLongLength) 
+START_TEST(test_004Parameters_0009TxInitFailureRecipientLongLength) 
 {
     BOAT_RESULT ret;
 
@@ -271,7 +271,7 @@ START_TEST(test_007ParametersInit_0009TxInitFailureRecipientLongLength)
 }
 END_TEST
 
-START_TEST(test_008ParametersSet_0001GetNonceFromNetworkSuccess) 
+START_TEST(test_004Parameters_0010GetNonceFromNetworkSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -298,7 +298,7 @@ START_TEST(test_008ParametersSet_0001GetNonceFromNetworkSuccess)
 }
 END_TEST
 
-START_TEST(test_008ParametersSet_0002SetNonceSuccess) 
+START_TEST(test_004Parameters_0011SetNonceSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -332,7 +332,7 @@ START_TEST(test_008ParametersSet_0002SetNonceSuccess)
 }
 END_TEST
 
-START_TEST(test_008ParametersSet_0003SetNonceFailureNullTx) 
+START_TEST(test_004Parameters_0012SetNonceFailureNullTx) 
 {
     BOAT_RESULT ret;
 
@@ -358,7 +358,7 @@ START_TEST(test_008ParametersSet_0003SetNonceFailureNullTx)
 }
 END_TEST
 
-START_TEST(test_008ParametersSet_0004SetValueSuccess) 
+START_TEST(test_004Parameters_0013SetValueSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -391,7 +391,7 @@ START_TEST(test_008ParametersSet_0004SetValueSuccess)
 END_TEST
 
 
-START_TEST(test_008ParametersSet_0005SetValueFailureNullTx) 
+START_TEST(test_004Parameters_0014SetValueFailureNullTx) 
 {
     BOAT_RESULT ret;
 
@@ -421,7 +421,7 @@ START_TEST(test_008ParametersSet_0005SetValueFailureNullTx)
 }
 END_TEST
 
-START_TEST(test_008ParametersSet_0006SetValueSuccessNullvalue) 
+START_TEST(test_004Parameters_0015SetValueSuccessNullvalue) 
 {
     BOAT_RESULT ret;
 
@@ -449,7 +449,7 @@ START_TEST(test_008ParametersSet_0006SetValueSuccessNullvalue)
 }
 END_TEST
 
-START_TEST(test_008ParametersSet_0007SetDataSuccess) 
+START_TEST(test_004Parameters_0016SetDataSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -479,7 +479,7 @@ START_TEST(test_008ParametersSet_0007SetDataSuccess)
 }
 END_TEST
 
-START_TEST(test_008ParametersSet_0008SetDataFailureNullTx) 
+START_TEST(test_004Parameters_0017SetDataFailureNullTx) 
 {
     BOAT_RESULT ret;
 
@@ -508,7 +508,7 @@ START_TEST(test_008ParametersSet_0008SetDataFailureNullTx)
 }
 END_TEST
 
-START_TEST(test_008ParametersSet_0009SetDataSuccessNullData) 
+START_TEST(test_004Parameters_0018SetDataSuccessNullData) 
 {
     BOAT_RESULT ret;
 
@@ -536,7 +536,7 @@ START_TEST(test_008ParametersSet_0009SetDataSuccessNullData)
 END_TEST
 
 
-START_TEST(test_009ParametersChange_0001ChangeNodeUrlSuccess) 
+START_TEST(test_004Parameters_0019ChangeNodeUrlSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -558,7 +558,7 @@ START_TEST(test_009ParametersChange_0001ChangeNodeUrlSuccess)
 }
 END_TEST
 
-START_TEST(test_009ParametersChange_0002ChangeNodeUrlFailureNullParameters) 
+START_TEST(test_004Parameters_0020ChangeNodeUrlFailureNullParameters) 
 {
     BOAT_RESULT ret;
 
@@ -582,7 +582,7 @@ START_TEST(test_009ParametersChange_0002ChangeNodeUrlFailureNullParameters)
 }
 END_TEST
 
-START_TEST(test_009ParametersChange_0003ChangeChainIDSuccess) 
+START_TEST(test_004Parameters_0021ChangeChainIDSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -604,7 +604,7 @@ START_TEST(test_009ParametersChange_0003ChangeChainIDSuccess)
 }
 END_TEST
 
-START_TEST(test_009ParametersChange_0004ChangeChainIDFailureNullParameters) 
+START_TEST(test_004Parameters_0022ChangeChainIDFailureNullParameters) 
 {
     BOAT_RESULT ret;
 
@@ -625,7 +625,7 @@ START_TEST(test_009ParametersChange_0004ChangeChainIDFailureNullParameters)
 }
 END_TEST
 
-START_TEST(test_009ParametersChange_0005ChangeEip155CompSuccess) 
+START_TEST(test_004Parameters_0023ChangeEip155CompSuccess) 
 {
     BOAT_RESULT ret;
 
@@ -647,7 +647,7 @@ START_TEST(test_009ParametersChange_0005ChangeEip155CompSuccess)
 }
 END_TEST
 
-START_TEST(test_009ParametersChange_0006ChangeEip155CompFailureNullParameters) 
+START_TEST(test_004Parameters_0024ChangeEip155CompFailureNullParameters) 
 {
     BOAT_RESULT ret;
 
@@ -679,33 +679,33 @@ Suite *make_parameters_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_parameters, tc_parameters_api);       
     /* Test cases are added to the test set */
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0001TxInitSuccess);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0001TxInitSuccess);
 
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0002TxInitFailureNullParam);
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0003TxInitSuccessNullGasPrice);
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0004TxInitFailureErrorGasPriceHexFormat);
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0005TxInitFailureGasPriceHexNonOx);
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0006TxInitFailureGasLimitErrorHexFormat);
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0007TxInitFailureGasLimitHexNonOx);
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0008TxInitFailureRecipientErrorHexFormat);
-    tcase_add_test(tc_parameters_api, test_007ParametersInit_0009TxInitFailureRecipientLongLength);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0002TxInitFailureNullParam);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0003TxInitSuccessNullGasPrice);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0004TxInitFailureErrorGasPriceHexFormat);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0005TxInitFailureGasPriceHexNonOx);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0006TxInitFailureGasLimitErrorHexFormat);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0007TxInitFailureGasLimitHexNonOx);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0008TxInitFailureRecipientErrorHexFormat);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0009TxInitFailureRecipientLongLength);
 
-    tcase_add_test(tc_parameters_api, test_008ParametersSet_0001GetNonceFromNetworkSuccess);
-    tcase_add_test(tc_parameters_api, test_008ParametersSet_0002SetNonceSuccess);
-    tcase_add_test(tc_parameters_api, test_008ParametersSet_0003SetNonceFailureNullTx);
-    tcase_add_test(tc_parameters_api, test_008ParametersSet_0004SetValueSuccess);
-    tcase_add_test(tc_parameters_api, test_008ParametersSet_0005SetValueFailureNullTx);
-    tcase_add_test(tc_parameters_api, test_008ParametersSet_0006SetValueSuccessNullvalue);
-    tcase_add_test(tc_parameters_api, test_008ParametersSet_0007SetDataSuccess);
-    tcase_add_test(tc_parameters_api, test_008ParametersSet_0008SetDataFailureNullTx);
-    tcase_add_test(tc_parameters_api, test_008ParametersSet_0009SetDataSuccessNullData);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0010GetNonceFromNetworkSuccess);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0011SetNonceSuccess);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0012SetNonceFailureNullTx);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0013SetValueSuccess);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0014SetValueFailureNullTx);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0015SetValueSuccessNullvalue);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0016SetDataSuccess);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0017SetDataFailureNullTx);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0018SetDataSuccessNullData);
 
-    tcase_add_test(tc_parameters_api, test_009ParametersChange_0001ChangeNodeUrlSuccess);
-    tcase_add_test(tc_parameters_api, test_009ParametersChange_0002ChangeNodeUrlFailureNullParameters);
-    tcase_add_test(tc_parameters_api, test_009ParametersChange_0003ChangeChainIDSuccess);
-    tcase_add_test(tc_parameters_api, test_009ParametersChange_0004ChangeChainIDFailureNullParameters);
-    tcase_add_test(tc_parameters_api, test_009ParametersChange_0005ChangeEip155CompSuccess);
-    tcase_add_test(tc_parameters_api, test_009ParametersChange_0006ChangeEip155CompFailureNullParameters);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0019ChangeNodeUrlSuccess);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0020ChangeNodeUrlFailureNullParameters);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0021ChangeChainIDSuccess);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0022ChangeChainIDFailureNullParameters);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0023ChangeEip155CompSuccess);
+    tcase_add_test(tc_parameters_api, test_004Parameters_0024ChangeEip155CompFailureNullParameters);
 
     return s_parameters;
 }
