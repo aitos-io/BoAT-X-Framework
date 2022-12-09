@@ -1,7 +1,6 @@
 set(SUB_MODULE_NAME         wallet_obj)
 
-set(FILE_SRC    boatwallet.c
-                boatversion.c)
+set(FILE_SRC    boatversion.c)
 
 if(BOAT_PROTOCOL_USE_ETHEREUM)
 set(FILE_SRC    ${FILE_SRC} api_ethereum.c)
@@ -43,7 +42,7 @@ endif()
 add_library(${SUB_MODULE_NAME}  OBJECT  ${FILE_SRC})
 
 
-target_link_libraries(${SUB_MODULE_NAME}  boatvendor cjson-obj  protocol_obj protos-obj)
+# target_link_libraries(${SUB_MODULE_NAME}  boatvendor cjson-obj  protocol_obj protos-obj)
 
 target_include_directories(${SUB_MODULE_NAME}
     PRIVATE
@@ -58,6 +57,9 @@ target_include_directories(${SUB_MODULE_NAME}
     ${PROJECT_SOURCE_DIR}/sdk/third-party/protobuf-c/include
     ${PROJECT_SOURCE_DIR}/sdk/protocol/boatchainmaker/protos
     ${PROJECT_SOURCE_DIR}/sdk/protocol/boatchainmaker
+    endif()
+    if(BOAT_PROTOCOL_USE_HLFABRIC)
+    ${PROJECT_SOURCE_DIR}/sdk/third-party/protos
     endif()
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

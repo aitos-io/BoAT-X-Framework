@@ -39,10 +39,7 @@ all: $(OBJECTS_DIR) contract_generate
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fiscobcos_helloworld_create_pkcs		
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_fiscobcos_helloworld.c \
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fiscobcos_helloworld_create_native
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_fiscobcos_helloworld.c \
-		-DUSE_LOAD_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fiscobcos_helloworld_load		 
+		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_fiscobcos_helloworld_create_native	 
 
 contract_generate:
 	make -C $(CONTRACT_SRC_DIR) all

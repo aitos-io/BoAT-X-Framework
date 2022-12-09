@@ -1,0 +1,45 @@
+syntax = "proto3";
+package common;
+
+message hwbcsNetworks{
+    uint32 networkNum = 1;
+    hwbcsNetworkData networks= 2;
+}
+
+message hwbcsNetworkData{
+    uint32 index = 1;
+    string accountCertContent = 2;
+    string accountClientTlsPrikey = 3;
+    string accountClientTlsCert  = 4;
+    // string tlsClientCertContent = 5 ;
+    // hwbcsNodesCfg nodes = 4;
+    // uint32 layoutNum = 4;
+    repeated hwbcsNodeLayoutCfg layoutCfg = 5;
+    hwbcsNodeGroupCfg orderCfg = 6;
+}
+
+message hwbcsNodesCfg{
+    // uint32 layoutNum = 1;
+    repeated hwbcsNodeLayoutCfg layoutCfg = 1;
+    hwbcsNodeGroupCfg orderCfg = 2;
+}
+
+message hwbcsNodeLayoutCfg{
+    // uint32 groupNum = 1;
+    repeated hwbcsNodeGroupCfg groupCfg = 1;
+}
+
+message hwbcsNodeGroupCfg {
+     uint32 quantities = 1 ;
+    //  uint32 nodeNum = 2;
+    repeated hwbcsNodeInfo endorser = 2  ;
+     string tlsOrgCertContent = 3 ;
+}
+
+
+message hwbcsNodeInfo {
+    string nodeUrl = 1;
+    string hostName = 2;
+}
+
+

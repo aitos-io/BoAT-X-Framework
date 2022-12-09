@@ -78,13 +78,6 @@ target_link_libraries(demo_venachain_mycontract_create_native
                        venachain_obj
                        curl)
 
-add_executable(demo_venachain_mycontract_load ${VENACHAIN_DEMO_SRC})
-target_compile_options(demo_venachain_mycontract_load PRIVATE -DUSE_LOAD_PERSIST_WALLET )
-target_link_libraries(demo_venachain_mycontract_load
-                       boatwallet
-                       boatvendor
-                       venachain_obj
-                       curl)
 
 
                 

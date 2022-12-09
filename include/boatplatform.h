@@ -28,10 +28,12 @@
 #include <stddef.h>
 #include "boattypes.h"
 #include "boaterrcode.h"
+#include "boatkeypair.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 
 /*!****************************************************************************
@@ -138,7 +140,67 @@ void BoatSleep(BUINT32 second);
  *   \n For RTOS it depends on the specification of the RTOS.
  *
  ******************************************************************************/
-long int BoatGetTimes();
+long int BoatGetTimes(void);
+
+
+/**
+ * @description: 
+ * 	This function get pubkey from prikey;
+ * @param {BoatKeypairPriKeyType} type
+ * 	now only support ecdsa and will support other alg such as SM
+ * @param {BUINT8} *prikey
+ * 	prikey inut
+ * @param {BUINT32} prikeyLen
+ * 	length of prikey
+ * @param {BUINT8} *pubkey
+ * 	pubkey output
+ * @param {BUINT32} *pubkeyLen
+ * 	length of pubkey
+ * @return {*}
+ *  This function returns BoAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoAT_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format, BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen);
+
+
+/**
+ * @description: 
+ * 	This function gen keypair .
+ * @param {BoatKeypairPriKeyType} type
+ * 	now only support ecdsa and will support other alg such as SM
+ * @param {BoatKeypairPriKeyFormat} format
+ * 	support native and pkcs
+ * @param {BoatKeypairKeypair} *keypair
+ * @return {*}
+ *  This function returns BoAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoAT_Keypair_generation(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format , BoatKeypairKeypair *keypair);
+
+
+/**
+ * @description: 
+ * 	This function gen signature by digest.
+ * @param[in] {BoatKeypairPriKeyType} type
+ * 	support ecdsa now.
+ * @param[in] {BUINT8} *prikey
+ * 	private key
+ * @param[in] {BUINT32} prikeylen
+ * 	length of prikey
+ * @param[in] {BUINT8*} digest
+ * @param[in] {BUINT32} digestLen
+ * @param[out] {BUINT8 *} signature
+ * @param[out] {BUINT32} *signatureLen
+ * @param[out] {BUINT8} *Prefix
+ * 	recovery factor getting public key from signature. The value must bu 0 or 1.
+ * @return {*}
+ * @author: aitos
+ */
+BOAT_RESULT BoAT_sign(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format,BUINT8 *prikey,BUINT32 prikeylen ,const BUINT8* digest,BUINT32 digestLen, BUINT8 * signature, BUINT32 *signatureLen , BUINT8 *Prefix);
 
 /*! @}*/
 

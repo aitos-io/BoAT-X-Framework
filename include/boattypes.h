@@ -64,7 +64,7 @@ typedef enum
     BOAT_PROTOCOL_CHAINMAKER,      // chainmaker
     BOAT_PROTOCOL_VENACHAIN,       // Venachain Enterprise consortium chain
     BOAT_PROTOCOL_QUORUM,          // quorum
-    BOAT_PROTOCOL_CITA             // cita chain   
+    BOAT_PROTOCOL_CITA             // cita
 }BoatProtocolType;
 
 //!@brief Blockchain hash algorithm
@@ -126,5 +126,12 @@ typedef struct TBoatFieldMax24B
     BUINT8 field[24];     //!< Field storage
     BUINT32 field_len;    //!< The effective length of the field in byte
 }BoatFieldMax24B;  
+
+typedef enum
+{
+    BOAT_STORE_TYPE_UNKNOWN = 0,  //!< Placeholder for unknown store type
+    BOAT_STORE_TYPE_RAM,          //!< store in ram ,for onetime wallet or test wallet
+    BOAT_STORE_TYPE_FLASH,        //!< store in flash , for persistent wallet
+}BoatStoreType;
 
 #endif

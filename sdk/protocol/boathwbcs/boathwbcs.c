@@ -71,7 +71,7 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 
 	BOAT_RESULT result = BOAT_SUCCESS;
 	boat_try_declare;
-	if (tx_ptr->var.type == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
+	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL)
 	{
 		/* contractInvocation info*/
 		contractInvocation.contract_name = tx_ptr->var.contract_name;
@@ -145,7 +145,7 @@ __BOATSTATIC BOAT_RESULT hwbcsPayloadPacked(BoatHwbcsTx *tx_ptr,
 		result = boat_exception;
 	}
 	/* free malloc */
-	if (tx_ptr->var.type == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL){
+	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL){
 		if(NULL != contractInvocation.args){
 			BoatFree(contractInvocation.args);
 		}
@@ -179,7 +179,7 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	}
 
 	/* step-1: generate nonce once for proposal */
-	if (tx_ptr->var.type == (BoatHlfabricType)HWBCS_TYPE_PROPOSAL)
+	if (tx_ptr->var.type == HWBCS_TYPE_PROPOSAL)
 	{
 		tx_ptr->var.nonce.field_len = 8;
 		result = BoatRandom(tx_ptr->var.nonce.field, tx_ptr->var.nonce.field_len, NULL);
@@ -228,8 +228,8 @@ BOAT_RESULT hwbcsProposalTransactionPacked(BoatHwbcsTx *tx_ptr)
 	}
 	/* approvals */
 
-	approval_message.identity.len = tx_ptr->wallet_ptr->account_info.cert.field_len;
-	approval_message.identity.data = tx_ptr->wallet_ptr->account_info.cert.field_ptr;
+	approval_message.identity.len = tx_ptr->wallet_ptr->network_info.accountCertContent.length;
+	approval_message.identity.data = tx_ptr->wallet_ptr->network_info.accountCertContent.content;
 	approval_message.sign.data = signatureResult.pkcs_sign;
 	approval_message.sign.len = signatureResult.pkcs_sign_length;
 

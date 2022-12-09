@@ -77,8 +77,3 @@ target_link_libraries(demo_cita_SimpleStorage_load
                         boatvendor
                         curl
                         cita_obj)
-
-
-
-
-

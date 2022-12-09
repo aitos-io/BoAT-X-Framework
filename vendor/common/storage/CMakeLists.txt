@@ -4,7 +4,7 @@ add_library(storage_obj  OBJECT  ${FILE_SRC})
 
 
 
-target_link_libraries(storage_obj keccak_obj)
+# target_link_libraries(storage_obj keccak_obj)
 
 target_include_directories(storage_obj
     PRIVATE

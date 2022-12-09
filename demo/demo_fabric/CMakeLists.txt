@@ -21,10 +21,3 @@ target_link_libraries(demo_fabric_abac_persist
                         boatwallet
                         boatvendor
                         curl)
-
-add_executable(demo_fabric_abac_load ${FABRIC_DEMO_SRC})
-target_compile_options(demo_fabric_abac_load PRIVATE -DUSE_LOAD_PERSIST_WALLET)
-target_link_libraries(demo_fabric_abac_load
-                        boatwallet
-                        boatvendor
-                        curl)

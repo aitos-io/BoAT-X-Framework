@@ -34,7 +34,8 @@
 
 #define HASHER_DIGEST_LENGTH 32
 
-typedef enum {
+typedef enum
+{
   HASHER_SHA2,
   HASHER_SHA2D,
   HASHER_SHA2_RIPEMD,
@@ -54,11 +55,13 @@ typedef enum {
   HASHER_BLAKE2B_PERSONAL,
 } HasherType;
 
-typedef struct {
+typedef struct
+{
   HasherType type;
 
-  union {
-    SHA256_CTX sha2;         // for HASHER_SHA2{,D}
+  union
+  {
+    DEFAULT_SHA256_CTX sha2; // for HASHER_SHA2{,D}
     SHA3_CTX sha3;           // for HASHER_SHA3{,K}
     BLAKE256_CTX blake;      // for HASHER_BLAKE{,D}
     GROESTL512_CTX groestl;  // for HASHER_GROESTLD_TRUNC

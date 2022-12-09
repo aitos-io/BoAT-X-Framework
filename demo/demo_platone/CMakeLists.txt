@@ -72,13 +72,6 @@ target_link_libraries(demo_platone_mycontract_create_native
                        platone_obj
                        curl)
 
-add_executable(demo_platone_mycontract_load ${PLATONE_DEMO_SRC})
-target_compile_options(demo_platone_mycontract_load PRIVATE -DUSE_LOAD_PERSIST_WALLET )
-target_link_libraries(demo_platone_mycontract_load
-                       boatwallet
-                       boatvendor
-                       platone_obj
-                       curl)
 
 
                 

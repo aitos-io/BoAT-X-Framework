@@ -63,12 +63,6 @@ target_link_libraries(demo_ethereum_transfer_create_native
                         boatvendor
                         curl)
 
-add_executable(demo_ethereum_transfer_load ${ETHEREUM_DEMO_SRC})
-target_compile_options(demo_ethereum_transfer_load PRIVATE -DUSE_LOAD_PERSIST_WALLET)
-target_link_libraries(demo_ethereum_transfer_load
-                        boatwallet
-                        boatvendor
-                        curl)
 
 
 ##############
@@ -121,13 +115,6 @@ target_link_libraries(demo_ethereum_storeread_create_native
                         curl
                         ethereum_obj)
 
-add_executable(demo_ethereum_storeread_load ${ETHEREUM_DEMO_SRC})
-target_compile_options(demo_ethereum_storeread_load PRIVATE -DUSE_LOAD_PERSIST_WALLET)
-target_link_libraries(demo_ethereum_storeread_load
-                        boatwallet
-                        boatvendor
-                        curl
-                        ethereum_obj)
 
 
 
