@@ -126,7 +126,7 @@ BOAT_RESULT check_platon_keypair_in_keypairList(BoatKeypairPriKeyCtx *keypair,Bo
     return BOAT_SUCCESS;
 }
 
-START_TEST(test_001CreateKeypair_0001CreateOneTimeKeypairSuccessNullName) 
+START_TEST(test_001Keypair_0001CreateOneTimeKeypairSuccessNullName) 
 {
     BOAT_RESULT ret;
     BOAT_RESULT keypair1_index;
@@ -156,7 +156,7 @@ START_TEST(test_001CreateKeypair_0001CreateOneTimeKeypairSuccessNullName)
 }
 END_TEST
 
-START_TEST(test_001CreateKeypair_0002CreateOneTimeKeypairSuccessWithName) 
+START_TEST(test_001Keypair_0002CreateOneTimeKeypairSuccessWithName) 
 {
     BOAT_RESULT ret;
     BOAT_RESULT keypair1_index;
@@ -185,7 +185,7 @@ START_TEST(test_001CreateKeypair_0002CreateOneTimeKeypairSuccessWithName)
 }
 END_TEST
 
-START_TEST(test_001CreateKeypair_0003CreateOneTimeKeypairSuccessTwice) 
+START_TEST(test_001Keypair_0003CreateOneTimeKeypairSuccessTwice) 
 {
     BOAT_RESULT ret;
     BOAT_RESULT keypair1_index;
@@ -221,7 +221,7 @@ START_TEST(test_001CreateKeypair_0003CreateOneTimeKeypairSuccessTwice)
 }
 END_TEST
 
-START_TEST(test_001CreateKeypair_0004CreateOneTimeWalletFailureNullConfig) 
+START_TEST(test_001Keypair_0004CreateOneTimeWalletFailureNullConfig) 
 {
     BOAT_RESULT keypair_index;
     BoatIotSdkInit();
@@ -235,7 +235,7 @@ START_TEST(test_001CreateKeypair_0004CreateOneTimeWalletFailureNullConfig)
 }
 END_TEST
 
-START_TEST(test_001CreateKeypair_0005CreateOneTimeWalletFailureWrongGenModeConfig) 
+START_TEST(test_001Keypair_0005CreateOneTimeWalletFailureWrongGenModeConfig) 
 {
     BOAT_RESULT keypair_index;
     BoatIotSdkInit();
@@ -257,7 +257,7 @@ START_TEST(test_001CreateKeypair_0005CreateOneTimeWalletFailureWrongGenModeConfi
 }
 END_TEST
 
-START_TEST(test_001CreateKeypair_0006CreateOneTimeWalletFailureWrongKeyTypeConfig) 
+START_TEST(test_001Keypair_0006CreateOneTimeWalletFailureWrongKeyTypeConfig) 
 {
     BOAT_RESULT keypair_index;
     BoatIotSdkInit();
@@ -279,7 +279,7 @@ START_TEST(test_001CreateKeypair_0006CreateOneTimeWalletFailureWrongKeyTypeConfi
 }
 END_TEST
 
-START_TEST(test_001CreateKeypair_0007CreateOneTimeWalletFailureWrongKeyFormatConfig) 
+START_TEST(test_001Keypair_0007CreateOneTimeWalletFailureWrongKeyFormatConfig) 
 {
     BOAT_RESULT keypair_index;
     BoatIotSdkInit();
@@ -301,7 +301,7 @@ START_TEST(test_001CreateKeypair_0007CreateOneTimeWalletFailureWrongKeyFormatCon
 }
 END_TEST
 
-START_TEST(test_001CreateKeypair_0008CreateOneTimeWalletFailureWrongNativeKeyLenConfig)
+START_TEST(test_001Keypair_0008CreateOneTimeWalletFailureWrongNativeKeyLenConfig)
 {
     BOAT_RESULT keypair_index;
     BoatIotSdkInit();
@@ -324,7 +324,7 @@ START_TEST(test_001CreateKeypair_0008CreateOneTimeWalletFailureWrongNativeKeyLen
 }
 END_TEST
 
-START_TEST(test_001CreateKeypair_0009CreateOneTimeWalletFailureWrongPKCSKeyLenConfig)
+START_TEST(test_001Keypair_0009CreateOneTimeWalletFailureWrongPKCSKeyLenConfig)
 {
     BOAT_RESULT keypair_index;
     BoatIotSdkInit();
@@ -346,7 +346,7 @@ START_TEST(test_001CreateKeypair_0009CreateOneTimeWalletFailureWrongPKCSKeyLenCo
 }
 END_TEST
 
-START_TEST(test_001CreateKeypair_0010CreatePersistKeypairSuccess)
+START_TEST(test_001Keypair_0010CreatePersistKeypairSuccess)
 {
     BOAT_RESULT ret;
     BOAT_RESULT keypair1_index;
@@ -380,7 +380,7 @@ START_TEST(test_001CreateKeypair_0010CreatePersistKeypairSuccess)
 }
 END_TEST
 
-START_TEST(test_001CreateKeypair_0011Create2PersistKeypairSuccess)
+START_TEST(test_001Keypair_0011Create2PersistKeypairSuccess)
 {
     BOAT_RESULT ret;
     BOAT_RESULT keypair1_index;
@@ -437,7 +437,7 @@ START_TEST(test_001CreateKeypair_0011Create2PersistKeypairSuccess)
 }
 END_TEST
 
-START_TEST(test_002DeleteKeypair_0001DeleteOnetimeKeypairSuccess)
+START_TEST(test_001Keypair_0012DeleteOnetimeKeypairSuccess)
 {
     BOAT_RESULT ret;
     BOAT_RESULT keypair1_index;
@@ -475,7 +475,7 @@ START_TEST(test_002DeleteKeypair_0001DeleteOnetimeKeypairSuccess)
 }
 END_TEST
 
-START_TEST(test_002DeleteKeypair_0002DeleteOnetimeKeypairFailureTwice)
+START_TEST(test_001Keypair_0013DeleteOnetimeKeypairFailureTwice)
 {
     BOAT_RESULT ret;
     BOAT_RESULT keypair1_index;
@@ -516,7 +516,7 @@ START_TEST(test_002DeleteKeypair_0002DeleteOnetimeKeypairFailureTwice)
 }
 END_TEST
 
-START_TEST(test_002DeleteKeypair_0003DeleteOnetimeKeypairFailureThenRecover)
+START_TEST(test_001Keypair_0014DeleteOnetimeKeypairFailureThenRecover)
 {
     BOAT_RESULT ret;
     BOAT_RESULT keypair1_index;
@@ -552,7 +552,7 @@ START_TEST(test_002DeleteKeypair_0003DeleteOnetimeKeypairFailureThenRecover)
 }
 END_TEST
 
-START_TEST(test_002DeleteKeypair_0004DeleteKeypairFailureWrongIndex)
+START_TEST(test_001Keypair_0015DeleteKeypairFailureWrongIndex)
 {
     BOAT_RESULT ret;
 
@@ -565,7 +565,7 @@ START_TEST(test_002DeleteKeypair_0004DeleteKeypairFailureWrongIndex)
 }
 END_TEST
 
-START_TEST(test_002DeleteKeypair_0005DeletePersistKeypairSuccess)
+START_TEST(test_001Keypair_0016DeletePersistKeypairSuccess)
 {
     BOAT_RESULT ret;
     BOAT_RESULT keypair1_index;
@@ -606,7 +606,7 @@ START_TEST(test_002DeleteKeypair_0005DeletePersistKeypairSuccess)
 }
 END_TEST
 
-START_TEST(test_002DeleteKeypair_0006DeletePersistKeypairFailureNonExistentIndex)
+START_TEST(test_001Keypair_0017DeletePersistKeypairFailureNonExistentIndex)
 {
     BOAT_RESULT ret;
     BUINT8 i,j,pickNum;
@@ -661,23 +661,23 @@ Suite *make_keypair_suite(void)
     suite_add_tcase(s_keypair, tc_keypair_api);       
     /* Test cases are added to the test set */
 
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0001CreateOneTimeKeypairSuccessNullName);  
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0002CreateOneTimeKeypairSuccessWithName); 
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0003CreateOneTimeKeypairSuccessTwice);
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0004CreateOneTimeWalletFailureNullConfig);
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0005CreateOneTimeWalletFailureWrongGenModeConfig);
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0006CreateOneTimeWalletFailureWrongKeyTypeConfig);
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0007CreateOneTimeWalletFailureWrongKeyFormatConfig);
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0008CreateOneTimeWalletFailureWrongNativeKeyLenConfig);
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0009CreateOneTimeWalletFailureWrongPKCSKeyLenConfig);
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0010CreatePersistKeypairSuccess);
-    tcase_add_test(tc_keypair_api, test_001CreateKeypair_0011Create2PersistKeypairSuccess);
-    tcase_add_test(tc_keypair_api, test_002DeleteKeypair_0001DeleteOnetimeKeypairSuccess);
-    tcase_add_test(tc_keypair_api, test_002DeleteKeypair_0002DeleteOnetimeKeypairFailureTwice);
-    tcase_add_test(tc_keypair_api, test_002DeleteKeypair_0003DeleteOnetimeKeypairFailureThenRecover);
-    tcase_add_test(tc_keypair_api, test_002DeleteKeypair_0004DeleteKeypairFailureWrongIndex);
-    tcase_add_test(tc_keypair_api, test_002DeleteKeypair_0005DeletePersistKeypairSuccess);
-    tcase_add_test(tc_keypair_api, test_002DeleteKeypair_0006DeletePersistKeypairFailureNonExistentIndex);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0001CreateOneTimeKeypairSuccessNullName);  
+    tcase_add_test(tc_keypair_api, test_001Keypair_0002CreateOneTimeKeypairSuccessWithName); 
+    tcase_add_test(tc_keypair_api, test_001Keypair_0003CreateOneTimeKeypairSuccessTwice);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0004CreateOneTimeWalletFailureNullConfig);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0005CreateOneTimeWalletFailureWrongGenModeConfig);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0006CreateOneTimeWalletFailureWrongKeyTypeConfig);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0007CreateOneTimeWalletFailureWrongKeyFormatConfig);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0008CreateOneTimeWalletFailureWrongNativeKeyLenConfig);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0009CreateOneTimeWalletFailureWrongPKCSKeyLenConfig);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0010CreatePersistKeypairSuccess);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0011Create2PersistKeypairSuccess);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0012DeleteOnetimeKeypairSuccess);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0013DeleteOnetimeKeypairFailureTwice);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0014DeleteOnetimeKeypairFailureThenRecover);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0015DeleteKeypairFailureWrongIndex);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0016DeletePersistKeypairSuccess);
+    tcase_add_test(tc_keypair_api, test_001Keypair_0017DeletePersistKeypairFailureNonExistentIndex);
 
     return s_keypair;
 }
