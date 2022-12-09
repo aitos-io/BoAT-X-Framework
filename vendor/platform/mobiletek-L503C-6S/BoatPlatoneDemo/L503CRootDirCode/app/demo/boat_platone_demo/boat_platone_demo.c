@@ -53,9 +53,6 @@ __BOATSTATIC BOAT_RESULT platone_createKeypair(BCHAR *keypairName)
     UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
     keypair_config.prikey_content.field_ptr = binFormatKey;
     keypair_config.prikey_content.field_len = 32;
-    /* default is internal generation */  
-    keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION;
-    keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
 
 	/* create platone wallet */
     result = BoatKeypairCreate( &keypair_config, keypairName,BOAT_STORE_TYPE_RAM);
