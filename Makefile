@@ -216,13 +216,14 @@ endif
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
 # SOFT_CRYPTO ?= CRYPTO_MBEDTLS
 
-ifeq ($(PLATFORM_TARGET), linux-default)
-    SOFT_CRYPTO ?= CRYPTO_DEFAULT
-else ifeq ($(PLATFORM_TARGET), mobiletek-L503C-6S) 
-    SOFT_CRYPTO ?= CRYPTO_DEFAULT
-else
-    $(error not support this platform : $(PLATFORM_TARGET))
-endif
+SOFT_CRYPTO ?= CRYPTO_DEFAULT
+# ifeq ($(PLATFORM_TARGET), linux-default)
+#     SOFT_CRYPTO ?= CRYPTO_DEFAULT
+# else ifeq ($(PLATFORM_TARGET), mobiletek-L503C-6S) 
+#     SOFT_CRYPTO ?= CRYPTO_DEFAULT
+# else
+#     $(error not support this platform : $(PLATFORM_TARGET))
+# endif
 
 
 ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
