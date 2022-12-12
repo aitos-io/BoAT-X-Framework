@@ -35,7 +35,7 @@
 #include "boatkeystore.h"
 
 /* net releated include */
-// #if (PROTOCOL_USE_HLFABRIC == 1)
+#if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_HWBCS == 1 || PROTOCOL_USE_CHAINMAKER_V1 == 1 || PROTOCOL_USE_CHAINMAKER_V2 == 1)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -52,12 +52,6 @@
 #include <openssl/err.h>
 #include <openssl/crypto.h>
 #include <openssl/x509v3.h>
-// #endif
-
-// #if (PROTOCOL_USE_HLFABRIC == 1)
-// // for TTLSContext structure
-// #include "http2intf.h"
-// #endif
 
 static X509 *buffer2x509(const uint8_t *cert, size_t len)
 {
@@ -118,6 +112,8 @@ BOAT_RESULT boat_find_subject_common_name(const BCHAR *cert, const BUINT32 certl
 
 	return retval;
 }
+
+#endif
 
 uint32_t random32(void)
 {
@@ -386,9 +382,9 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 
 /******************************************************************************
 							  BOAT SOCKET WARPPER
-							THIS ONLY USED BY FABRIC
+							THIS ONLY USED BY FABRIC/HWBCS/CHAINMAKER
 *******************************************************************************/
-// #if (PROTOCOL_USE_HLFABRIC == 1)
+#if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_HWBCS == 1 || PROTOCOL_USE_CHAINMAKER_V1 == 1 || PROTOCOL_USE_CHAINMAKER_V2 == 1)
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
 	int connectfd;
@@ -599,10 +595,10 @@ void BoatClose(BSINT32 sockfd, void **tlsContext, void *rsvd)
 	*tlsContext = NULL;
 #endif
 }
-// #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
-
-/******************************************************************************
-							  BOAT KEY PROCESS WARPPER
+#endif /* ##if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_HWBCS == 1 || PROTOCOL_USE_CHAINMAKER_V1 == 1 || PROTOCOL_USE_CHAINMAKER_V2 == 1)   \
+																																			 \ \
+/******************************************************************************                                                                \
+							  BOAT KEY PROCESS WARPPER                                                                                         \
 *******************************************************************************/
 static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriKeyCtx_config *config,
 														   BoatKeypairDataCtx *pkCtx)
