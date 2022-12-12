@@ -30,62 +30,7 @@ api_hw_bcs.c defines the hwbcs wallet API for BoAT IoT SDK.
 #include "orderer/cluster.pb-c.h"
 #include "common/transaction.pb-c-hwbcs.h"
 
-#if (BOAT_HWBCS_TLS_SUPPORT == 1)
-#include "mbedtls/x509_crt.h"
-#include "mbedtls/oid.h"
 #include "boatutility.h"
-#endif
-
-__BOATSTATIC size_t boat_find_oid_value_in_name(const mbedtls_x509_name *name, const char *target_short_name, char *value, size_t value_length)
-{
-	const char *short_name = NULL;
-	bool found = false;
-	size_t retval = 0;
-
-	while ((name != NULL) && !found)
-	{
-		// if there is no data for this name go to the next one
-		if (!name->oid.p)
-		{
-			name = name->next;
-			continue;
-		}
-
-		int ret = mbedtls_oid_get_attr_short_name(&name->oid, &short_name);
-		if ((ret == 0) && (strcmp(short_name, target_short_name) == 0))
-		{
-			found = true;
-		}
-
-		if (found)
-		{
-			size_t bytes_to_write = (name->val.len >= value_length) ? value_length - 1 : name->val.len;
-
-			for (size_t i = 0; i < bytes_to_write; i++)
-			{
-				char c = name->val.p[i];
-				// if (c < 32 || c == 127 || (c > 128 && c < 160))
-				if (c < 32 || c == 127)
-				{
-					value[i] = '?';
-				}
-				else
-				{
-					value[i] = c;
-				}
-			}
-
-			// null terminate
-			value[bytes_to_write] = 0;
-
-			retval = name->val.len;
-		}
-
-		name = name->next;
-	}
-
-	return retval;
-}
 
 BOAT_RESULT BoatHwbcsTxSetArgs(BoatHwbcsTx *tx_ptr,
 							   const BCHAR *arg1,
@@ -171,7 +116,6 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 		}
 		tx_ptr->evaluateRes.httpResLen = 0;
 	}
-
 	result = hwbcsProposalTransactionPacked(tx_ptr);
 	if (result != BOAT_SUCCESS)
 	{
@@ -215,9 +159,9 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 					}
 					memset(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr, 0x00, ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_len);
 					memcpy(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain.field_ptr, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.content, nodeCfg.layoutCfg[i].groupCfg[j].tlsOrgCertContent.length);
-// 			BoatLog_hexasciidump(BOAT_LOG_NORMAL, "tlsCAchain  :",
-// 			 ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr,
-// 			 ((http2IntfContext*)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
+					// BoatLog_hexasciidump(BOAT_LOG_NORMAL, "tlsCAchain  :",
+					// 					 ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_ptr,
+					// 					 ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCAchain[0].field_len);
 #endif
 					((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->type = tx_ptr->var.type;
 
@@ -400,52 +344,52 @@ __BOATSTATIC BOAT_RESULT BoatHwbcsTxExec(BoatHwbcsTx *tx_ptr,
 	return result;
 }
 
-#if (BOAT_HWBCS_TLS_SUPPORT == 1) && (BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
-BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo(BoatHwbcsWallet *wallet_ptr,
-											const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											const BoatHwbcsCertInfoCfg certContent)
-{
-	BOAT_RESULT result = BOAT_SUCCESS;
-	boat_try_declare;
+// #if (BOAT_HWBCS_TLS_SUPPORT == 1) && (BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
+// BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo(BoatHwbcsWallet *wallet_ptr,
+// 											const BoatWalletPriKeyCtx_config prikeyCtx_config,
+// 											const BoatHwbcsCertInfoCfg certContent)
+// {
+// 	BOAT_RESULT result = BOAT_SUCCESS;
+// 	boat_try_declare;
 
-	if (wallet_ptr == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
-		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-	}
+// 	if (wallet_ptr == NULL)
+// 	{
+// 		BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr should not be NULL.");
+// 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+// 	}
 
-	/* initialization */
-	memset(&wallet_ptr->tlsClinet_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx));
-	wallet_ptr->tlsClinet_info.cert.field_ptr = NULL;
-	wallet_ptr->tlsClinet_info.cert.field_len = 0;
+// 	/* initialization */
+// 	memset(&wallet_ptr->tlsClinet_info.prikeyCtx, 0, sizeof(BoatWalletPriKeyCtx));
+// 	wallet_ptr->tlsClinet_info.cert.field_ptr = NULL;
+// 	wallet_ptr->tlsClinet_info.cert.field_len = 0;
 
-	/* prikey context assignment */
-	memcpy(&wallet_ptr->tlsClinet_info.prikeyCtx,
-		   &prikeyCtx_config.private_KeyCtx, sizeof(BoatWalletPriKeyCtx));
+// 	/* prikey context assignment */
+// 	memcpy(&wallet_ptr->tlsClinet_info.prikeyCtx,
+// 		   &prikeyCtx_config.private_KeyCtx, sizeof(BoatWalletPriKeyCtx));
 
-	/* cert assignment */
-	wallet_ptr->tlsClinet_info.cert.field_ptr = BoatMalloc(certContent.length);
-	if (wallet_ptr->tlsClinet_info.cert.field_ptr == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
-		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsWalletSetTlsInfo_exception);
-	}
-	memcpy(wallet_ptr->tlsClinet_info.cert.field_ptr, certContent.content, certContent.length);
-	wallet_ptr->tlsClinet_info.cert.field_len = certContent.length;
+// 	/* cert assignment */
+// 	wallet_ptr->tlsClinet_info.cert.field_ptr = BoatMalloc(certContent.length);
+// 	if (wallet_ptr->tlsClinet_info.cert.field_ptr == NULL)
+// 	{
+// 		BoatLog(BOAT_LOG_CRITICAL, "BoatMalloc failed.");
+// 		boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHwbcsWalletSetTlsInfo_exception);
+// 	}
+// 	memcpy(wallet_ptr->tlsClinet_info.cert.field_ptr, certContent.content, certContent.length);
+// 	wallet_ptr->tlsClinet_info.cert.field_len = certContent.length;
 
-	/* boat catch handle */
-	boat_catch(BoatHwbcsWalletSetTlsInfo_exception)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
-		result = boat_exception;
-		/* free malloc param Deinit */
-		BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
-		wallet_ptr->tlsClinet_info.cert.field_len = 0;
-	}
+// 	/* boat catch handle */
+// 	boat_catch(BoatHwbcsWalletSetTlsInfo_exception)
+// 	{
+// 		BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
+// 		result = boat_exception;
+// 		/* free malloc param Deinit */
+// 		BoatFree(wallet_ptr->tlsClinet_info.cert.field_ptr);
+// 		wallet_ptr->tlsClinet_info.cert.field_len = 0;
+// 	}
 
-	return result;
-}
-#endif
+// 	return result;
+// }
+// #endif
 
 /**
  * @description:
@@ -589,6 +533,8 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 	}
 	tx_ptr->var.channelId = NULL;
 	tx_ptr->var.orgName = NULL;
+	tx_ptr->evaluateRes.httpResLen = 0;
+	tx_ptr->evaluateRes.http2Res = NULL;
 	/* ----->tx_ptr->endorserResponse reset */
 	tx_ptr->endorserResponse.responseCount = 0;
 	for (i = 0; i < BOAT_HWBCS_ENDORSER_MAX_NUM; i++)
@@ -633,20 +579,13 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 			memcpy(*paramDstList[i], paramSrcList[i], stringLen + 1);
 		}
 	}
-#if (BOAT_HWBCS_TLS_SUPPORT == 1)
-	mbedtls_x509_crt m_certificate;
-	mbedtls_x509_crt_init(&m_certificate);
-	uint32_t status = mbedtls_x509_crt_parse(&m_certificate, (const unsigned char *)tx_ptr->wallet_ptr->network_info.accountCertContent.content, tx_ptr->wallet_ptr->network_info.accountCertContent.length);
-	if (status != 0)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "certificate parse failed.");
-		boat_throw(BOAT_ERROR, BoatHwbcsTxInit_exception);
-	}
-	const mbedtls_x509_name *name = &m_certificate.subject;
 	char value[64];
 	size_t value_len;
 
-	value_len = boat_find_oid_value_in_name(name, "CN", value, sizeof(value));
+	// value_len = boat_find_oid_value_in_name(name, "CN", value, sizeof(value));
+
+	value_len = boat_find_subject_common_name(tx_ptr->wallet_ptr->network_info.accountCertContent.content, tx_ptr->wallet_ptr->network_info.accountCertContent.length, value, sizeof(value));
+
 	if (value_len)
 	{
 		tx_ptr->var.creator_id = BoatMalloc(value_len + 1);
@@ -657,8 +596,6 @@ BOAT_RESULT BoatHwbcsTxInit(BoatHwbcsTx *tx_ptr,
 		}
 		memcpy(tx_ptr->var.creator_id, value, value_len);
 	}
-
-#endif
 
 	/* boat catch handle */
 	boat_catch(BoatHwbcsTxInit_exception)

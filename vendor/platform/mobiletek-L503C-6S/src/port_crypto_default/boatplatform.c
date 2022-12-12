@@ -146,6 +146,7 @@ BOAT_RESULT  BoatHash( const BoatHashAlgType type, const BUINT8* input, BUINT32 
  */
 BOAT_RESULT BoAT_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat format, BUINT8 *prikey, BUINT32 prikeyLen, BUINT8 *pubkey, BUINT32 *pubkeyLen)
 {
+	BoatLog(BOAT_LOG_CRITICAL, "BoAT_getPubkey");
 	BOAT_RESULT result = BOAT_SUCCESS;
 	BUINT8      pubKey65[65] = {0};
 	if (type== BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1)
@@ -165,6 +166,7 @@ BOAT_RESULT BoAT_getPubkey(BoatKeypairPriKeyType type,BoatKeypairPriKeyFormat fo
 		BoatLog(BOAT_LOG_CRITICAL, "Invalid private key type.");
 		result = BOAT_ERROR_KEYPAIR_KEY_TYPE_ERR;
 	}
+	BoatLog(BOAT_LOG_CRITICAL, "BoAT_getPubkey end");
 	return result;
 }
 

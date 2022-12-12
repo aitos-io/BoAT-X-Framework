@@ -185,35 +185,33 @@ typedef struct TBoatHwbcsTx
 extern "C" {
 #endif
 
-
-
-#if (BOAT_HWBCS_TLS_SUPPORT == 1) && (BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
-/*!****************************************************************************
- * @brief 
- *   Set TLS key pairs of client.
- *
- * @details
- *   This function used to set TLS key pairs of client. If server needs to 
- *   authenticate the client, this function needs to be enabled.
- *
- * @param wallet_ptr 
- *   huawei chain wallet pointer.
- *
- * @param prikeyCtx_config 
- *   The private key information to be settings.
- *
- * @param certContent
- *   The content of the certificate to be settings.
- *
- * @return 
- *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
- *
- *@note This function is reserved for future. DO NOT use it in your application.
- ******************************************************************************/
-BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo( BoatHwbcsWallet *wallet_ptr, 
-											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											    const BoatHwbcsCertInfoCfg certContent );
-#endif
+	// #if (BOAT_HWBCS_TLS_SUPPORT == 1) && (BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
+	// /*!****************************************************************************
+	//  * @brief
+	//  *   Set TLS key pairs of client.
+	//  *
+	//  * @details
+	//  *   This function used to set TLS key pairs of client. If server needs to
+	//  *   authenticate the client, this function needs to be enabled.
+	//  *
+	//  * @param wallet_ptr
+	//  *   huawei chain wallet pointer.
+	//  *
+	//  * @param prikeyCtx_config
+	//  *   The private key information to be settings.
+	//  *
+	//  * @param certContent
+	//  *   The content of the certificate to be settings.
+	//  *
+	//  * @return
+	//  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
+	//  *
+	//  *@note This function is reserved for future. DO NOT use it in your application.
+	//  ******************************************************************************/
+	// BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo( BoatHwbcsWallet *wallet_ptr,
+	// 											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
+	// 											    const BoatHwbcsCertInfoCfg certContent );
+	// #endif
 
 /**
  * @description: 

@@ -506,7 +506,7 @@ __BOATSTATIC BOAT_RESULT BoATVenachain_Get_NetworkData_Len(BoatVenachainNetworkD
     paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
     networkLength += (paramLength + paramLengthLen);
     /* acount url*/
-    paramLength = strlen(networkData->node_url_str);
+    paramLength = strlen(networkData->node_url_str) + 1;
     paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
     networkLength += (paramLength + paramLengthLen);
     /* all the data*/

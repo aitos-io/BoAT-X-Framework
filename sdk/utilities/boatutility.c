@@ -1442,8 +1442,8 @@ BCHAR *UtilityNative2PKCS(KeypairNative keypair)
     len = offset_bat;
     offset = 0;
     add_TL_withOffset((BoAT_ASN1_CONSTRUCTED | BoAT_ASN1_SEQUENCE), dataHex, &offset, len); // all
-    outStr = BoatMalloc(offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6);
-    memset(outStr, 0, offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 6);
+    outStr = BoatMalloc(offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 7);
+    memset(outStr, 0, offset + strlen(PRIKEY_PKCS_BEGIN) + strlen(PRIKEY_PKCS_END) + 7);
     len = BoAT_base64_encode(dataHex, offset, outStr + strlen(PRIKEY_PKCS_BEGIN) + 2);
     memcpy(outStr, PRIKEY_PKCS_BEGIN, strlen(PRIKEY_PKCS_BEGIN));
     offset = strlen(PRIKEY_PKCS_BEGIN);
@@ -1455,6 +1455,7 @@ BCHAR *UtilityNative2PKCS(KeypairNative keypair)
     memcpy(outStr + offset, PRIKEY_PKCS_END, strlen(PRIKEY_PKCS_BEGIN));
     outStr[offset++] = 0x0D;
     outStr[offset++] = 0x0A;
+    outStr[offset++] = 0x00;
     BoatFree(dataHex);
     return outStr;
 }

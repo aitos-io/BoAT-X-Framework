@@ -5,10 +5,6 @@ add_subdirectory(keystore)
 add_subdirectory(common/storage)
 if(SOFT_CRYPTO STREQUAL "CRYPTO_DEFAULT")
 add_subdirectory(common/crypto/crypto_default)
-
-elseif(SOFT_CRYPTO STREQUAL "CRYPTO_MBEDTLS")
-add_subdirectory(common/crypto/keccak)
-add_subdirectory(common/crypto/mbedTLS)
 endif()
 
 
@@ -24,13 +20,6 @@ add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:storage_obj>
                                     $<TARGET_OBJECTS:platform_${PLATFORM_TARGET}_obj>
                                     ${TARGET})
 
-elseif(SOFT_CRYPTO STREQUAL "CRYPTO_MBEDTLS")
-add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:storage_obj>
-                                    $<TARGET_OBJECTS:keccak_obj>
-                                    $<TARGET_OBJECTS:crypto_obj>
-                                    $<TARGET_OBJECTS:platform_${PLATFORM_TARGET}_obj>
-                                    ${TARGET})
-endif()
 
 
 
