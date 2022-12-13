@@ -53,7 +53,7 @@ const BCHAR *demoRecipientAddress = "0xaac9fb1d70ee0d4b5a857a28b9c3b16114518e45"
  * native demo key
  */
 const BCHAR *native_demoKey = "0xf1395a1fc3f74f0c867b61292e28e0f6cc98a095535fd6bf04e4169ebc047e61";
-const BUINT8 pubkey256R1[] = {0xEC, 0xBB, 0x65, 0xC5, 0xAF, 0x1E, 0x6E, 0xD9, 0x80, 0x16, 0x32, 0xFE, 0x30, 0x18, 0x7D, 0xEA, 0x2B, 0x31, 0x83, 0x6B, 0xF4, 0x2E, 0xB2, 0xD2, 0xF4, 0x0B, 0x78, 0x95, 0xC1, 0x97, 0xBB, 0xDC, 0x0C, 0xA0, 0xD7, 0x31, 0x63, 0x80, 0xAB, 0x59, 0xD4, 0x6A, 0xEE, 0xDD, 0x55, 0xD9, 0xEB, 0xEA, 0x2C, 0x44, 0xB0, 0xFC, 0xE8, 0x50, 0xF7, 0xF8, 0xC6, 0x14, 0xCF, 0x8E, 0xAF, 0x09, 0x37, 0xAF};
+const BUINT8 pubkey256K1[] = {0xC8, 0x00,0xAE, 0xD2, 0x61, 0x2C, 0xB2, 0xB6, 0x2F, 0x4C, 0xED, 0x0C, 0x8E, 0xD5, 0xDF, 0xE7, 0x49, 0xE5, 0x17, 0xC2, 0xCF, 0x1B, 0x31, 0x9C, 0x14, 0xC3, 0x1C, 0x2C, 0x44, 0xE6, 0xA2, 0x9D, 0xEA, 0x68, 0xC3, 0x84, 0x65, 0x02, 0x3E, 0x9C, 0x65, 0xD3, 0x64, 0x02, 0xDA, 0x5E, 0xE4, 0x24, 0xAC, 0x29, 0x55, 0xD9, 0x1A, 0x30, 0xA5, 0x0d, 0x98, 0xe0, 0x94, 0xb4, 0xC2, 0xE9, 0x25, 0x72};
 BUINT8 binFormatKey[32] = {0};
 
 /**
@@ -110,7 +110,7 @@ BOAT_RESULT platone_createKeypair_native(BCHAR * keypairName, BBOOL is_onetime, 
 
     keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
-    keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1;
+    keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
     UtilityHexToBin(binFormatKey, 32, native_demoKey, TRIMBIN_TRIM_NO, BOAT_FALSE);
     keypair_config.prikey_content.field_ptr = binFormatKey;
     keypair_config.prikey_content.field_len = 32;
@@ -167,9 +167,10 @@ START_TEST(test_003CreateWallet_0001CreateOneTimeWalletSuccess)
     /* check keypair format in the struct ,must be the same as in the config */
     ck_assert_int_eq(g_platone_wallet_ptr->account_info.prikeyCtx.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
     /* check keypair type in the struct ,must be the same as in the config*/
-    ck_assert_int_eq(g_platone_wallet_ptr->account_info.prikeyCtx.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1);
-    // /* check public key in the struct */
-    ck_assert_int_eq(memcmp(g_platone_wallet_ptr->account_info.prikeyCtx.pubkey_content, pubkey256R1, sizeof(pubkey256R1)), 0);
+    ck_assert_int_eq(g_platone_wallet_ptr->account_info.prikeyCtx.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
+
+    /* check public key in the struct */
+    ck_assert_int_eq(memcmp(g_platone_wallet_ptr->account_info.prikeyCtx.pubkey_content, pubkey256K1, sizeof(pubkey256K1)), 0);
 
     // check network
     ck_assert_int_eq(g_platone_wallet_ptr->network_info.networkIndex, 0);
@@ -245,9 +246,9 @@ START_TEST(test_003CreateWallet_0004CreatePersistWalletSuccess)
     /* check keypair format in the struct ,must be the same as in the config */
     ck_assert_int_eq(g_platone_wallet_ptr->account_info.prikeyCtx.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
     /* check keypair type in the struct ,must be the same as in the config*/
-    ck_assert_int_eq(g_platone_wallet_ptr->account_info.prikeyCtx.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1);
+    ck_assert_int_eq(g_platone_wallet_ptr->account_info.prikeyCtx.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
     // /* check public key in the struct */
-    ck_assert_int_eq(memcmp(g_platone_wallet_ptr->account_info.prikeyCtx.pubkey_content, pubkey256R1, sizeof(pubkey256R1)), 0);
+    ck_assert_int_eq(memcmp(g_platone_wallet_ptr->account_info.prikeyCtx.pubkey_content, pubkey256K1, sizeof(pubkey256K1)), 0);
 
     // check network
     ck_assert_int_eq(g_platone_wallet_ptr->network_info.networkIndex, 1);
