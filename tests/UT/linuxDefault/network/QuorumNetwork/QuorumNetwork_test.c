@@ -575,6 +575,7 @@ Suite *make_quorumNetworkUtTest_suite(void)
     tcase_add_test(tc_networkCreat_api, test_002quorumNetwork_0012DeleteAllNetworkSuccess);
     tcase_add_test(tc_networkCreat_api, test_002quorumNetwork_0013GetNetworkListSuccess);
     tcase_add_test(tc_networkCreat_api, test_002quorumNetwork_0014CreateAllNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002quorumNetwork_0012DeleteAllNetworkSuccess);
 
     return s_networkcreate;
 }
