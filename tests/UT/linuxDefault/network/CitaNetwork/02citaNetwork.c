@@ -587,7 +587,6 @@ Suite *make_citaNetworkUtTest_suite(void)
     tcase_add_test(tc_networkCreat_api, test_002citaNetwork_0012DeleteAllNetworkSuccess);
     tcase_add_test(tc_networkCreat_api, test_002citaNetwork_0013GetNetworkListSuccess);
     tcase_add_test(tc_networkCreat_api, test_002citaNetwork_0014CreateAllNetworkSuccess);
-    tcase_add_test(tc_networkCreat_api, test_002citaNetwork_0015DeleteAllNetworkSuccess);
     tcase_add_test(tc_networkCreat_api, test_002citaNetwork_0012DeleteAllNetworkSuccess);
 
     return s_networkcreate;

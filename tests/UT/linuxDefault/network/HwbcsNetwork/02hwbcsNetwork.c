@@ -379,7 +379,7 @@ hwbcs_checkNetworkData(BoatHwbcsNetworkData networkData, BoatHwbcsNetworkConfig 
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0001CreateOneTimeNetworkSuccess)
+START_TEST(test_002hwbcsNetwork_0001CreateOneTimeNetworkSuccess)
 {
     BSINT32 rtnVal;
     BoatHwbcsNetworkConfig networkCfg;
@@ -416,7 +416,7 @@ END_TEST
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0002CreateMoreOneTimeNetworkSuccess)
+START_TEST(test_002hwbcsNetwork_0002CreateMoreOneTimeNetworkSuccess)
 {
     BSINT32 rtnVal;
     BUINT8 index = 0;
@@ -468,7 +468,7 @@ END_TEST
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0003CreatePersistNetworkSuccess)
+START_TEST(test_002hwbcsNetwork_0003CreatePersistNetworkSuccess)
 {
     BSINT32 rtnVal;
     BUINT8 index = 1;
@@ -506,7 +506,7 @@ END_TEST
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0004CreateMorePersistNetworkSuccess)
+START_TEST(test_002hwbcsNetwork_0004CreateMorePersistNetworkSuccess)
 {
     BSINT32 rtnVal;
     BUINT8 index = 1;
@@ -546,7 +546,7 @@ END_TEST
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0005Create6PersistNetworkSuccess)
+START_TEST(test_002hwbcsNetwork_0005Create6PersistNetworkSuccess)
 {
     BSINT32 rtnVal;
     BUINT8 index = 0;
@@ -573,7 +573,7 @@ END_TEST
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0006GetNetworkListSuccess)
+START_TEST(test_002hwbcsNetwork_0006GetNetworkListSuccess)
 {
     BSINT32 rtnVal;
     BUINT8 index = 0;
@@ -612,7 +612,7 @@ END_TEST
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0007DeletePersistNetworkSuccess_index3)
+START_TEST(test_002hwbcsNetwork_0007DeletePersistNetworkSuccess_index3)
 {
     BSINT32 rtnVal;
     /* delete network*/
@@ -676,7 +676,7 @@ END_TEST
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0009CreatePersistNetworkSuccess)
+START_TEST(test_002hwbcsNetwork_0009CreatePersistNetworkSuccess)
 {
     BSINT32 rtnVal;
     BUINT8 index = 3;
@@ -712,7 +712,7 @@ END_TEST
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0010CreateOnetimeNetworkSuccess)
+START_TEST(test_002hwbcsNetwork_0010CreateOnetimeNetworkSuccess)
 {
     BSINT32 rtnVal;
     BUINT8 index = 0;
@@ -750,7 +750,7 @@ END_TEST
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0011GetNetworkByIndex)
+START_TEST(test_002hwbcsNetwork_0011GetNetworkByIndex)
 {
     BSINT32 rtnVal;
     BUINT8 index = 0;
@@ -786,7 +786,7 @@ END_TEST
 * @return
 ****************************************************************************************
 */
-START_TEST(test_001hwbcsNetwork_0012DeleteAllNetworkSuccess)
+START_TEST(test_002hwbcsNetwork_0012DeleteAllNetworkSuccess)
 {
     BSINT32 rtnVal;
     BUINT8 index = 0;
@@ -885,21 +885,21 @@ Suite *make_hwbcsNetworkIntfTest_suite(void)
     /* Add a test case to the Suite */
     suite_add_tcase(s_networkcreate, tc_networkCreat_api);
     /* Test cases are added to the test set */
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0001CreateOneTimeNetworkSuccess);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0002CreateMoreOneTimeNetworkSuccess);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0003CreatePersistNetworkSuccess);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0004CreateMorePersistNetworkSuccess);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0005Create6PersistNetworkSuccess);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0006GetNetworkListSuccess);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0007DeletePersistNetworkSuccess_index3);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0001CreateOneTimeNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0002CreateMoreOneTimeNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0003CreatePersistNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0004CreateMorePersistNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0005Create6PersistNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0006GetNetworkListSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0007DeletePersistNetworkSuccess_index3);
     tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0008GetNetworkListSuccess);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0009CreatePersistNetworkSuccess);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0010CreateOnetimeNetworkSuccess);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0011GetNetworkByIndex);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0012DeleteAllNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0009CreatePersistNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0010CreateOnetimeNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0011GetNetworkByIndex);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0012DeleteAllNetworkSuccess);
     tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0013GetNetworkListSuccess);
     tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0014CreateAllNetworkSuccess);
-    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0012DeleteAllNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0012DeleteAllNetworkSuccess);
 
     return s_networkcreate;
 }
