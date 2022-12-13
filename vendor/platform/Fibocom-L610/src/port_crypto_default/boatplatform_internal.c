@@ -33,6 +33,8 @@
 #include "persiststore.h"
 #include "boatkeystore.h"
 
+#include "fibo_opencpu.h"
+
 /* net releated include */
 //#if (PROTOCOL_USE_HLFABRIC == 1)
 // #include <sys/types.h>
@@ -44,79 +46,19 @@
 //#endif
 #include <sys/time.h>
 
-#include <openssl/evp.h>
-#include <openssl/x509.h>
-#include <openssl/ssl.h>
+//#include <openssl/evp.h>
+//#include <openssl/x509.h>
+//#include <openssl/ssl.h>
 
-#include <openssl/err.h>
-#include <openssl/crypto.h>
-#include <openssl/x509v3.h>
+//#include <openssl/err.h>
+//#include <openssl/crypto.h>
+//#include <openssl/x509v3.h>
 // #endif
 
 // #if (PROTOCOL_USE_HLFABRIC == 1)
 // // for TTLSContext structure
 // #include "http2intf.h"
 // #endif
-
-static X509 *buffer2x509(const uint8_t *cert, size_t len)
-{
-	/*read the cert and decode it*/
-	BIO *b = BIO_new_mem_buf((void *)cert, len);
-	if (NULL == b)
-	{
-		BoatLog(BOAT_LOG_NORMAL, "read cert data fail");
-		return NULL;
-	}
-	X509 *x509 = PEM_read_bio_X509(b, NULL, NULL, NULL);
-	if (NULL == x509)
-	{
-		BoatLog(BOAT_LOG_NORMAL, "PEM_read_bio_X509 fail");
-		BIO_free(b);
-		return NULL;
-	}
-	BIO_free(b);
-	return x509;
-}
-
-static EVP_PKEY *buffer2evpkey(const uint8_t *key, size_t key_len)
-{
-	BIO *b = BIO_new_mem_buf((void *)key, key_len);
-	if (NULL == b)
-	{
-		return NULL;
-	}
-
-	// see openssl's PEM_read_bio_PrivateKey interface
-	EVP_PKEY *evpkey = PEM_read_bio_PrivateKey(b, NULL, NULL, NULL);
-	if (NULL == evpkey)
-	{
-		BIO_free(b);
-		return NULL;
-	}
-	BIO_free(b);
-	return evpkey;
-}
-
-BOAT_RESULT boat_find_subject_common_name(const BCHAR *cert, const BUINT32 certlen, BCHAR *value, size_t value_length)
-{
-	BOAT_RESULT retval = BOAT_SUCCESS;
-	X509 *x509Cert = NULL;
-	X509_NAME *subject = NULL;
-	// retval = boat_get_x509cert(cert, certlen, &x509Cert);
-	x509Cert = buffer2x509(cert, certlen);
-	if (x509Cert == NULL)
-	{
-		BoatLog(BOAT_LOG_NORMAL, "read x509cert fail");
-		return BOAT_ERROR;
-	}
-	// Version = X509_get_version(x509Cert);
-	// BoatLog(BOAT_LOG_NORMAL, "X509 Version:%d\n", Version);
-	subject = X509_get_subject_name(x509Cert);
-	retval = X509_NAME_get_text_by_NID(subject, NID_commonName, value, value_length);
-	X509_free(x509Cert);
-
-	return retval;
-}
 
 uint32_t random32(void)
 {
@@ -369,7 +311,7 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 	
 	(void)rsvd;
 	
-	if ((fileName == NULL) || (readBuf == NULL))
+	if ((BOAT_FILE_STOREDATA == NULL) || (readBuf == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param 'readBuf' can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
@@ -377,7 +319,7 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 
 	/* read from file-system */
 #if BOAT_USE_FIBO_FILESYSTEM == 1
-	file_fd = fibo_file_open(fileName, FS_O_RDONLY);
+	file_fd = fibo_file_open(BOAT_FILE_STOREDATA, FS_O_RDONLY);
 
 	if (file_fd >= 0)
 	{
@@ -386,15 +328,15 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 	}
 	else
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 #else
 	
-	file_ptr = fopen(fileName, "rb");
+	file_ptr = fopen(BOAT_FILE_STOREDATA, "rb");
 	if (file_ptr == NULL)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 	count = fread(readBuf, 1, readLen, file_ptr);
@@ -403,7 +345,7 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 
 	if (count != readLen)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", fileName);
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to read file: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_READ_FAIL;
 	}
 	
@@ -439,6 +381,66 @@ BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
                               BOAT SOCKET WARPPER
 					        THIS ONLY USED BY FABRIC OR CHAINMAKER
 *******************************************************************************/
+static X509 *buffer2x509(const uint8_t *cert, size_t len)
+{
+	/*read the cert and decode it*/
+	BIO *b = BIO_new_mem_buf((void *)cert, len);
+	if (NULL == b)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "read cert data fail");
+		return NULL;
+	}
+	X509 *x509 = PEM_read_bio_X509(b, NULL, NULL, NULL);
+	if (NULL == x509)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "PEM_read_bio_X509 fail");
+		BIO_free(b);
+		return NULL;
+	}
+	BIO_free(b);
+	return x509;
+}
+
+static EVP_PKEY *buffer2evpkey(const uint8_t *key, size_t key_len)
+{
+	BIO *b = BIO_new_mem_buf((void *)key, key_len);
+	if (NULL == b)
+	{
+		return NULL;
+	}
+
+	// see openssl's PEM_read_bio_PrivateKey interface
+	EVP_PKEY *evpkey = PEM_read_bio_PrivateKey(b, NULL, NULL, NULL);
+	if (NULL == evpkey)
+	{
+		BIO_free(b);
+		return NULL;
+	}
+	BIO_free(b);
+	return evpkey;
+}
+
+BOAT_RESULT boat_find_subject_common_name(const BCHAR *cert, const BUINT32 certlen, BCHAR *value, size_t value_length)
+{
+	BOAT_RESULT retval = BOAT_SUCCESS;
+	X509 *x509Cert = NULL;
+	X509_NAME *subject = NULL;
+	// retval = boat_get_x509cert(cert, certlen, &x509Cert);
+	x509Cert = buffer2x509(cert, certlen);
+	if (x509Cert == NULL)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "read x509cert fail");
+		return BOAT_ERROR;
+	}
+	// Version = X509_get_version(x509Cert);
+	// BoatLog(BOAT_LOG_NORMAL, "X509 Version:%d\n", Version);
+	subject = X509_get_subject_name(x509Cert);
+	retval = X509_NAME_get_text_by_NID(subject, NID_commonName, value, value_length);
+	X509_free(x509Cert);
+
+	return retval;
+}
+
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
     int                connectfd;
@@ -649,7 +651,7 @@ void BoatClose(BSINT32 sockfd, void **tlsContext, void *rsvd)
 	*tlsContext = NULL;
 #endif
 }
-// #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
+ #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
 
 /******************************************************************************
 							  BOAT KEY PROCESS WARPPER
