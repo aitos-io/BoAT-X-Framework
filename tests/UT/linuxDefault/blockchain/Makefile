@@ -1,5 +1,5 @@
-all: testethereum testfabric testvenachain testplatone testplaton
-	
+all: testethereum testfabric testvenachain testplatone testplaton testchainmaker
+	 
 testfabric:
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC),1)
 	make -C fabric all
@@ -25,7 +25,18 @@ ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM),1)
 	make -C ethereum all
 endif
 
+testchainmaker:
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1),1) 
+	make -C chainmaker all
+endif
+
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V2),1) 
+	make -C chainmaker all
+endif
+
+
 clean:
 	make -C fabric clean
 	make -C venachain clean
 	make -C platone clean
+	make -C chainmaker clean
