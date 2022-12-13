@@ -899,6 +899,7 @@ Suite *make_hwbcsNetworkIntfTest_suite(void)
     tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0012DeleteAllNetworkSuccess);
     tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0013GetNetworkListSuccess);
     tcase_add_test(tc_networkCreat_api, test_002hwbcsNetwork_0014CreateAllNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_001hwbcsNetwork_0012DeleteAllNetworkSuccess);
 
     return s_networkcreate;
 }
