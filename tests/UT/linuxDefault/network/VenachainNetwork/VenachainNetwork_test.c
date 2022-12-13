@@ -575,6 +575,7 @@ Suite *make_venachainNetworkUtTest_suite(void)
     tcase_add_test(tc_networkCreat_api, test_002venachainNetwork_0012DeleteAllNetworkSuccess);
     tcase_add_test(tc_networkCreat_api, test_002venachainNetwork_0013GetNetworkListSuccess);
     tcase_add_test(tc_networkCreat_api, test_002venachainNetwork_0014CreateAllNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002venachainNetwork_0012DeleteAllNetworkSuccess);
 
     return s_networkcreate;
 }
