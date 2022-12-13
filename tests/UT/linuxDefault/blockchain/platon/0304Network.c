@@ -16,7 +16,7 @@
 #include "tcase_platon.h"
 
 #define TEST_EIP155_COMPATIBILITY   BOAT_FALSE
-#define TEST_PLATON_CHAIN_ID      300
+#define TEST_PLATON_CHAIN_ID      2206132
 
 BoatPlatONNetworkConfig get_platon_network_settings()
 {
