@@ -574,7 +574,7 @@ Suite *make_ethNetworkUtTest_suite(void)
     tcase_add_test(tc_networkCreat_api, test_002ethNetwork_0011GetNetworkByIndex);
     tcase_add_test(tc_networkCreat_api, test_002ethNetwork_0012DeleteAllNetworkSuccess);
     tcase_add_test(tc_networkCreat_api, test_002ethNetwork_0013GetNetworkListSuccess);
-    tcase_add_test(tc_networkCreat_api, test_002ethNetwork_0014CreateAllNetworkSuccess);
+    tcase_add_test(tc_networkCreat_api, test_002ethNetwork_0012DeleteAllNetworkSuccess);
 
     return s_networkcreate;
 }
