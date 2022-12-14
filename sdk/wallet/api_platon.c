@@ -236,6 +236,9 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
+    memset(tx_ptr->rawtx_fields.recipientbech32,0U,BOAT_PLATON_BECH32_ADDRESS_SIZE);
+    memcpy(tx_ptr->rawtx_fields.recipientbech32,recipient_str,strlen(recipient_str));
+
     result = BoatPlatONTxSetRecipient(tx_ptr, recipient);
 
     // result = BoatPlatONTxSetRecipient(tx_ptr, recipient_str);
@@ -530,8 +533,8 @@ BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr, BCHAR *func_proto_str,
     param_platon_call.to = tx_ptr->rawtx_fields.recipientbech32;
 
     // Function call consumes zero gas but gasLimit and gasPrice must be specified.
-    param_platon_call.gas = "0x1fffff";
-    param_platon_call.gasPrice = "0x8250de00";
+    param_platon_call.gas = "0x9fffff";
+    param_platon_call.gasPrice = "0x12a05ff00";
 
     BoatHash(BOAT_HASH_KECCAK256, (BUINT8 *)func_proto_str,
              strlen(func_proto_str), function_selector, &hashLenDummy, NULL);
