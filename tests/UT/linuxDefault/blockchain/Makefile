@@ -39,4 +39,5 @@ clean:
 	make -C fabric clean
 	make -C venachain clean
 	make -C platone clean
+	make -C platon clean
 	make -C chainmaker clean
