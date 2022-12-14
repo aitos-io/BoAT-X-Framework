@@ -5,10 +5,6 @@ add_subdirectory(keystore)
 add_subdirectory(common/storage)
 if(SOFT_CRYPTO STREQUAL "CRYPTO_DEFAULT")
 add_subdirectory(common/crypto/crypto_default)
-
-elseif(SOFT_CRYPTO STREQUAL "CRYPTO_MBEDTLS")
-add_subdirectory(common/crypto/keccak)
-add_subdirectory(common/crypto/mbedTLS)
 endif()
 
 
@@ -18,20 +14,21 @@ add_subdirectory(platform/${PLATFORM_TARGET})
 set(TARGET  ${TARGET} $<TARGET_OBJECTS:keystore_soft_obj>)
 # endif()
 
-if(SOFT_CRYPTO STREQUAL "CRYPTO_DEFAULT")
+find_package(OpenSSL REQUIRED)
+if(OPENSSL_FOUND)
+  include_directories(${OPENSSL_INCLUDE_DIRS})
+  message(STATUS "OpenSSL Found!")
+endif()
+
+
+
+# if(SOFT_CRYPTO STREQUAL "CRYPTO_DEFAULT")
 add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:storage_obj>
                                     $<TARGET_OBJECTS:crypto_default_obj>
                                     $<TARGET_OBJECTS:platform_${PLATFORM_TARGET}_obj>
                                     ${TARGET})
 
-elseif(SOFT_CRYPTO STREQUAL "CRYPTO_MBEDTLS")
-add_library(${MODULE_NAME}  STATIC  $<TARGET_OBJECTS:storage_obj>
-                                    $<TARGET_OBJECTS:keccak_obj>
-                                    $<TARGET_OBJECTS:crypto_obj>
-                                    $<TARGET_OBJECTS:platform_${PLATFORM_TARGET}_obj>
-                                    ${TARGET})
-endif()
-
+target_link_libraries(${MODULE_NAME} OpenSSL::Crypto OpenSSL::SSL)
 
 
 target_include_directories(${MODULE_NAME}

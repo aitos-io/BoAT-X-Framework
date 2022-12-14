@@ -24,7 +24,6 @@ api_Quorum.h is header file for BoAT IoT SDK Quorum's interface.
 #define __API_QUORUM_H__
 
 #include "boatiotsdk.h"
-#include "network_quorum.h"
 
 /*! @defgroup Quorum-api boat Quorumereum-API
  * @{

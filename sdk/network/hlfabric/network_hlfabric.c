@@ -25,7 +25,6 @@
 #include "boatinternal.h"
 
 #include "persiststore.h"
-#include "network_hlfabric.h"
 #include "fabric_network.pb-c.h"
 
 __BOATSTATIC BOAT_RESULT BoATHlfabric_checkNodefig(BoatHlfabricNodesCfg nodeCfg)

@@ -34,9 +34,11 @@ boatutility.h is header file for utility functions.
 
 
 #define PRIKEY_EC_PKCS_BEGIN "-----BEGIN EC PRIVATE KEY-----"
-#define PRIKEY_EC_PKCS_END   "-----END EC PRIVATE KEY-----"
-#define PRIKEY_PKCS_BEGIN	"-----BEGIN PRIVATE KEY-----"
-#define PRIKEY_PKCS_END		"-----END PRIVATE KEY-----"
+#define PRIKEY_EC_PKCS_END "-----END EC PRIVATE KEY-----"
+#define PRIKEY_PKCS_BEGIN "-----BEGIN PRIVATE KEY-----"
+#define PRIKEY_PKCS_END "-----END PRIVATE KEY-----"
+#define CERT_BEGIN "-----BEGIN CERTIFICATE-----"
+#define CERT_END "-----END CERTIFICATE-----"
 
 /**
  * \name DER constants

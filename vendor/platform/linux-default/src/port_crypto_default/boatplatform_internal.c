@@ -35,7 +35,7 @@
 #include "boatkeystore.h"
 
 /* net releated include */
-#if (PROTOCOL_USE_HLFABRIC == 1)
+#if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_HWBCS == 1 || PROTOCOL_USE_CHAINMAKER_V1 == 1 || PROTOCOL_USE_CHAINMAKER_V2 == 1)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -43,13 +43,77 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <sys/time.h>
-#include "http2intf.h"
-#endif
-
-// #if (PROTOCOL_USE_HLFABRIC == 1)
-// // for TTLSContext structure
 // #include "http2intf.h"
-// #endif
+
+#include <openssl/evp.h>
+#include <openssl/x509.h>
+#include <openssl/ssl.h>
+
+#include <openssl/err.h>
+#include <openssl/crypto.h>
+#include <openssl/x509v3.h>
+
+static X509 *buffer2x509(const uint8_t *cert, size_t len)
+{
+	/*read the cert and decode it*/
+	BIO *b = BIO_new_mem_buf((void *)cert, len);
+	if (NULL == b)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "read cert data fail");
+		return NULL;
+	}
+	X509 *x509 = PEM_read_bio_X509(b, NULL, NULL, NULL);
+	if (NULL == x509)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "PEM_read_bio_X509 fail");
+		BIO_free(b);
+		return NULL;
+	}
+	BIO_free(b);
+	return x509;
+}
+
+static EVP_PKEY *buffer2evpkey(const uint8_t *key, size_t key_len)
+{
+	BIO *b = BIO_new_mem_buf((void *)key, key_len);
+	if (NULL == b)
+	{
+		return NULL;
+	}
+
+	// see openssl's PEM_read_bio_PrivateKey interface
+	EVP_PKEY *evpkey = PEM_read_bio_PrivateKey(b, NULL, NULL, NULL);
+	if (NULL == evpkey)
+	{
+		BIO_free(b);
+		return NULL;
+	}
+	BIO_free(b);
+	return evpkey;
+}
+
+BOAT_RESULT boat_find_subject_common_name(const BCHAR *cert, const BUINT32 certlen, BCHAR *value, size_t value_length)
+{
+	BOAT_RESULT retval = BOAT_SUCCESS;
+	X509 *x509Cert = NULL;
+	X509_NAME *subject = NULL;
+	// retval = boat_get_x509cert(cert, certlen, &x509Cert);
+	x509Cert = buffer2x509(cert, certlen);
+	if (x509Cert == NULL)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "read x509cert fail");
+		return BOAT_ERROR;
+	}
+	// Version = X509_get_version(x509Cert);
+	// BoatLog(BOAT_LOG_NORMAL, "X509 Version:%d\n", Version);
+	subject = X509_get_subject_name(x509Cert);
+	retval = X509_NAME_get_text_by_NID(subject, NID_commonName, value, value_length);
+	X509_free(x509Cert);
+
+	return retval;
+}
+
+#endif
 
 uint32_t random32(void)
 {
@@ -318,9 +382,9 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 
 /******************************************************************************
 							  BOAT SOCKET WARPPER
-							THIS ONLY USED BY FABRIC
+							THIS ONLY USED BY FABRIC/HWBCS/CHAINMAKER
 *******************************************************************************/
-#if (PROTOCOL_USE_HLFABRIC == 1)
+#if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_HWBCS == 1 || PROTOCOL_USE_CHAINMAKER_V1 == 1 || PROTOCOL_USE_CHAINMAKER_V2 == 1)
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
 	int connectfd;
@@ -393,12 +457,100 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 }
 
 #if (BOAT_TLS_SUPPORT == 1)
-BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable caChain, const BoatFieldVariable clientPrikey,
-						const BoatFieldVariable clientCert, BSINT32 socketfd, void *tlsContext, void *rsvd)
+BOAT_RESULT BoatTlsInit(const BCHAR *address, const BCHAR *hostName, const BoatFieldVariable caChain, const BoatFieldVariable clientPrikey,
+						const BoatFieldVariable clientCert, BSINT32 *socketfd, void **tlsContext, void *rsvd)
 {
 
 	//! @todo BoatTlsInit implementation in crypto default.
-	return BOAT_ERROR;
+	// return BOAT_ERROR;
+	BOAT_RESULT retval = BOAT_SUCCESS;
+	SSL_CTX *ctx;
+	X509 *cert = NULL;
+	X509 *clientTlsCert = NULL;
+	EVP_PKEY *clientTlsprikey = NULL;
+	retval = BoatConnect(address, NULL);
+	if (retval < BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "socket connect fail ");
+		return BOAT_ERROR;
+	}
+	*socketfd = retval;
+	/* SSL library init, ssl-server.c  */
+	SSL_library_init();
+	OpenSSL_add_all_algorithms();
+	SSL_load_error_strings();
+	ctx = SSL_CTX_new(SSLv23_client_method());
+	if (ctx == NULL)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "creat SSL CTX fail ");
+		return BOAT_ERROR;
+	}
+	// client and server verification
+	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
+	cert = buffer2x509(caChain.field_ptr, caChain.field_len);
+	if (cert == NULL)
+	{
+		BoatLog(BOAT_LOG_NORMAL, " get x509 cert fail");
+		return BOAT_ERROR;
+	}
+	X509_STORE *certS = SSL_CTX_get_cert_store(ctx);
+	X509_STORE_add_cert(certS, cert);
+	X509_free(cert);
+	if (BOAT_TLS_IDENTIFY_CLIENT == 1)
+	{
+		/* load client tls cert ,contain public key */
+		clientTlsCert = buffer2x509(clientCert.field_ptr, clientCert.field_len);
+		if (clientTlsCert == NULL)
+		{
+			BoatLog(BOAT_LOG_NORMAL, "read client tls cert fail ");
+			SSL_CTX_free(ctx);
+			return BOAT_ERROR;
+		}
+		if (SSL_CTX_use_certificate(ctx, clientTlsCert) <= 0)
+		{
+			BoatLog(BOAT_LOG_NORMAL, "load client tls cert fail ");
+			SSL_CTX_free(ctx);
+			X509_free(clientTlsCert);
+			return BOAT_ERROR;
+		}
+		X509_free(clientTlsCert);
+
+		clientTlsprikey = buffer2evpkey(clientPrikey.field_ptr, clientPrikey.field_len);
+		if (clientTlsprikey == NULL)
+		{
+			BoatLog(BOAT_LOG_NORMAL, "read client tls key fail ");
+			SSL_CTX_free(ctx);
+			return BOAT_ERROR;
+		}
+		/* load client prikey */
+		if (SSL_CTX_use_PrivateKey(ctx, clientTlsprikey) <= 0)
+		{
+			BoatLog(BOAT_LOG_NORMAL, "load client tls key fail ");
+			EVP_PKEY_free(clientTlsprikey);
+			SSL_CTX_free(ctx);
+			return BOAT_ERROR;
+		}
+		EVP_PKEY_free(clientTlsprikey);
+		/* check client's private key */
+		if (!SSL_CTX_check_private_key(ctx))
+		{
+			BoatLog(BOAT_LOG_NORMAL, "creat SSL CTX fail ");
+			SSL_CTX_free(ctx);
+			return BOAT_ERROR;
+		}
+	}
+	/* creat new SSL by ctx  */
+	*tlsContext = SSL_new(ctx);
+	SSL_set_fd(*tlsContext, *socketfd);
+	/* creat connection of SSL */
+	if (SSL_connect(*tlsContext) == -1)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "SSL_connect fail ");
+		SSL_CTX_free(ctx);
+		return BOAT_ERROR;
+	}
+	// SSL_CTX_free(ctx);
+	return BOAT_SUCCESS;
 }
 #endif
 
@@ -406,7 +558,12 @@ BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, 
 {
 #if (BOAT_TLS_SUPPORT == 1)
 	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
-	return -1;
+	if (tlsContext == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "tlsContext  can't be NULL.");
+		return -1;
+	}
+	return SSL_write((SSL *)tlsContext, buf, len);
 #else
 	return send(sockfd, buf, len, 0);
 #endif
@@ -416,24 +573,32 @@ BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *
 {
 #if (BOAT_TLS_SUPPORT == 1)
 	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
-	return -1;
+	if (tlsContext == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "tlsContext  can't be NULL.");
+		return -1;
+	}
+	return SSL_read((SSL *)tlsContext, buf, len);
 #else
 	return recv(sockfd, buf, len, 0);
 #endif
 }
 
-void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
+void BoatClose(BSINT32 sockfd, void **tlsContext, void *rsvd)
 {
 	close(sockfd);
 #if (BOAT_TLS_SUPPORT == 1)
 	// free tls releated
 	//! @todo BOAT_TLS_SUPPORT implementation in crypto default.
+	SSL_shutdown((SSL *)*tlsContext);
+	SSL_free((SSL *)*tlsContext);
+	*tlsContext = NULL;
 #endif
 }
-#endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
-
-/******************************************************************************
-							  BOAT KEY PROCESS WARPPER
+#endif /* ##if (PROTOCOL_USE_HLFABRIC == 1 || PROTOCOL_USE_HWBCS == 1 || PROTOCOL_USE_CHAINMAKER_V1 == 1 || PROTOCOL_USE_CHAINMAKER_V2 == 1)   \
+																																			 \ \
+/******************************************************************************                                                                \
+							  BOAT KEY PROCESS WARPPER                                                                                         \
 *******************************************************************************/
 static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriKeyCtx_config *config,
 														   BoatKeypairDataCtx *pkCtx)

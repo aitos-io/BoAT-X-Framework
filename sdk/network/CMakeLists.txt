@@ -32,7 +32,7 @@ if(BOAT_PROTOCOL_USE_VENACHAIN)
 add_subdirectory(venachain)
 endif()
 
-if(BOAT_PROTOCOL_USE_CHAINMAKER)
+if(BOAT_PROTOCOL_USE_CHAINMAKER_V1 OR BOAT_PROTOCOL_USE_CHAINMAKER_V2)
 add_subdirectory(chainmaker)
 endif()
 

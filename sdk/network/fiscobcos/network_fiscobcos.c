@@ -25,7 +25,6 @@
 #include "boatinternal.h"
 
 #include "persiststore.h"
-#include "network_fiscobcos.h"
 
 /**
  * @description:
@@ -506,7 +505,7 @@ __BOATSTATIC BOAT_RESULT BoATFiscobcos_Get_NetworkData_Len(BoatFiscobcosNetworkD
     paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
     networkLength += (paramLength + paramLengthLen);
     /* acount url*/
-    paramLength = strlen(networkData->node_url_str);
+    paramLength = strlen(networkData->node_url_str) + 1;
     paramLengthLen = UtilityGetTLV_LL_from_len(paramLength);
     networkLength += (paramLength + paramLengthLen);
     /* all the data*/
