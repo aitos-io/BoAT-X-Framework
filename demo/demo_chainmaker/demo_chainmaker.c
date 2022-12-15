@@ -309,6 +309,11 @@ int main(int argc, char *argv[])
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
     }   
 
+    if (g_chaninmaker_wallet_ptr != NULL)
+    {
+        BoatChainmakerWalletDeInit(g_chaninmaker_wallet_ptr);
+    }
+
     BoatChainmakerWalletDeInit(g_chaninmaker_wallet_ptr);
 
     /* step-8: Boat SDK Deinitialization */
