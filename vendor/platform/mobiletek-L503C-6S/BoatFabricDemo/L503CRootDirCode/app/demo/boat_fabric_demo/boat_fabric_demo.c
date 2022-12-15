@@ -118,17 +118,17 @@ const BCHAR *fabric_order_tlsCert = "-----BEGIN CERTIFICATE-----\n"
 									"-----END CERTIFICATE-----\n";
 
 
-const BCHAR *fabric_demo_order1_url = "121.4.178.74:7050";
+const BCHAR *fabric_demo_order1_url = "172.20.255.199:7050";
 const BCHAR *fabric_demo_order1_hostName = "orderer.example.com";
 
-const BCHAR *fabric_demo_endorser_peer0Org1_url = "121.4.178.74:7051";
+const BCHAR *fabric_demo_endorser_peer0Org1_url = "172.20.255.199:7051";
 const BCHAR *fabric_demo_endorser_peer0Org1_hostName = "peer0.org1.example.com";
-const BCHAR *fabric_demo_endorser_peer1Org1_url = "121.4.178.74:8051";
+const BCHAR *fabric_demo_endorser_peer1Org1_url = "172.20.255.199:8051";
 const BCHAR *fabric_demo_endorser_peer1Org1_hostName = "peer1.org1.example.com";
 
-const BCHAR *fabric_demo_endorser_peer0Org2_url = "121.4.178.74:9051";
+const BCHAR *fabric_demo_endorser_peer0Org2_url = "172.20.255.199:9051";
 const BCHAR *fabric_demo_endorser_peer0Org2_hostName = "peer0.org2.example.com";
-const BCHAR *fabric_demo_endorser_peer1Org2_url = "121.4.178.74:10051";
+const BCHAR *fabric_demo_endorser_peer1Org2_url = "172.20.255.199:10051";
 const BCHAR *fabric_demo_endorser_peer1Org2_hostName = "peer1.org2.example.com";
 
 
