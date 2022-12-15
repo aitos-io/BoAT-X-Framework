@@ -107,10 +107,10 @@ const BCHAR *chainmaker_client_tls_cert =
 #endif
 #endif
 
-BCHAR *chainmaker_node_url = "152.136.217.46:12302";
-BCHAR *chainmaker_host_name = "common1.tls.org1.cmtestnet";
-BCHAR *chainmaker_chain_id = "chainmaker_testnet_chain";
-BCHAR *chainmaker_org_id = "org5.cmtestnet";
+BCHAR *chainmaker_node_url = "127.0.0.1:12302";
+BCHAR *chainmaker_host_name = "xxxxxx";
+BCHAR *chainmaker_chain_id = "xxxxxx";
+BCHAR *chainmaker_org_id = "xxxxxx";
 
 BoatChainmakerWallet *g_chaninmaker_wallet_ptr;
 BoatChainmakerWallet wallet_config = {0};
