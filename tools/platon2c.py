@@ -15,7 +15,7 @@
 # limitations under the License.
 
 
-# This python script generates Ethereum's C language interface function from contract ABI (solidity).
+# This python script generates PlatON's C language interface function from contract ABI (solidity).
 
 # Not all contract ABI can be converted to C interface because C is lack of object-oriented programming
 # capability. If the tool fails to generate the interface, you may have to organize the contract call
@@ -46,7 +46,6 @@ This file is generated from contract ABI. DO NOT modify it by hand.
 generated_include_block_str = '''
 // Generated C function interface from smart contract ABI
 
-#include "boatconfig.h"
 #include "boatiotsdk.h"
 
 '''
@@ -857,6 +856,8 @@ class CFunctionGen():
         if not self.is_Change_Blockchain_State(abi_item):
             func_body_str += '    boat_try(BoatPlatONTxSetNonce(tx_ptr, BOAT_PLATON_NONCE_AUTO));\n\n'
 
+
+
         # Extract solidity function inputs
         inputs_len = len(inputs)
         nonFixed_filedLen_str = self.gen_nonFixed_mallocSize_exp(abi_item, 27)
@@ -1060,7 +1061,8 @@ class CFunctionGen():
             i = i + 1
 
         if self.is_Change_Blockchain_State(abi_item):
-            func_body_str += '    call_result_str = BoatPlatONCallContractFunc(tx_ptr, function_prototye_str, data_field.field_ptr+4, data_field.field_len-4);\n\n'
+            # for state-less funciton call
+            func_body_str += '    call_result_str = BoatPlatONCallContractFunc(tx_ptr, data_field.field_ptr, data_field.field_len);\n\n'
         else:
             # for stateful transaction
             func_body_str += '    boat_try(BoatPlatONTxSetData(tx_ptr, &data_field));\n\n'
