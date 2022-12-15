@@ -549,7 +549,7 @@ BOAT_RESULT BoatTlsInit(const BCHAR *address, const BCHAR *hostName, const BoatF
 		SSL_CTX_free(ctx);
 		return BOAT_ERROR;
 	}
-	// SSL_CTX_free(ctx);
+	SSL_CTX_free(ctx);
 	return BOAT_SUCCESS;
 }
 #endif
