@@ -161,8 +161,6 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
     strcpy(networkConfig.host_name, chainmaker_host_name);
     strcpy(networkConfig.chain_id,  chainmaker_chain_id);
     strcpy(networkConfig.org_id,    chainmaker_org_id);
-
-
    
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
      networkConfig.ca_tls_cert_content.length = strlen(chainmaker_ca_tls_cert);
@@ -311,7 +309,9 @@ int main(int argc, char *argv[])
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
     }   
 
-    /* step-6: Boat SDK Deinitialization */
+    BoatChainmakerWalletDeInit(g_chaninmaker_wallet_ptr);
+
+    /* step-8: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
 
     return 0;
