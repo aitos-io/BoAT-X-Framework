@@ -25,7 +25,7 @@
 /**
  * PlatON test network human-readable part
  */
-const BCHAR *hrp = "lat";
+static const BCHAR *hrp = "lat";
 
 __BOATSTATIC BoatPlatONWallet * platonOnetimeWalletPrepare()
 {
