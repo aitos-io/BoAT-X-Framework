@@ -14,7 +14,7 @@ BOAT_PROTOCOL_USE_HLFABRIC      ?= 1
 BOAT_PROTOCOL_USE_HWBCS         ?= 1
 BOAT_PROTOCOL_USE_CHAINMAKER_V1 ?= 0
 BOAT_PROTOCOL_USE_CHAINMAKER_V2 ?= 1
-BOAT_DISCOVERY_PEER_QUERY       ?= 1
+BOAT_DISCOVERY_PEER_QUERY       ?= 0
 BOAT_PROTOCOL_USE_VENACHAIN     ?= 1
 BOAT_PROTOCOL_USE_QUORUM        ?= 1
 BOAT_PROTOCOL_USE_CITA          ?= 1
@@ -96,6 +96,7 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
                   -I$(BOAT_SDK_DIR)/protocol/common/web3intf \
                   -I$(BOAT_BASE_DIR)/vendor/platform/include \
                   -I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/log \
+                  -I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/inet \
                   -I$(BOAT_BASE_DIR)/contract/generated \
                   -I$(BOAT_BASE_DIR)/demo \
 		  -I$(BOAT_BASE_DIR)/tests \

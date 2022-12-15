@@ -178,7 +178,7 @@ __BOATSTATIC BOAT_RESULT BoatChainmakerTxRequest(BoatChainmakerTx *tx_ptr, Commo
     Common__TxResponse *tx_response_ptr = NULL;
     Http2Response http2_response = {0, NULL};
 
-    if (tx_ptr == NULL || tx_ptr->wallet_ptr->http2Context_ptr)
+    if (tx_ptr == NULL || tx_ptr->wallet_ptr->http2Context_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
