@@ -470,6 +470,7 @@ BOAT_RESULT BoatTlsInit(const BCHAR *address, const BCHAR *hostName, const BoatF
 		ol_ssl_shutdown(tlsContext_ptr);
 		ol_ssl_ctx_deinit(tlsContext_ptr);
 		BoatFree(tlsContext_ptr);
+		tlsContext_ptr = NULL;
 	}
 	*tlsContext = tlsContext_ptr;
 	return result;
@@ -485,7 +486,6 @@ BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, 
 		BoatLog(BOAT_LOG_CRITICAL, "tlsContext can't be NULL.");
 		return -1;
 	}
-	BUINT8 *p = buf;
 
 	return ol_ssl_write((SSLCtx *)tlsContext, buf, len);
 #else
@@ -512,17 +512,10 @@ BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *
 
 void BoatClose(BSINT32 sockfd, void **tlsContext, void *rsvd)
 {
-	int ret = -1;
 	close(sockfd);
 #if (BOAT_TLS_SUPPORT == 1) 
-	if ((SSLCtx *)*tlsContext == NULL)
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "tlsContext can't be NULL.");
-		return -1;
-	}
-	ret = ol_ssl_shutdown((SSLCtx *)*tlsContext);
+	ol_ssl_shutdown((SSLCtx *)*tlsContext);
 	ol_ssl_ctx_deinit((SSLCtx *)*tlsContext);
-	return ret;
 #endif	
 }
 #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
