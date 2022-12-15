@@ -413,17 +413,28 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
                 {
 #ifdef CHAINMAKER_V1
                     Common__TransactionInfo *transactation_info = common__transaction_info__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
+                    if (tx_response != NULL)
+                    {
+                        common__tx_response__free_unpacked(tx_response, NULL);
+                    }
                     if (transactation_info != NULL)
                     {
                         if (transactation_info->transaction->result->code == BOAT_SUCCESS)
                         {
                             len = sprintf(response_data->contract_result, "gas_used:%lld ", transactation_info->transaction->result->contract_result->gas_used);
+                            common__transaction_info__free_unpacked(transactation_info, NULL);
                             break;
                         }
+                        common__transaction_info__free_unpacked(transactation_info, NULL);
                     }
+
 #endif
 #ifdef CHAINMAKER_V2
                     Common__TransactionInfoWithRWSet *transaction_info_with_rwset = common__transaction_info_with_rwset__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
+                    if (tx_response != NULL)
+                    {
+                        common__tx_response__free_unpacked(tx_response, NULL);
+                    }
                     if (transaction_info_with_rwset != NULL)
                     {
                         if (transaction_info_with_rwset->transaction->result->code == BOAT_SUCCESS)
@@ -444,8 +455,10 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
                                 }
                                 len += sprintf(response_data->contract_result + len, ">");
                             }
+                            common__transaction_info_with_rwset__free_unpacked(transaction_info_with_rwset, NULL);
                             break;
                         }
+                        common__transaction_info_with_rwset__free_unpacked(transaction_info_with_rwset, NULL);
                     }
 #endif
                 }
