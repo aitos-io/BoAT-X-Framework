@@ -168,3 +168,14 @@ After these files copied, the directory structure should look like:
    ```
    
    The download file `ASR_CRANEL_EVB_CRANEL_A0_08MB.zip` will be generated under `<L503 Root>/kernel/OUTPUT_L503C_6S` once compiled successfully.
+
+   tips: If the compilation environment is Windows 11, the following errors may occur during the compilation:
+   ```
+      Opening image "rd" from "X:\OUTPUT_L503C_6S\ReliableData.bin" ...
+   error: open raw image "rd" failed.
+   FAILED: generate release package failed!
+   ```
+
+   If the above error occurs, open`<L503 Root>/kernel/tavor/Arbel/build/project_output_1606.bat`.
+
+   Find `copy /Y %XROOT%\tavor\Arbel\bin\ReliableData.bin   %XROOT%\%PROJECT_OUTPUT%\ReliableData.bin` and change it to `copy /Y %XROOT%\mbtk\releasepack\L503C_6S\images\ReliableData.bin   %XROOT%\%PROJECT_OUTPUT%\ReliableData.bin`
