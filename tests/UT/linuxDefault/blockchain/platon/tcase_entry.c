@@ -73,10 +73,10 @@ int main(int argc, char *argv[])
 
     /* new adding test suite should create in here */
     Suite *suite_keypair    = make_keypair_suite();
- //   Suite *suite_network = make_network_suite();
- //   Suite *suite_wallet = make_wallet_suite();
- //   Suite *suite_parameters = make_parameters_suite();
- //   Suite *suite_chainandcontract= make_chainAndContract_suite();
+    Suite *suite_network = make_network_suite();
+    Suite *suite_wallet = make_wallet_suite();
+    Suite *suite_parameters = make_parameters_suite();
+    Suite *suite_chainandcontract= make_chainAndContract_suite();
 
     read_key_content(g_platon_private_key_buf);
 
@@ -87,12 +87,12 @@ int main(int argc, char *argv[])
     /* set generate test log in running path */
     srunner_set_log(sr, "test_statistics_report.txt");
     /* add other suite to srunner, more test suite should be add in here */
-//    srunner_add_suite(sr, suite_network);
+    srunner_add_suite(sr, suite_network);
 
-//    srunner_add_suite(sr, suite_wallet);
+    srunner_add_suite(sr, suite_wallet);
 
-//    srunner_add_suite(sr, suite_parameters);
-//    srunner_add_suite(sr, suite_chainandcontract);
+    srunner_add_suite(sr, suite_parameters);
+    srunner_add_suite(sr, suite_chainandcontract);
 
     /* start to run all test case */
     srunner_run_all(sr, CK_NORMAL);
