@@ -314,8 +314,6 @@ int main(int argc, char *argv[])
         BoatChainmakerWalletDeInit(g_chaninmaker_wallet_ptr);
     }
 
-    BoatChainmakerWalletDeInit(g_chaninmaker_wallet_ptr);
-
     /* step-8: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
 
