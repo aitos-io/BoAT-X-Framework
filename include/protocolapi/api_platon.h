@@ -223,10 +223,8 @@ extern "C"
      * @brief Call a state-less contract function
      * @see BoatEthCallContractFunc()
      ******************************************************************************/
-    BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr,
-                                      BCHAR *func_proto_str,
-                                      BUINT8 *rlp_param_ptr,
-                                      BUINT32 rlp_param_len);
+    BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr, BUINT8 *rlp_param_ptr,
+                                   BUINT32 rlp_param_len);
 
     /*!****************************************************************************
      * @brief Wait for a transaction being mined.

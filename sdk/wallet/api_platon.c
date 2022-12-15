@@ -236,6 +236,9 @@ BOAT_RESULT BoatPlatONTxInit(BoatPlatONWallet *wallet_ptr,
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
 
+    memset(tx_ptr->rawtx_fields.recipientbech32,0U,BOAT_PLATON_BECH32_ADDRESS_SIZE);
+    memcpy(tx_ptr->rawtx_fields.recipientbech32,recipient_str,strlen(recipient_str));
+
     result = BoatPlatONTxSetRecipient(tx_ptr, recipient);
 
     // result = BoatPlatONTxSetRecipient(tx_ptr, recipient_str);
@@ -351,7 +354,7 @@ BOAT_RESULT BoatPlatONTxSetGasPrice(BoatPlatONTx *tx_ptr, BoatFieldMax32B *gas_p
                     TRIMBIN_LEFTTRIM,
                     BOAT_TRUE);
 
-            BoatLog(BOAT_LOG_VERBOSE, "Use gasPrice from network: %s wei.", gas_price_from_net_str);
+            BoatLog(BOAT_LOG_VERBOSE, "Use gasPrice from network: %s wei.", tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf.field_ptr);
         }
         else
         {
@@ -489,66 +492,55 @@ BOAT_RESULT BoatPlatONTxSend(BoatPlatONTx *tx_ptr)
     return result;
 }
 
-BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr, BCHAR *func_proto_str,
-                                  BUINT8 *func_param_ptr, BUINT32 func_param_len)
-{
-    BUINT8 function_selector[32];
-    BUINT8 hashLenDummy;
 
-    // +4 for function selector, *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
-    BCHAR data_str[(func_param_len + 4) * 2 + 3]; // Compiler MUST support C99 to allow variable-size local array
+
+BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr, BUINT8 *rlp_param_ptr,
+                                   BUINT32 rlp_param_len)
+{
+    // *2 for bin to HEX, + 3 for "0x" prefix and NULL terminator
+    BCHAR data_str[rlp_param_len * 2 + 3]; // Compiler MUST support C99 to allow variable-size local array
 
     Param_web3_call param_platon_call;
     BOAT_RESULT result = BOAT_SUCCESS;
     BCHAR *retval_str;
 
-    if (tx_ptr == NULL || tx_ptr->wallet_ptr == NULL)
+    if (rlp_param_ptr == NULL && rlp_param_len != 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         return NULL;
     }
 
-    if (func_param_ptr == NULL && func_param_len != 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return NULL;
-    }
-
-    if (func_param_len > BOAT_STRING_MAX_LEN)
+    if (rlp_param_len > BOAT_STRING_MAX_LEN)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
     }
 
-    if ((BOAT_SUCCESS != UtilityStringLenCheck(func_proto_str)) &&
-        (BOAT_SUCCESS != UtilityStringLenCheck((BCHAR *)func_param_ptr)))
+    if (BOAT_SUCCESS != UtilityStringLenCheck((BCHAR *)rlp_param_ptr))
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments check error.");
         return NULL;
     }
 
-    param_platon_call.to = tx_ptr->rawtx_fields.recipientbech32;
+    //BCHAR recipient_hexstr[BOAT_PLATON_ADDRESS_SIZE * 2 + 3];
+
+   // UtilityBinToHex(recipient_hexstr, tx_ptr->rawtx_fields.recipient, BOAT_PLATON_ADDRESS_SIZE,
+    //                BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
+
+    param_platon_call.from = tx_ptr->address;
+    param_platon_call.to = tx_ptr->rawtx_fields.recipientbech32;;
 
     // Function call consumes zero gas but gasLimit and gasPrice must be specified.
     param_platon_call.gas = "0x1fffff";
-    param_platon_call.gasPrice = "0x8250de00";
+    param_platon_call.gasPrice = "0x12a05f200";
 
-    BoatHash(BOAT_HASH_KECCAK256, (BUINT8 *)func_proto_str,
-             strlen(func_proto_str), function_selector, &hashLenDummy, NULL);
-
-    // Set function selector
-    UtilityBinToHex(data_str, function_selector, 4,
+    // Set function parameters
+    UtilityBinToHex(data_str, rlp_param_ptr, rlp_param_len,
                     BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_YES, BOAT_FALSE);
-
-    // Set function parameters.param1 '+10' means skip function selector prefixed
-    // e.g. "0x12345678" is a function selector prefixed
-    UtilityBinToHex(data_str + 10, func_param_ptr, func_param_len,
-                    BIN2HEX_LEFTTRIM_UNFMTDATA, BIN2HEX_PREFIX_0x_NO, BOAT_FALSE);
-
     param_platon_call.method_name_str = "platon_call";
     param_platon_call.data = data_str;
     param_platon_call.block_num_str = "latest";
-    retval_str = web3_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
+    retval_str = platon_web3_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
                            tx_ptr->wallet_ptr->network_info.node_url_str,
                            &param_platon_call, &result);
     if (retval_str == NULL)
@@ -557,6 +549,7 @@ BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr, BCHAR *func_proto_str,
     }
     return retval_str;
 }
+
 
 BOAT_RESULT BoatPlatONTransfer(BoatPlatONTx *tx_ptr, BCHAR *value_hex_str)
 {

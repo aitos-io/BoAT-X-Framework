@@ -341,4 +341,3 @@ cleandemo:
 
 cleantests:
 	make -C $(BOAT_BASE_DIR)/tests clean
-

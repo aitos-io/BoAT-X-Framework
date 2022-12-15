@@ -82,6 +82,9 @@ typedef struct TParam_web3_getTransactionReceipt
 typedef struct TParam_web3_call
 {
     BCHAR *method_name_str; //!< String of this method name, e.g. Ethereum "eth_getTransactionCount" PlatON "platon_getTransactionCount"
+#if (PROTOCOL_USE_PLATON == 1)
+    BCHAR *from;       //!< The address of the sender.
+#endif
     BCHAR *to;       //!< The address of the contract.
     BCHAR *gas;      //!< The gasLimit.
     BCHAR *gasPrice; //!< The gasPrice in wei.
@@ -603,8 +606,12 @@ BCHAR *web3_call(Web3IntfContext *web3intf_context_ptr,
                  const Param_web3_call *param_ptr,
                  BOAT_RESULT *web3Result);
 
-
-
+#if (PROTOCOL_USE_PLATON == 1)
+BCHAR *platon_web3_call(Web3IntfContext *web3intf_context_ptr,
+                 BCHAR *node_url_str,
+                 const Param_web3_call *param_ptr,
+                 BOAT_RESULT *web3Result);
+#endif
 
 /***************************************************************************************************
                                   FISCO BCOS JSONRPC INTERFACE
