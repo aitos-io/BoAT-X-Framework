@@ -37,7 +37,6 @@
                                                    //!< set to 1. 
                                                    //!< @note This macro is reserved for future.
 
-#define BOAT_CHAINMAKER_NODE_INFO_MAX_LEN        127  //!< Maxmum length of node's URL
 #define BOAT_CHAINMAKER_CERT_MAX_LEN             1024 //!< Maxmum length of certificate
 
 //!@brief chainmaker certificate information config structure
