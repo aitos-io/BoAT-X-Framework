@@ -440,21 +440,25 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
                         if (transaction_info_with_rwset->transaction->result->code == BOAT_SUCCESS)
                         {
                             len = sprintf(response_data->contract_result, "gas_used:%lld ", transaction_info_with_rwset->transaction->result->contract_result->gas_used);
-                            len += sprintf(response_data->contract_result + len, "contract_event:<");
 
-                            for (i = 0; i < transaction_info_with_rwset->transaction->result->contract_result->n_contract_event; i++)
+                            if (transaction_info_with_rwset->transaction->result->contract_result->n_contract_event  != 0)
                             {
-                                len += sprintf(response_data->contract_result + len, "topic:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->topic);
-                                len += sprintf(response_data->contract_result + len, " tx_id:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->tx_id);
-                                len += sprintf(response_data->contract_result + len, " contract_name:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->contract_name);
-                                len += sprintf(response_data->contract_result + len, " contract_version:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->contract_version);
-
-                                for (int n = 0; n < transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->n_event_data; n++)
+                                len += sprintf(response_data->contract_result + len, "contract_event:<");
+                                for (i = 0; i < transaction_info_with_rwset->transaction->result->contract_result->n_contract_event; i++)
                                 {
-                                    len += sprintf(response_data->contract_result + len, " event_data:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->event_data[n]);
+                                    len += sprintf(response_data->contract_result + len, "topic:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->topic);
+                                    len += sprintf(response_data->contract_result + len, " tx_id:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->tx_id);
+                                    len += sprintf(response_data->contract_result + len, " contract_name:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->contract_name);
+                                    len += sprintf(response_data->contract_result + len, " contract_version:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->contract_version);
+
+                                    for (int n = 0; n < transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->n_event_data; n++)
+                                    {
+                                        len += sprintf(response_data->contract_result + len, " event_data:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->event_data[n]);
+                                    }
+                                    len += sprintf(response_data->contract_result + len, ">");
                                 }
-                                len += sprintf(response_data->contract_result + len, ">");
                             }
+                          
                             common__transaction_info_with_rwset__free_unpacked(transaction_info_with_rwset, NULL);
                             break;
                         }
