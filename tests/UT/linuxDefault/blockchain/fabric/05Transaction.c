@@ -366,14 +366,6 @@ START_TEST(test_005Transaction_0015DeInit_Txptr_NULL)
 }
 END_TEST
 
-START_TEST(test_005Transaction_0016Free_WalletConfig_WithoutInit) 
-{
-    BoatHlfabricNetworkConfig network_config;
-    fabricWalletConfigFree(network_config);
-}
-END_TEST
-
-
 Suite *make_fabricTransactionTest_suite(void)
 {
     /* Create Suite */
@@ -401,7 +393,6 @@ Suite *make_fabricTransactionTest_suite(void)
     tcase_add_test(tc_transaction_api, test_005Transaction_0013TxQuery_Failure_arg2_NULL);
     tcase_add_test(tc_transaction_api, test_005Transaction_0014TxQuery_Failure_args_ADD1);
     tcase_add_test(tc_transaction_api, test_005Transaction_0015DeInit_Txptr_NULL);
-    tcase_add_test(tc_transaction_api, test_005Transaction_0016Free_WalletConfig_WithoutInit);
     
     return s_transaction;
 }
