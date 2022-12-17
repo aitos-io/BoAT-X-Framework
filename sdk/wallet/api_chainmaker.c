@@ -322,7 +322,6 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
     BUINT32 i;
     BUINT32 len;
     Common__TxResponse *tx_response = NULL;
-    Common__ContractResult *contract_result = NULL;
     BCHAR invoke_tx_id[BOAT_TXID_LEN] = {0};
     BCHAR query_systm_tx_id[BOAT_TXID_LEN] = {0};
 
@@ -334,6 +333,13 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
         boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
+    }
+
+    result = BoatChainmakerResponseInit(response_data);
+    if (result != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerResponseInit failed");
+        boat_throw(result, BoatHlchainmakerContractInvoke);
     }
 
     result = get_tx_id(invoke_tx_id);
@@ -359,23 +365,20 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
     }
 
     response_data->code = tx_response->code;
-    if (strlen(tx_response->message) < BOAT_RESPONSE_MESSAGE_MAX_LEN)
-    {
-        memset(response_data->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
+    if (strlen(tx_response->message) < BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
+    {    
+        response_data->message = BoatMalloc(strlen(tx_response->message) + 1);
+        if (response_data->message == NULL)
+        {
+            BoatLog(BOAT_LOG_CRITICAL, "response_data->message  is NULL");
+            boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
+        }
         strcpy(response_data->message, tx_response->message);
     }
-    strcpy(response_data->contract_result, "NULL");
 
     if (tx_response != NULL)
     {
         common__tx_response__free_unpacked(tx_response, NULL);
-    }
-
-    if (response_data->code != BOAT_SUCCESS)
-    {
-        strcpy(response_data->contract_result, tx_response->contract_result);
-        BoatLog(BOAT_LOG_CRITICAL, "invoke without sync failed");
-        boat_throw(result, BoatHlchainmakerContractInvoke);
     }
 
     if (sync_result)
@@ -388,7 +391,6 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
                 BoatLog(BOAT_LOG_CRITICAL, "get_tx_id failed");
                 boat_throw(result, BoatHlchainmakerContractInvoke);
             }
-
             BoatChainmakerAddTxParam(tx_ptr, 2, "txId", invoke_tx_id);
 #ifdef CHAINMAKER_V1
             result = hlchainmakerTransactionPacked(tx_ptr, "GET_TX_BY_TX_ID", "SYSTEM_CONTRACT_QUERY", TXTYPE_QUERY_SYSTEM_CONTRACT, query_systm_tx_id);
@@ -405,9 +407,22 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
                     BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerTxRequest sync failed");
                 }
 
-                response_data->code = tx_response->contract_result->code;
-                memset(response_data->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
-                strcpy(response_data->message, tx_response->contract_result->message);
+                response_data->code = tx_response->code;
+                if (response_data->message != NULL)
+                {
+                    BoatFree(response_data->message);
+                    response_data->message = NULL;
+                }
+                if (strlen(tx_response->message) < BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
+                {
+                    response_data->message = BoatMalloc(strlen(tx_response->message) + 1);
+                    if (response_data->message == NULL)
+                    {
+                        BoatLog(BOAT_LOG_CRITICAL, "response_data->message  is NULL");
+                        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
+                    }
+                    strcpy(response_data->message, tx_response->message);
+                }
 
                 if (response_data->code == BOAT_SUCCESS)
                 {
@@ -437,28 +452,14 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
                     }
                     if (transaction_info_with_rwset != NULL)
                     {
+                        response_data->contract_result.contract_code = transaction_info_with_rwset->transaction->result->code;
                         if (transaction_info_with_rwset->transaction->result->code == BOAT_SUCCESS)
                         {
-                            len = sprintf(response_data->contract_result, "gas_used:%lld ", transaction_info_with_rwset->transaction->result->contract_result->gas_used);
-
-                            if (transaction_info_with_rwset->transaction->result->contract_result->n_contract_event  != 0)
+                            response_data->contract_result.gas_used = transaction_info_with_rwset->transaction->result->contract_result->gas_used;
+                            if (strlen(tx_response->tx_id) < BOAT_TXID_LEN)
                             {
-                                len += sprintf(response_data->contract_result + len, "contract_event:<");
-                                for (i = 0; i < transaction_info_with_rwset->transaction->result->contract_result->n_contract_event; i++)
-                                {
-                                    len += sprintf(response_data->contract_result + len, "topic:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->topic);
-                                    len += sprintf(response_data->contract_result + len, " tx_id:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->tx_id);
-                                    len += sprintf(response_data->contract_result + len, " contract_name:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->contract_name);
-                                    len += sprintf(response_data->contract_result + len, " contract_version:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->contract_version);
-
-                                    for (int n = 0; n < transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->n_event_data; n++)
-                                    {
-                                        len += sprintf(response_data->contract_result + len, " event_data:\"%s\"", transaction_info_with_rwset->transaction->result->contract_result->contract_event[i]->event_data[n]);
-                                    }
-                                    len += sprintf(response_data->contract_result + len, ">");
-                                }
+                                strcpy(response_data->tx_id, tx_response->tx_id);
                             }
-                          
                             common__transaction_info_with_rwset__free_unpacked(transaction_info_with_rwset, NULL);
                             break;
                         }
@@ -498,6 +499,13 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
     }
     BoatLog(BOAT_LOG_NORMAL, "Submit will execute...");
 
+    result = BoatChainmakerResponseInit(response_data);
+    if (result != BOAT_SUCCESS)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerResponseInit failed");
+        boat_throw(result, BoatHlchainmakerContractQuery_exception);
+    }
+
     get_tx_id(query_tx_id);
     query_tx_id[BOAT_TXID_LEN - 1] = 0;
 
@@ -522,37 +530,49 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
     }
 
     response_data->code = tx_response->code;
-    if (strlen(tx_response->message) > BOAT_RESPONSE_MESSAGE_MAX_LEN)
+    if (strlen(tx_response->message) > BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
     {
         BoatLog(BOAT_LOG_CRITICAL, "tx_response->message is too long");
         boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
     }
 
-    memset(response_data->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
-    memcpy(response_data->message, tx_response->message, strlen(tx_response->message));
-    memset(response_data->contract_result, 0, BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN);
+    if (strlen(tx_response->message) < BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
+    {
+        response_data->message = BoatMalloc(strlen(tx_response->message) + 1);
+        if (response_data->message == NULL)
+        {
+            BoatLog(BOAT_LOG_CRITICAL, "response_data->message  is NULL");
+            boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractQuery_exception);
+        }
+        strcpy(response_data->message, tx_response->message);
+    }
 
-    len = sprintf(response_data->contract_result, "<result:\"");
     if (response_data->code == BOAT_SUCCESS)
     {
         if (tx_response->contract_result->code == BOAT_SUCCESS)
         {
             if (tx_response->contract_result->result.len != 0)
             {
-                if (tx_response->contract_result->result.len > BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN)
+                if (tx_response->contract_result->result.len > BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
                 {
                     BoatLog(BOAT_LOG_CRITICAL, "tx_response->contract_result->result.datais too long");
                     boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
                 }
-                memcpy(response_data->contract_result + len, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
+                response_data->contract_result.payload.field_ptr = BoatMalloc(tx_response->contract_result->result.len);    
+                if (response_data->contract_result.payload.field_ptr == NULL)
+                {
+                    BoatLog(BOAT_LOG_CRITICAL, "response_data->contract_result.payload.field_ptr malloc falied");
+                    boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
+                }
+                memcpy(response_data->contract_result.payload.field_ptr, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
+                response_data->contract_result.payload.field_len =tx_response->contract_result->result.len;
+            }
+
+            if (tx_response->contract_result->gas_used != 0)
+            {
+                response_data->contract_result.gas_used = tx_response->contract_result->gas_used;
             }
         }
-        len += tx_response->contract_result->result.len;
-        len += sprintf(response_data->contract_result + len, "\" gas_used: %lld", tx_response->contract_result->gas_used);
-    }
-    else
-    {
-        memcpy(response_data->contract_result, "NULL", strlen("NULL"));
     }
 #ifdef CHAINMAKER_V2
     if (strlen(tx_response->tx_id) < BOAT_TXID_LEN)
@@ -573,4 +593,48 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
         common__tx_response__free_unpacked(tx_response, NULL);
     }
     return result;
+}
+
+BOAT_RESULT BoatChainmakerResponseInit(BoatResponseData *response_data)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+    if (NULL == response_data)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "response_data is NULL.");
+        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
+    }
+
+    response_data->message = NULL;
+    response_data->contract_result.contract_message = NULL;
+    response_data->contract_result.payload.field_ptr = NULL;
+    return result;
+}
+
+
+void BoatChainmakerResponseFree(BoatResponseData *response_data)
+{
+    if (NULL == response_data)
+    {
+        BoatLog(BOAT_LOG_CRITICAL, "response_data is NULL.");
+        return;
+    }
+
+    /* message DeInit */
+    if (response_data->message != NULL)
+    {
+        BoatFree(response_data->message);
+        response_data->message = NULL;
+    }
+
+    if (response_data->contract_result.contract_message != NULL)
+    {
+        BoatFree(response_data->contract_result.contract_message);
+        response_data->contract_result.contract_message = NULL;
+    }
+
+    if (response_data->contract_result.payload.field_ptr != NULL)
+    {
+        BoatFree(response_data->contract_result.payload.field_ptr);
+        response_data->contract_result.payload.field_ptr = NULL;
+    }
 }

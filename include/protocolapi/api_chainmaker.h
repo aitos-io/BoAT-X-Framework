@@ -31,26 +31,27 @@ api_chainmaker.h is header file for BoAT IoT SDK chainmaker's interface.
 #define BOAT_TXID_LEN 65
 #define BOAT_RETRY_CNT 10
 #define BOAT_CHAINMAKER_MINE_INTERVAL 3 //!< Mining Interval of the blockchain, in seconds
-
 #define BOAT_CHAINMAKER_PRIKEY_MAX_LEN 512
 #define BOAT_CHAINMAKER_CERT_MAX_LEN 1024
 #define BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN 8192 //!< The maximum length of HTTP2 send buffer
 #define BOAT_HLCHAINMAKER_ARGS_MAX_NUM 10
-#define BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN 2048
-#define BOAT_RESPONSE_MESSAGE_MAX_LEN 2048
 // call a pre created user contract, tx included in block
 // query a pre-created user contract, tx not included in block
 typedef enum
 {
-
   TXTYPE_INVOKE_USER_CONTRACT = 0,
   TXTYPE_QUERY_USER_CONTRACT = 1,
   TXTYPE_QUERY_SYSTEM_CONTRACT = 3
 } TxType;
 
-typedef enum TBoatresponseCode
+typedef enum TBoatContractResultCode 
 {
+  BOAT_CONTRACT_RESULT_CODE_OK   = 0,
+  BOAT_CONTRACT_RESULT_CODE_FAIL = 1
+} BoatContractResultCode;
 
+typedef enum TBoatResponseCode
+{
   SUCCESS = 0,
   TIMEOUT = 1,
   INVALIDPARAMETER = 2,
@@ -87,53 +88,49 @@ typedef enum TBoatresponseCode
   CONTRACTINVOKEMETHODFAILED = 39,
   ARCHIVEDTX = 40,
   ARCHIVEDBLOCK = 41
-} BoatresponseCode;
-
-typedef struct TBoatResponseData
-{
-
-  BoatresponseCode code;
-  char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
-  char contract_result[BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN];
-  char tx_id[BOAT_TXID_LEN];
-} BoatResponseData;
-
-//! chainmaker certificate information config structure
-typedef struct TBoatHlchainmakerCertInfoCfg
-{
-
-  BUINT32 length;
-  BCHAR content[BOAT_CHAINMAKER_CERT_MAX_LEN];
-} BoatHlchainmakerCertInfoCfg;
+} BoatResponseCode;
 
 typedef struct TBoatKeyValuePair
 {
-
   char *key;
   BoatFieldVariable value;
 } BoatKeyValuePair;
 
-typedef struct TBoatTransactionPara
+typedef struct TBoatTransactionParams
 {
-
   BUINT32 n_parameters;
   BoatKeyValuePair parameters[BOAT_HLCHAINMAKER_ARGS_MAX_NUM];
-} BoatTransactionPara;
+} BoatTransactionParams;
 
-typedef struct TBoatChainamkerResult
+typedef struct TBoatContractResult
 {
-  BUINT32 code;
-  char *message;
-  BoatFieldVariable payload;
+  BUINT64                gas_used;
+  BoatContractResultCode contract_code;
+  BCHAR                  *contract_message;
+  BoatFieldVariable      payload
+} BoatContractResult;
 
-} BoatChainamkerResult;
+typedef struct TBoatResponseData
+{
+  BoatResponseCode code;
+  char *message;
+  char tx_id[BOAT_TXID_LEN];
+  BoatContractResult contract_result;
+} BoatResponseData;
+
+
+//! chainmaker certificate information config structure
+typedef struct TBoatHlchainmakerCertInfoCfg
+{
+  BUINT32 length;
+  BCHAR content[BOAT_CHAINMAKER_CERT_MAX_LEN];
+} BoatHlchainmakerCertInfoCfg;
 
 //!@brief chainmaker key pairs structure
 //! chainmaker key pairs structure
 typedef struct TBoatChainmakerKeyPair
 {
   BoatKeypairPriKeyCtx prikeyCtx; //!< @NOTE This field MUST BE placed in the first member of the structure
-                                  //!< because in function BoatWalletCreate(),
 } BoatChainmakerKeyPair;
 
 // chainmaker wallet structure
@@ -147,9 +144,8 @@ typedef struct TBoatChainmakerWallet
 
 typedef struct TBoatChainamkerTx
 {
-
-  BoatChainmakerWallet *wallet_ptr; //!< Pointer of the transaction wallet
-  BoatTransactionPara trans_para;
+  BoatChainmakerWallet  *wallet_ptr; //!< Pointer of the transaction wallet
+  BoatTransactionParams trans_para;
   BUINT64 gas_limit;
 } BoatChainmakerTx;
 
@@ -271,6 +267,8 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
  *   To be de-initialized chainmaker wallet pointer.
  ******************************************************************************/
 void BoatChainmakerWalletDeInit(BoatChainmakerWallet *wallet_ptr);
+
+void BoatChainmakerResponseFree(BoatResponseData *response_data);
 
 /*! @}*/
 
