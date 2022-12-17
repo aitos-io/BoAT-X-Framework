@@ -530,9 +530,9 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
 
     memset(response_data->message, 0, BOAT_RESPONSE_MESSAGE_MAX_LEN);
     memcpy(response_data->message, tx_response->message, strlen(tx_response->message));
-
     memset(response_data->contract_result, 0, BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN);
 
+    len = sprintf(response_data->contract_result, "<result:\"");
     if (response_data->code == BOAT_SUCCESS)
     {
         if (tx_response->contract_result->code == BOAT_SUCCESS)
@@ -544,19 +544,22 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
                     BoatLog(BOAT_LOG_CRITICAL, "tx_response->contract_result->result.datais too long");
                     boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
                 }
-                memcpy(response_data->contract_result, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
+                memcpy(response_data->contract_result + len, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
             }
         }
-        len = tx_response->contract_result->result.len;
-        len += sprintf(response_data->contract_result + len, " gas_used: %lld", tx_response->contract_result->gas_used);
-#ifdef CHAINMAKER_V2
-        sprintf(response_data->contract_result + len, " tx_id:\"%s\"", tx_response->tx_id);
-#endif
+        len += tx_response->contract_result->result.len;
+        len += sprintf(response_data->contract_result + len, "\" gas_used: %lld", tx_response->contract_result->gas_used);
     }
     else
     {
         memcpy(response_data->contract_result, "NULL", strlen("NULL"));
     }
+#ifdef CHAINMAKER_V2
+    if (strlen(tx_response->tx_id) < BOAT_TXID_LEN)
+    {
+        strcpy(response_data->tx_id, tx_response->tx_id);
+    }
+#endif
 
     /* boat catch handle */
     boat_catch(BoatHlchainmakerContractQuery_exception)

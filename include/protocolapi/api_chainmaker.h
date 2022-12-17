@@ -95,6 +95,7 @@ typedef struct TBoatResponseData
   BoatresponseCode code;
   char message[BOAT_RESPONSE_MESSAGE_MAX_LEN];
   char contract_result[BOAT_RESPONSE_CONTRACT_RESULT_MAX_LEN];
+  char tx_id[BOAT_TXID_LEN];
 } BoatResponseData;
 
 //! chainmaker certificate information config structure

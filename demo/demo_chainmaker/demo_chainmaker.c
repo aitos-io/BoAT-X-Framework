@@ -301,8 +301,8 @@ int main(int argc, char *argv[])
         BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerContractQuery() failed.");
         boat_throw(result, chainmaker_demo_catch);
     }
-    BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s", 
-            response_data.code, response_data.message, response_data.contract_result);
+    BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, tx_id = %s", 
+            response_data.code, response_data.message, response_data.contract_result, response_data.tx_id);
 
     boat_catch(chainmaker_demo_catch)
     {
