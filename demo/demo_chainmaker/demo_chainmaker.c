@@ -281,6 +281,7 @@ int main(int argc, char *argv[])
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerContractInvoke() failed.");
+        BoatChainmakerResponseFree(&response_data);
         boat_throw(result, chainmaker_demo_catch);
     }
     BoatLog(BOAT_LOG_CRITICAL, "response code = %d, message = %s", response_data.code, response_data.message);
@@ -300,11 +301,12 @@ int main(int argc, char *argv[])
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerContractQuery() failed.");
+        BoatChainmakerResponseFree(&response_data);
         boat_throw(result, chainmaker_demo_catch);
     }
     BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, tx_id = %s", 
             response_data.code, response_data.message, response_data.contract_result.payload.field_ptr, response_data.tx_id);
-
+     BoatChainmakerResponseFree(&response_data);
 
     boat_catch(chainmaker_demo_catch)
     {
@@ -316,7 +318,6 @@ int main(int argc, char *argv[])
         BoatChainmakerWalletDeInit(g_chaninmaker_wallet_ptr);
     }
 
-    BoatChainmakerResponseFree(&response_data);
     /* step-8: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
 
