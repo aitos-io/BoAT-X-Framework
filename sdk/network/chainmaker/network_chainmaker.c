@@ -74,7 +74,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_getNetworkFromProto(BoatChainmakerNetwor
 
     if (strlen(network_proto->ca_tls_cert_content) - 1 > sizeof(Networkdata->ca_tls_cert_content.content))
     {
-        BoatLog(BOAT_LOG_NORMAL, "client tls cert len exceed = %lld\n", strlen(network_proto->ca_tls_cert_content));
+        BoatLog(BOAT_LOG_NORMAL, "client tls cert len exceed = %lld", strlen(network_proto->ca_tls_cert_content));
         return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
     }
 
@@ -573,7 +573,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_NetworkDataCtx_Store(BoatChainmakerNetwo
             networkNum = 0;
             result = BOAT_SUCCESS;
         }
-        BoatLog(BOAT_LOG_NORMAL, "read networkNum = %d\n", networkNum);
+        BoatLog(BOAT_LOG_NORMAL, "read networkNum = %d", networkNum);
     }
     if (networkNum >= BOAT_MAX_NETWORK_NUM)
     {
@@ -631,7 +631,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_NetworkDataCtx_Store(BoatChainmakerNetwo
         boat_throw(result, chainmaker_exception);
     }
     offset += sizeof(mNetworkDataCtx->networkIndex);
-    BoatLog(BOAT_LOG_NORMAL, "store chainmaker network, networkLength = %d ", networkLength);
+    BoatLog(BOAT_LOG_NORMAL, "store chainmaker network, networkLength = %d", networkLength);
     /* store network data */
     result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK, offset, networkData, networkLength, storeType);
     if (result != BOAT_SUCCESS)
@@ -743,7 +743,7 @@ BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig
     {
         return result;
     }
-    BoatLog(BOAT_LOG_NORMAL, "network creat success networkIndex = %d\n", networkIndex);
+    BoatLog(BOAT_LOG_NORMAL, "network creat success networkIndex = %d", networkIndex);
     return networkIndex;
 }
 
