@@ -458,9 +458,9 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
                             response_data->contract_result.contract_message = BoatMalloc(strlen(transaction_info_with_rwset->transaction->result->contract_result->message));
                             strcpy(response_data->contract_result.contract_message , transaction_info_with_rwset->transaction->result->contract_result->message);
                         }
+                        response_data->contract_result.gas_used = transaction_info_with_rwset->transaction->result->contract_result->gas_used;
                         if (transaction_info_with_rwset->transaction->result->code == BOAT_SUCCESS)
                         {
-                            response_data->contract_result.gas_used = transaction_info_with_rwset->transaction->result->contract_result->gas_used;
                             if (strlen(tx_response->tx_id) < BOAT_TXID_LEN)
                             {
                                 strcpy(response_data->tx_id, tx_response->tx_id);
@@ -551,42 +551,33 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
         }
         strcpy(response_data->message, tx_response->message);
     }
-
-    if (response_data->code == BOAT_SUCCESS)
+ 
+    response_data->contract_result.contract_code =  tx_response->contract_result->code;
+    if (tx_response->contract_result->message != NULL)
     {
-        response_data->contract_result.contract_code =  tx_response->contract_result->code;
-        if (tx_response->contract_result->message != NULL)
+        response_data->contract_result.contract_message = BoatMalloc(strlen(tx_response->contract_result->message));
+        strcpy(response_data->contract_result.contract_message , tx_response->contract_result->message);
+    }
+    response_data->contract_result.gas_used = tx_response->contract_result->gas_used;
+    if (tx_response->contract_result->code == BOAT_SUCCESS)
+    {
+        if ((tx_response->contract_result->result.len != 0) ||  (tx_response->contract_result->result.data != NULL))
         {
-            response_data->contract_result.contract_message = BoatMalloc(strlen(tx_response->contract_result->message));
-            strcpy(response_data->contract_result.contract_message , tx_response->contract_result->message);
-        }
-        if (tx_response->contract_result->code == BOAT_SUCCESS)
-        {
-            if (tx_response->contract_result->result.len != 0)
+            if (tx_response->contract_result->result.len > BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
             {
-                if (tx_response->contract_result->result.len > BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
-                {
-                    BoatLog(BOAT_LOG_CRITICAL, "tx_response->contract_result->result.datais too long");
-                    boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
-                }
-                response_data->contract_result.payload.field_ptr = BoatMalloc(tx_response->contract_result->result.len);    
-                if (response_data->contract_result.payload.field_ptr == NULL)
-                {
-                    BoatLog(BOAT_LOG_CRITICAL, "response_data->contract_result.payload.field_ptr malloc falied");
-                    boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
-                }
-                memcpy(response_data->contract_result.payload.field_ptr, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
-                response_data->contract_result.payload.field_len =tx_response->contract_result->result.len;
+                BoatLog(BOAT_LOG_CRITICAL, "tx_response->contract_result->result.datais too long");
+                boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
             }
-
-
-            if (tx_response->contract_result->gas_used != 0)
+            response_data->contract_result.payload.field_ptr = BoatMalloc(tx_response->contract_result->result.len);    
+            if (response_data->contract_result.payload.field_ptr == NULL)
             {
-                response_data->contract_result.gas_used = tx_response->contract_result->gas_used;
+                BoatLog(BOAT_LOG_CRITICAL, "response_data->contract_result.payload.field_ptr malloc falied");
+                boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
             }
+            memcpy(response_data->contract_result.payload.field_ptr, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
+            response_data->contract_result.payload.field_len =tx_response->contract_result->result.len;
         }
     }
-   
 
 #ifdef CHAINMAKER_V2
     if (strlen(tx_response->tx_id) < BOAT_TXID_LEN)
@@ -619,8 +610,9 @@ BOAT_RESULT BoatChainmakerResponseInit(BoatResponseData *response_data)
     }
 
     response_data->message = NULL;
-    response_data->contract_result.contract_message = NULL;
+    response_data->contract_result.contract_message  = NULL;
     response_data->contract_result.payload.field_ptr = NULL;
+    response_data->contract_result.payload.field_len = 0;
     return result;
 }
 
@@ -650,5 +642,6 @@ void BoatChainmakerResponseFree(BoatResponseData *response_data)
     {
         BoatFree(response_data->contract_result.payload.field_ptr);
         response_data->contract_result.payload.field_ptr = NULL;
+        response_data->contract_result.payload.field_len = 0;
     }
 }
