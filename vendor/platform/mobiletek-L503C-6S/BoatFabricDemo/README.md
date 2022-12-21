@@ -170,3 +170,14 @@
    ```
 
    编译成功会在`<L503 Root>/kernel/OUTPUT_L503C_6S`下生成`ASR_CRANEL_EVB_CRANEL_A0_08MB.zip`下载文件。
+
+   tips: 若编译环境为Windows 11系统，在编译过程中可能会出现以下错误：
+   ```
+      Opening image "rd" from "X:\OUTPUT_L503C_6S\ReliableData.bin" ...
+   error: open raw image "rd" failed.
+   FAILED: generate release package failed!
+   ```
+
+   若出现以上错误，打开`<L503 Root>/kernel/tavor/Arbel/build/project_output_1606.bat`文件。
+
+   找到`copy /Y %XROOT%\tavor\Arbel\bin\ReliableData.bin   %XROOT%\%PROJECT_OUTPUT%\ReliableData.bin`并修改为`copy /Y %XROOT%\mbtk\releasepack\L503C_6S\images\ReliableData.bin   %XROOT%\%PROJECT_OUTPUT%\ReliableData.bin`
