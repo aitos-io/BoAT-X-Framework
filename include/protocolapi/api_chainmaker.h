@@ -107,7 +107,7 @@ typedef struct TBoatContractResult
   BUINT64                gas_used;
   BoatContractResultCode contract_code;
   BCHAR                  *contract_message;
-  BoatFieldVariable      payload
+  BoatFieldVariable      payload;
 } BoatContractResult;
 
 typedef struct TBoatResponseData
