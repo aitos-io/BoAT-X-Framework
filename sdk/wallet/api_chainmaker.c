@@ -455,7 +455,7 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
                         response_data->contract_result.contract_code = transaction_info_with_rwset->transaction->result->code;
                         if (transaction_info_with_rwset->transaction->result->contract_result->message != NULL)
                         {
-                            response_data->contract_result.contract_message = BoatMalloc(strlen(transaction_info_with_rwset->transaction->result->contract_result->message));
+                            response_data->contract_result.contract_message = BoatMalloc(strlen(transaction_info_with_rwset->transaction->result->contract_result->message) + 1);
                             strcpy(response_data->contract_result.contract_message , transaction_info_with_rwset->transaction->result->contract_result->message);
                         }
                         response_data->contract_result.gas_used = transaction_info_with_rwset->transaction->result->contract_result->gas_used;
@@ -555,7 +555,7 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
     response_data->contract_result.contract_code =  tx_response->contract_result->code;
     if (tx_response->contract_result->message != NULL)
     {
-        response_data->contract_result.contract_message = BoatMalloc(strlen(tx_response->contract_result->message));
+        response_data->contract_result.contract_message = BoatMalloc(strlen(tx_response->contract_result->message) + 1);
         strcpy(response_data->contract_result.contract_message , tx_response->contract_result->message);
     }
     response_data->contract_result.gas_used = tx_response->contract_result->gas_used;
