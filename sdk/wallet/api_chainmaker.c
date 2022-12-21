@@ -453,6 +453,11 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
                     if (transaction_info_with_rwset != NULL)
                     {
                         response_data->contract_result.contract_code = transaction_info_with_rwset->transaction->result->code;
+                        if (transaction_info_with_rwset->transaction->result->contract_result->message != NULL)
+                        {
+                            response_data->contract_result.contract_message = BoatMalloc(strlen(transaction_info_with_rwset->transaction->result->contract_result->message));
+                            strcpy(response_data->contract_result.contract_message , transaction_info_with_rwset->transaction->result->contract_result->message);
+                        }
                         if (transaction_info_with_rwset->transaction->result->code == BOAT_SUCCESS)
                         {
                             response_data->contract_result.gas_used = transaction_info_with_rwset->transaction->result->contract_result->gas_used;
@@ -549,6 +554,12 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
 
     if (response_data->code == BOAT_SUCCESS)
     {
+        response_data->contract_result.contract_code =  tx_response->contract_result->code;
+        if (tx_response->contract_result->message != NULL)
+        {
+            response_data->contract_result.contract_message = BoatMalloc(strlen(tx_response->contract_result->message));
+            strcpy(response_data->contract_result.contract_message , tx_response->contract_result->message);
+        }
         if (tx_response->contract_result->code == BOAT_SUCCESS)
         {
             if (tx_response->contract_result->result.len != 0)
@@ -568,12 +579,15 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
                 response_data->contract_result.payload.field_len =tx_response->contract_result->result.len;
             }
 
+
             if (tx_response->contract_result->gas_used != 0)
             {
                 response_data->contract_result.gas_used = tx_response->contract_result->gas_used;
             }
         }
     }
+   
+
 #ifdef CHAINMAKER_V2
     if (strlen(tx_response->tx_id) < BOAT_TXID_LEN)
     {
