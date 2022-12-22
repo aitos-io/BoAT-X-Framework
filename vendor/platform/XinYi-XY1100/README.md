@@ -18,10 +18,6 @@
 
 4、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.h到`<XY1100 Root>/userapp/demo/boat_demo`下。
 
-5、拷贝并覆盖 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/vendor/Makefile到`<XY1100 Root>/userapp/BoAT-X-Framework/vendor`下。
-
-6、拷贝并覆盖 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/storage/persiststore.c到`<XY1100 Root>/userapp/BoAT-X-Framework/vendor/common/storage`下。
-
 
 拷贝后的目录和文件结构如下：
 ```
@@ -68,8 +64,7 @@
 
 在头文件路径添加处新添以下内容：
 ```
-    CFLAGS+= -I$(TOP_DIR)/TCPIP/net_tool/Dtls/mbedtls-2.6.0/include/mbedtls \
-             -I$(TOP_DIR)/userapp/BoAT-X-Framework/include \
+    CFLAGS+= -I$(TOP_DIR)/userapp/BoAT-X-Framework/include \
              -I$(TOP_DIR)/userapp/BoAT-X-Framework/vendor/platform/include \
              -I$(TOP_DIR)/userapp/BoAT-X-Framework/sdk/include \
              -I$(TOP_DIR)/userapp/BoAT-X-Framework/vendor/platform/XinYi-XY1100/src/log \
@@ -119,38 +114,6 @@
     ifeq ($(BOATSDK_SUPPORT),y)
         FLAGS+=-DBOATSDK_SUPPORT=1
     endif
-```
-
-### 8、在XinYi-XY1100平台中配置mbedtls的宏选项
-
-打开`<XY1100 Root>/TCPIP/net_tool/Dtls/mbedtls_port/los_mbedtls_config.h`文件
-
-添加以下内容：
-```
-  #ifdef BOATSDK_SUPPORT
-
-  #define MBEDTLS_ECDSA_C
-  #define MBEDTLS_ECP_C
-  #define MBEDTLS_ASN1_WRITE_C
-  #define MBEDTLS_ECDH_C
-  #define MBEDTLS_PK_C
-  #define MBEDTLS_ECP_DP_SECP256K1_ENABLED
-
-  #define MBEDTLS_PLATFORM_STD_CALLOC        calloc
-  #define MBEDTLS_PLATFORM_STD_FREE            free
-
-
-  #define MBEDTLS_PEM_WRITE_C
-  #define MBEDTLS_PK_WRITE_C
-  #define MBEDTLS_BASE64_C
-  #define MBEDTLS_PK_PARSE_C
-  #define MBEDTLS_ASN1_PARSE_C
-
-  #define MBEDTLS_BIGNUM_C
-  #define MBEDTLS_OID_C
-  #define MBEDTLS_PEM_PARSE_C
-
-  #endif
 ```
 
 ## 四、编译BoAT-X-Framework静态库
