@@ -12,11 +12,11 @@ Assuming `<XY1100 Root>` to be the root directory of XinYi-XY1100-R14 platform S
 
 1. Copy the entire BoAT-X-Framework directory into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples`.
 
-2. Create a new folder `boat_demo` under `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples`, copy BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/boat_demo.c into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`.
+2. Create a new folder `boat_demo` under `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples`, copy BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/platone_demo/boat_platone_demo.c into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`.
 
-3. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/my_contract.c into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`.
+3. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/platone_demo/my_contract.c into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`.
 
-4. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/my_contract.h into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`.
+4. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/platone_demo/my_contract.h into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`.
 
 
 After copying these files, the directory structure should look like:
@@ -57,7 +57,7 @@ $(wildcard $(EXAMPLES_SRC_DIR)/boat_demo/*.c) \
 ```
 
 ### 2.Register demo's entry-point function
-Open `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/basic/src/main.c`, make an external declaration of the demo entry function, and add the demo entry function to the `user_task_init` function. Use `boat_demo.c `For example, the entry function is `void boat_task_demo_init()`, which can be registered by referring to the following code:
+Open `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/basic/src/main.c`, make an external declaration of the demo entry function, and add the demo entry function to the `user_task_init` function. Use `boat_platone_demo.c `For example, the entry function is `void boat_task_demo_init()`, which can be registered by referring to the following code:
 ```
 extern void boat_task_demo_init();
 
@@ -114,7 +114,7 @@ Configure the cross-compilation environment of XinYi-XY1100-R14 in the local PC 
 
 ### 2. Build the demo program of XY1100-R14, generate .mimgx file for download
 
-   Demo code for accessing blockchain through BoAT-X Framework is in `XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo/boat_demo.c`
+   Demo code for accessing blockchain through BoAT-X Framework is in `XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo/boat_platone_demo.c`
 
    Open a Windows cmd shell and build the demo:
    ```
