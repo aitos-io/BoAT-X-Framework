@@ -12,11 +12,11 @@
 
 1、拷贝 BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<XY1100 Root>/userapp`下。
 
-2、在`<XY1100 Root>/userapp/demo`下新建文件夹`boat_demo`，拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/boat_demo.c到`<XY1100 Root>/userapp/demo/boat_demo`下。
+2、在`<XY1100 Root>/userapp/demo`下新建文件夹`boat_demo`，拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/platone_demo/boat_platone_demo.c到`<XY1100 Root>/userapp/demo/boat_demo`下。
 
-3、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.c到`<XY1100 Root>/userapp/demo/boat_demo`下。
+3、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/platone_demo/my_contract.c到`<XY1100 Root>/userapp/demo/boat_demo`下。
 
-4、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.h到`<XY1100 Root>/userapp/demo/boat_demo`下。
+4、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/platone_demo/my_contract.h到`<XY1100 Root>/userapp/demo/boat_demo`下。
 
 
 拷贝后的目录和文件结构如下：
@@ -40,7 +40,7 @@
     |-- module.mk    
     |-- demo
     |   |-- boat_demo
-    |   |   |-- boat_demo.c
+    |   |   |-- boat_platone_demo.c
     |   |   |-- my_contract.c
     |   |   |-- my_contract.h
 ```
@@ -54,7 +54,7 @@
   
   在源文件添加处新添以下内容：
   ```
-  C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/boat_demo.c
+  C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/boat_platone_demo.c
   C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/my_contract.c
   ```
 
@@ -137,7 +137,7 @@
 
 ### 2、编译XY1100演示demo程序，生成.bin下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在`<XY1100 Root>/userapp/demo/boat_demo/boat_demo.c`
+   通过BoAT-X-Framework访问区块链的演示代码，在`<XY1100 Root>/userapp/demo/boat_demo/boat_platone_demo.c`
    
    打开Linux终端并进入`<XY1100 Root>/targets/xinyiNBSoc_M3/Makefile`
    ```
