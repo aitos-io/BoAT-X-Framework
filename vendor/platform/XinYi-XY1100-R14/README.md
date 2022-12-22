@@ -18,10 +18,6 @@
 
 4、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/my_contract.h到`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`下。
 
-5、拷贝并覆盖 BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/vendor/Makefile到`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/BoAT-X-Framework/vendor`下。
-
-6、拷贝并覆盖 BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/storage/persiststore.c到`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/BoAT-X-Framework/vendor/common/storage`下。
-
 
 拷贝后的目录和文件结构如下：
 ```
@@ -103,34 +99,6 @@ SRCS_LIBS_INC += -L$(USERAPP_SRC_DIR)/examples/BoAT-X-Framework/lib/ -lboatvendo
   
 按照XY1100-R14的文档要求在本地PC中配置好XinYi-XY1100-R14的交叉编译环境
 
-### 7、在XinYi-XY1100-R14平台中配置mbedtls的宏选项
-
-打开`<XY1100 Root>/APPLIB/Dtls/xy_dtls/inc/los_mbedtls_config.h`文件
-
-添加以下内容：
-```
-  #include "stdlib.h"
-  #define MBEDTLS_ECDSA_C
-  #define MBEDTLS_ECP_C
-  #define MBEDTLS_ASN1_WRITE_C
-  #define MBEDTLS_ECDH_C
-  #define MBEDTLS_PK_C
-  #define MBEDTLS_ECP_DP_SECP256K1_ENABLED
-
-  #define MBEDTLS_PLATFORM_STD_CALLOC        calloc
-  #define MBEDTLS_PLATFORM_STD_FREE            free
-
-
-  #define MBEDTLS_PEM_WRITE_C
-  #define MBEDTLS_PK_WRITE_C
-  #define MBEDTLS_BASE64_C
-  #define MBEDTLS_PK_PARSE_C
-  #define MBEDTLS_ASN1_PARSE_C
-
-  #define MBEDTLS_BIGNUM_C
-  #define MBEDTLS_OID_C
-  #define MBEDTLS_PEM_PARSE_C
-```
 
 ## 四、编译BoAT-X-Framework静态库
 
