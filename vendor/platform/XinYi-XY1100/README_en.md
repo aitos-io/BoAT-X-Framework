@@ -18,10 +18,6 @@ Assuming `<XY1100 Root>` to be the root directory of XinYi-XY1100 platform SDK:
 
 4. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.h into `<XY1100 Root>/userapp/demo/boat_demo`.
 
-5. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/vendor/Makefile into /userapp/BoAT-X-Framework/vendor and overwrite the original file.
-
-6. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/storage/persiststore.c into `<XY1100 Root>/userapp/BoAT-X-Framework/vendor/common/storage`.
-
 
 After copying these files, the directory structure should look like:
 
@@ -68,8 +64,7 @@ C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/my_contract.c
 Open `<XY1100 Root>/userapp/module.mk` 
 Add the following content in the header file path addition:
 ```
-CFLAGS+= -I$(TOP_DIR)/TCPIP/net_tool/Dtls/mbedtls-2.6.0/include/mbedtls \
--I$(TOP_DIR)/userapp/BoAT-X-Framework/include \
+CFLAGS+= -I$(TOP_DIR)/userapp/BoAT-X-Framework/include \
 -I$(TOP_DIR)/userapp/BoAT-X-Framework/vendor/platform/include \
 -I$(TOP_DIR)/userapp/BoAT-X-Framework/sdk/include \
 -I$(TOP_DIR)/userapp/BoAT-X-Framework/vendor/platform/XinYi-XY1100/src/log \
@@ -110,36 +105,6 @@ Add the following in the position of the additional functions of the configurati
 ifeq ($(BOATSDK_SUPPORT),y)
     FLAGS+=-DBOATSDK_SUPPORT=1
 endif
-```
-
-### 8. Configure the macro options of mbedtls in the XinYi-XY1100 platform
-Open `<XY1100 Root>/TCPIP/net_tool/Dtls/mbedtls_port/los_mbedtls_config.h`
-Add the following:
-```
-  #ifdef BOATSDK_SUPPORT
-
-  #define MBEDTLS_ECDSA_C
-  #define MBEDTLS_ECP_C
-  #define MBEDTLS_ASN1_WRITE_C
-  #define MBEDTLS_ECDH_C
-  #define MBEDTLS_PK_C
-  #define MBEDTLS_ECP_DP_SECP256K1_ENABLED
-
-  #define MBEDTLS_PLATFORM_STD_CALLOC        calloc
-  #define MBEDTLS_PLATFORM_STD_FREE            free
-
-
-  #define MBEDTLS_PEM_WRITE_C
-  #define MBEDTLS_PK_WRITE_C
-  #define MBEDTLS_BASE64_C
-  #define MBEDTLS_PK_PARSE_C
-  #define MBEDTLS_ASN1_PARSE_C
-
-  #define MBEDTLS_BIGNUM_C
-  #define MBEDTLS_OID_C
-  #define MBEDTLS_PEM_PARSE_C
-
-  #endif
 ```
 
 ## Compile BoAT-X Framework Static library
