@@ -12,11 +12,11 @@
 
 1、拷贝BoAT代码，将BoAT-X-Framework整个文件夹拷贝至`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples`下。
 
-2、在`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples`下新建文件夹`boat_demo`，拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/boat_demo.c到`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`下。
+2、在`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples`下新建文件夹`boat_demo`，拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/platone_demo/boat_platone_demo.c到`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`下。
 
-3、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/my_contract.c到`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`下。
+3、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/platone_demo/my_contract.c到`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`下。
 
-4、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/my_contract.h到`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`下。
+4、拷贝 BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/platone_demo/my_contract.h到`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`下。
 
 
 拷贝后的目录和文件结构如下：
@@ -58,7 +58,7 @@ $(wildcard $(EXAMPLES_SRC_DIR)/boat_demo/*.c) \
 
 ### 2、注册demo的入口函数
 
-打开`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/basic/src/main.c`文件，对demo的入口函数做外部声明之后，将demo入口函数添加至`user_task_init`函数中.以`boat_demo.c`为例，入口函数为`void boat_task_demo_init()`,可以参照如下代码进行注册：
+打开`<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/basic/src/main.c`文件，对demo的入口函数做外部声明之后，将demo入口函数添加至`user_task_init`函数中.以`boat_platone_demo.c`为例，入口函数为`void boat_task_demo_init()`,可以参照如下代码进行注册：
 ```
 extern void boat_task_demo_init();
 
@@ -121,7 +121,7 @@ SRCS_LIBS_INC += -L$(USERAPP_SRC_DIR)/examples/BoAT-X-Framework/lib/ -lboatvendo
 
 ### 2、编译XY1100-R14演示demo程序，生成.mimgx下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在`XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo/boat_demo.c`
+   通过BoAT-X-Framework访问区块链的演示代码，在`XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo/boat_platone_demo.c`
    
    打开Windows的cmd终端并进入`<XY1100 Root>`
    ```
