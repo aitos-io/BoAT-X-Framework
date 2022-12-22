@@ -18,10 +18,6 @@ Assuming `<XY1100 Root>` to be the root directory of XinYi-XY1100-R14 platform S
 
 4. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/demo/my_contract.h into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/boat_demo`.
 
-5. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/vendor/Makefile into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/BoAT-X-Framework/vendor`.
-
-6. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100-R14/XY1100R14RootDirCode/storage/persiststore.c into `<XY1100 Root>/TARGETS/xinyiNBSoC/USERAPP/examples/BoAT-X-Framework/vendor/common/storage`.
-
 
 After copying these files, the directory structure should look like:
 
@@ -96,33 +92,6 @@ Configure the actual path of the local cross compiler after `CC` and `AR`
 ### 6. Configure the cross-compilation environment of XinYi-XY1100-R14 platform
 Configure the cross-compilation environment of XinYi-XY1100-R14 in the local PC according to the documentation requirements of XY1100-R14
 
-
-### 7. Configure the macro options of mbedtls in the XinYi-XY1100-R14 platform
-Open `<XY1100 Root>/APPLIB/Dtls/xy_dtls/inc/los_mbedtls_config.h`
-Add the following:
-```
-  #include "stdlib.h"
-  #define MBEDTLS_ECDSA_C
-  #define MBEDTLS_ECP_C
-  #define MBEDTLS_ASN1_WRITE_C
-  #define MBEDTLS_ECDH_C
-  #define MBEDTLS_PK_C
-  #define MBEDTLS_ECP_DP_SECP256K1_ENABLED
-
-  #define MBEDTLS_PLATFORM_STD_CALLOC        calloc
-  #define MBEDTLS_PLATFORM_STD_FREE            free
-
-
-  #define MBEDTLS_PEM_WRITE_C
-  #define MBEDTLS_PK_WRITE_C
-  #define MBEDTLS_BASE64_C
-  #define MBEDTLS_PK_PARSE_C
-  #define MBEDTLS_ASN1_PARSE_C
-
-  #define MBEDTLS_BIGNUM_C
-  #define MBEDTLS_OID_C
-  #define MBEDTLS_PEM_PARSE_C
-```
 
 ## Compile BoAT-X Framework Static library
 
