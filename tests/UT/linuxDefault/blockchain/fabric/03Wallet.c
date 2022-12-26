@@ -522,6 +522,9 @@ START_TEST(test_003CreateWallet_0001CreateOneTimeWalletSuccess)
     ck_assert_int_eq(memcmp(g_fabric_wallet_ptr->account_info.prikeyCtx.pubkey_content, pubkey256R1, sizeof(pubkey256R1)), 0);
 
     rtnVal = fabric_checkNetworkData(g_fabric_wallet_ptr->network_info, networkConfig, 0);
+
+    BoatHlfabricWalletDeInit(g_fabric_wallet_ptr);
+    ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL); 
     /* free configuration struct */
     fabricWalletConfigFree(networkConfig);
     /* check result */
@@ -545,6 +548,9 @@ START_TEST(test_003CreateWallet_0002CreateOneTimeWalletFailureWithoutKeypair)
     g_fabric_wallet_ptr = BoatHlfabricWalletInit(keypairIndex, networkIndex);
     ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL);
 
+    BoatHlfabricWalletDeInit(g_fabric_wallet_ptr);
+    ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL); 
+
     /* free configuration struct */
     fabricWalletConfigFree(networkConfig);
     BoatIotSdkDeInit();
@@ -564,6 +570,10 @@ START_TEST(test_003CreateWallet_0003CreateOneTimeWalletFailureWithoutNetwork)
    
     g_fabric_wallet_ptr = BoatHlfabricWalletInit(keypairIndex, networkIndex);
     ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL);
+
+    BoatHlfabricWalletDeInit(g_fabric_wallet_ptr);
+    ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL); 
+
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -602,6 +612,13 @@ START_TEST(test_003CreateWallet_0004CreatePersistWalletSuccess)
     fabricWalletConfigFree(networkConfig);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
+
+    BoatHlfabricWalletDeInit(g_fabric_wallet_ptr);
+    ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL); 
+
+    BoatHlfabricWalletDeInit(g_fabric_wallet_ptr);
+    ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL); 
+
     /* delete this network*/
     BoATHlfabricNetworkDelete(1);
     BoATIotKeypairDelete(1);
@@ -624,6 +641,9 @@ START_TEST(test_003CreateWallet_0005CreatePersistWalletFailureWithoutKeypair)
     g_fabric_wallet_ptr = BoatHlfabricWalletInit(keypairIndex, networkIndex);
     ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL);
 
+    BoatHlfabricWalletDeInit(g_fabric_wallet_ptr);
+    ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL); 
+
     /* free configuration struct */
     fabricWalletConfigFree(networkConfig);
     BoATHlfabricNetworkDelete(1);
@@ -644,6 +664,9 @@ START_TEST(test_003CreateWallet_0006CreatePersistWalletFailureWithoutNetwork)
    
     g_fabric_wallet_ptr = BoatHlfabricWalletInit(keypairIndex, networkIndex);
     ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL);
+    BoatHlfabricWalletDeInit(g_fabric_wallet_ptr);
+    ck_assert_ptr_eq(g_fabric_wallet_ptr, NULL); 
+
     BoATIotKeypairDelete(1);
     BoatIotSdkDeInit();
 }
