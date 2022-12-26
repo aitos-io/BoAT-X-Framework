@@ -20,7 +20,7 @@
 */
 
 //! self header include
-#include "boatconfig.h"
+#include "boatiotsdk.h"
 #include "boatplatform_internal.h"
 
 #include "boattypes.h"
@@ -31,7 +31,8 @@
 #include "secp256k1.h"
 #include "nist256p1.h"
 #include "bignum.h"
-#include <string.h>
+#include "persiststore.h"
+#include "boatkeystore.h"
 
 #include "cm_fs.h"
 
@@ -87,57 +88,67 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 }
 
 
-BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
-						  const BUINT8 *digest, BUINT32 digestLen, 
+BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
+						  const BUINT8 *digest, BUINT32 digestLen,
 						  BoatSignatureResult *signatureResult, void *rsvd)
 {
-	BUINT8 signatureTmp[64];
+	BUINT8 signature[64] = {0};
+	BUINT8 signatureTmp[139];
+	BUINT32 signatureTmpLen = 0;
 	BUINT8 ecdsPrefix = 0;
-	
+	BUINT32 signatureLen = 0;
 	BOAT_RESULT result = BOAT_SUCCESS;
-	
+
 	(void)rsvd;
-	
+
 	/* param check */
 	if ((digest == NULL) || (signatureResult == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
+	// result = BoAT_GetPirkeyByIndex(prikeyCtx.keypair_index,&prikey);
+	// if(result != BOAT_SUCCESS){
+	// 	BoatLog(BOAT_LOG_CRITICAL, "get keypair prikey fail.");
+	// 	return BOAT_ERROR;
+	// }
 
-	if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+	// result = BoAT_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format, prikey.value,prikey.value_len,digest,digestLen,signatureTmp,&signatureLen,&ecdsPrefix);
+
+	result = BoAT_Keystore_Sign(prikeyCtx.prikey_type, prikeyCtx.keypair_index, digest, digestLen, signature, &signatureLen, &ecdsPrefix);
+	if (result != BOAT_SUCCESS)
 	{
-		result = ecdsa_sign_digest(&secp256k1,      // const ecdsa_curve *curve
-								   prikeyCtx.extra_data.value,        // const uint8_t *priv_key
-								   digest,          // const uint8_t *digest
-								   signatureTmp,    // uint8_t *sig,
-								   &ecdsPrefix,     // uint8_t *pby,
-								   NULL);           // int (*is_canonical)(uint8_t by, uint8_t sig[64]))		
-	}
-	else if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
-	{
-		result = ecdsa_sign_digest(&nist256p1,      // const ecdsa_curve *curve
-								   prikeyCtx.extra_data.value,        // const uint8_t *priv_key
-								   digest,          // const uint8_t *digest
-								   signatureTmp,    // uint8_t *sig,
-								   &ecdsPrefix,     // uint8_t *pby,
-								   NULL);           // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-									
-	}
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Unkown private key type.");
-		return  BOAT_ERROR_WALLET_KEY_TYPE_ERR;
+		return result;
 	}
 
+	// // signature result assign
+	// memset(signatureResult, 0, sizeof(BoatSignatureResult));
+
+	// signatureResult->native_format_used = true;
+	// memcpy(signatureResult->native_sign, signatureTmp, 64);
+
+	// signatureResult->signPrefix_used = true;
+	// signatureResult->signPrefix      = ecdsPrefix;
+
+	/* convert r,s to asn.1 */
+	result = utility_signature_to_asn1(signature, signatureLen, signatureTmp, &signatureTmpLen);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "signature to asn.1  fail.");
+		return BOAT_ERROR;
+	}
 	// signature result assign
 	memset(signatureResult, 0, sizeof(BoatSignatureResult));
-	
+
+	signatureResult->pkcs_format_used = true;
+	signatureResult->pkcs_sign_length = signatureTmpLen;
+	memcpy(signatureResult->pkcs_sign, signatureTmp, signatureResult->pkcs_sign_length);
+
 	signatureResult->native_format_used = true;
-	memcpy(signatureResult->native_sign,  signatureTmp, 64);
+	memcpy(&signatureResult->native_sign[0], signature, 64);
 
 	signatureResult->signPrefix_used = true;
-	signatureResult->signPrefix      = ecdsPrefix;
+	signatureResult->signPrefix = ecdsPrefix;
 
 	return result;
 }
@@ -146,7 +157,7 @@ BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx,
 /******************************************************************************
                               BOAT FILE OPERATION WARPPER
 *******************************************************************************/
-BOAT_RESULT BoatGetFileSize(BUINT32 *size, void *rsvd)
+BOAT_RESULT BoatGetStorageSize(BUINT32 *size, void *rsvd)
 {
 	FILE *file_ptr;
 	struct stat st;
@@ -196,6 +207,7 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset, BUINT8 *writeBuf, BUINT32 writeLen,
 	BSINT32 result = 0;
     BUINT8 *buf_zero = NULL;
     BUINT32 size;
+    struct stat st;
 	
 	(void)rsvd;
 	
@@ -220,7 +232,7 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset, BUINT8 *writeBuf, BUINT32 writeLen,
 	if (file < 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", BOAT_FILE_STOREDATA);
-        return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL
+        return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 
     if (size < offset)
@@ -251,14 +263,14 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset, BUINT8 *writeBuf, BUINT32 writeLen,
 	count = cm_fs_fwrite(file, writeBuf, writeLen);
 	if (count != writeLen)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to write file: %s.", fileName);
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to write file: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_WRITE_FAIL;
 	}
 
 	result = cm_fs_fclose(file);
 	if (result < 0)
 	{
-		BoatLog(BOAT_LOG_CRITICAL, "Failed to close file: %s.", fileName);
+		BoatLog(BOAT_LOG_CRITICAL, "Failed to close file: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_CLOSE_FAIL;
 	}
 	
