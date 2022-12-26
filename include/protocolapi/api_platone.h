@@ -24,7 +24,6 @@ api_platone.h is header file for BoAT IoT SDK PlatONE's interface.
 #define __API_PLATONE_H__
 
 #include "boatiotsdk.h"
-#include "network_platone.h"
 
 /*! @defgroup platone-api boat platone-API
  * @{

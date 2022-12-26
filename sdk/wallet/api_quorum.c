@@ -25,7 +25,6 @@ api_Quorum.c defines the Quorumereum wallet API for BoAT IoT SDK.
 #include "boatprotocols.h"
 #include "rpcintf.h"
 #include "cJSON.h"
-#include "network_quorum.h"
 #include "boatquorum/boatquorum.h"
 
 BOAT_RESULT BoatQuorumTxSetNonce(BoatQuorumTx *tx_ptr, BUINT64 nonce)

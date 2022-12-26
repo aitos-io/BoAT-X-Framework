@@ -25,7 +25,6 @@
 #include "boatinternal.h"
 
 #include "persiststore.h"
-#include "network_platon.h"
 
 /**
  * @description:

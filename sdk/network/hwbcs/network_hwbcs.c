@@ -25,7 +25,6 @@
 #include "boatinternal.h"
 
 #include "persiststore.h"
-#include "network_hwbcs.h"
 #include "hwbcs_network.pb-c.h"
 
 __BOATSTATIC BOAT_RESULT BoATHwbcs_checkNodefig(BoatHwbcsNodesCfg nodeCfg)
