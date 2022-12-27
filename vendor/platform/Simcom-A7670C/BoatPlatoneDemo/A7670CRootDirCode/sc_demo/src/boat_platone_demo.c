@@ -18,12 +18,11 @@
 #include "my_contract.cpp.abi.h"
 #include "simcom_os.h"
 #include "simcom_ntp_client.h"
+#include "simcom_debug.h"
 
 sTaskRef PlatoneProcesser;
 static UINT8 PlatoneProcesserStack[30 * 1024];
 sMsgQRef ntpUIResp_msgq;
-
-extern int simcom_printf(const char *format, ...);
 
 const char *native_demoKey = "0xfcf6d76706e66250dbacc9827bc427321edb9542d58a74a67624b253960465ca";
 
@@ -49,7 +48,7 @@ __BOATSTATIC BOAT_RESULT platone_createKeypair(BCHAR *keypairName)
 
     (void)binFormatKey; //avoid warning
 
-    //simcom_printf(">>>>>>>>>> wallet format: external injection[native].");
+    //sAPI_Debug(">>>>>>>>>> wallet format: external injection[native].");
     keypair_config.prikey_genMode = BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION;
     keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
     keypair_config.prikey_type    = BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1;
@@ -62,7 +61,7 @@ __BOATSTATIC BOAT_RESULT platone_createKeypair(BCHAR *keypairName)
 
     if (result < 0)
 	{
-        //simcom_printf("create one-time keypair failed.");
+        //sAPI_Debug("create one-time keypair failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     keypairIndex = result;
@@ -84,7 +83,7 @@ __BOATSTATIC BOAT_RESULT createOnetimeNetwork(void)
 
     if (result < 0)
 	{
-        //simcom_printf("create one-time wallet failed.");
+        //sAPI_Debug("create one-time wallet failed.");
         return BOAT_ERROR_WALLET_CREATE_FAIL;
     }
     networkIndex = result;
@@ -106,25 +105,25 @@ BOAT_RESULT platone_call_mycontract(BoatPlatoneWallet *wallet_ptr)
 
     if (result != BOAT_SUCCESS)
 	{
-        //simcom_printf("BoatPlatoneTxInit fails.");
+        //sAPI_Debug("BoatPlatoneTxInit fails.");
         return BOAT_ERROR_WALLET_INIT_FAIL;
     }
 
     result_str = my_contract_cpp_abi_setName(&tx_ctx, "HelloWorld");
     if (result_str == NULL)
 	{
-        //simcom_printf("my_contract_cpp_abi_setName failed: %s.", result_str);
+        //sAPI_Debug("my_contract_cpp_abi_setName failed: %s.", result_str);
 		return BOAT_ERROR;
     }
-	//simcom_printf("setName returns: %s", result_str);
+	//sAPI_Debug("setName returns: %s", result_str);
     
     result_str = my_contract_cpp_abi_getName(&tx_ctx);
     if (result_str == NULL)
 	{
-        //simcom_printf("my_contract_cpp_abi_getName failed: %s.", result_str);
+        //sAPI_Debug("my_contract_cpp_abi_getName failed: %s.", result_str);
 		return BOAT_ERROR;
     }
-	//simcom_printf("getName returns: %s", result_str);
+	//sAPI_Debug("getName returns: %s", result_str);
 	
     return BOAT_SUCCESS;
 }
@@ -137,41 +136,41 @@ BOAT_RESULT PlatoneDemo(void)
     BoatIotSdkInit();
     
 	/* step-2: create platone wallet */
-	//simcom_printf(">>>>>>>>>> wallet type: create one-time wallet.");
+	//sAPI_Debug(">>>>>>>>>> wallet type: create one-time wallet.");
 	result = platone_createKeypair("keypair00");
     if (result != BOAT_SUCCESS)
 	{
-		 //simcom_printf("platoneWalletPrepare_create failed : %d.", result);
+		 //sAPI_Debug("platoneWalletPrepare_create failed : %d.", result);
 		//return -1;
         boat_throw(result, platone_demo_catch);
 	}    
     result = createOnetimeNetwork();
     if (result != BOAT_SUCCESS)
 	{
-		 //simcom_printf("platoneWalletPrepare_create failed : %d.", result);
+		 //sAPI_Debug("platoneWalletPrepare_create failed : %d.", result);
 		//return -1;
         boat_throw(result, platone_demo_catch);
 	}
     if (result != BOAT_SUCCESS)
 	{
-		 //simcom_printf("platoneWalletPrepare_create failed : %d.", result);
+		 //sAPI_Debug("platoneWalletPrepare_create failed : %d.", result);
 		//return -1;
         boat_throw(result, platone_demo_catch);
 	}
     g_platone_wallet_ptr = BoatPlatoneWalletInit(keypairIndex,networkIndex);
     if(g_platone_wallet_ptr == NULL){
-        // simcom_printf("BoatPlatoneWalletInit fail");
+        // sAPI_Debug("BoatPlatoneWalletInit fail");
         boat_throw(BOAT_ERROR, platone_demo_catch);
     }
 	/* step-3: execute 'platone_call_mycontract' */
 	result = platone_call_mycontract(g_platone_wallet_ptr);
     if (result != BOAT_SUCCESS)
 	{
-        //simcom_printf("platone mycontract access Failed: %d.", result);
+        //sAPI_Debug("platone mycontract access Failed: %d.", result);
     }
 	else
 	{
-        //simcom_printf("platone mycontract access Passed.");
+        //sAPI_Debug("platone mycontract access Passed.");
     }
 	boat_catch(platone_demo_catch)
     {
@@ -195,28 +194,28 @@ BOAT_RESULT NtpService(void)
         status = sAPI_MsgQCreate(&ntpUIResp_msgq, "ntpUIResp_msgq", sizeof(SIM_MSG_T), 4, SC_FIFO);
         if(SC_SUCCESS != status)
         {
-            simcom_printf("[CNTP]msgQ create fail\n");
-            simcom_printf("\r\nNTP Update Fail!\r\n");
+            sAPI_Debug("[CNTP]msgQ create fail\n");
+            sAPI_Debug("\r\nNTP Update Fail!\r\n");
         }
     }
 
     memset(&currUtcTime,0,sizeof(currUtcTime));
 
     sAPI_GetSysLocalTime(&currUtcTime);
-    simcom_printf("[CNTP] sAPI_GetSysLocalTime %d - %d - %d - %d : %d : %d   %d\n",currUtcTime.tm_year,currUtcTime.tm_mon,currUtcTime.tm_mday,
+    sAPI_Debug("[CNTP] sAPI_GetSysLocalTime %d - %d - %d - %d : %d : %d   %d\n",currUtcTime.tm_year,currUtcTime.tm_mon,currUtcTime.tm_mday,
       currUtcTime.tm_hour,currUtcTime.tm_min,currUtcTime.tm_sec,currUtcTime.tm_wday);
     result = sAPI_NtpUpdate(SC_NTP_OP_SET, "ntp3.aliyun.com", 32, NULL);                        //Unavailable addr may cause long time suspend
-	simcom_printf("SC_NTP_OP_SET result[%d]\n",result);
+	sAPI_Debug("SC_NTP_OP_SET result[%d]\n",result);
 
     result = sAPI_NtpUpdate(SC_NTP_OP_GET, buff, 0, NULL);
-    simcom_printf("SC_NTP_OP_GET result[%d] buff[%s]\n", result, buff);
+    sAPI_Debug("SC_NTP_OP_GET result[%d] buff[%s]\n", result, buff);
             
     result = sAPI_NtpUpdate(SC_NTP_OP_EXC, NULL, 0, ntpUIResp_msgq);
-    simcom_printf("SC_NTP_OP_EXC result[%d]\n",result );
+    sAPI_Debug("SC_NTP_OP_EXC result[%d]\n",result );
 
     memset(&currUtcTime,0,sizeof(currUtcTime));
     sAPI_GetSysLocalTime(&currUtcTime);
-    simcom_printf("[CNTP] sAPI_GetSysLocalTime %d - %d - %d - %d : %d : %d   %d\n",currUtcTime.tm_year,currUtcTime.tm_mon,currUtcTime.tm_mday,
+    sAPI_Debug("[CNTP] sAPI_GetSysLocalTime %d - %d - %d - %d : %d : %d   %d\n",currUtcTime.tm_year,currUtcTime.tm_mon,currUtcTime.tm_mday,
     currUtcTime.tm_hour,currUtcTime.tm_min,currUtcTime.tm_sec,currUtcTime.tm_wday);
 
     return result;
@@ -229,12 +228,12 @@ void sTask_PlatoneProcesser(void* argv)
     result = NtpService();
     if(result != BOAT_SUCCESS)
     {
-        simcom_printf("NTP get time failed : %d.", result);
+        sAPI_Debug("NTP get time failed : %d.", result);
     }
     result = PlatoneDemo();
     if(result != BOAT_SUCCESS)
     {
-        simcom_printf("Platone Demo failed : %d.", result);
+        sAPI_Debug("Platone Demo failed : %d.", result);
     }
 
 }
@@ -246,6 +245,6 @@ void sAPP_PlatoneDemo(void)
     status = sAPI_TaskCreate(&PlatoneProcesser, PlatoneProcesserStack, 30 * 1024, 150, "PlatoneProcesser",sTask_PlatoneProcesser,(void *)0);
     if(SC_SUCCESS != status)
     {
-        simcom_printf("Task create fail,status = [%d]",status);
+        sAPI_Debug("Task create fail,status = [%d]",status);
     }
 }
