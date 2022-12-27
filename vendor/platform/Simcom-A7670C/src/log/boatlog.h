@@ -24,8 +24,9 @@ boatLogConfig.h defines options for compiling.
 #define __BOATLOG_H__
 
 #include "boattypes.h"
+#include "simcom_debug.h"
 
-extern int simcom_printf(const char *format, ...);
+// extern int simcom_printf(const char *format, ...);
 
 //! BOAT LOG LEVEL DEFINITION
 //! Log level is used to control the detail of log output.
@@ -44,7 +45,7 @@ extern int simcom_printf(const char *format, ...);
 
 
 //void BoatPrintf(char* fmt, ...);
-#define BoatPrintf simcom_printf
+#define BoatPrintf sAPI_Debug
 extern const BCHAR *const g_log_level_name_str[];
 
 /*!****************************************************************************

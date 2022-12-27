@@ -3,11 +3,11 @@
 #include "scfw_netdb.h"
 #include "scfw_socket.h"
 #include "simcom_os.h"
+#include "simcom_debug.h"
 
-extern int simcom_printf(const char *format, ...);
-#define DBG(x, arg...)  simcom_printf("[BOAT]"x,##arg)
-#define WARN(x, arg...) simcom_printf("[BOAT]"x,##arg)
-#define ERR(x, arg...)  simcom_printf("[BOAT]"x,##arg)
+#define DBG(x, arg...)  sAPI_Debug("[BOAT]"x,##arg)
+#define WARN(x, arg...) sAPI_Debug("[BOAT]"x,##arg)
+#define ERR(x, arg...)  sAPI_Debug("[BOAT]"x,##arg)
 
 #define HTTPCLIENT_AUTHB_SIZE     128
 
@@ -570,7 +570,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
             client_data->retrieve_len = readLen;
             client_data->response_content_len += client_data->retrieve_len;
             if (n != 1) {
-                simcom_printf("Could not read chunk length");
+                sAPI_Debug("Could not read chunk length");
                 return HTTPCLIENT_ERROR_PRTCL;
             }
 
@@ -651,7 +651,7 @@ int httpclient_retrieve_content(httpclient_t *client, char *data, int len, httpc
                 len += new_trf_len;
             }
             if ( (data[0] != '\r') || (data[1] != '\n') ) {
-                simcom_printf("Format error, %s", data); /* after memmove, the beginning of next chunk */
+                sAPI_Debug("Format error, %s", data); /* after memmove, the beginning of next chunk */
                 return HTTPCLIENT_ERROR_PRTCL;
             }
             memmove(data, &data[2], len - 2); /* remove the \r\n */
@@ -681,7 +681,7 @@ int httpclient_response_parse(httpclient_t *client, char *data, int len, httpcli
 
     char *crlf_ptr = strstr(data, "\r\n");
     if (crlf_ptr == NULL) {
-        simcom_printf("\r\n not found");
+        sAPI_Debug("\r\n not found");
         return HTTPCLIENT_ERROR_PRTCL;
     }
 
@@ -691,7 +691,7 @@ int httpclient_response_parse(httpclient_t *client, char *data, int len, httpcli
     /* Parse HTTP response */
     if ( sscanf(data, "HTTP/%*d.%*d %d %*[^\r\n]", &(client->response_code)) != 1 ) {
         /* Cannot match string, error */
-        simcom_printf("Not a correct HTTP answer : %s", data);
+        sAPI_Debug("Not a correct HTTP answer : %s", data);
         return HTTPCLIENT_ERROR_PRTCL;
     }
 
@@ -851,17 +851,17 @@ HTTPCLIENT_RESULT httpclient_recv_response(httpclient_t *client, httpclient_data
     int ret = HTTPCLIENT_ERROR_CONN;
     // TODO: header format:  name + value must not bigger than HTTPCLIENT_CHUNK_SIZE.
     char buf[HTTPCLIENT_CHUNK_SIZE] = {0}; // char buf[HTTPCLIENT_CHUNK_SIZE*2] = {0};
-    simcom_printf("http start recv response");
+    sAPI_Debug("http start recv response");
     if (client->socket < 0) {
         return (HTTPCLIENT_RESULT)ret;
     }
 
     if (client_data->is_more) {
-        simcom_printf("http start retrieve data");
+        sAPI_Debug("http start retrieve data");
         client_data->response_buf[0] = '\0';
         ret = httpclient_retrieve_content(client, buf, reclen, client_data);
     } else {
-        simcom_printf("http enter recv");
+        sAPI_Debug("http enter recv");
         ret = httpclient_recv(client, buf, 1, HTTPCLIENT_CHUNK_SIZE - 1, &reclen);
         if (ret != 0) {
             return (HTTPCLIENT_RESULT)ret;
@@ -902,11 +902,11 @@ static HTTPCLIENT_RESULT httpclient_common(httpclient_t *client, char *url, int 
     ret = httpclient_connect(client, url);
     
     if (!ret) {
-        simcom_printf("http send request");
+        sAPI_Debug("http send request");
         ret = httpclient_send_request(client, url, method, client_data);
 
         if (!ret) {
-            simcom_printf("recv response");
+            sAPI_Debug("recv response");
             ret = httpclient_recv_response(client, client_data);
         }
     }

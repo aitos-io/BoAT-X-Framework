@@ -34,7 +34,7 @@
 `-- sc_demo
     |-- inc
     |   |-- demo_lcd.h
-    |   |-- demo_platone.h
+    |   |-- boat_platone_demo.h
     |   |-- my_contract.cpp.abi.h
     |-- src
     |   |-- token
@@ -64,7 +64,7 @@
     |   |-- demo_mqtt.c
     |   |-- demo_network.c
     |   |-- demo_ntp.c
-    |   |-- demo_platone.c
+    |   |-- boat_platone_demo.c
     |   |-- demo_pm.c
     |   |-- demo_poc.c
     |   |-- demo_pwm.c

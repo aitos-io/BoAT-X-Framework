@@ -346,7 +346,7 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset, BUINT8 *writeBuf, BUINT32 writeLen,
  *  for details.
  * @author: aitos
  */
-BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, void *rsvd)
+BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, void *rsvd)	
 {
 #if BOAT_USE_SIMCOM_FILESYSTEM == 1
 	SCFILE *file_hdl = NULL;
@@ -450,7 +450,7 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
         return -1;
     }
 
-    sockfd = sAPI_TcpipSocket(SC_AF_INET, SC_SOCK_STREAM, 0);
+    sockfd = sAPI_TcpipSocket(SC_AF_INET, SC_SOCK_STREAM, SC_IPPROTO_TCP);
 	BoatLog(BOAT_LOG_CRITICAL,"BoatConnect sockfd[%d]", sockfd);
 	if(sockfd < 0)
     {
@@ -463,6 +463,7 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
     }
 
 	host_entry = sAPI_TcpipGethostbyname(ip);
+	// host_entry = sAPI_TcpipGethostbyname((INT8 *)"www.baidu.com");
 	if (host_entry == NULL)
     {
         sAPI_SslClose(0);
@@ -477,6 +478,7 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 
 	server.sin_family = SC_AF_INET;
 	server.sin_port = sAPI_TcpipHtons(atoi(port));
+	// server.sin_port = sAPI_TcpipHtons(443);
 	server.sin_addr.s_addr= *(UINT32 *)host_entry->h_addr_list[0];
 
 	BoatLog(BOAT_LOG_CRITICAL, "start connect!!!");
@@ -515,19 +517,24 @@ BOAT_RESULT BoatTlsInit(const BCHAR *address, const BCHAR *hostName, const BoatF
 		BoatLog(BOAT_LOG_NORMAL, "socket connect success!!! ");
 	}
 
-	memset(tlsContext_ptr,0,sizeof(tlsContext_ptr));
+	// memset(tlsContext_ptr,0,sizeof(tlsContext_ptr));
 
 	tlsContext_ptr->ClientId           = 0;
-    tlsContext_ptr->fd                 = sockfd;
-	tlsContext_ptr->auth_mode          = 2;
+	tlsContext_ptr->ciphersuitesetflg  = 0;
+	tlsContext_ptr->ssl_version        = SC_SSL_CFG_VERSION_ALL;
+	tlsContext_ptr->enable_SNI         = 0;
+	tlsContext_ptr->auth_mode          = SC_SSL_CFG_VERIFY_MODE_SERVER_CLIENT;
+	tlsContext_ptr->ignore_local_time  = 1;
+	// tlsContext_ptr->ipstr              = "121.4.178.74";
 
-    tlsContext_ptr->ssl_version        = SC_SSL_CFG_VERSION_ALL;
 	tlsContext_ptr->root_ca            = (INT8 *)caChain.field_ptr;
-	tlsContext_ptr->root_ca_len        = (UINT32)caChain.field_len;
+	tlsContext_ptr->root_ca_len        = caChain.field_len + 1;
 	tlsContext_ptr->client_cert        = (INT8 *)clientCert.field_ptr;
-	tlsContext_ptr->client_cert_len    = (UINT32)clientCert.field_len;
+	tlsContext_ptr->client_cert_len    = clientCert.field_len + 1;
 	tlsContext_ptr->client_key         = (INT8 *)clientPrikey.field_ptr;
-	tlsContext_ptr->client_key_len     = (UINT32)clientPrikey.field_len;
+	tlsContext_ptr->client_key_len     = clientPrikey.field_len + 1;
+
+	tlsContext_ptr->fd                 = sockfd;
 
 	result = sAPI_SslHandShake(tlsContext_ptr);
 	if (result != BOAT_SUCCESS)

@@ -12,9 +12,11 @@
 
 1、拷贝 BoAT代码，将 BoAT-X-Framework 整个文件夹拷贝至`<A7670C Root>`下。
 
-2、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_demo`到`<A7670C Root>`下。
+2、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatFabricDemo/A7670CRootDirCode/sc_demo`到`<A7670C Root>`下。
 
-3、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_application.c`到`<A7670C Root>`下。
+3、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatFabricDemo/A7670CRootDirCode/sc_application.c`到`<A7670C Root>`下。
+
+4、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatFabricDemo/BoAT-X-Framework`到`<A7670C Root>/BoAT-X-Framework`下。
 
 拷贝后的目录和文件结构如下：
 ```
@@ -34,8 +36,7 @@
 `-- sc_demo
     |-- inc
     |   |-- demo_lcd.h
-    |   |-- demo_platone.h
-    |   |-- my_contract.cpp.abi.h
+    |   |-- boat_fabric_demo.h
     |-- src
     |   |-- token
     |   |-- utils
@@ -64,7 +65,7 @@
     |   |-- demo_mqtt.c
     |   |-- demo_network.c
     |   |-- demo_ntp.c
-    |   |-- demo_platone.c
+    |   |-- boat_fabric_demo.c
     |   |-- demo_pm.c
     |   |-- demo_poc.c
     |   |-- demo_pwm.c
@@ -78,7 +79,6 @@
     |   |-- demo_wifi.c
     |   |-- mqtt_OneNET.c
     |   |-- mqtt_tencent.c
-    |   |-- my_contract.cpp.abi.c
     |   |-- simcom_demo.c
     |-- CMakeLists.txt
 ```
@@ -117,7 +117,7 @@
   ${CMAKE_SOURCE_DIR}/BoAT-X-Framework/include
   ${CMAKE_SOURCE_DIR}/BoAT-X-Framework/include/protocolapi
   ${CMAKE_SOURCE_DIR}/BoAT-X-Framework/vendor/platform/include
-  ${CMAKE_SOURCE_DIR}/BoAT-X-Framework/sdk/network/platone
+  ${CMAKE_SOURCE_DIR}/BoAT-X-Framework/sdk/network/hlfabric
   ```
 
 
@@ -142,7 +142,7 @@
 
 ### 2、编译A7670C演示demo程序，生成.zip下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在`<A7670C Root>/sc_demo/src/boat_platone_demo.c`。
+   通过BoAT-X-Framework访问区块链的演示代码，在`<A7670C Root>/sc_demo/src/boat_fabric_demo.c`。
 
    打开windows终端进入`<A7670C Root>`
    ```

@@ -29,7 +29,7 @@ extern void sAPP_HelloWorldDemo(void);
 extern void sAPP_UrcTask(void);
 extern void sAPP_UartTask(void);
 extern void sAPP_UsbVcomTask(void);
-extern void sAPP_PlatoneDemo(void);
+extern void sAPP_FabricDemo(void);
 
 /**
   * @brief  OpenSDK app entry.
@@ -54,7 +54,7 @@ void userSpace_Main(void *arg)
     sAPP_UrcTask();
     sAPP_UsbVcomTask();
     // sAPP_HelloWorldDemo();
-    sAPP_PlatoneDemo();
+    sAPP_FabricDemo();
     printf("user app is running...");
 
 }
