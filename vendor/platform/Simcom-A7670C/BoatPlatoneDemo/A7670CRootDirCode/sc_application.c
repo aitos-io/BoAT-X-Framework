@@ -29,23 +29,7 @@ extern void sAPP_HelloWorldDemo(void);
 extern void sAPP_UrcTask(void);
 extern void sAPP_UartTask(void);
 extern void sAPP_UsbVcomTask(void);
-extern void HttpsDemo(void);
 extern void sAPP_PlatoneDemo(void);
-
-int simcom_printf(const char *format, ...)
-{
-    char buffer[1000];
-    int size;
-    va_list va;
-
-    va_start(va, format);
-    size = vsnprintf(buffer, sizeof(buffer), format, va);
-    va_end(va);
-
-    sAPI_UartWrite(SC_UART4, (UINT8 *)buffer, size);
-
-    return size;
-}
 
 /**
   * @brief  OpenSDK app entry.
