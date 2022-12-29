@@ -34,13 +34,14 @@
 #include "bignum.h"
 #include "boatplatform_internal.h"
 
-#include "cm_sys.h"
+#include "cm_os.h"
 
 /* net releated include */
 #include <sys/types.h>
 #include <string.h>
 
 #define GENERATE_KEY_REPEAT_TIMES 100
+
 
 BOAT_RESULT BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 inputLen,
 					 BUINT8 *hashed, BUINT8 *hashedLen, void *rsvd)
@@ -252,7 +253,7 @@ BOAT_RESULT BoAT_sign(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format
 
 void *BoatMalloc(size_t size)
 {
-    return(malloc(size));
+    return (malloc(size));
 }
 
 
@@ -264,5 +265,5 @@ void BoatFree(void *mem_ptr)
 
 void BoatSleep(BUINT32 second)
 {
-    cm_sys_delay_us(second * 1000000);
+    osDelay(50 * second);
 }
