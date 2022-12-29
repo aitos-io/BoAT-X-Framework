@@ -23,10 +23,17 @@
 #include "check.h"
 #include "boatlog.h"
 #include "boatiotsdk.h"
-#include "boatiotsdk.h"
+#include "protocolapi/api_platone.h"
 
-extern BOAT_RESULT platone_createKeypair(BCHAR * keypairName, BBOOL is_onetime, BUINT8* keypairIndex_ptr);
-extern BOAT_RESULT platone_createNetwork(BBOOL is_onetime, BUINT8* networkIndex);
-extern BoatPlatoneWallet *platone_get_wallet_ptr();
+extern char g_platone_private_key_buf[1024];
+extern BoatKeypairPriKeyCtx_config g_keypair_config;
+extern BoatPlatoneNetworkConfig g_platone_network_config;
+extern BUINT8 g_binFormatKey[32];
+
+Suite *make_keypair_suite(void);
+Suite *make_network_suite(void);
+Suite *make_wallet_suite(void);
+Suite *make_parameters_suite(void);
+Suite *make_chainAndContract_suite(void);
 
 #endif
