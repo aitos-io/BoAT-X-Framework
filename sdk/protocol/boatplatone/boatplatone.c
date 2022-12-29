@@ -554,7 +554,7 @@ int Platone_get_Nodeinfo(const char *const monitor,nodesResult *result_out)
         const char *error_ptr = cJSON_GetErrorPtr();
         if (error_ptr != NULL)
         {
-            fprintf(stderr, "Error before: %s\n", error_ptr);
+            BoatLog(BOAT_LOG_CRITICAL, "Error before: %s\n", error_ptr);
         }
         status = 0;
         goto end;
