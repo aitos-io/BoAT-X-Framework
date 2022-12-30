@@ -36,6 +36,7 @@ __BOATSTATIC BoatPlatoneWallet *platoneOnetimeWalletPrepare()
         
     if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
     {
+        BoatLog(BOAT_LOG_CRITICAL, "g_platone_private_key_buf: %s", g_platone_private_key_buf);
         keypair_config.prikey_format  = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
         UtilityHexToBin(g_binFormatKey, 32, g_platone_private_key_buf, TRIMBIN_TRIM_NO, BOAT_FALSE);
         keypair_config.prikey_content.field_ptr = g_binFormatKey;
@@ -82,7 +83,7 @@ START_TEST(test_005ChainAndContract_0001WASMsetNameSuccess)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet, &tx_ctx, BOAT_TRUE, NULL,
-						TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS,
+						TEST_GAS_LIMIT, (BCHAR *)TEST_RECIPIENT_ADDRESS,
                         BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -111,7 +112,7 @@ START_TEST(test_005ChainAndContract_0002WASMgetNameSuccess)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet, &tx_ctx, BOAT_TRUE, NULL,
-						TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS,
+						TEST_GAS_LIMIT, (BCHAR *)TEST_RECIPIENT_ADDRESS,
                         BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -140,7 +141,7 @@ START_TEST(test_005ChainAndContract_0003WASMsetNameNulltxctxFailure)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet, &tx_ctx, BOAT_TRUE, NULL,
-						TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS,
+						TEST_GAS_LIMIT, (BCHAR *)TEST_RECIPIENT_ADDRESS,
                         BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -172,7 +173,7 @@ START_TEST(test_005ChainAndContract_0004WASMsetNameNullmsgFailures)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet, &tx_ctx, BOAT_TRUE, NULL,
-						TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS,
+						TEST_GAS_LIMIT, (BCHAR *)TEST_RECIPIENT_ADDRESS,
                         BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -268,7 +269,7 @@ START_TEST(test_005ChainAndContract_0008TransferSuccess)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet, &tx_ctx, BOAT_TRUE, NULL,
-						TEST_GAS_LIMIT, TEST_RECIPIENT_ADDRESS,
+						TEST_GAS_LIMIT, (BCHAR *)TEST_RECIPIENT_ADDRESS,
                         BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
