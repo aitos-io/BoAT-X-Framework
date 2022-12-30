@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
     sr = srunner_create(suite_keypair);
    
     /* set generate test log in running path */
-    srunner_set_log(sr, "test_platone_report.txt");
+    srunner_set_log(sr, "test_report_platone.txt");
     /* add other suite to srunner, more test suite should be add in here */
     srunner_add_suite(sr, suite_network);
 
