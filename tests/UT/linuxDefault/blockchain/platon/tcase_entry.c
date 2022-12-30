@@ -41,7 +41,7 @@ int read_key_content(char* key_ptr)
 
     if (TEST_KEY_TYPE == "BOAT_WALLET_PRIKEY_FORMAT_NATIVE")
     {
-        fd = open("./pri_key/native.key", O_RDONLY);
+        fd = open("../../../../../../tests/UT/linuxDefault/blockchain/platon/pri_key/native.key", O_RDONLY);
         if (fd < 0)
         {
             return -1;
@@ -50,7 +50,7 @@ int read_key_content(char* key_ptr)
     }
     else
     {
-        fd = open("./pri_key/pkcs_key.key", O_RDONLY);
+        fd = open("../../../../../../tests/UT/linuxDefault/blockchain/platon/pri_key/pkcs_key.key", O_RDONLY);
         if (fd < 0)
         {
             return -1;
