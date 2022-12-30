@@ -77,7 +77,7 @@ START_TEST(test_004Parameters_0001TxInitSuccess)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS, 
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS, 
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     
@@ -100,12 +100,12 @@ START_TEST(test_004Parameters_0002TxInitFailureNullParam)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(NULL,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
     ret = BoatPlatoneTxInit(wallet,NULL,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
 
@@ -128,7 +128,7 @@ START_TEST(test_004Parameters_0003TxInitSuccessNullGasPrice)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, NULL,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     
@@ -151,7 +151,7 @@ START_TEST(test_004Parameters_0004TxInitFailureErrorGasPriceHexFormat)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, "0x4A81LLJK",
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
@@ -175,7 +175,7 @@ START_TEST(test_004Parameters_0005TxInitSuccessGasPriceHexNonOx)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, "0x4A817C800",
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     
@@ -199,7 +199,7 @@ START_TEST(test_004Parameters_0006TxInitFailureGasLimitErrorHexFormat)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   "0x6691JJ",TEST_RECIPIENT_ADDRESS,
+							   "0x6691JJ",(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
@@ -222,7 +222,7 @@ START_TEST(test_004Parameters_0007TxInitSuccessGasLimitHexNonOx)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   "0x6691B7",TEST_RECIPIENT_ADDRESS,
+							   "0x6691B7",(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
     
@@ -246,7 +246,7 @@ START_TEST(test_004Parameters_0008TxInitFailureRecipientErrorHexFormat)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,"0xde4c806b372Df8857C97cF36A08D528bB8E261JJ",
+							   TEST_GAS_LIMIT,(BCHAR *)"0xde4c806b372Df8857C97cF36A08D528bB8E261JJ",
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
@@ -269,7 +269,7 @@ START_TEST(test_004Parameters_0009TxInitFailureRecipientLongLength)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,"0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+							   TEST_GAS_LIMIT,(BCHAR *)"0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
@@ -292,7 +292,7 @@ START_TEST(test_004Parameters_0010GetNonceFromNetworkSuccess)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -320,7 +320,7 @@ START_TEST(test_004Parameters_0011SetNonceSuccess)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -354,7 +354,7 @@ START_TEST(test_004Parameters_0012SetNonceFailureNullTx)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -381,7 +381,7 @@ START_TEST(test_004Parameters_0013SetValueSuccess)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -415,7 +415,7 @@ START_TEST(test_004Parameters_0014SetValueFailureNullTx)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -446,7 +446,7 @@ START_TEST(test_004Parameters_0015SetValueSuccessNullvalue)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -475,7 +475,7 @@ START_TEST(test_004Parameters_0016SetDataSuccess)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -506,7 +506,7 @@ START_TEST(test_004Parameters_0017SetDataFailureNullTx)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
@@ -536,7 +536,7 @@ START_TEST(test_004Parameters_0018SetDataSuccessNullData)
 
     /* Init TX */
     ret = BoatPlatoneTxInit(wallet,&tx_ctx,BOAT_TRUE, TEST_GAS_PRICE,
-							   TEST_GAS_LIMIT,TEST_RECIPIENT_ADDRESS,
+							   TEST_GAS_LIMIT,(BCHAR *)TEST_RECIPIENT_ADDRESS,
                                BOAT_PLATONE_TX_TYPE_CONTRACT_NULL_TERMED_STR);
     ck_assert_int_eq(ret, BOAT_SUCCESS);
 
