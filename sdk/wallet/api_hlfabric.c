@@ -560,7 +560,7 @@ void BoatHlfabricTxDeInit(BoatHlfabricTx *tx_ptr)
 
 	/* -----var.args */
 	tx_ptr->var.args.nArgs = 0;
-	for (int i = 0; i < BOAT_HLFABRIC_ARGS_MAX_NUM; i++)
+	for (int i = 0; i <= BOAT_HLFABRIC_ARGS_MAX_NUM; i++)
 	{
 		tx_ptr->var.args.args[i] = NULL;
 	}
@@ -639,7 +639,7 @@ BOAT_RESULT BoatHlfabricTxSetArgs(BoatHlfabricTx *tx_ptr,
 	{
 		tx_ptr->var.args.args[tx_ptr->var.args.nArgs] = (BCHAR *)args;
 		tx_ptr->var.args.nArgs++;
-		if (tx_ptr->var.args.nArgs >= BOAT_HLFABRIC_ARGS_MAX_NUM)
+		if (tx_ptr->var.args.nArgs > BOAT_HLFABRIC_ARGS_MAX_NUM)
 		{
 			result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 			break;
