@@ -118,7 +118,6 @@ const BCHAR *fabric_order_tlsCert = "-----BEGIN CERTIFICATE-----\n"
 									"Qy2dzpelIg==\n"
 									"-----END CERTIFICATE-----\n";
 
-
 const BCHAR *fabric_demo_order1_url = "172.20.255.199:7050";
 const BCHAR *fabric_demo_order1_hostName = "orderer.example.com";
 
@@ -132,13 +131,11 @@ const BCHAR *fabric_demo_endorser_peer0Org2_hostName = "peer0.org2.example.com";
 const BCHAR *fabric_demo_endorser_peer1Org2_url = "172.20.255.199:10051";
 const BCHAR *fabric_demo_endorser_peer1Org2_hostName = "peer1.org2.example.com";
 
-
 BoatHlfabricWallet *g_fabric_wallet_ptr;
 
 BUINT8 keypairIndex = 0;
 BUINT8 networkIndex = 0;
 // DiscoverRes discoverResult;
-
 
 __BOATSTATIC BOAT_RESULT fabric_createkeypair()
 {
@@ -283,7 +280,7 @@ int main(int argc, char *argv[])
 	if (result != BOAT_SUCCESS)
 	{
 		// BoatLog(BOAT_LOG_CRITICAL, "BoatHlfabricTxInit failed.");
-		boat_throw(result, fabric_demo_catch);
+		boat_throw(result, fabric_key_network_catch);
 	}
 	/* step-4: set transaction timestamp */
 #if defined(__unix__) || defined(__unix) || defined(unix)
