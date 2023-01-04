@@ -532,7 +532,7 @@ Issue Date: 20/12/2007
 
 /* END OF CONFIGURATION OPTIONS */
 
-#define RC_LENGTH   (5 * (AES_BLOCK_SIZE / 4 - 2))
+#define RC_LENGTH   (5 * (CRYPTO_DEFAULT_AES_BLOCK_SIZE / 4 - 2))
 
 /* Disable or report errors on some combinations of options */
 
