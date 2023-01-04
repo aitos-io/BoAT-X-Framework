@@ -29,8 +29,8 @@
 // HMAC based Deterministic Random Bit Generator with SHA-256
 
 typedef struct _HMAC_DRBG_CTX {
-  uint32_t odig[SHA256_DIGEST_LENGTH / sizeof(uint32_t)];
-  uint32_t idig[SHA256_DIGEST_LENGTH / sizeof(uint32_t)];
+  uint32_t odig[CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH / sizeof(uint32_t)];
+  uint32_t idig[CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH / sizeof(uint32_t)];
   uint32_t v[SHA256_BLOCK_LENGTH / sizeof(uint32_t)];
 } HMAC_DRBG_CTX;
 

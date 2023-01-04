@@ -39,7 +39,7 @@ void pbkdf2_hmac_sha256_Init(PBKDF2_HMAC_SHA256_CTX *pctx, const uint8_t *pass,
   hmac_sha256_prepare(pass, passlen, pctx->odig, pctx->idig);
   memzero(pctx->g, sizeof(pctx->g));
   pctx->g[8] = 0x80000000;
-  pctx->g[15] = (SHA256_BLOCK_LENGTH + SHA256_DIGEST_LENGTH) * 8;
+  pctx->g[15] = (SHA256_BLOCK_LENGTH + CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH) * 8;
 
   memcpy(ctx.state, pctx->idig, sizeof(pctx->idig));
   ctx.bitcount = SHA256_BLOCK_LENGTH * 8;
@@ -47,13 +47,13 @@ void pbkdf2_hmac_sha256_Init(PBKDF2_HMAC_SHA256_CTX *pctx, const uint8_t *pass,
   sha256_Update(&ctx, (uint8_t *)&blocknr, sizeof(blocknr));
   sha256_Final(&ctx, (uint8_t *)pctx->g);
 #if BYTE_ORDER == LITTLE_ENDIAN
-  for (uint32_t k = 0; k < SHA256_DIGEST_LENGTH / sizeof(uint32_t); k++)
+  for (uint32_t k = 0; k < CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH / sizeof(uint32_t); k++)
   {
     REVERSE32(pctx->g[k], pctx->g[k]);
   }
 #endif
   sha256_Transform(pctx->odig, pctx->g, pctx->g);
-  memcpy(pctx->f, pctx->g, SHA256_DIGEST_LENGTH);
+  memcpy(pctx->f, pctx->g, CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH);
   pctx->first = 1;
 }
 
@@ -64,7 +64,7 @@ void pbkdf2_hmac_sha256_Update(PBKDF2_HMAC_SHA256_CTX *pctx,
   {
     sha256_Transform(pctx->idig, pctx->g, pctx->g);
     sha256_Transform(pctx->odig, pctx->g, pctx->g);
-    for (uint32_t j = 0; j < SHA256_DIGEST_LENGTH / sizeof(uint32_t); j++)
+    for (uint32_t j = 0; j < CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH / sizeof(uint32_t); j++)
     {
       pctx->f[j] ^= pctx->g[j];
     }
@@ -75,12 +75,12 @@ void pbkdf2_hmac_sha256_Update(PBKDF2_HMAC_SHA256_CTX *pctx,
 void pbkdf2_hmac_sha256_Final(PBKDF2_HMAC_SHA256_CTX *pctx, uint8_t *key)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN
-  for (uint32_t k = 0; k < SHA256_DIGEST_LENGTH / sizeof(uint32_t); k++)
+  for (uint32_t k = 0; k < CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH / sizeof(uint32_t); k++)
   {
     REVERSE32(pctx->f[k], pctx->f[k]);
   }
 #endif
-  memcpy(key, pctx->f, SHA256_DIGEST_LENGTH);
+  memcpy(key, pctx->f, CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH);
   memzero(pctx, sizeof(PBKDF2_HMAC_SHA256_CTX));
 }
 
@@ -88,27 +88,27 @@ void pbkdf2_hmac_sha256(const uint8_t *pass, int passlen, const uint8_t *salt,
                         int saltlen, uint32_t iterations, uint8_t *key,
                         int keylen)
 {
-  uint32_t last_block_size = keylen % SHA256_DIGEST_LENGTH;
-  uint32_t blocks_count = keylen / SHA256_DIGEST_LENGTH;
+  uint32_t last_block_size = keylen % CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH;
+  uint32_t blocks_count = keylen / CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH;
   if (last_block_size)
   {
     blocks_count++;
   }
   else
   {
-    last_block_size = SHA256_DIGEST_LENGTH;
+    last_block_size = CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH;
   }
   for (uint32_t blocknr = 1; blocknr <= blocks_count; blocknr++)
   {
     PBKDF2_HMAC_SHA256_CTX pctx = {0};
     pbkdf2_hmac_sha256_Init(&pctx, pass, passlen, salt, saltlen, blocknr);
     pbkdf2_hmac_sha256_Update(&pctx, iterations);
-    uint8_t digest[SHA256_DIGEST_LENGTH] = {0};
+    uint8_t digest[CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH] = {0};
     pbkdf2_hmac_sha256_Final(&pctx, digest);
-    uint32_t key_offset = (blocknr - 1) * SHA256_DIGEST_LENGTH;
+    uint32_t key_offset = (blocknr - 1) * CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH;
     if (blocknr < blocks_count)
     {
-      memcpy(key + key_offset, digest, SHA256_DIGEST_LENGTH);
+      memcpy(key + key_offset, digest, CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH);
     }
     else
     {
