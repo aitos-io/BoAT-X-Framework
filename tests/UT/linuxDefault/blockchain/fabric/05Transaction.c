@@ -620,8 +620,12 @@ START_TEST(test_005Transaction_0026TxQuery_Failure_Walleturl_Err)
     BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
     g_fabric_wallet_ptr = fabric_get_wallet_ptr();
 
-    g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl = "121.4.178.74";
+    BoatFree(g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl);
+    g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl = NULL;
 
+    BCHAR *fabric_demo_endorser_peer0Org1_url_err = "121.4.178.74";
+    g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer0Org1_url_err) + 1);
+    strcpy(g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl, fabric_demo_endorser_peer0Org1_url_err);
 
     rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
