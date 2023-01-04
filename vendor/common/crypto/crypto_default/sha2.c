@@ -697,7 +697,7 @@ void sha256_Init(DEFAULT_SHA256_CTX *context)
 	{
 		return;
 	}
-	MEMCPY_BCOPY(context->state, sha256_initial_hash_value, SHA256_DIGEST_LENGTH);
+	MEMCPY_BCOPY(context->state, sha256_initial_hash_value, CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH);
 	memzero(context->buffer, SHA256_BLOCK_LENGTH);
 	context->bitcount = 0;
 }
@@ -978,7 +978,7 @@ void sha256_Final(DEFAULT_SHA256_CTX *context, sha2_byte digest[])
 			REVERSE32(context->state[j], context->state[j]);
 		}
 #endif
-		MEMCPY_BCOPY(digest, context->state, SHA256_DIGEST_LENGTH);
+		MEMCPY_BCOPY(digest, context->state, CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH);
 	}
 
 	/* Clean up state data: */
@@ -988,14 +988,14 @@ void sha256_Final(DEFAULT_SHA256_CTX *context, sha2_byte digest[])
 
 char *sha256_End(DEFAULT_SHA256_CTX *context, char buffer[])
 {
-	sha2_byte digest[SHA256_DIGEST_LENGTH] = {0}, *d = digest;
+	sha2_byte digest[CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH] = {0}, *d = digest;
 	int i = 0;
 
 	if (buffer != (char *)0)
 	{
 		sha256_Final(context, digest);
 
-		for (i = 0; i < SHA256_DIGEST_LENGTH; i++)
+		for (i = 0; i < CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH; i++)
 		{
 			*buffer++ = sha2_hex_digits[(*d & 0xf0) >> 4];
 			*buffer++ = sha2_hex_digits[*d & 0x0f];
@@ -1007,11 +1007,11 @@ char *sha256_End(DEFAULT_SHA256_CTX *context, char buffer[])
 	{
 		memzero(context, sizeof(DEFAULT_SHA256_CTX));
 	}
-	memzero(digest, SHA256_DIGEST_LENGTH);
+	memzero(digest, CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH);
 	return buffer;
 }
 
-void sha256_Raw(const sha2_byte *data, size_t len, uint8_t digest[SHA256_DIGEST_LENGTH])
+void sha256_Raw(const sha2_byte *data, size_t len, uint8_t digest[CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH])
 {
 	DEFAULT_SHA256_CTX context = {0};
 	sha256_Init(&context);
