@@ -56,7 +56,7 @@ extern "C"
 #define AES_DECRYPT /* if support for decryption is needed           */
 
 #define AES_BLOCK_SIZE_P2  4  /* AES block size as a power of 2      */
-#define AES_BLOCK_SIZE    (1 << AES_BLOCK_SIZE_P2) /* AES block size */
+#define CRYPTO_DEFAULT_AES_BLOCK_SIZE    (1 << AES_BLOCK_SIZE_P2) /* AES block size */
 #define N_COLS             4  /* the number of columns in the state  */
 
 /* The key schedule length is 11, 13 or 15 16-byte blocks for 128,   */
