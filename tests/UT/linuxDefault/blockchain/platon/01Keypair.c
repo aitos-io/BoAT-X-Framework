@@ -152,6 +152,8 @@ START_TEST(test_001Keypair_0001CreateOneTimeKeypairSuccessNullName)
     {
         BoatFree(keypair2_ctx.keypair_name);
     }
+    /* deinit keypair list*/
+    BoATKeypair_FreeKeypairContext(keypair_list);
 #endif
     BoatIotSdkDeInit();
 }
@@ -187,6 +189,8 @@ START_TEST(test_001Keypair_0002CreateOneTimeKeypairSuccessWithName)
     {
         BoatFree(keypair2_ctx.keypair_name);
     }
+    /* deinit keypair list*/
+    BoATKeypair_FreeKeypairContext(keypair_list);
 
     BoatIotSdkDeInit();
 }
@@ -229,6 +233,8 @@ START_TEST(test_001Keypair_0003CreateOneTimeKeypairSuccessTwice)
     {
         BoatFree(keypair_ctx.keypair_name);
     }
+    /* deinit keypair list*/
+    BoATKeypair_FreeKeypairContext(keypair_list);
 #endif
     BoatIotSdkDeInit();
 }
@@ -390,6 +396,8 @@ START_TEST(test_001Keypair_0010CreatePersistKeypairSuccess)
     {
         BoatFree(keypair2_ctx.keypair_name);
     }
+    /* deinit keypair list*/
+    BoATKeypair_FreeKeypairContext(keypair_list);
 
     /* 4.Delete the keypair */
     ret = BoATIotKeypairDelete(keypair1_index); // To prevent the impact on subsequent test cases
@@ -455,6 +463,8 @@ START_TEST(test_001Keypair_0011Create2PersistKeypairSuccess)
     {
         BoatFree(keypair4_ctx.keypair_name);
     }
+    /* deinit keypair list*/
+    BoATKeypair_FreeKeypairContext(keypair_list);
 
     /* 6.Delete keypairs*/
     ret = BoATIotKeypairDelete(keypair1_index); // To prevent the impact on subsequent test cases
@@ -506,6 +516,9 @@ START_TEST(test_001Keypair_0012DeleteOnetimeKeypairSuccess)
     {
         BoatFree(keypair2_ctx.keypair_name);
     }
+    /* deinit keypair list*/
+    BoATKeypair_FreeKeypairContext(keypair_list);
+    BoATKeypair_FreeKeypairContext(keypair_list1);
 
     BoatIotSdkDeInit();
 }
@@ -549,6 +562,9 @@ START_TEST(test_001Keypair_0013DeleteOnetimeKeypairFailureTwice)
     {
         BoatFree(keypair2_ctx.keypair_name);
     }
+    /* deinit keypair list*/
+    BoATKeypair_FreeKeypairContext(keypair_list);
+    BoATKeypair_FreeKeypairContext(keypair_list1);
 
     /* 2. Delete again*/
     ret = BoATIotKeypairDelete(0);
@@ -587,6 +603,8 @@ START_TEST(test_001Keypair_0014DeleteOnetimeKeypairFailureThenRecover)
     {
         BoatFree(keypair2_ctx.keypair_name);
     }
+    /* deinit keypair list*/
+    BoATKeypair_FreeKeypairContext(keypair_list);
 
     /* 2.Delete Onetime-keypair*/
     ret = BoATIotKeypairDelete(0);
@@ -652,6 +670,9 @@ START_TEST(test_001Keypair_0016DeletePersistKeypairSuccess)
     {
         BoatFree(keypair2_ctx.keypair_name);
     }
+    /* deinit keypair list*/
+    BoATKeypair_FreeKeypairContext(keypair_list);
+    BoATKeypair_FreeKeypairContext(keypair_list1);
 
     BoatIotSdkDeInit();
 }
@@ -689,6 +710,8 @@ START_TEST(test_001Keypair_0017DeletePersistKeypairFailureNonExistentIndex)
 
     ck_assert_int_lt(pickNum, 5);
     ck_assert_int_gt(pickNum, 0);
+    /* deinit keypair list*/
+    BoATKeypair_FreeKeypairContext(keypair_list);
 
     /* 2.Delete the keypair */
     ret = BoATIotKeypairDelete(pickNum);
