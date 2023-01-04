@@ -16,85 +16,85 @@
 #include "tcase_chainmaker.h"
 
 const BCHAR* chainmaker_client_sign_prikey = 
-    "-----BEGIN EC PRIVATE KEY-----\n"
-    "MHcCAQEEILgtE1C5l2Tx5hnYWm7MrQlq4eOcxRuCbOtatp0wEk81oAoGCCqGSM49\n"
-    "AwEHoUQDQgAEQ6dROujZYsFMX3pqnMPenjWelq5J1BbO9LnucX5f45RgKXcrpOuT\n"
-    "pL8Mt3k6aWzgjLldevbDxizSnbr3gzfDXw==\n"
-    "-----END EC PRIVATE KEY-----\n";
+  "-----BEGIN EC PRIVATE KEY-----\n"
+"MHcCAQEEICuhtWmvK4C3f1U48MMWflZTMJl4R74oRQ8MEsDGnF+doAoGCCqGSM49\n"
+"AwEHoUQDQgAESwYKHefgAVJin1E8mSrBbsMpNKZybnsRA5HmTG6VQDp5rChGBvyl\n"
+"5Gon43z1ff3cHaa1P42tmcnj2sS4lyCzvw==\n"
+"-----END EC PRIVATE KEY-----\n";
 
 const BCHAR* chainmaker_client_sign_cert = 
     "-----BEGIN CERTIFICATE-----\n"
-    "MIICeTCCAh6gAwIBAgIDAogrMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
-    "MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
-    "b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
-    "ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIyMTEyNTA2MjUzMVoXDTI3\n"
-    "MTEyNDA2MjUzMVowgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
-    "DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
-    "MQ8wDQYDVQQLEwZjbGllbnQxLDAqBgNVBAMTI2NsaWVudDEuc2lnbi53eC1vcmcx\n"
-    "LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQ6dROujZ\n"
-    "YsFMX3pqnMPenjWelq5J1BbO9LnucX5f45RgKXcrpOuTpL8Mt3k6aWzgjLldevbD\n"
-    "xizSnbr3gzfDX6NqMGgwDgYDVR0PAQH/BAQDAgbAMCkGA1UdDgQiBCCufTSDLWhz\n"
-    "/z1VO5owaUrOZorjUQzufjHlEpHYNqgZUTArBgNVHSMEJDAigCD/CRels6efRbYk\n"
-    "+8teT20O+VdtmeN+3vpIgXbKLarTZzAKBggqhkjOPQQDAgNJADBGAiEA5VwXscWv\n"
-    "V330I/TGBFSyJ1pEhfGDzkUCDH5JgdGuL48CIQCIfqN95GPu2KUfKUMPhVAX+20o\n"
-    "PoHSDSh/PzoPpZLdHg==\n"
-    "-----END CERTIFICATE-----\n";
+"MIICeDCCAh6gAwIBAgIDCCc3MAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
+"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
+"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIzMDEwNDA3MDMyOFoXDTI4\n"
+"MDEwMzA3MDMyOFowgZExCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
+"MQ8wDQYDVQQLEwZjbGllbnQxLDAqBgNVBAMTI2NsaWVudDEuc2lnbi53eC1vcmcx\n"
+"LmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAESwYKHefg\n"
+"AVJin1E8mSrBbsMpNKZybnsRA5HmTG6VQDp5rChGBvyl5Gon43z1ff3cHaa1P42t\n"
+"mcnj2sS4lyCzv6NqMGgwDgYDVR0PAQH/BAQDAgbAMCkGA1UdDgQiBCDAkfh6k77j\n"
+"VgRiyYoe54DL+7n7rua8a1DsLt685vaj2zArBgNVHSMEJDAigCDltbhMnD8zpJDE\n"
+"cAfszaehAyyU8tPlO2MVLUk2sXG8YDAKBggqhkjOPQQDAgNIADBFAiEAhmyVTiVB\n"
+"OcOkEcWdZKCO7KOkG9FUhqfvvDbXelYRFocCIC7qaf0Rg+ncjikoznItyNjpoB49\n"
+"66RTrP5A5jquPLxN\n"
+"-----END CERTIFICATE-----\n";
 
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
     const BCHAR* chainmaker_ca_tls_cert = 
-    "-----BEGIN CERTIFICATE-----\n"
-    "MIICnjCCAkOgAwIBAgICK7swCgYIKoZIzj0EAwIwgYoxCzAJBgNVBAYTAkNOMRAw\n"
-    "DgYDVQQIEwdCZWlqaW5nMRAwDgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1v\n"
-    "cmcxLmNoYWlubWFrZXIub3JnMRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMT\n"
-    "GWNhLnd4LW9yZzEuY2hhaW5tYWtlci5vcmcwHhcNMjIxMTI1MDYyNTMxWhcNMzIx\n"
-    "MTIyMDYyNTMxWjCBijELMAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaWppbmcxEDAO\n"
-    "BgNVBAcTB0JlaWppbmcxHzAdBgNVBAoTFnd4LW9yZzEuY2hhaW5tYWtlci5vcmcx\n"
-    "EjAQBgNVBAsTCXJvb3QtY2VydDEiMCAGA1UEAxMZY2Eud3gtb3JnMS5jaGFpbm1h\n"
-    "a2VyLm9yZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABMbHVgzI2LlAMNsPCnZO\n"
-    "IUfYpkqRNDwjFalPs3gUQndwUYWCl1BiguaWed9fHorsfnc+GwTGjcIwE7iO/nVu\n"
-    "1najgZYwgZMwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wKQYDVR0O\n"
-    "BCIEIP8JF6Wzp59FtiT7y15PbQ75V22Z437e+kiBdsotqtNnMEUGA1UdEQQ+MDyC\n"
-    "DmNoYWlubWFrZXIub3Jngglsb2NhbGhvc3SCGWNhLnd4LW9yZzEuY2hhaW5tYWtl\n"
-    "ci5vcmeHBH8AAAEwCgYIKoZIzj0EAwIDSQAwRgIhAKN3jHuuMUsfY9UG6cyrRLtN\n"
-    "MtqVL1KAr+h/KBxwCRWcAiEAx3uFKTj/RCNqJVL35ULz5pWcIaK/0TWRuq6sisXd\n"
-    "wVk=\n"
-    "-----END CERTIFICATE-----\n";
+   "-----BEGIN CERTIFICATE-----\n"
+"MIICnjCCAkSgAwIBAgIDAiyYMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+"MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
+"b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
+"ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIzMDEwNDA3MDMyOFoXDTMz\n"
+"MDEwMTA3MDMyOFowgYoxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+"DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
+"MRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMTGWNhLnd4LW9yZzEuY2hhaW5t\n"
+"YWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAR3n1HznUS7Oh45zPaM\n"
+"uA3HWXn9fnlHchtuy9J3ACQaPCUUSEGOONO4PyPs3L/jgtNprkUhgZsuHWCeZ2qS\n"
+"X2gNo4GWMIGTMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud\n"
+"DgQiBCDltbhMnD8zpJDEcAfszaehAyyU8tPlO2MVLUk2sXG8YDBFBgNVHREEPjA8\n"
+"gg5jaGFpbm1ha2VyLm9yZ4IJbG9jYWxob3N0ghljYS53eC1vcmcxLmNoYWlubWFr\n"
+"ZXIub3JnhwR/AAABMAoGCCqGSM49BAMCA0gAMEUCIGuw9A/NGU989gu7zbWqz+eV\n"
+"hVTLMBspSjpfs1vG6jGrAiEA53b30lnIeNLKte03PXS4nkvNZ1wpOhO4fNiSh7r5\n"
+"2rg=\n"
+"-----END CERTIFICATE-----\n";
+
 
     #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
         const BCHAR* chainmaker_clinet_tls_prikey = 
-        "-----BEGIN EC PRIVATE KEY-----\n"
-        "MHcCAQEEINgke7SKh+psxDsBD3esD8zCpJhwIU7m6IPDp60FPlDAoAoGCCqGSM49\n"
-        "AwEHoUQDQgAEGycJFX0GC8e4Hek9CBv53lb8sjEziy61P/mg/46Ut7I0awfHSpfF\n"
-        "xvysCMEE1XEdXCT6JjebjMfffNCsVRyWxQ==\n"
-        "-----END EC PRIVATE KEY-----\n";
+           "-----BEGIN EC PRIVATE KEY-----\n"
+    "MHcCAQEEIGwG4j7R07WQgVG+rsJpqRsx1W1szaPNDfG6xgElX6nYoAoGCCqGSM49\n"
+    "AwEHoUQDQgAE0AtF7zzegqDfg+qg2Su1+16gJyCgZaaVljZMzzQ/VvxqtpcxaCR5\n"
+    "7A4eG3wUR3h1G9VkTJA1ykajHsrk051HFw==\n"
+    "-----END EC PRIVATE KEY-----\n";
 
-        const BCHAR* chainmaker_client_tls_cert = 
-        "-----BEGIN CERTIFICATE-----\n"
-        "MIICjjCCAjWgAwIBAgICdcAwCgYIKoZIzj0EAwIwgYoxCzAJBgNVBAYTAkNOMRAw\n"
-        "DgYDVQQIEwdCZWlqaW5nMRAwDgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1v\n"
-        "cmcxLmNoYWlubWFrZXIub3JnMRIwEAYDVQQLEwlyb290LWNlcnQxIjAgBgNVBAMT\n"
-        "GWNhLnd4LW9yZzEuY2hhaW5tYWtlci5vcmcwHhcNMjIxMTI1MDYyNTMxWhcNMjcx\n"
-        "MTI0MDYyNTMxWjCBlDELMAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaWppbmcxEDAO\n"
-        "BgNVBAcTB0JlaWppbmcxHzAdBgNVBAoTFnd4LW9yZzEuY2hhaW5tYWtlci5vcmcx\n"
-        "EzARBgNVBAsTCkNoYWluTWFrZXIxKzApBgNVBAMTImNsaWVudDEudGxzLnd4LW9y\n"
-        "ZzEuY2hhaW5tYWtlci5vcmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQbJwkV\n"
-        "fQYLx7gd6T0IG/neVvyyMTOLLrU/+aD/jpS3sjRrB8dKl8XG/KwIwQTVcR1cJPom\n"
-        "N5uMx9980KxVHJbFo38wfTAOBgNVHQ8BAf8EBAMCA/gwEwYDVR0lBAwwCgYIKwYB\n"
-        "BQUHAwIwKQYDVR0OBCIEIDA7/j4z/SKzrbgF2MPSKdaxXoWGfObDZ4+22COqrszb\n"
-        "MCsGA1UdIwQkMCKAIP8JF6Wzp59FtiT7y15PbQ75V22Z437e+kiBdsotqtNnMAoG\n"
-        "CCqGSM49BAMCA0cAMEQCIDS4InAM5Oa6GB9lzL/K4c1/2F2vnf9k3rU7HQ3W2xAQ\n"
-        "AiAX4PjazfcIqrDPztfHqxxcXRF2tMAqkMBJapZgWlQZrA==\n"
-        "-----END CERTIFICATE-----\n";
+
+            const BCHAR* chainmaker_client_tls_cert = 
+            "-----BEGIN CERTIFICATE-----\n"
+    "MIICkDCCAjagAwIBAgIDAssyMAoGCCqGSM49BAMCMIGKMQswCQYDVQQGEwJDTjEQ\n"
+    "MA4GA1UECBMHQmVpamluZzEQMA4GA1UEBxMHQmVpamluZzEfMB0GA1UEChMWd3gt\n"
+    "b3JnMS5jaGFpbm1ha2VyLm9yZzESMBAGA1UECxMJcm9vdC1jZXJ0MSIwIAYDVQQD\n"
+    "ExljYS53eC1vcmcxLmNoYWlubWFrZXIub3JnMB4XDTIzMDEwNDA3MDMyOFoXDTI4\n"
+    "MDEwMzA3MDMyOFowgZQxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlqaW5nMRAw\n"
+    "DgYDVQQHEwdCZWlqaW5nMR8wHQYDVQQKExZ3eC1vcmcxLmNoYWlubWFrZXIub3Jn\n"
+    "MRMwEQYDVQQLEwpDaGFpbk1ha2VyMSswKQYDVQQDEyJjbGllbnQxLnRscy53eC1v\n"
+    "cmcxLmNoYWlubWFrZXIub3JnMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE0AtF\n"
+    "7zzegqDfg+qg2Su1+16gJyCgZaaVljZMzzQ/VvxqtpcxaCR57A4eG3wUR3h1G9Vk\n"
+    "TJA1ykajHsrk051HF6N/MH0wDgYDVR0PAQH/BAQDAgP4MBMGA1UdJQQMMAoGCCsG\n"
+    "AQUFBwMCMCkGA1UdDgQiBCCWH6Yex0Pz1WNnaBztiZ75JH8u2pAhWmEH5j3RNiIn\n"
+    "EjArBgNVHSMEJDAigCDltbhMnD8zpJDEcAfszaehAyyU8tPlO2MVLUk2sXG8YDAK\n"
+    "BggqhkjOPQQDAgNIADBFAiEA1Z8vZQqr2katSCW5idyNBTlxY7pSpcSI+ke5qaK/\n"
+    "cUkCIGVDZPD2SASxDjXuuW5PXO5ftqCyrf5o9DAfoHXVgB3T\n"
+    "-----END CERTIFICATE-----\n";
     #endif
 #endif
 
-BCHAR *chainmaker_node_url   = "127.0.0.1:12301";
 BCHAR *chainmaker_host_name  = "chainmaker.org";
 BCHAR *chainmaker_chain_id   = "chain1";
 BCHAR *chainmaker_org_id     = "wx-org1.chainmaker.org";
-
-const BUINT8 pubkey_256R1[] = {0x43, 0xA7, 0x51, 0x3A, 0xE8, 0xD9, 0x62, 0xC1, 0x4C, 0x5F, 0x7A, 0x6A, 0x9C, 0xC3, 0xDE, 0x9E, 0x35, 0x9E, 0x96, 0xAE, 0x49, 0xD4, 0x16, 0xCE, 0xF4, 0xB9, 0xEE, 0x71, 0x7E, 0x5F, 0xE3, 0x94, 0x60, 0x29, 0x77, 0x2B, 0xA4, 0xEB, 0x93, 0xA4, 0xBF, 0x0C, 0xB7, 0x79, 0x3A, 0x69, 0x6C, 0xE0, 0x8C, 0xB9, 0x5D, 0x7A, 0xF6, 0xC3, 0xC6, 0x2C, 0xD2, 0x9D, 0xBA, 0xF7, 0x83, 0x37, 0xC3, 0x5F};
+const BUINT8 pubkey_256R1[] = {0x4B, 0x06, 0x0A, 0x1D, 0xE7, 0xE0, 0x01, 0x52, 0x62, 0x9F, 0x51, 0x3C, 0x99, 0x2A, 0xC1, 0x6E, 0xC3, 0x29, 0x34, 0xA6, 0x72, 0x6E, 0x7B, 0x11, 0x03, 0x91, 0xE6, 0x4C, 0x6E, 0x95, 0x40, 0x3A, 0x79, 0xAC, 0x28, 0x46, 0x06, 0xFC, 0xA5, 0xE4, 0x6A, 0x27, 0xE3, 0x7C, 0xF5, 0x7D, 0xFD, 0xDC, 0x1D, 0xA6, 0xB5, 0x3F, 0x8D, 0xAD, 0x99, 0xC9, 0xE3, 0xDA, 0xC4, 0xB8, 0x97, 0x20, 0xB3, 0xBF};
 BUINT8 binFormatKey[32] = {0};
 
 BOAT_RESULT test_chainmaker_create_keypair(BCHAR *keypairName, BBOOL is_onetime, BUINT8 *keypair_index_ptr)
@@ -144,13 +144,12 @@ BOAT_RESULT test_chainmaker_create_network(BBOOL is_onetime, BUINT8 *network_ind
         return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
     }
     strcpy(networkConfig.client_sign_cert_content.content, chainmaker_client_sign_cert);
-
-    networkConfig.node_url  = BoatMalloc(strlen(chainmaker_node_url) + 1);
+    networkConfig.node_url  = BoatMalloc(strlen(TEST_CHAINMAKER_NODE_URL) + 1);
     networkConfig.host_name = BoatMalloc(strlen(chainmaker_host_name) + 1);
     networkConfig.chain_id  = BoatMalloc(strlen(chainmaker_chain_id) + 1);
     networkConfig.org_id    = BoatMalloc(strlen(chainmaker_org_id) + 1);
 
-    strcpy(networkConfig.node_url,  chainmaker_node_url);
+    strcpy(networkConfig.node_url,  TEST_CHAINMAKER_NODE_URL);
     strcpy(networkConfig.host_name, chainmaker_host_name);
     strcpy(networkConfig.chain_id,  chainmaker_chain_id);
     strcpy(networkConfig.org_id,    chainmaker_org_id);
@@ -228,7 +227,6 @@ START_TEST(test_003CreateWallet_0001CreateOneTimeWalletSuccess)
     ck_assert_int_eq(g_chaninmaker_wallet_ptr->account_info.prikeyCtx.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1);
     // /* check public key in the struct */
     ck_assert_int_eq(memcmp(g_chaninmaker_wallet_ptr->account_info.prikeyCtx.pubkey_content, pubkey_256R1, sizeof(pubkey_256R1)), 0);
-
     /* check the result of getting network data */
     /* check index in the struct ,must be 0 */
     ck_assert_int_eq(g_chaninmaker_wallet_ptr->network_info.networkIndex, 0);
@@ -241,7 +239,7 @@ START_TEST(test_003CreateWallet_0001CreateOneTimeWalletSuccess)
     /* check orgID in the struct , must be same to the configuration */
     ck_assert_str_eq(g_chaninmaker_wallet_ptr->network_info.org_id, chainmaker_org_id);
     /* check url in the struct , must be same to the configuration */
-    ck_assert_str_eq(g_chaninmaker_wallet_ptr->network_info.node_url, chainmaker_node_url);
+    ck_assert_str_eq(g_chaninmaker_wallet_ptr->network_info.node_url, TEST_CHAINMAKER_NODE_URL);
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
     ck_assert_str_eq(g_chaninmaker_wallet_ptr->network_info.ca_tls_cert_content.content, chainmaker_ca_tls_cert);
@@ -319,7 +317,7 @@ START_TEST(test_003CreateWallet_0004CreatePersistWalletSuccess)
     ck_assert_int_eq(g_chaninmaker_wallet_ptr->account_info.prikeyCtx.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1);
     // /* check public key in the struct */
     ck_assert_int_eq(memcmp(g_chaninmaker_wallet_ptr->account_info.prikeyCtx.pubkey_content, pubkey_256R1, sizeof(pubkey_256R1)), 0);
-
+  
     /* check the result of getting network data */
     /* check index in the struct ,must be 0 */
     ck_assert_int_eq(g_chaninmaker_wallet_ptr->network_info.networkIndex, 1);
@@ -332,7 +330,7 @@ START_TEST(test_003CreateWallet_0004CreatePersistWalletSuccess)
     /* check orgID in the struct , must be same to the configuration */
     ck_assert_str_eq(g_chaninmaker_wallet_ptr->network_info.org_id, chainmaker_org_id);
     /* check url in the struct , must be same to the configuration */
-    ck_assert_str_eq(g_chaninmaker_wallet_ptr->network_info.node_url, chainmaker_node_url);
+    ck_assert_str_eq(g_chaninmaker_wallet_ptr->network_info.node_url, TEST_CHAINMAKER_NODE_URL);
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
     ck_assert_str_eq(g_chaninmaker_wallet_ptr->network_info.ca_tls_cert_content.content, chainmaker_ca_tls_cert);

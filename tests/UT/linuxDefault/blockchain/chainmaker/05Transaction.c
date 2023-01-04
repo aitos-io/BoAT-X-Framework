@@ -107,7 +107,7 @@ START_TEST(test_005RunTransaction_0004InvokeFailureContractNoExist)
     result = BoatChainmakerContractInvoke(&tx_ptr, "save", "test", true, &invoke_response);
     ck_assert_int_eq(result, BOAT_SUCCESS);
     ck_assert_int_eq(invoke_response.code, BOAT_SUCCESS);
-    ck_assert_str_eq(invoke_response.message, "OK");
+    ck_assert_str_eq(invoke_response.message, "SUCCESS");
     BoatIotSdkDeInit();
 }
 END_TEST
@@ -138,7 +138,7 @@ START_TEST(test_005RunTransaction_0006InvokeSucessSyncOn)
     ck_assert_int_eq(result, BOAT_SUCCESS);
     
     ck_assert_int_eq(invoke_response.code, BOAT_SUCCESS);
-    ck_assert_str_eq(invoke_response.message, "OK");
+    ck_assert_str_eq(invoke_response.message, "SUCCESS");
 
     BoatIotSdkDeInit();
 }
@@ -153,6 +153,7 @@ START_TEST(test_005RunTransaction_0007InvokeSucessSyncOff)
     test_contrct_invoke_prepara(&tx_ptr);
     ck_assert_int_eq(result, BOAT_SUCCESS);
 
+    BoatSleep(3);
     result = BoatChainmakerContractInvoke(&tx_ptr, "save", "fact", false, &invoke_response);
 
     ck_assert_int_eq(result, BOAT_SUCCESS);
@@ -173,7 +174,7 @@ START_TEST(test_005RunTransaction_0008InvokeFailureInvalidUrl)
     test_contrct_invoke_prepara(&tx_ptr);
     strcpy(tx_ptr.wallet_ptr->network_info.node_url, url_buf);
     result = BoatChainmakerContractInvoke(&tx_ptr, "save", "fact", true, &invoke_response); ;
-    ck_assert_int_eq(result, BOAT_ERROR_HTTP2_CONNECT_FAIL);
+    ck_assert_int_eq(result, BOAT_ERROR_HTTP2_TLS_INIT_FAIL);
     BoatIotSdkDeInit();
 }
 END_TEST

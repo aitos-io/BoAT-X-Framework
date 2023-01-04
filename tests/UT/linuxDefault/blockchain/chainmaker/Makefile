@@ -14,6 +14,8 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 				  -lrt\
 				  -lsubunit
 
+BOAT_CFLAGS +=  -DTEST_CHAINMAKER_NODE_URL=\"$(CHAINMAKER_NODE_URL)\" 
+
 all: $(OBJECTS_DIR) $(OBJECTS)	
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(OBJECTS) $(DEPENDENCE_LIBS) -o $(EXECUTABLE_DIR)/chainmaker
 
