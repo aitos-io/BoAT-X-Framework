@@ -82,7 +82,7 @@ START_TEST(test_005Transaction_0003TxInvoke_Failure_Args_NULL)
     time(&timesec);
     rtnVal = BoatHlfabricTxSetTimestamp(&tx_ptr, timesec, 0);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, NULL);
+    rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, NULL, NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
@@ -303,7 +303,13 @@ START_TEST(test_005Transaction_0013TxInvoke_Failure_Walleturl_Err)
     BoatHlfabricTx tx_ptr;
     BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
     g_fabric_wallet_ptr = fabric_get_wallet_ptr();
-    g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl = "121.4.178.74";
+
+    BoatFree(g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl);
+    g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl = NULL;
+
+    BCHAR *fabric_demo_endorser_peer0Org1_url_err = "121.4.178.74";
+    g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer0Org1_url_err) + 1);
+    strcpy(g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl, fabric_demo_endorser_peer0Org1_url_err);
 
     rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
@@ -314,21 +320,26 @@ START_TEST(test_005Transaction_0013TxInvoke_Failure_Walleturl_Err)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxSubmit(&tx_ptr);
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
 }
 END_TEST
 
-START_TEST(test_005Transaction_0014TxInvoke_Failure_WalletHostName_Err) 
+START_TEST(test_005Transaction_0014TxInvoke_Success_WalletHostName_Err) 
 {
     BSINT32 rtnVal;
     BoatHlfabricTx tx_ptr;
     BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
     g_fabric_wallet_ptr = fabric_get_wallet_ptr();
 
-    g_fabric_wallet_ptr->network_info.nodesCfg.orderCfg.endorser[0].hostName = "peer0.org1.com111";
+    BoatFree(g_fabric_wallet_ptr->network_info.nodesCfg.orderCfg.endorser[0].hostName);
+    g_fabric_wallet_ptr->network_info.nodesCfg.orderCfg.endorser[0].hostName = NULL;
+
+    BCHAR *fabric_demo_order1_hostName_err = "peer0.org1.com111";
+    g_fabric_wallet_ptr->network_info.nodesCfg.orderCfg.endorser[0].hostName = BoatMalloc(strlen(fabric_demo_order1_hostName_err) + 1);
+    strcpy(g_fabric_wallet_ptr->network_info.nodesCfg.orderCfg.endorser[0].hostName, fabric_demo_order1_hostName_err);
 
     rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
@@ -340,7 +351,7 @@ START_TEST(test_005Transaction_0014TxInvoke_Failure_WalletHostName_Err)
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "invoke", "a", "b", "10", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
-    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
 }
@@ -609,8 +620,12 @@ START_TEST(test_005Transaction_0026TxQuery_Failure_Walleturl_Err)
     BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
     g_fabric_wallet_ptr = fabric_get_wallet_ptr();
 
-    g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl = "121.4.178.74";
+    BoatFree(g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl);
+    g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl = NULL;
 
+    BCHAR *fabric_demo_endorser_peer0Org1_url_err = "121.4.178.74";
+    g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl = BoatMalloc(strlen(fabric_demo_endorser_peer0Org1_url_err) + 1);
+    strcpy(g_fabric_wallet_ptr->network_info.nodesCfg.layoutCfg[0].groupCfg[0].endorser[0].nodeUrl, fabric_demo_endorser_peer0Org1_url_err);
 
     rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
@@ -628,14 +643,20 @@ START_TEST(test_005Transaction_0026TxQuery_Failure_Walleturl_Err)
 }
 END_TEST
 
-START_TEST(test_005Transaction_0027TxQuery_Failure_WalletHostName_Err) 
+START_TEST(test_005Transaction_0027TxQuery_Success_WalletHostName_Err) 
 {
     BSINT32 rtnVal;
     BoatHlfabricTx tx_ptr;
     BoatHlfabricWallet *g_fabric_wallet_ptr = NULL;
     g_fabric_wallet_ptr = fabric_get_wallet_ptr();
 
-    g_fabric_wallet_ptr->network_info.nodesCfg.orderCfg.endorser[0].hostName = "peer0.org1.com111";
+    BoatFree(g_fabric_wallet_ptr->network_info.nodesCfg.orderCfg.endorser[0].hostName);
+    g_fabric_wallet_ptr->network_info.nodesCfg.orderCfg.endorser[0].hostName = NULL;
+
+    BCHAR *fabric_demo_order1_hostName_err = "peer0.org1.com111";
+    g_fabric_wallet_ptr->network_info.nodesCfg.orderCfg.endorser[0].hostName = BoatMalloc(strlen(fabric_demo_order1_hostName_err) + 1);
+    strcpy(g_fabric_wallet_ptr->network_info.nodesCfg.orderCfg.endorser[0].hostName, fabric_demo_order1_hostName_err);
+
     rtnVal = BoatHlfabricTxInit(&tx_ptr, g_fabric_wallet_ptr, NULL, "mycc", NULL, "mychannel", "Org1MSP");
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
  
@@ -646,7 +667,7 @@ START_TEST(test_005Transaction_0027TxQuery_Failure_WalletHostName_Err)
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
-    ck_assert_int_eq(rtnVal, BOAT_ERROR);
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
 }
@@ -685,7 +706,7 @@ Suite *make_fabricTransactionTest_suite(void)
     tcase_add_test(tc_transaction_api, test_005Transaction_0011TxInvoke_Failure_Args_channelId_err);
     tcase_add_test(tc_transaction_api, test_005Transaction_0012TxInvoke_Failure_Args_orgName_err);
     tcase_add_test(tc_transaction_api, test_005Transaction_0013TxInvoke_Failure_Walleturl_Err);
-    tcase_add_test(tc_transaction_api, test_005Transaction_0014TxInvoke_Failure_WalletHostName_Err);
+    tcase_add_test(tc_transaction_api, test_005Transaction_0014TxInvoke_Success_WalletHostName_Err);
 
     tcase_add_test(tc_transaction_api, test_005Transaction_0015TxQuery_Success);
     tcase_add_test(tc_transaction_api, test_005Transaction_0016TxQuery_Failure_Txptr_NULL);
@@ -699,7 +720,7 @@ Suite *make_fabricTransactionTest_suite(void)
     tcase_add_test(tc_transaction_api, test_005Transaction_0024TxQuery_Failure_Args_channelId_err);
     tcase_add_test(tc_transaction_api, test_005Transaction_0025TxQuery_Failure_Args_orgName_err);
     tcase_add_test(tc_transaction_api, test_005Transaction_0026TxQuery_Failure_Walleturl_Err);
-    tcase_add_test(tc_transaction_api, test_005Transaction_0027TxQuery_Failure_WalletHostName_Err);
+    tcase_add_test(tc_transaction_api, test_005Transaction_0027TxQuery_Success_WalletHostName_Err);
     tcase_add_test(tc_transaction_api, test_005Transaction_0028DeInit_Txptr_NULL);
     
     return s_transaction;

@@ -307,7 +307,7 @@ START_TEST(test_004ParmsInit_0015TxSetArgs_Success_argsNull)
     time(&timesec);
     rtnVal = BoatHlfabricTxSetTimestamp(&tx_ptr, timesec, 0);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, NULL);
+    rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, NULL, NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
