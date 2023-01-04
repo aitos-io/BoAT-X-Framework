@@ -95,7 +95,7 @@ void get_keypair_external_native_256R1_config(BoatKeypairPriKeyCtx_config *keypa
 START_TEST(test_001Keypair_0001CreateOneTimeKeypairSuccess)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config */
     get_keypair_external_native_256k1_config(&keypair_config);
@@ -105,17 +105,25 @@ START_TEST(test_001Keypair_0001CreateOneTimeKeypairSuccess)
     /* check keypair index ,must be 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get keypair content by index */
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, rtnVal);
+    createkeypair.keypair_name = NULL;
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, rtnVal);
+    /* check result of get keypair by index*/
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* check index in keypair struct */
-    ck_assert_int_eq(creatkeypair.keypair_index, 0);
+    ck_assert_int_eq(createkeypair.keypair_index, 0);
     /* check keypair name in the struct */
-    ck_assert_int_eq(strcmp(creatkeypair.keypair_name, "keypairOnetime"), 0);
+    ck_assert_int_eq(strcmp(createkeypair.keypair_name, "keypairOnetime"), 0);
     /* check keypair format in the struct ,must be the same as in the config */
-    ck_assert_int_eq(creatkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
+    ck_assert_int_eq(createkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
     /* check keypair type in the struct ,must be the same as in the config*/
-    ck_assert_int_eq(creatkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
+    ck_assert_int_eq(createkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
     /* check public key in the struct */
-    ck_assert_int_eq(memcmp(creatkeypair.pubkey_content, pubkey, sizeof(pubkey)), 0);
+    ck_assert_int_eq(memcmp(createkeypair.pubkey_content, pubkey, sizeof(pubkey)), 0);
+    /* free keypair name */
+    if (createkeypair.keypair_name != NULL)
+    {
+        BoatFree(createkeypair.keypair_name);
+    }
     /* delete the keypair */
     BoATIotKeypairDelete(0);
 }
@@ -141,7 +149,10 @@ START_TEST(test_001Keypair_0002CreatePersistKeypairSuccess)
     /* check keypair index ,must be 1*/
     ck_assert_int_eq(rtnVal, 1);
     /* get keypair content by index */
+    createkeypair.keypair_name = NULL;
     rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, rtnVal);
+    /* check result of get keypair by index*/
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* check keypair index in the struct , must be 1 */
     ck_assert_int_eq(createkeypair.keypair_index, 1);
     /* check the keypair name in the struct , must be same to the name in the cteating interface */
@@ -152,6 +163,11 @@ START_TEST(test_001Keypair_0002CreatePersistKeypairSuccess)
     ck_assert_int_eq(createkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
     /* check public key */
     ck_assert_int_eq(memcmp(createkeypair.pubkey_content, pubkey, sizeof(pubkey)), 0);
+    /* free keypair_name*/
+    if (createkeypair.keypair_name != NULL)
+    {
+        BoatFree(createkeypair.keypair_name);
+    }
     /* delete the keypair */
     BoATIotKeypairDelete(1);
 }
@@ -177,7 +193,10 @@ START_TEST(test_001Keypair_0003CreatePersistKeypairNativeSuccess)
     /* check keypair index ,must be 1*/
     ck_assert_int_eq(rtnVal, 1);
     /* get keypair content by index */
+    createkeypair.keypair_name = NULL;
     rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, rtnVal);
+    /* check result of get keypair by index*/
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* check keypair index in the struct , must be 1 */
     ck_assert_int_eq(createkeypair.keypair_index, 1);
     /* check the keypair name in the struct , must be same to the name in the cteating interface */
@@ -188,6 +207,11 @@ START_TEST(test_001Keypair_0003CreatePersistKeypairNativeSuccess)
     ck_assert_int_eq(createkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
     /* check public key */
     ck_assert_int_eq(memcmp(createkeypair.pubkey_content, pubkey, sizeof(pubkey)), 0);
+    /* free keypair_name*/
+    if (createkeypair.keypair_name != NULL)
+    {
+        BoatFree(createkeypair.keypair_name);
+    }
     /* delete the keypair */
     BoATIotKeypairDelete(1);
 }
@@ -203,7 +227,7 @@ END_TEST
 START_TEST(test_001Keypair_0004CreatePersistKeypairPKCSSuccess)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from external , pkcs format , 256K1  */
     get_keypair_external_pkcs_256k1_config(&keypair_config);
@@ -213,19 +237,27 @@ START_TEST(test_001Keypair_0004CreatePersistKeypairPKCSSuccess)
     /* check keypair index ,must be 1*/
     ck_assert_int_eq(rtnVal, 1);
     /* get keypair content by index */
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, rtnVal);
+    createkeypair.keypair_name = NULL;
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, rtnVal);
+    /* check result of get keypair by index*/
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* check keypair index in the struct , must be 1 */
-    ck_assert_int_eq(creatkeypair.keypair_index, 1);
+    ck_assert_int_eq(createkeypair.keypair_index, 1);
     /* check the keypair name in the struct , must be same to the name in the cteating interface */
-    ck_assert_int_eq(strcmp(creatkeypair.keypair_name, "keypairPersist01"), 0);
+    ck_assert_int_eq(strcmp(createkeypair.keypair_name, "keypairPersist01"), 0);
     /* chect format in the struct , must be NATIVE
        input of create keypair interface is PKCS , but the out of keypair create interface is NATIVE,
        becase the key format created alway be NATIVE , and stored by native format */
-    ck_assert_int_eq(creatkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
+    ck_assert_int_eq(createkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
     /* chect key type in the struct ,must be same to the config */
-    ck_assert_int_eq(creatkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
+    ck_assert_int_eq(createkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
     /* check public key */
-    ck_assert_int_eq(memcmp(creatkeypair.pubkey_content, pubkeyFormPkcs, sizeof(pubkeyFormPkcs)), 0);
+    ck_assert_int_eq(memcmp(createkeypair.pubkey_content, pubkeyFormPkcs, sizeof(pubkeyFormPkcs)), 0);
+    /* free keypair_name*/
+    if (createkeypair.keypair_name != NULL)
+    {
+        BoatFree(createkeypair.keypair_name);
+    }
     /* delete the keypair */
     BoATIotKeypairDelete(1);
 }
@@ -241,7 +273,7 @@ END_TEST
 START_TEST(test_001Keypair_0005CreatePersistKeypair256K1Success)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from external , native format , 256K1  */
     get_keypair_external_native_256k1_config(&keypair_config);
@@ -251,17 +283,26 @@ START_TEST(test_001Keypair_0005CreatePersistKeypair256K1Success)
     /* check keypair index ,must be 1*/
     ck_assert_int_eq(rtnVal, 1);
     /* get keypair content by index */
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, rtnVal);
+    createkeypair.keypair_name = NULL;
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, rtnVal);
+    /* check result of get keypair by index*/
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* check keypair index in the struct , must be 1 */
-    ck_assert_int_eq(creatkeypair.keypair_index, 1);
+    ck_assert_int_eq(createkeypair.keypair_index, 1);
     /* check the keypair name in the struct , must be same to the name in the cteating interface */
-    ck_assert_int_eq(strcmp(creatkeypair.keypair_name, "keypairPersist01"), 0);
+    ck_assert_int_eq(strcmp(createkeypair.keypair_name, "keypairPersist01"), 0);
     /* chect format in the struct , must be NATIVE */
-    ck_assert_int_eq(creatkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
+    ck_assert_int_eq(createkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
     /* chect key type in the struct ,must be same to the config */
-    ck_assert_int_eq(creatkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
+    ck_assert_int_eq(createkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
     /* check public key */
-    ck_assert_int_eq(memcmp(creatkeypair.pubkey_content, pubkey, sizeof(pubkey)), 0);
+    ck_assert_int_eq(memcmp(createkeypair.pubkey_content, pubkey, sizeof(pubkey)), 0);
+    /* free keypair_name*/
+    if (createkeypair.keypair_name != NULL)
+    {
+        BoatFree(createkeypair.keypair_name);
+    }
+
     /* delete the keypair */
     BoATIotKeypairDelete(1);
 }
@@ -277,7 +318,7 @@ END_TEST
 START_TEST(test_001Keypair_0006CreatePersistKeypair256R1Success)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from external , native format , 256R1  */
     get_keypair_external_native_256R1_config(&keypair_config);
@@ -287,17 +328,25 @@ START_TEST(test_001Keypair_0006CreatePersistKeypair256R1Success)
     /* check keypair index ,must be 1*/
     ck_assert_int_eq(rtnVal, 1);
     /* get keypair content by index */
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, rtnVal);
+    createkeypair.keypair_name = NULL;
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, rtnVal);
+    /* check result of get keypair by index*/
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* check keypair index in the struct , must be 1 */
-    ck_assert_int_eq(creatkeypair.keypair_index, 1);
+    ck_assert_int_eq(createkeypair.keypair_index, 1);
     /* check the keypair name in the struct , must be same to the name in the cteating interface */
-    ck_assert_int_eq(strcmp(creatkeypair.keypair_name, "keypairPersist01"), 0);
+    ck_assert_int_eq(strcmp(createkeypair.keypair_name, "keypairPersist01"), 0);
     /* chect format in the struct , must be NATIVE */
-    ck_assert_int_eq(creatkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
+    ck_assert_int_eq(createkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
     /* chect key type in the struct ,must be same to the config */
-    ck_assert_int_eq(creatkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1);
+    ck_assert_int_eq(createkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1);
     /* check public key */
-    ck_assert_int_eq(memcmp(creatkeypair.pubkey_content, pubkey256R1, sizeof(pubkey256R1)), 0);
+    ck_assert_int_eq(memcmp(createkeypair.pubkey_content, pubkey256R1, sizeof(pubkey256R1)), 0);
+    /* free keypair_name*/
+    if (createkeypair.keypair_name != NULL)
+    {
+        BoatFree(createkeypair.keypair_name);
+    }
     /* delete the keypair */
     BoATIotKeypairDelete(1);
 }
@@ -313,7 +362,7 @@ END_TEST
 START_TEST(test_001Keypair_0007CreatePersistKeypairEXTERNALSuccess)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from external , native format , 256R1  */
     get_keypair_external_native_256R1_config(&keypair_config);
@@ -323,17 +372,25 @@ START_TEST(test_001Keypair_0007CreatePersistKeypairEXTERNALSuccess)
     /* check keypair index ,must be 1*/
     ck_assert_int_eq(rtnVal, 1);
     /* get keypair content by index */
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, rtnVal);
+    createkeypair.keypair_name = NULL;
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, rtnVal);
+    /* check result of get keypair by index*/
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* check keypair index in the struct , must be 1 */
-    ck_assert_int_eq(creatkeypair.keypair_index, 1);
+    ck_assert_int_eq(createkeypair.keypair_index, 1);
     /* check the keypair name in the struct , must be same to the name in the cteating interface */
-    ck_assert_int_eq(strcmp(creatkeypair.keypair_name, "keypairPersist01"), 0);
+    ck_assert_int_eq(strcmp(createkeypair.keypair_name, "keypairPersist01"), 0);
     /* chect format in the struct , must be NATIVE */
-    ck_assert_int_eq(creatkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
+    ck_assert_int_eq(createkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
     /* chect key type in the struct ,must be same to the config */
-    ck_assert_int_eq(creatkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1);
+    ck_assert_int_eq(createkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1);
     /* check public key */
-    ck_assert_int_eq(memcmp(creatkeypair.pubkey_content, pubkey256R1, sizeof(pubkey256R1)), 0);
+    ck_assert_int_eq(memcmp(createkeypair.pubkey_content, pubkey256R1, sizeof(pubkey256R1)), 0);
+    /* free keypair_name*/
+    if (createkeypair.keypair_name != NULL)
+    {
+        BoatFree(createkeypair.keypair_name);
+    }
     /* delete the keypair */
     BoATIotKeypairDelete(1);
 }
@@ -349,7 +406,7 @@ END_TEST
 START_TEST(test_001Keypair_0008CreatePersistKeypairINTERNALSuccess)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from internal ,  256K1  */
     get_keypair_internal_native_256k1_config(&keypair_config);
@@ -359,15 +416,24 @@ START_TEST(test_001Keypair_0008CreatePersistKeypairINTERNALSuccess)
     /* check keypair index ,must be 1*/
     ck_assert_int_eq(rtnVal, 1);
     /* get keypair content by index */
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, rtnVal);
+    createkeypair.keypair_name = NULL;
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, rtnVal);
+    /* check result of get keypair by index*/
+    ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* check keypair index in the struct , must be 1 */
-    ck_assert_int_eq(creatkeypair.keypair_index, 1);
+    ck_assert_int_eq(createkeypair.keypair_index, 1);
     /* check the keypair name in the struct , must be same to the name in the cteating interface */
-    ck_assert_int_eq(strcmp(creatkeypair.keypair_name, "keypairPersist01"), 0);
+    ck_assert_int_eq(strcmp(createkeypair.keypair_name, "keypairPersist01"), 0);
     /* chect format in the struct , must be NATIVE */
-    ck_assert_int_eq(creatkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
+    ck_assert_int_eq(createkeypair.prikey_format, BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE);
     /* chect key type in the struct ,must be same to the config */
-    ck_assert_int_eq(creatkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
+    ck_assert_int_eq(createkeypair.prikey_type, BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1);
+    /* free keypair_name*/
+    if (createkeypair.keypair_name != NULL)
+    {
+        BoatFree(createkeypair.keypair_name);
+    }
+
     /* delete the keypair */
     BoATIotKeypairDelete(1);
 }
@@ -383,7 +449,7 @@ END_TEST
 START_TEST(test_001Keypair_0009DeleteOneTimeKeypairSuccess)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from external , native ,  256K1  */
     get_keypair_external_native_256k1_config(&keypair_config);
@@ -395,7 +461,7 @@ START_TEST(test_001Keypair_0009DeleteOneTimeKeypairSuccess)
     /* delete the keypair */
     BoATIotKeypairDelete(rtnVal);
     /* get keypair content by index , index = 0 (one time keypair)*/
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, 0);
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, 0);
     /* rtnVal must be BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE , because the keypair has be deleted , have no this keypair*/
     ck_assert_int_eq(rtnVal, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE);
 }
@@ -411,7 +477,7 @@ END_TEST
 START_TEST(test_001Keypair_0010DeletePersistKeypairSuccess)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from external , native ,  256K1  */
     get_keypair_external_native_256k1_config(&keypair_config);
@@ -423,7 +489,7 @@ START_TEST(test_001Keypair_0010DeletePersistKeypairSuccess)
     /* delete the keypair */
     BoATIotKeypairDelete(rtnVal);
     /* get keypair content by index */
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, rtnVal);
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, rtnVal);
     /* rtnVal must be BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE , because the keypair has be deleted , have no this keypair*/
     ck_assert_int_eq(rtnVal, BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE);
 }
@@ -440,7 +506,7 @@ END_TEST
 START_TEST(test_001Keypair_0011CreateKeypair_storeTypeERR)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from external , native ,  256K1  */
     get_keypair_external_native_256k1_config(&keypair_config);
@@ -463,7 +529,7 @@ END_TEST
 START_TEST(test_001Keypair_0012CreateOneTimeKeypair_PriKeyGenModeERR)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from external , native ,  256K1  */
     get_keypair_external_native_256k1_config(&keypair_config);
@@ -488,7 +554,7 @@ END_TEST
 START_TEST(test_001Keypair_0013CreateOneTimeKeypair_PriKeyFormatERR)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from external , native ,  256K1  */
     get_keypair_external_native_256k1_config(&keypair_config);
@@ -513,7 +579,7 @@ END_TEST
 START_TEST(test_001Keypair_0014CreateOneTimeKeypair_PriKeyTypeERR)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* get config : gen from external , native ,  256K1  */
     get_keypair_external_native_256k1_config(&keypair_config);
@@ -754,9 +820,9 @@ END_TEST
 START_TEST(test_001Keypair_0022GetKeypairByIndex_IndexExceed)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     /* get keypair by index , the index is bigger than BOAT_MAX_KEYPAIR_NUM */
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, BOAT_MAX_KEYPAIR_NUM + 1);
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, BOAT_MAX_KEYPAIR_NUM + 1);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_KEYPAIR_KEY_INDEX_EXCEED);
 }
@@ -773,7 +839,7 @@ END_TEST
 START_TEST(test_001Keypair_0023GetKeypairByIndex_Onetime)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* create onetime keypair */
     /* get config */
@@ -789,26 +855,26 @@ START_TEST(test_001Keypair_0023GetKeypairByIndex_Onetime)
     /* check keypair index ,must be 1 */
     ck_assert_int_eq(rtnVal, 1);
 
-    creatkeypair.keypair_name = NULL;
+    createkeypair.keypair_name = NULL;
     /* get keypair by index , the index of onetime keypair is 0 */
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, 0);
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, 0);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* check keypair content*/
     /* index of the onetime keypair must be 0*/
-    ck_assert_int_eq(creatkeypair.keypair_index, 0);
+    ck_assert_int_eq(createkeypair.keypair_index, 0);
     /* format of the keypair must be same to config's */
-    ck_assert_int_eq(creatkeypair.prikey_format, keypair_config.prikey_format);
+    ck_assert_int_eq(createkeypair.prikey_format, keypair_config.prikey_format);
     /* key type of the keypair must be same to config's */
-    ck_assert_int_eq(creatkeypair.prikey_type, keypair_config.prikey_type);
+    ck_assert_int_eq(createkeypair.prikey_type, keypair_config.prikey_type);
     /* keypair name must be same as created */
-    ck_assert_int_eq(strcmp(creatkeypair.keypair_name, "keypairOnetime"), 0);
+    ck_assert_int_eq(strcmp(createkeypair.keypair_name, "keypairOnetime"), 0);
     /* check public key in the struct*/
-    ck_assert_int_eq(memcmp(creatkeypair.pubkey_content, pubkey, sizeof(pubkey)), 0);
+    ck_assert_int_eq(memcmp(createkeypair.pubkey_content, pubkey, sizeof(pubkey)), 0);
     /* free memory of keypair name*/
-    if (creatkeypair.keypair_name != NULL)
+    if (createkeypair.keypair_name != NULL)
     {
-        BoatFree(creatkeypair.keypair_name);
+        BoatFree(createkeypair.keypair_name);
     }
 
     /* delete onetime keypair */
@@ -830,7 +896,7 @@ END_TEST
 START_TEST(test_001Keypair_0024GetKeypairByIndex_Persist)
 {
     BSINT32 rtnVal;
-    BoatKeypairPriKeyCtx creatkeypair;
+    BoatKeypairPriKeyCtx createkeypair;
     BoatKeypairPriKeyCtx_config keypair_config;
     /* create onetime keypair */
     /* get config */
@@ -846,26 +912,26 @@ START_TEST(test_001Keypair_0024GetKeypairByIndex_Persist)
     /* check keypair index ,must be 1 */
     ck_assert_int_eq(rtnVal, 1);
 
-    creatkeypair.keypair_name = NULL;
+    createkeypair.keypair_name = NULL;
     /* get keypair by index , the index of persist keypair is 1 */
-    rtnVal = BoATKeypair_GetKeypairByIndex(&creatkeypair, 1);
+    rtnVal = BoATKeypair_GetKeypairByIndex(&createkeypair, 1);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* check keypair content*/
     /* index of the persist keypair must be 1*/
-    ck_assert_int_eq(creatkeypair.keypair_index, 1);
+    ck_assert_int_eq(createkeypair.keypair_index, 1);
     /* format of the keypair must be same to config's */
-    ck_assert_int_eq(creatkeypair.prikey_format, keypair_config.prikey_format);
+    ck_assert_int_eq(createkeypair.prikey_format, keypair_config.prikey_format);
     /* key type of the keypair must be same to config's */
-    ck_assert_int_eq(creatkeypair.prikey_type, keypair_config.prikey_type);
+    ck_assert_int_eq(createkeypair.prikey_type, keypair_config.prikey_type);
     /* keypair name must be same as created */
-    ck_assert_int_eq(strcmp(creatkeypair.keypair_name, "keypairpersist"), 0);
+    ck_assert_int_eq(strcmp(createkeypair.keypair_name, "keypairpersist"), 0);
     /* check public key in the struct*/
-    ck_assert_int_eq(memcmp(creatkeypair.pubkey_content, pubkey, sizeof(pubkey)), 0);
+    ck_assert_int_eq(memcmp(createkeypair.pubkey_content, pubkey, sizeof(pubkey)), 0);
     /* free memory of keypair name*/
-    if (creatkeypair.keypair_name != NULL)
+    if (createkeypair.keypair_name != NULL)
     {
-        BoatFree(creatkeypair.keypair_name);
+        BoatFree(createkeypair.keypair_name);
     }
 
     /* delete onetime keypair */
