@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     srunner_add_suite(sr, suite_transaction);
 
     /* set generate test log in running path */
-    srunner_set_log(sr, "test_reportchaninmaker.txt");
+    srunner_set_log(sr, "test_report_chaninmaker.txt");
 
     /* start to run all test case */
     srunner_run_all(sr, CK_NORMAL);
