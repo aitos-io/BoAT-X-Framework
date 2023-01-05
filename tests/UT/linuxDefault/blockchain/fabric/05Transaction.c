@@ -375,7 +375,7 @@ START_TEST(test_005Transaction_0015TxQuery_Success)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -398,7 +398,7 @@ START_TEST(test_005Transaction_0016TxQuery_Failure_Txptr_NULL)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(NULL); 
+    rtnVal = BoatHlfabricTxEvaluate(NULL); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -421,7 +421,7 @@ START_TEST(test_005Transaction_0017TxQuery_Failure_Args_NULL)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, NULL, NULL, NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -444,7 +444,7 @@ START_TEST(test_005Transaction_0018TxQuery_Failure_Method_ERR)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query_test", "a", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -467,7 +467,7 @@ START_TEST(test_005Transaction_0019TxQuery_Failure_arg2_ERR)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "c", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -490,7 +490,7 @@ START_TEST(test_005Transaction_0020TxQuery_Failure_arg2_NULL)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", NULL, NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -513,7 +513,7 @@ START_TEST(test_005Transaction_0021TxQuery_Failure_args_ADD1)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a","b", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -536,7 +536,7 @@ START_TEST(test_005Transaction_0022TxQuery_Success_Args_timeZero)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -559,7 +559,7 @@ START_TEST(test_005Transaction_0023TxQuery_Failure_Args_chaincodeId_name_err)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -583,7 +583,7 @@ START_TEST(test_005Transaction_0024TxQuery_Failure_Args_channelId_err)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -606,7 +606,7 @@ START_TEST(test_005Transaction_0025TxQuery_Failure_Args_orgName_err)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -636,7 +636,7 @@ START_TEST(test_005Transaction_0026TxQuery_Failure_Walleturl_Err)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_ERROR);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
@@ -666,7 +666,7 @@ START_TEST(test_005Transaction_0027TxQuery_Success_WalletHostName_Err)
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     rtnVal = BoatHlfabricTxSetArgs(&tx_ptr, "query", "a", NULL);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
-    rtnVal = BoatHlfabricTxSubmit(&tx_ptr); 
+    rtnVal = BoatHlfabricTxEvaluate(&tx_ptr); 
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     BoatHlfabricTxDeInit(&tx_ptr);
     BoatIotSdkDeInit();
