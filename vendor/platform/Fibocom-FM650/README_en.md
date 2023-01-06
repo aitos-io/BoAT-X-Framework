@@ -12,11 +12,11 @@ Assuming `<FM650 Root>` to be the root directory of Fibocom-FM650 platform SDK:
 
 1. Copy the entire BoAT-X-Framework directory into `<FM650 Root>/fibo-sdk/umdp/example`.
 
-2. Create a new folder `boat_demo` under `<FM650 Root>/fibo-sdk/umdp/example`, copy BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/demo_platone_mycontract.c into `<FM650 Root>/fibo-sdk/umdp/example/boat_demo`.
+2. Create a new folder `boat_demo` under `<FM650 Root>/fibo-sdk/umdp/example`, copy BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/platone_demo/demo_platone_mycontract.c into `<FM650 Root>/fibo-sdk/umdp/example/boat_demo`.
 
-3. Copy BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/my_contract.cpp.abi.c into `<FM650 Root>/fibo-sdk/umdp/example/boat_demo`.
+3. Copy BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/platone_demo/my_contract.cpp.abi.c into `<FM650 Root>/fibo-sdk/umdp/example/boat_demo`.
 
-4. Copy BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/my_contract.cpp.abi.h into `<FM650 Root>/fibo-sdk/umdp/example/boat_demo`.
+4. Copy BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/platone_demo/my_contract.cpp.abi.h into `<FM650 Root>/fibo-sdk/umdp/example/boat_demo`.
 
 5. Copy BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/Makefile into `<FM650 Root>/fibo-sdk/umdp/example/boat_demo`.
 
@@ -100,7 +100,6 @@ EXTERNAL_INC := -I/home/linux/FM650/fg650-opensdk
 
   #### a. Configure the compilation information in the main Makefile, open `<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/Makefile`, and modify the following (Take PlatONE as an example):
   ```
-   BOAT_PROTOCOL_USE_ETHEREUM   ?= 1
    BOAT_PROTOCOL_USE_PLATONE    ?= 1
 
    PLATFORM_TARGET ?= linux-default
