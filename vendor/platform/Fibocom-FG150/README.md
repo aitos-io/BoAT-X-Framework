@@ -145,7 +145,7 @@ export CFLAGS+=-I$(CUR_PATH)/umdp/example/BoAT-X-Framework/vendor/platform/linux
 
   #### c、在pc上打开一个终端，通过ADB将可执行文件`sample_platone.bin`push到板子内（以/home/user为例）
   ```
-  adb push call_boat_test /home/user
+  adb push sample_platone.bin /home/user
   ```
 
   #### d、在FG150的SIM卡槽中插入一张可用的SIM卡
