@@ -12,11 +12,11 @@
 
 1、拷贝 BoAT代码，将 BoAT-X-Framework 整个文件夹拷贝至`<L610 Root>`下，即与主CMakeLists.txt平级。
 
-2、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/demo.c到`<L610 Root>`下。
+2、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/PlatONE_demo/boatdemo.c到`<L610 Root>`下。
 
-3、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.c到`<L610 Root>`下。
+3、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/PlatONE_demo/my_contract.cpp.abi.c到`<L610 Root>`下。
 
-4、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/my_contract.cpp.abi.h到`<L610 Root>`下。
+4、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-L610/L610RootDirCode/PlatONE_demo/my_contract.cpp.abi.h到`<L610 Root>`下。
 
 
 拷贝后的目录和文件结构如下：
@@ -31,7 +31,7 @@
 +---prebuilt
 +---tools
 \---CMakeList.txt
-\---demo.c
+\---boatdemo.c
 \---my_contract.cpp.abi.c
 \---my_contract.cpp.abi.h
 ```
@@ -71,7 +71,7 @@
 
   打开`<L610 Root>/CMakeLists.txt`文件。
 
-  在if(CONFIG_APPIMG_LOAD_FLASH)下方大括号内找到add_appimg(${target} xxx ) 字样，在最后添加demo.c my_contract.cpp.abi.c，如：
+  在if(CONFIG_APPIMG_LOAD_FLASH)下方大括号内找到add_appimg(${target} xxx ) 字样，在最后添加boatdemo.c my_contract.cpp.abi.c，如：
   ```
   add_appimg(${target} ${flash_ldscript} demo.c my_contract.cpp.abi.c)
   ```
@@ -85,10 +85,11 @@
    PLATFORM_TARGET ?= Fibocom-L610
    ```
 
-   #### b、关闭FABRIC链宏开关  
+   #### b、修改BoAT-X-Framework/Makefile中的区块链的选项（以PlatONE为例）
+   ```
+   BOAT_PROTOCOL_USE_PLATONE       ?= 1
+   ```
 
-   由于资源限制，该平台暂时不支持FABRIC链。所以，需要打开主makefile，找到`BOAT_PROTOCOL_USE_HLFABRIC`，将后面参数改为0，即`BOAT_PROTOCOL_USE_HLFABRIC  ?= 0`。
-   
    #### c、打开Linux终端进入BoAT-X-Framework目录编译BoAT静态库
    ```
    cd BoAT-X-Framework
