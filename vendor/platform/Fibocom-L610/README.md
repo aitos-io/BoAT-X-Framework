@@ -102,7 +102,7 @@
 
 ### 2、编译L610演示demo程序，生成.pac下载文件
 
-   通过BoAT-X-Framework访问区块链的演示代码，在`<L610 Root>/demo.c`中。
+   通过BoAT-X-Framework访问区块链的演示代码，在`<L610 Root>/boatdemo.c`中。
    
    打开Linux终端进入L610根目录。
    ```
