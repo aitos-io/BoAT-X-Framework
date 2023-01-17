@@ -101,7 +101,7 @@ AES_RETURN aes_xi(encrypt_key128)(const unsigned char *key, aes_encrypt_ctx cx[1
 #endif
     ke4(cx->ks, 9);
     cx->inf.l = 0;
-    cx->inf.b[0] = 10 * AES_BLOCK_SIZE;
+    cx->inf.b[0] = 10 * CRYPTO_DEFAULT_AES_BLOCK_SIZE;
 
 #ifdef USE_VIA_ACE_IF_PRESENT
     if(VIA_ACE_AVAILABLE)
@@ -150,7 +150,7 @@ AES_RETURN aes_xi(encrypt_key192)(const unsigned char *key, aes_encrypt_ctx cx[1
 #endif
     kef6(cx->ks, 7);
     cx->inf.l = 0;
-    cx->inf.b[0] = 12 * AES_BLOCK_SIZE;
+    cx->inf.b[0] = 12 * CRYPTO_DEFAULT_AES_BLOCK_SIZE;
 
 #ifdef USE_VIA_ACE_IF_PRESENT
     if(VIA_ACE_AVAILABLE)
@@ -202,7 +202,7 @@ AES_RETURN aes_xi(encrypt_key256)(const unsigned char *key, aes_encrypt_ctx cx[1
 #endif
     kef8(cx->ks, 6);
     cx->inf.l = 0;
-    cx->inf.b[0] = 14 * AES_BLOCK_SIZE;
+    cx->inf.b[0] = 14 * CRYPTO_DEFAULT_AES_BLOCK_SIZE;
 
 #ifdef USE_VIA_ACE_IF_PRESENT
     if(VIA_ACE_AVAILABLE)
@@ -329,7 +329,7 @@ AES_RETURN aes_xi(decrypt_key128)(const unsigned char *key, aes_decrypt_ctx cx[1
     }
 #endif
     cx->inf.l = 0;
-    cx->inf.b[0] = 10 * AES_BLOCK_SIZE;
+    cx->inf.b[0] = 10 * CRYPTO_DEFAULT_AES_BLOCK_SIZE;
 
 #ifdef USE_VIA_ACE_IF_PRESENT
     if(VIA_ACE_AVAILABLE)
@@ -416,7 +416,7 @@ AES_RETURN aes_xi(decrypt_key192)(const unsigned char *key, aes_decrypt_ctx cx[1
     }
 #endif
     cx->inf.l = 0;
-    cx->inf.b[0] = 12 * AES_BLOCK_SIZE;
+    cx->inf.b[0] = 12 * CRYPTO_DEFAULT_AES_BLOCK_SIZE;
 
 #ifdef USE_VIA_ACE_IF_PRESENT
     if(VIA_ACE_AVAILABLE)
@@ -516,7 +516,7 @@ AES_RETURN aes_xi(decrypt_key256)(const unsigned char *key, aes_decrypt_ctx cx[1
     }
 #endif
     cx->inf.l = 0;
-    cx->inf.b[0] = 14 * AES_BLOCK_SIZE;
+    cx->inf.b[0] = 14 * CRYPTO_DEFAULT_AES_BLOCK_SIZE;
 
 #ifdef USE_VIA_ACE_IF_PRESENT
     if(VIA_ACE_AVAILABLE)

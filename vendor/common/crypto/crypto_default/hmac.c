@@ -61,7 +61,7 @@ void hmac_sha256_Final(HMAC_SHA256_CTX *hctx, uint8_t *hmac)
   sha256_Final(&(hctx->ctx), hmac);
   sha256_Init(&(hctx->ctx));
   sha256_Update(&(hctx->ctx), hctx->o_key_pad, SHA256_BLOCK_LENGTH);
-  sha256_Update(&(hctx->ctx), hmac, SHA256_DIGEST_LENGTH);
+  sha256_Update(&(hctx->ctx), hmac, CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH);
   sha256_Final(&(hctx->ctx), hmac);
   memzero(hctx, sizeof(HMAC_SHA256_CTX));
 }

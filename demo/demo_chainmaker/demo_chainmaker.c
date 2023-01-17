@@ -161,8 +161,6 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
     strcpy(networkConfig.host_name, chainmaker_host_name);
     strcpy(networkConfig.chain_id,  chainmaker_chain_id);
     strcpy(networkConfig.org_id,    chainmaker_org_id);
-
-
    
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
      networkConfig.ca_tls_cert_content.length = strlen(chainmaker_ca_tls_cert);
@@ -253,7 +251,7 @@ int main(int argc, char *argv[])
         BoatLog(BOAT_LOG_CRITICAL, "chainmaker create network failed.");
         boat_throw(result, chainmaker_demo_catch);;
     }
-    BoatLog(BOAT_LOG_CRITICAL, "wallet init keypair_index =%d, network_index = %d\n",keypair_index, network_index);
+    BoatLog(BOAT_LOG_CRITICAL, "wallet init keypair_index =%d, network_index = %d",keypair_index, network_index);
 
     g_chaninmaker_wallet_ptr = BoatChainmakerWalletInit(keypair_index, network_index);
     if (g_chaninmaker_wallet_ptr == NULL)
@@ -283,9 +281,11 @@ int main(int argc, char *argv[])
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerContractInvoke() failed.");
+        BoatChainmakerResponseFree(&response_data);
         boat_throw(result, chainmaker_demo_catch);
     }
-    BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s", response_data.code, response_data.message, response_data.contract_result);
+    BoatLog(BOAT_LOG_CRITICAL, "response code = %d, message = %s", response_data.code, response_data.message);
+    BoatChainmakerResponseFree(&response_data);
 
     // /* step-6: add query parameters*/
     BoatSleep(2);
@@ -301,17 +301,24 @@ int main(int argc, char *argv[])
     if (result != BOAT_SUCCESS)
     {
         BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerContractQuery() failed.");
+        BoatChainmakerResponseFree(&response_data);
         boat_throw(result, chainmaker_demo_catch);
     }
-    BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s", 
-            response_data.code, response_data.message, response_data.contract_result);
+    BoatLog(BOAT_LOG_CRITICAL, "response code = %d,  message = %s,  contract_result = %s, tx_id = %s", 
+            response_data.code, response_data.message, response_data.contract_result.payload.field_ptr, response_data.tx_id);
+     BoatChainmakerResponseFree(&response_data);
 
     boat_catch(chainmaker_demo_catch)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
     }   
 
-    /* step-6: Boat SDK Deinitialization */
+    if (g_chaninmaker_wallet_ptr != NULL)
+    {
+        BoatChainmakerWalletDeInit(g_chaninmaker_wallet_ptr);
+    }
+
+    /* step-8: Boat SDK Deinitialization */
     BoatIotSdkDeInit();
 
     return 0;

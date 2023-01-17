@@ -28,9 +28,9 @@
 #include "sha2.h"
 
 typedef struct _PBKDF2_HMAC_SHA256_CTX {
-  uint32_t odig[SHA256_DIGEST_LENGTH / sizeof(uint32_t)];
-  uint32_t idig[SHA256_DIGEST_LENGTH / sizeof(uint32_t)];
-  uint32_t f[SHA256_DIGEST_LENGTH / sizeof(uint32_t)];
+  uint32_t odig[CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH / sizeof(uint32_t)];
+  uint32_t idig[CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH / sizeof(uint32_t)];
+  uint32_t f[CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH / sizeof(uint32_t)];
   uint32_t g[SHA256_BLOCK_LENGTH / sizeof(uint32_t)];
   char first;
 } PBKDF2_HMAC_SHA256_CTX;

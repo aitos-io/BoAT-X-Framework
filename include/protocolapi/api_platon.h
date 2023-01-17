@@ -24,7 +24,6 @@ api_platon.h is header file for BoAT IoT SDK PlatON's interface.
 #define __API_PLATON_H__
 
 #include "boatiotsdk.h"
-#include "network_platon.h"
 
 /*! @defgroup PlatON-api boat PlatON-API
  * @{
@@ -224,10 +223,8 @@ extern "C"
      * @brief Call a state-less contract function
      * @see BoatEthCallContractFunc()
      ******************************************************************************/
-    BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr,
-                                      BCHAR *func_proto_str,
-                                      BUINT8 *rlp_param_ptr,
-                                      BUINT32 rlp_param_len);
+    BCHAR *BoatPlatONCallContractFunc(BoatPlatONTx *tx_ptr, BUINT8 *rlp_param_ptr,
+                                   BUINT32 rlp_param_len);
 
     /*!****************************************************************************
      * @brief Wait for a transaction being mined.

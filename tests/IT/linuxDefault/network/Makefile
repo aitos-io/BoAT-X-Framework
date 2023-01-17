@@ -1,4 +1,4 @@
-all:  testEthNetwork testFiscobcosNetwork testPlatonNetwork testPlatoneNetwork testQuorumNetwork testVenachainNetwork testFabricNetwork testHwbcsNetwork testCitaNetwork testCitaNetwork
+all:  testEthNetwork testFiscobcosNetwork testPlatonNetwork testPlatoneNetwork testQuorumNetwork testVenachainNetwork testFabricNetwork testHwbcsNetwork testCitaNetwork testChainmakerNetwork
 	
 
 testEthNetwork:
@@ -46,7 +46,7 @@ ifeq ($(BOAT_PROTOCOL_USE_CITA),1)
 	make -C CitaNetwork all
 endif
 
-testCitaNetwork:
+testChainmakerNetwork:
 ifneq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1)_$(BOAT_PROTOCOL_USE_CHAINMAKER_V2),0_0)
 	make -C ChainmakerNetwork all
 endif

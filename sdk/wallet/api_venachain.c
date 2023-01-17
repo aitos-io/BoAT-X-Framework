@@ -23,7 +23,6 @@ api_venachain.c defines the Venachain wallet API for BoAT IoT SDK.
 #include "boatinternal.h"
 #include "web3intf.h"
 #include "boatprotocols.h"
-#include "network_venachain.h"
 #include "rpcintf.h"
 #include "cJSON.h"
 

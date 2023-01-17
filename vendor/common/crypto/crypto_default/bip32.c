@@ -691,20 +691,20 @@ int hdnode_get_nem_shared_key(const HDNode *node,
 int hdnode_nem_encrypt(const HDNode *node, const ed25519_public_key public_key,
                        const uint8_t *iv_immut, const uint8_t *salt,
                        const uint8_t *payload, size_t size, uint8_t *buffer) {
-  uint8_t last_block[AES_BLOCK_SIZE] = {0};
-  uint8_t remainder = size % AES_BLOCK_SIZE;
+  uint8_t last_block[CRYPTO_DEFAULT_AES_BLOCK_SIZE] = {0};
+  uint8_t remainder = size % CRYPTO_DEFAULT_AES_BLOCK_SIZE;
 
   // Round down to last whole block
   size -= remainder;
   // Copy old last block
   memcpy(last_block, &payload[size], remainder);
   // Pad new last block with number of missing bytes
-  memset(&last_block[remainder], AES_BLOCK_SIZE - remainder,
-         AES_BLOCK_SIZE - remainder);
+  memset(&last_block[remainder], CRYPTO_DEFAULT_AES_BLOCK_SIZE - remainder,
+         CRYPTO_DEFAULT_AES_BLOCK_SIZE - remainder);
 
   // the IV gets mutated, so we make a copy not to touch the original
-  uint8_t iv[AES_BLOCK_SIZE] = {0};
-  memcpy(iv, iv_immut, AES_BLOCK_SIZE);
+  uint8_t iv[CRYPTO_DEFAULT_AES_BLOCK_SIZE] = {0};
+  memcpy(iv, iv_immut, CRYPTO_DEFAULT_AES_BLOCK_SIZE);
 
   uint8_t shared_key[SHA3_256_DIGEST_LENGTH] = {0};
   if (!hdnode_get_nem_shared_key(node, public_key, salt, NULL, shared_key)) {
@@ -764,8 +764,8 @@ int hdnode_sign(HDNode *node, const uint8_t *msg, uint32_t msg_len,
                 HasherType hasher_sign, uint8_t *sig, uint8_t *pby,
                 int (*is_canonical)(uint8_t by, uint8_t sig[64])) {
   if (node->curve->params) {
-    return ecdsa_sign(node->curve->params, hasher_sign, node->private_key, msg,
-                      msg_len, sig, pby, is_canonical);
+    return crypto_default_ecdsa_sign(node->curve->params, hasher_sign, node->private_key, msg,
+                                     msg_len, sig, pby, is_canonical);
   } else if (node->curve == &curve25519_info) {
     return 1;  // signatures are not supported
   } else {

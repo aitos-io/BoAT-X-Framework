@@ -25,7 +25,6 @@
 #include "boatinternal.h"
 
 #include "persiststore.h"
-#include "network_chainmaker.h"
 #include "chainmaker_network.pb-c.h"
 
 /**
@@ -61,21 +60,21 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_getNetworkFromProto(BoatChainmakerNetwor
     strcpy(Networkdata->client_sign_cert_content.content, network_proto->client_sign_cert_content);
 
     /*node info*/
-    Networkdata->node_url  = BoatMalloc(strlen(network_proto->node_url) + 1);
+    Networkdata->node_url = BoatMalloc(strlen(network_proto->node_url) + 1);
     Networkdata->host_name = BoatMalloc(strlen(network_proto->host_name) + 1);
-    Networkdata->chain_id  = BoatMalloc(strlen(network_proto->chain_id) + 1);
-    Networkdata->org_id    = BoatMalloc(strlen(network_proto->org_id) + 1);
+    Networkdata->chain_id = BoatMalloc(strlen(network_proto->chain_id) + 1);
+    Networkdata->org_id = BoatMalloc(strlen(network_proto->org_id) + 1);
 
     strcpy(Networkdata->node_url, network_proto->node_url);
     strcpy(Networkdata->host_name, network_proto->host_name);
     strcpy(Networkdata->chain_id, network_proto->chain_id);
     strcpy(Networkdata->org_id, network_proto->org_id);
 
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
 
     if (strlen(network_proto->ca_tls_cert_content) - 1 > sizeof(Networkdata->ca_tls_cert_content.content))
     {
-        BoatLog(BOAT_LOG_NORMAL, "client tls cert len exceed = %lld\n", strlen(network_proto->ca_tls_cert_content));
+        BoatLog(BOAT_LOG_NORMAL, "client tls cert len exceed = %lld", strlen(network_proto->ca_tls_cert_content));
         return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
     }
 
@@ -83,22 +82,22 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_getNetworkFromProto(BoatChainmakerNetwor
     strcpy((BCHAR *)Networkdata->ca_tls_cert_content.content, network_proto->ca_tls_cert_content);
 
     #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
-    if (strlen(network_proto->client_tls_cert_content) - 1 > sizeof(Networkdata->client_tls_cert_content.content))
-    {
-        BoatLog(BOAT_LOG_NORMAL, "client tls cert len exceed");
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
+        if (strlen(network_proto->client_tls_cert_content) - 1 > sizeof(Networkdata->client_tls_cert_content.content))
+        {
+            BoatLog(BOAT_LOG_NORMAL, "client tls cert len exceed");
+            return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+        }
 
-    Networkdata->client_tls_cert_content.length = strlen(network_proto->client_tls_cert_content);
-    strcpy((BCHAR *)Networkdata->client_tls_cert_content.content, network_proto->client_tls_cert_content);
+        Networkdata->client_tls_cert_content.length = strlen(network_proto->client_tls_cert_content);
+        strcpy((BCHAR *)Networkdata->client_tls_cert_content.content, network_proto->client_tls_cert_content);
 
-    if (strlen(network_proto->client_tls_privkey_data) - 1 > sizeof(Networkdata->client_tls_privkey_data.value))
-    {
-        BoatLog(BOAT_LOG_NORMAL, "client tls prikey len exceed");
-        return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
-    Networkdata->client_tls_privkey_data.value_len = strlen(network_proto->client_tls_privkey_data);
-    strcpy((BCHAR *)Networkdata->client_tls_privkey_data.value, network_proto->client_tls_privkey_data);
+        if (strlen(network_proto->client_tls_privkey_data) - 1 > sizeof(Networkdata->client_tls_privkey_data.value))
+        {
+            BoatLog(BOAT_LOG_NORMAL, "client tls prikey len exceed");
+            return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+        }
+        Networkdata->client_tls_privkey_data.value_len = strlen(network_proto->client_tls_privkey_data);
+        strcpy((BCHAR *)Networkdata->client_tls_privkey_data.value, network_proto->client_tls_privkey_data);
     #endif
 #endif
 
@@ -187,7 +186,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_GetNetworkFromNvram(BoatChainmakerNetwor
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
     }
-    
+
     if (networkcontent != NULL)
     {
         BoatFree(networkcontent);
@@ -467,15 +466,15 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_Get_Network_Data(BoatChainmakerNetworkDa
     protobuf_network.chain_id = networkData->chain_id;
     protobuf_network.org_id = networkData->org_id;
 
-    protobuf_network.client_member_type       = networkData->client_member_type;
+    protobuf_network.client_member_type = networkData->client_member_type;
     protobuf_network.client_sign_cert_content = networkData->client_sign_cert_content.content;
     protobuf_network.ca_tls_cert_content = (BCHAR *)networkData->ca_tls_cert_content.content;
 
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
     protobuf_network.ca_tls_cert_content = (BCHAR *)networkData->ca_tls_cert_content.content;
     #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
         protobuf_network.client_tls_privkey_data = (BCHAR *)networkData->client_tls_privkey_data.value;
-        protobuf_network.client_tls_cert_content  = (BCHAR *)networkData->client_tls_cert_content.content;
+        protobuf_network.client_tls_cert_content = (BCHAR *)networkData->client_tls_cert_content.content;
     #endif
 #endif
 
@@ -574,7 +573,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_NetworkDataCtx_Store(BoatChainmakerNetwo
             networkNum = 0;
             result = BOAT_SUCCESS;
         }
-        BoatLog(BOAT_LOG_NORMAL, "read networkNum = %d\n", networkNum);
+        BoatLog(BOAT_LOG_NORMAL, "read networkNum = %d", networkNum);
     }
     if (networkNum >= BOAT_MAX_NETWORK_NUM)
     {
@@ -632,7 +631,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_NetworkDataCtx_Store(BoatChainmakerNetwo
         boat_throw(result, chainmaker_exception);
     }
     offset += sizeof(mNetworkDataCtx->networkIndex);
-    BoatLog(BOAT_LOG_NORMAL, "store chainmaker network, networkLength = %d ", networkLength);
+    BoatLog(BOAT_LOG_NORMAL, "store chainmaker network, networkLength = %d", networkLength);
     /* store network data */
     result = BoATStoreSoftRotNvram(BOAT_STORE_NETWORK, offset, networkData, networkLength, storeType);
     if (result != BOAT_SUCCESS)
@@ -724,18 +723,17 @@ BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig
     }
 
     mNetworkDataCtx.networkIndex = networkIndex;
-    mNetworkDataCtx.node_url     = networkConfig->node_url;
-    mNetworkDataCtx.host_name    = networkConfig->host_name;
-    mNetworkDataCtx.chain_id     = networkConfig->chain_id;
-    mNetworkDataCtx.org_id       = networkConfig->org_id;
-    mNetworkDataCtx.client_member_type       = networkConfig->client_member_type;
+    mNetworkDataCtx.node_url = networkConfig->node_url;
+    mNetworkDataCtx.host_name = networkConfig->host_name;
+    mNetworkDataCtx.chain_id = networkConfig->chain_id;
+    mNetworkDataCtx.org_id = networkConfig->org_id;
+    mNetworkDataCtx.client_member_type = networkConfig->client_member_type;
     mNetworkDataCtx.client_sign_cert_content = networkConfig->client_sign_cert_content;
 
-    
-#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1) 
-    mNetworkDataCtx.ca_tls_cert_content  = networkConfig->ca_tls_cert_content;
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
+    mNetworkDataCtx.ca_tls_cert_content = networkConfig->ca_tls_cert_content;
     #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
-        mNetworkDataCtx.client_tls_cert_content  = networkConfig->client_tls_cert_content;
+        mNetworkDataCtx.client_tls_cert_content = networkConfig->client_tls_cert_content;
         mNetworkDataCtx.client_tls_privkey_data = networkConfig->client_tls_privkey_data;
     #endif
 #endif
@@ -745,7 +743,7 @@ BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig
     {
         return result;
     }
-    BoatLog(BOAT_LOG_NORMAL, "network creat success networkIndex = %d\n", networkIndex);
+    BoatLog(BOAT_LOG_NORMAL, "network creat success networkIndex = %d", networkIndex);
     return networkIndex;
 }
 
@@ -1057,4 +1055,81 @@ BOAT_RESULT BoATChainmaker_GetNetworkByIndex(BoatChainmakerNetworkData *networkD
         }
     }
     return BOAT_ERROR_NETWORK_INEXISTENCE;
+}
+
+/**
+ * @description:
+ *  This function reset every param in BoatChainmakerNetworkData;
+ *  if someone have malloced memory , free the memory;
+ * @param {BoatChainmakerNetworkData} networkData
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoATChainmaker_FreeNetworkData(BoatChainmakerNetworkData *networkData)
+{
+    BOAT_RESULT result = BOAT_SUCCESS;
+
+    networkData->networkIndex                    = 0;
+    networkData->client_member_type              = 0;
+    networkData->client_sign_cert_content.length = 0;
+
+#if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
+    networkData->ca_tls_cert_content.length = 0;
+    #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
+        networkData->client_tls_privkey_data.value_len = 0;
+        networkData->client_tls_cert_content.length    = 0;
+    #endif
+#endif
+
+    if (NULL != networkData->node_url)
+    {
+        BoatFree(networkData->node_url);
+    }
+
+    if (NULL != networkData->host_name)
+    {
+        BoatFree(networkData->host_name);
+    }
+
+    if (NULL != networkData->chain_id)
+    {
+        BoatFree(networkData->chain_id);
+    }
+
+    if (NULL != networkData->org_id)
+    {
+        BoatFree(networkData->org_id);
+    }
+
+    return result;
+}
+
+
+
+/**
+ * @description:
+ *  This function use to free BoatChainmakerNetworkContext param.
+ * @param[in] {BoatChainmakerNetworkContext} networkList
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoATChainmaker_FreeNetworkContext(BoatChainmakerNetworkContext networkList)
+{
+    if (networkList.networkNum == 0)
+    {
+        return BOAT_SUCCESS;
+    }
+    for (int i = 0; i < networkList.networkNum; i++)
+    {
+        /* code */
+        BoATChainmaker_FreeNetworkData(&networkList.networks[i]);
+    }
+    networkList.networkNum = 0;
+    return BOAT_SUCCESS;
 }

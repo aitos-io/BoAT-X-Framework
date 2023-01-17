@@ -14,6 +14,9 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 				  -lrt\
 				  -lsubunit
 
+BOAT_CFLAGS +=  -DTEST_PLATONE_NODE_URL=\"$(PLATONE_NODE_URL)\" \
+				-DTEST_KEY_TYPE=\"$(KEY_TYPE)\"
+
 all: $(OBJECTS_DIR) $(OBJECTS)	
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(OBJECTS) $(DEPENDENCE_LIBS) -o $(EXECUTABLE_DIR)/platone
 

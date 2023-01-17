@@ -10,7 +10,9 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 				  $(LINK_LIBS) \
 				  -lcheck\
 				  -lpthread\
-				  -lm
+				  -lm \
+				  -lrt\
+				  -lsubunit
 
 BOAT_CFLAGS +=  -DTEST_ETHEREUM_NODE_URL=\"$(ETHEREUM_NODE_URL)\" \
 				-DTEST_KEY_TYPE=\"$(KEY_TYPE)\"

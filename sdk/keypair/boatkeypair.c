@@ -1101,17 +1101,22 @@ BOAT_RESULT BoATIotKeypairDelete(BUINT8 index)
     {
         storeType = BOAT_STORE_TYPE_FLASH;
     }
-    result = BoATKeypair_GetKeypairByIndex(&restorekeypair, index);
-    if (result != BOAT_SUCCESS)
-    {
-        BoatLog(BOAT_LOG_NORMAL, "get keypair[%d] fail ", index);
-        return result;
-    }
     /* onetime keypair
        index of onetime keypair must be 0
     */
     if (index == 0)
     {
+        result = BoatReadSoftRotNvram(BOAT_STORE_KEYPAIR, offset, keypairnumBytes, sizeof(keypairnumBytes), BOAT_STORE_TYPE_RAM);
+        /* if read Nvram failed , no keypair */
+        if (result != BOAT_SUCCESS)
+        {
+            return result;
+        }
+        result = utility_check_NumBytes(keypairnumBytes, &keypairNum);
+        if (result != BOAT_SUCCESS || keypairNum == 0)
+        {
+            return BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE;
+        }
         /* set keypair num of onetime keypair to 0 */
         memset(keypairnumBytes, 0x00, sizeof(keypairnumBytes));
         result = BoATStoreSoftRotNvram(BOAT_STORE_KEYPAIR, 0, keypairnumBytes, sizeof(keypairnumBytes), BOAT_STORE_TYPE_RAM);
@@ -1128,7 +1133,7 @@ BOAT_RESULT BoATIotKeypairDelete(BUINT8 index)
         result = utility_check_NumBytes(keypairnumBytes, &keypairNum);
         if (result != BOAT_SUCCESS || keypairNum == 0)
         {
-            return result;
+            return BOAT_ERROR_KEYPAIR_KEY_INEXISTENCE;
         }
         offset += sizeof(keypairnumBytes);
         for (i = 0; i < keypairNum; i++)
@@ -1177,12 +1182,19 @@ BOAT_RESULT BoATIotKeypairDelete(BUINT8 index)
             BoatLog(BOAT_LOG_NORMAL, "not find the keypair ");
             return BOAT_ERROR;
         }
+        result = BoATKeypair_GetKeypairByIndex(&restorekeypair, index);
+        if (result != BOAT_SUCCESS)
+        {
+            BoatLog(BOAT_LOG_NORMAL, "get keypair[%d] fail ", index);
+            return result;
+        }
         keypairNumNew = keypairNum - 1;
         utility_get_NumBytes(keypairNumNew, keypairnumBytes);
         result = BoATStoreSoftRotNvram(BOAT_STORE_KEYPAIR, 0, keypairnumBytes, sizeof(keypairnumBytes), BOAT_STORE_TYPE_FLASH); // only need to reset keypair length bytes
         if (result != BOAT_SUCCESS)
         {
             BoatLog(BOAT_LOG_NORMAL, "delete keypair fail ");
+            BoatFree(restorekeypair.keypair_name);
             return result;
         }
 
@@ -1268,6 +1280,7 @@ BOAT_RESULT BoATIotKeypairDelete(BUINT8 index)
         }
         result = boat_exception;
     }
+    BoatFree(restorekeypair.keypair_name);
 
     return result;
 }

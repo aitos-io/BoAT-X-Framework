@@ -14,7 +14,7 @@ BOAT_PROTOCOL_USE_HLFABRIC      ?= 1
 BOAT_PROTOCOL_USE_HWBCS         ?= 1
 BOAT_PROTOCOL_USE_CHAINMAKER_V1 ?= 0
 BOAT_PROTOCOL_USE_CHAINMAKER_V2 ?= 1
-BOAT_DISCOVERY_PEER_QUERY       ?= 1
+BOAT_DISCOVERY_PEER_QUERY       ?= 0
 BOAT_PROTOCOL_USE_VENACHAIN     ?= 1
 BOAT_PROTOCOL_USE_QUORUM        ?= 1
 BOAT_PROTOCOL_USE_CITA          ?= 1
@@ -96,6 +96,7 @@ BOAT_INCLUDE :=   -I$(BOAT_BASE_DIR)/include \
                   -I$(BOAT_SDK_DIR)/protocol/common/web3intf \
                   -I$(BOAT_BASE_DIR)/vendor/platform/include \
                   -I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/log \
+                  -I$(BOAT_BASE_DIR)/vendor/platform/$(PLATFORM_TARGET)/src/inet \
                   -I$(BOAT_BASE_DIR)/contract/generated \
                   -I$(BOAT_BASE_DIR)/demo \
 		  -I$(BOAT_BASE_DIR)/tests \
@@ -216,13 +217,14 @@ endif
 # - CRYPTO_MBEDTLS      : mbedtls crypto algorithm
 # SOFT_CRYPTO ?= CRYPTO_MBEDTLS
 
-ifeq ($(PLATFORM_TARGET), linux-default)
-    SOFT_CRYPTO ?= CRYPTO_DEFAULT
-else ifeq ($(PLATFORM_TARGET), mobiletek-L503C-6S) 
-    SOFT_CRYPTO ?= CRYPTO_DEFAULT
-else
-    $(error not support this platform : $(PLATFORM_TARGET))
-endif
+SOFT_CRYPTO ?= CRYPTO_DEFAULT
+# ifeq ($(PLATFORM_TARGET), linux-default)
+#     SOFT_CRYPTO ?= CRYPTO_DEFAULT
+# else ifeq ($(PLATFORM_TARGET), mobiletek-L503C-6S) 
+#     SOFT_CRYPTO ?= CRYPTO_DEFAULT
+# else
+#     $(error not support this platform : $(PLATFORM_TARGET))
+# endif
 
 
 ifeq ($(SOFT_CRYPTO), CRYPTO_DEFAULT)
@@ -339,4 +341,3 @@ cleandemo:
 
 cleantests:
 	make -C $(BOAT_BASE_DIR)/tests clean
-

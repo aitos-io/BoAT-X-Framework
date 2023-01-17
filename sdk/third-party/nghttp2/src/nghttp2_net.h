@@ -26,15 +26,15 @@
 #define NGHTTP2_NET_H
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#include <config.h>
 #endif /* HAVE_CONFIG_H */
 
 #ifdef HAVE_ARPA_INET_H
-#  include <arpa/inet.h>
+#include <arpa/inet.h>
 #endif /* HAVE_ARPA_INET_H */
 
 #ifdef HAVE_NETINET_IN_H
-#  include <netinet/in.h>
+#include <netinet/in.h>
 #endif /* HAVE_NETINET_IN_H */
 
 #include <nghttp2/nghttp2.h>
@@ -44,48 +44,53 @@
    define inline functions for those function so that we don't have
    dependeny on that lib. */
 
-#  ifdef _MSC_VER
-#    define STIN static __inline
-#  else
-#    define STIN static inline
-#  endif
+#ifdef _MSC_VER
+#define STIN static __inline
+#else
+#define STIN static inline
+#endif
 
-STIN uint32_t htonl(uint32_t hostlong) {
-  uint32_t res;
-  unsigned char *p = (unsigned char *)&res;
-  *p++ = hostlong >> 24;
-  *p++ = (hostlong >> 16) & 0xffu;
-  *p++ = (hostlong >> 8) & 0xffu;
-  *p = hostlong & 0xffu;
-  return res;
+STIN uint32_t htonl(uint32_t hostlong)
+{
+    uint32_t res;
+    unsigned char *p = (unsigned char *)&res;
+    *p++ = hostlong >> 24;
+    *p++ = (hostlong >> 16) & 0xffu;
+    *p++ = (hostlong >> 8) & 0xffu;
+    *p = hostlong & 0xffu;
+    return res;
 }
 
-STIN uint16_t htons(uint16_t hostshort) {
-  uint16_t res;
-  unsigned char *p = (unsigned char *)&res;
-  *p++ = hostshort >> 8;
-  *p = hostshort & 0xffu;
-  return res;
+STIN uint16_t htons(uint16_t hostshort)
+{
+    uint16_t res;
+    unsigned char *p = (unsigned char *)&res;
+    *p++ = hostshort >> 8;
+    *p = hostshort & 0xffu;
+    return res;
 }
 
-STIN uint32_t ntohl(uint32_t netlong) {
-  uint32_t res;
-  unsigned char *p = (unsigned char *)&netlong;
-  res = *p++ << 24;
-  res += *p++ << 16;
-  res += *p++ << 8;
-  res += *p;
-  return res;
+STIN uint32_t ntohl(uint32_t netlong)
+{
+    uint32_t res;
+    unsigned char *p = (unsigned char *)&netlong;
+    res = *p++ << 24;
+    res += *p++ << 16;
+    res += *p++ << 8;
+    res += *p;
+    return res;
 }
 
-STIN uint16_t ntohs(uint16_t netshort) {
-  uint16_t res;
-  unsigned char *p = (unsigned char *)&netshort;
-  res = *p++ << 8;
-  res += *p;
-  return res;
+STIN uint16_t ntohs(uint16_t netshort)
+{
+    uint16_t res;
+    unsigned char *p = (unsigned char *)&netshort;
+    res = *p++ << 8;
+    res += *p;
+    return res;
 }
-
+#else
+#include "boatinet.h"
 #endif /* WIN32 */
 
 #endif /* NGHTTP2_NET_H */

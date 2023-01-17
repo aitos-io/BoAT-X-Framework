@@ -20,6 +20,11 @@ BCHAR *my_contract_cpp_abi_setName(BoatPlatoneTx *tx_ptr, BCHAR* msg)
     RlpObject rlp_object_string_msg;
     boat_try_declare;
 
+    if ((tx_ptr == NULL) || (msg == NULL))
+    {
+        return NULL;
+    }
+
     boat_try(BoatPlatoneTxSetNonce(tx_ptr, BOAT_PLATONE_NONCE_AUTO));
 
     boat_try(RlpInitListObject(&rlp_object_list));
@@ -67,6 +72,11 @@ BCHAR *my_contract_cpp_abi_getName(BoatPlatoneTx *tx_ptr)
     BUINT64 txtype;
     RlpObject rlp_object_string_func_name;
     boat_try_declare;
+    
+    if (tx_ptr == NULL)
+    {
+        return NULL;
+    }
 
     boat_try(RlpInitListObject(&rlp_object_list));
 
