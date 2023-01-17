@@ -23,6 +23,8 @@
 #include "boatconfig.h"
 #include "boatplatform_internal.h"
 #include "boattypes.h"
+#include "persiststore.h"
+#include "boatkeystore.h"
 
 #include "rand.h"
 #include "aes/aes.h"
@@ -61,6 +63,7 @@
 #define GENERATE_KEY_REPEAT_TIMES	100
 
 #define BoAT_DIR_PATH_ROOT		"/datatx/dir_boat"
+
 
 
 uint32_t random32(void)
@@ -125,59 +128,67 @@ end:
 	return result;
 }
 
-
-BOAT_RESULT BoatSignature(BoatWalletPriKeyCtx prikeyCtx, 
-						  const BUINT8 *digest, BUINT32 digestLen, 
+BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
+						  const BUINT8 *digest, BUINT32 digestLen,
 						  BoatSignatureResult *signatureResult, void *rsvd)
 {
-	BUINT8 signatureTmp[64];
+	BUINT8 signature[64] = {0};
+	BUINT8 signatureTmp[139];
+	BUINT32 signatureTmpLen = 0;
 	BUINT8 ecdsPrefix = 0;
-	
+	BUINT32 signatureLen = 0;
 	BOAT_RESULT result = BOAT_SUCCESS;
-	
+
 	(void)rsvd;
-	
+
 	/* param check */
 	if ((digest == NULL) || (signatureResult == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
+	// result = BoAT_GetPirkeyByIndex(prikeyCtx.keypair_index,&prikey);
+	// if(result != BOAT_SUCCESS){
+	// 	BoatLog(BOAT_LOG_CRITICAL, "get keypair prikey fail.");
+	// 	return BOAT_ERROR;
+	// }
 
-	if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+	// result = BoAT_sign(prikeyCtx.prikey_type,prikeyCtx.prikey_format, prikey.value,prikey.value_len,digest,digestLen,signatureTmp,&signatureLen,&ecdsPrefix);
+
+	result = BoAT_Keystore_Sign(prikeyCtx.prikey_type, prikeyCtx.keypair_index, digest, digestLen, signature, &signatureLen, &ecdsPrefix);
+	if (result != BOAT_SUCCESS)
 	{
-		result = ecdsa_sign_digest(&secp256k1,      // const ecdsa_curve *curve
-								   prikeyCtx.extra_data.value,        // const uint8_t *priv_key
-								   digest,          // const uint8_t *digest
-								   signatureTmp,    // uint8_t *sig,
-								   &ecdsPrefix,     // uint8_t *pby,
-								   NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-								   );
+		return result;
 	}
-	else if (prikeyCtx.prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+
+	// // signature result assign
+	// memset(signatureResult, 0, sizeof(BoatSignatureResult));
+
+	// signatureResult->native_format_used = true;
+	// memcpy(signatureResult->native_sign, signatureTmp, 64);
+
+	// signatureResult->signPrefix_used = true;
+	// signatureResult->signPrefix      = ecdsPrefix;
+
+	/* convert r,s to asn.1 */
+	result = utility_signature_to_asn1(signature, signatureLen, signatureTmp, &signatureTmpLen);
+	if (result != BOAT_SUCCESS)
 	{
-		result = ecdsa_sign_digest(&nist256p1,      // const ecdsa_curve *curve
-								   prikeyCtx.extra_data.value,        // const uint8_t *priv_key
-								   digest,          // const uint8_t *digest
-								   signatureTmp,    // uint8_t *sig,
-								   &ecdsPrefix,     // uint8_t *pby,
-								   NULL             // int (*is_canonical)(uint8_t by, uint8_t sig[64]))
-								   );
-	}
-	else
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Unkown private key type.");
+		BoatLog(BOAT_LOG_CRITICAL, "signature to asn.1  fail.");
 		return BOAT_ERROR;
 	}
-
 	// signature result assign
 	memset(signatureResult, 0, sizeof(BoatSignatureResult));
-	
+
+	signatureResult->pkcs_format_used = true;
+	signatureResult->pkcs_sign_length = signatureTmpLen;
+	memcpy(signatureResult->pkcs_sign, signatureTmp, signatureResult->pkcs_sign_length);
+
 	signatureResult->native_format_used = true;
-	memcpy(signatureResult->native_sign, signatureTmp, 64);
+	memcpy(&signatureResult->native_sign[0], signature, 64);
 
 	signatureResult->signPrefix_used = true;
-	signatureResult->signPrefix      = ecdsPrefix;
+	signatureResult->signPrefix = ecdsPrefix;
 
 	return result;
 }
@@ -283,8 +294,7 @@ BOAT_RESULT BoatGetFileSize(const BCHAR *fileName, BUINT32 *size, void *rsvd)
 }
 
 
-BOAT_RESULT BoatWriteFile(const BCHAR *fileName, 
-						  BUINT8 *writeBuf, BUINT32 writeLen, void *rsvd)
+BOAT_RESULT BoatWriteStorage(BUINT32 offset, BUINT8 *writeBuf, BUINT32 writeLen, void *rsvd)
 {
 
 	qapi_FS_Status_t status = QAPI_OK;
@@ -294,6 +304,12 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 	int fNameLen=0;
 	int fullPathNamelen=0;
 	BCHAR *fullFilePath=NULL;
+
+	BSINT32 count = 0;
+	BUINT32 size = 0;
+	BUINT8 *buf_zero = NULL;
+
+	qapi_FS_Offset_t seek_status = 0;
 
 	/// MUST SETTING
 	setlocale(LC_ALL, "C");	/// <locale.h>
@@ -314,9 +330,8 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 
 		strcat(fullFileName,BoAT_DIR_PATH_ROOT);
 		strcat(fullFileName,"/");
-		strcat(fullFileName,fileName);
+		strcat(fullFileName,BOAT_FILE_STOREDATA);
 
-		status = qapi_FS_Open(fullFileName, QAPI_FS_O_RDWR_E | QAPI_FS_O_CREAT_E, &fd);
 	}
 	else
 	{
@@ -329,10 +344,15 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 
 		strcat(fullFilePath,BoAT_DIR_PATH_ROOT);
 		strcat(fullFilePath,"/");
-		strcat(fullFilePath,fileName);
+		strcat(fullFilePath,BOAT_FILE_STOREDATA);
 
-		status = qapi_FS_Open(fullFilePath, QAPI_FS_O_RDWR_E | QAPI_FS_O_CREAT_E, &fd);
+		
 	}
+
+	BoatGetFileSize(fullFilePath,&size,NULL);
+
+	status = qapi_FS_Open(fullFilePath, QAPI_FS_O_RDWR_E | QAPI_FS_O_CREAT_E, &fd);
+
 	if(fullFilePath)
 	{
 		BoatFree(fullFilePath);
@@ -341,6 +361,37 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
 		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
+	}
+
+
+	/*move to the end of the file*/
+	BoatLog(BOAT_LOG_NORMAL, "size = %d , offset = %d ", size, offset);
+	if (size < offset)
+	{
+		buf_zero = BoatMalloc(offset - size);
+		if (NULL == buf_zero)
+		{
+			qapi_FS_Close(fd);
+			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
+		}
+		memset(buf_zero, 0x00, offset - size);
+		//count = fwrite(buf_zero, 1, offset - size, file_ptr);
+		qapi_FS_Write(fd,buf_zero,offset - size,&count);
+		BoatFree(buf_zero);
+		if (count != (offset - size))
+		{
+			//fclose(file_ptr);
+			qapi_FS_Close(fd);
+			BoatLog(BOAT_LOG_CRITICAL, "Failed to write file: %s.", BOAT_FILE_STOREDATA);
+			return BOAT_ERROR_STORAGE_FILE_WRITE_FAIL;
+		}
+		//fseek(file_ptr, 0, SEEK_END);
+		qapi_FS_Seek(fd,0,QAPI_FS_SEEK_END_E, &seek_status);
+	}
+	else
+	{
+		//fseek(file_ptr, offset, SEEK_SET);
+		qapi_FS_Seek(fd,offset,QAPI_FS_SEEK_SET_E, &seek_status);
 	}
 
 	status = qapi_FS_Write(fd, writeBuf, writeLen, &wr_bytes);
@@ -362,8 +413,7 @@ BOAT_RESULT BoatWriteFile(const BCHAR *fileName,
 }
 
 
-BOAT_RESULT BoatReadFile(const BCHAR *fileName, 
-						 BUINT8 *readBuf, BUINT32 readLen, void *rsvd)
+BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, void *rsvd)
 {
 	qapi_FS_Status_t status = QAPI_OK;
   	int    fd = -1;
@@ -372,6 +422,10 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 	int fNameLen = 0;
 	int fullPathNameLen = 0;
 	BCHAR *fullFilePath = NULL;
+
+	BSINT32 count = 0;
+	BUINT32 size = 0;
+	BUINT8 *buf_zero = NULL;
 
 	fNameLen = strlen(fileName);
 	fullPathNameLen = strlen((char *)BoAT_DIR_PATH_ROOT)+1+fNameLen;
@@ -385,9 +439,8 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 
 		strcat(fullFileName,BoAT_DIR_PATH_ROOT);
 		strcat(fullFileName,"/");
-		strcat(fullFileName,fileName);
+		strcat(fullFileName,BOAT_FILE_STOREDATA);
 
-		status = qapi_FS_Open(fullFileName, QAPI_FS_O_RDONLY_E, &fd);
 	}
 	else
 	{
@@ -400,10 +453,14 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 
 		strcat(fullFilePath,BoAT_DIR_PATH_ROOT);
 		strcat(fullFilePath,"/");
-		strcat(fullFilePath,fileName);
+		strcat(fullFilePath,BOAT_FILE_STOREDATA);
 
-		status = qapi_FS_Open(fullFilePath, QAPI_FS_O_RDONLY_E, &fd);
+
 	}
+
+	BoatGetFileSize(fullFilePath,&size,NULL);
+
+	status = qapi_FS_Open(fullFilePath, QAPI_FS_O_RDONLY_E, &fd);
 
 	if(fullFilePath)
 	{
@@ -415,6 +472,14 @@ BOAT_RESULT BoatReadFile(const BCHAR *fileName,
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", fileName);
 		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
+
+	if (readLen + offset > size)
+	{
+		qapi_FS_Close(fd);
+		return BOAT_ERROR_STORAGE_FILE_READ_FAIL;
+	}
+
+	qapi_FS_Seek(fd,offset,QAPI_FS_SEEK_SET_E, &seek_status);
 
 	status = qapi_FS_Read(fd, readBuf, readLen, &rd_bytes);
 	if(status != QAPI_OK)
@@ -621,156 +686,73 @@ void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 /******************************************************************************
                               BOAT KEY PROCESS WARPPER
 *******************************************************************************/
-static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatWalletPriKeyCtx_config *config, 
-													       BoatWalletPriKeyCtx *pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriKeyCtx_config *config,
+														   BoatKeypairDataCtx *pkCtx)
 {
-	/* Valid private key value (as a UINT256) for Ethereum is [1, n-1], where n is
-       0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141 */
-    const BUINT32 priv_key_max_u256[8] = {0xD0364141, 0xBFD25E8C, 0xAF48A03B, 0xBAAEDCE6,
-                                          0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
-	bignum256   priv_key_bn256;
-    bignum256   priv_key_max_bn256;
-	BUINT8      prikeyTmp[32];
-	BUINT8      pubKey65[65] = {0};
-	BUINT32     key_try_count;
-    BOAT_RESULT result = BOAT_SUCCESS;
-
-	/* Convert private key from UINT256 to Bignum256 format */
-    bn_read_le(prikeyTmp, &priv_key_bn256);
-
-	/* Convert priv_key_max_u256 from UINT256 to Bignum256 format */
-    bn_read_le((const uint8_t *)priv_key_max_u256, &priv_key_max_bn256);
-
-	// 1- update private key
-	/* generate native private key loop */
-	for (key_try_count = 0; key_try_count < GENERATE_KEY_REPEAT_TIMES; key_try_count++)
-    {
-		/* generate native private key */
-        result = BoatRandom(prikeyTmp, 32, NULL);
-        if (result != BOAT_SUCCESS)
-        {
-            BoatLog(BOAT_LOG_CRITICAL, "Fail to generate private key.");
-            break;
-        }        
-
-		/* check the generated private key is valid or not */
-		if ((bn_is_zero(&priv_key_bn256) == 0) && \
-		   (bn_is_less(&priv_key_bn256, &priv_key_max_bn256) != 0))
-		{
-			/* key is valid */
-			memcpy(pkCtx->extra_data.value, prikeyTmp, 32);
-			pkCtx->extra_data.value_len = 32;
-			result = BOAT_SUCCESS;
-			break;
-		}
-		else if (key_try_count == GENERATE_KEY_REPEAT_TIMES - 1)
-		{
-			result = BOAT_ERROR;
-		}          
-    }
-
-	if (result == BOAT_ERROR)
+	BOAT_RESULT result = BOAT_SUCCESS;
+	BoatKeypairKeypair keypair;
+	// result = BoAT_Keypair_generation(config->prikey_type,config->prikey_format,&keypair);
+	result = BoAT_Keystore_Gen_Keypair(config->prikey_type, &keypair);
+	if (result != BOAT_SUCCESS)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "generate private key failed.");
 		return result;
 	}
 
 	// 2- update private key format
-	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
-	
+	pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
+
 	// 3- update private key type
-	pkCtx->prikey_type = config->prikey_type;
-
-	// 4- update private key index
-	// This field should update by 'key secure storage'(such as TE/SE).
-	// When algorithms are implemented by software, this field is default to 0, means
-	// that ignore this field.
-	pkCtx->prikey_index = 0; 
-
-	// 5- update public key
-	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
-
-	if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
-	{
-		ecdsa_get_public_key65(&secp256k1, pkCtx->extra_data.value, pubKey65);
-		memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
-	}
-	else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
-	{
-		ecdsa_get_public_key65(&nist256p1, pkCtx->extra_data.value, pubKey65);
-		memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
-	}
-	else 
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Invalid private key type.");
-		result = BOAT_ERROR;
-	}
+	pkCtx->prikeyCtx.prikey_type = config->prikey_type;
+	pkCtx->extraData.value_len = keypair.prikey.value_len;
+	memcpy(pkCtx->extraData.value, keypair.prikey.value, keypair.prikey.value_len);
+	memcpy(pkCtx->prikeyCtx.pubkey_content, keypair.pubkey.value, 64);
 
 	return result;
 }
 
-static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatWalletPriKeyCtx_config *config, 
-													             BoatWalletPriKeyCtx *pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_external_injection_native(const BoatKeypairPriKeyCtx_config *config,
+																 BoatKeypairDataCtx *pkCtx)
 {
-	BUINT8      pubKey65[65] = {0};
+	BUINT32 len = 0;
 	BOAT_RESULT result = BOAT_SUCCESS;
 
 	// 0- check input parameter
 	if ((config == NULL) || (config->prikey_content.field_ptr == NULL) || (pkCtx == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "input parameter can not be NULL.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
 
 	// 1- update private key
-	if (config->prikey_content.field_len > sizeof(pkCtx->extra_data.value))
+	if (config->prikey_content.field_len > sizeof(pkCtx->extraData.value))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Error: length of injection key is too long.");
-		return BOAT_ERROR;
+		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 
-	memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
-	pkCtx->extra_data.value_len = config->prikey_content.field_len;
+	memcpy(pkCtx->extraData.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
+	pkCtx->extraData.value_len = config->prikey_content.field_len;
 
 	// 2- update private key format
-	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
-	
+	pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
+
 	// 3- update private key type
-	pkCtx->prikey_type = config->prikey_type;
+	pkCtx->prikeyCtx.prikey_type = config->prikey_type;
 
 	// 4- update private key index
-	// This field should update by 'key secure storage'(such as TE/SE).
-	// When algorithms are implemented by software, this field is default to 0, means
-	// that ignore this field.
-	pkCtx->prikey_index = 0; 
 
 	// 5- update public key
-	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
+	result = BoAT_getPubkey(config->prikey_type, config->prikey_format, pkCtx->extraData.value, pkCtx->extraData.value_len, pkCtx->prikeyCtx.pubkey_content, &len);
 
-	if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
-	{
-		ecdsa_get_public_key65(&secp256k1, pkCtx->extra_data.value, pubKey65);
-		memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
-	}
-	else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
-	{
-		ecdsa_get_public_key65(&nist256p1, pkCtx->extra_data.value, pubKey65);
-		memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
-	}
-	else 
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "Invalid private key type.");
-		result = BOAT_ERROR;
-	}
-	
-    return result;
+	return result;
 }
 
-static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletPriKeyCtx_config *config, 
-													             BoatWalletPriKeyCtx *pkCtx)
+static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatKeypairPriKeyCtx_config *config,
+															   BoatKeypairDataCtx *pkCtx)
 {
-	BUINT8       pubKey65[65] = {0};
-	BOAT_RESULT  result = BOAT_SUCCESS;
+	// BUINT8       pubKey65[65] = {0};
+	BOAT_RESULT result = BOAT_SUCCESS;
 	KeypairNative keypair;
 
 	// 0- check input parameter
@@ -781,105 +763,106 @@ static BOAT_RESULT sBoatPort_keyCreate_external_injection_pkcs(const BoatWalletP
 	}
 
 	// 1- update private key
-	if (config->prikey_content.field_len > sizeof(pkCtx->extra_data.value))
+	if (config->prikey_content.field_len > sizeof(pkCtx->extraData.value))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Error: length of injection key is too long.");
 		return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 	}
 
-    result = UtilityPKCS2Native(config->prikey_content.field_ptr,&keypair);
-    if(result != BOAT_SUCCESS){
-        BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> UtilityPKCS2Native err.");
-				UtilityFreeKeypair(keypair);
-        return result;
-    }
+	result = UtilityPKCS2Native((BCHAR *)(config->prikey_content.field_ptr), &keypair);
+	if (result != BOAT_SUCCESS)
+	{
+		BoatLog(BOAT_LOG_NORMAL, ">>>>>>>>>> UtilityPKCS2Native err.");
+		UtilityFreeKeypair(keypair);
+		return result;
+	}
 
 	// memcpy(pkCtx->extra_data.value, config->prikey_content.field_ptr, config->prikey_content.field_len);
 	// pkCtx->extra_data.value_len = config->prikey_content.field_len;
-	memcpy(pkCtx->extra_data.value,keypair.prikey,keypair.prikeylen);
-	pkCtx->extra_data.value_len = keypair.prikeylen;
+	memcpy(pkCtx->extraData.value, keypair.prikey, keypair.prikeylen);
+	pkCtx->extraData.value_len = keypair.prikeylen;
 
 	// 2- update private key format
-	pkCtx->prikey_format = BOAT_WALLET_PRIKEY_FORMAT_NATIVE;
-	
+	pkCtx->prikeyCtx.prikey_format = BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE;
+
 	// 3- update private key type
-	pkCtx->prikey_type   = config->prikey_type;
+	pkCtx->prikeyCtx.prikey_type = config->prikey_type;
 
 	// 4- update private key index
 	// This field should update by 'key secure storage'(such as TE/SE).
 	// When algorithms are implemented by software, this field is default to 0, means
 	// that ignore this field.
-	pkCtx->prikey_index  = 0; 
 
 	// 5- update public key
-	pkCtx->pubkey_format = BOAT_WALLET_PUBKEY_FORMAT_NATIVE;
 
-	// if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256K1)
+	// if (config->prikey_type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256K1)
 	// {
 	// 	ecdsa_get_public_key65(&secp256k1, pkCtx->extra_data.value, pubKey65);
 	// 	memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
 	// }
-	// else if (config->prikey_type == BOAT_WALLET_PRIKEY_TYPE_SECP256R1)
+	// else if (config->prikey_type == BOAT_KEYPAIR_PRIKEY_TYPE_SECP256R1)
 	// {
 	// 	ecdsa_get_public_key65(&nist256p1, pkCtx->extra_data.value, pubKey65);
 	// 	memcpy(pkCtx->pubkey_content, &pubKey65[1], 64);
 	// }
-	// else 
+	// else
 	// {
 	// 	BoatLog( BOAT_LOG_CRITICAL, "Invalid private key type." );
 	// 	result = BOAT_ERROR_WALLET_KEY_TYPE_ERR;
 	// }
-	memcpy(pkCtx->pubkey_content, keypair.pubkey, keypair.pubkeylen);
+	memcpy(pkCtx->prikeyCtx.pubkey_content, keypair.pubkey, keypair.pubkeylen);
 	UtilityFreeKeypair(keypair);
-  return result;
+	return result;
 }
 
-
-BOAT_RESULT BoatPort_keyCreate(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
+BOAT_RESULT BoatPort_keyCreate(const BoatKeypairPriKeyCtx_config *config, BoatKeypairDataCtx *pkCtx)
 {
 	BOAT_RESULT result = BOAT_SUCCESS;
-	
+
 	if ((config == NULL) || (pkCtx == NULL))
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "parameter can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
-	
-	if (config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_INTERNAL_GENERATION)
+	BoatLog(BOAT_LOG_NORMAL, "prikey_genMode = %d .", config->prikey_genMode);
+	if (config->prikey_genMode == BOAT_KEYPAIR_PRIKEY_GENMODE_INTERNAL_GENERATION)
 	{
 		BoatLog(BOAT_LOG_VERBOSE, "The private key is generated internally...");
 		result = sBoatPort_keyCreate_internal_generation(config, pkCtx);
 	}
-	else if (config->prikey_genMode == BOAT_WALLET_PRIKEY_GENMODE_EXTERNAL_INJECTION)
+	else if (config->prikey_genMode == BOAT_KEYPAIR_PRIKEY_GENMODE_EXTERNAL_INJECTION)
 	{
+		BoatLog(BOAT_LOG_NORMAL, "prikey_format = %d .", config->prikey_format);
 		switch (config->prikey_format)
 		{
-			case BOAT_WALLET_PRIKEY_FORMAT_PKCS:
-				BoatLog(BOAT_LOG_NORMAL, "wallet private key[pkcs] set...");
-				result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
-				break;
-			case BOAT_WALLET_PRIKEY_FORMAT_NATIVE:
-				BoatLog(BOAT_LOG_VERBOSE, "wallet private key[native] set...");
-				result = sBoatPort_keyCreate_external_injection_native(config, pkCtx);
-				break;
-			case BOAT_WALLET_PRIKEY_FORMAT_MNEMONIC:
-				BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
-				result = BOAT_ERROR;
-				break;
-			default:
-				BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
-				result = BOAT_ERROR;
-				break;
+		case BOAT_KEYPAIR_PRIKEY_FORMAT_PKCS:
+			BoatLog(BOAT_LOG_NORMAL, "keypair private key[pkcs] set...");
+			// result = BOAT_ERROR_kEYPAIR_KEY_FORMAT_ERR;
+			result = sBoatPort_keyCreate_external_injection_pkcs(config, pkCtx);
+			break;
+		case BOAT_KEYPAIR_PRIKEY_FORMAT_NATIVE:
+			BoatLog(BOAT_LOG_VERBOSE, "keypair private key[native] set...");
+			result = sBoatPort_keyCreate_external_injection_native(config, pkCtx);
+			break;
+		case BOAT_KEYPAIR_PRIKEY_FORMAT_MNEMONIC:
+			BoatLog(BOAT_LOG_NORMAL, "NOT SUPPORT FORMAT YET.");
+			result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
+			break;
+		default:
+			BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
+			result = BOAT_ERROR_KEYPAIR_KEY_FORMAT_ERR;
+			break;
 		}
 	}
 	else
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Invalid private key format.");
-		result = BOAT_ERROR;
+		result = BOAT_ERROR_KEYPAIR_KEY_GENMODE_ERR;
 	}
 
-    return result;
+	return result;
 }
+
 
 BOAT_RESULT BoatPort_keyQuery(const BoatWalletPriKeyCtx_config *config, BoatWalletPriKeyCtx *pkCtx)
 {
