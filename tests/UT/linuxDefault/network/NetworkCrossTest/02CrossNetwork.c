@@ -1409,7 +1409,7 @@ START_TEST(test_002CrossNetwork_0010CreateOneTimeNetworkSuccess_chainmaker)
     rtnVal = getChainmakerNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -1555,7 +1555,7 @@ START_TEST(test_002CrossNetwork_0012Create6thPersistNetworkFail)
     rtnVal = getChainmakerNetworkConfig(&Chainmaker_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&Chainmaker_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&Chainmaker_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
        Already created BOAT_MAX_NETWORK_NUM persist networks, return BOAT_ERROR_NETWORK_INDEX_EXCEED */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INDEX_EXCEED);
@@ -1894,7 +1894,7 @@ START_TEST(test_002CrossNetwork_0016CreatOtherNetworks_Success)
     rtnVal = getChainmakerNetworkConfig(&Chainmaker_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&Chainmaker_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&Chainmaker_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         This is the fourth persist network, index must be 4 */
     ck_assert_int_eq(rtnVal, 4);
