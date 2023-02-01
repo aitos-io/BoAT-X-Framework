@@ -118,9 +118,9 @@ __BOATSTATIC BOAT_RESULT createNetwork()
     strncpy(network_config.node_url_str, demoUrl, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 #if defined(USE_ONETIME_WALLET)
     /* create ethereum wallet */
-    result = BoatEthNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    result = BoATEthNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
 #elif defined(USE_CREATE_PERSIST_WALLET)
-    result = BoatEthNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    result = BoATEthNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
 #else
     result = BOAT_ERROR;
 #endif
