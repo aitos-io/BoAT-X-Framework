@@ -22,9 +22,11 @@
 #include "boatiotsdk.h"
 #include "boatlog.h"
 #include "boatkeypair.h"
-#include <time.h>
-#include "softap_api.h"
 
+/* MA510 Includes ---------------------------------------------------------*/
+#include "qflog_utils.h"
+#include "qapi_uart.h"
+#include "qapi_timer.h"
 #define BOAT_TEST
 #define USE_ONETIME_WALLET
 
@@ -350,33 +352,25 @@ int boat_fabric_entry()
 
 
 
-static void* boat_task_entry(void *args)
-{
-    xy_work_lock(1);
-    xy_sleep(30000);
 
+int fibocom_task_entry(void)
+{
+  int ret=0;
+  qapi_Timer_Sleep(3, QAPI_TIMER_UNIT_SEC, true);
+  
+  debug_uart_init(&debug_uart_context_D);
+
+  ret = dam_byte_pool_init();
+  if(ret != TX_SUCCESS)
+  {
+    BoatLog(BOAT_LOG_CRITICAL,"Create DAM byte pool fail!\n");
+    return ret;
+  }
+
+  /* BoAT demo task */
 #ifdef BOAT_TEST
     boat_fabric_entry();
 #endif
 
-    xy_work_unlock();
-    xy_TaskDelete(g_boat_task_Handle);
-    return (void *)0;
+   return 0;
 }
-
-void boat_task_init()
-{
-    xy_TaskCreate((TaskFunc_t)boat_task_entry, "boat task", 20 * 1024, NULL, 10, &g_boat_task_Handle);
-}
-
-/*
-* undef DEMO_TEST
-* make all error, so add next code
-*/
-#ifndef DEMO_TEST
-int at_encode_thread_id = -1;
-
-void at_encode_creat_thread(char *encode_buf)
-{
-}
-#endif
