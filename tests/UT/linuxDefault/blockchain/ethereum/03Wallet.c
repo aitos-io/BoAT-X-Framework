@@ -73,7 +73,7 @@ START_TEST(test_003Wallet_0001InitWalletSuccessOneTimeKeypairOneTimeNetwork)
     memset(networkConfig.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
     strncpy(networkConfig.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    networkIndex = BoatEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
+    networkIndex = BoATEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
 
     /* 3.Init onetime wallet */
@@ -116,7 +116,7 @@ START_TEST(test_003Wallet_0002InitWalletSuccessOneTimeKeypairPersistNetwork)
     memset(networkConfig.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
     strncpy(networkConfig.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    networkIndex = BoatEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
+    networkIndex = BoATEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(networkIndex,5);
     ck_assert_int_gt(networkIndex,0);
 
@@ -163,7 +163,7 @@ START_TEST(test_003Wallet_0003InitWalletSuccessPersistKeypairOneTimeNetwork)
     memset(networkConfig.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
     strncpy(networkConfig.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    networkIndex = BoatEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
+    networkIndex = BoATEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
 
     /* 3.Init onetime wallet */
@@ -209,7 +209,7 @@ START_TEST(test_003Wallet_0004InitWalletSuccessPersistKeypairPersistNetwork)
     memset(networkConfig.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
     strncpy(networkConfig.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    networkIndex = BoatEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
+    networkIndex = BoATEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_eq(networkIndex, 1);
 
     /* 3.Init wallet */
@@ -245,7 +245,7 @@ START_TEST(test_003Wallet_0003WalletFailureWrongKeypair)
     memset(networkConfig.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
     strncpy(networkConfig.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    networkIndex = BoatEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
+    networkIndex = BoATEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
 
     /* 2.Init wallet */
@@ -318,7 +318,7 @@ START_TEST(test_003Wallet_0007DeInitWalletSuccessOneTimeKeypairOneTimeNetwork)
     memset(networkConfig.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
     strncpy(networkConfig.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    networkIndex = BoatEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
+    networkIndex = BoATEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
 
     /* 3.Init onetime wallet */
@@ -364,7 +364,7 @@ START_TEST(test_003Wallet_0008DeInitWalletSuccessOneTimeKeypairPersistNetwork)
     memset(networkConfig.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
     strncpy(networkConfig.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    networkIndex = BoatEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
+    networkIndex = BoATEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(networkIndex,5);
     ck_assert_int_gt(networkIndex,0);
 
@@ -414,7 +414,7 @@ START_TEST(test_003Wallet_0009DeInitWalletSuccessPersistKeypairOneTimeNetwork)
     memset(networkConfig.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
     strncpy(networkConfig.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    networkIndex = BoatEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
+    networkIndex = BoATEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
 
     /* 3.Init onetime wallet */
@@ -463,7 +463,7 @@ START_TEST(test_003Wallet_0010DeInitWalletSuccessPersistKeypairPersistNetwork)
     memset(networkConfig.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
     strncpy(networkConfig.node_url_str, TEST_ETHEREUM_NODE_URL, BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    networkIndex = BoatEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
+    networkIndex = BoATEthNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_eq(networkIndex, 1);
 
     /* 3.Init wallet */
