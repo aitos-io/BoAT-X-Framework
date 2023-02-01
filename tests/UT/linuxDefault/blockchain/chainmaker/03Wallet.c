@@ -182,12 +182,12 @@ BOAT_RESULT test_chainmaker_create_network(BBOOL is_onetime, BUINT8 *network_ind
     /* create ethereum keypair */
     if (is_onetime)
     {
-        index = BoatChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
+        index = BoATChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
     }
 
     else
     {
-         index = BoatChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
+         index = BoATChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
     }
 
     if (index < 0)
