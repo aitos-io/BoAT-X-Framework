@@ -58,7 +58,7 @@ __BOATSTATIC BoatEthWallet *ethereumOnetimeWalletPrepare()
     memset(network_config.node_url_str,0U,BOAT_ETH_NODE_URL_MAX_LEN);
     strncpy(network_config.node_url_str, "http://127.0.0.1:7545", BOAT_ETH_NODE_URL_MAX_LEN - 1);
 
-    network_index = BoatEthNetworkCreate(&network_config,BOAT_STORE_TYPE_RAM);
+    network_index = BoATEthNetworkCreate(&network_config,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(network_index, 0);
 
     wallet_p = BoatEthWalletInit(keypair_index, network_index);
