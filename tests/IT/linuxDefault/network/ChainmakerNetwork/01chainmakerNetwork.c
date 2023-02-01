@@ -284,7 +284,7 @@ START_TEST(test_001chainmakerNetwork_0001CreateOneTimeNetworkSuccess)
     rtnVal = getChainmakerNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -325,7 +325,7 @@ START_TEST(test_001chainmakerNetwork_0002CreatePersistNetworkSuccess)
     rtnVal = getChainmakerNetworkConfig2(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network ,this is the first persist network ,
         so the index must be 1 */
     ck_assert_int_eq(rtnVal, 1);
@@ -370,7 +370,7 @@ START_TEST(test_001chainmakerNetwork_0003CreatetNetworkFail_signCert_content_emp
     memset(network_config.client_sign_cert_content.content, 0x00, sizeof(network_config.client_sign_cert_content.content));
     network_config.client_sign_cert_content.length = 0;
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     /* free configuration struct */
@@ -397,7 +397,7 @@ START_TEST(test_001chainmakerNetwork_0004CreatetNetworkFail_node_url_empty)
     /* clear the nodeurl content*/
     memset(network_config.node_url, 0x00, sizeof(network_config.node_url));
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     /* free configuration struct */
@@ -424,7 +424,7 @@ START_TEST(test_001chainmakerNetwork_0005CreatetNetworkFail_host_name_empty)
     /* clear the hostname content*/
     memset(network_config.host_name, 0x00, sizeof(network_config.host_name));
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     /* free configuration struct */
@@ -451,7 +451,7 @@ START_TEST(test_001chainmakerNetwork_0006CreatetNetworkFail_chain_id_empty)
     /* clear the chain_id content*/
     memset(network_config.chain_id, 0x00, sizeof(network_config.chain_id));
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     /* free configuration struct */
@@ -478,7 +478,7 @@ START_TEST(test_001chainmakerNetwork_0007CreatetNetworkFail_org_id_empty)
     /* clear the org_id content*/
     memset(network_config.org_id, 0x00, sizeof(network_config.org_id));
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check result */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     /* free configuration struct */
@@ -502,7 +502,7 @@ START_TEST(test_001chainmakerNetwork_0008DeleteOneTimeNetworkSuccess)
     rtnVal = getChainmakerNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* delete the onetime network */
@@ -534,7 +534,7 @@ START_TEST(test_001chainmakerNetwork_0009DeletePersistNetworkSuccess)
     rtnVal = getChainmakerNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , the index from 1 to BOAT_MAX_NETWORK_NUM
         this is the first persist network ,so the index must be 1 */
     ck_assert_int_eq(rtnVal, 1);
@@ -648,7 +648,7 @@ START_TEST(test_001chainmakerNetwork_0014GetNetworkList_OnlyOnetimeNetwork)
     rtnVal = getChainmakerNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get the network list */
@@ -689,7 +689,7 @@ START_TEST(test_001chainmakerNetwork_0015GetNetworkList_OnetimeAndPersistNetwork
     rtnVal = getChainmakerNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* creat a persist network*/
@@ -697,7 +697,7 @@ START_TEST(test_001chainmakerNetwork_0015GetNetworkList_OnetimeAndPersistNetwork
     rtnVal = getChainmakerNetworkConfig2(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network ;
         index of persist networks is form 1 to BOAT_MAX_NETWORK_NUM,
         this is the first persist network, the index must equal 1 */
@@ -790,7 +790,7 @@ START_TEST(test_001chainmakerNetwork_0018GetNetworkByIndex_Onetime)
     rtnVal = getChainmakerNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* creat a persist network*/
@@ -798,7 +798,7 @@ START_TEST(test_001chainmakerNetwork_0018GetNetworkByIndex_Onetime)
     rtnVal = getChainmakerNetworkConfig2(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network ;
         index of persist networks is form 1 to BOAT_MAX_NETWORK_NUM,
         this is the first persist network, the index must equal 1 */
@@ -842,7 +842,7 @@ START_TEST(test_001chainmakerNetwork_0019GetNetworkByIndex_Persist)
     rtnVal = getChainmakerNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* creat a persist network*/
@@ -850,7 +850,7 @@ START_TEST(test_001chainmakerNetwork_0019GetNetworkByIndex_Persist)
     rtnVal = getChainmakerNetworkConfig2(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network ;
         index of persist networks is form 1 to BOAT_MAX_NETWORK_NUM,
         this is the first persist network, the index must equal 1 */
