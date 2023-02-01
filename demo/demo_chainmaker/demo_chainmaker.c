@@ -189,11 +189,11 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
 #endif 
 
 #if defined(USE_ONETIME_WALLET)
-    index = BoatChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
+    index = BoATChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
 
 #elif defined(USE_CREATE_PERSIST_WALLET)
     BoatLog(BOAT_LOG_NORMAL, "startting create persist wallet");
-    index = BoatChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
+    index = BoATChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
 
 #else
     return BOAT_ERROR;
