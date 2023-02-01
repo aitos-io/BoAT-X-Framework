@@ -196,7 +196,7 @@ __BOATSTATIC BOAT_RESULT chainmaker_create_network(void)
 #endif
 
     BoatLog(BOAT_LOG_NORMAL, "startting create persist wallet");
-    index = BoatChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
+    index = BoATChainmakerNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
     if (index < 0)
     {
         return BOAT_ERROR_WALLET_CREATE_FAIL;
