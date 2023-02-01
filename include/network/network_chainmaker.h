@@ -118,7 +118,7 @@ BOAT_RESULT BoATChainmaker_GetNetworkList(BoatChainmakerNetworkContext *networkL
  * @author: aitos
  */
 
-BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig, BoatStoreType storeType);
+BOAT_RESULT BoATChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig, BoatStoreType storeType);
 
 /**
  * @description: 
