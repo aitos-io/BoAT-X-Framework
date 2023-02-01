@@ -102,7 +102,7 @@ BOAT_RESULT BoATEth_FreeNetworkContext(BoatEthNetworkContext networkList);
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatEthNetworkCreate(BoatEthNetworkConfig *networkConfig, BoatStoreType storeType);
+BOAT_RESULT BoATEthNetworkCreate(BoatEthNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
  * @description:
