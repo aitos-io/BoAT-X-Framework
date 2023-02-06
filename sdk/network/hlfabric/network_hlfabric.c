@@ -739,6 +739,10 @@ __BOATSTATIC BOAT_RESULT BoAT_Free_FabricNetworkData(Common__FabricNetworkData f
             BoatFree(fabric_network_protobuf.ordercfg->endorser[i]);
         }
     }
+    if (fabric_network_protobuf.ordercfg->endorser != NULL)
+    {
+        BoatFree(fabric_network_protobuf.ordercfg->endorser);
+    }
     if (fabric_network_protobuf.ordercfg != NULL)
     {
         BoatFree(fabric_network_protobuf.ordercfg);
