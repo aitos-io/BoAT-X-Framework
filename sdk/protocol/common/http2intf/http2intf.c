@@ -285,12 +285,17 @@ void http2DeInit(http2IntfContext *http2Context)
 			http2Context->session = NULL;
 		}
 #if (BOAT_TLS_SUPPORT == 1)
-		BoatFree(http2Context->tlsContext);
-		http2Context->tlsContext = NULL;
-		// if(http2Context->tlsCAchain != NULL){
-		http2Context->tlsCAchain.field_len = 0;
-		BoatFree(http2Context->tlsCAchain.field_ptr);
-		// BoatFree(http2Context->tlsCAchain);
+		if (http2Context->tlsContext != NULL)
+		{
+			BoatFree(http2Context->tlsContext);
+			http2Context->tlsContext = NULL;
+		}
+
+        // if(http2Context->tlsCAchain != NULL){
+        http2Context->tlsCAchain.field_len = 0;
+        // if (http2Context->tlsCAchain.field_ptr != NULL)
+        //     BoatFree(http2Context->tlsCAchain.field_ptr);
+        // BoatFree(http2Context->tlsCAchain);
 
 		// }
 #endif
