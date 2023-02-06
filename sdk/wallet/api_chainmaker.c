@@ -189,25 +189,28 @@ __BOATSTATIC BOAT_RESULT BoatChainmakerTxRequest(BoatChainmakerTx *tx_ptr, Commo
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
     ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->hostName = tx_ptr->wallet_ptr->network_info.host_name;
     ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_len = tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.length + 1;
-    ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr = BoatMalloc(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_len);
-    memset(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr, 0x00, ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_len);
-    memcpy(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr, tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.content, tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.length);
+    // ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr = BoatMalloc(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_len);
+    // memset(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr, 0x00, ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_len);
+    // memcpy(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr, tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.content, tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.length);
+    ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr = tx_ptr->wallet_ptr->network_info.ca_tls_cert_content.content;
 
 #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
-    if (((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr != NULL)
-    {
-        BoatFree(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr);
-    }
+    // if (((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr != NULL)
+    // {
+    //     BoatFree(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr);
+    // }
     ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_len = tx_ptr->wallet_ptr->network_info.client_tls_privkey_data.value_len + 1;
-    ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr = BoatMalloc(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_len);
-    strcpy((BCHAR *)((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr, (BCHAR *)tx_ptr->wallet_ptr->network_info.client_tls_privkey_data.value);
-    if (((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr != NULL)
-    {
-        BoatFree(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr);
-    }
+    // ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr = BoatMalloc(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_len);
+    // strcpy((BCHAR *)((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr, (BCHAR *)tx_ptr->wallet_ptr->network_info.client_tls_privkey_data.value);
+    ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsPrikey.field_ptr = tx_ptr->wallet_ptr->network_info.client_tls_privkey_data.value;
+    // if (((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr != NULL)
+    // {
+    //     BoatFree(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr);
+    // }
     ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_len = tx_ptr->wallet_ptr->network_info.client_tls_cert_content.length + 1;
-    ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr = BoatMalloc(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_len);
-    strcpy((BCHAR *)((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr, tx_ptr->wallet_ptr->network_info.client_tls_cert_content.content);
+    // ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr = BoatMalloc(((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_len);
+    // strcpy((BCHAR *)((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr, tx_ptr->wallet_ptr->network_info.client_tls_cert_content.content);
+    ((http2IntfContext *)(tx_ptr->wallet_ptr->http2Context_ptr))->tlsCert.field_ptr = tx_ptr->wallet_ptr->network_info.client_tls_cert_content.content;
 #endif
 #endif
     ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->pathTmp = "/api.RpcNode/SendRequest";
@@ -246,26 +249,26 @@ __BOATSTATIC BOAT_RESULT BoatChainmakerTxRequest(BoatChainmakerTx *tx_ptr, Commo
     }
 
 #if (BOAT_CHAINMAKER_TLS_SUPPORT == 1)
-    if (((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr != NULL)
-    {
-        BoatFree(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr);
-        ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr = NULL;
-    }
+    // if (((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr != NULL)
+    // {
+    //     BoatFree(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr);
+    //     ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_ptr = NULL;
+    // }
     ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCAchain.field_len = 0;
 
 #if (BOAT_CHAINMAKER_TLS_IDENTIFY_CLIENT == 1)
-    if (((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsPrikey.field_ptr != NULL)
-    {
-        BoatFree(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsPrikey.field_ptr);
-        ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsPrikey.field_ptr = NULL;
-    }
+    // if (((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsPrikey.field_ptr != NULL)
+    // {
+    //     BoatFree(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsPrikey.field_ptr);
+    //     ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsPrikey.field_ptr = NULL;
+    // }
     ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsPrikey.field_len = 0;
 
-    if (((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCert.field_ptr != NULL)
-    {
-        BoatFree(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCert.field_ptr);
-        ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCert.field_ptr = NULL;
-    }
+    // if (((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCert.field_ptr != NULL)
+    // {
+    //     BoatFree(((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCert.field_ptr);
+    //     ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCert.field_ptr = NULL;
+    // }
     ((http2IntfContext *)tx_ptr->wallet_ptr->http2Context_ptr)->tlsCert.field_len = 0;
 #endif
 
@@ -365,8 +368,9 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
     }
 
     response_data->code = tx_response->code;
-    if (strlen(tx_response->message) < BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
-    {    
+    // if (strlen(tx_response->message) < BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
+    if (tx_response->code != SUCCESS)
+    {
         response_data->message = BoatMalloc(strlen(tx_response->message) + 1);
         if (response_data->message == NULL)
         {
@@ -374,11 +378,7 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
             boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
         }
         strcpy(response_data->message, tx_response->message);
-    }
-
-    if (tx_response != NULL)
-    {
-        common__tx_response__free_unpacked(tx_response, NULL);
+        boat_throw(BOAT_ERROR, BoatHlchainmakerContractInvoke);
     }
 
     if (sync_result)
@@ -401,28 +401,34 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
 #endif
             if (result == BOAT_SUCCESS)
             {
+                if (tx_response != NULL)
+                {
+                    common__tx_response__free_unpacked(tx_response, NULL);
+                    tx_response = NULL;
+                }
                 result = BoatChainmakerTxRequest(tx_ptr, &tx_response, BOAT_TRUE);
                 if (result != BOAT_SUCCESS)
                 {
                     BoatLog(BOAT_LOG_CRITICAL, "BoatChainmakerTxRequest sync failed");
+                    continue;
                 }
 
                 response_data->code = tx_response->code;
-                if (response_data->message != NULL)
-                {
-                    BoatFree(response_data->message);
-                    response_data->message = NULL;
-                }
-                if (strlen(tx_response->message) < BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
-                {
-                    response_data->message = BoatMalloc(strlen(tx_response->message) + 1);
-                    if (response_data->message == NULL)
-                    {
-                        BoatLog(BOAT_LOG_CRITICAL, "response_data->message  is NULL");
-                        boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
-                    }
-                    strcpy(response_data->message, tx_response->message);
-                }
+                // if (response_data->message != NULL)
+                // {
+                //     BoatFree(response_data->message);
+                //     response_data->message = NULL;
+                // }
+                // if (strlen(tx_response->message) < BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
+                // {
+                //     response_data->message = BoatMalloc(strlen(tx_response->message) + 1);
+                //     if (response_data->message == NULL)
+                //     {
+                //         BoatLog(BOAT_LOG_CRITICAL, "response_data->message  is NULL");
+                //         boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
+                //     }
+                //     strcpy(response_data->message, tx_response->message);
+                // }
 
                 if (response_data->code == BOAT_SUCCESS)
                 {
@@ -446,21 +452,18 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
 #endif
 #ifdef CHAINMAKER_V2
                     Common__TransactionInfoWithRWSet *transaction_info_with_rwset = common__transaction_info_with_rwset__unpack(NULL, tx_response->contract_result->result.len, tx_response->contract_result->result.data);
-                    if (tx_response != NULL)
-                    {
-                        common__tx_response__free_unpacked(tx_response, NULL);
-                    }
                     if (transaction_info_with_rwset != NULL)
                     {
                         response_data->contract_result.contract_code = transaction_info_with_rwset->transaction->result->code;
-                        if (transaction_info_with_rwset->transaction->result->contract_result->message != NULL)
-                        {
-                            response_data->contract_result.contract_message = BoatMalloc(strlen(transaction_info_with_rwset->transaction->result->contract_result->message) + 1);
-                            strcpy(response_data->contract_result.contract_message , transaction_info_with_rwset->transaction->result->contract_result->message);
-                        }
-                        response_data->contract_result.gas_used = transaction_info_with_rwset->transaction->result->contract_result->gas_used;
+
                         if (transaction_info_with_rwset->transaction->result->code == BOAT_SUCCESS)
                         {
+                            if (transaction_info_with_rwset->transaction->result->contract_result->message != NULL)
+                            {
+                                response_data->contract_result.contract_message = BoatMalloc(strlen(transaction_info_with_rwset->transaction->result->contract_result->message) + 1);
+                                strcpy(response_data->contract_result.contract_message, transaction_info_with_rwset->transaction->result->contract_result->message);
+                            }
+                            response_data->contract_result.gas_used = transaction_info_with_rwset->transaction->result->contract_result->gas_used;
                             if (strlen(tx_response->tx_id) < BOAT_TXID_LEN)
                             {
                                 strcpy(response_data->tx_id, tx_response->tx_id);
@@ -468,12 +471,43 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
                             common__transaction_info_with_rwset__free_unpacked(transaction_info_with_rwset, NULL);
                             break;
                         }
+                        else if (i = (BOAT_RETRY_CNT - 1))
+                        {
+                            if (transaction_info_with_rwset->transaction->result->contract_result->message != NULL)
+                            {
+                                response_data->contract_result.contract_message = BoatMalloc(strlen(transaction_info_with_rwset->transaction->result->contract_result->message) + 1);
+                                strcpy(response_data->contract_result.contract_message, transaction_info_with_rwset->transaction->result->contract_result->message);
+                            }
+                        }
                         common__transaction_info_with_rwset__free_unpacked(transaction_info_with_rwset, NULL);
+                    }
+                    else
+                    {
+                        response_data->contract_result.contract_code = BOAT_ERROR;
+                    }
+                    if (tx_response != NULL)
+                    {
+                        common__tx_response__free_unpacked(tx_response, NULL);
+                        tx_response = NULL;
                     }
 #endif
                 }
             }
             BoatSleep(BOAT_CHAINMAKER_MINE_INTERVAL);
+        }
+        if ((result == BOAT_SUCCESS) && (tx_response != NULL))
+        {
+            response_data->message = BoatMalloc(strlen(tx_response->message) + 1);
+            if (response_data->message == NULL)
+            {
+                BoatLog(BOAT_LOG_CRITICAL, "response_data->message  is NULL");
+                boat_throw(BOAT_ERROR_COMMON_INVALID_ARGUMENT, BoatHlchainmakerContractInvoke);
+            }
+            strcpy(response_data->message, tx_response->message);
+        }
+        else
+        {
+            response_data->code = BOAT_ERROR;
         }
     }
 
@@ -482,6 +516,11 @@ BOAT_RESULT BoatChainmakerContractInvoke(BoatChainmakerTx *tx_ptr, char *method,
     {
         BoatLog(BOAT_LOG_CRITICAL, "Exception: %d", boat_exception);
         result = boat_exception;
+    }
+    if (tx_response != NULL)
+    {
+        common__tx_response__free_unpacked(tx_response, NULL);
+        tx_response = NULL;
     }
 
     return result;
@@ -551,31 +590,31 @@ BOAT_RESULT BoatChainmakerContractQuery(BoatChainmakerTx *tx_ptr, char *method, 
         }
         strcpy(response_data->message, tx_response->message);
     }
- 
-    response_data->contract_result.contract_code =  tx_response->contract_result->code;
+
+    response_data->contract_result.contract_code = tx_response->contract_result->code;
     if (tx_response->contract_result->message != NULL)
     {
         response_data->contract_result.contract_message = BoatMalloc(strlen(tx_response->contract_result->message) + 1);
-        strcpy(response_data->contract_result.contract_message , tx_response->contract_result->message);
+        strcpy(response_data->contract_result.contract_message, tx_response->contract_result->message);
     }
     response_data->contract_result.gas_used = tx_response->contract_result->gas_used;
     if (tx_response->contract_result->code == BOAT_SUCCESS)
     {
-        if ((tx_response->contract_result->result.len != 0) ||  (tx_response->contract_result->result.data != NULL))
+        if ((tx_response->contract_result->result.len != 0) || (tx_response->contract_result->result.data != NULL))
         {
             if (tx_response->contract_result->result.len > BOAT_HLCHAINMAKER_HTTP2_SEND_BUF_MAX_LEN)
             {
                 BoatLog(BOAT_LOG_CRITICAL, "tx_response->contract_result->result.datais too long");
                 boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
             }
-            response_data->contract_result.payload.field_ptr = BoatMalloc(tx_response->contract_result->result.len);    
+            response_data->contract_result.payload.field_ptr = BoatMalloc(tx_response->contract_result->result.len);
             if (response_data->contract_result.payload.field_ptr == NULL)
             {
                 BoatLog(BOAT_LOG_CRITICAL, "response_data->contract_result.payload.field_ptr malloc falied");
                 boat_throw(BOAT_ERROR_COMMON_OUT_OF_MEMORY, BoatHlchainmakerContractQuery_exception);
             }
             memcpy(response_data->contract_result.payload.field_ptr, tx_response->contract_result->result.data, tx_response->contract_result->result.len);
-            response_data->contract_result.payload.field_len =tx_response->contract_result->result.len;
+            response_data->contract_result.payload.field_len = tx_response->contract_result->result.len;
         }
     }
 
@@ -610,12 +649,11 @@ BOAT_RESULT BoatChainmakerResponseInit(BoatResponseData *response_data)
     }
 
     response_data->message = NULL;
-    response_data->contract_result.contract_message  = NULL;
+    response_data->contract_result.contract_message = NULL;
     response_data->contract_result.payload.field_ptr = NULL;
     response_data->contract_result.payload.field_len = 0;
     return result;
 }
-
 
 void BoatChainmakerResponseFree(BoatResponseData *response_data)
 {
