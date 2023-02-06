@@ -41,11 +41,14 @@ extern unsigned short boat_htons(unsigned short n);
 
 uint32_t random32(void)
 {
-    static uint32_t seed = 0;
-    seed = osiEpochSecond();
-    srand(seed);
+    // static uint32_t seed = 0;
+    // seed = osiEpochSecond();
+    // srand(seed);
 
-    return seed;
+    // return seed;
+    BUINT8 rand[4] = {0};
+    fibo_rng_generate(rand, sizeof(rand));
+    return ((rand[0] << 24) | (rand[1] << 16) | (rand[2] << 8) | rand[3]);
 }
 
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
@@ -411,7 +414,7 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
     if (fibo_ssl_sock_connect(connectfd, ip, atoi(port)) < 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "connect() error ,code = %d", fibo_get_ssl_errcode());
-        close(connectfd);
+        fibo_ssl_sock_close(connectfd);
         return -1;
     }
     /// get ssl socket fd
@@ -443,7 +446,7 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
     if (fibo_sock_connect(connectfd, &addr) == 0)
     {
         BoatLog(BOAT_LOG_CRITICAL, "connect() error");
-        close(connectfd);
+        fibo_ssl_sock_close(connectfd);
         return -1;
     }
 #endif
@@ -457,6 +460,14 @@ BOAT_RESULT BoatTlsInit(const BCHAR *address, const BCHAR *hostName, const BoatF
 {
 
     int ret = 0;
+
+    fibo_set_ssl_chkmode(1);
+    ret = fibo_write_ssl_file("TRUSTFILE", caChain.field_ptr, strlen(caChain.field_ptr));
+    if (BOAT_TLS_IDENTIFY_CLIENT == 1)
+    {
+        ret = fibo_write_ssl_file("CAFILE", clientCert.field_ptr, clientCert.field_len);
+        ret = fibo_write_ssl_file("CAKEY", clientPrikey.field_ptr, clientPrikey.field_len);
+    }
     ret = BoatConnect(address, NULL);
     if (ret == -1)
     {
@@ -464,14 +475,6 @@ BOAT_RESULT BoatTlsInit(const BCHAR *address, const BCHAR *hostName, const BoatF
         return BOAT_ERROR;
     }
     *socketfd = ret;
-    fibo_set_ssl_chkmode(0);
-    ret = fibo_write_ssl_file("TRUSTFILE", caChain.field_ptr, strlen(caChain.field_ptr));
-    // if (BOAT_TLS_IDENTIFY_CLIENT == 1)
-    // {
-    ret = fibo_write_ssl_file("CAFILE", clientCert.field_ptr, clientCert.field_len);
-    ret = fibo_write_ssl_file("CAKEY", clientPrikey.field_ptr, clientPrikey.field_len);
-    // }
-
     // fibo_taskSleep(10000);
     BoatLog(BOAT_LOG_NORMAL, " BoatTlsInit OK");
     return BOAT_SUCCESS;
@@ -484,7 +487,7 @@ BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, 
     //! @todo BOAT_TLS_SUPPORT implementation in crypto default.
     //! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
     BSINT32 ret = fibo_ssl_sock_send(sockfd, buf, len);
-    //  BoatLog(BOAT_LOG_VERBOSE, "write ssl send = %d ", ret);
+    // BoatLog(BOAT_LOG_VERBOSE, "write ssl send = %d ", ret);
     return ret;
 #else
     return send(sockfd, buf, len, 0);
@@ -507,7 +510,7 @@ static int ssl_recv_unblock(INT32 sock, void *buf, INT32 size, INT32 timeout)
     }
     else if (ret < 0)
     {
-        BoatLog(BOAT_LOG_VERBOSE, "recv data fail");
+        // BoatLog(BOAT_LOG_VERBOSE, "recv data fail");
         return ret;
     }
 
@@ -561,6 +564,8 @@ void BoatClose(BSINT32 sockfd, void **tlsContext, void *rsvd)
     // free tls releated
     //! @todo BOAT_TLS_SUPPORT implementation in crypto default.
     fibo_ssl_sock_close(sockfd);
+#else
+    close(sockfd);
 #endif
 }
 #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
