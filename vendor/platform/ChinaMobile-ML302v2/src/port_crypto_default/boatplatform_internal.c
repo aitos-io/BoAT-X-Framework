@@ -35,30 +35,23 @@
 #include "boatkeystore.h"
 
 #include "cm_fs.h"
-
-/* net releated include */
 #if (PROTOCOL_USE_HLFABRIC == 1)
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
+#include "cm_ssl.h"
 
+// #include <sys/types.h>
+#include "sockets.h"
+// #include <netinet/in.h>
+#include "netdb.h"
+#include "inet.h"
 #include <sys/time.h>
 #endif
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
-// for TTLSContext structure
-#include "http2intf.h"
-#endif
-
-#define GENERATE_KEY_REPEAT_TIMES	100
-
+#define GENERATE_KEY_REPEAT_TIMES 100
 
 uint32_t random32(void)
 {
 	static uint32_t seed = 0;
-	if(seed == 0)
+	if (seed == 0)
 	{
 		seed = osiEpochSecond();
 	}
@@ -69,10 +62,8 @@ uint32_t random32(void)
 	return seed;
 }
 
-
-
 BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
-{	
+{
 	/* param check */
 	if (output == NULL)
 	{
@@ -81,12 +72,11 @@ BOAT_RESULT BoatRandom(BUINT8 *output, BUINT32 outputLen, void *rsvd)
 	}
 
 	(void)rsvd;
-	
+
 	random_buffer(output, outputLen);
 
 	return BOAT_SUCCESS;
 }
-
 
 BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 						  const BUINT8 *digest, BUINT32 digestLen,
@@ -153,33 +143,32 @@ BOAT_RESULT BoatSignature(BoatKeypairPriKeyCtx prikeyCtx,
 	return result;
 }
 
-
 /******************************************************************************
-                              BOAT FILE OPERATION WARPPER
+							  BOAT FILE OPERATION WARPPER
 *******************************************************************************/
 BOAT_RESULT BoatGetStorageSize(BUINT32 *size, void *rsvd)
 {
 	FILE *file_ptr;
 	struct stat st;
 	BSINT32 result = 0;
-	
+
 	(void)rsvd;
-	
+
 	if (size == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param 'size' can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
-	
+
 	result = cm_fs_stat(BOAT_FILE_STOREDATA, &st);
 	if (result != 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to get file status: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
-	
+
 	*size = st.st_size;
-	
+
 	return BOAT_SUCCESS;
 }
 
@@ -205,12 +194,12 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset, BUINT8 *writeBuf, BUINT32 writeLen,
 	BSINT32 file;
 	BSINT32 count = 0;
 	BSINT32 result = 0;
-    BUINT8 *buf_zero = NULL;
-    BUINT32 size;
-    struct stat st;
-	
+	BUINT8 *buf_zero = NULL;
+	BUINT32 size;
+	struct stat st;
+
 	(void)rsvd;
-	
+
 	if (writeBuf == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param 'writeBuf' can't be NULL.");
@@ -218,33 +207,33 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset, BUINT8 *writeBuf, BUINT32 writeLen,
 	}
 
 	/* write to file-system */
-    result = cm_fs_stat(BOAT_FILE_STOREDATA, &st);
-    if (result != 0)
-    {
-        size = 0;
-    }
-    else
-    {
-        size = st.st_size;
-    }
+	result = cm_fs_stat(BOAT_FILE_STOREDATA, &st);
+	if (result != 0)
+	{
+		size = 0;
+	}
+	else
+	{
+		size = st.st_size;
+	}
 
 	file = cm_fs_fopen(BOAT_FILE_STOREDATA, O_WRONLY | O_CREAT);
 	if (file < 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to open file: %s.", BOAT_FILE_STOREDATA);
-        return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
+		return BOAT_ERROR_STORAGE_FILE_OPEN_FAIL;
 	}
 
-    if (size < offset)
-    {
-        buf_zero = BoatMalloc(offset - size);
+	if (size < offset)
+	{
+		buf_zero = BoatMalloc(offset - size);
 		if (buf_zero == NULL)
 		{
 			cm_fs_fclose(file);
 			return BOAT_ERROR_COMMON_OUT_OF_MEMORY;
 		}
 		memset(buf_zero, 0x00, offset - size);
-        cm_fs_fseek(file, 0, SEEK_END);
+		cm_fs_fseek(file, 0, SEEK_END);
 		count = cm_fs_fwrite(file, buf_zero, offset - size);
 		BoatFree(buf_zero);
 		if (count != (offset - size))
@@ -254,11 +243,11 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset, BUINT8 *writeBuf, BUINT32 writeLen,
 			return BOAT_ERROR_STORAGE_FILE_WRITE_FAIL;
 		}
 		cm_fs_fseek(file, 0, SEEK_END);
-    }
-    else
-    {
-        cm_fs_fseek(file, offset, SEEK_SET);
-    }
+	}
+	else
+	{
+		cm_fs_fseek(file, offset, SEEK_SET);
+	}
 
 	count = cm_fs_fwrite(file, writeBuf, writeLen);
 	if (count != writeLen)
@@ -273,7 +262,7 @@ BOAT_RESULT BoatWriteStorage(BUINT32 offset, BUINT8 *writeBuf, BUINT32 writeLen,
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to close file: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_CLOSE_FAIL;
 	}
-	
+
 	return BOAT_SUCCESS;
 }
 
@@ -299,9 +288,9 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 	BSINT32 file;
 	BSINT32 count = 0;
 	BSINT32 result = 0;
-	
+
 	(void)rsvd;
-	
+
 	if (readBuf == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param 'readBuf' can't be NULL.");
@@ -328,145 +317,427 @@ BOAT_RESULT BoatReadStorage(BUINT32 offset, BUINT8 *readBuf, BUINT32 readLen, vo
 		BoatLog(BOAT_LOG_CRITICAL, "Failed to close file: %s.", BOAT_FILE_STOREDATA);
 		return BOAT_ERROR_STORAGE_FILE_CLOSE_FAIL;
 	}
-	
+
 	return BOAT_SUCCESS;
 }
-
 
 BOAT_RESULT BoatRemoveFile(const BCHAR *fileName, void *rsvd)
 {
 	(void)rsvd;
-		
+
 	if (fileName == NULL)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "param which 'fileName' can't be NULL.");
 		return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
 	}
-	
+
 	if (0 != cm_fs_fdelete(fileName))
-    {
-        return BOAT_ERROR_STORAGE_FILE_REMOVE_FAIL;
-    }
-    else
-    {
-        return BOAT_SUCCESS;
-    }
+	{
+		return BOAT_ERROR_STORAGE_FILE_REMOVE_FAIL;
+	}
+	else
+	{
+		return BOAT_SUCCESS;
+	}
 }
 
 /******************************************************************************
-                              BOAT SOCKET WARPPER
-					        THIS ONLY USED BY FABRIC
+							  BOAT SOCKET WARPPER
+							THIS ONLY USED BY FABRIC
 *******************************************************************************/
 #if (PROTOCOL_USE_HLFABRIC == 1)
 BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 {
-    int                 connectfd;
-    char                ip[64];
-    char                port[8];
-    char                *ptr = NULL;
-    struct hostent      *he; 
-    struct sockaddr_in  server;
-    struct sockaddr     localaddr;
-    struct sockaddr_in  *localaddr_ptr;
-    socklen_t           addrlen = sizeof(struct sockaddr);
+	int connectfd;
+	char ip[64];
+	char port[8];
+	char *ptr = NULL;
+	struct hostent *he;
+	struct sockaddr_in server;
+	struct sockaddr localaddr;
+	struct sockaddr_in *localaddr_ptr;
+	socklen_t addrlen = sizeof(struct sockaddr);
 
-    (void)rsvd;
+	(void)rsvd;
 
-    ptr = strchr(address, ':');
-    if (NULL == ptr)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", address);
-        return -1;
-    }
+	ptr = strchr(address, ':');
+	if (NULL == ptr)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "invalid address:%s.", address);
+		return -1;
+	}
 
-    memset(ip  , 0      , sizeof(ip));
-    memset(port, 0      , sizeof(port));
-    memcpy(ip  , address, (int)(ptr - address));
-    memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
+	memset(ip, 0, sizeof(ip));
+	memset(port, 0, sizeof(port));
+	memcpy(ip, address, (int)(ptr - address));
+	memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
 
-    if ((he = gethostbyname(ip)) == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "gethostbyname() error");
-        return -1;
-    }
+	if ((he = gethostbyname(ip)) == NULL)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "gethostbyname() error");
+		return -1;
+	}
 
-    if ((connectfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "socket() error");
-        return -1;
-    }
+	if ((connectfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "socket() error");
+		return -1;
+	}
 
-    struct timeval timeout = {0, 500*1000};
-    setsockopt(connectfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(struct timeval));
-    setsockopt(connectfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(struct timeval));
+	struct timeval timeout = {0, 500 * 1000};
+	setsockopt(connectfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(struct timeval));
+	setsockopt(connectfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(struct timeval));
 
-    memset(&server, 0, sizeof(server));
-    server.sin_family = AF_INET;
-    server.sin_port = htons(atoi(port));
-    server.sin_addr = *((struct in_addr *)(he->h_addr_list[0])); 
+	memset(&server, 0, sizeof(server));
+	server.sin_family = AF_INET;
+	server.sin_port = htons(atoi(port));
+	server.sin_addr = *((struct in_addr *)(he->h_addr_list[0]));
 
-    if (connect(connectfd, (struct sockaddr *)&server,sizeof(struct sockaddr)) < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "connect() error");
-        close(connectfd);
-        return -1;
-    }
-    if (getsockname(connectfd, &localaddr, &addrlen) < 0)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "getsockname() error");
-        close(connectfd);
-        return -1;
-    }
-    else
-    {
-        localaddr_ptr = (struct sockaddr_in*)&localaddr;
-        BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.", 
-        inet_ntoa(localaddr_ptr->sin_addr), htons(localaddr_ptr->sin_port));
-    }
+	if (connect(connectfd, (struct sockaddr *)&server, sizeof(struct sockaddr)) < 0)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "connect() error");
+		close(connectfd);
+		return -1;
+	}
+	if (getsockname(connectfd, &localaddr, &addrlen) < 0)
+	{
+		BoatLog(BOAT_LOG_CRITICAL, "getsockname() error");
+		close(connectfd);
+		return -1;
+	}
+	else
+	{
+		localaddr_ptr = (struct sockaddr_in *)&localaddr;
+		BoatLog(BOAT_LOG_VERBOSE, "localIP: %s:%d.",
+				inet_ntoa(localaddr_ptr->sin_addr), htons(localaddr_ptr->sin_port));
+	}
 
-    BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
+	BoatLog(BOAT_LOG_VERBOSE, "%s:%s[%d] connected!", ip, port, connectfd);
 
-    return connectfd;
+	return connectfd;
 }
 
+#if (BOAT_TLS_SUPPORT == 1)
 
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)	
-BOAT_RESULT BoatTlsInit(const BCHAR *hostName, const BoatFieldVariable *caChain,
-						BSINT32 socketfd, void *tlsContext, void *rsvd)
+// 加密算法数组
+static uint8_t global_cipher_list[1024] = {0};
+
+/**
+ *  \brief 初始化ssl上下文结构体
+ *
+ *  \param [in] ssl_ctx 要初始化的ssl_ctx_t结构体指针
+ *  \return 空
+ *
+ *  \details 用户可根据需要修改其中的默认值
+ */
+void set_ssl_ctx_default(ssl_ctx_t *ssl_ctx)
 {
-	
-	//! @todo BoatTlsInit implementation in crypto default.
-	return BOAT_ERROR;
+	ssl_ctx->init_flg = 0;
+	ssl_ctx->ssl_ver = 4;
+	ssl_ctx->cipher_suit = TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384;
+	// ssl_ctx->cipher_suit = 0xffff;
+	ssl_ctx->sec_lvl = 0;
+	ssl_ctx->ca_cert = NULL;
+	ssl_ctx->client_cert = NULL;
+	ssl_ctx->client_key = NULL;
+	ssl_ctx->ign_rtctime = 0;
+	ssl_ctx->http_enable = 0;
+	ssl_ctx->http_index = -1;
+	ssl_ctx->smtp_style = 0;
+	ssl_ctx->smtp_index = -1;
+	ssl_ctx->wolf_ctx = NULL;
+
+	ssl_ctx->used_cnt = 0;
+}
+
+/**
+ *  \brief 根据指定的SSL版本号，得到相应的SSL协议功能
+ *
+ *  \param [in] ssl_ctx ssl上下文结构体指针
+ *  \return SSL协议功能
+ *
+ *  \details 用户无需修改此函数
+ */
+static wolfSSL_method_func ssl_get_ssl_version_method(ssl_ctx_t *ssl_ctx)
+{
+	if (ssl_ctx == NULL)
+		return (wolfSSL_method_func)wolfTLSv1_1_client_method_ex;
+
+	if (ssl_ctx->ssl_ver == 0)
+		return (wolfSSL_method_func)wolfSSLv3_client_method;
+	if (ssl_ctx->ssl_ver == 1)
+		return (wolfSSL_method_func)wolfTLSv1_client_method;
+	if (ssl_ctx->ssl_ver == 2)
+		return (wolfSSL_method_func)wolfTLSv1_1_client_method;
+	if (ssl_ctx->ssl_ver == 3)
+		return (wolfSSL_method_func)wolfTLSv1_2_client_method;
+	if (ssl_ctx->ssl_ver == 4)
+		return (wolfSSL_method_func)wolfSSLv23_client_method; // use highest possible version
+
+	return (wolfSSL_method_func)NULL;
+}
+/**
+ *  \brief 获取加密套件
+ *
+ *  \param [in] buf 加密套件保存数组
+ *  \return 0：成功 -1：失败
+ *
+ *  \details 用户无需修改此函数
+ */
+static int8_t ssl_get_full_cipher_list(uint8_t *buf)
+{
+	uint8_t *cipher_item = NULL;
+	uint16_t len = 0;
+
+	if (buf == NULL)
+		return -1;
+
+	cipher_item = (uint8_t *)GetCipherNameInternal(0, TLS_RSA_WITH_AES_256_CBC_SHA);
+	if (cipher_item != NULL)
+		len += sprintf(buf + len, "%s:", cipher_item);
+
+	cipher_item = (uint8_t *)GetCipherNameInternal(0, TLS_RSA_WITH_AES_128_CBC_SHA);
+	if (cipher_item != NULL)
+		len += sprintf(buf + len, "%s:", cipher_item);
+
+	cipher_item = (uint8_t *)GetCipherNameInternal(0, SSL_RSA_WITH_RC4_128_SHA);
+	if (cipher_item != NULL)
+		len += sprintf(buf + len, "%s:", cipher_item);
+
+	cipher_item = (uint8_t *)GetCipherNameInternal(0, SSL_RSA_WITH_RC4_128_MD5);
+	if (cipher_item != NULL)
+		len += sprintf(buf + len, "%s:", cipher_item);
+
+	cipher_item = (uint8_t *)GetCipherNameInternal(0, SSL_RSA_WITH_3DES_EDE_CBC_SHA);
+	if (cipher_item != NULL)
+		len += sprintf(buf + len, "%s:", cipher_item);
+
+	cipher_item = (uint8_t *)GetCipherNameInternal(0, TLS_RSA_WITH_AES_256_CBC_SHA256);
+	if (cipher_item != NULL)
+		len += sprintf(buf + len, "%s", cipher_item);
+
+	if (strlen(buf) == 0)
+		return -1;
+
+	return 0;
+}
+
+// WOFFSSL初始化标志
+uint8_t wolf_ssl_init_flg = 0;
+
+/**
+ *  \brief ssl模块初始化函数
+ *
+ *  \param [in] ssl_ctx ssl上下文结构体
+ *  \return 0：成功 -1：失败
+ *
+ *  \details 用户无需修改此函数
+ */
+int8_t wolf_ssl_init(ssl_ctx_t *ssl_ctx)
+{
+	wolfSSL_method_func method = NULL;
+	int32_t ret = 0;
+
+	if (ssl_ctx == NULL)
+	{
+		cm_sys_log("wolf_ssl_init input error");
+		return -1;
+	}
+
+	if (wolf_ssl_init_flg == 0)
+	{
+		wolf_ssl_init_flg = 1;
+		wolfSSL_Debugging_ON();
+		wolfSSL_Init();
+	}
+
+	method = ssl_get_ssl_version_method(ssl_ctx);
+	if (ssl_ctx->wolf_ctx == NULL)
+	{
+		ssl_ctx->wolf_ctx = SSL_CTX_new(method(NULL));
+		if (ssl_ctx->wolf_ctx == NULL)
+		{
+			cm_sys_log("wolf_ssl_init ssl ctx new error");
+			return -1;
+		}
+	}
+	else if (ssl_ctx->used_cnt > 0)
+	{
+		cm_sys_log("wolf_ssl_init ssl ctx busy, can't reconfig");
+		return 0;
+	}
+
+	if (ssl_ctx->cipher_suit != 0xffff)
+	{
+		ret = wolfSSL_CTX_set_cipher_list(ssl_ctx->wolf_ctx, GetCipherNameInternal(ECC_BYTE, ssl_ctx->cipher_suit));
+	}
+	else
+	{
+
+		ssl_get_full_cipher_list(global_cipher_list);
+		ret = wolfSSL_CTX_set_cipher_list(ssl_ctx->wolf_ctx, (const char *)global_cipher_list);
+	}
+
+	if (ret != WOLFSSL_SUCCESS)
+	{
+		cm_sys_log("wolf_ssl_init cipher set error");
+		return -1;
+	}
+
+	if (ssl_ctx->sec_lvl == 0)
+		wolfSSL_CTX_set_verify(ssl_ctx->wolf_ctx, WOLFSSL_VERIFY_NONE, NULL);
+	else
+	{
+		int32_t format = SSL_FILETYPE_PEM;
+		int ret = 0;
+		// 加载密钥证书
+		cm_sys_log("sec level 1\n");
+		wolfSSL_CTX_set_verify(ssl_ctx->wolf_ctx, WOLFSSL_VERIFY_PEER, NULL);
+		cm_sys_log("sec level 1\n");
+		ret = wolfSSL_CTX_load_verify_buffer(ssl_ctx->wolf_ctx, ssl_ctx->ca_cert, strlen(ssl_ctx->ca_cert), format);
+		if (ret != WOLFSSL_SUCCESS)
+		{
+			cm_sys_log("[SSL]ca load error\n");
+			return -1;
+		}
+	}
+
+	if (ssl_ctx->sec_lvl == 2)
+	{
+		cm_sys_log("[SSL]sec level 2\n");
+		int ret = 0;
+		int32_t format = SSL_FILETYPE_PEM;
+		ret = wolfSSL_CTX_use_certificate_chain_buffer_format(ssl_ctx->wolf_ctx, ssl_ctx->client_cert, strlen(ssl_ctx->client_cert), format);
+		if (ret != WOLFSSL_SUCCESS)
+		{
+			cm_sys_log("%s local ca file use error", __func__);
+			return -1;
+		}
+
+		ret = wolfSSL_CTX_use_PrivateKey_buffer(ssl_ctx->wolf_ctx, ssl_ctx->client_key, strlen(ssl_ctx->client_key), format);
+		if (ret != WOLFSSL_SUCCESS)
+		{
+			cm_sys_log("%s local key file use error", __func__);
+			return -1;
+		}
+	}
+
+	return 0;
+}
+
+BOAT_RESULT BoatTlsInit(const BCHAR *address, const BCHAR *hostName, const BoatFieldVariable caChain, const BoatFieldVariable clientPrikey,
+						const BoatFieldVariable clientCert, BSINT32 *socketfd, void **tlsContext, void *rsvd)
+{
+	BCHAR *clientcert;
+	BCHAR *clientprikey;
+	BCHAR *caphain;
+	ssl_ctx_t test_ssl_ctx;
+	int ret = 0;
+	ret = BoatConnect(address, NULL);
+	if (ret == -1)
+	{
+		BoatLog(BOAT_LOG_NORMAL, "socket connect fail ");
+		return BOAT_ERROR;
+	}
+
+	*socketfd = ret;
+	// 初始化SSL上下文
+	set_ssl_ctx_default(&test_ssl_ctx);
+	BoatSleep(1);
+	test_ssl_ctx.sec_lvl = 1; // 1 校验服务器    2、双向校验     0：不校验
+#if (BOAT_TLS_IDENTIFY_CLIENT == 1)
+	test_ssl_ctx.client_cert = clientCert.field_ptr;
+	test_ssl_ctx.client_key = clientPrikey.field_ptr;
+	test_ssl_ctx.sec_lvl = 2; // 1 校验服务器    2、双向校验     0：不校验
+#endif
+	test_ssl_ctx.ca_cert = caChain.field_ptr; // ca证书
+
+	BoatSleep(1);
+
+	// 初始化SSL模块
+	wolf_ssl_init(&test_ssl_ctx);
+
+	BoatSleep(1);
+
+	// 新建WOLFSSL实例
+	*tlsContext = wolfSSL_new(test_ssl_ctx.wolf_ctx);
+
+	BoatSleep(1);
+	// 绑定socket号到WOLFSSL实例
+	SSL_set_fd(*tlsContext, *socketfd);
+	// 启动WOLFSSL连接握手
+	if ((SSL_connect(*tlsContext)) == WOLFSSL_SUCCESS)
+	{
+		// 连接握手成功
+		BoatLog(BOAT_LOG_NORMAL, "WOLFSSL_CONNECT_SUCCESS");
+	}
+	else
+	{
+		// 失败
+		BoatLog(BOAT_LOG_NORMAL, "WOLFSSL_CONNECT_ERROR");
+		wolfSSL_free(*tlsContext);
+	}
+
+	BoatLog(BOAT_LOG_NORMAL, " BoatTlsInit OK");
+	return BOAT_SUCCESS;
 }
 #endif
 
-
 BSINT32 BoatSend(BSINT32 sockfd, void *tlsContext, const void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
-	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
-	return -1;
-#else
-	return send(sockfd, buf, len, 0);	
-#endif	
-}
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+	size_t written_len = 0;
 
+	while (written_len < len)
+	{
+		int ret = wolfSSL_write(tlsContext, (unsigned char *)(buf + written_len), (len - written_len));
+		if (ret > 0)
+		{
+			written_len += ret;
+			continue;
+		}
+		else if (ret == 0)
+		{
+			return written_len;
+		}
+		else
+		{
+			return -1; /* Connnection error */
+		}
+	}
+
+	return written_len;
+#else
+	return send(sockfd, buf, len, 0);
+#endif
+}
 
 BSINT32 BoatRecv(BSINT32 sockfd, void *tlsContext, void *buf, size_t len, void *rsvd)
 {
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
-	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
-	return -1;
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
+	int ret = wolfSSL_read(tlsContext, buf, len);
+
+	if (ret >= 0)
+	{
+		// BoatLog(BOAT_LOG_VERBOSE, "recv data size:%d", ret);
+		return ret;
+	}
+	else if (ret < 0)
+	{
+		BoatLog(BOAT_LOG_VERBOSE, "recv data fail");
+		return ret;
+	}
 #else
 	return recv(sockfd, buf, len, 0);
-#endif	
+#endif
 }
 
-
-void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
+void BoatClose(BSINT32 sockfd, void **tlsContext, void *rsvd)
 {
+	wolfSSL_free(*tlsContext);
 	close(sockfd);
-#if (BOAT_HLFABRIC_TLS_SUPPORT == 1) 
+	*tlsContext = NULL;
+#if (BOAT_HLFABRIC_TLS_SUPPORT == 1)
 	// free tls releated
 	//! @todo BOAT_HLFABRIC_TLS_SUPPORT implementation in crypto default.
 #endif
@@ -474,7 +745,7 @@ void BoatClose(BSINT32 sockfd, void *tlsContext, void *rsvd)
 #endif /* #if (PROTOCOL_USE_HLFABRIC == 1) */
 
 /******************************************************************************
-                              BOAT KEY PROCESS WARPPER
+							  BOAT KEY PROCESS WARPPER
 *******************************************************************************/
 static BOAT_RESULT sBoatPort_keyCreate_internal_generation(const BoatKeypairPriKeyCtx_config *config,
 														   BoatKeypairDataCtx *pkCtx)
@@ -666,7 +937,7 @@ BOAT_RESULT BoatPort_keyDelete(BoatKeypairPriKeyCtx *pkCtx)
 }
 
 /******************************************************************************
-                              BOAT AES WARPPER
+							  BOAT AES WARPPER
 *******************************************************************************/
 BOAT_RESULT BoatAesEncrypt(BUINT8 iv[16], const BUINT8 *key, const BUINT8 *input, size_t length, BUINT8 *output)
 {
