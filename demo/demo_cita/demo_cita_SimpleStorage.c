@@ -130,9 +130,9 @@ __BOATSTATIC BOAT_RESULT createNetwork()
 
     /* create ciat wallet */
 #if defined(USE_ONETIME_WALLET) 
-    result = BoatCitaNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    result = BoATCitaNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
 #elif defined(USE_CREATE_PERSIST_WALLET)
-    result = BoatCitaNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    result = BoATCitaNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
 #else
     result = BOAT_ERROR;
 #endif
