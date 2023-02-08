@@ -102,7 +102,7 @@ BOAT_RESULT BoATFiscobcos_FreeNetworkContext(BoatFiscobcosNetworkContext network
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatFiscobcosNetworkCreate(BoatFiscobcosNetworkConfig *networkConfig, BoatStoreType storeType);
+BOAT_RESULT BoATFiscobcosNetworkCreate(BoatFiscobcosNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
  * @description:
