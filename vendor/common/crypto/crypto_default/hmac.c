@@ -149,7 +149,7 @@ void hmac_sha512_Final(HMAC_SHA512_CTX *hctx, uint8_t *hmac)
   sha512_Final(&(hctx->ctx), hmac);
   sha512_Init(&(hctx->ctx));
   sha512_Update(&(hctx->ctx), hctx->o_key_pad, SHA512_BLOCK_LENGTH);
-  sha512_Update(&(hctx->ctx), hmac, SHA512_DIGEST_LENGTH);
+  sha512_Update(&(hctx->ctx), hmac, DEFAULT_SHA512_DIGEST_LENGTH);
   sha512_Final(&(hctx->ctx), hmac);
   memzero(hctx, sizeof(HMAC_SHA512_CTX));
 }

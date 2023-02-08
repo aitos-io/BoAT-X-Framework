@@ -41,8 +41,8 @@
 #define CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH 32
 #define SHA256_DIGEST_STRING_LENGTH (CRYPTO_DEFAULT_SHA256_DIGEST_LENGTH * 2 + 1)
 #define SHA512_BLOCK_LENGTH 128
-#define SHA512_DIGEST_LENGTH 64
-#define SHA512_DIGEST_STRING_LENGTH (SHA512_DIGEST_LENGTH * 2 + 1)
+#define DEFAULT_SHA512_DIGEST_LENGTH 64
+#define SHA512_DIGEST_STRING_LENGTH (DEFAULT_SHA512_DIGEST_LENGTH * 2 + 1)
 
 typedef struct _SHA1_CTX
 {
@@ -113,9 +113,9 @@ char *sha256_Data(const uint8_t *, size_t, char[SHA256_DIGEST_STRING_LENGTH]);
 void sha512_Transform(const uint64_t *state_in, const uint64_t *data, uint64_t *state_out);
 void sha512_Init(DEFAULT_SHA512_CTX *);
 void sha512_Update(DEFAULT_SHA512_CTX *, const uint8_t *, size_t);
-void sha512_Final(DEFAULT_SHA512_CTX *, uint8_t[SHA512_DIGEST_LENGTH]);
+void sha512_Final(DEFAULT_SHA512_CTX *, uint8_t[DEFAULT_SHA512_DIGEST_LENGTH]);
 char *sha512_End(DEFAULT_SHA512_CTX *, char[SHA512_DIGEST_STRING_LENGTH]);
-void sha512_Raw(const uint8_t *, size_t, uint8_t[SHA512_DIGEST_LENGTH]);
+void sha512_Raw(const uint8_t *, size_t, uint8_t[DEFAULT_SHA512_DIGEST_LENGTH]);
 char *sha512_Data(const uint8_t *, size_t, char[SHA512_DIGEST_STRING_LENGTH]);
 
 #endif
