@@ -1333,7 +1333,7 @@ START_TEST(test_002CrossNetwork_0009CreateOneTimeNetworkSuccess_cita)
     rtnVal = getCitaNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatCitaNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATCitaNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -1582,7 +1582,7 @@ START_TEST(test_002CrossNetwork_0012Create6thPersistNetworkFail)
     rtnVal = getCitaNetworkConfig(&Cita_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatCitaNetworkCreate(&Cita_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATCitaNetworkCreate(&Cita_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
        Already created BOAT_MAX_NETWORK_NUM persist networks, return BOAT_ERROR_NETWORK_INDEX_EXCEED */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INDEX_EXCEED);
@@ -1903,7 +1903,7 @@ START_TEST(test_002CrossNetwork_0016CreatOtherNetworks_Success)
     rtnVal = getCitaNetworkConfig(&Cita_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatCitaNetworkCreate(&Cita_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATCitaNetworkCreate(&Cita_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         This is the fifth persist network, index must be 5 */
     ck_assert_int_eq(rtnVal, 5);
