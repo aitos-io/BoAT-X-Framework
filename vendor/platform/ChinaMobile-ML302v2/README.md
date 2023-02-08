@@ -110,6 +110,21 @@
   #define HAVE_TLS_EXTENSIONS
   #define HAVE_SUPPORTED_CURVES
   ```
+  
+  找到`<ML302 Root>\src\demo\wolfssl-3.15.3\src\internal.c`中的`word32 LowResTimer(void)`，如下：
+  ```
+    word32 LowResTimer(void)
+    {
+        return (word32)XTIME(0);
+    }
+  ```
+  修改为：
+  ```
+    word32 LowResTimer(void)
+    {
+        return (word32)osiEpochSecond();
+    }
+  ```
 
 ## 四、编译BoAT-X-Framework静态库
 
