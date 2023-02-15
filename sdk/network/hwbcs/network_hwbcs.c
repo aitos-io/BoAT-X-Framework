@@ -1062,7 +1062,7 @@ __BOATSTATIC BOAT_RESULT BoATHwbcs_NetworkDataCtx_Store(BoatHwbcsNetworkData *mN
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatHwbcsNetworkCreate(BoatHwbcsNetworkConfig *networkConfig, BoatStoreType storeType)
+BOAT_RESULT BoATHwbcsNetworkCreate(BoatHwbcsNetworkConfig *networkConfig, BoatStoreType storeType)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatHwbcsNetworkData mNetworkDataCtx;
