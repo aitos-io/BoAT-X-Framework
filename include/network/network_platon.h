@@ -102,7 +102,7 @@ BOAT_RESULT BoATPlatON_FreeNetworkContext(BoatPlatONNetworkContext networkList);
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatPlatONNetworkCreate(BoatPlatONNetworkConfig *networkConfig, BoatStoreType storeType);
+BOAT_RESULT BoATPlatONNetworkCreate(BoatPlatONNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
  * @description:
