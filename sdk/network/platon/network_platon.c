@@ -748,7 +748,7 @@ __BOATSTATIC BOAT_RESULT BoATPlatON_NetworkDataCtx_Store(BoatPlatONNetworkData *
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatPlatONNetworkCreate(BoatPlatONNetworkConfig *networkConfig, BoatStoreType storeType)
+BOAT_RESULT BoATPlatONNetworkCreate(BoatPlatONNetworkConfig *networkConfig, BoatStoreType storeType)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatPlatONNetworkData mNetworkDataCtx;
