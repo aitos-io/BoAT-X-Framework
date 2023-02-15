@@ -1101,7 +1101,7 @@ START_TEST(test_002CrossNetwork_0006CreateOneTimeNetworkSuccess_hwbcs)
     rtnVal = hwbcs_getNetworkCfg(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatHwbcsNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATHwbcsNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* free configuration struct */
     hwbcsWalletConfigFree(network_config);
     /* check index of onetime network , the index must equal 0 */
@@ -1544,7 +1544,7 @@ START_TEST(test_002CrossNetwork_0012Create6thPersistNetworkFail)
     rtnVal = hwbcs_getNetworkCfg(&Hwbcs_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatHwbcsNetworkCreate(&Hwbcs_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHwbcsNetworkCreate(&Hwbcs_network_config, BOAT_STORE_TYPE_FLASH);
     /* free configuration struct */
     hwbcsWalletConfigFree(Hwbcs_network_config);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
@@ -1883,7 +1883,7 @@ START_TEST(test_002CrossNetwork_0016CreatOtherNetworks_Success)
     rtnVal = hwbcs_getNetworkCfg(&Hwbcs_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatHwbcsNetworkCreate(&Hwbcs_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHwbcsNetworkCreate(&Hwbcs_network_config, BOAT_STORE_TYPE_FLASH);
     /* free configuration struct */
     hwbcsWalletConfigFree(Hwbcs_network_config);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
