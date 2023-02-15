@@ -184,9 +184,9 @@ __BOATSTATIC BOAT_RESULT hw_bcs_NetworkPrepare(void)
 	memcpy(networkConfig.nodesCfg.orderCfg.endorser[0].hostName, hw_bcs_demo_order_hostName, strlen(hw_bcs_demo_order_hostName) + 1);
 	/* create hwbcs wallet */
 #if defined(USE_ONETIME_WALLET)
-	result = BoatHwbcsNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
+	result = BoATHwbcsNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
 #elif defined(USE_CREATE_PERSIST_WALLET)
-	result = BoatHwbcsNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
+	result = BoATHwbcsNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
 #else
 	return BOAT_ERROR;
 #endif
