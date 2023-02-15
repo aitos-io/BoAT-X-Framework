@@ -162,7 +162,7 @@ BOAT_RESULT BoATHwbcs_FreeNetworkContext(BoatHwbcsNetworkContext networkList);
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatHwbcsNetworkCreate(BoatHwbcsNetworkConfig *networkConfig, BoatStoreType storeType);
+BOAT_RESULT BoATHwbcsNetworkCreate(BoatHwbcsNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
  * @description:
