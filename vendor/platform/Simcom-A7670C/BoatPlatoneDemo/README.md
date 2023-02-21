@@ -12,9 +12,11 @@
 
 1、拷贝 BoAT代码，将 BoAT-X-Framework 整个文件夹拷贝至`<A7670C Root>`下。
 
-2、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_demo`到`<A7670C Root>`下。
+2、拷贝 `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_demo/src`下的文件到`<A7670C Root>/sc_demo/src`下。
 
-3、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_application.c`到`<A7670C Root>`下。
+3、拷贝 `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_demo/inc`下的文件到`<A7670C Root>/sc_demo/inc`下。
+
+4、拷贝并覆盖 `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_application.c`到`<A7670C Root>`下。
 
 拷贝后的目录和文件结构如下：
 ```
@@ -120,6 +122,12 @@
   ${CMAKE_SOURCE_DIR}/BoAT-X-Framework/sdk/network/platone
   ```
 
+  再找到 `list(APPEND sc_demo_src ./src/demo_helloworld.c)`，然后在下方添加以下内容：
+  ```
+  list(APPEND sc_demo_src ./src/boat_platone_demo.c)
+  list(APPEND sc_demo_src ./src/my_contract.cpp.abi.c)
+  ```
+
 
 ## 四、编译BoAT-X-Framework静态库
 
@@ -133,8 +141,8 @@
    #### b、打开Cygwin终端进入BoAT-X-Framework目录编译BoAT静态库
    ```
    cd <A7670C Root>/BoAT-X-Framework
-   ../tools/win32/GNUmake.exe clean
-   ../tools/win32/GNUmake.exe all
+   make clean
+   make all
    ```
    
    编译成功后，在BoAT-X-Framework/lib下会生成静态库`libboatvendor.a`、`libboatwallet.a`。
@@ -148,7 +156,7 @@
    ```
    cd <A7670C Root>
    make clean
-   make A7670C_LANS
+   make A7670C_LANS_1606_V701
    ```
 
-   编译成功会在`<A7670C Root>/out`下生成`A7670C_LANS.zip`下载文件。
+   编译成功会在`<A7670C Root>/out`下生成`A7670C_LANS_1606_V701.zip`下载文件。

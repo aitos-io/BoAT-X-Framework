@@ -12,9 +12,11 @@ Assuming `<A7670C Root>` to be the root directory of A7670C SDK:
 
 1. Copy the entire BoAT-X-Framework directory into `<A7670C Root>/app`.
 
-2. Copy `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_demo` into `<A7670C Root>`.
+2. Copy files under `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_demo/src` into `<A7670C Root>/sc_demo/src`.
 
-3. Copy `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_application.c` into `<A7670C Root>`.
+3. Copy files under `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_demo/inc` into `<A7670C Root>/sc_demo/inc`.
+
+4. Copy and replace `BoAT-X-Framework/vendor/platform/Simcom-A7670C/BoatPlatoneDemo/A7670CRootDirCode/sc_application.c` into `<A7670C Root>`.
 
 
 After these files copied, the directory structure should look like:
@@ -120,6 +122,12 @@ After these files copied, the directory structure should look like:
   ${CMAKE_SOURCE_DIR}/BoAT-X-Framework/vendor/platform/include
   ${CMAKE_SOURCE_DIR}/BoAT-X-Framework/sdk/network/platone
   ```
+
+  Then, find `list(APPEND sc_demo_src ./src/demo_helloworld.c)`, add the following content in the last new line:
+  ```
+  list(APPEND sc_demo_src ./src/boat_platone_demo.c)
+  list(APPEND sc_demo_src ./src/my_contract.cpp.abi.c)
+  ```
   
 
 ## Compile BoAT-X-Framework Static library
@@ -131,11 +139,11 @@ After these files copied, the directory structure should look like:
    PLATFORM_TARGET ?= Simcom-A7670C
    ```
    
-   #### b. Open a Cygwin shell, enter <A7670C Root>/BoAT-X-Framework directory and compile BoAT static library
+   #### b. Open a Windows cmd, enter <A7670C Root>/BoAT-X-Framework directory and compile BoAT static library
    ```
    cd <A7670C Root>/BoAT-X-Framework
-   ../tools/win32/GNUmake.exe clean
-   ../tools/win32/GNUmake.exe all
+   make clean
+   make all
    ```
    
    After compiling, static library `libboatvendor.a` and `libboatwallet.a` will be created in `<A7670C Root>/BoAT-X-Framework/lib` directory.
@@ -149,7 +157,7 @@ After these files copied, the directory structure should look like:
    ```
    cd <A7670C Root>
    make clean
-   make A7670C_LANS
+   make A7670C_LANS_1606_V701
    ```
    
-   The download file `A7670C_LANS.zip` will be generated under `<A7670C Root>/out` once compiled successfully.
+   The download file `A7670C_LANS_1606_V701.zip` will be generated under `<A7670C Root>/out` once compiled successfully.
