@@ -43,7 +43,6 @@
 #include "http2intf.h"
 #include "simcom_tcpip_old.h"
 #include "simcom_ssl.h"
-#include "boat_simcom_ssl.h"
 #endif
 
 // #if (PROTOCOL_USE_HLFABRIC == 1)
@@ -344,21 +343,21 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 	memcpy(ip, address, (int)(ptr - address));
 	memcpy(port, ptr + 1, strlen(address) - (int)(ptr - address));
 
-	if (-1 == sAPI_TcpipPdpActive(1, 1))
-	{
-		BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipPdpActive() error");
-		return -1;
-	}
+	// if (-1 == sAPI_TcpipPdpActive(1, 1))
+	// {
+	// 	BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipPdpActive() error");
+	// 	return -1;
+	// }
 
 	sockfd = sAPI_TcpipSocket(SC_AF_INET, SC_SOCK_STREAM, SC_IPPROTO_TCP);
 	BoatLog(BOAT_LOG_CRITICAL, "BoatConnect sockfd[%d]", sockfd);
 	if (sockfd < 0)
 	{
 		BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipSocket() error");
-		if (-1 == sAPI_TcpipPdpDeactive(1, 1))
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipPdpDeactive() error");
-		}
+		// if (-1 == sAPI_TcpipPdpDeactive(1, 1))
+		// {
+		// 	BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipPdpDeactive() error");
+		// }
 		return -1;
 	}
 
@@ -369,10 +368,10 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 		sAPI_SslClose(0);
 		sAPI_TcpipClose(sockfd);
 		BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipGethostbyname() error");
-		if (-1 == sAPI_TcpipPdpDeactive(1, 1))
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipPdpDeactive() error");
-		}
+		// if (-1 == sAPI_TcpipPdpDeactive(1, 1))
+		// {
+		// 	BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipPdpDeactive() error");
+		// }
 		return -1;
 	}
 
@@ -387,10 +386,10 @@ BSINT32 BoatConnect(const BCHAR *address, void *rsvd)
 		sAPI_SslClose(0);
 		sAPI_TcpipClose(sockfd);
 		BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipConnect() error");
-		if (-1 == sAPI_TcpipPdpDeactive(1, 1))
-		{
-			BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipPdpDeactive() error");
-		}
+		// if (-1 == sAPI_TcpipPdpDeactive(1, 1))
+		// {
+		// 	BoatLog(BOAT_LOG_CRITICAL, "sAPI_TcpipPdpDeactive() error");
+		// }
 		return -1;
 	}
 
