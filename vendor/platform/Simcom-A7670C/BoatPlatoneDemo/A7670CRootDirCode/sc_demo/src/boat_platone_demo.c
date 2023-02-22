@@ -79,7 +79,7 @@ __BOATSTATIC BOAT_RESULT createOnetimeNetwork(void)
     strncpy(network_config.node_url_str, demoUrl, BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
 
 	/* create platone network */
-    result = BoatPlatoneNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
+    result = BoATPlatoneNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
 
     if (result < 0)
 	{
