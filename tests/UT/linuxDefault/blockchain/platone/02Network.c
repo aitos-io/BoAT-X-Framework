@@ -82,7 +82,7 @@ START_TEST(test_002Network_0001CreateOnetimeNetworkSuccess)
     BoatIotSdkInit();
     /* 1. Create network */
     networkConfig = get_platone_network_settings();
-    networkIndex = BoatPlatoneNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
+    networkIndex = BoATPlatoneNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
 
     /* 2.Verify network */
@@ -112,7 +112,7 @@ START_TEST(test_002Network_0002CreateOnetimeNetworkFailureNullConfig)
 
     BoatIotSdkInit();
     /* Create network */
-    networkIndex = BoatPlatoneNetworkCreate(NULL,BOAT_STORE_TYPE_RAM);
+    networkIndex = BoATPlatoneNetworkCreate(NULL,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
     BoatIotSdkDeInit();
@@ -134,7 +134,7 @@ START_TEST(test_002Network_0003CreateOnetimeNetworkSuccessTwice)
     memset(networkConfig1.node_url_str,0U,BOAT_PLATONE_NODE_URL_MAX_LEN);
     strncpy(networkConfig1.node_url_str, "nodeUrl1", BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
 
-    networkIndex1 = BoatPlatoneNetworkCreate(&networkConfig1,BOAT_STORE_TYPE_RAM);
+    networkIndex1 = BoATPlatoneNetworkCreate(&networkConfig1,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex1, 0);
 
     /* 1.Create network twice*/
@@ -143,7 +143,7 @@ START_TEST(test_002Network_0003CreateOnetimeNetworkSuccessTwice)
     memset(networkConfig2.node_url_str,0U,BOAT_PLATONE_NODE_URL_MAX_LEN);
     strncpy(networkConfig2.node_url_str, "nodeUrl2", BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
 
-    networkIndex2 = BoatPlatoneNetworkCreate(&networkConfig2,BOAT_STORE_TYPE_RAM);
+    networkIndex2 = BoATPlatoneNetworkCreate(&networkConfig2,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex2, 0);
 
     /* 3.Check network*/
@@ -182,7 +182,7 @@ START_TEST(test_002Network_0004CreatePersistNetworkSuccess)
     BoatIotSdkInit();
     /* 1. Create network */
     networkConfig = get_platone_network_settings();
-    networkIndex = BoatPlatoneNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
+    networkIndex = BoATPlatoneNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(networkIndex,5);
     ck_assert_int_gt(networkIndex,0);
 
@@ -225,7 +225,7 @@ START_TEST(test_002Network_0005Create2PersistNetworkSuccess)
     memset(networkConfig1.node_url_str,0U,BOAT_PLATONE_NODE_URL_MAX_LEN);
     strncpy(networkConfig1.node_url_str, "nodeUrl1", BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
 
-    networkIndex1 = BoatPlatoneNetworkCreate(&networkConfig1,BOAT_STORE_TYPE_FLASH);
+    networkIndex1 = BoATPlatoneNetworkCreate(&networkConfig1,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(networkIndex1,5);
     ck_assert_int_gt(networkIndex1,0);
 
@@ -235,7 +235,7 @@ START_TEST(test_002Network_0005Create2PersistNetworkSuccess)
     memset(networkConfig2.node_url_str,0U,BOAT_PLATONE_NODE_URL_MAX_LEN);
     strncpy(networkConfig2.node_url_str, "nodeUrl2", BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
 
-    networkIndex2 = BoatPlatoneNetworkCreate(&networkConfig2,BOAT_STORE_TYPE_FLASH);
+    networkIndex2 = BoATPlatoneNetworkCreate(&networkConfig2,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(networkIndex2,5);
     ck_assert_int_gt(networkIndex2,0);
 
@@ -283,7 +283,7 @@ START_TEST(test_002Network_0006CreatePersistNetworkFailureNullConfig)
 
     BoatIotSdkInit();
     /* Create network */
-    networkIndex = BoatPlatoneNetworkCreate(NULL,BOAT_STORE_TYPE_FLASH);
+    networkIndex = BoATPlatoneNetworkCreate(NULL,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_eq(networkIndex, BOAT_ERROR_COMMON_INVALID_ARGUMENT);
     
     BoatIotSdkDeInit();
@@ -299,7 +299,7 @@ START_TEST(test_002Network_0007DeleteOnetimeNetworkSuccess)
     BoatIotSdkInit();
     /* 1. Execute 003_0001 */
     networkConfig = get_platone_network_settings();
-    networkIndex = BoatPlatoneNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
+    networkIndex = BoATPlatoneNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
 
     BoatPlatoneNetworkData networkData;
@@ -347,7 +347,7 @@ START_TEST(test_002Network_0008DeleteOnetimeNetworkFailureNonExistentIndex)
     BoatIotSdkInit();
     /* 1. Execute 003_0001 */
     networkConfig = get_platone_network_settings();
-    networkIndex = BoatPlatoneNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
+    networkIndex = BoATPlatoneNetworkCreate(&networkConfig,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(networkIndex, 0);
 
     BoatPlatoneNetworkData networkData;
@@ -386,7 +386,7 @@ START_TEST(test_002Network_0009DeletePersistNetworkSuccess)
     BoatIotSdkInit();
     /* 1. Create persist network */
     networkConfig = get_platone_network_settings();
-    networkIndex = BoatPlatoneNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
+    networkIndex = BoATPlatoneNetworkCreate(&networkConfig,BOAT_STORE_TYPE_FLASH);
     ck_assert_int_lt(networkIndex,5);
     ck_assert_int_gt(networkIndex,0);
 
