@@ -55,7 +55,7 @@ __BOATSTATIC BoatPlatoneWallet *platoneOnetimeWalletPrepare()
     memset(network_config.node_url_str,0U,BOAT_PLATONE_NODE_URL_MAX_LEN);
     strncpy(network_config.node_url_str, TEST_PLATONE_NODE_URL, BOAT_PLATONE_NODE_URL_MAX_LEN - 1);
 
-    network_index = BoatPlatoneNetworkCreate(&network_config,BOAT_STORE_TYPE_RAM);
+    network_index = BoATPlatoneNetworkCreate(&network_config,BOAT_STORE_TYPE_RAM);
     ck_assert_int_eq(network_index, 0);
 
     wallet = BoatPlatoneWalletInit(keypair_index,network_index);
