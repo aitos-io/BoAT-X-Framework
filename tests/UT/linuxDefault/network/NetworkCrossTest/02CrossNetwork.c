@@ -869,7 +869,7 @@ START_TEST(test_002CrossNetwork_0003CreateOneTimeNetworkSuccess_platone)
     rtnVal = getPlatoneNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatPlatoneNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATPlatoneNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -1496,7 +1496,7 @@ START_TEST(test_002CrossNetwork_0011Create5PersistNetworkSuccess)
     rtnVal = getPlatoneNetworkConfig(&Platone_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatPlatoneNetworkCreate(&Platone_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATPlatoneNetworkCreate(&Platone_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         This is the third persist network, index must be 3 */
     ck_assert_int_eq(rtnVal, 3);
@@ -1950,7 +1950,7 @@ START_TEST(test_002CrossNetwork_0017CreateAnother6thPersistNetworkFail)
     rtnVal = getPlatoneNetworkConfig(&Platone_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatPlatoneNetworkCreate(&Platone_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATPlatoneNetworkCreate(&Platone_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         Already created BOAT_MAX_NETWORK_NUM persist networks, return BOAT_ERROR_NETWORK_INDEX_EXCEED */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INDEX_EXCEED);
