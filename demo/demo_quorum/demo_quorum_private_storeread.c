@@ -132,9 +132,9 @@ __BOATSTATIC BOAT_RESULT createNetwork()
 
 	/* create platone network */
 #if defined(USE_ONETIME_WALLET)
-    result = BoatQuorumNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
+    result = BoATQuorumNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
 #elif defined(USE_CREATE_PERSIST_WALLET)
-    result = BoatQuorumNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
+    result = BoATQuorumNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
 #else
     result = BOAT_ERROR;
 #endif
