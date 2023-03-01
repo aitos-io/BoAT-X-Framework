@@ -748,7 +748,7 @@ __BOATSTATIC BOAT_RESULT BoATQuorum_NetworkDataCtx_Store(BoatQuorumNetworkData *
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatQuorumNetworkCreate(BoatQuorumNetworkConfig *networkConfig, BoatStoreType storeType)
+BOAT_RESULT BoATQuorumNetworkCreate(BoatQuorumNetworkConfig *networkConfig, BoatStoreType storeType)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatQuorumNetworkData mNetworkDataCtx;
