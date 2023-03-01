@@ -102,7 +102,7 @@ BOAT_RESULT BoATQuorum_FreeNetworkContext(BoatQuorumNetworkContext networkList);
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatQuorumNetworkCreate(BoatQuorumNetworkConfig *networkConfig, BoatStoreType storeType);
+BOAT_RESULT BoATQuorumNetworkCreate(BoatQuorumNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
  * @description:
