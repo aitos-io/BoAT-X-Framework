@@ -102,7 +102,7 @@ BOAT_RESULT BoATVenachain_FreeNetworkContext(BoatVenachainNetworkContext network
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatVenachainNetworkCreate(BoatVenachainNetworkConfig *networkConfig, BoatStoreType storeType);
+BOAT_RESULT BoATVenachainNetworkCreate(BoatVenachainNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
  * @description:
