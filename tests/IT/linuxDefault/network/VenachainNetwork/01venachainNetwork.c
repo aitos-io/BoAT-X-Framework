@@ -82,7 +82,7 @@ START_TEST(test_001venachainNetwork_0001CreateOneTimeNetworkSuccess)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_1);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -119,7 +119,7 @@ START_TEST(test_001venachainNetwork_0002CreatePersistNetworkSuccess)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_2);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network ,this is the first persist network ,
         so the index must be 1 */
     ck_assert_int_eq(rtnVal, 1);
@@ -156,7 +156,7 @@ START_TEST(test_001venachainNetwork_0003DeleteOneTimeNetworkSuccess)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_1);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* delete the onetime network */
@@ -186,7 +186,7 @@ START_TEST(test_001venachainNetwork_0004DeletePersistNetworkSuccess)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_1);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , the index from 1 to BOAT_MAX_NETWORK_NUM
         this is the first persist network ,so the index must be 1 */
     ck_assert_int_eq(rtnVal, 1);
@@ -298,7 +298,7 @@ START_TEST(test_001venachainNetwork_0009GetNetworkList_OnlyOnetimeNetwork)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_1);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get the network list */
@@ -335,7 +335,7 @@ START_TEST(test_001venachainNetwork_0010GetNetworkList_OnetimeAndPersistNetwork)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_1);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* creat a persist network*/
@@ -343,7 +343,7 @@ START_TEST(test_001venachainNetwork_0010GetNetworkList_OnetimeAndPersistNetwork)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_2);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network ;
         index of persist networks is form 1 to BOAT_MAX_NETWORK_NUM,
         this is the first persist network, the index must equal 1 */
@@ -430,7 +430,7 @@ START_TEST(test_001venachainNetwork_0013GetNetworkByIndex_Onetime)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_1);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* creat a persist network*/
@@ -438,7 +438,7 @@ START_TEST(test_001venachainNetwork_0013GetNetworkByIndex_Onetime)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_2);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network ;
         index of persist networks is form 1 to BOAT_MAX_NETWORK_NUM,
         this is the first persist network, the index must equal 1 */
@@ -478,7 +478,7 @@ START_TEST(test_001venachainNetwork_0014GetNetworkByIndex_Persist)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_1);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* creat a persist network*/
@@ -486,7 +486,7 @@ START_TEST(test_001venachainNetwork_0014GetNetworkByIndex_Persist)
     rtnVal = getVenachainNetworkConfig(&network_config, chainID, BOAT_FALSE, demoUrl_2);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATVenachainNetworkCreate(&network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network ;
         index of persist networks is form 1 to BOAT_MAX_NETWORK_NUM,
         this is the first persist network, the index must equal 1 */
