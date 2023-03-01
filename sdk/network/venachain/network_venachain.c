@@ -748,7 +748,7 @@ __BOATSTATIC BOAT_RESULT BoATVenachain_NetworkDataCtx_Store(BoatVenachainNetwork
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatVenachainNetworkCreate(BoatVenachainNetworkConfig *networkConfig, BoatStoreType storeType)
+BOAT_RESULT BoATVenachainNetworkCreate(BoatVenachainNetworkConfig *networkConfig, BoatStoreType storeType)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatVenachainNetworkData mNetworkDataCtx;
