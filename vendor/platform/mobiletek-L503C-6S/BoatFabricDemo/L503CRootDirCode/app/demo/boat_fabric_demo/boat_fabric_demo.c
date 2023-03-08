@@ -231,7 +231,7 @@ __BOATSTATIC BOAT_RESULT fabric_creatNetwork(void)
 	strcpy((BCHAR *)networkConfig.accountClientTlsCert.content, fabric_client_tls_cert);
 #endif
 	/* create fabric wallet */
-	index = BoatHlfabricNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
+	index = BoATHlfabricNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
 
 	if (index < 0)
 	{
