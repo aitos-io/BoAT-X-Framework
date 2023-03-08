@@ -1021,7 +1021,7 @@ START_TEST(test_002CrossNetwork_0005CreateOneTimeNetworkSuccess_fabric)
     rtnVal = fabric_getNetworkCfg(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatHlfabricNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATHlfabricNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* free configuration struct */
     fabricWalletConfigFree(network_config);
     /* check index of onetime network , the index must equal 0 */
@@ -1514,7 +1514,7 @@ START_TEST(test_002CrossNetwork_0011Create5PersistNetworkSuccess)
     rtnVal = fabric_getNetworkCfg(&Fabric_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&Fabric_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&Fabric_network_config, BOAT_STORE_TYPE_FLASH);
     fabricWalletConfigFree(Fabric_network_config);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         This is the fifth persist network, index must be 5 */
@@ -1968,7 +1968,7 @@ START_TEST(test_002CrossNetwork_0017CreateAnother6thPersistNetworkFail)
     rtnVal = fabric_getNetworkCfg(&Hlfabric_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&Hlfabric_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&Hlfabric_network_config, BOAT_STORE_TYPE_FLASH);
     fabricWalletConfigFree(Hlfabric_network_config);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
        Already created BOAT_MAX_NETWORK_NUM persist networks, return BOAT_ERROR_NETWORK_INDEX_EXCEED */
