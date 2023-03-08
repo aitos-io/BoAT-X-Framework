@@ -664,7 +664,7 @@ START_TEST(test_001fabricNetwork_0001CreateOneTimeNetworkSuccess)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat onetime network , store type must be RAM */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_RAM);
     /* check result of create network , index of onetime network must be 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network by index */
@@ -701,7 +701,7 @@ START_TEST(test_001fabricNetwork_0002CreatePersistNetworkSuccess)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network , index of persist network is from 1 to BOAT_MAX_NETWORK_NUM,
         this is the first persist network ,index must be 1*/
     ck_assert_int_eq(rtnVal, 1);
@@ -741,7 +741,7 @@ START_TEST(test_001fabricNetwork_0003CreatetNetworkFail_NodeCfg_endorserLayoutNu
     /* change the endorserLayoutNum to 0*/
     networkCfg.nodesCfg.endorserLayoutNum = 0;
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_NODECFG_ERR);
     /* free configuration struct */
@@ -766,7 +766,7 @@ START_TEST(test_001fabricNetwork_0004CreatetNetworkFail_NodeCfg_layoutCfg_NULL)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_NODECFG_ERR);
     /* free configuration struct */
@@ -793,7 +793,7 @@ START_TEST(test_001fabricNetwork_0005CreatetNetworkFail_NodeCfg_endorserGroupNum
     /* change endorserGroupNum to 0*/
     networkCfg.nodesCfg.layoutCfg[0].endorserGroupNum = 0;
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_NODECFG_ERR);
     /* free configuration struct */
@@ -818,7 +818,7 @@ START_TEST(test_001fabricNetwork_0006CreatetNetworkFail_NodeCfg_groupCfg_NULL)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_NODECFG_ERR);
     /* free configuration struct */
@@ -845,7 +845,7 @@ START_TEST(test_001fabricNetwork_0007CreatetNetworkFail_NodeCfg_endorserNumber_E
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_NODECFG_ERR);
     /* free configuration struct */
@@ -870,7 +870,7 @@ START_TEST(test_001fabricNetwork_0008CreatetNetworkFail_NodeCfg_endorser_NULL)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_NODECFG_ERR);
     /* free configuration struct */
@@ -895,7 +895,7 @@ START_TEST(test_001fabricNetwork_0009CreatetNetworkFail_NodeCfg_nodeUrl_NULL)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_NODECFG_ERR);
     /* free configuration struct */
@@ -920,7 +920,7 @@ START_TEST(test_001fabricNetwork_0010CreatetNetworkFail_NodeCfg_hostname_NULL)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_NODECFG_ERR);
     /* free configuration struct */
@@ -947,7 +947,7 @@ START_TEST(test_001fabricNetwork_0011CreatetNetworkFail_NodeCfg_quantities_ERR)
     /* change quantities to 3 ,is bigger than the endorserNumber in the same group*/
     networkCfg.nodesCfg.layoutCfg[0].groupCfg[0].quantities = 3;
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_NODECFG_ERR);
     /* free configuration struct */
@@ -974,7 +974,7 @@ START_TEST(test_001fabricNetwork_0012DeleteOneTimeNetworkSuccess)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat onetime network , store type must be RAM */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_RAM);
     /* check result of create network, index of onetime network must be 0*/
     ck_assert_int_eq(rtnVal, 0);
     /* free configuration struct */
@@ -1009,7 +1009,7 @@ START_TEST(test_001fabricNetwork_0013DeletePersistNetworkSuccess)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_FLASH);
     /* check result of create network, index of persist network is from 1 to BOAT_MAX_NETWORK_NUM;
         this is the first persist network, index must be 1*/
     ck_assert_int_eq(rtnVal, 1);
@@ -1123,7 +1123,7 @@ START_TEST(test_001fabricNetwork_0018GetNetworkList_OnlyOnetimeNetwork)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat onetime network , store type must be RAM */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg, BOAT_STORE_TYPE_RAM);
     /* check result of create network, index of onetime network must be 0*/
     ck_assert_int_eq(rtnVal, 0);
     /* get network list */
@@ -1171,7 +1171,7 @@ START_TEST(test_001fabricNetwork_0019GetNetworkList_OnetimeAndPersistNetwork)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat onetime network , store type must be RAM */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg1, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg1, BOAT_STORE_TYPE_RAM);
     /* check result of create network, index of onetime network must be 0*/
     ck_assert_int_eq(rtnVal, 0);
     /************** create persist network ***********************/
@@ -1180,7 +1180,7 @@ START_TEST(test_001fabricNetwork_0019GetNetworkList_OnetimeAndPersistNetwork)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg2, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg2, BOAT_STORE_TYPE_FLASH);
     /* check result of create network, index of persist network is from 1 to BOAT_MAX_NETWORK_NUM,
        this is the first persist network, so index of persist must be 1*/
     ck_assert_int_eq(rtnVal, 1);
@@ -1271,7 +1271,7 @@ START_TEST(test_001fabricNetwork_0022GetNetworkByIndex_Onetime)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat onetime network , store type must be RAM */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg1, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg1, BOAT_STORE_TYPE_RAM);
     /* check result of create network , index of onetime network must be 0 */
     ck_assert_int_eq(rtnVal, 0);
 
@@ -1280,7 +1280,7 @@ START_TEST(test_001fabricNetwork_0022GetNetworkByIndex_Onetime)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg2, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg2, BOAT_STORE_TYPE_FLASH);
     /* check result of create network , index of onetime network must be 1 */
     ck_assert_int_eq(rtnVal, 1);
 
@@ -1322,7 +1322,7 @@ START_TEST(test_001fabricNetwork_0023GetNetworkByIndex_Persist)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat onetime network , store type must be RAM */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg1, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg1, BOAT_STORE_TYPE_RAM);
     /* check result of create network , index of onetime network must be 0 */
     ck_assert_int_eq(rtnVal, 0);
 
@@ -1331,7 +1331,7 @@ START_TEST(test_001fabricNetwork_0023GetNetworkByIndex_Persist)
     /* check result of getting configuration*/
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* creat persist network , store type must be FLASH */
-    rtnVal = BoatHlfabricNetworkCreate(&networkCfg2, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHlfabricNetworkCreate(&networkCfg2, BOAT_STORE_TYPE_FLASH);
     /* check result of create network , index of onetime network must be 1 */
     ck_assert_int_eq(rtnVal, 1);
 
