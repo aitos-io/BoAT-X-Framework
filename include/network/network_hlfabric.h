@@ -163,7 +163,7 @@ BOAT_RESULT BoATHlfabric_FreeNetworkContext(BoatHlfabricNetworkContext networkLi
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatHlfabricNetworkCreate(BoatHlfabricNetworkConfig *networkConfig, BoatStoreType storeType);
+BOAT_RESULT BoATHlfabricNetworkCreate(BoatHlfabricNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
  * @description:
