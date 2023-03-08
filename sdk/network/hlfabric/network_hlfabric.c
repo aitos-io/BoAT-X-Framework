@@ -1068,7 +1068,7 @@ __BOATSTATIC BOAT_RESULT BoATHlfabric_NetworkDataCtx_Store(BoatHlfabricNetworkDa
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatHlfabricNetworkCreate(BoatHlfabricNetworkConfig *networkConfig, BoatStoreType storeType)
+BOAT_RESULT BoATHlfabricNetworkCreate(BoatHlfabricNetworkConfig *networkConfig, BoatStoreType storeType)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatHlfabricNetworkData mNetworkDataCtx;
