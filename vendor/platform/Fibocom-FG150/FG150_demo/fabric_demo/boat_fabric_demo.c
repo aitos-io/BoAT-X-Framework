@@ -239,9 +239,9 @@ __BOATSTATIC BOAT_RESULT fabric_creatNetwork(void)
 #endif
 	/* create fabric wallet */
 #if defined(USE_ONETIME_WALLET)
-	index = BoatHlfabricNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
+	index = BoATHlfabricNetworkCreate(&networkConfig, BOAT_STORE_TYPE_RAM);
 #elif defined(USE_CREATE_PERSIST_WALLET)
-	index = BoatHlfabricNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
+	index = BoATHlfabricNetworkCreate(&networkConfig, BOAT_STORE_TYPE_FLASH);
 #else
 	return BOAT_ERROR;
 #endif
