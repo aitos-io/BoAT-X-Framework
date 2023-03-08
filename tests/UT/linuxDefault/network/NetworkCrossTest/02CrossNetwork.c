@@ -717,7 +717,7 @@ START_TEST(test_002CrossNetwork_0001CreateOneTimeNetworkSuccess_ETH)
     rtnVal = getEthNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatEthNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATEthNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -793,7 +793,7 @@ START_TEST(test_002CrossNetwork_0002CreateOneTimeNetworkSuccess_platON)
     rtnVal = getPlatONNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatPlatONNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATPlatONNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -869,7 +869,7 @@ START_TEST(test_002CrossNetwork_0003CreateOneTimeNetworkSuccess_platone)
     rtnVal = getPlatoneNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatPlatoneNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATPlatoneNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -945,7 +945,7 @@ START_TEST(test_002CrossNetwork_0004CreateOneTimeNetworkSuccess_fiscobcos)
     rtnVal = getFiscobcosNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatFiscobcosNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATFiscobcosNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -1101,7 +1101,7 @@ START_TEST(test_002CrossNetwork_0006CreateOneTimeNetworkSuccess_hwbcs)
     rtnVal = hwbcs_getNetworkCfg(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatHwbcsNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATHwbcsNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* free configuration struct */
     hwbcsWalletConfigFree(network_config);
     /* check index of onetime network , the index must equal 0 */
@@ -1333,7 +1333,7 @@ START_TEST(test_002CrossNetwork_0009CreateOneTimeNetworkSuccess_cita)
     rtnVal = getCitaNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatCitaNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATCitaNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -1409,7 +1409,7 @@ START_TEST(test_002CrossNetwork_0010CreateOneTimeNetworkSuccess_chainmaker)
     rtnVal = getChainmakerNetworkConfig(&network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create onetime network , store type must be RAM */
-    rtnVal = BoatChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
+    rtnVal = BoATChainmakerNetworkCreate(&network_config, BOAT_STORE_TYPE_RAM);
     /* check index of onetime network , the index must equal 0 */
     ck_assert_int_eq(rtnVal, 0);
     /* get network data by index , index = 0 */
@@ -1478,7 +1478,7 @@ START_TEST(test_002CrossNetwork_0011Create5PersistNetworkSuccess)
     rtnVal = getEthNetworkConfig(&Eth_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatEthNetworkCreate(&Eth_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATEthNetworkCreate(&Eth_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         This is the first persist network, index must be 1 */
     ck_assert_int_eq(rtnVal, 1);
@@ -1487,7 +1487,7 @@ START_TEST(test_002CrossNetwork_0011Create5PersistNetworkSuccess)
     rtnVal = getPlatONNetworkConfig(&PlatON_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatPlatONNetworkCreate(&PlatON_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATPlatONNetworkCreate(&PlatON_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         This is the second persist network, index must be 2 */
     ck_assert_int_eq(rtnVal, 2);
@@ -1496,7 +1496,7 @@ START_TEST(test_002CrossNetwork_0011Create5PersistNetworkSuccess)
     rtnVal = getPlatoneNetworkConfig(&Platone_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatPlatoneNetworkCreate(&Platone_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATPlatoneNetworkCreate(&Platone_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         This is the third persist network, index must be 3 */
     ck_assert_int_eq(rtnVal, 3);
@@ -1505,7 +1505,7 @@ START_TEST(test_002CrossNetwork_0011Create5PersistNetworkSuccess)
     rtnVal = getFiscobcosNetworkConfig(&Fiscobcos_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatFiscobcosNetworkCreate(&Fiscobcos_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATFiscobcosNetworkCreate(&Fiscobcos_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         This is the fourth persist network, index must be 4 */
     ck_assert_int_eq(rtnVal, 4);
@@ -1544,7 +1544,7 @@ START_TEST(test_002CrossNetwork_0012Create6thPersistNetworkFail)
     rtnVal = hwbcs_getNetworkCfg(&Hwbcs_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatHwbcsNetworkCreate(&Hwbcs_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHwbcsNetworkCreate(&Hwbcs_network_config, BOAT_STORE_TYPE_FLASH);
     /* free configuration struct */
     hwbcsWalletConfigFree(Hwbcs_network_config);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
@@ -1555,7 +1555,7 @@ START_TEST(test_002CrossNetwork_0012Create6thPersistNetworkFail)
     rtnVal = getChainmakerNetworkConfig(&Chainmaker_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&Chainmaker_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&Chainmaker_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
        Already created BOAT_MAX_NETWORK_NUM persist networks, return BOAT_ERROR_NETWORK_INDEX_EXCEED */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INDEX_EXCEED);
@@ -1582,7 +1582,7 @@ START_TEST(test_002CrossNetwork_0012Create6thPersistNetworkFail)
     rtnVal = getCitaNetworkConfig(&Cita_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatCitaNetworkCreate(&Cita_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATCitaNetworkCreate(&Cita_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
        Already created BOAT_MAX_NETWORK_NUM persist networks, return BOAT_ERROR_NETWORK_INDEX_EXCEED */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INDEX_EXCEED);
@@ -1883,7 +1883,7 @@ START_TEST(test_002CrossNetwork_0016CreatOtherNetworks_Success)
     rtnVal = hwbcs_getNetworkCfg(&Hwbcs_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatHwbcsNetworkCreate(&Hwbcs_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATHwbcsNetworkCreate(&Hwbcs_network_config, BOAT_STORE_TYPE_FLASH);
     /* free configuration struct */
     hwbcsWalletConfigFree(Hwbcs_network_config);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
@@ -1894,7 +1894,7 @@ START_TEST(test_002CrossNetwork_0016CreatOtherNetworks_Success)
     rtnVal = getChainmakerNetworkConfig(&Chainmaker_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatChainmakerNetworkCreate(&Chainmaker_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATChainmakerNetworkCreate(&Chainmaker_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         This is the fourth persist network, index must be 4 */
     ck_assert_int_eq(rtnVal, 4);
@@ -1903,7 +1903,7 @@ START_TEST(test_002CrossNetwork_0016CreatOtherNetworks_Success)
     rtnVal = getCitaNetworkConfig(&Cita_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatCitaNetworkCreate(&Cita_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATCitaNetworkCreate(&Cita_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         This is the fifth persist network, index must be 5 */
     ck_assert_int_eq(rtnVal, 5);
@@ -1932,7 +1932,7 @@ START_TEST(test_002CrossNetwork_0017CreateAnother6thPersistNetworkFail)
     rtnVal = getEthNetworkConfig(&Eth_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatEthNetworkCreate(&Eth_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATEthNetworkCreate(&Eth_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         Already created BOAT_MAX_NETWORK_NUM persist networks, return BOAT_ERROR_NETWORK_INDEX_EXCEED */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INDEX_EXCEED);
@@ -1941,7 +1941,7 @@ START_TEST(test_002CrossNetwork_0017CreateAnother6thPersistNetworkFail)
     rtnVal = getPlatONNetworkConfig(&PlatON_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatPlatONNetworkCreate(&PlatON_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATPlatONNetworkCreate(&PlatON_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
        Already created BOAT_MAX_NETWORK_NUM persist networks, return BOAT_ERROR_NETWORK_INDEX_EXCEED */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INDEX_EXCEED);
@@ -1950,7 +1950,7 @@ START_TEST(test_002CrossNetwork_0017CreateAnother6thPersistNetworkFail)
     rtnVal = getPlatoneNetworkConfig(&Platone_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatPlatoneNetworkCreate(&Platone_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATPlatoneNetworkCreate(&Platone_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
         Already created BOAT_MAX_NETWORK_NUM persist networks, return BOAT_ERROR_NETWORK_INDEX_EXCEED */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INDEX_EXCEED);
@@ -1959,7 +1959,7 @@ START_TEST(test_002CrossNetwork_0017CreateAnother6thPersistNetworkFail)
     rtnVal = getFiscobcosNetworkConfig(&Fiscobcos_network_config);
     ck_assert_int_eq(rtnVal, BOAT_SUCCESS);
     /* create persist network , store type must be FLASH */
-    rtnVal = BoatFiscobcosNetworkCreate(&Fiscobcos_network_config, BOAT_STORE_TYPE_FLASH);
+    rtnVal = BoATFiscobcosNetworkCreate(&Fiscobcos_network_config, BOAT_STORE_TYPE_FLASH);
     /* check index of persist network , index of persist networks is from 1 to BOAT_MAX_NETWORK_NUM;
        Already created BOAT_MAX_NETWORK_NUM persist networks, return BOAT_ERROR_NETWORK_INDEX_EXCEED */
     ck_assert_int_eq(rtnVal, BOAT_ERROR_NETWORK_INDEX_EXCEED);

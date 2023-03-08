@@ -723,7 +723,9 @@ int httpclient_send_header(httpclient_t *client, char *url, int method, httpclie
     }
 
     /* Close headers */
-    httpclient_get_info(client, send_buf, &len, "\r\n", 0);
+    // httpclient_get_info(client, send_buf, &len, "\r\n", 0);
+    /* Close headers */
+    httpclient_get_info(client, send_buf, &len, "Connection: close\r\n\r\n", 0);
 
     DBG("Trying to write %d bytes http header:%s", len, send_buf);
 

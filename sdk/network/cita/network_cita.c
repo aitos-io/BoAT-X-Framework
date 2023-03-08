@@ -616,7 +616,7 @@ __BOATSTATIC BOAT_RESULT BoATCita_NetworkDataCtx_Store(BoatCitaNetworkData *mNet
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatCitaNetworkCreate(BoatCitaNetworkConfig *networkConfig, BoatStoreType storeType)
+BOAT_RESULT BoATCitaNetworkCreate(BoatCitaNetworkConfig *networkConfig, BoatStoreType storeType)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatCitaNetworkData mNetworkDataCtx;

@@ -27,7 +27,7 @@ persiststore.c contains APIs for default persistent storage as a file.
 #include "boatlog.h"
 
 /* mbedTLS header include */
-//#include "mbedtls/aes.h"
+// #include "mbedtls/aes.h"
 
 //!@brief Salt size for keystore
 #define BOAT_STORAGE_SALT_SIZE 16
@@ -40,7 +40,7 @@ BUINT8 RAM_BOAT_NETWORK_DATA[5120] = {0};
 BUINT8 RAM_BOAT_NETWORK_DATA[1024] = {0};
 #endif
 
-BUINT8 RAM_BOAT_PRIKEY_DATA[1024] = {0};
+BUINT8 RAM_BOAT_PRIKEY_DATA[256] = {0};
 
 // AES KEY FOR DEVELOPMENT ONLY. DO NOT USE IT FOR PRODUCTION.
 // Either replace it with a production key or replace the persitent storage

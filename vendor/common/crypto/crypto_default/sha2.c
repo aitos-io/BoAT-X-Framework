@@ -1035,7 +1035,7 @@ void sha512_Init(DEFAULT_SHA512_CTX *context)
 	{
 		return;
 	}
-	MEMCPY_BCOPY(context->state, sha512_initial_hash_value, SHA512_DIGEST_LENGTH);
+	MEMCPY_BCOPY(context->state, sha512_initial_hash_value, DEFAULT_SHA512_DIGEST_LENGTH);
 	memzero(context->buffer, SHA512_BLOCK_LENGTH);
 	context->bitcount[0] = context->bitcount[1] = 0;
 }
@@ -1319,7 +1319,7 @@ void sha512_Final(DEFAULT_SHA512_CTX *context, sha2_byte digest[])
 			REVERSE64(context->state[j], context->state[j]);
 		}
 #endif
-		MEMCPY_BCOPY(digest, context->state, SHA512_DIGEST_LENGTH);
+		MEMCPY_BCOPY(digest, context->state, DEFAULT_SHA512_DIGEST_LENGTH);
 	}
 
 	/* Zero out state data */
@@ -1328,14 +1328,14 @@ void sha512_Final(DEFAULT_SHA512_CTX *context, sha2_byte digest[])
 
 char *sha512_End(DEFAULT_SHA512_CTX *context, char buffer[])
 {
-	sha2_byte digest[SHA512_DIGEST_LENGTH] = {0}, *d = digest;
+	sha2_byte digest[DEFAULT_SHA512_DIGEST_LENGTH] = {0}, *d = digest;
 	int i = 0;
 
 	if (buffer != (char *)0)
 	{
 		sha512_Final(context, digest);
 
-		for (i = 0; i < SHA512_DIGEST_LENGTH; i++)
+		for (i = 0; i < DEFAULT_SHA512_DIGEST_LENGTH; i++)
 		{
 			*buffer++ = sha2_hex_digits[(*d & 0xf0) >> 4];
 			*buffer++ = sha2_hex_digits[*d & 0x0f];
@@ -1347,11 +1347,11 @@ char *sha512_End(DEFAULT_SHA512_CTX *context, char buffer[])
 	{
 		memzero(context, sizeof(DEFAULT_SHA512_CTX));
 	}
-	memzero(digest, SHA512_DIGEST_LENGTH);
+	memzero(digest, DEFAULT_SHA512_DIGEST_LENGTH);
 	return buffer;
 }
 
-void sha512_Raw(const sha2_byte *data, size_t len, uint8_t digest[SHA512_DIGEST_LENGTH])
+void sha512_Raw(const sha2_byte *data, size_t len, uint8_t digest[DEFAULT_SHA512_DIGEST_LENGTH])
 {
 	DEFAULT_SHA512_CTX context = {0};
 	sha512_Init(&context);

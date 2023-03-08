@@ -9,16 +9,17 @@
 
 约定`<ML302 Root>`是XinYi-XY1100平台SDK的根目录：
 
+以下以PlatONE为例。
+
 1、拷贝BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<ML302 Root>`下。
 
-2、在`<ML302 Root>\src`下新建文件夹`boat`，拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302v2\ML302RootDirCode\src\boatPlatONEdemo.c到`<ML302 Root>\src\boat`下。
+2、在`<ML302 Root>\src`下新建文件夹`boat`，拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302v2\ML302RootDirCode\PlatONE_demo\boatPlatONEdemo.c到`<ML302 Root>\src\boat`下。
 
-3、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302v2\ML302RootDirCode\src\my_contract.cpp.abi.c到`<ML302 Root>\src\boat`下。
+3、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302v2\ML302RootDirCode\PlatONE_demo\my_contract.cpp.abi.c到`<ML302 Root>\src\boat`下。
 
-4、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302v2\ML302RootDirCode\src\boat.mk到`<ML302 Root>\src\boat`下。
+4、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302v2\ML302RootDirCode\PlatONE_demo\boat.mk到`<ML302 Root>\src\boat`下。
 
-5、在`<ML302 Root>\inc`下新建文件夹`boat`，拷贝BoAT-X-Framework\vendor\platform\ChinaMobile-ML302v2\ML302RootDirCode\src\my_contract.cpp.abi.h到`<ML302 Root>\inc\boat`下。
-
+5、拷贝 BoAT-X-Framework\vendor\platform\ChinaMobile-ML302v2\ML302RootDirCode\core_export.list到`<ML302 Root>\src\app`下，替换core_export.list文件。
 
 拷贝后的目录和文件结构如下：
 ```
@@ -29,7 +30,6 @@
 |-- firmware
 `-- inc
     |-- bluetooth
-    |-- boat
     |-- cJSON
 |-- prebuilt
 `-- src
@@ -50,6 +50,10 @@
   在下方增加以下内容：
   ```
     include src/boat/boat.mk
+    SRC_DIRS += src\demo\wolfssl-3.15.3\src
+    SRC_DIRS += src\demo\wolfssl-3.15.3\src\wolfcrypt\src
+    INC      += -Isrc\demo\wolfssl-3.15.3\include
+    INC      += -Isrc\demo\async_socket
   ```
 
   然后找到如下段落：
@@ -90,8 +94,37 @@
 
 ### 4、删除cm_main.c
 
-找到`<ML302 Root>\src\cm_main_.c`文件并删除。
+  找到`<ML302 Root>\src\cm_main_.c`文件并删除。
 
+### 5、修改wolfssl配置
+
+  找到`<ML302 Root>\src\demo\wolfssl-3.15.3\include\wolfssl\wolfcrypt\settings.h`，增加以下宏开关。
+  ```
+  #define HAVE_ECC
+  #undef NO_ECC256
+  #define ECC_USER_CURVES
+  #define HAVE_AESGCM
+  #define WOLFSSL_SHA384
+  #define WOLFSSL_SHA512
+  #define NO_ASN_TIME
+  #define HAVE_TLS_EXTENSIONS
+  #define HAVE_SUPPORTED_CURVES
+  ```
+  
+  找到`<ML302 Root>\src\demo\wolfssl-3.15.3\src\internal.c`中的`word32 LowResTimer(void)`，如下：
+  ```
+    word32 LowResTimer(void)
+    {
+        return (word32)XTIME(0);
+    }
+  ```
+  修改为：
+  ```
+    word32 LowResTimer(void)
+    {
+        return (word32)osiEpochSecond();
+    }
+  ```
 
 ## 四、编译BoAT-X-Framework静态库
 

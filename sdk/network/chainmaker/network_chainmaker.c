@@ -670,7 +670,7 @@ __BOATSTATIC BOAT_RESULT BoATChainmaker_NetworkDataCtx_Store(BoatChainmakerNetwo
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig, BoatStoreType storeType)
+BOAT_RESULT BoATChainmakerNetworkCreate(BoatChainmakerNetworkData *networkConfig, BoatStoreType storeType)
 {
 
     BOAT_RESULT result = BOAT_SUCCESS;

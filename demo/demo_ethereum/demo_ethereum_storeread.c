@@ -122,9 +122,9 @@ __BOATSTATIC BOAT_RESULT createNetwork()
 
 	/* create ethereum wallet */
 #if defined(USE_ONETIME_WALLET) 
-    result = BoatEthNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
+    result = BoATEthNetworkCreate( &network_config, BOAT_STORE_TYPE_RAM);
 #elif defined(USE_CREATE_PERSIST_WALLET)
-    result = BoatEthNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
+    result = BoATEthNetworkCreate( &network_config, BOAT_STORE_TYPE_FLASH);
 #else
     result = BOAT_ERROR;
 #endif

@@ -1,11 +1,34 @@
 # Source and Objects
 
 # Generate sub-directory list
-PROTOSFILES     := $(shell $(BOAT_FIND) . -name "*.proto" -exec readlink -f {} \;)
-PROTOSFILES_DIR := $(shell dirname . $(PROTOSFILES) | sort | uniq)
+OBJECTS_DIRSUB :=  $(BOAT_BUILD_DIR)/sdk/third-party/protos/common \
+			       $(BOAT_BUILD_DIR)/sdk/third-party/protos/discovery \
+			 		$(BOAT_BUILD_DIR)/sdk/third-party/protos/google/protobuf \
+					$(BOAT_BUILD_DIR)/sdk/third-party/protos/gossip \
+					$(BOAT_BUILD_DIR)/sdk/third-party/protos/idemix \
+					$(BOAT_BUILD_DIR)/sdk/third-party/protos/ledger/queryresult \
+					$(BOAT_BUILD_DIR)/sdk/third-party/protos/ledger/rwset \
+					$(BOAT_BUILD_DIR)/sdk/third-party/protos/msp \
+					$(BOAT_BUILD_DIR)/sdk/third-party/protos/orderer \
+					$(BOAT_BUILD_DIR)/sdk/third-party/protos/peer \
+					$(BOAT_BUILD_DIR)/sdk/third-party/protos/peer/lifecycle \
+					$(BOAT_BUILD_DIR)/sdk/third-party/protos/token \
+					$(BOAT_BUILD_DIR)/sdk/third-party/protos/transientstore
 
-OBJECTS_DIRSUB  := $(subst $(BOAT_BASE_DIR),$(BOAT_BUILD_DIR),$(PROTOSFILES_DIR))
-SOURCES         := $(shell $(BOAT_FIND) . -name "*.c" -exec readlink -f {} \;)
+SOURCES := $(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/common/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/discovery/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/google/protobuf/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/gossip/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/idemix/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/ledger/queryresult/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/ledger/rwset/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/msp/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/orderer/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/peer/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/peer/lifecycle/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/token/*.c) \
+			$(wildcard $(BOAT_BASE_DIR)/sdk/third-party/protos/transientstore/*.c) 
+
 OBJECTS_DIR     := $(BOAT_BUILD_DIR)/sdk/third-party/protos
 
 OBJECTS         := $(subst $(BOAT_BASE_DIR),$(BOAT_BUILD_DIR),$(SOURCES))

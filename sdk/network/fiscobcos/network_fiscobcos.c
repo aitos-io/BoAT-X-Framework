@@ -748,7 +748,7 @@ __BOATSTATIC BOAT_RESULT BoATFiscobcos_NetworkDataCtx_Store(BoatFiscobcosNetwork
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatFiscobcosNetworkCreate(BoatFiscobcosNetworkConfig *networkConfig, BoatStoreType storeType)
+BOAT_RESULT BoATFiscobcosNetworkCreate(BoatFiscobcosNetworkConfig *networkConfig, BoatStoreType storeType)
 {
     BOAT_RESULT result = BOAT_SUCCESS;
     BoatFiscobcosNetworkData mNetworkDataCtx;

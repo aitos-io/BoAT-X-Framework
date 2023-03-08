@@ -108,7 +108,7 @@ BOAT_RESULT BoATCita_FreeNetworkContext(BoatCitaNetworkContext networkList);
  *   for details.
  * @author: aitos
  */
-BOAT_RESULT BoatCitaNetworkCreate(BoatCitaNetworkConfig *networkConfig, BoatStoreType storeType);
+BOAT_RESULT BoATCitaNetworkCreate(BoatCitaNetworkConfig *networkConfig, BoatStoreType storeType);
 
 /**
  * @description:

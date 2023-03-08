@@ -42,6 +42,45 @@
 
 #define GENERATE_KEY_REPEAT_TIMES 100
 
+uint32_t htonl(uint32_t hostlong)
+{
+	uint32_t res;
+	unsigned char *p = (unsigned char *)&res;
+	*p++ = hostlong >> 24;
+	*p++ = (hostlong >> 16) & 0xffu;
+	*p++ = (hostlong >> 8) & 0xffu;
+	*p = hostlong & 0xffu;
+	return res;
+}
+
+uint16_t htons(uint16_t hostshort)
+{
+	uint16_t res;
+	unsigned char *p = (unsigned char *)&res;
+	*p++ = hostshort >> 8;
+	*p = hostshort & 0xffu;
+	return res;
+}
+
+uint32_t ntohl(uint32_t netlong)
+{
+	uint32_t res;
+	unsigned char *p = (unsigned char *)&netlong;
+	res = *p++ << 24;
+	res += *p++ << 16;
+	res += *p++ << 8;
+	res += *p;
+	return res;
+}
+
+uint16_t ntohs(uint16_t netshort)
+{
+	uint16_t res;
+	unsigned char *p = (unsigned char *)&netshort;
+	res = *p++ << 8;
+	res += *p;
+	return res;
+}
 
 BOAT_RESULT BoatHash(const BoatHashAlgType type, const BUINT8 *input, BUINT32 inputLen,
 					 BUINT8 *hashed, BUINT8 *hashedLen, void *rsvd)
@@ -250,20 +289,17 @@ BOAT_RESULT BoAT_sign(BoatKeypairPriKeyType type, BoatKeypairPriKeyFormat format
 	return result;
 }
 
-
 void *BoatMalloc(size_t size)
 {
-    return (malloc(size));
+	return (malloc(size));
 }
-
 
 void BoatFree(void *mem_ptr)
 {
-    free(mem_ptr);
+	free(mem_ptr);
 }
-
 
 void BoatSleep(BUINT32 second)
 {
-    osDelay(50 * second);
+	osDelay(50 * second);
 }
