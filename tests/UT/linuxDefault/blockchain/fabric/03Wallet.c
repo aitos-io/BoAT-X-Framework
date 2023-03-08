@@ -351,11 +351,11 @@ BOAT_RESULT fabric_createNetwork(BBOOL is_onetime, BUINT8* networkIndex, BoatHlf
     /* create ciat wallet */
     if (is_onetime)
     {
-        result = BoatHlfabricNetworkCreate(networkConfig, BOAT_STORE_TYPE_RAM);
+        result = BoATHlfabricNetworkCreate(networkConfig, BOAT_STORE_TYPE_RAM);
     }
     else
     {
-        result = BoatHlfabricNetworkCreate(networkConfig, BOAT_STORE_TYPE_FLASH);
+        result = BoATHlfabricNetworkCreate(networkConfig, BOAT_STORE_TYPE_FLASH);
     }
 
     if (result < 0)
