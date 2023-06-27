@@ -57,7 +57,7 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     BUINT8 sig_parity = 0;
     BUINT32 v;
 
-    Param_eth_sendRawTransaction param_eth_sendRawTransaction;
+    Param_web3_sendRawTransaction param_quorum_sendRawTransaction;
     Param_quorum_sendRawPrivateTransaction param_quorum_sendRawPrivateTransaction;
 
     BOAT_RESULT result = BOAT_SUCCESS;
@@ -520,16 +520,16 @@ BOAT_RESULT QuorumSendRawtx(BOAT_INOUT BoatQuorumTx *tx_ptr)
         param_quorum_sendRawPrivateTransaction.privatefor_str  = "ROAZBWtSacxXQrOe3FGAqJDyJjFePR5ce4TSIzmJ0Bc=";
     
         tx_hash_str = web3_sendRawPrivateTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
-                                          tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                          tx_ptr->wallet_ptr->network_info.node_url_str,
                                           &param_quorum_sendRawPrivateTransaction,&result);
     }
     else
     {
-        param_eth_sendRawTransaction.method_name_str = "eth_sendRawTransaction";
-        param_eth_sendRawTransaction.signedtx_str = rlp_stream_hex_str; 
+        param_quorum_sendRawTransaction.method_name_str = "eth_sendRawTransaction";
+        param_quorum_sendRawTransaction.signedtx_str = rlp_stream_hex_str; 
         tx_hash_str = web3_sendRawTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
-                                          tx_ptr->wallet_ptr->network_info.node_url_ptr,
-                                          &param_eth_sendRawTransaction,&result);
+                                          tx_ptr->wallet_ptr->network_info.node_url_str,
+                                          &param_quorum_sendRawTransaction,&result);
     }
   
 	if (tx_hash_str == NULL)
@@ -613,7 +613,7 @@ BOAT_RESULT QuorumSendFilltx(BOAT_INOUT BoatQuorumTx *tx_ptr)
     param_quorum_fillTransaction.privateFor      = &(tx_ptr->rawtx_fields.privatefor[0]);
  
     tx_hash_str = web3_fillTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
-                                          tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                          tx_ptr->wallet_ptr->network_info.node_url_str,
                                           &param_quorum_fillTransaction,&result);
     if (tx_hash_str == NULL)
     {

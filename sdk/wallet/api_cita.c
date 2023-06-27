@@ -26,32 +26,40 @@ api_cita.c defines the cita wallet API for BoAT IoT SDK.
 #include "rpcintf.h"
 #include "cJSON.h"
 
-BoatCitaWallet *BoatCitaWalletInit(const BoatCitaWalletConfig *config_ptr, BUINT32 config_size)
+/**
+ * @description: 
+ *  This function creat BoatCitaWallet by walletindex and networkIndex.
+ * @param {BUINT8} walletIndex
+ * @param {BUINT8} networkIndex
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BoatCitaWallet *BoatCitaWalletInit(BUINT8 walletIndex,BUINT8 networkIndex)
 {
     BoatCitaWallet *wallet_ptr;
     BOAT_RESULT result;
     BUINT8 pubkeyHash[32];
     BUINT8 hashLenDummy;
 
-    if (config_ptr == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Argument cannot be NULL.");
-        return NULL;
-    }
-
-    if (sizeof(BoatCitaWalletConfig) != config_size)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Incorrect configuration size.");
-        return NULL;
-    }
-    
     wallet_ptr = BoatMalloc(sizeof(BoatCitaWallet));
     if (wallet_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "wallet memory malloc falied.");
         return NULL;
     }
-        
+    result = BoATKeypair_GetKeypairByIndex(&(wallet_ptr->account_info.prikeyCtx),walletIndex);
+    if(result != BOAT_SUCCESS){
+        BoatLog(BOAT_LOG_CRITICAL, "get wallet by index fail");
+        return NULL;
+    }
+    result = BoATCita_GetNetworkByIndex(&(wallet_ptr->network_info),networkIndex);
+    if(result != BOAT_SUCCESS){
+        BoatLog(BOAT_LOG_CRITICAL, "get network by index fail");
+        return NULL;
+    }
     /* Init Web3 interface */
     wallet_ptr->web3intf_context_ptr = web3_init();
 
@@ -62,43 +70,12 @@ BoatCitaWallet *BoatCitaWalletInit(const BoatCitaWalletConfig *config_ptr, BUINT
         return NULL;
     }
 
-    if (config_ptr->load_existed_wallet == false)
-    {
-        if (BOAT_SUCCESS != BoatPort_keyCreate(&config_ptr->prikeyCtx_config, &wallet_ptr->account_info.prikeyCtx))
-        {
-            web3_deinit(wallet_ptr->web3intf_context_ptr);
-            BoatFree(wallet_ptr);
-            BoatLog(BOAT_LOG_CRITICAL, "Failed to exec BoatPort_keyCreate.");
-            return NULL;
-        }
-    }
-
+    
     // Configure account address    
-    BoatHash(BOAT_HASH_SHA256, wallet_ptr->account_info.prikeyCtx.pubkey_content, 
+    BoatHash(BOAT_HASH_KECCAK256, wallet_ptr->account_info.prikeyCtx.pubkey_content, 
              64, pubkeyHash, &hashLenDummy, NULL);
     memcpy(wallet_ptr->account_info.address, &pubkeyHash[32 - BOAT_CITA_ADDRESS_SIZE], BOAT_CITA_ADDRESS_SIZE);
-    // Configure node URL string
-    wallet_ptr->network_info.node_url_ptr = NULL;
-    result = BoatCitaWalletSetNodeUrl(wallet_ptr, config_ptr->node_url_str);
-    if (result != BOAT_SUCCESS)
-    {
-        web3_deinit(wallet_ptr->web3intf_context_ptr);
-        BoatFree(wallet_ptr);
-        BoatLog(BOAT_LOG_CRITICAL, "wallet set nodeURL failed.");
-        return NULL;
-    }
-
-    //chainid
-    result = BoatCitaWalletSetChainId(wallet_ptr, &config_ptr->chain_id);
-    if (result != BOAT_SUCCESS)
-    {
-        web3_deinit(wallet_ptr->web3intf_context_ptr);
-        BoatFree(wallet_ptr);
-        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaWalletSetChainId failed.");
-        return NULL;
-    }
-
-    wallet_ptr->network_info.version = config_ptr->version;
+    
     return wallet_ptr;
 }
 
@@ -108,6 +85,7 @@ BOAT_RESULT BoatCitaTxInit(BoatCitaWallet *wallet_ptr,
                                 BCHAR *recipient_str,
                                 BUINT64 quota)
 {
+    BCHAR   *retval_str = NULL;
     BOAT_RESULT result;
     BUINT64 valid_until_block_value;
 
@@ -189,10 +167,10 @@ void BoatCitaWalletDeInit(BoatCitaWallet *wallet_ptr)
 {
     if (wallet_ptr != NULL)
     {
-        if (wallet_ptr->network_info.node_url_ptr != NULL)
+        if (wallet_ptr->account_info.prikeyCtx.keypair_name != NULL)
         {
-            BoatFree(wallet_ptr->network_info.node_url_ptr);
-            wallet_ptr->network_info.node_url_ptr = NULL;
+            BoatFree(wallet_ptr->account_info.prikeyCtx.keypair_name);
+            wallet_ptr->account_info.prikeyCtx.keypair_name = NULL;
         }
 
         web3_deinit(wallet_ptr->web3intf_context_ptr);
@@ -203,7 +181,6 @@ void BoatCitaWalletDeInit(BoatCitaWallet *wallet_ptr)
 
 BOAT_RESULT BoatCitaTxSetQuotaLimit(BoatCitaTx *tx_ptr, BUINT64 quota_limit_value)
 {
-    BOAT_RESULT result = BOAT_SUCCESS;
     if (tx_ptr == NULL)
     {
         BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
@@ -212,49 +189,7 @@ BOAT_RESULT BoatCitaTxSetQuotaLimit(BoatCitaTx *tx_ptr, BUINT64 quota_limit_valu
 
     // Set quotaLimit
     tx_ptr->rawtx_fields.quota = quota_limit_value;
-    return result;
 }
-
-
-BOAT_RESULT BoatCitaWalletSetNodeUrl(BoatCitaWallet *wallet_ptr, const BCHAR *node_url_ptr)
-{
-    BOAT_RESULT result;
-    
-    if ((wallet_ptr == NULL) || (node_url_ptr == NULL))
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "wallet_ptr or node_url_ptr cannot be NULL.");
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
-
-    // string length check
-    if (BOAT_SUCCESS != UtilityStringLenCheck(node_url_ptr))
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "node URL length out of limit: %s.", node_url_ptr);
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
-	
-    // Set Node URL
-	if (wallet_ptr->network_info.node_url_ptr != NULL)
-	{
-		BoatFree(wallet_ptr->network_info.node_url_ptr);
-	}
-
-	// +1 for NULL Terminator
-	wallet_ptr->network_info.node_url_ptr = BoatMalloc(strlen(node_url_ptr) + 1);
-	if (wallet_ptr->network_info.node_url_ptr == NULL)
-    {
-		BoatLog(BOAT_LOG_CRITICAL, "Fail to allocate memory for Node URL string.");
-		result = BOAT_ERROR_COMMON_OUT_OF_MEMORY;
-    }
-    else
-	{
-		strcpy(wallet_ptr->network_info.node_url_ptr, node_url_ptr);
-		result = BOAT_SUCCESS;
-	}
-
-    return result;
-}
-
 
 BOAT_RESULT BoatCitaTxSetRecipient(BoatCitaTx *tx_ptr, BUINT8 address[BOAT_CITA_ADDRESS_SIZE])
 {
@@ -268,21 +203,6 @@ BOAT_RESULT BoatCitaTxSetRecipient(BoatCitaTx *tx_ptr, BUINT8 address[BOAT_CITA_
     memcpy(&tx_ptr->rawtx_fields.recipient, address, BOAT_CITA_ADDRESS_SIZE);
 
     return BOAT_SUCCESS;    
-}
-
-BOAT_RESULT BoatCitaWalletSetChainId(BoatCitaWallet *wallet_ptr, BoatWalletChainId *wallet_chain_id)
-{
-    if (wallet_ptr == NULL)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "Arguments cannot be NULL.");
-        return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
-    }
-
-    memset(wallet_ptr->network_info.chain_id_buf, 0, BOAT_CITA_CHAIN_ID_V1_SIZE);
-
-    BUINT8 chain_id_index = BOAT_CITA_CHAIN_ID_V1_SIZE - wallet_chain_id->value_len;
-    memcpy(&wallet_ptr->network_info.chain_id_buf[chain_id_index],  wallet_chain_id->value, wallet_chain_id->value_len);
-    return BOAT_SUCCESS;
 }
 
 BOAT_RESULT BoatCitaTxSetValue(BoatCitaTx *tx_ptr, BoatFieldMax32B *value_ptr)
@@ -455,7 +375,7 @@ BCHAR *BoatCitaCallContractFunc(BoatCitaTx *tx_ptr, BCHAR *func_proto_str,
     param_cita_call.data  = data_hexstr;
 
     retval_str = web3_cita_call(tx_ptr->wallet_ptr->web3intf_context_ptr,
-                                     tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                     tx_ptr->wallet_ptr->network_info.node_url_buf,
                                      &param_cita_call,&result);
     if (retval_str == NULL)
     {
@@ -485,7 +405,7 @@ BOAT_RESULT BoatCitaGetTransactionReceipt(BoatCitaTx *tx_ptr)
     do{
         BoatSleep(BOAT_CITA_MINE_INTERVAL); // Sleep waiting for the block being mined 
         tx_status_str = web3_cita_getTransactionReceiptStatus(tx_ptr->wallet_ptr->web3intf_context_ptr,
-                        tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                        tx_ptr->wallet_ptr->network_info.node_url_buf,
                         &param_cita_getTransactionReceipt, &result);
         if (tx_status_str == NULL)
         {
@@ -554,19 +474,14 @@ BOAT_RESULT BoatCitaGetBlockNumber(BoatCitaTx *tx_ptr, BUINT64 *block_number)
         return BOAT_ERROR_COMMON_INVALID_ARGUMENT;
     }
     retval_str = web3_cita_getBlockNumber(tx_ptr->wallet_ptr->web3intf_context_ptr,
-                                               tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                               tx_ptr->wallet_ptr->network_info.node_url_buf,
                                                &result);
-    if (result != BOAT_SUCCESS)
-    {
-        BoatLog(BOAT_LOG_CRITICAL, "web3_cita_getBlockNumber failed.");
-        return result;
-    }
 
     result = BoatCitaParseRpcResponseStringResult(retval_str, 
                                                            &tx_ptr->wallet_ptr->web3intf_context_ptr->web3_result_string_buf);
     if (result != BOAT_SUCCESS)
     {
-        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaParseRpcResponseStringResult failed.");
+        BoatLog(BOAT_LOG_CRITICAL, "BoatCitaGetBlockNumber failed.");
         return result;
     }
     

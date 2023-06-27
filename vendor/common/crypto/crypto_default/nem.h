@@ -54,9 +54,9 @@
 #define NEM_SALT_SIZE sizeof(ed25519_public_key)
 
 #define NEM_ENCRYPTED_SIZE(size) \
-  (((size) + AES_BLOCK_SIZE) / AES_BLOCK_SIZE * AES_BLOCK_SIZE)
+  (((size) + CRYPTO_DEFAULT_AES_BLOCK_SIZE) / CRYPTO_DEFAULT_AES_BLOCK_SIZE * CRYPTO_DEFAULT_AES_BLOCK_SIZE)
 #define NEM_ENCRYPTED_PAYLOAD_SIZE(size) \
-  (AES_BLOCK_SIZE + NEM_SALT_SIZE + NEM_ENCRYPTED_SIZE(size))
+  (CRYPTO_DEFAULT_AES_BLOCK_SIZE + NEM_SALT_SIZE + NEM_ENCRYPTED_SIZE(size))
 
 #define _NEM_PADDING_SIZE(buffer, size) ((buffer)[(size)-1])
 #define NEM_PADDING_SIZE(buffer, size)               \

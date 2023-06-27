@@ -37,9 +37,7 @@ all: $(OBJECTS_DIR) contract_generate
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_quorum_public_storeread.c \
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_quorum_public_storeread_create_native
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_quorum_public_storeread.c \
-		-DUSE_LOAD_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_quorum_public_storeread_load		
+	
 
 
 
@@ -61,9 +59,7 @@ all: $(OBJECTS_DIR) contract_generate
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_quorum_private_storeread.c \
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_quorum_private_storeread_create_native
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_quorum_private_storeread.c \
-		-DUSE_LOAD_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_quorum_private_storeread_load		 
+	 
 
 
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_quorum_transfer.c \
@@ -84,9 +80,7 @@ all: $(OBJECTS_DIR) contract_generate
 	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_quorum_transfer.c \
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_quorum_transfer_create_native
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_quorum_transfer.c \
-		-DUSE_LOAD_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_quorum_transfer_load			
+		
 
 contract_generate:
 	make -C $(CONTRACT_SRC_DIR) all

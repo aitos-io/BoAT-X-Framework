@@ -26,44 +26,26 @@ api_hw_bcs.h is header file for hauwei chain transaction construction and perfor
 #include "boatiotsdk.h"
 
 
-#define    BOAT_HWBCS_NODE_URL_MAX_LEN     BOAT_HLFABRIC_NODE_URL_MAX_LEN   //!< Maxmum length of node's URL
-#define    BOAT_HWBCS_HOSTNAME_MAX_LEN     BOAT_HLFABRIC_HOSTNAME_MAX_LEN //!< Maxmum length of hostname
-#define    BOAT_HWBCS_CERT_MAX_LEN         BOAT_HLFABRIC_CERT_MAX_LEN//!< Maxmum length of certificate
+#define    BOAT_HWBCS_NODE_URL_MAX_LEN     127   //!< Maxmum length of node's URL
+#define    BOAT_HWBCS_HOSTNAME_MAX_LEN     127 //!< Maxmum length of hostname
+#define    BOAT_HWBCS_CERT_MAX_LEN         1024//!< Maxmum length of certificate
 
 
-#define    BOAT_HWBCS_ARGS_MAX_NUM         BOAT_HLFABRIC_ARGS_MAX_NUM//!< Arguments max number in fabric command
-#define    BOAT_HWBCS_ENDORSER_MAX_NUM     BOAT_HLFABRIC_ENDORSER_MAX_NUM  //!< Support endorser max number
-#define    BOAT_HWBCS_ORDERER_MAX_NUM      BOAT_HLFABRIC_ORDERER_MAX_NUM   //!< Support orderer max number
+#define    BOAT_HWBCS_ARGS_MAX_NUM         10//!< Arguments max number in hwbcs command
+#define    BOAT_HWBCS_ENDORSER_MAX_NUM     10  //!< Support endorser max number
+#define    BOAT_HWBCS_ORDERER_MAX_NUM      4   //!< Support orderer max number
 
-#define    BOAT_HWBCS_TLS_SUPPORT          BOAT_HLFABRIC_TLS_SUPPORT//!< If need client support TLS, set it to 1.
-#define    BOAT_HWBCS_TLS_IDENTIFY_CLIENT  BOAT_HLFABRIC_TLS_IDENTIFY_CLIENT     //!< If server need identify client, set it to 1.
+#define    BOAT_HWBCS_TLS_SUPPORT          BOAT_TLS_SUPPORT//!< If need client support TLS, set it to 1.
+#define    BOAT_HWBCS_TLS_IDENTIFY_CLIENT  BOAT_TLS_IDENTIFY_CLIENT     //!< If server need identify client, set it to 1.
 
-                                                   //!< This macro valid only BOAT_HLFABRIC_TLS_SUPPORT has
+                                                   //!< This macro valid only BOAT_HWBCS_TLS_SUPPORT has
                                                    //!< set to 1. 
 												   //!< @note This macro is reserved for future.
-#define    BOAT_HWBCS_ROOTCA_MAX_NUM        BOAT_HLFABRIC_ROOTCA_MAX_NUM//!< Support ROOT CA certificate max number
 
-#define    BOAT_HWBCS_HTTP2_SEND_BUF_MAX_LEN BOAT_HLFABRIC_HTTP2_SEND_BUF_MAX_LEN //!< The maximum length of HTTP2 send buffer
+#define    BOAT_HWBCS_HTTP2_SEND_BUF_MAX_LEN 8192 //!< The maximum length of HTTP2 send buffer
 
-#define  BoatHwbcsKeyPair BoatHlfabricKeyPair
-#define  BoatHwbcsTlsCAchain BoatHlfabricTlsCAchain
-#define  BoatHwbcsNodeInfo BoatHlfabricNodeInfo
-#define  BoatHwbcsCertInfoCfg BoatHlfabricCertInfoCfg
-#define  BoatHwbcsNodeInfoCfg BoatHlfabricNodeInfoCfg
-#define  BoatHwbcsNodeGroupCfg BoatHlfabricNodeGroupCfg
-#define  BoatHwbcsNodeLayoutCfg BoatHlfabricNodeLayoutCfg
-#define  BoatHwbcsNodesCfg  BoatHlfabricNodesCfg
-#define  BoatHwbcsWallet  BoatHlfabricWallet
-#define  BoatHwbcsTimestamp BoatHlfabricTimestamp
-#define  BoatHwbcsChaincodeId BoatHlfabricChaincodeId
-#define  BoatHwbcsArgs BoatHlfabricArgs
-#define  BoatHwbcsSingleEndorserResponse BoatHlfabricSingleEndorserResponse
-#define  BoatHwbcsEndorserResponse BoatHlfabricEndorserResponse
-#define  BoatHwbcsVariable BoatHlfabricVariable
-#define  BoatHwbcsTx  BoatHlfabricTx
-#define  BoatHwbcsWalletConfig BoatHlfabricWalletConfig
 
-//!@brief fabric transaction type
+//!@brief hwbcs transaction type
 //! 
 typedef enum
 {
@@ -73,7 +55,7 @@ typedef enum
 	HWBCS_TYPE_DISCOVER,
 }BoatHwbcsType;
 
-//!@brief fabric function type
+//!@brief hwbcs function type
 //! 
 typedef enum
 {
@@ -81,127 +63,167 @@ typedef enum
 	HWBCS_FUN_SUBMIT ,
 }BoatHwbcsFunType;
 
+typedef struct ThwbcsResponse
+{
+	BUINT32								httpResLen;
+	BUINT8 								*http2Res;
+}hwbcsResponse;
+
+//!@brief hwbcs key pairs structure
+//!hwbcs key pairs structure
+typedef struct TBoatHwbcsKeyPair
+{
+	BoatKeypairPriKeyCtx  prikeyCtx; //!< @NOTE This field MUST BE placed in the first member of the structure
+	                                //!< because in function BoatWalletCreate(), 
+}BoatHwbcsKeyPair;
+
+//!@brief hwbcs all fully trusted top-level CAs
+//! hwbcs all fully trusted top-level CAs
+typedef struct TBoatHwbcsTlsCAchain
+{
+	BoatFieldVariable      ca; //!< rootCA certificate content
+}BoatHwbcsTlsCAchain;
+
+//!@brief hwbcs wallet structure
+//! hwbcs wallet structure
+typedef struct TBoatHwbcsWallet
+{
+	BoatHwbcsKeyPair   account_info; //!< Account information
+#if (BOAT_HWBCS_TLS_SUPPORT == 1)	
+	BoatHwbcsTlsCAchain    tlsCAchain;   //!< tls rootCA certificate list
+#endif /* end of BOAT_HWBCS_TLS_SUPPORT */
+    // BoatHwbcsNetworkInfo   network_info; //!< Network information
+	BoatHwbcsNetworkData network_info;
+	
+	void  *http2Context_ptr; //!< http2 information
+}BoatHwbcsWallet;
+
+//!@brief hwbcs transaction timestamp structure
+//! hwbcs transaction timestamp structure
+typedef struct TBoatHwbcsTimestamp
+{
+	BUINT64 sec;   //!< passing seconds from 1970-01-01 00:00:00
+	BUINT64 nanos; //!< Non-negative fractions of a second at nanosecond resolution
+}BoatHwbcsTimestamp;
+
+//!@brief chaincodeId structure
+//! chaincodeId structure
+typedef struct TBoatHwbcsChaincodeId
+{
+	BCHAR*     path;    //!< The chaincode path, if unused, set it as NULL.
+	BCHAR*     name;    //!< The chaincode name
+	BCHAR*     version; //!< The chaincode version, if unused, set it as NULL.
+}BoatHwbcsChaincodeId;
+
+//! Transaction command arguments
+typedef struct TBoatHwbcsArgs
+{
+	BUINT32    nArgs;
+	BCHAR*     args[BOAT_HWBCS_ARGS_MAX_NUM];
+}BoatHwbcsArgs;
+
+//!@brief endorser node respond structure
+//! 
+typedef struct TBoatHwbcsSingleEndorserResponse
+{
+	void*            contentPtr; //!< response content point
+	BoatHwbcsType responseType;
+	union
+	{
+		struct
+		{ //!< endorserResponse
+			BoatFieldVariable     payload;
+			BoatFieldVariable     endorser;
+			BoatFieldVariable     signature;
+		};
+		struct
+		{ //!< ordererResponse
+			BSINT32               status;//!< for 'query' operation, remote will respond a state code
+		};
+	};
+}BoatHwbcsSingleEndorserResponse;
+
+//!@brief endorser node respond array
+//! endorser node respond array
+typedef struct TBoatHwbcsProposalResponseArray
+{
+	BUINT16                            responseCount;
+	BoatHwbcsSingleEndorserResponse response[BOAT_HWBCS_ENDORSER_MAX_NUM];
+}BoatHwbcsEndorserResponse;
+
+//!@brief hwbcs transaction variable structure
+//! hwbcs transaction variable structure
+typedef struct TBoatHwbcsVariable
+{
+	BoatHwbcsType             type; //!< Frame is proposal or trancaction,this field will maintenance by sdk,
+	                                   //!< caller should not modify it manually. this field maybe removed in future version!
+	BoatHwbcsTimestamp        timestamp;  //!< Transaction occurred datatime
+	BoatFieldMax24B              nonce;      //!< This field maintenanced by sdk, caller should not modify it manually
+	BoatHwbcsChaincodeId      chaincodeId;//!< Chaincode attribute(path,name,version)
+	BoatHwbcsArgs             args;       //!< Transaction arguments,e.g. "query a", "invoke a b 10".
+	BCHAR*                       channelId;  //!< Channel name
+	BCHAR*                       orgName;    //!< Organization name
+	BCHAR*                       contract_name;    //!< contract name
+	BCHAR*                       creator_id;    //!< creator id 
+}BoatHwbcsVariable;
+
+//!@brief hwbcs transaction high level structure
+//! hwbcs transaction high level structure
+typedef struct TBoatHwbcsTx
+{
+	BoatHwbcsWallet*          wallet_ptr;       //!< Pointer of the transaction wallet
+	BoatHwbcsVariable         var;              //!< Necessary variable in transaction
+	BoatHwbcsEndorserResponse endorserResponse; //!< Endorser respond contents
+	hwbcsResponse                evaluateRes;
+}BoatHwbcsTx;
+
+
+
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+	// #if (BOAT_HWBCS_TLS_SUPPORT == 1) && (BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
+	// /*!****************************************************************************
+	//  * @brief
+	//  *   Set TLS key pairs of client.
+	//  *
+	//  * @details
+	//  *   This function used to set TLS key pairs of client. If server needs to
+	//  *   authenticate the client, this function needs to be enabled.
+	//  *
+	//  * @param wallet_ptr
+	//  *   huawei chain wallet pointer.
+	//  *
+	//  * @param prikeyCtx_config
+	//  *   The private key information to be settings.
+	//  *
+	//  * @param certContent
+	//  *   The content of the certificate to be settings.
+	//  *
+	//  * @return
+	//  *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
+	//  *
+	//  *@note This function is reserved for future. DO NOT use it in your application.
+	//  ******************************************************************************/
+	// BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo( BoatHwbcsWallet *wallet_ptr,
+	// 											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
+	// 											    const BoatHwbcsCertInfoCfg certContent );
+	// #endif
 
-/*!****************************************************************************
- * @brief 
- *   Set huawei chain transaction related private key index and certificate information.
- * 
- * @details
- *   This function used to set transaction releated key pairs information.
- *   The private key format is PCKS#8. for huawei chain, the default used curve is SECP256R1.
- *
- * @param wallet_ptr
- *   huawei chain wallet pointer.
- *
- * @param prikeyCtx_config
- *   The private key information to be settings.
- *
- * @param certContent
- *   The content of the certificate to be settings.
- *
- * @return
- *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
- ******************************************************************************/
-BOAT_RESULT BoatHwbcsWalletSetAccountInfo(BoatHwbcsWallet *wallet_ptr, 
-											 const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											 const BoatHwbcsCertInfoCfg certContent);
-
-
-#if (BOAT_HWBCS_TLS_SUPPORT == 1) && (BOAT_HWBCS_TLS_IDENTIFY_CLIENT == 1)
-/*!****************************************************************************
- * @brief 
- *   Set TLS key pairs of client.
- *
- * @details
- *   This function used to set TLS key pairs of client. If server needs to 
- *   authenticate the client, this function needs to be enabled.
- *
- * @param wallet_ptr 
- *   huawei chain wallet pointer.
- *
- * @param prikeyCtx_config 
- *   The private key information to be settings.
- *
- * @param certContent
- *   The content of the certificate to be settings.
- *
- * @return 
- *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
- *
- *@note This function is reserved for future. DO NOT use it in your application.
- ******************************************************************************/
-BOAT_RESULT BoatHwbcsWalletSetTlsClientInfo( BoatHwbcsWallet *wallet_ptr, 
-											    const BoatWalletPriKeyCtx_config prikeyCtx_config,
-											    const BoatHwbcsCertInfoCfg certContent );
-#endif
-
-
-#if (BOAT_HWBCS_TLS_SUPPORT == 1)
-/*!****************************************************************************
- * @brief Set root CA certificate for TLS connection.
- * 
- * @details
- *   Set root CA certificate for TLS connection.
- *
- * @param wallet_ptr 
- *   huawei chain wallet pointer.
- *
- * @param rootCaContent
- *   Array of root CA certificate content.
- *
- * @param rootCaNumber
- *   Number of root CA certificate to be set.
- *
- * @return 
- *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
- ******************************************************************************/
-BOAT_RESULT BoatHwbcsWalletSetRootCaInfo(BoatHwbcsWallet *wallet_ptr, 
-											const BoatHwbcsCertInfoCfg *rootCaContent,
-											BUINT32 rootCaNumber);
-#endif
-
-
-/*!****************************************************************************
- * @brief 
- *   Set huawei chain network information.
- * 
- * @details
- *   This function used to set huawei chain network information, which include 
- *   endorser and orderor node network information.
- *
- * @param wallet_ptr 
- *   huawei chain wallet pointer.
- *
- * @param endorserInfo_ptr
- *   First member address of endorser node info array, the array include node 
- *   URL and node hostname. 
- *   \n Node URL is endorser addresss in "IP/domain name:port" format; node 
- *   hostname is the CN field of endorser certificate, it is valid when TLS 
- *   be enabled only.
- *
- * @param endorserNumber
- *   Number of endorser to be set.
- *
- * @param ordererInfo_ptr
- *   First member address of orderer node info array, the array include node 
- *   URL and node hostname. 
- *   \n Node URL is orderer addresss in "IP/domain name:port" format; node 
- *   hostname is the CN field of orderer certificate, it is valid when TLS 
- *   be enabled only.
- *
- * @param ordererNumber
- *   Number of orderer to be set.
- *
- * @return 
- *   Return \c BOAT_SUCCESS if set successed, otherwise return a error code.
- ******************************************************************************/
-BOAT_RESULT BoatHwbcsWalletSetNetworkInfo( BoatHwbcsWallet *wallet_ptr, 
-							const BoatHwbcsNodesCfg endorserInfo_ptr );
+/**
+ * @description: 
+ * 	This function init hwbcs wallet by keypair index and network index;
+ * @param {BUINT8} keypairIndex
+ * @param {BUINT8} networkIndex
+ * @return {*}
+ *  This function returns hwbcswallet if successfully executed.
+ *  Otherwise it returns NULL.
+ * @author: aitos
+ */
+BoatHwbcsWallet *BoatHwbcsWalletInit(BUINT8 keypairIndex,BUINT8 networkIndex);
 
 /*!****************************************************************************
  * @brief 
@@ -315,10 +337,9 @@ BOAT_RESULT BoatHwbcsTxSetTimestamp(BoatHwbcsTx *tx_ptr,
  * @return 
  *   Return \c BOAT_SUCCESS if set success, otherwise return a error code.
  ******************************************************************************/
-// BOAT_RESULT BoatHwbcsTxSetArgs(BoatHlfabricTx *tx_ptr, 
-// 								  const BCHAR *arg1, 
-// 								  ...);
-#define BoatHwbcsTxSetArgs BoatHlfabricTxSetArgs
+BOAT_RESULT BoatHwbcsTxSetArgs(BoatHwbcsTx *tx_ptr,
+								  const BCHAR *arg1,
+								  ...);
 
 /*!****************************************************************************
  * @brief 

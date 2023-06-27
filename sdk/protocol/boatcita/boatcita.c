@@ -196,7 +196,7 @@ BOAT_RESULT CitaSendRawtx(BOAT_INOUT BoatCitaTx *tx_ptr)
     
     param_cita_sendRawTransaction.signedtx_str = probuf_hex_str;
     tx_hash_str = web3_cita_sendRawTransaction(tx_ptr->wallet_ptr->web3intf_context_ptr,
-                                                    tx_ptr->wallet_ptr->network_info.node_url_ptr,
+                                                    tx_ptr->wallet_ptr->network_info.node_url_buf,
                                                     &param_cita_sendRawTransaction,&result);
     if (tx_hash_str == NULL)
     {

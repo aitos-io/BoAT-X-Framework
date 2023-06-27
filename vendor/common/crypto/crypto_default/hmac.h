@@ -27,14 +27,16 @@
 #include <stdint.h>
 #include "sha2.h"
 
-typedef struct _HMAC_SHA256_CTX {
+typedef struct _HMAC_SHA256_CTX
+{
   uint8_t o_key_pad[SHA256_BLOCK_LENGTH];
-  SHA256_CTX ctx;
+  DEFAULT_SHA256_CTX ctx;
 } HMAC_SHA256_CTX;
 
-typedef struct _HMAC_SHA512_CTX {
+typedef struct _HMAC_SHA512_CTX
+{
   uint8_t o_key_pad[SHA512_BLOCK_LENGTH];
-  SHA512_CTX ctx;
+  DEFAULT_SHA512_CTX ctx;
 } HMAC_SHA512_CTX;
 
 void hmac_sha256_Init(HMAC_SHA256_CTX *hctx, const uint8_t *key,

@@ -11,7 +11,7 @@ Assuming `<MA510 Root>` to be the root directory of Fibocom-MA510 platform SDK:
 
 1、Copy the entire BoAT-X-Framework directory into `<MA510 Root>/fibocom/example`.
 
-2、Create a new folder `boat_demo` under `<MA510 Root>/fibocom/example`,copy all the contents under BoAT-X-Framework/vendor/platform/Fibocom-MA510/MA510RootDirCode/demo to `<MA510 Root>/fibocom/example/boat_demo`.
+2、Create a new folder `boat_demo` under `<MA510 Root>/fibocom/example`,copy all the contents under BoAT-X-Framework/vendor/platform/Fibocom-MA510/MA510RootDirCode/platone_demo to `<MA510 Root>/fibocom/example/boat_demo`.
 
 After copying these files, the directory structure should look like:
 ```

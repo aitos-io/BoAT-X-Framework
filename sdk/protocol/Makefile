@@ -4,9 +4,9 @@ SOURCES = $(wildcard *.c)
 OBJECTS_DIR = $(BOAT_BUILD_DIR)/sdk/protocol
 OBJECTS = $(patsubst %.c,$(OBJECTS_DIR)/%.o,$(SOURCES))
 
-.PHONY: all protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain protocol_quorum protocol_cita
+.PHONY: all protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker_v1 protocol_chainmaker_v2 protocol_venachain protocol_quorum protocol_cita
 
-all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker protocol_venachain protocol_quorum protocol_cita $(OBJECTS_DIR) $(OBJECTS)
+all: protocol_common protocol_ethereum protocol_platon protocol_platone protocol_fiscobcos protocol_hlfabric protocol_hw_bcs protocol_chainmaker_v1 protocol_chainmaker_v2 protocol_venachain protocol_quorum protocol_cita $(OBJECTS_DIR) $(OBJECTS)
 
 
 protocol_common:
@@ -42,9 +42,14 @@ ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)
 	make -C  boathwbcs all
 endif
 
-protocol_chainmaker:
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)
-	make -C  boatchainmaker all
+protocol_chainmaker_v1:
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V1), 1)
+	make -C  boatchainmaker_v1 all
+endif
+
+protocol_chainmaker_v2:
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V2), 1)
+	make -C  boatchainmaker_v2 all
 endif
 
 protocol_venachain:
@@ -72,16 +77,16 @@ $(OBJECTS_DIR)/%.o:%.c
 clean:
 	-$(BOAT_RM) $(OBJECTS)
 	make -C common clean
-ifeq ($(BOAT_PROTOCOL_USE_ETHEREUM), 1)	
+ifeq ($(PROTOCOL_USE_ETHEREUM), 1)	
 	make -C boatethereum  clean
 endif
-ifeq ($(BOAT_PROTOCOL_USE_PLATON), 1)	
+ifeq ($(PROTOCOL_USE_PLATON), 1)
 	make -C boatplaton    clean
 endif
-ifeq ($(BOAT_PROTOCOL_USE_PLATONE), 1)
+ifeq ($(PROTOCOL_USE_PLATONE), 1)
 	make -C boatplatone   clean
 endif
-ifeq ($(BOAT_PROTOCOL_USE_FISCOBCOS), 1)
+ifeq ($(PROTOCOL_USE_FISCOBCOS), 1)
 	make -C boatfiscobcos clean
 endif
 ifeq ($(BOAT_PROTOCOL_USE_HLFABRIC), 1)	
@@ -90,8 +95,11 @@ endif
 ifeq ($(BOAT_PROTOCOL_USE_HWBCS), 1)	
 	make -C boathwbcs  clean
 endif
-ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER), 1)	
-	make -C boatchainmaker clean
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_v1), 1)	
+	make -C boatchainmaker_v1 clean
+endif
+ifeq ($(BOAT_PROTOCOL_USE_CHAINMAKER_V2), 1)	
+	make -C boatchainmaker_v2 clean
 endif
 ifeq ($(BOAT_PROTOCOL_USE_VENACHAIN), 1)
 	make -C boatvenachain clean

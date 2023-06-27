@@ -18,27 +18,24 @@ DEPENDENCE_LIBS = $(BOAT_LIB_DIR)/libboatwallet.a \
 
 .PHONY: all contract_generate
 all: $(OBJECTS_DIR) contract_generate
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer.c \
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer_and_callContract.c \
 		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_platon_transfer_onetime_internalGen
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer.c \
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer_and_callContract.c \
 		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS \
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_platon_transfer_onetime_pkcs
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer.c \
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer_and_callContract.c \
 		-DUSE_ONETIME_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_platon_transfer_onetime_native
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer.c \
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer_and_callContract.c \
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_INTERNAL_GENERATION \
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_platon_transfer_create_internalGen
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer.c \
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer_and_callContract.c \
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_PKCS \
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_platon_transfer_create_pkcs		
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer.c \
+	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer_and_callContract.c \
 		-DUSE_CREATE_PERSIST_WALLET -DUSE_PRIKEY_FORMAT_EXTERNAL_INJECTION_NATIVE \
 		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_platon_transfer_create_native
-	$(CC) $(BOAT_CFLAGS) $(BOAT_LFLAGS) $(CONTRACT_INCLUDE) $(CONTRACT_SOURCES) demo_platon_transfer.c \
-		-DUSE_LOAD_PERSIST_WALLET \
-		$(DEPENDENCE_LIBS) -o $(OBJECTS_DIR)/demo_platon_transfer_load
 
 contract_generate:
 	make -C $(CONTRACT_SRC_DIR) all

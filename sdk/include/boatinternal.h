@@ -32,7 +32,7 @@ boatinternal.h defines common types and include external header files that are i
 #include <time.h>
 
 #include "boattypes.h"
-#include "boatwallet.h"
+#include "boatkeypair.h"
 #include "boatplatform_internal.h"
 #include "boatiotsdk.h"
 

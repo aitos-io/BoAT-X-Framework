@@ -95,8 +95,8 @@ __BOATSTATIC BOAT_RESULT hlfabricSignatureHeaderPacked(const BoatHlfabricTx *tx_
 	serializedIdentity.mspid          = (BCHAR *)tx_ptr->var.orgName;
 	/* --------> certificate */
 	serializedIdentity.has_id_bytes   = true;
-	serializedIdentity.id_bytes.len   = tx_ptr->wallet_ptr->account_info.cert.field_len;
-	serializedIdentity.id_bytes.data  = tx_ptr->wallet_ptr->account_info.cert.field_ptr;
+	serializedIdentity.id_bytes.len   = tx_ptr->wallet_ptr->network_info.accountCertContent.length;
+	serializedIdentity.id_bytes.data  = (BUINT8 *)tx_ptr->wallet_ptr->network_info.accountCertContent.content;
 	/* --------> creator packed */
 	packedLength             = msp__serialized_identity__get_packed_size(&serializedIdentity);
     serializedIdentityBuffer = BoatMalloc(packedLength);

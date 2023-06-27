@@ -73,13 +73,6 @@ target_link_libraries(demo_fiscobcos_helloworld_create_native
                        fiscobcos_obj
                        curl)
 
-add_executable(demo_fiscobcos_helloworld_load ${FISCOBCOS_DEMO_SRC})
-target_compile_options(demo_fiscobcos_helloworld_load PRIVATE -DUSE_LOAD_PERSIST_WALLET)
-target_link_libraries(demo_fiscobcos_helloworld_load
-                       boatwallet
-                       boatvendor
-                       fiscobcos_obj
-                       curl)
 
 
 

@@ -12,15 +12,11 @@ Assuming `<XY1100 Root>` to be the root directory of XinYi-XY1100 platform SDK:
 
 1. Copy the entire BoAT-X-Framework directory into `<XY1100 Root>/userapp`.
 
-2. Create a new folder `boat_demo` under `<XY1100 Root>/userapp/demo`, copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/boat_demo.c into `<XY1100 Root>/userapp/demo/boat_dem/`.
+2. Create a new folder `boat_demo` under `<XY1100 Root>/userapp/demo`, copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/platone_demo/boat_platone_demo.c into `<XY1100 Root>/userapp/demo/boat_demo/`.
 
-3. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.c into `<XY1100 Root>/userapp/demo/boat_demo`.
+3. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/platone_demo/my_contract.c into `<XY1100 Root>/userapp/demo/boat_demo`.
 
-4. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/demo/my_contract.h into `<XY1100 Root>/userapp/demo/boat_demo`.
-
-5. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/vendor/Makefile into /userapp/BoAT-X-Framework/vendor and overwrite the original file.
-
-6. Copy and overwrite BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/storage/persiststore.c into `<XY1100 Root>/userapp/BoAT-X-Framework/vendor/common/storage`.
+4. Copy BoAT-X-Framework/vendor/platform/XinYi-XY1100/XY1100RootDirCode/platone_demo/my_contract.h into `<XY1100 Root>/userapp/demo/boat_demo`.
 
 
 After copying these files, the directory structure should look like:
@@ -45,7 +41,7 @@ After copying these files, the directory structure should look like:
     |-- module.mk    
     |-- demo
     |   |-- boat_demo
-    |   |   |-- boat_demo.c
+    |   |   |-- boat_platone_demo.c
     |   |   |-- my_contract.c
     |   |   |-- my_contract.h
 ```
@@ -58,7 +54,7 @@ After copying these files, the directory structure should look like:
 Open `<XY1100 Root>/userapp/module.mk` 
 Add the following two lines as below:
 ```
-C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/boat_demo.c
+C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/boat_platone_demo.c
 C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/my_contract.c
 ```
 
@@ -68,8 +64,7 @@ C_FILES_FLASH+=$(TOP_DIR)/userapp/demo/boat_demo/my_contract.c
 Open `<XY1100 Root>/userapp/module.mk` 
 Add the following content in the header file path addition:
 ```
-CFLAGS+= -I$(TOP_DIR)/TCPIP/net_tool/Dtls/mbedtls-2.6.0/include/mbedtls \
--I$(TOP_DIR)/userapp/BoAT-X-Framework/include \
+CFLAGS+= -I$(TOP_DIR)/userapp/BoAT-X-Framework/include \
 -I$(TOP_DIR)/userapp/BoAT-X-Framework/vendor/platform/include \
 -I$(TOP_DIR)/userapp/BoAT-X-Framework/sdk/include \
 -I$(TOP_DIR)/userapp/BoAT-X-Framework/vendor/platform/XinYi-XY1100/src/log \
@@ -112,36 +107,6 @@ ifeq ($(BOATSDK_SUPPORT),y)
 endif
 ```
 
-### 8. Configure the macro options of mbedtls in the XinYi-XY1100 platform
-Open `<XY1100 Root>/TCPIP/net_tool/Dtls/mbedtls_port/los_mbedtls_config.h`
-Add the following:
-```
-  #ifdef BOATSDK_SUPPORT
-
-  #define MBEDTLS_ECDSA_C
-  #define MBEDTLS_ECP_C
-  #define MBEDTLS_ASN1_WRITE_C
-  #define MBEDTLS_ECDH_C
-  #define MBEDTLS_PK_C
-  #define MBEDTLS_ECP_DP_SECP256K1_ENABLED
-
-  #define MBEDTLS_PLATFORM_STD_CALLOC        calloc
-  #define MBEDTLS_PLATFORM_STD_FREE            free
-
-
-  #define MBEDTLS_PEM_WRITE_C
-  #define MBEDTLS_PK_WRITE_C
-  #define MBEDTLS_BASE64_C
-  #define MBEDTLS_PK_PARSE_C
-  #define MBEDTLS_ASN1_PARSE_C
-
-  #define MBEDTLS_BIGNUM_C
-  #define MBEDTLS_OID_C
-  #define MBEDTLS_PEM_PARSE_C
-
-  #endif
-```
-
 ## Compile BoAT-X Framework Static library
 
 ### 1. Compile BoAT-X Framework static library (under Linux)
@@ -163,7 +128,7 @@ Add the following:
 
 ### 2. Build the demo program of XY1100, generate .bin file for download
 
-   Demo code for accessing blockchain through BoAT-X Framework is in `<XY1100 Root>/userapp/demo/boat_demo/boat_demo.c`
+   Demo code for accessing blockchain through BoAT-X Framework is in `<XY1100 Root>/userapp/demo/boat_demo/boat_platone_demo.c`
 
    Open a Linux shell and build the demo:
    ```

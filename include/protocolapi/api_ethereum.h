@@ -32,7 +32,7 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 #define BOAT_ETH_MINE_INTERVAL                   3  //!< Mining Interval of the blockchain, in seconds
 #define BOAT_ETH_WAIT_PENDING_TX_TIMEOUT         30 //!< Timeout waiting for a transaction being mined, in seconds
 
-#define BOAT_ETH_NODE_URL_MAX_LEN                127 //!< Maxmum length for node's URL
+
 
 #define BOAT_ETH_NONCE_AUTO                      0xFFFFFFFFFFFFFFFF
 #define BOAT_ETH_ADDRESS_SIZE                    20
@@ -42,34 +42,11 @@ api_ethereum.h is header file for BoAT IoT SDK ethereum's interface.
 //! from the public key and the public key is calculated from the private key.
 typedef struct TBoatEthAccountInfo
 {
-    BoatWalletPriKeyCtx prikeyCtx;         //!< prikey context                       
+    BoatKeypairPriKeyCtx prikeyCtx;         //!< prikey context                       
 
     BUINT8  address[BOAT_ETH_ADDRESS_SIZE];//!< Account address calculated from public key
 }BoatEthAccountInfo;
 
-
-/*!
- * @brief Blockchain network information
- *
- * EIP-155 (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md) requires
- * chain ID of the network being part of the transaction before it's signed.
- * If the network is NOT EIP-155 compatible, <eip155_compatibility> must be FALSE
- * and <chain_id> is ignored. Otherwise the chain ID must be set.\n
- * <node_url_ptr> must include the protocol descriptor, IP address or URL name and 
- * port. For example, http://a.b.com:8545
- */
-typedef struct TBoatEthNetworkInfo
-{
-    BUINT32 chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
-
-    /*!@brief Network EIP-155 compatibility
-
-    If the network is EIP-155 compabible <eip155_compatibility> must be set to TRUE and <chain_id>
-    must be set.\n
-    Otherwise set it to FALSE and <chain_id> is ignored.*/
-    BBOOL eip155_compatibility;
-    BCHAR *node_url_ptr; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
-}BoatEthNetworkInfo;
 
 
 //!@brief Wallet information
@@ -80,25 +57,11 @@ typedef struct TBoatEthNetworkInfo
 typedef struct TBoatEthWallet
 {
     BoatEthAccountInfo account_info; //!< Account information
-    BoatEthNetworkInfo network_info; //!< Network information
+    BoatEthNetworkData network_info; //!< Network information
 
     // Ethereum wallet internal members. DO NOT access them from outside wallet protocol.
     struct TWeb3IntfContext *web3intf_context_ptr;  //!< Web3 Interface Context
 }BoatEthWallet;
-
-
-//!@brief Ethereum Wallet configuration
-
-//! Ethereum wallet configuration is used in wallet creation.
-typedef struct TBoatEthWalletConfig
-{
-	BoatWalletPriKeyCtx_config  prikeyCtx_config; //!< @NOTE This field MUST BE placed in the first member of the structure
-	                                              //!< because in function BoatWalletCreate(), 
-    BUINT32  chain_id;    //!< Chain ID (in host endian) of the blockchain network if the network is EIP-155 compatible
-    BBOOL    eip155_compatibility;    //!< Network EIP-155 compatibility. See BoatEthNetworkInfo
-    BCHAR    node_url_str[BOAT_ETH_NODE_URL_MAX_LEN]; //!< URL of the blockchain node, e.g. "http://a.b.com:8545"
-    BBOOL    load_existed_wallet;   //false: need creat key by Boat , true: not need creat key
-}BoatEthWalletConfig;
 
 
 //!@brief ECDSA signature struct
@@ -116,6 +79,10 @@ typedef struct TBoatEthTxFieldSig
     BUINT8 r_len;            //!< Effective length of r, either 0 for unsigned tx and 32 for signed tx
     BUINT8 s_len;            //!< Effective length of s, either 0 for unsigned tx and 32 for signed tx
 }BoatEthTxFieldSig;
+
+
+
+
 
 //!@brief EthereumRAW transaction fields
 
@@ -177,13 +144,6 @@ extern "C" {
  *   configuration.
  *   \n DO NOT call this function directly. Instead call BoatWalletCreate() with an Ethereum
  *   wallet configuration like:
- *   @verbatim
-     BoatEthWalletConfig eth_config = {...};
-     BSINT32 wallet_index;
-     wallet_index = BoatWalletCreate(BOAT_PROTOCOL_ETHEREUM,
-                                     &eth_config,
-                                     sizeof(BoatEthWalletConfig)
-                                    );
      @endverbatim
  *   \n BoatEthWalletInit() MUST be called before any use of Boat Ethereum Wallet.
  *   \n BoatEthWalletDeInit() MUST be called after use of Boat Ethereum Wallet.
@@ -200,7 +160,7 @@ extern "C" {
  *		
  * @see BoatEthWalletDeInit() BoatWalletCreate()
  ******************************************************************************/
-BoatEthWallet *BoatEthWalletInit(const BoatEthWalletConfig *config_ptr, BUINT32 config_size);
+BoatEthWallet *BoatEthWalletInit(BUINT8 walletIndex,BUINT8 accountIndex);
 
 
 /*!****************************************************************************
@@ -250,68 +210,6 @@ BOAT_RESULT eth_parse_json_result(const BCHAR *json_string,
 								  const BCHAR *child_name, 
 								  BoatFieldVariable *result_out);
 
-/*!****************************************************************************
- * @brief Set BoatWallet: URL of blockchain node
- *
- * @details
- *   This function sets the URL of the blockchain node to connect to.
- *   \n A URL is composed of protocol, IP address/name and port, in a form:
- *   http://a.b.com:8545
- *
- * @param[in] wallet_ptr
- *   Wallet context pointer.    
- *
- * @param[in] node_url_ptr
- *   A string indicating the URL of blockchain node to connect to.
- *
- * @return
- *   This function returns BOAT_SUCCESS if setting is successful.\n
- *   Otherwise it returns one of the error codes.        
- ******************************************************************************/
-BOAT_RESULT BoatEthWalletSetNodeUrl(BoatEthWallet *wallet_ptr, const BCHAR *node_url_ptr);
-
-
-/*!****************************************************************************
- * @brief Set BoatWallet: EIP-155 Compatibility
- *
- * @details
- *   This function sets if the network supports EIP-155.
- *   If the network supports EIP-155, set it to BOAT_TRUE.
- *   Otherwise set it to BOAT_FALSE.
-
- * @param[in] wallet_ptr
- *   Wallet context pointer.   
- *
- * @param[in] eip155_compatibility
- *   BOAT_TRUE if the network supports EIP-155. Otherwise BOAT_FALSE.
- *
- * @return
- *   This function returns BOAT_SUCCESS if setting is successful.\n
- *   Otherwise it returns one of the error codes.      
- ******************************************************************************/
-BOAT_RESULT BoatEthWalletSetEIP155Comp(BoatEthWallet *wallet_ptr, BBOOL eip155_compatibility);
-
-
-/*!****************************************************************************
- * @brief Set BoatWallet: Chain ID
- *
- * @details
- *   This function sets the chain ID of the network.
- *   If the network supports EIP-155, chain ID is part of the transaction
- *   message to sign.
- *   If the network doesn't support EIP-155, chain ID is ignored.
- *
- * @param[in] wallet_ptr
- *   Wallet context pointer.    
- *
- * @param[in] chain_id
- *   Chain ID of the blockchain network to use.
- *
- * @return
- *   This function returns BOAT_SUCCESS if setting is successful.\n
- *   Otherwise it returns one of the error codes.
- ******************************************************************************/
-BOAT_RESULT BoatEthWalletSetChainId(BoatEthWallet *wallet_ptr, BUINT32 chain_id);
 
 
 /*!****************************************************************************
@@ -711,6 +609,46 @@ BOAT_RESULT BoatEthTransfer(BoatEthTx *tx_ptr, BCHAR *value_hex_str);
  *   of the error codes.
  ******************************************************************************/
 BOAT_RESULT BoatEthGetTransactionReceipt(BoatEthTx *tx_ptr);
+
+
+/**
+ * @description: 
+ *  This function changes the URL of Ethereum wallet to new URL;
+ * @param {BoatEthWallet} *wallet_ptr
+ * @param {BCHAR *} newUrl
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoatEthWalletChangeNodeUrl(BoatEthWallet *wallet_ptr,BCHAR * newUrl);
+
+/**
+ * @description: 
+ *  This function changes the chainID of Ethereum wallet to new chainID;
+ * @param {BoatEthWallet} *wallet_ptr
+ * @param {BUINT32} newChainID
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoatEthWalletChangeChainID(BoatEthWallet *wallet_ptr,BUINT32 newChainID);
+
+/**
+ * @description: 
+ *  This function changes the eip155 compatibility of Ethereum wallet to new compatibility;
+ * @param {BoatEthWallet} *wallet_ptr
+ * @param {BBOOL} eip155_compatibility
+ * @return {*}
+ *  This function returns BOAT_SUCCESS if successfully executed.
+ *  Otherwise it returns one of the error codes. Refer to header file boaterrcode.h 
+ *  for details.
+ * @author: aitos
+ */
+BOAT_RESULT BoatEthWalletChangeEIP155Comp(BoatEthWallet *wallet_ptr, BBOOL eip155_compatibility);
 
 /*! @}*/
 

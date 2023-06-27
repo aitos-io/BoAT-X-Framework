@@ -12,11 +12,11 @@
 
 1、拷贝 BoAT代码，将BoAT-X-Framework 整个文件夹拷贝至`<FM650 Root>/fibo-sdk/umdp/example`下。
 
-2、在`<FM650 Root>/fibo-sdk/umdp/example`下新建文件夹`boat_demo`，拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/demo_platone_mycontract.c到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
+2、在`<FM650 Root>/fibo-sdk/umdp/example`下新建文件夹`boat_demo`，拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/platone_demo/demo_platone_mycontract.c到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
 
-3、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/my_contract.cpp.abi.c到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
+3、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/platone_demo/my_contract.cpp.abi.c到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
 
-4、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/my_contract.cpp.abi.h到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
+4、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/platone_demo/my_contract.cpp.abi.h到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
 
 5、拷贝 BoAT-X-Framework/vendor/platform/Fibocom-FM650/FM650_demo/Makefile到`<FM650 Root>/fibo-sdk/umdp/example/boat_demo`下。
 
@@ -99,7 +99,6 @@ EXTERNAL_INC := -I/home/linux/FM650/fg650-opensdk
 
    #### a、配置主Makefile中的编译信息，打开`<FM650 Root>/fibo-sdk/umdp/example/BoAT-X-Framework/Makefile`，修改以下内容（以PlatONE为例）：
    ```
-   BOAT_PROTOCOL_USE_ETHEREUM   ?= 1
    BOAT_PROTOCOL_USE_PLATONE    ?= 1
 
    PLATFORM_TARGET ?= linux-default
