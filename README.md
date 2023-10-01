@@ -4,6 +4,10 @@
 
 ![BoAT logo](https://aitos-io.github.io/BoAT-X-Framework/logo/BoAT_RGB_Horizontal_100.png)
 
+## This repository is archived
+BoAT has sailed toward new continent at [BoAT-ProjectTemplate](https://github.com/aitos-io/BoAT-ProjectTemplate) with all navigation documents at [BoAT-EdgeDocs](https://github.com/aitos-io/BoAT-EdgeDocs).
+
+This repository is archived.
 
 ## Introduction
 Welcome to the official implementation and documents of BoAT-X Framework!([中文版](./README_cn.md)) 

@@ -4,6 +4,11 @@
 
 ![BoAT logo](https://aitos-io.github.io/BoAT-X-Framework/logo/BoAT_RGB_Horizontal_100.png)
 
+## 本仓库已迁移
+BoAT已经迁移到新仓库[BoAT-ProjectTemplate](https://github.com/aitos-io/BoAT-ProjectTemplate)。BoAT文档迁移至[BoAT-EdgeDocs](https://github.com/aitos-io/BoAT-EdgeDocs).
+
+本仓库仅作历史归档。
+
 
 ## BoAT-X介绍
 **BoAT-X** 是摩联科技推出的一套面向物联网的区块链应用框架，**它帮助物联网设备实现可信数据上链，赋能**数据从数据源头上传到云端以及后续物联网数据开放和交换下的全生命周期可信，是**BoAT家族各关键**组件的统称。**BoAT**全称为**B**lockchain **o**f **A**I **T**hing，**X泛指**本产品族涵盖的各相关组件，包括嵌入式区块链客户端，云端服务，和配套工具。物联网设备可以通过灵活调用该套组件访问各类区块链服务。BoAT-X所描绘的美好愿景是打造一艘船BoAT，从物联网设备这一数据的源头出发，承载着可信的物联网数据驶向千行百业的数据湖。
